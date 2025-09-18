@@ -44,7 +44,7 @@ TRUSTED_SOURCES = (ORIGIN_ANALYSIS_UTILS, ORIGIN_DB)
 class GcorFluxscaleQAHandler(pqa.QAPlugin):
     result_cls = commonfluxresults.FluxCalibrationResults
     child_cls = None
-    generating_task = gcorfluxscale.GcorFluxscale
+    generating_task = gcorfluxscale.SerialGcorFluxscale
 
     def handle(self, context, result):
         vis = result.inputs['vis']
@@ -77,12 +77,10 @@ class GcorFluxscaleQAHandler(pqa.QAPlugin):
 
 
 class GcorFluxscaleListQAHandler(pqa.QAPlugin):
-    """
-    QA handler for a list containing FluxCalibrationResults.
-    """
+    """QA handler for a list containing FluxCalibrationResults."""
     result_cls = collections.abc.Iterable
     child_cls = commonfluxresults.FluxCalibrationResults
-    generating_task = gcorfluxscale.GcorFluxscale
+    generating_task = gcorfluxscale.SerialGcorFluxscale
 
     def handle(self, context, result):
         # collate the QAScores from each child result, pulling them into our

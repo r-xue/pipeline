@@ -6,8 +6,8 @@ import pprint
 import tempfile
 from inspect import signature
 
-from . import daskhelpers, exceptions, logging
-from .utils import get_obj_size, human_file_size
+from pipeline.infrastructure import daskhelpers, exceptions, logging
+from pipeline.infrastructure.utils import gen_hash, get_obj_size, human_file_size
 
 mpi_spec = importlib.util.find_spec('casampi')
 if mpi_spec is None:
@@ -26,6 +26,7 @@ else:
 # global variable for toggling MPI usage
 USE_MPI = True
 ENABLE_TIER0_PLOTMS = True
+BUFFER_LIMIT = 100*1024*1024  # 100 MiB
 
 LOG = logging.get_logger(__name__)
 
@@ -78,7 +79,14 @@ class AsyncTask(object):
         response = response[0]
         if response['successful']:
             self._merge_casa_commands(response)
-            return response['ret']
+            ret, ret_file = response['ret']
+            if ret_file is not None:
+                LOG.debug('Retrieve the execution return of %s from %s',
+                          response['parameters']['tier0_executable'], ret_file)
+                with open(ret_file, 'rb') as pickle_file:
+                    ret = pickle.load(pickle_file)
+                os.unlink(ret_file)
+            return ret
         else:
             err_msg = 'Failure executing job on MPI server {}, with traceback\n {}'.format(
                 response['server'], response['traceback']
@@ -381,10 +389,22 @@ def mpiexec(tier0_executable):
     executable = tier0_executable.get_executable()
     LOG.info('Executing %s on rank%s@%s', tier0_executable, MPIEnvironment.mpi_processor_rank, MPIEnvironment.hostname)
 
-    ret = executable()
-    LOG.debug('Buffering the execution return (%s) of %s', human_file_size(get_obj_size(ret)), tier0_executable)
+    ret, ret_file = executable(), None
+    ret_size = get_obj_size(ret)  # in Bytes
+    if ret_size > BUFFER_LIMIT:
+        tmpfile = tempfile.NamedTemporaryFile(suffix='.context',
+                                              dir='',
+                                              delete=True)
+        tmpfile.close()
+        LOG.debug('Saving the execution return from %s to %s due to its size of %s execeeding the MPI Buffer limit %s restricted by Pipeline',
+                  tier0_executable, tmpfile.name, human_file_size(ret_size), human_file_size(BUFFER_LIMIT))
+        with open(tmpfile.name, 'wb') as pickle_file:
+            pickle.dump(ret, pickle_file, protocol=-1)
+        ret, ret_file = None, os.path.abspath(tmpfile.name)
+    else:
+        LOG.debug('Buffering the execution return (%s) from %s', human_file_size(ret_size), tier0_executable)
 
-    return ret
+    return ret, ret_file
 
 
 def is_mpi_ready():
@@ -527,6 +547,7 @@ class TaskQueue:
 
     Example 1:
 
+        from pipeline.infrastructure.mpihelpers import TaskQueue
         q = TaskQueue()
         q.add_functioncall(test, 9, 8) # test is a function taking two arguments.
         for i in range(4):
@@ -537,20 +558,30 @@ class TaskQueue:
 
     Example 2:
 
+        from pipeline.infrastructure.mpihelpers import TaskQueue
+        from pipeline.infrastructure.utils.math import round_up
+        # A note on object serialization: The mapped object must be serializable (pickleable)
+        # and resolvable by the server process, as it is passed through our MPI4py wrapper.
+        # For reliable execution, define the function at the module level within the
+        # Pipeline package or before the casampi queue is created.
         with TaskQueue() as tq:
-            tq.map(fn, [(1,2),(2,3),(4,5),(6,7),(8,9)])
-        results = q.get_results()
+            tq.map(round_up,[(1.1,),(1.2,),(1.2,),(1.5,),(1.6,)])
+        results = tq.get_results()
+        print(results)
+
     """
 
-    def __init__(self, parallel=True, executor=None):
+    def __init__(self, parallel=True, executor=None, unique=False):
         self.__queue = []
+        self.__hash = []
+        self.__returned = []        
         self.__results = []
-        self.__running = True
         self.__executor = executor
         self.__mpi_server_list = mpi_server_list
         self.__is_async_ready = daskhelpers.is_dask_ready() or is_mpi_ready()
         self.__parallel_wanted = parallel
         self.__async = self.__parallel_wanted and self.__is_async_ready
+        self.__unique = unique
 
         LOG.info('TaskQueue initialized: ')
         LOG.info('    MPI server list: %s', self.__mpi_server_list)
@@ -561,36 +592,42 @@ class TaskQueue:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        if self.__running:
-            _ = self.get_results()
-        else:
-            pass
+        self.get_results(clear=False)
         if exc_type:
             LOG.error('Error in TaskQueue: %s', exc_val)
         else:
             LOG.info('TaskQueue completed successfully')
 
     def __call__(self):
-        return self.get_results()
+        return self.get_results(clear=False)
 
-    def done(self):
-        return self.get_results()
+    def done(self, clear=False):
+        return self.get_results(clear=clear)
 
     def is_async(self):
         """Return True if the TaskQueue is running in parallel mode."""
         return self.__async
 
-    def get_results(self):
-        if not self.__running and self.__results:
-            return self.__results
-        else:
-            results = []
-            for task in self.__queue:
-                results.append(task.get_result())
-            self.__results = results
-            self.__running = False
+    def get_results(self, clear=False):
+        """get all queue results in a block fashion."""
+        for idx, task in enumerate(self.__queue):
+            if not self.__returned[idx]:
+                self.__results[idx] = task.get_result()
+                self.__returned[idx] = True
 
-        return self.__results
+        if clear:
+            self.__queue = []
+            self.__hash = []
+            self.__returned = []
+            results = self.__results[:]
+
+            self.__queue.clear()
+            self.__hash.clear()
+            self.__returned.clear()
+            self.__results.clear()
+            return results
+        else:
+            return self.__results
 
     def map(self, fn, iterable):
         if not hasattr(iterable, '__len__'):
@@ -598,6 +635,12 @@ class TaskQueue:
 
         for args in iterable:
             self.add_functioncall(fn, *args)
+
+    def _register_task(self, task, task_hash):
+        self.__queue.append(task)
+        self.__hash.append(task_hash)
+        self.__returned.append(False)
+        self.__results.append(None)            
 
     def add_jobrequest(self, fn, job_args, executor=None):
         """Add a jobequest into the queue.
@@ -607,6 +650,11 @@ class TaskQueue:
             fn = casa_tasks.imdev
             job_args = {'imagename': 'myimage.fits'}
         """
+        task_hash = gen_hash((fn, job_args))
+        if self.__unique and task_hash in self.__hash:
+            LOG.debug('Skipping duplicated JobRequest - fn: %s, job_args: %s', fn, job_args)
+            return
+                
         if executor is None:
             executor = self.__executor
 
@@ -622,12 +670,17 @@ class TaskQueue:
         else:
             task = SyncTask(fn(**job_args), executor)
 
-        self.__queue.append(task)
+        self._register_task(task, task_hash)
 
     def add_functioncall(self, fn, *args, use_pickle=False, **kwargs):
-        # try different parallelization arrangement:
-        #   dask/futures -> casampi -> serial
+        """Add a function call into the queue."""
+        task_hash = gen_hash((fn, args, kwargs))
+        if self.__unique and task_hash in self.__hash:
+            LOG.debug('Skipping duplicated JobRequest - fn: %s, args: %s, kwargs: %s', fn.__name__, args, kwargs)
+            return        
 
+        # try different parallelization arrangement:
+        #   dask/futures -> casampi -> serial        
         if self.__parallel_wanted and daskhelpers.is_dask_ready():
             executable = Tier0FunctionCall(fn, *args, use_pickle=use_pickle, **kwargs)
             task = daskhelpers.FutureTask(executable)
@@ -637,9 +690,20 @@ class TaskQueue:
         else:
             task = SyncTask(lambda: fn(*args, **kwargs))
 
-        self.__queue.append(task)
+        self._register_task(task, task_hash)
 
     def add_pipelinetask(self, task_cls, task_args, context, executor=None):
+        """Add a PipelineTask into the queue."""
+        task_hash = gen_hash((task_cls, task_args, context))
+        if self.__unique and task_hash in self.__hash:
+            LOG.debug(
+                'Skipping duplicated PipelineTask - task_cls: %s, task_args: %s, content: %s',
+                task_cls,
+                task_args,
+                context,
+            )
+            return
+                
         if executor is None:
             executor = self.__executor
 
@@ -666,4 +730,4 @@ class TaskQueue:
             task = task_cls(inputs)
             task = SyncTask(task, executor)
 
-        self.__queue.append(task)
+        self._register_task(task, task_hash)

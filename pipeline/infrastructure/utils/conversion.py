@@ -4,17 +4,17 @@ The conversion module contains utility functions that convert between data
 types and assist in formatting objects as strings for presentation to the
 user.
 """
+from __future__ import annotations
 
 import collections
+import datetime
 import decimal
 import math
 import os
 import re
 import string
-import typing
-from datetime import datetime, timedelta
-from numbers import Number
-from typing import Any, Dict, Iterable, Iterator, List, Optional, Sequence, Tuple, Union
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Iterable, Iterator, Sequence
 
 import astropy.units as u
 import cachetools
@@ -22,13 +22,34 @@ import numpy as np
 import pyparsing
 from astropy.coordinates import SkyCoord
 
-from .. import casa_tools, logging
+from pipeline import infrastructure
+from pipeline.infrastructure import casa_tools
 
-LOG = logging.get_logger(__name__)
+if TYPE_CHECKING:
+    from pipeline.domain import Field, MeasurementSet
 
-__all__ = ['commafy', 'flatten', 'mjd_seconds_to_datetime', 'get_epoch_as_datetime', 'range_to_list', 'to_CASA_intent',
-           'to_pipeline_intent', 'field_arg_to_id', 'spw_arg_to_id', 'ant_arg_to_id', 'safe_split', 'dequote',
-           'format_datetime', 'format_timedelta', 'record_to_quantity', 'human_file_size']
+LOG = infrastructure.logging.get_logger(__name__)
+
+__all__ = [
+    'ant_arg_to_id',
+    'commafy',
+    'dequote',
+    'field_arg_to_id',
+    'flatten',
+    'format_datetime',
+    'format_timedelta',
+    'get_epoch_as_datetime',
+    'invert_dict',
+    'mjd_seconds_to_datetime',
+    'range_to_list',
+    'record_to_quantity',
+    'safe_split',
+    'spw_arg_to_id',
+    'to_CASA_intent',
+    'to_pipeline_intent',
+    'convert_paths_to_basenames',
+    'human_file_size',
+    ]
 
 # By default we use CASA to parse arguments into spw/field/ant IDs. However, this
 # requires access to the data. Setting this property to False uses the pipeline's
@@ -52,7 +73,7 @@ class LoggingLRUCache(cachetools.LRUCache):
         self.name = name
         super().__init__(*args, **kwargs)
 
-    def popitem(self):
+    def popitem(self) -> tuple[Any, Any]:
         """Remove and return the (key, value) pair least recently used.
 
         Override popitem method to create a log entry when a cache entry is
@@ -68,7 +89,7 @@ class LoggingLRUCache(cachetools.LRUCache):
 # Cache for ms.msselectedindices calls. Without this cache, the MS tool would
 # open and close the measurement set on each query, which is an expensive
 # operation.
-MSTOOL_SELECTEDINDICES_CACHE: typing.Dict[str, LoggingLRUCache] = {}
+MSTOOL_SELECTEDINDICES_CACHE: dict[str, LoggingLRUCache] = {}
 
 
 def commafy(l: Iterable, quotes: bool = True, multi_prefix: str = '', separator: str = ', ',
@@ -154,7 +175,7 @@ def flatten(l: Sequence[Any]) -> Iterator[Any]:
             yield el
 
 
-def unix_seconds_to_datetime(unix_secs: Sequence[Number]) -> Union[datetime, List[datetime]]:
+def unix_seconds_to_datetime(unix_secs: list[int | float]) -> list[datetime.datetime]:
     """Convert list of UNIX epoch times to a list of equivalent datetime objects.
 
     Args:
@@ -162,10 +183,10 @@ def unix_seconds_to_datetime(unix_secs: Sequence[Number]) -> Union[datetime, Lis
     Returns:
         List of equivalent Python datetime objects.
     """
-    return [datetime.utcfromtimestamp(s) for s in unix_secs]
+    return [datetime.datetime.utcfromtimestamp(s) for s in unix_secs]
 
 
-def mjd_seconds_to_datetime(mjd_secs: Sequence[Number]) -> List[datetime]:
+def mjd_seconds_to_datetime(mjd_secs: list[int | float]) -> list[datetime.datetime]:
     """Convert list of MJD seconds to a list of equivalent datetime objects.
 
     Convert the input list of elapsed seconds since MJD epoch to the
@@ -182,7 +203,7 @@ def mjd_seconds_to_datetime(mjd_secs: Sequence[Number]) -> List[datetime]:
     return unix_seconds_to_datetime(mjd_secs_with_offsets)
 
 
-def get_epoch_as_datetime(epoch: dict) -> datetime:
+def get_epoch_as_datetime(epoch: dict) -> datetime.datetime:
     """Convert a CASA 'epoch' measure into a Python datetime.
 
     Args:
@@ -204,12 +225,12 @@ def get_epoch_as_datetime(epoch: dict) -> datetime:
     t = mt.getvalue(epoch_utc)['m0']
     t = qt.sub(t, base_time)
     t = qt.convert(t, 's')
-    t = datetime.utcfromtimestamp(qt.getvalue(t)[0])
+    t = datetime.datetime.utcfromtimestamp(qt.getvalue(t)[0])
 
     return t
 
 
-def range_to_list(arg: str) -> List[int]:
+def range_to_list(arg: str) -> list[int]:
     """Expand a numeric range expressed in CASA syntax to the list of integer.
 
     Expand a numeric range expressed in CASA syntax to the equivalent Python
@@ -250,7 +271,7 @@ def range_to_list(arg: str) -> List[int]:
     return atoms.parseString(str(arg)).asList()
 
 
-def to_CASA_intent(ms, intents: str) -> str:
+def to_CASA_intent(ms: MeasurementSet, intents: str) -> str:
     """Convert pipeline intents back to the equivalent intents recorded in the measurement set.
 
     Example:
@@ -267,7 +288,7 @@ def to_CASA_intent(ms, intents: str) -> str:
     return ','.join(obs_modes)
 
 
-def to_pipeline_intent(ms, intents: str) -> str:
+def to_pipeline_intent(ms: MeasurementSet, intents: str) -> str:
     """Convert CASA intents to pipeline intents.
 
     Args:
@@ -287,7 +308,7 @@ def to_pipeline_intent(ms, intents: str) -> str:
     return ','.join(pipeline_intents)
 
 
-def field_arg_to_id(ms_path: str, field_arg: Union[str, int], all_fields) -> List[int]:
+def field_arg_to_id(ms_path: str, field_arg: str | int, all_fields) -> list[int]:
     """Convert a string to the corresponding field IDs.
 
     Args:
@@ -312,7 +333,7 @@ def field_arg_to_id(ms_path: str, field_arg: Union[str, int], all_fields) -> Lis
         return _parse_field(field_arg, all_fields)
 
 
-def spw_arg_to_id(ms_path: str, spw_arg: Union[str, int], all_spws) -> List[Tuple[int, int, int, int]]:
+def spw_arg_to_id(ms_path: str, spw_arg: str | int, all_spws) -> list[tuple[int, int, int, int]]:
     """Convert a string to spectral window IDs and channels.
 
     Args:
@@ -339,7 +360,7 @@ def spw_arg_to_id(ms_path: str, spw_arg: Union[str, int], all_spws) -> List[Tupl
         return spws
 
 
-def ant_arg_to_id(ms_path: str, ant_arg: Union[str, int], all_antennas) -> List[int]:
+def ant_arg_to_id(ms_path: str, ant_arg: str | int, all_antennas) -> list[int]:
     """Convert a string to the corresponding antenna IDs.
 
     Args
@@ -356,7 +377,7 @@ def ant_arg_to_id(ms_path: str, ant_arg: Union[str, int], all_antennas) -> List[
         return _parse_antenna(ant_arg, all_antennas)
 
 
-def _convert_arg_to_id(arg_name: str, ms_path: str, arg_val: str) -> Dict[str, np.ndarray]:
+def _convert_arg_to_id(arg_name: str, ms_path: str, arg_val: str) -> dict[str, np.ndarray]:
     """Parse the CASA input argument and return the matching IDs.
 
     Originally the cache was set on this function with the cache size fixed at
@@ -404,7 +425,7 @@ def _convert_arg_to_id(arg_name: str, ms_path: str, arg_val: str) -> Dict[str, n
     return result
 
 
-def safe_split(fields: str) -> List[str]:
+def safe_split(fields: str) -> list[str]:
     """Split a string containing field names into a list.
 
     Split a string containing field names into a list, taking account of field
@@ -429,7 +450,7 @@ def dequote(s: str) -> str:
     return s.replace('"', '').replace("'", "")
 
 
-def format_datetime(dt: datetime, dp: int = 0) -> str:
+def format_datetime(dt: datetime.datetime, dp: int = 0) -> str:
     """Convert a datetime to a formatted string representation.
 
     Convert a Python datetime object into a string representation, including
@@ -452,7 +473,7 @@ def format_datetime(dt: datetime, dp: int = 0) -> str:
         return s
 
 
-def format_timedelta(td: timedelta, dp: int = 0) -> str:
+def format_timedelta(td: datetime.timedelta, dp: int = 0) -> str:
     """Convert a timedelta to a formatted string representation.
 
     Convert a Python timedelta object into a string representation, including
@@ -468,7 +489,7 @@ def format_timedelta(td: timedelta, dp: int = 0) -> str:
     secs = decimal.Decimal(td.seconds)
     microsecs = decimal.Decimal(td.microseconds) / decimal.Decimal('1e6')
     rounded_secs = (secs + microsecs).quantize(decimal.Decimal(10) ** -dp)
-    rounded = timedelta(days=td.days, seconds=math.floor(rounded_secs))
+    rounded = datetime.timedelta(days=td.days, seconds=math.floor(rounded_secs))
     # get rounded number of microseconds as an integer
     rounded_microsecs = int((rounded_secs % 1).shift(6))
     # .. which we can pad with zeroes..
@@ -484,7 +505,7 @@ def format_timedelta(td: timedelta, dp: int = 0) -> str:
         return str(rounded)
 
 
-def _parse_spw(task_arg: str, all_spw_ids: tuple = None):
+def _parse_spw(task_arg: str, all_spw_ids: tuple = None) -> list[tuple[str, list[Any, Any]]]:
     """Convert the CASA-style spw argument to a list of spw IDs.
 
     Channel limits are also parsed in this function but are not currently
@@ -583,7 +604,7 @@ def _parse_spw(task_arg: str, all_spw_ids: tuple = None):
     return [Atom(spw=k, channels=v) for k, v in results.items()]
 
 
-def _parse_field(task_arg: Optional[str], fields=None) -> List[int]:
+def _parse_field(task_arg: str | None, fields: Field | None = None) -> list[int]:
     """Convert the field section in CASA format to list of field IDs.
 
     Inner method.
@@ -634,7 +655,7 @@ def _parse_field(task_arg: Optional[str], fields=None) -> List[int]:
     return sorted(list(results))
 
 
-def _parse_antenna(task_arg: Optional[str], antennas: Optional[Dict[str, np.ndarray]] = None) -> List[int]:
+def _parse_antenna(task_arg: str | None, antennas: dict[str, np.ndarray] | None = None) -> list[int]:
     """Convert the antenna selection in CASA format to a list of antenna IDs.
 
     Inner method.
@@ -695,7 +716,9 @@ def _parse_antenna(task_arg: Optional[str], antennas: Optional[Dict[str, np.ndar
     return sorted(list(results))
 
 
-def record_to_quantity(record: Union[Dict, List[Dict], Tuple[Dict]]) -> Union[u.Quantity, List[u.Quantity], Tuple[u.Quantity]]:
+def record_to_quantity(
+        record: dict | list[dict] | tuple[dict]
+        ) -> u.Quantity | list[u.Quantity] | tuple[u.Quantity]:
     """Convert a CASA record to an Astropy quantity.
 
     Optionally, the input can be a list/tuple in which each element is a CASA record.
@@ -710,7 +733,7 @@ def record_to_quantity(record: Union[Dict, List[Dict], Tuple[Dict]]) -> Union[u.
     return record['value'] * u.Unit(record['unit'])
 
 
-def phasecenter_to_skycoord(phasecenter):
+def phasecenter_to_skycoord(phasecenter: str) -> SkyCoord:
     """Convert a CASA-style coordinate string to an Astropy SkyCoord object."""
 
     phasecenter_list = phasecenter.split()
@@ -733,8 +756,8 @@ def phasecenter_to_skycoord(phasecenter):
     return coord
 
 
-def refcode_to_skyframe(refcode):
-    """Conver a CASA coordsysy refcode to an Astropy SkyCoord frame name.
+def refcode_to_skyframe(refcode: str) -> str:
+    """Convert a CASA coordsysy refcode to an Astropy SkyCoord frame name.
 
     Limitations:
 
@@ -756,6 +779,63 @@ def refcode_to_skyframe(refcode):
         frame = 'fk4'
 
     return frame
+
+
+def invert_dict(input_dict: dict) -> dict:
+    """Inverts a dictionary so that values become keys and keys become grouped in a list.
+
+    Args:
+        input_dict: The original dictionary.
+
+    Returns:
+        A new dictionary with values as keys and lists of original keys as values.
+    """
+    inverted = collections.defaultdict(list)
+    for key, value in input_dict.items():
+        inverted[value].append(key)
+    return dict(inverted)
+
+
+def convert_paths_to_basenames(command_string: str) -> str:
+    """Convert all absolute and relative file paths in command string to basenames.
+
+    Handles multi-line strings with comments and preserves all formatting while
+    converting only the file paths to basenames. Ensures proper quote pair matching
+    and excludes strings with ANY nested quotes (both same and different types).
+
+    Args:
+        command_string: CASA command string(s) with file paths to convert.
+
+    Returns:
+        Command string with all paths converted to basenames only.
+    """
+
+    def replace_path(match: re.Match) -> str:
+        full_match = match.group(0)
+        quote_char = full_match[0]
+        path_content = full_match[1:-1]
+
+        if "'" in path_content or '"' in path_content:
+            return full_match
+
+        # Convert to basename only if it contains path separators
+        if '/' in path_content:
+            basename = Path(path_content).name
+            return f'{quote_char}{basename}{quote_char}'
+        return full_match
+
+    lines = command_string.split('\n')
+    converted_lines = []
+
+    for line in lines:
+        if line.strip().startswith('#'):
+            converted_lines.append(line)
+        else:
+            pattern = r"'[^']*'|\"[^\"]*\""
+            converted_line = re.sub(pattern, replace_path, line)
+            converted_lines.append(converted_line)
+
+    return '\n'.join(converted_lines)
 
 
 def human_file_size(size_in_bytes: int | float) -> str:

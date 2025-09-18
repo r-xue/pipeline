@@ -1,6 +1,6 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>hifa_calimage</ProcedureTitle>
+    <ProcedureTitle>test_hifa_calimage_tier0</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_importdata</Command>
@@ -12,13 +12,17 @@
             <Parameter>
                 <Keyword xmlns="">parallel</Keyword>
                 <Value xmlns="">True</Value>
-            </Parameter>            
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_flagdata</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -31,6 +35,10 @@
     <ProcessingCommand>
         <Command xmlns="">hif_rawflagchans</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>              
         </ParameterSet>
     </ProcessingCommand>
 
@@ -43,30 +51,50 @@
     <ProcessingCommand>
         <Command xmlns="">h_tsyscal</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_tsysflag</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>  
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_tsysflagcontamination</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_antpos</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">search</Keyword>
+                <Value xmlns="">both_latest</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_wvrgcalflag</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -79,18 +107,30 @@
     <ProcessingCommand>
         <Command xmlns="">hif_setmodels</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_bandpassflag</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_bandpass</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -103,18 +143,30 @@
     <ProcessingCommand>
         <Command xmlns="">hifa_gfluxscaleflag</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_gfluxscale</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_timegaincal</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -132,13 +184,17 @@
             <Parameter>
                 <Keyword xmlns="">parallel</Keyword>
                 <Value xmlns="">True</Value>
-            </Parameter>                        
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_targetflag</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -148,7 +204,7 @@
             <Parameter>
                 <Keyword xmlns="">parallel</Keyword>
                 <Value xmlns="">True</Value>
-            </Parameter>         
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -227,12 +283,20 @@
     <ProcessingCommand>
         <Command xmlns="">hif_mstransform</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_flagtargets</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -258,7 +322,7 @@
             <Parameter>
                 <Keyword xmlns="">parallel</Keyword>
                 <Value xmlns="">True</Value>
-            </Parameter> 
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 

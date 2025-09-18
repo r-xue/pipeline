@@ -281,6 +281,10 @@ class PipelineRegression:
                         self.__run_ppr(input_vis, self.ppr, telescope)
                     else:
                         self.__run_reducer(input_vis)
+
+                # Do sanity checks
+                self.__do_sanity_checks()                        
+                
                 # Get new results
                 new_results = self.__get_results_of_from_current_context()
 
@@ -375,6 +379,36 @@ class PipelineRegression:
         context = launcher.Pipeline(context='last').context
         new_results = sorted(regression.extract_regression_results(context))
         return new_results
+
+    def __do_sanity_checks(self):
+        """
+        Do the following sanity-checks on the pipeline run
+
+        1. rawdata, working, products directories are present
+        2. *.pipeline_manifest.xml is present under the products directory
+        3. Non-existence of errorexit-*.txt in working directory
+        """
+        context = launcher.Pipeline(context='last').context
+
+        # 1. rawdata, working, products directories are present
+        # The rawdata directory is only present for PPR runs
+        missing_directories = regression.missing_directories(context, include_rawdata=self.ppr)
+        if len(missing_directories) > 0:
+            msg = f"The following directories are missing from the pipeline run: {', '.join(missing_directories)}"
+            LOG.warning(msg)
+            pytest.fail(msg)
+
+        # 2. *pipeline_manifest.xml is present under the products directory
+        if not regression.manifest_present(context):
+            msg = "pipeline_manifest.xml is not present under the products directory"
+            LOG.warning(msg)
+            pytest.fail(msg)
+
+        # 3. Non-existence of errorexit-*.txt in working directory
+        if regression.errorexit_present(context):
+            msg = "errorexit-*.txt is present in working directory"
+            LOG.warning(msg)
+            pytest.fail(msg)
 
     def __run_ppr(self, input_vis: list[str], ppr: str, telescope: str) -> None:
         """
@@ -547,7 +581,6 @@ def test_uid___A002_X85c183_X36f__procedure_hsd_calimage__regression():
 
     Recipe name:                procedure_hsd_calimage
     Dataset:                    uid___A002_X85c183_X36f
-    Expected results version:   casa-6.2.1-2-pipeline-2021.2.0.94
     """
     pr = PipelineRegression(
         visname=['uid___A002_X85c183_X36f'],
@@ -565,7 +598,6 @@ def test_uid___A002_X85c183_X36f_SPW15_23__PPR__regression():
     """Run ALMA single-dish restoredata regression on the observation data of M100.
 
     Dataset:                    uid___A002_X85c183_X36f_SPW15_23
-    Expected results version:   casa-6.2.1-2-pipeline-2021.2.0.94
     """
     input_dir = 'pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23'
     pr = PipelineRegression(
@@ -590,14 +622,13 @@ def test_uid___mg2_20170525142607_180419__procedure_hsdn_calimage__regression():
 
     Recipe name:                procedure_hsdn_calimage
     Dataset:                    mg2-20170525142607-180419
-    Expected results version:   casa-6.2.0-119-pipeline-2020.2.0.23
     """
     pr = PipelineRegression(
         visname=['mg2-20170525142607-180419.ms'],
         recipe='procedure_hsdn_calimage.xml',
         input_dir='pl-regressiontest/mg2-20170525142607-180419',
         expectedoutput_file=('pl-regressiontest/mg2-20170525142607-180419/' +
-                             'mg2-20170525142607-180419.casa-6.6.6-9-pipeline-2025.0.0.36.results.txt'))
+                             'mg2-20170525142607-180419.casa-6.6.6-16-pipeline-2025.0.2.7.results.txt'))
     pr.run()
 
 
@@ -607,7 +638,6 @@ def test_uid___mg2_20170525142607_180419__PPR__regression():
     """Run ALMA single-dish cal+image regression for restore nobeyama recipe.
 
     Dataset:                    mg2-20170525142607-180419
-    Expected results version:   casa-6.2.0-119-pipeline-2020.2.0.23
     """
 
     input_dir = 'pl-regressiontest/mg2-20170525142607-180419'
@@ -617,7 +647,7 @@ def test_uid___mg2_20170525142607_180419__PPR__regression():
         ppr=f'{input_dir}/PPR.xml',
         input_dir=input_dir,
         expectedoutput_file=(f'{input_dir}/' +
-                             'mg2-20170525142607-180419_PPR.casa-6.6.6-9-pipeline-2025.0.0.36.results.txt'),
+                             'mg2-20170525142607-180419_PPR.casa-6.6.6-16-pipeline-2025.0.1.18.results.txt'),
         output_dir='mg2-20170525142607-180419_PPR')
 
     # copy files use restore task into products folder
@@ -634,7 +664,6 @@ def test_csv_3899_eb2_small__procedure_hifa_calimage__regression():
     """PIPE-2245: Run small ALMA cal+image regression to cover various heuristics
 
     Dataset:                    CSV-3899-EB2-small
-    Expected results version:   casa-6.6.6-5-pipeline-2025.0.0.10
     """
 
     input_dir = 'pl-regressiontest/CSV-3899-EB2-small'
@@ -655,15 +684,13 @@ def test_uid___A002_Xee1eb6_Xc58d_pipeline__procedure_hifa_calsurvey__regression
  
     Recipe name:                procedure_hifa_calsurvey
     Dataset:                    uid___A002_Xee1eb6_Xc58d_original.ms
-    Expected results version:   casa-6.3.0-48-pipeline-2021.3.0.5
     """
     input_directory = 'pl-regressiontest/uid___A002_Xee1eb6_Xc58d_calsurvey/'
     pr = PipelineRegression(
         visname=['uid___A002_Xee1eb6_Xc58d_original.ms'],
         recipe='procedure_hifa_calsurvey.xml',
         input_dir=input_directory,
-        expectedoutput_file=(input_directory +
-                             'uid___A002_Xee1eb6_Xc58d.casa-6.3.0-482-pipeline-2021.3.0.5.results.txt'),
+        expectedoutput_dir=input_directory,
         output_dir='uid___A002_Xee1eb6_Xc58d_calsurvey_output'
         )
 
@@ -717,6 +744,8 @@ def test_13A_537__calibration__PPR__regression():
 @pytest.mark.fast
 def test_13A_537__restore__PPR__regression():
     """Run VLA calibration restoredata regression with a PPR file
+    NOTE: results file frozen to CASA/Pipeline version below since products were created
+    with that Pipeline version
 
     PPR name:                   PPR_13A-537_restore.xml
     Dataset:                    13A-537/13A-537.sb24066356.eb24324502.56514.05971091435
@@ -727,8 +756,8 @@ def test_13A_537__restore__PPR__regression():
         visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
         ppr=f'{input_dir}/PPR_13A-537_restore.xml',
         input_dir=input_dir,
-        expectedoutput_file=(f'{input_dir}/restore/' +
-                             '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.restore.results.txt'),
+        expectedoutput_file=f'{input_dir}/restore/' +
+                             '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.restore.results.txt',
         output_dir='13A_537__restore__PPR__regression'
         )
 
@@ -747,15 +776,13 @@ def test_13A_537__restore__post1553__PPR__regression():
 
     PPR name:                   PPR_13A-537_restore.xml
     Dataset:                    13A-537/13A-537.sb24066356.eb24324502.56514.05971091435
-    Expected results version:   casa-6.6.6-5-pipeline-2025.0.0.10
     """
     input_dir = 'pl-regressiontest/13A-537'
     pr = PipelineRegression(
         visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
         ppr=f'{input_dir}/PPR_13A-537_restore.xml',
         input_dir=input_dir,
-        expectedoutput_file=(f'{input_dir}/restore/' +
-                             '13A-537.casa-6.6.6-5-pipeline-2025.0.0.10.restore.results.txt'),
+        expectedoutput_dir=f'{input_dir}/restore/',
         output_dir='13A_537__restore__post1553__PPR__regression'
         )
 
@@ -1044,8 +1071,7 @@ class TestSlowerRegression:
             ppr=(test_directory + 'PPR.xml'),
             input_dir=test_directory,
             project_id="2019_1_01056_S",
-            expectedoutput_file=(f'{ref_directory}' +
-                                 'uid___A002_Xe1f219_X6d0b.casa-6.5.4-2-pipeline-2023.0.0.17.results.txt')
+            expectedoutput_dir=f'{ref_directory}'
             )
 
         setup_flux_antennapos(test_directory, pr.output_dir)
@@ -1089,7 +1115,7 @@ class TestSlowerRegression:
             recipe='procedure_hsd_calimage.xml',
             input_dir=test_directory,
             project_id="2019_1_01056_S",
-            expectedoutput_file=f'{ref_directory}uid___A002_Xe1d2cb_X110f1.casa-6.5.4-2-pipeline-2023.0.0.17.results.txt'
+            expectedoutput_dir=f'{ref_directory}'
             )
 
         setup_flux_antennapos(test_directory, pr.output_dir)

@@ -492,8 +492,20 @@ def plotms_iterate(
         queued_job.get_result()
         callback()
 
+    # PIPE-2279 tweak plotms command associated with plots
+    if singledish:
+        sd_jobs_and_wrappers = []
+        for job, wrapper in jobs_and_wrappers:
+            antsel = job.kw.get('antenna', '')
+            tmp_kw = dict(job.kw, antenna=f"{antsel}&&&") if antsel else job.kw
+            tmp_job = JobRequest(job.fn, *job.args, **tmp_kw)
+            wrapper.command = str(tmp_job)
+            sd_jobs_and_wrappers.append((job, wrapper))
+        jobs_and_wrappers = sd_jobs_and_wrappers
+
     # at this point, the sequentially-named plots from the merged job have
     # been renamed match that of the unmerged job, so we can simply check
     # whether the plot (with the original filename) exists or not.
     wrappers = [w for _, w in jobs_and_wrappers if os.path.exists(w.abspath)]
+
     return wrappers

@@ -6,7 +6,8 @@ import os
 import platform
 import re
 import types
-from inspect import signature
+from inspect import Parameter, signature
+from typing import Any, Callable
 
 import casaplotms
 import casatasks
@@ -133,6 +134,12 @@ def truncate_paths(arg):
                         'fluxtable', 'infile', 'infiles', 'mask', 'imagename', 'fitsimage', 'outputvis'):
         return arg
 
+    # PIPE-51: 'asdm' can be either a full path location used by `importasdm`
+    # or a UID parameter for `getantposalma`. This logic ensures that the
+    # latter is not truncated.
+    if arg.name == "asdm" and isinstance(arg.value, str) and is_uid(arg.value):
+        return arg  # Return unmodified if it's a UID
+
     # PIPE-639: 'inpfile' is an argument for CASA's flagdata task, and it can
     # contain either a path name, a list of path names, or a list of flagging
     # commands. Attempting to get the basename of a flagging command can cause
@@ -146,6 +153,11 @@ def truncate_paths(arg):
     # the recursive map function
     basename_value = _recur_map(func, (arg.value,))[0]
     return FunctionArg(arg.name, basename_value)
+
+
+def is_uid(string: str) -> bool:
+    """Check if the given string is formatted as a UID."""
+    return string.startswith("uid://")
 
 
 def basename_if_isfile(arg: str) -> str:
@@ -162,56 +174,64 @@ def _recur_map(fn, data):
     return [isinstance(x, str) and fn(x) or _recur_map(fn, x) for x in data]
 
 
-class JobRequest(object):
-    def __init__(self, fn, *args, **kw):
+class JobRequest:
+    """Encapsulates a function call with its arguments and keywords for deferred execution."""
+
+    def __init__(self, fn: Callable[..., Any], *args: Any, **kw: Any) -> None:
+        """Create a new JobRequest that encapsulates a function call and its arguments.
+
+        Automatically filters out None values and empty strings from keyword arguments,
+        allowing CASA to use default values. Performs function introspection to validate
+        arguments and prepare complete invocation details for verbose execution.
+
+        Args:
+            fn: Function or callable to be executed
+            *args: Positional arguments to pass to the function
+            **kw: Keyword arguments to pass to the function
         """
-        Create a new JobRequest that encapsulates a function call and its
-        associated arguments and keywords.
-        """
-        # remove any keyword arguments that have a value of None or an empty
-        # string, letting CASA use the default value for that argument
-        null_keywords = [k for k, v in kw.items() if v is None or (isinstance(v, str) and not v)]
-        for key in null_keywords:
+        # Filter out null/empty keyword arguments to use CASA defaults
+        null_keys = [key for key, value in kw.items() if value is None or (isinstance(value, str) and not value)]
+        for key in null_keys:
             kw.pop(key)
 
         self.fn = fn
+        self.fn_name, is_casa_task = get_fn_name(fn)
 
-        fn_name, is_casa_task = get_fn_name(fn)
-        self.fn_name = fn_name
-        if is_casa_task:
-            # CASA tasks are instances rather than functions, whose execution
-            # begins at __call__.
-            fn = fn.__call__
+        # For CASA tasks, use the __call__ method for introspection
+        target_fn = fn.__call__ if is_casa_task else fn
 
-        # the next piece of code does some introspection on the given function
-        # so that we can find out the complete invocation, adding any implicit
-        # or defaulted argument values to those arguments explicitly given. We
-        # use this information if execute(verbose=True) is specified.
+        # Perform function signature analysis using inspect APIs
+        sig = signature(target_fn)
+        param_names = list(sig.parameters.keys())
+        param_count = len(param_names)
 
-        # get the argument names and default argument values for the given
-        # function
-        argnames = list(signature(fn).parameters)
-        argcount = len(argnames)
-        fn_defaults = fn.__defaults__ or list()
-        argdefs = dict(zip(argnames[-len(fn_defaults):], fn_defaults))
+        # Extract default values for parameters that have them
+        param_defaults = {
+            name: param.default for name, param in sig.parameters.items() if param.default is not Parameter.empty
+        }
 
-        # remove arguments that are not expected by the function, such as
-        # pipeline variables that the CASA task is not expecting.
-        unexpected_kw = [k for k, v in kw.items() if k not in argnames]
-        if unexpected_kw:
-            LOG.warning('Removing unexpected keywords from JobRequest: {!s}'.format(unexpected_kw))
-            for key in unexpected_kw:
+        # Remove unexpected keyword arguments not expected by the function
+        unexpected_keys = [key for key in kw if key not in param_names]
+        if unexpected_keys:
+            LOG.warning('Removing unexpected keywords from JobRequest: %s', unexpected_keys)
+            for key in unexpected_keys:
                 kw.pop(key)
 
         self.args = args
         self.kw = kw
 
-        self._positional = [FunctionArg(name, arg) for name, arg in zip(argnames, args)]
-        self._defaulted = [FunctionArg(name, argdefs[name])
-                           for name in argnames[len(args):]
-                           if name not in kw and name != 'self']
-        self._keyword = [FunctionArg(name, kw[name]) for name in argnames if name in kw]
-        self._nameless = [NamelessArg(a) for a in args[argcount:]]
+        # Build argument categorization for verbose execution display
+        self._positional = [FunctionArg(name, arg) for name, arg in zip(param_names, args)]
+
+        self._defaulted = [
+            FunctionArg(name, param_defaults[name])
+            for name in param_names[len(args) :]
+            if name not in kw and name != 'self' and name in param_defaults
+        ]
+
+        self._keyword = [FunctionArg(name, kw[name]) for name in param_names if name in kw]
+
+        self._nameless = [NamelessArg(arg) for arg in args[param_count:]]
 
     def execute(self, verbose=False):
         """

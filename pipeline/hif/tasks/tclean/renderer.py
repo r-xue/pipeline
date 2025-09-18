@@ -9,7 +9,6 @@ import itertools
 import os
 import string
 import traceback
-from random import randint
 
 import numpy as np
 
@@ -25,6 +24,7 @@ from . import display
 
 LOG = logging.get_logger(__name__)
 
+_VALID_CHARS = f'_.-{string.ascii_letters}{string.digits}'
 
 ImageRow = collections.namedtuple('ImageInfo', (
     'vis field fieldname intent spw spwnames pol stokes_label frequency_label frequency beam beam_pa sensitivity '
@@ -45,7 +45,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='tclean.mako',
                  description='Produce a cleaned image',
                  always_rerender=False):
-        super(T2_4MDetailsTcleanRenderer, self).__init__(uri=uri,
+        super().__init__(uri=uri,
                 description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, ctx, context, results):
@@ -404,8 +404,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 else:
                     if stokes_parameters != ['I']:
                         r_image_rms = r.image_rms_iquv[stokes_indices[pol]]
-                        r_image_rms_max = r.image_rms_iquv[stokes_indices[pol]]
-                        r_image_rms_min = r.image_rms_iquv[stokes_indices[pol]]
+                        r_image_rms_max = r.image_rms_max_iquv[stokes_indices[pol]]
+                        r_image_rms_min = r.image_rms_min_iquv[stokes_indices[pol]]
                     else:
                         r_image_rms = r.image_rms
                         r_image_rms_max = r.image_rms_max
@@ -699,18 +699,49 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             # construct the renderers so we know what the back/forward links will be
             temp_urls = (None, None, None)
-            qa_renderers = [TCleanPlotsRenderer(context, results, row.result, plots_dict, row.image_file.split(
-                '.')[0], row.field, str(row.spw), row.pol, row.datatype, temp_urls, row.cube_all_cont) for row in image_rows]
+            qa_renderers = [
+                TCleanPlotsRenderer(
+                    context,
+                    results,
+                    row.result,
+                    plots_dict,
+                    row.image_file,
+                    row.field,
+                    str(row.spw),
+                    row.pol,
+                    row.datatype,
+                    temp_urls,
+                    row.cube_all_cont,
+                )
+                for row in image_rows
+            ]
             qa_links = triadwise([renderer.path for renderer in qa_renderers])
 
             # PIPE-991: render tclean major cycle table, but only if tab_dict is specified (currently VLASS-SE-CONT)
-            tab_renderer = [TCleanTablesRenderer(context, results, row.result,
-                                                 row.tab_dict, row.image_file.split('.')[0], row.field, str(row.spw),
-                                                 row.pol, temp_urls) if row.tab_dict else None for row in image_rows]
+            tab_renderer = [
+                TCleanTablesRenderer(
+                    context,
+                    results,
+                    row.result,
+                    row.tab_dict,
+                    row.image_file,
+                    row.field,
+                    str(row.spw),
+                    row.pol,
+                    temp_urls,
+                )
+                if row.tab_dict
+                else None
+                for row in image_rows
+            ]
             tab_links = triadwise([renderer.path if renderer else None for renderer in tab_renderer])
 
             final_rows = []
             for row, renderer, qa_urls, tab_url in zip(image_rows, qa_renderers, qa_links, tab_links):
+
+                # PIPE-2668: "prefix" is the top-level key in `plots_dict`, derived from plot wrapper objects
+                # created in display.CleanSummary. Historically, it's the first component of image basename
+                # separated by '.'.
                 prefix = row.image_file.split('.')[0]
                 try:
                     final_iter = sorted(plots_dict[prefix][row.datatype][row.field][str(row.spw)][row.pol].keys())[-1]
@@ -720,9 +751,19 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         # mfs and cont mode use mean
                         plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), row.pol, final_iter, 'image', 'mean')
 
-                    renderer = TCleanPlotsRenderer(context, results, row.result,
-                                                   plots_dict, prefix, row.field, str(row.spw), row.pol,
-                                                   row.datatype, qa_urls, row.cube_all_cont)
+                    renderer = TCleanPlotsRenderer(
+                        context,
+                        results,
+                        row.result,
+                        plots_dict,
+                        row.image_file,
+                        row.field,
+                        str(row.spw),
+                        row.pol,
+                        row.datatype,
+                        qa_urls,
+                        row.cube_all_cont,
+                    )
                     with renderer.get_file() as fileobj:
                         fileobj.write(renderer.render())
 
@@ -732,21 +773,29 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
                     # PIPE-991: render tclean major cycle table, but only if tab_dict exists (currently VLASS-SE-CONT)
                     if any(tab_url):
-                        tab_renderer = TCleanTablesRenderer(context, results, row.result,
-                                                            row.tab_dict, prefix, row.field, str(row.spw), row.pol,
-                                                            tab_url)
+                        tab_renderer = TCleanTablesRenderer(
+                            context,
+                            results,
+                            row.result,
+                            row.tab_dict,
+                            row.image_file,
+                            row.field,
+                            str(row.spw),
+                            row.pol,
+                            tab_url,
+                        )
                         with tab_renderer.get_file() as fileobj:
                             fileobj.write(tab_renderer.render())
                         values['tab_url'] = tab_renderer.path
 
-                    if stokes_parameters != ['I']:
+                    if row.intent == 'POLARIZATION' and stokes_parameters != ['I']:
                         # Save POLI/POLA paths which is known only after plot() has been called
                         values['poli_abspath'] = get_plot(
                             plots_dict, prefix, row.datatype, row.field, str(row.spw),
-                            'Ptotal', final_iter, 'image', 'mean').abspath
+                            'Plinear', final_iter, 'image', 'mean').abspath
                         values['poli_thumbnail'] = get_plot(
                             plots_dict, prefix, row.datatype, row.field, str(row.spw),
-                            'Ptotal', final_iter, 'image', 'mean').thumbnail
+                            'Plinear', final_iter, 'image', 'mean').thumbnail
                         values['pola_abspath'] = get_plot(
                             plots_dict, prefix, row.datatype, row.field, str(row.spw),
                             'Pangle', final_iter, 'image', 'mean').abspath
@@ -758,9 +807,13 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     final_rows.append(new_row)
                 except IOError as e:
                     LOG.error(e)
+                    traceback_msg = traceback.format_exc()
+                    LOG.debug(traceback_msg)
                 except Exception as e:
                     # Probably some detail page rendering exception.
                     LOG.error(e)
+                    traceback_msg = traceback.format_exc()
+                    LOG.debug(traceback_msg)
                     final_rows.append(row)
 
             # PIPE-1595: sort targets by field/spw/pol for VLA, so multiple bands of the same objects will
@@ -791,6 +844,10 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             # PIPE-1723: display a message in the weblog depending on the observatory
             imaging_mode = clean_results[0].imaging_mode if len(clean_results) > 0 else None
 
+        except Exception as ex:
+            LOG.error(ex)
+            traceback_msg = traceback.format_exc()
+            LOG.debug(traceback_msg)
         finally:
             # PIPE-2191/PIPE-2022: remove the local logging handler and attach the LogRecord list to extra_logrecords.
             logging.remove_handler(extra_logrecords_handler)
@@ -811,25 +868,25 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
 
 class TCleanPlotsRenderer(basetemplates.CommonRenderer):
-    def __init__(self, context, makeimages_results, result, plots_dict, prefix, field, spw, pol, datatype, urls, cube_all_cont):
+    def __init__(self, context, makeimages_results, result, plots_dict, image_basename, field, spw, pol, datatype, urls, cube_all_cont):
         super().__init__('tcleanplots.mako', context, makeimages_results)
-
-
-        outfile = '%s-field%s-spw%s-pol%s-datatype%s-cleanplots.html' % (prefix, field, spw, pol, datatype)
+        # PIPE-2668/PIPE-2743: expect image basename to be unique and URI stays under 255-char filesystem limit
+        outfile = f'{image_basename}.{pol}-cleanplots.html'
 
         # HTML encoded filenames, so can't have plus sign
-        valid_chars = "_.-%s%s" % (string.ascii_letters, string.digits)
-        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, valid_chars))
+        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, _VALID_CHARS))
 
         if result.specmode in ('mfs', 'cont'):
             colorders = [[('pbcorimage', None), ('residual', None), ('cleanmask', None)]]
             if 'VLA' in result.imaging_mode:
-                # PIPE-1462 / PIPE-2569: Use non-pbcor images for VLA continuum imaging on the tclean details page.
+                # PIPE-1462/PIPE-2569: Use non-pbcor images for VLA continuum imaging on the tclean details page.
                 # Prior to the fix in CAS-13814, tclean with deconvolver='mtmfs' and pbcor=True did not produce
                 # primary-beam-corrected images for VLA — it would instead silently pass with only a warning.
-                # After CAS-13814, tclean does generate pb-corrected images (though scientifically less accurate 
+                # After CAS-13814, tclean does generate pb-corrected images (though scientifically less accurate
                 # vs. specmode='mvc') but with a different warning.
-                # For consistency and clarity in VLA continuum imaging plots, we continue to use non-pbcor images here.
+                # PIPE-2710: We're using the flatnoise image for VLA continuum plots in the hif_makeimage weblog. This is a
+                # deliberate choice for consistency and clarity, as these images are often better at revealing sources beyond
+                # the primary beam (PB) mask limit.
                 colorders = [[('image', None), ('residual', None), ('cleanmask', None)]]
         else:
             colorders = [[('pbcorimage', 'mom8'), ('residual', 'mom8'), ('mom8_fc', None), ('spectra', None)],
@@ -837,7 +894,7 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
 
         self.extra_data = {
             'plots_dict': plots_dict,
-            'prefix': prefix.split('.')[0],
+            'prefix': image_basename.split('.')[0],
             'datatype': datatype,
             'field': field,
             'spw': spw,
@@ -855,19 +912,18 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
 
 
 class TCleanTablesRenderer(basetemplates.CommonRenderer):
-    def __init__(self, context, makeimages_results, result, table_dict, prefix, field, spw, pol, urls):
-        super(TCleanTablesRenderer, self).__init__('tcleantables.mako', context, makeimages_results)
-
-        # Set HTML page name
-        outfile = '%s-field%s-spw%s-pol%s-cleantables.html' % (prefix, field, spw, pol)
+    def __init__(self, context, makeimages_results, result, table_dict, image_basename, field, spw, pol, urls):
+        super().__init__('tcleantables.mako', context, makeimages_results)
+        # PIPE-2668/PIPE-2743: expect image basename to be unique and URI stays under 255-char filesystem limit
+        # use `-cleantables.html` to stay different from tcleanplots URLs.
+        outfile = f'{image_basename}-cleantables.html'
 
         # HTML encoded filenames, so can't have plus sign
-        valid_chars = "_.-%s%s" % (string.ascii_letters, string.digits)
-        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, valid_chars))
+        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, _VALID_CHARS))
 
         self.extra_data = {
             'table_dict': table_dict,
-            'prefix': prefix.split('.')[0],
+            'prefix': image_basename.split('.')[0],
             'field': field,
             'spw': spw,
             'pol': pol,
@@ -958,7 +1014,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
 
     def update_mako_context(self, ctx, context, results):
 
-        # because hif.tclean is a multi-vis task (is_multi_vis_task = True) which operates over multiple MSs,
+        # because hif_tclean is a multi-vis task (is_multi_vis_task = True) which operates over multiple MSs,
         # we will only get one CleanListResult in the ResultsList returned by the task.
         makeimages_result = results[0]
         if not makeimages_result:
@@ -1292,8 +1348,8 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                 else:
                     if stokes_parameters != ['I']:
                         r_image_rms = r.image_rms_iquv[stokes_indices[pol]]
-                        r_image_rms_max = r.image_rms_iquv[stokes_indices[pol]]
-                        r_image_rms_min = r.image_rms_iquv[stokes_indices[pol]]
+                        r_image_rms_max = r.image_rms_max_iquv[stokes_indices[pol]]
+                        r_image_rms_min = r.image_rms_min_iquv[stokes_indices[pol]]
                     else:
                         r_image_rms = r.image_rms
                         r_image_rms_max = r.image_rms_max
@@ -1620,14 +1676,41 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
             image_rows.sort(key=lambda row: (row.image_file.split(
                 '.')[0], row.datatype, row.field, utils.natural_sort_key(row.spw), row.pol))
             temp_urls = (None, None, None)
-            qa_renderers = [TCleanPlotsRenderer(context, results, row.result, plots_dict, row.image_file.split(
-                '.')[0], row.field, str(row.spw), row.pol, row.datatype, temp_urls, row.cube_all_cont) for row in image_rows]
+            qa_renderers = [
+                TCleanPlotsRenderer(
+                    context,
+                    results,
+                    row.result,
+                    plots_dict,
+                    row.image_file,
+                    row.field,
+                    str(row.spw),
+                    row.pol,
+                    row.datatype,
+                    temp_urls,
+                    row.cube_all_cont,
+                )
+                for row in image_rows
+            ]
             qa_links = triadwise([renderer.path for renderer in qa_renderers])
 
             # PIPE-991: render tclean major cycle table, but only if tab_dict is specified (currently VLASS-SE-CONT)
-            tab_renderer = [TCleanTablesRenderer(context, results, row.result,
-                                                 row.tab_dict, row.image_file.split('.')[0], row.field, str(row.spw),
-                                                 row.pol, temp_urls) if row.tab_dict else None for row in image_rows]
+            tab_renderer = [
+                TCleanTablesRenderer(
+                    context,
+                    results,
+                    row.result,
+                    row.tab_dict,
+                    row.image_file,
+                    row.field,
+                    str(row.spw),
+                    row.pol,
+                    temp_urls,
+                )
+                if row.tab_dict
+                else None
+                for row in image_rows
+            ]
             tab_links = triadwise([renderer.path if renderer else None for renderer in tab_renderer])
 
             final_rows = []
@@ -1644,9 +1727,19 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                         # mfs and cont mode use mean
                         plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), row.pol, final_iter, 'image', 'mean')
 
-                    renderer = TCleanPlotsRenderer(context, results, row.result,
-                                                   plots_dict, prefix, row.field, str(row.spw), row.pol,
-                                                   row.datatype, qa_urls, row.cube_all_cont)
+                    renderer = TCleanPlotsRenderer(
+                        context,
+                        results,
+                        row.result,
+                        plots_dict,
+                        row.image_file,
+                        row.field,
+                        str(row.spw),
+                        row.pol,
+                        row.datatype,
+                        qa_urls,
+                        row.cube_all_cont,
+                    )
                     with renderer.get_file() as fileobj:
                         fileobj.write(renderer.render())
 
@@ -1656,15 +1749,14 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
 
                     # PIPE-991: render tclean major cycle table, but only if tab_dict exists (currently VLASS-SE-CONT)
                     if any(tab_url):
-                        tab_renderer = TCleanTablesRenderer(context, results, row.result,
-                                                            row.tab_dict, prefix, row.field, str(row.spw), row.pol,
-                                                            tab_url)
+                        tab_renderer = TCleanTablesRenderer(context, results, row.result, row.tab_dict,
+                                                            row.image_file, row.field, str(row.spw), row.pol, tab_url)
                         with tab_renderer.get_file() as fileobj:
                             fileobj.write(tab_renderer.render())
                         values['tab_url'] = tab_renderer.path
 
                     # Save POLI/POLA paths which is known only after plot() has been called
-                    pol_plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean')
+                    pol_plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Plinear', final_iter, 'image', 'mean')
                     if pol_plot is not None:
                         values['poli_abspath'] = pol_plot.abspath
                         values['poli_thumbnail'] = pol_plot.thumbnail
@@ -1677,11 +1769,13 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                     final_rows.append(new_row)
                 except IOError as e:
                     LOG.error(e)
-                    LOG.error(traceback.format_exc())
+                    traceback_msg = traceback.format_exc()
+                    LOG.debug(traceback_msg)
                 except Exception as e:
                     # Probably some detail page rendering exception.
                     LOG.error(e)
-                    LOG.error(traceback.format_exc())
+                    traceback_msg = traceback.format_exc()
+                    LOG.debug(traceback_msg)
                     final_rows.append(row)
 
             # primary sort images by vis, datatype, field, secondary sort on spw, then by pol
@@ -1717,6 +1811,10 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
             spwgroup_list = makeimages_result.metadata['vlass_cube_metadata']['spwgroup_list']
             plane_keep_dict = {spwgroup: plane_keep[idx] for idx, spwgroup in enumerate(spwgroup_list)}
 
+        except Exception as ex:
+            LOG.error(ex)
+            traceback_msg = traceback.format_exc()
+            LOG.debug(traceback_msg)
         finally:
             # PIPE-2191/PIPE-2022: remove the local logging handler and attach the LogRecord list to extra_logrecords.
             logging.remove_handler(extra_logrecords_handler)
@@ -1735,7 +1833,6 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
 
 def get_cycle_stats(context, makeimages_result, r):
     """Get the major cycle statistics."""
-
     row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict = None, None, None, None
 
     if 'VLASS-SE-CUBE' in r.imaging_mode or 'VLASS-SE-CONT' in r.imaging_mode:

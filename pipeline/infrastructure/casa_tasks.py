@@ -98,6 +98,10 @@ def gencal(*v, **k) -> JobRequest:
     return JobRequest(casatasks.gencal, *v, **k)
 
 
+def getantposalma(*v, **k) -> JobRequest:
+    return JobRequest(casatasks.getantposalma, *v, **k)
+
+
 @register_task
 def hanningsmooth(*v, **k) -> JobRequest:
     return JobRequest(casatasks.hanningsmooth, *v, **k)

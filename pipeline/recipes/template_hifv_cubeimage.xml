@@ -348,14 +348,6 @@
     <!-- end of the selfcal section -->
     {{/selfcal}}
 
-    {{#cont_image}}
-    <ProcessingCommand>
-        <Command xmlns="">hifv_pbcor</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>    
-    {{/cont_image}}
-
     <ProcessingCommand>
         <Command xmlns="">hifv_exportdata</Command>
         <ParameterSet>

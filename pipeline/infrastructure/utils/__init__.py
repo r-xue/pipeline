@@ -11,6 +11,7 @@ as appropriate).
 
 Modules:
     utils: Core utility functions (imported first to prevent circular imports)
+    caltable_tools: Caltable utilities
     casa_data: Utilities for handling CASA data structures
     conversion: Data conversion utilities
     diagnostics: Diagnostic and debugging tools
@@ -18,6 +19,7 @@ Modules:
     imaging: Image processing utilities
     math: Mathematical functions and algorithms
     positioncorrection: Position correction utilities
+    parallactic_range: Parallactic range calculation utilties
     ppr: Pipeline processing request utilities
     sorting: Sorting algorithms and utilities
     weblog: Web logging utilities
@@ -28,12 +30,14 @@ from importlib import import_module
 # generic utility functions first to prevent potential circular imports
 from .utils import *
 
+from .caltable_tools import *
 from .casa_data import *
 from .conversion import *
 from .diagnostics import *
 from .framework import *
 from .imaging import *
 from .math import *
+from .parallactic_range import *
 from .positioncorrection import *
 from .ppr import *
 from .sorting import *
@@ -42,6 +46,7 @@ from .conf import *
 
 # IMPORTANT! If you import from a new submodule, please add it to the list below
 _all_modules = [
+    'caltable_tools',
     'casa_data',
     'conversion',
     'diagnostics',
@@ -52,6 +57,7 @@ _all_modules = [
     'utils',
     'weblog',
     'math',
+    'parallactic_range',
     'positioncorrection',
 ]
 

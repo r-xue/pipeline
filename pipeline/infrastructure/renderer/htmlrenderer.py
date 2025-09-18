@@ -1,3 +1,6 @@
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import collections
 import contextlib
 import datetime
@@ -12,33 +15,27 @@ import re
 import shutil
 import sys
 from importlib.resources import files
-from typing import Any, Dict, List
+from typing import TYPE_CHECKING, Any
 
 import mako
 import numpy as np
 
-import pipeline as pipeline
-import pipeline.domain.measures as measures
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.displays.pointing as pointing
-import pipeline.infrastructure.displays.summary as summary
-import pipeline.infrastructure.logging as logging
-from pipeline import environment
-from pipeline.domain.measurementset import MeasurementSet
-from pipeline.infrastructure import casa_tools, mpihelpers, task_registry, utils
-from pipeline.infrastructure.launcher import Context
-from pipeline.infrastructure.renderer.templates import resources
+import pipeline
+import pipeline.infrastructure.pipelineqa as pqa
+from pipeline import environment, infrastructure
+from pipeline.domain import measures
+from pipeline.infrastructure import basetask, casa_tasks, casa_tools, eventbus, \
+    logging, mpihelpers, task_registry, utils
+from pipeline.infrastructure.displays import pointing, summary
+from pipeline.infrastructure.renderer import qaadapter, templates, weblog
 
-from .. import eventbus, pipelineqa
-from ..eventbus import (
-    WebLogStageRenderingAbnormalExitEvent,
-    WebLogStageRenderingCompleteEvent,
-    WebLogStageRenderingStartedEvent,
-)
-from . import qaadapter, weblog
+if TYPE_CHECKING:
+    from pipeline.domain import Source
+    from pipeline.domain.measurementset import MeasurementSet
+    from pipeline.infrastructure.launcher import Context
+    from pipeline.infrastructure.renderer import logger
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 def get_task_description(result_obj, context, include_stage=True):
@@ -281,7 +278,7 @@ class RendererBase(object):
         if os.path.exists(path) and not cls.rerender(context):
             return
 
-        path_to_resources_pkg = str(files(resources.__name__))
+        path_to_resources_pkg = str(files(templates.resources.__name__))
         path_to_js = os.path.join(path_to_resources_pkg, 'js', 'pipeline_common.min.js')
         use_minified_js = os.path.exists(path_to_js)
 
@@ -361,8 +358,8 @@ class T1_1Renderer(RendererBase):
         def __init__(
                 self,
                 ctx: Context,
-                rows: List["T1_1Renderer.EnvironmentProperty"],
-                data: Dict["T1_1Renderer.EnvironmentProperty", List[str]]
+                rows: list["T1_1Renderer.EnvironmentProperty"],
+                data: dict["T1_1Renderer.EnvironmentProperty", list[str]]
             ):
 
             # 'memory available to pipeline' should not be presented for SD data
@@ -416,8 +413,6 @@ class T1_1Renderer(RendererBase):
         dt = exec_end - exec_start
         exec_duration = datetime.timedelta(days=dt.days, seconds=dt.seconds)
 
-#         qaresults = qaadapter.ResultsToQAAdapter(context.results)
-
         out_fmt = '%Y-%m-%d %H:%M:%S'
 
         # Convert timestamps, if available:
@@ -433,6 +428,10 @@ class T1_1Renderer(RendererBase):
             pipeline_doclink = pipeline.__pipeline_documentation_weblink_alma__
         else:
             pipeline_doclink = None
+
+        pipeline_recipe = context.get_recipe_name()
+        if pipeline_recipe == '':
+            pipeline_recipe = 'N/A'
 
         # Observation Summary (formerly the T1-2 page)
         ms_summary_rows = []
@@ -521,6 +520,7 @@ class T1_1Renderer(RendererBase):
             'casa_version': environment.casa_version_string,
             'pipeline_revision': pipeline.revision,
             'pipeline_doclink': pipeline_doclink,
+            'pipeline_recipe': pipeline_recipe,
             'obs_start': obs_start_fmt,
             'obs_end': obs_end_fmt,
             'iers_eop_2000_version': iers_eop_2000_version,
@@ -550,9 +550,9 @@ class T1_1Renderer(RendererBase):
         # alias to make the following code more compact and easier to read
         props = T1_1Renderer.EnvironmentProperty
 
-        node_environments: Dict[str, List[environment.Environment]] = {}
+        node_environments: dict[str, list[environment.Environment]] = {}
 
-        data = sorted(pipeline.environment.cluster_details(), key=operator.attrgetter('hostname'))
+        data = sorted(environment.cluster_details(), key=operator.attrgetter('hostname'))
         for k, g in itertools.groupby(data, operator.attrgetter('hostname')):
             node_environments[k] = list(g)
 
@@ -619,7 +619,7 @@ class T1_1Renderer(RendererBase):
             )
         }
 
-        mode = 'Parallel' if any(['MPI Server' in d.role for d in pipeline.environment.cluster_details()]) else 'Serial'
+        mode = 'Parallel' if any(['MPI Server' in d.role for d in environment.cluster_details()]) else 'Serial'
 
         return mode, tables
 
@@ -690,7 +690,7 @@ class T1_2Renderer(RendererBase):
 
 class T1_3MRenderer(RendererBase):
     """
-    T1-3M renderer
+    T1-3M renderer - By Topic page
     """
     output_file = 't1-3.html'
     template = 't1-3m.mako'
@@ -774,7 +774,7 @@ class T1_3MRenderer(RendererBase):
 
 class T1_4MRenderer(RendererBase):
     """
-    T1-4M renderer
+    T1-4M renderer - Task Summary
     """
     output_file = 't1-4.html'
     # TODO get template at run-time
@@ -814,7 +814,7 @@ class T1_4MRenderer(RendererBase):
 
 class T2_1Renderer(RendererBase):
     """
-    T2-4M renderer
+    T2-1 renderer - Session Tree
     """
     output_file = 't2-1.html'
     template = 't2-1.mako'
@@ -827,6 +827,9 @@ class T2_1Renderer(RendererBase):
 
 
 class T2_1DetailsRenderer(object):
+    """
+    T2-1Details renderer - Session Details
+    """
     output_file = 't2-1_details.html'
     template = 't2-1_details.mako'
 
@@ -856,8 +859,7 @@ class T2_1DetailsRenderer(object):
 
         if not os.path.exists(listfile):
             LOG.debug('Writing listobs output to %s' % listfile)
-            task = infrastructure.casa_tasks.listobs(vis=ms.name,
-                                                     listfile=listfile)
+            task = casa_tasks.listobs(vis=ms.name, listfile=listfile)
             task.execute()
 
     @staticmethod
@@ -917,9 +919,8 @@ class T2_1DetailsRenderer(object):
         el_vs_time_plot = task.plot()
 
         # Get min, max elevation
-        observatory = context.project_summary.telescope
-        el_min = "%.2f" % compute_az_el_for_ms(ms, observatory, min)[1]
-        el_max = "%.2f" % compute_az_el_for_ms(ms, observatory, max)[1]
+        el_min = "%.2f" % ms.compute_az_el_for_ms(min)[1]
+        el_max = "%.2f" % ms.compute_az_el_for_ms(max)[1]
 
         dirname = os.path.join('session%s' % ms.session, ms.basename)
 
@@ -1013,14 +1014,14 @@ class T2_1DetailsRenderer(object):
                     fileobj.write(template.render(**display_context))
 
 
-class MetadataRendererBase(RendererBase):
-    @classmethod
-    def rerender(cls, context):
-        # TODO: only rerender when a new ImportData result is queued
-        if cls in DEBUG_CLASSES:
-            LOG.warning('Always rerendering %s' % cls.__name__)
-            return True
-        return False
+# class MetadataRendererBase(RendererBase):
+#     @classmethod
+#     def rerender(cls, context):
+#         # TODO: only rerender when a new ImportData result is queued
+#         if cls in DEBUG_CLASSES:
+#             LOG.warning('Always rerendering %s' % cls.__name__)
+#             return True
+#         return False
 
 
 class T2_2_XRendererBase(object):
@@ -1059,30 +1060,39 @@ class T2_2_XRendererBase(object):
 
 
 class T2_2_1Renderer(T2_2_XRendererBase):
-    """
-    T2-2-1 renderer - spatial setup
-    """
+    """T2-2-1 renderer - Spatial Setup."""
+
     output_file = 't2-2-1.html'
     template = 't2-2-1.mako'
 
     @staticmethod
-    def get_display_context(context, ms):
-        mosaics = []
+    def get_display_context(
+        context: Context, ms: MeasurementSet
+    ) -> dict[str, Context | MeasurementSet | list[tuple[Source, list[logger.Plot | None]]]]:
+        pointings = []
         for source in ms.sources:
-            num_pointings = len([f for f in ms.fields 
-                                 if f.source_id == source.id])
-            if num_pointings > 1:
-                task = summary.MosaicChart(context, ms, source)
-                mosaics.append((source, task.plot()))
+            plots = []
+            num_pointings = len([f for f in ms.fields if f.source_id == source.id])
+            if num_pointings < 1 or 'TARGET' not in source.intents:
+                continue
+            else:
+                if num_pointings > 1:
+                    mosaic_plot = summary.MosaicPointingsChart(context, ms, source).plot()
+                    if mosaic_plot:
+                        plots.append(mosaic_plot)
+                if 'ATMOSPHERE' in ms.intents and ms.antenna_array.name == 'ALMA':
+                    tsys_plot = summary.TsysScansChart(context, ms, source).plot()
+                    if tsys_plot:
+                        plots.append(tsys_plot)
+            if plots:
+                pointings.append((source, plots))
 
-        return {'pcontext' : context,
-                'ms'       : ms,
-                'mosaics'  : mosaics}
+        return {'pcontext': context, 'ms': ms, 'pointings': pointings}
 
 
 class T2_2_2Renderer(T2_2_XRendererBase):
     """
-    T2-2-2 renderer
+    T2-2-2 renderer - Spectral Setup
     """
     output_file = 't2-2-2.html'
     template = 't2-2-2.mako'
@@ -1121,7 +1131,7 @@ class T2_2_2Renderer(T2_2_XRendererBase):
 
 class T2_2_3Renderer(T2_2_XRendererBase):
     """
-    T2-2-3 renderer
+    T2-2-3 renderer - Antenna Setup
     """
     output_file = 't2-2-3.html'
     template = 't2-2-3.mako'
@@ -1162,7 +1172,7 @@ class T2_2_3Renderer(T2_2_XRendererBase):
 
 class T2_2_4Renderer(T2_2_XRendererBase):
     """
-    T2-2-4 renderer
+    T2-2-4 renderer - sky setup
     """
     output_file = 't2-2-4.html'
     template = 't2-2-4.mako'
@@ -1197,29 +1207,29 @@ class T2_2_4Renderer(T2_2_XRendererBase):
                 'dirname': dirname}
 
 
-class T2_2_5Renderer(T2_2_XRendererBase):
-    """
-    T2-2-5 renderer - weather page
-    """
-    output_file = 't2-2-5.html'
-    template = 't2-2-5.mako'
+# class T2_2_5Renderer(T2_2_XRendererBase):
+#     """
+#     T2-2-5 renderer - weather page
+#     """
+#     output_file = 't2-2-5.html'
+#     template = 't2-2-5.mako'
 
-    @staticmethod
-    def get_display_context(context, ms):
-        task = summary.WeatherChart(context, ms)
-        weather_plot = task.plot()
-        dirname = os.path.join('session%s' % ms.session,
-                               ms.basename)
+#     @staticmethod
+#     def get_display_context(context, ms):
+#         task = summary.WeatherChart(context, ms)
+#         weather_plot = task.plot()
+#         dirname = os.path.join('session%s' % ms.session,
+#                                ms.basename)
 
-        return {'pcontext'     : context,
-                'ms'           : ms,
-                'weather_plot' : weather_plot,
-                'dirname'      : dirname}
+#         return {'pcontext'     : context,
+#                 'ms'           : ms,
+#                 'weather_plot' : weather_plot,
+#                 'dirname'      : dirname}
 
 
 class T2_2_6Renderer(T2_2_XRendererBase):
     """
-    T2-2-6 renderer - scans page
+    T2-2-6 renderer - Scans Page
     """
     output_file = 't2-2-6.html'
     template = 't2-2-6.mako'
@@ -1272,18 +1282,18 @@ class T2_2_7Renderer(T2_2_XRendererBase):
     @classmethod
     def render(cls, context):
         if utils.contains_single_dish(context):
-            super(T2_2_7Renderer, cls).render(context)
+            super().render(context)
 
     @staticmethod
-    def get_display_context(context:Context, ms: MeasurementSet) -> Dict[str, Any]:
+    def get_display_context(context: Context, ms: MeasurementSet) -> dict[str, Any]:
         """Get display context and plots points
 
         Args:
-            context (Context): pipeline context state object
-            ms (MeasurementSet): an object of Measurement Set
+            context: pipeline context state object
+            ms: an object of Measurement Set
 
         Returns:
-            Dict[str, Any]: display context
+            display context
         """
         target_pointings = []
         whole_pointings = []
@@ -1405,18 +1415,18 @@ class T2_3_3MRenderer(T2_3_XMBaseRenderer):
         return qaadapter.registry.get_flagging_topic()        
 
 
-class T2_3_4MRenderer(T2_3_XMBaseRenderer):
-    """
-    Renderer for T2-3-4M: the QA line finding section.
-    """
-    # the filename to which output will be directed
-    output_file = 't2-3-4m.html'
-    # the template file for this renderer
-    template = 't2-3-4m.mako'
+# class T2_3_4MRenderer(T2_3_XMBaseRenderer):
+#     """
+#     Renderer for T2-3-4M: the QA line finding section.
+#     """
+#     # the filename to which output will be directed
+#     output_file = 't2-3-4m.html'
+#     # the template file for this renderer
+#     template = 't2-3-4m.mako'
 
-    @classmethod
-    def get_topic(cls):
-        return qaadapter.registry.get_linefinding_topic()        
+#     @classmethod
+#     def get_topic(cls):
+#         return qaadapter.registry.get_linefinding_topic()
 
 
 class T2_3_5MRenderer(T2_3_XMBaseRenderer):
@@ -1449,7 +1459,7 @@ class T2_3_6MRenderer(T2_3_XMBaseRenderer):
 
 class T2_4MRenderer(RendererBase):
     """
-    T2-4M renderer
+    T2-4M renderer - Task Tree
     """
     output_file = 't2-4m.html'
     template = 't2-4m.mako'
@@ -1757,12 +1767,16 @@ class T2_4MDetailsRenderer(object):
                 LOG.trace('Writing %s output to %s', renderer.__class__.__name__,
                           path)
 
-                event = WebLogStageRenderingStartedEvent(context_name=context.name, stage_number=result.stage_number)
+                event = eventbus.WebLogStageRenderingStartedEvent(
+                    context_name=context.name, stage_number=result.stage_number
+                    )
                 eventbus.send_message(event)
 
                 fileobj.write(renderer.render(context, result))
 
-                event = WebLogStageRenderingCompleteEvent(context_name=context.name, stage_number=result.stage_number)
+                event = eventbus.WebLogStageRenderingCompleteEvent(
+                    context_name=context.name, stage_number=result.stage_number
+                    )
                 eventbus.send_message(event)
 
             except:
@@ -1770,7 +1784,9 @@ class T2_4MDetailsRenderer(object):
                 LOG.debug(mako.exceptions.text_error_template().render())
                 fileobj.write(mako.exceptions.html_error_template().render().decode(sys.stdout.encoding))
 
-                event = WebLogStageRenderingAbnormalExitEvent(context_name=context.name, stage_number=result.stage_number)
+                event = eventbus.WebLogStageRenderingAbnormalExitEvent(
+                    context_name=context.name, stage_number=result.stage_number
+                    )
                 eventbus.send_message(event)
 
 
@@ -1911,7 +1927,7 @@ class WebLogGenerator(object):
                  T2_4MRenderer,        # task tree
                  T2_4MDetailsRenderer, # task details
         # some summary renderers are placed last for access to scores
-                 T1_4MRenderer]  # task summary
+                 T1_4MRenderer]        # task summary
 
     @staticmethod
     def copy_resources(context):
@@ -1922,7 +1938,7 @@ class WebLogGenerator(object):
             shutil.rmtree(outdir)
 
         # copy all uncompressed non-python resources to output directory
-        src = str(files(resources.__name__))
+        src = str(files(templates.resources.__name__))
         dst = outdir
         ignore_fn = shutil.ignore_patterns('*.zip', '*.py', '*.pyc', 'CVS*', '.svn')
         shutil.copytree(src, dst, symlinks=False, ignore=ignore_fn)
@@ -2087,7 +2103,7 @@ class LogCopier(object):
 #
 #        # Task executions are bookended by statements log entries like this:
 #        #
-#        # 2013-02-15 13:55:47 INFO    hif_importdata::::casa+ ##########################################
+#        # 2013-02-15 13:55:47 INFO    hifa_importdata::::casa+ ##########################################
 #        #
 #        # This regex matches this pattern, and therefore the start and end
 #        # sections of the CASA log for this task 
@@ -2193,13 +2209,13 @@ def cmp(a, b):
 #   qascores_to_tablerow
 #   logrecords_to_tablerows
 #
-def filter_qascores(results_list, lo:float, hi:float) -> List[pipelineqa.QAScore]:
-    all_scores: List[pipelineqa.QAScore] = results_list.qa.pool
+def filter_qascores(results_list, lo:float, hi:float) -> list[pqa.QAScore]:
+    all_scores: list[pqa.QAScore] = results_list.qa.pool
     # suppress scores not intended for the weblog, taking care not to suppress
     # legacy scores with a default message destination (=UNSET) so that old
     # tasks continue to render as before
-    weblog_scores = pipelineqa.scores_with_location(
-        all_scores, [pipelineqa.WebLogLocation.BANNER, pipelineqa.WebLogLocation.ACCORDION, pipelineqa.WebLogLocation.UNSET]
+    weblog_scores = pqa.scores_with_location(
+        all_scores, [pqa.WebLogLocation.BANNER, pqa.WebLogLocation.ACCORDION, pqa.WebLogLocation.UNSET]
     )
     with_score = [s for s in weblog_scores if s.score not in ('', 'N/A', None)]
     return [s for s in with_score if lo < s.score <= hi]
@@ -2220,9 +2236,9 @@ def create_tablerow(results, message: str, msgtype: str, target='') -> MsgTableR
                        target=target)
 
 
-def qascores_to_tablerows(qascores: List[pipelineqa.QAScore],
+def qascores_to_tablerows(qascores: list[pqa.QAScore],
                           results,
-                          msgtype: str = 'ERROR') -> List[MsgTableRow]:
+                          msgtype: str = 'ERROR') -> list[MsgTableRow]:
     """
     Convert a list of QAScores to a list of table entries, ready for
     insertion into a Mako template.
@@ -2239,7 +2255,7 @@ def qascores_to_tablerows(qascores: List[pipelineqa.QAScore],
             for qascore in qascores]
 
 
-def logrecords_to_tablerows(records, results, msgtype='ERROR') -> List[MsgTableRow]:
+def logrecords_to_tablerows(records, results, msgtype='ERROR') -> list[MsgTableRow]:
     """
     Convert a list of LogRecords to a list of table entries, ready for
     insertion into a Mako template.

@@ -11,7 +11,6 @@ runtime contexts.
 """
 from __future__ import annotations
 
-import ast
 import dataclasses
 import json
 import operator
@@ -299,38 +298,11 @@ class LinuxEnvironment(CommonEnvironment):
         self.cgroup_cpu_weight = str(CGroupLimit.CPUWeight.get_limit(cgroup_controllers))
         self.cgroup_mem_limit = str(CGroupLimit.MemoryLimit.get_limit(cgroup_controllers))
 
-        os_release = dict(self.read_os_release())
+        # PIPE-2674: use the standard `platform` APIs:
+        # https://docs.python.org/3/library/platform.html#platform.freedesktop_os_release
+        os_release = platform.freedesktop_os_release()
         self.host_distribution = (f'{os_release.get("NAME", "Linux")} '
                                   f'{os_release.get("VERSION", "(unknown distribution)")}')
-
-    @staticmethod
-    def read_os_release():
-        """
-        Reads OS release information from disk.
-
-        Taken from https://www.freedesktop.org/software/systemd/man/latest/os-release.html
-        """
-        # in Python >= 3.10 we could do this:
-        # return platform.freedesktop_os_release()
-        try:
-            filename = '/etc/os-release'
-            f = open(filename)
-        except FileNotFoundError:
-            filename = '/usr/lib/os-release'
-            f = open(filename)
-
-        for line_number, line in enumerate(f, start=1):
-            line = line.rstrip()
-            if not line or line.startswith('#'):
-                continue
-            m = re.match(r'([A-Z][A-Z_0-9]+)=(.*)', line)
-            if m:
-                name, val = m.groups()
-                if val and val[0] in '"\'':
-                    val = ast.literal_eval(val)
-                yield name, val
-            else:
-                LOG.warning(f'{filename}:{line_number}: bad line {line!r}')
 
     @staticmethod
     def _from_lscpu(lscpu_json: dict, key: str) -> str:
@@ -532,6 +504,8 @@ class CGroupLimit:
 
         @staticmethod
         def get_limit(controllers: typing.Dict[str, CGroupController]):
+            if 'cpu' not in controllers:
+                return 'N/A'
             controller = controllers['cpu']
             str_limits = controller.get_limits([], ['cpu.weight'])
             limits = [CGroupLimit.CPUWeight(val) for val in str_limits]
@@ -573,8 +547,9 @@ class CGroupLimit:
 
         @staticmethod
         def get_limit(controllers: typing.Dict[str, CGroupController]):
+            if 'cpu' not in controllers:
+                return 'N/A'            
             controller = controllers['cpu']
-
             if controller.enabled and controller.hierarchy_id == 0:
                 str_limits = controller.get_limits([], ['cpu.max'])
             else:
@@ -621,7 +596,10 @@ class CGroupLimit:
 
         @staticmethod
         def get_limit(controllers: typing.Dict[str, CGroupController]) -> CGroupLimit.CPUAllocation:
-            controller = controllers['cpuset']
+            if 'cpuset' not in controllers:
+                return 'N/A'
+
+            controller = controllers.get('cpuset')
             str_limits = controller.get_limits(
                 ['cpuset.cpus'],
                 ['cpuset.cpus', 'cpuset.cpus.effective']
@@ -651,6 +629,9 @@ class CGroupLimit:
 
         @staticmethod
         def get_limit(controllers: typing.Dict[str, CGroupController]):
+            if 'memory' not in controllers:
+                return 'N/A'
+
             controller = controllers['memory']
             str_limits = controller.get_limits(
                 ["memory.limit_in_bytes", "memory.memsw.limit_in_bytes", "memory.soft_limit_in_bytes"],

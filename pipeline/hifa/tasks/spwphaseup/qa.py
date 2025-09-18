@@ -31,13 +31,27 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
         # for SpWs that have been re-mapped.
         for (intent, field, spw), median_snr in result.snr_info.items():
             # Skip if encountering unhandled intent.
-            if intent not in ['CHECK', 'PHASE']:
+            intent_list = {'AMPLITUDE', 'BANDPASS', 'CHECK', 'DIFFGAINREF', 'DIFFGAINSRC', 'PHASE'}
+            if intent not in intent_list:
                 LOG.warning(f"{ms.basename}: unexpected intent '{intent}' encountered in SNR info result, cannot"
                             f" assign a QA score.")
                 continue
 
             # Get SpW mapping info for current intent and field.
             spwmapping = result.spwmaps.get((intent, field), None)
+
+            # If no SpW mapping info exists for the current intent and field,
+            # then skip QA with a warning. Based on the current (PIPE-2499,
+            # PIPE-2713, 2025) spwphaseup workflow, this should not happen,
+            # since SNR info is computed for intent/field combinations that
+            # appear in result.spwmaps, i.e. any intent/field for which we have
+            # SNR info should have an originating spwmapping. This is here to
+            # defensively handle potential future changes to the workflow.
+            if spwmapping is None:
+                LOG.warning(f"{ms.basename}: encountered intent/field combination '{intent}, {field}' in SNR info"
+                            f" result but unexpectedly unable to retrieve SpW mapping for this intent/field, cannot"
+                            f" assign a QA score.")
+                continue
 
             # If SpW mapping info exists for the current intent and field and
             # the current SpW is not mapped to itself, then skip the QA score
@@ -49,11 +63,13 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
 
             # Check which QA score heuristic to use, based on intent.
             if intent == 'CHECK':
-                score = qacalc.score_phaseup_spw_median_snr_for_check(ms, field, spw, median_snr,
-                                                                      result.inputs['phasesnr'])
-            elif intent == 'PHASE':
-                score = qacalc.score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr,
-                                                                      result.inputs['phasesnr'])
+                score = qacalc.score_phaseup_spw_median_snr_for_check(
+                    ms, field, spw, median_snr, spwmapping.snr_threshold_used
+                )
+            else:
+                score = qacalc.score_phaseup_spw_median_snr_for_cal(
+                    ms, field, spw, intent, median_snr, spwmapping.snr_threshold_used
+                )
 
             # If SpW mapping info exists for the current intent and field, and
             # there is a non-empty SpW map in which other SpWs are mapped to

@@ -583,5 +583,47 @@ class SpectralWindowWithChannelSelection:
     def id(self) -> str:
         """Returns the spectral window ID including channel selection."""
         channels = ':%s' % self._channels if self._channels else ''
-        return '{spw}{channels}'.format(spw=self._subject.id,
-                                        channels=channels)
+        return f'{self._subject.id}{channels}'
+
+
+def match_spw_basename(name1: str, name2: str) -> bool:
+    """Determines if one SPW name is a suffix of the other, indicating equivalent SPW configurations.
+
+    This function identifies spectral window settings that are functionally identical across different observation
+    cycles, despite variations in naming conventions due to evolving metadata convention. The comparison is performed
+    bidirectionally to accommodate naming changes where prefixes are usually added in newer cycles.
+
+    ALMA naming convention change examples:
+
+    Cycle 1-2 to Cycle 3-11 (partID addition for spectralspec identifiers):
+        Before: `ALMA_RB_03#BB_1#SW-01#FULL_RES`
+        After:  `X425992413#ALMA_RB_03#BB_2#SW-01#FULL_RES`
+
+    Cycle 3-11 to Cycle 12 (groupID addition):
+        Before: `X870829884#ALMA_RB_03#BB_1#SW-01#FULL_RES`
+        After:  `X127/X45069401/X3370#X870829884#ALMA_RB_03#BB_1#SW-01#FULL_RES`
+
+    Note: Cycle 0 data have fallback SPW names ("spw_i" where `i` is the SPW ID) in the `name` property of
+    `SpectralWindow` domain objects since no specific names are assigned in the MS subtables.
+
+    Args:
+        name1: First spectral window name for comparison
+        name2: Second spectral window name for comparison
+
+    Returns:
+        True if either name is a suffix of the other, False otherwise
+
+    Raises:
+        ValueError: If either name is shorter than 5 characters (insufficient for reliable matching)
+    """
+    # Validate minimum length requirement based on Pipeline fallback naming (spw_i)
+    min_length = 5
+    if len(name1) < min_length or len(name2) < min_length:
+        msg = (
+            f"SPW names too short for comparison: name1='{name1}', name2='{name2}'. "
+            f"Minimum length is {min_length} characters."
+        )
+        LOG.error(msg)
+        raise ValueError(msg)
+
+    return name1.endswith(name2) or name2.endswith(name1)

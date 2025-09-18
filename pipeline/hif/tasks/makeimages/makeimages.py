@@ -28,7 +28,7 @@ class MakeImagesInputs(vdp.StandardInputs):
 
     calcsb = vdp.VisDependentProperty(default=False)
     cleancontranges = vdp.VisDependentProperty(default=False)
-    hm_cleaning = vdp.VisDependentProperty(default='rms')
+    hm_cleaning = vdp.VisDependentProperty(default='')
     hm_cyclefactor = vdp.VisDependentProperty(default=-999.0)
     hm_nmajor = vdp.VisDependentProperty(default=None)
     hm_dogrowprune = vdp.VisDependentProperty(default=None)
@@ -97,7 +97,7 @@ class MakeImagesInputs(vdp.StandardInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the <hifa,hifv>_importdata task.
                 '': use all MeasurementSets in the context
                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
 
@@ -184,7 +184,11 @@ class MakeImagesInputs(vdp.StandardInputs):
                 - beamdev_thresh: default: 0.2
                   Threshold for the fractional beam deviation from the expected value required for the plane rejection.
 
-            parallel: Clean images using MPI cluster
+            parallel: Use CASA/tclean built-in parallel imaging for individual scientific targets, or, perform continuum imaging 
+                of multiple target (calibrators) concurrently without the CASA/tclean built-in parallelization.
+                options: 'automatic', 'true', 'false', True, False
+                default: 'automatic' - Optimizes the parallelization mode based on the imaging target type
+                    (scientific targets vs. calibrators) and the specific operation.
 
         """
         self.context = context
@@ -224,7 +228,7 @@ class MakeImagesInputs(vdp.StandardInputs):
 
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
-#api.ImagingMeasurementSetsPreferred.register(MakeImagesInputs)
+# api.ImagingMeasurementSetsPreferred.register(MakeImagesInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_makeimages')
@@ -288,14 +292,14 @@ class MakeImages(basetask.StandardTaskTemplate):
 
         description = {
             # map specmode to description for every clean target
-            _get_description_map(target['intent']).get(target['specmode'], 'Calculate clean products')
+            _get_description_map(target['intent'], target['stokes']).get(target['specmode'], 'Calculate clean products')
             for target in target_list
         }
         result.metadata['long description'] = ' / '.join(sorted(description))
 
         sidebar = {
             # map specmode to description for every clean target
-            _get_sidebar_map(target['intent']).get(target['specmode'], '')
+            _get_sidebar_map(target['intent'], target['stokes']).get(target['specmode'], '')
             for target in target_list
         }
         result.metadata['sidebar suffix'] = '/'.join(sidebar)
@@ -336,12 +340,14 @@ class MakeImages(basetask.StandardTaskTemplate):
         # as the ImageItem instance 'metadata' attribute.
         for idx, tclean_result in enumerate(result.results):
             target = result.targets[idx]
-            imaging_metadata = {'keep': False,
-                                # Flagging percentage of a VLASS-SE-CUBE plane within a 1deg^2 box.
-                                'flagpct': target['flagpct'],
-                                'spw': target['spw'],
-                                'freq': float(target['reffreq'].replace('GHz', '')),
-                                'beam': [None, None, None]}
+            imaging_metadata = {
+                'keep': False,
+                # Flagging percentage of a VLASS-SE-CUBE plane within a 1deg^2 box.
+                'flagpct': target['misc_vlass']['flagpct'],
+                'spw': target['spw'],
+                'freq': float(target['reffreq'].replace('GHz', '')),
+                'beam': [None, None, None],
+            }
 
             if isinstance(tclean_result.image, str):
                 ext = '.tt0' if tclean_result.multiterm else ''
@@ -364,14 +370,23 @@ class MakeImages(basetask.StandardTaskTemplate):
 
         # update tclean_result.imaging_metadata['keep'] based on the beam size and flagging percentage
         if bminor_list:
-            ref_idx = np.argsort(bminor_list)[len(bminor_list)//2]
 
-            bmajor_expected = bmajor_list[ref_idx]*freq_list[ref_idx]/np.array(freq_list)
-            bminor_expected = bminor_list[ref_idx]*freq_list[ref_idx]/np.array(freq_list)
-            c1 = (bmajor_expected*(1.-beamdev_thresh) < np.array(bmajor_list))
-            c2 = (bmajor_expected*(1.+beamdev_thresh) > np.array(bmajor_list))
-            c3 = (bminor_expected*(1.-beamdev_thresh) < np.array(bminor_list))
-            c4 = (bminor_expected*(1.+beamdev_thresh) > np.array(bminor_list))
+            bminor_array = np.array(bminor_list)
+            freq_array = np.array(freq_list)
+            weighted_values = bminor_array * freq_array
+            sorted_indices = np.argsort(weighted_values)
+            ref_idx = sorted_indices[len(bminor_list) // 2]
+
+            bmajor_expected = (
+                bmajor_list[ref_idx] * freq_list[ref_idx] / np.array(freq_list)
+            )
+            bminor_expected = (
+                bminor_list[ref_idx] * freq_list[ref_idx] / np.array(freq_list)
+            )
+            c1 = bmajor_expected * (1.0 - beamdev_thresh) < np.array(bmajor_list)
+            c2 = bmajor_expected * (1.0 + beamdev_thresh) > np.array(bmajor_list)
+            c3 = bminor_expected * (1.0 - beamdev_thresh) < np.array(bminor_list)
+            c4 = bminor_expected * (1.0 + beamdev_thresh) > np.array(bminor_list)
             c5 = (np.array(flagpct_list) < flagpct_thresh)
 
             spwgroup_keep = [False]*len(spwgroup_list)
@@ -435,6 +450,12 @@ class MakeImages(basetask.StandardTaskTemplate):
         if heuristics.imaging_mode == 'ALMA':
             return clean_result.intent == 'TARGET'
 
+        # VLA pipeline
+        # note: Need to check are their any conditions to
+        # export image sensitivities for VLA
+        if heuristics.imaging_mode == 'VLA':
+            return True
+
         # Representative source and SpW
         _, repr_source, repr_spw, _, _, _, _, _, _, _ = heuristics.representative_target()
         if str(repr_spw) in clean_result.spw.split(',') and repr_source == utils.dequote(clean_result.sourcename):
@@ -476,11 +497,28 @@ class MakeImages(basetask.StandardTaskTemplate):
         array = ('%dm' % min(diameters))
 
         # Check if this sensitivity is for the representative source and SpW
-        _, repr_source, repr_spw, _, _, _, _, _, _, _ = heuristics.representative_target()
-        if str(repr_spw) in result.spw.split(',') and repr_source == utils.dequote(result.sourcename):
-            is_representative = True
-        else:
+        if heuristics.imaging_mode == 'VLA':
             is_representative = False
+        else:
+            _, repr_source, repr_spw, _, _, _, _, _, _, _ = heuristics.representative_target()
+            if str(repr_spw) in result.spw.split(',') and repr_source == utils.dequote(result.sourcename):
+                is_representative = True
+            else:
+                is_representative = False
+
+        # Sensitivities are currently reported for Stokes I only. For IQUV imaging the
+        # correct values have to be fetched from the new parameters since the previous
+        # ones will contain mixtures of I, Q, U and V due to the "axes" parameter in
+        # the ia.statistics() calls (PIPE-2464). TODO: Refactor the code to have just
+        # one set of statistical parameters.
+        if result.stokes == 'IQUV':
+            image_rms = result.image_rms_iquv[0]
+            image_min = result.image_min_iquv[0]
+            image_max = result.image_max_iquv[0]
+        else:
+            image_rms = result.image_rms
+            image_min = result.image_min
+            image_max = result.image_max
 
         return Sensitivity(array=array,
                            intent=target['intent'],
@@ -494,9 +532,10 @@ class MakeImages(basetask.StandardTaskTemplate):
                            cell=cell,
                            robust=target['robust'],
                            uvtaper=target['uvtaper'],
-                           sensitivity=cqa.quantity(result.image_rms, 'Jy/beam'),
-                           pbcor_image_min=cqa.quantity(result.image_min, 'Jy/beam'),
-                           pbcor_image_max=cqa.quantity(result.image_max, 'Jy/beam'),
+                           theoretical_sensitivity=cqa.quantity(result.sensitivity, 'Jy/beam'),
+                           observed_sensitivity=cqa.quantity(image_rms, 'Jy/beam'),
+                           pbcor_image_min=cqa.quantity(image_min, 'Jy/beam'),
+                           pbcor_image_max=cqa.quantity(image_max, 'Jy/beam'),
                            imagename=result.image.replace('.pbcor', ''),
                            datatype=result.datatype)
 
@@ -645,13 +684,26 @@ class CleanTaskFactory(object):
 
         if inputs.hm_masking in (None, ''):
             if 'TARGET' in task_args['intent']:
-                task_args['hm_masking'] = 'auto'
+                if task_args['stokes'] == 'IQUV':
+                    if task_args['mask'] not in (None, ''):
+                        # "re-use" is a hidden mode just for the special use case
+                        # of re-using a previously computed Stokes I mask.
+                        task_args['hm_masking'] = 're-use'
+                    else:
+                        task_args['hm_masking'] = 'none'
+                elif task_args['mask'] not in (None, ''):
+                    task_args['hm_masking'] = 'manual'
+                else:
+                    task_args['hm_masking'] = 'auto'
             elif task_args['intent'] == 'POLARIZATION' and task_args['stokes'] == 'IQUV':
                 task_args['hm_masking'] = 'centralregion'
             else:
                 task_args['hm_masking'] = 'auto'
         else:
-            task_args['hm_masking'] = inputs.hm_masking
+            if inputs.hm_masking.lower() in ('auto', 'centralregion', 'manual', 'none'):
+                task_args['hm_masking'] = inputs.hm_masking.lower()
+            else:
+                raise Exception(f'Masking mode {inputs.hm_masking} unknown.')
 
         if inputs.hm_masking == 'auto':
             task_args['hm_sidelobethreshold'] = inputs.hm_sidelobethreshold
@@ -665,7 +717,10 @@ class CleanTaskFactory(object):
             task_args['hm_fastnoise'] = inputs.hm_fastnoise
 
         if inputs.hm_cleaning == '':
-            task_args['hm_cleaning'] = 'rms'
+            if task_args['threshold'] not in (None, ''):
+                task_args['hm_cleaning'] = 'manual'
+            else:
+                task_args['hm_cleaning'] = 'rms'
         else:
             task_args['hm_cleaning'] = inputs.hm_cleaning
 
@@ -691,7 +746,7 @@ class CleanTaskFactory(object):
             task_args['cyclefactor'] = inputs.hm_cyclefactor
 
         if inputs.hm_nmajor not in (None, -999.0):
-            task_args['nmajor'] = inputs.hm_nmajor        
+            task_args['nmajor'] = inputs.hm_nmajor
 
         if inputs.hm_minpsffraction not in (None, -999.0):
             task_args['hm_minpsffraction'] = inputs.hm_minpsffraction
@@ -702,7 +757,7 @@ class CleanTaskFactory(object):
         return task_args
 
 
-def _get_description_map(intent):
+def _get_description_map(intent, stokes):
     if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE'):
         return {
             'mfs': 'Make calibrator images',
@@ -724,18 +779,28 @@ def _get_description_map(intent):
             'cont': 'Make check source images'
         }
     elif intent == 'TARGET':
-        return {
-            'mfs': 'Make target per-spw continuum images',
-            'cont': 'Make target aggregate continuum images',
-            'cube': 'Make target cubes',
-            'repBW': 'Make representative bandwidth target cube'
+        if stokes.upper() in ('', 'I'):
+            return {
+                'mfs': 'Make target per-spw continuum images',
+                'cont': 'Make target aggregate continuum images',
+                'cube': 'Make target cubes',
+                'repBW': 'Make representative bandwidth target cube'
+            }
+        elif stokes.upper() == 'IQUV':
+            return {
+                'mfs': 'Make target fullpol per-spw continuum images',
+                'cont': 'Make target fullpol aggregate continuum images',
+                'cube': 'Make target fullpol cubes',
+                'repBW': 'Make fullpol representative bandwidth target cube'
+            }
+        else:
+            raise Exception(f'Unknown Stokes value "{stokes}"')
 
-        }
     else:
         return {}
 
 
-def _get_sidebar_map(intent):
+def _get_sidebar_map(intent, stokes):
     if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE', 'DIFFGAINREF', 'DIFFGAINSRC'):
         return {
             'mfs': 'cals',
@@ -752,11 +817,21 @@ def _get_sidebar_map(intent):
             'cont': 'checksrc'
         }
     elif intent == 'TARGET':
-        return {
-            'mfs': 'mfs',
-            'cont': 'cont',
-            'cube': 'cube',
-            'repBW': 'cube_repBW'
-        }
+        if stokes.upper() in ('', 'I'):
+            return {
+                'mfs': 'mfs',
+                'cont': 'cont',
+                'cube': 'cube',
+                'repBW': 'cube_repBW'
+            }
+        elif stokes.upper() == 'IQUV':
+            return {
+                'mfs': 'mfs_fullpol',
+                'cont': 'cont_fullpol',
+                'cube': 'cube_fullpol',
+                'repBW': 'cube_repBW_fullpol'
+            }
+        else:
+            raise Exception(f'Unknown Stokes value "{stokes}"')
     else:
         return {}
