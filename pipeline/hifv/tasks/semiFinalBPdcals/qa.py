@@ -42,9 +42,13 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
                 LOG.error('Error with bandpass and/or delay table for band {!s}.'.format(bandname))
                 scores = [pqa.QAScore(0.0, longmsg='No flagging stats about the bandpass table or info in delay table.',
                                       shortmsg='Bandpass or delay table problem.')]
-
         for antenna, spwlist in self.antspw.items():
             uniquespw = list(set(spwlist))
+            for spwid in uniquespw:
+                spw = m.get_spectral_window(spwid)
+                if spw.specline_window:
+                    LOG.warning('Antenna {!s}, spw: {!s} has a flagging fraction of 1.0.'.format(antenna, ','.join(spwid)))
+
             uniquespwlist = [int(spw) for spw in uniquespw]
             uniquespwlist.sort()
             uniquespwlist = [str(spw) for spw in uniquespwlist]
