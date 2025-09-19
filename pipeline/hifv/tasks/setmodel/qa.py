@@ -21,22 +21,29 @@ class VLASetjyQAHandler(pqa.QAPlugin):
         scores = []
         if sum(standard_source_fields, []):
             scorevalue = 0.0
-            msg = 'No VLA standard calibrator present.'
+            msg = ''
             field_ids = [str(fieldid) for sublist in standard_source_fields for fieldid in sublist]
             calfields = ",".join(field_ids)
             flagdata_task = casa_tasks.flagdata(vis=result.inputs['vis'], mode="summary", field=calfields)
             flagdata_result = flagdata_task.execute()
             for fields in standard_source_fields:
+                field_intents = set()
                 for myfield in fields:
-                    domainfield = m.get_fields(myfield)[0]
-                    total_flagged = flagdata_result['field'][domainfield.name.strip('"')]['flagged']
-                    total = flagdata_result['field'][domainfield.name.strip('"')]['total']
-                    if 'AMPLITUDE' in domainfield.intents and (total_flagged/total) < 0.995:
-                        scorevalue = 1.0
-                        msg = 'Standard calibrator present.'
+                    field_intents.update(m.get_fields(myfield)[0].intents)
+                if len(fields) != 0:
+                    domainfield = m.get_fields(fields[0])[0]
+                    if 'AMPLITUDE' in field_intents:
+                        total_flagged = flagdata_result['field'][domainfield.name.strip('"')]['flagged']
+                        total = flagdata_result['field'][domainfield.name.strip('"')]['total']
+                        if (total_flagged/total) < 0.995:
+                            scorevalue = 1.0
+                            msg = 'Standard calibrator present.'
+                        else:
+                            scorevalue = 0.0
+                            msg = "Standard calibrator is fully flagged"
                     else:
                         scorevalue = 0.0
-                        msg = 'No flux calibration intent found or calibrator is fully flagged'
+                        msg = 'No flux calibration intent found'
                     score = pqa.QAScore(scorevalue, longmsg=msg, shortmsg=msg)
                     scores.append(score)
         else:
