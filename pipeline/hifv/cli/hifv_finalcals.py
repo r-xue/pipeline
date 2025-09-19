@@ -6,7 +6,6 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifv.tasks.finalcals.finalcals.FinalcalsInputs.__init__
 @utils.cli_wrapper
 def hifv_finalcals(vis=None, weakbp=None, refantignore=None, refant=None):
-
     """Compute final gain calibration tables.
 
     Returns:
@@ -16,10 +15,7 @@ def hifv_finalcals(vis=None, weakbp=None, refantignore=None, refant=None):
         1. Create the final calibration tables to be applied to the data in the VLA CASA pipeline:
 
         >>> hifv_finalcals()
-
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

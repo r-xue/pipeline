@@ -6,8 +6,7 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifv.tasks.fixpointing.fixpointing.FixpointingInputs.__init__
 @utils.cli_wrapper
 def hifv_fixpointing(vis=None):
-
-    """Base fixpointing task
+    """Base fixpointing task.
 
     Returns:
         The results object for the pipeline task is returned.
@@ -16,10 +15,7 @@ def hifv_fixpointing(vis=None):
         1. Basic fixpointing task:
 
         >>> hifv_fixpointing()
-
     """
-
-
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
     #  needed beyond this point.                                             #

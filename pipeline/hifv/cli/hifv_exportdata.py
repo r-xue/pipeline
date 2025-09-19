@@ -8,7 +8,6 @@ import pipeline.h.cli.utils as utils
 def hifv_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, tarms=None, exportcalprods=None,
     pprfile=None, calintents=None, calimages=None, targetimages=None, products_dir=None,
     gainmap=None):
-
     """Prepare and export interferometry and imaging data.
 
     The hifv_exportdata task for the VLA CASA pipeline exports the data defined
@@ -43,8 +42,6 @@ def hifv_exportdata(vis=None, session=None, imaging_products_only=None, exportms
         >>> hifv_exportdata (products_dir='../products', calintents='*PHASE*')
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

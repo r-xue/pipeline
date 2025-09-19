@@ -6,7 +6,6 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifv.tasks.tecmaps.tecmaps.TecMapsInputs.__init__
 @utils.cli_wrapper
 def hifv_tecmaps(vis=None):
-
     """Base tecmaps task
 
     Returns:
@@ -18,8 +17,6 @@ def hifv_tecmaps(vis=None):
         >>> hifv_tecmaps()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

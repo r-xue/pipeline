@@ -9,7 +9,7 @@ def hifa_timegaincal(vis=None, calamptable=None, calphasetable=None, offsetstabl
                      amptable=None, field=None, spw=None, antenna=None, calsolint=None, targetsolint=None, refant=None,
                      refantmode=None, solnorm=None, minblperant=None, calminsnr=None, targetminsnr=None, smodel=None,
                      parallel=None):
-    """Determine temporal gains from calibrator observations
+    """Determine temporal gains from calibrator observations.
 
     The time-dependent complex gains for each antenna/spw are determined from
     the raw data (DATA column) divided by the model (MODEL column), for the

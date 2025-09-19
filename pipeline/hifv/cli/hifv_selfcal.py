@@ -7,7 +7,6 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_selfcal(vis=None, refantignore=None,
                  combine=None, selfcalmode=None, refantmode=None, overwrite_modelcol=None):
-
     """Perform phase-only self-calibration, per scan row, on VLASS SE images.
 
     Returns:
@@ -23,8 +22,6 @@ def hifv_selfcal(vis=None, refantignore=None,
         >>> hifv_selfcal(selfcalmode='VLASS-SE', combine='field, spw')
 
     """
-
-
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
     #  needed beyond this point.                                             #

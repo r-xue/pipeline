@@ -7,7 +7,6 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hsd_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, rawdata_dir=None, lazy=None,
                     bdfflags=None, ocorr_mode=None, asis=None, hm_rasterscan=None):
-
     """Restore flagged and calibration single dish data from a pipeline run.
 
     The hsd_restoredata task restores flagged and calibrated MeasurementSets

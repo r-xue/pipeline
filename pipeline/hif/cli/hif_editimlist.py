@@ -46,7 +46,7 @@ def hif_editimlist(imagename=None,
                    uvrange=None,
                    width=None,
                    vlass_plane_reject_ms=None):
-    """Add to a list of images to be produced with hif_makeimages()
+    """Add to a list of images to be produced with ``hif_makeimages``.
 
     Add to a list of images to be produced with hif_makeimages(), which uses hif_tclean() to invoke CASA tclean.
     Many of the hif_editimlist() inputs map directly to tclean parameters.
@@ -55,13 +55,7 @@ def hif_editimlist(imagename=None,
 
     Returns:
         The results object for the pipeline task is returned.
-
-    Examples:
-
-
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

@@ -2,7 +2,7 @@ from . import utils
 
 
 def h_import_calstate(filename):
-    """Import a calibration state from disk
+    """Import a calibration state from disk.
 
     h_import_calstate clears and then recreates the pipeline calibration state
     based on the set of applycal calls given in the named file. The applycal

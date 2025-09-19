@@ -5,10 +5,7 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hif.tasks.makermsimages.makermsimages.MakermsimagesInputs.__init__
 @utils.cli_wrapper
 def hif_makermsimages(vis=None):
-
     """Create RMS images for VLASS data.
-
-    Create RMS images for VLASS data.
 
     Returns:
         The results object for the pipeline task is returned.
@@ -19,8 +16,6 @@ def hif_makermsimages(vis=None):
         >>> hif_makermsimages()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

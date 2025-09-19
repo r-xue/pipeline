@@ -8,7 +8,7 @@ import pipeline.h.cli.utils as utils
 def hifa_importdata(vis=None, session=None, asis=None, process_caldevice=None, overwrite=None, nocopy=None,
                     bdfflags=None, datacolumns=None, lazy=None, dbservice=None, ocorr_mode=None, createmms=None,
                     minparang=None, parallel=None):
-    """Imports data into the interferometry pipeline
+    """Imports data into the interferometry pipeline.
 
     The hifa_importdata task loads the specified visibility data into the pipeline
     context unpacking and / or converting it as necessary.

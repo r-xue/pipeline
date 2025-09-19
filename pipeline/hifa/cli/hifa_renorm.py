@@ -7,7 +7,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifa_renorm(vis=None, createcaltable=None, threshold=None, spw=None, excludechan=None,
                 atm_auto_exclude=None, bwthreshspw=None, parallel=None):
-    """ALMA renormalization task
+    """ALMA renormalization.
 
     This task makes an assessment, and optionally applies a correction, to data
     suffering from incorrect amplitude normalization caused by bright

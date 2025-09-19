@@ -7,7 +7,7 @@ from . import cli, utils
 @utils.cli_wrapper
 def h_init(loglevel='info', plotlevel='default', weblog=True, processing_intents=dict()):
 
-    """Initialize the pipeline
+    """Initialize the pipeline.
 
     The h_init task initializes the pipeline.
 

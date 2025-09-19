@@ -6,8 +6,7 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hif.tasks.analyzealpha.analyzealpha.AnalyzealphaInputs.__init__
 @utils.cli_wrapper
 def hif_analyzealpha(vis=None, image=None, alphafile=None, alphaerrorfile=None):
-
-    """Extract spectral index from intensity peak in VLA/VLASS images
+    """Extract spectral index from intensity peak in VLA/VLASS images.
 
     The results object for the pipeline task is returned.
 
@@ -18,10 +17,7 @@ def hif_analyzealpha(vis=None, image=None, alphafile=None, alphaerrorfile=None):
         1. Basic analyzealpha task
 
         >>> hif_analyzealpha()
-
     """
-
-
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
     #  needed beyond this point.                                             #

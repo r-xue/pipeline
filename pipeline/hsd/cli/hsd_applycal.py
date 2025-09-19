@@ -7,7 +7,6 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hsd_applycal(vis=None, field=None, intent=None, spw=None, antenna=None,
     applymode=None, flagbackup=None, parallel=None):
-
     """Apply the calibration(s) to the data.
 
     hsd_applycal applies the precomputed calibration tables stored in the pipeline
@@ -30,8 +29,6 @@ def hsd_applycal(vis=None, field=None, intent=None, spw=None, antenna=None,
         >>> hsd_applycal(field='3C279, M82', spw='17', intent='TARGET')
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

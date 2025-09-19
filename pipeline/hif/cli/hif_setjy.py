@@ -8,10 +8,7 @@ import pipeline.h.cli.utils as utils
 def hif_setjy(vis=None, field=None, intent=None, spw=None, model=None,
               reffile=None, normfluxes=None, reffreq=None, fluxdensity=None,
               spix=None, scalebychan=None, standard=None):
-
-    """Fill the model column with calibrated visibilities
-
-    Fills the model column with the model visibilities.
+    """Fill the model column with calibrated visibilities.
 
     Returns:
         The results object for the pipeline task is returned.
@@ -22,8 +19,6 @@ def hif_setjy(vis=None, field=None, intent=None, spw=None, model=None,
         >>> hif_setjy()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

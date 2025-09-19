@@ -5,7 +5,6 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifv_rqcal(vis=None, caltable=None):
-
     """Runs gencal in rq mode.
 
     Args:
@@ -22,8 +21,6 @@ def hifv_rqcal(vis=None, caltable=None):
         >>> hifv_rqcal()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

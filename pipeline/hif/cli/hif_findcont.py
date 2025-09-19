@@ -7,10 +7,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hif_findcont(vis=None, target_list=None, hm_mosweight=None, hm_perchanweightdensity=None, hm_weighting=None,
                  datacolumn=None, parallel=None):
-
-    """Find continuum frequency ranges
-
-    Find continuum frequency ranges for a list of specified targets.
+    """Find continuum frequency ranges for a list of specified targets.
 
     If the cont.dat file is not already present in the working directory, then dirty image
     cubes are created for each spectral window of each science target at the native channel
@@ -39,8 +36,6 @@ def hif_findcont(vis=None, target_list=None, hm_mosweight=None, hm_perchanweight
         >>> hif_findcont()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

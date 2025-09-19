@@ -7,7 +7,6 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hsdn_importdata(vis=None, session=None, hm_rasterscan=None, datacolumns=None,
                     overwrite=None, nocopy=None, createmms=None):
-
     """Imports Nobeyama data into the single dish pipeline.
 
     Imports Nobeyama data into the single dish pipeline.
@@ -39,8 +38,6 @@ def hsdn_importdata(vis=None, session=None, hm_rasterscan=None, datacolumns=None
         >>> hsdn_importdata(vis=myvislist)
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

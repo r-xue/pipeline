@@ -16,7 +16,7 @@ def hifa_tsysflagcontamination(
     continue_on_failure=None,
     parallel=None,
 ):
-    """Flag line contamination in ALMA interferometric Tsys caltables
+    """Flag line contamination in ALMA interferometric Tsys caltables.
 
     This task flags all line contamination detected through an analysis of the
     Tsys and bandpass caltables.

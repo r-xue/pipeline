@@ -2,7 +2,7 @@ from pipeline import show_weblog
 
 
 def h_weblog(relpath=None):
-    """Open the pipeline weblog in a browser
+    """Open the pipeline weblog in a browser.
 
     h_weblog opens the weblog in a new browser tab or window.
 

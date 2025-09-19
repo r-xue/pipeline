@@ -13,7 +13,6 @@ def hsd_tsysflag(vis=None, caltable=None,
                  flag_birdies=None, fb_sharps_limit=None,
                  flag_toomany=None, tmf1_limit=None, tmef1_limit=None,
                  metric_order=None, normalize_tsys=None, filetemplate=None):
-
     """Flag deviant system temperature measurements.
 
     Flag deviant system temperature measurements for single dish measurements. This is done by running a
@@ -57,8 +56,6 @@ def hsd_tsysflag(vis=None, caltable=None,
         >>> hsd_tsysflag(flag_fieldshape=False)
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

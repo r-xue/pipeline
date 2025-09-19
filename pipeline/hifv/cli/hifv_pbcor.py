@@ -6,7 +6,6 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifv.tasks.pbcor.pbcor.PbcorInputs.__init__
 @utils.cli_wrapper
 def hifv_pbcor(vis=None):
-
     """Apply primary beam correction to VLA and VLASS images.
 
     Returns:
@@ -18,8 +17,6 @@ def hifv_pbcor(vis=None):
         >>> hifv_pbcor()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

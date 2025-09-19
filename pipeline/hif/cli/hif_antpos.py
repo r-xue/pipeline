@@ -6,10 +6,7 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hif.tasks.antpos.antpos.AntposInputs.__init__
 @utils.cli_wrapper
 def hif_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=None, antposfile=None):
-
-    """Derive an antenna position calibration table
-
-    Derive the antenna position calibration for list of MeasurementSets.
+    """Derive the antenna position calibration table for list of MeasurementSets.
 
     The hif_antpos task corrects the antenna positions recorded in the ASDMs using
     updated antenna position calibration information determined after the
@@ -49,8 +46,6 @@ def hif_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=No
         >>> hif_antpos(hm_antpos='file', antposfile='myantposfile.csv')
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

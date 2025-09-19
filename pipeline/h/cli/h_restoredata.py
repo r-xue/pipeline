@@ -8,7 +8,7 @@ from . import utils
 def h_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, rawdata_dir=None, lazy=None, bdfflags=None,
                   ocorr_mode=None, asis=None):
 
-    """Restore flags and calibration state from a pipeline run
+    """Restore flags and calibration state from a pipeline run.
 
     The h_restoredata restores flagged and calibrated data from archived ASDMs and
     pipeline flagging and calibration data products. Pending archive retrieval

@@ -7,7 +7,6 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hsd_importdata(vis=None, session=None, hm_rasterscan=None, parallel=None, asis=None, process_caldevice=None, overwrite=None,
                    nocopy=None, bdfflags=None, datacolumns=None, lazy=None, with_pointing_correction=None, createmms=None):
-
     """Imports data into the single dish pipeline.
 
     The hsd_importdata task loads the specified visibility data into the pipeline
@@ -40,8 +39,6 @@ def hsd_importdata(vis=None, session=None, hm_rasterscan=None, parallel=None, as
         >>> hsd_importdata(vis=myvislist)
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

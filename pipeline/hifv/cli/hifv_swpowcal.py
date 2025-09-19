@@ -5,7 +5,6 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifv_swpowcal(vis=None, caltable=None, spw=None):
-
     """Runs gencal in swpow mode.
 
     Args:
@@ -24,8 +23,6 @@ def hifv_swpowcal(vis=None, caltable=None, spw=None):
         >>> hifv_swpowcal()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

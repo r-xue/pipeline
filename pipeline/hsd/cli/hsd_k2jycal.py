@@ -7,7 +7,6 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hsd_k2jycal(dbservice=None, endpoint=None, reffile=None,
                 infiles=None, caltable=None):
-
     """Derive Kelvin to Jy calibration tables.
 
     Derive the Kelvin to Jy calibration for list of MeasurementSets.
@@ -21,8 +20,6 @@ def hsd_k2jycal(dbservice=None, endpoint=None, reffile=None,
         >>> hsd_k2jycal()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

@@ -7,7 +7,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifa_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, rawdata_dir=None, lazy=None,
                      bdfflags=None, ocorr_mode=None, asis=None):
-    """Restore flagged and calibration interferometry data from a pipeline run
+    """Restore flagged and calibration interferometry data from a pipeline run.
 
     The hifa_restoredata task restores flagged and calibrated MeasurementSets
     from archived ASDMs and pipeline flagging and calibration data products.

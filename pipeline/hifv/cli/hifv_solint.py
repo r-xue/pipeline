@@ -6,7 +6,6 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifv.tasks.fluxscale.solint.SolintInputs.__init__
 @utils.cli_wrapper
 def hifv_solint(vis=None, limit_short_solint=None, refantignore=None, refant=None):
-
     """Determines different solution intervals.
 
     The hifv_solint task determines different solution intervals. Note that the short solint value is switched to 'int' when
@@ -21,8 +20,6 @@ def hifv_solint(vis=None, limit_short_solint=None, refantignore=None, refant=Non
         >>> hifv_solint()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

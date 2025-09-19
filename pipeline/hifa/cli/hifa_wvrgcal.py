@@ -9,8 +9,7 @@ def hifa_wvrgcal(vis=None, caltable=None, offsetstable=None, hm_toffset=None, to
                  sourceflag=None, hm_tie=None, tie=None, nsol=None, disperse=None, wvrflag=None, hm_smooth=None,
                  smooth=None, scale=None, maxdistm=None, minnumants=None, mingoodfrac=None, refant=None, qa_intent=None,
                  qa_bandpass_intent=None, qa_spw=None, accept_threshold=None):
-    """Generate a gain table based on Water Vapor Radiometer data, and calculate
-    a QA score based on its effect on the interferometric data.
+    """Generate a gain table based on Water Vapor Radiometer (WVR) data.
 
     Generate a gain table based on the Water Vapor Radiometer data in each vis
     file. By applying the wvr calibration to the data specified by ``qa_intent``

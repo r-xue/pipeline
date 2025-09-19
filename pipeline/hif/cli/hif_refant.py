@@ -8,8 +8,7 @@ import pipeline.h.cli.utils as utils
 def hif_refant(vis=None, field=None, spw=None, intent=None, hm_refant=None,
                refant=None, geometry=None, flagging=None, parallel=None,
                refantignore=None):
-
-    """Select the best reference antennas
+    """Select the best reference antennas.
 
     The hif_refant task selects a list of reference antennas and stores them
     in the pipeline context in priority order.
@@ -27,8 +26,6 @@ def hif_refant(vis=None, field=None, spw=None, intent=None, hm_refant=None,
         >>> hif_refant()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

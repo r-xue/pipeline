@@ -6,7 +6,6 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifv.tasks.flagging.flagcal.FlagcalInputs.__init__
 @utils.cli_wrapper
 def hifv_flagcal(vis=None, caltable=None, clipminmax=None):
-
     """Flagcal task.
 
     Returns:
@@ -16,10 +15,7 @@ def hifv_flagcal(vis=None, caltable=None, clipminmax=None):
         1. Flag existing caltable:
 
         >>> hifv_flagcal()
-
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

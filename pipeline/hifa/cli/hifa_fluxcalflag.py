@@ -7,7 +7,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifa_fluxcalflag(vis=None, field=None, intent=None, spw=None, threshold=None, appendlines=None, linesfiles=None,
                      applyflags=None):
-    """Locate and flag line regions in solar system flux calibrators
+    """Locate and flag line regions in solar system flux calibrators.
 
     Search the built-in solar system flux calibrator line catalog for overlaps with
     the science spectral windows. Generate a list of line overlap regions and

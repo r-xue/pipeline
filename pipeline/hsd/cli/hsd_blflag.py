@@ -19,7 +19,6 @@ def hsd_blflag(iteration=None, edge=None, flag_tsys=None, tsys_thresh=None,
                  plotflag=None, parallel=None,
                  infiles=None, antenna=None,
                  field=None, spw=None, pol=None):
-
     """Flag spectra based on predefined criteria of single dish pipeline.
 
     Data are flagged based on several flagging rules. Available rules are:
@@ -38,8 +37,6 @@ def hsd_blflag(iteration=None, edge=None, flag_tsys=None, tsys_thresh=None,
         >>> hsd_blflag()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

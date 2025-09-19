@@ -6,8 +6,7 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifv.tasks.flagging.targetflag.TargetflagInputs.__init__
 @utils.cli_wrapper
 def hifv_targetflag(vis=None, intents=None):
-
-    """Targetflag
+    """Targetflag.
 
     Returns:
         The results object for the pipeline task is returned.
@@ -18,8 +17,6 @@ def hifv_targetflag(vis=None, intents=None):
         >>> hifv_targetflag()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

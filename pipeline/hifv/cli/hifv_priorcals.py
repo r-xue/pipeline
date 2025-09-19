@@ -7,7 +7,6 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_priorcals(vis=None, show_tec_maps=None, apply_tec_correction=None, apply_gaincurves=None, apply_opcal=None, apply_rqcal=None,
                    apply_antpos=None, apply_swpowcal=None, swpow_spw=None, ant_pos_time_limit=None):
-
     """Runs gaincurves, opacities, requantizer gains, antenna position corrections, tec_maps, switched power.
 
     Returns:
@@ -19,7 +18,6 @@ def hifv_priorcals(vis=None, show_tec_maps=None, apply_tec_correction=None, appl
         >>> hifv_priorcals()
 
     """
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

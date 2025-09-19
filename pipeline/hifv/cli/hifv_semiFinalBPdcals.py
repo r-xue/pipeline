@@ -6,7 +6,6 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifv.tasks.semiFinalBPdcals.semiFinalBPdcals.SemiFinalBPdcalsInputs.__init__
 @utils.cli_wrapper
 def hifv_semiFinalBPdcals(vis=None, weakbp=None, refantignore=None, refant=None):
-
     """Runs a second delay and bandpass calibration and applies to calibrators to setup for RFI flagging.
 
     Returns:
@@ -18,8 +17,6 @@ def hifv_semiFinalBPdcals(vis=None, weakbp=None, refantignore=None, refant=None)
         >>> hifv_semiFinalBPdcals()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

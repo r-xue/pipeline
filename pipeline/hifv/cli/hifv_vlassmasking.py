@@ -6,7 +6,6 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifv.tasks.vlassmasking.vlassmasking.VlassmaskingInputs.__init__
 @utils.cli_wrapper
 def hifv_vlassmasking(vis=None, vlass_ql_database=None, maskingmode=None, catalog_search_size=None):
-
     """Create clean masks for VLASS Single Epoch (SE) images.
 
     Returns:
@@ -18,8 +17,6 @@ def hifv_vlassmasking(vis=None, vlass_ql_database=None, maskingmode=None, catalo
         >>> hifv_vlassmasking()
 
     """
-
-
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
     #  needed beyond this point.                                             #

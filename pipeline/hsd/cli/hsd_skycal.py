@@ -9,7 +9,6 @@ def hsd_skycal(calmode=None, fraction=None, noff=None,
                  width=None, elongated=None, parallel=None,
                  infiles=None, field=None,
                  spw=None, scan=None):
-
     """Calibrate data.
 
     The hsd_skycal generates a caltable for sky calibration that stores
@@ -24,10 +23,7 @@ def hsd_skycal(calmode=None, fraction=None, noff=None,
 
         >>> default(hsd_skycal)
         >>> hsd_skycal()
-
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

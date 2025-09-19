@@ -10,7 +10,7 @@ def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
 
     """Restore flagged and calibration interferometry data from a pipeline run.
 
-    The hifv_restoredata restores flagged and calibrated data from archived
+    ``hifv_restoredata`` restores flagged and calibrated data from archived
     ASDMs and pipeline flagging and calibration data products.
 
     hifv_restoredata assumes that the ASDMs to be restored are present in the

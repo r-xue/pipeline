@@ -7,9 +7,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_fluxboot(vis=None, caltable=None, fitorder=None, refantignore=None, refant=None):
 
-    """Fluxboot
-
-    Determine flux density bootstrapping for gain calibrators relative to flux calibrator.
+    """Determine flux density bootstrapping for gain calibrators relative to flux calibrator.
 
     Returns:
         The results object for the pipeline task is returned.
@@ -20,8 +18,6 @@ def hifv_fluxboot(vis=None, caltable=None, fitorder=None, refantignore=None, ref
         >>> hifv_fluxboot()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

@@ -10,7 +10,6 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
                  clusteringalgorithm=None,
                  deviationmask=None, deviationmask_sigma_threshold=None, parallel=None,
                  infiles=None, field=None, antenna=None, spw=None, pol=None):
-
     """Detect and validate spectral lines, subtract baseline by masking detected lines.
 
     The hsd_baseline task subtracts baseline from calibrated spectra.
@@ -70,7 +69,6 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
                          linewindowmode='merge')
 
     """
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

@@ -11,7 +11,6 @@ def hsd_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
                  filetemplate=None, pointing=None, filepointing=None, incompleteraster=None,
                  hm_tbuff=None, tbuff=None, qa0=None, qa2=None, parallel=None,
                  flagbackup=None):
-
     """Do basic flagging of a list of MeasurementSets.
 
     The hsd_flagdata data performs basic flagging operations on a list of
@@ -37,8 +36,6 @@ def hsd_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
         >>> hsd_flagdata(scannumber='13,18')
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

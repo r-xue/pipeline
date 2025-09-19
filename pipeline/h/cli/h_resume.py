@@ -3,8 +3,7 @@ import pipeline.infrastructure.launcher as launcher
 
 
 def h_resume(filename=None):
-
-    """Restore a saved pipeline state
+    """Restore a saved pipeline state.
 
     h_resume restores a name pipeline state from disk, allowing a
     suspended pipeline reduction session to be resumed.
@@ -26,7 +25,6 @@ def h_resume(filename=None):
         >>> h_resume(filename='context.s3.2012-02-13T10:49:11')
 
     """
-
     _filename = 'last' if filename is None else filename
     pipeline = launcher.Pipeline(context=_filename)
 

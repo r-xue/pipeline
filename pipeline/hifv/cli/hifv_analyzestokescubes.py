@@ -6,7 +6,6 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifv.tasks.analysestokescubes.analysestokescubes.AnalysestokescubesInputs.__init__
 @utils.cli_wrapper
 def hifv_analyzestokescubes(vis=None):
-
     """Characterize stokes IQUV flux densities as a function of frequency for VLASS Coarse Cube (CC) images.
 
     Returns:
@@ -18,8 +17,6 @@ def hifv_analyzestokescubes(vis=None):
         >>> hifv_analyzestokescubes()
 
     """
-
-
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
     #  needed beyond this point.                                             #

@@ -7,8 +7,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hif_checkproductsize(vis=None, maxcubesize=None, maxcubelimit=None, maxproductsize=None, maximsize=None,
                          calcsb=None, parallel=None):
-
-    """Check imaging product size
+    """Check imaging product size.
 
     Check interferometry imaging product size and try to mitigate to maximum
     allowed values. The task implements a mitigation cascade computing the largest
@@ -39,8 +38,6 @@ def hif_checkproductsize(vis=None, maxcubesize=None, maxcubelimit=None, maxprodu
         >>> hif_checkproductsize(maxcubesize=40.0, maxcubelimit=60.0, maxproductsize=350.0)
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

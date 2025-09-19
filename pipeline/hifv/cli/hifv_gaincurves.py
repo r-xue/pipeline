@@ -5,7 +5,6 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifv_gaincurves(vis=None, caltable=None):
-
     """Runs gencal in gc mode.
 
     Args:
@@ -22,8 +21,6 @@ def hifv_gaincurves(vis=None, caltable=None):
         >>> hifv_gaincurves()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

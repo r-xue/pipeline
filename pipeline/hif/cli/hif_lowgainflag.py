@@ -7,7 +7,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hif_lowgainflag(vis=None, intent=None, spw=None, refant=None, flag_nmedian=None, fnm_lo_limit=None,
                     fnm_hi_limit=None, tmef1_limit=None):
-    """Flag antennas with low or high gain
+    """Flag antennas with low or high gain.
 
     Deviant antennas are detected by outlier analysis of a view showing their
     amplitude gains, pre-applying a temporary bandpass and phase solution.

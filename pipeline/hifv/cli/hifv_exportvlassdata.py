@@ -6,7 +6,6 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifv.tasks.exportvlassdata.exportvlassdata.ExportvlassdataInputs.__init__
 @utils.cli_wrapper
 def hifv_exportvlassdata(vis=None):
-
     """Export Image data from QL, SE, and Coarse Cube modes of VLASS Survey.
 
     Returns:
@@ -18,8 +17,6 @@ def hifv_exportvlassdata(vis=None):
         >>> hifv_exportvlassdata()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

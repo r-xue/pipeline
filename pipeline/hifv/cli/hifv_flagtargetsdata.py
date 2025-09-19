@@ -6,7 +6,6 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifv.tasks.flagging.flagtargetsdata.FlagtargetsdataInputs.__init__
 @utils.cli_wrapper
 def hifv_flagtargetsdata(vis=None, template=None, filetemplate=None, flagbackup=None):
-
     """Apply a flagtemplate to target data prior to running imaging pipeline tasks.
 
     Returns:
@@ -18,8 +17,6 @@ def hifv_flagtargetsdata(vis=None, template=None, filetemplate=None, flagbackup=
         >>> hifv_flagtargetsdata()
 
     """
-
-
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
     #  needed beyond this point.                                             #

@@ -5,7 +5,6 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hifv_opcal(vis=None, caltable=None):
-
     """Runs gencal in opac mode.
 
     Args:
@@ -20,8 +19,6 @@ def hifv_opcal(vis=None, caltable=None):
         >>> hifv_opcal()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

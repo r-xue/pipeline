@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifa.tasks.lock_refant.lock_refant.LockRefAntInputs.__init__
 @utils.cli_wrapper
 def hifa_lock_refant(vis=None):
-    """Lock reference antenna list
+    """Lock reference antenna list.
 
     hifa_lock_refant marks the reference antenna list as "locked" for specified
     measurement sets, preventing modification of the refant list by subsequent

@@ -7,7 +7,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifa_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=None, antposfile=None,
                 threshold=None, snr=None, search=None):
-    """Derive an antenna position calibration table
+    """Derive an antenna position calibration table.
 
     The hifa_antpos task corrects the antenna positions recorded in the ASDMs using
     updated antenna position calibration information determined after the

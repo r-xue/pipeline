@@ -7,7 +7,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifa_bpsolint(vis=None, field=None, intent=None, spw=None, phaseupsnr=None, minphaseupints=None, evenbpints=None,
                   bpsnr=None, minbpsnr=None, minbpnchan=None, hm_nantennas=None, maxfracflagged=None):
-    """Compute optimal bandpass calibration solution intervals
+    """Compute optimal bandpass calibration solution intervals.
 
     The optimal bandpass phaseup time and frequency solution intervals required
     to achieve the required signal-to-noise ratio is estimated based on nominal
@@ -91,7 +91,6 @@ def hifa_bpsolint(vis=None, field=None, intent=None, spw=None, phaseupsnr=None, 
     #  needed beyond this point.                                             #
     #                                                                        #
     ##########################################################################
-
     # create a dictionary containing all the arguments given in the
     # constructor
     all_inputs = vars()

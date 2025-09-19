@@ -11,8 +11,7 @@ def hifv_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
                   online=None, fileonline=None, template=None,
                   filetemplate=None, hm_tbuff=None, tbuff=None,
                   flagbackup=None):
-
-    """Do basic deterministic flagging of a list of MeasurementSets.
+    """Do basic deterministic flagging.
 
     The hifv_flagdata task performs basic flagging operations on a list of MeasurementSets including:
 
@@ -40,8 +39,6 @@ def hifv_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
         >>> hifv_flagdata(scan=True intent='*BANDPASS*')
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

@@ -8,7 +8,7 @@ from . import utils
 def h_importdata(vis=None, session=None, asis=None, process_caldevice=None, overwrite=None,
                  nocopy=None, bdfflags=None, lazy=None, ocorr_mode=None, createmms=None):
 
-    """Imports data into the interferometry pipeline
+    """Imports data into the interferometry pipeline.
 
     The h_importdata task loads the specified visibility data into the pipeline
     context unpacking and / or converting it as necessary.

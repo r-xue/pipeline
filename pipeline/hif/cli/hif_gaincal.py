@@ -8,8 +8,7 @@ import pipeline.h.cli.utils as utils
 def hif_gaincal(vis=None, caltable=None, field=None, intent=None, spw=None, antenna=None, hm_gaintype=None,
                 calmode=None, solint=None, combine=None, refant=None, refantmode=None, solnorm=None, minblperant=None,
                 minsnr=None, smodel=None, splinetime=None, npointaver=None, phasewrap=None):
-
-    """Determine temporal gains from calibrator observations
+    """Determine temporal gains from calibrator observations.
 
     The complex gains are derived from the data column (raw data) divided by the
     model column (usually set with hif_setjy). The gains are obtained for a
@@ -32,8 +31,6 @@ def hif_gaincal(vis=None, caltable=None, field=None, intent=None, spw=None, ante
         >>> hif_gaincal()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

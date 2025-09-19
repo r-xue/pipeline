@@ -13,9 +13,7 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
                    hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, tlimit=None, drcorrect=None, masklimit=None,
                    cleancontranges=None, calcsb=None, hm_mosweight=None, overwrite_on_export=None, vlass_plane_reject_im=None,
                    parallel=None):
-    """Compute clean map.
-
-    Compute clean results from a list of specified targets.
+    """Compute clean results from a list of specified targets.
 
     Returns:
         The results object for the pipeline task is returned.

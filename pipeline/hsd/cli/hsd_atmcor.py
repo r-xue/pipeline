@@ -7,7 +7,6 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hsd_atmcor(atmtype=None, dtem_dh=None, h0=None,
                infiles=None, antenna=None, field=None, spw=None, pol=None):
-
     """Apply offline ATM correction to the data.
 
     The hsd_atmcor task provides the capability of offline correction of
@@ -38,8 +37,6 @@ def hsd_atmcor(atmtype=None, dtem_dh=None, h0=None,
         >>> hsd_atmcor(atmtype=[1, 2])
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

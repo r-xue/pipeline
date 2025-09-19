@@ -6,7 +6,6 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifv.tasks.flagging.checkflag.CheckflagInputs.__init__
 @utils.cli_wrapper
 def hifv_checkflag(vis=None, checkflagmode=None, growflags=None, overwrite_modelcol=None):
-
     """Run RFI flagging using flagdata in various modes.
 
     Returns:
@@ -18,8 +17,6 @@ def hifv_checkflag(vis=None, checkflagmode=None, growflags=None, overwrite_model
         >>> hifv_checkflag()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

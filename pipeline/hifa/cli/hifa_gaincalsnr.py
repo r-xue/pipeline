@@ -7,7 +7,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifa_gaincalsnr(vis=None, field=None, intent=None, spw=None, bwedgefrac=None, hm_nantennas=None,
                     maxfracflagged=None):
-    """Compute gaincal signal-to-noise ratios per spw
+    """Compute gaincal signal-to-noise ratios per spw.
 
     The gaincal solution signal-to-noise is determined as follows:
 

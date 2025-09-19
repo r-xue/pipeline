@@ -18,8 +18,6 @@ def hifv_syspower(vis=None, clip_sp_template=None, antexclude=None, apply=None, 
         >>> hifv_syspower()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

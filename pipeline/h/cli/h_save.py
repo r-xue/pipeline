@@ -4,8 +4,7 @@ from . import utils
 
 
 def h_save(filename=None):
-
-    """Save the pipeline state to disk
+    """Save the pipeline state to disk.
 
     h_save saves the current pipeline state to disk using a unique filename.
     If no name is supplied one is generated automatically from a combination
@@ -28,6 +27,5 @@ def h_save(filename=None):
         >>> h_save(filename='savestate_1')
 
     """
-
     context = utils.get_context()
     context.save(filename)

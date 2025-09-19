@@ -8,9 +8,7 @@ from . import utils
 def h_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, parang=None, applymode=None, flagbackup=None,
                flagsum=None, flagdetailedsum=None, parallel=None):
 
-    """Apply the calibration(s) to the data
-
-    Apply precomputed calibrations to the data.
+    """Apply precomputed calibrations to the data.
 
     h_applycal applies the precomputed calibration tables stored in the pipeline
     context to the set of visibility files using predetermined field and

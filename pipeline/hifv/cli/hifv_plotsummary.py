@@ -6,7 +6,6 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifv.tasks.plotsummary.plotsummary.PlotSummaryInputs.__init__
 @utils.cli_wrapper
 def hifv_plotsummary(vis=None):
-
     """Create pipeline summary plots.
 
     Returns:
@@ -18,8 +17,6 @@ def hifv_plotsummary(vis=None):
         >>> hifv_plotsummary()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

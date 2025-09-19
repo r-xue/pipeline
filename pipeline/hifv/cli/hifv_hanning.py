@@ -6,10 +6,7 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifv.tasks.hanning.hanning.HanningInputs.__init__
 @utils.cli_wrapper
 def hifv_hanning(vis=None, maser_detection=None, spws_to_smooth=None):
-
     """Hanning smoothing on a dataset.
-
-    The hifv_hanning task will hanning smooth a VLA dataset.
 
     Returns:
         The results object for the pipeline task is returned.
@@ -24,8 +21,6 @@ def hifv_hanning(vis=None, maser_detection=None, spws_to_smooth=None):
         >>> hifv_hanning(maser_detection=False, spws_to_smooth='2~5')
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

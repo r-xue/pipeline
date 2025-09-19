@@ -6,8 +6,7 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifv.tasks.mstransform.mstransform.VlaMstransformInputs.__init__
 @utils.cli_wrapper
 def hifv_mstransform(vis=None, outputvis=None, outputvis_for_line=None, field=None, intent=None, spw=None, spw_line=None, chanbin=None, timebin=None, omit_contline_ms=None):
-
-    """Create new MeasurementSets for science target imaging
+    """Create new MeasurementSets for science target imaging.
 
     Create new MeasurementSets for imaging from the corrected column of the input
     MeasurementSet via calling mstransform with all data selection parameters.
@@ -34,8 +33,6 @@ def hifv_mstransform(vis=None, outputvis=None, outputvis_for_line=None, field=No
         >>> hifv_mstransform(intent='PHASE,BANDPASS')
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

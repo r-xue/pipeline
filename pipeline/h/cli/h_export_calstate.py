@@ -2,7 +2,7 @@ from . import utils
 
 
 def h_export_calstate(filename=None, state=None):
-    """Save the pipeline calibration state to disk
+    """Save the pipeline calibration state to disk.
 
     h_export_calstate saves the current pipeline calibration state to disk
     in the form of a set of equivalent applycal calls.

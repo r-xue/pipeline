@@ -7,10 +7,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hif_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, parang=None, applymode=None, calwt=None,
                  flagbackup=None, flagsum=None, flagdetailedsum=None, parallel=None):
-
-    """Apply the calibration(s) to the data
-
-    Apply precomputed calibrations to the data.
+    """Apply precomputed calibrations to the data.
 
     hif_applycal applies the precomputed calibration tables stored in the pipeline
     context to the set of visibility files using predetermined field and
@@ -28,8 +25,6 @@ def hif_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, para
         >>> hif_applycal (intent='TARGET')
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

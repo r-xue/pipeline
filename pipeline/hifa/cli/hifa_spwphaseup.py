@@ -9,7 +9,7 @@ def hifa_spwphaseup(vis=None, caltable=None, field=None, intent=None, spw=None, 
                     minfracmaxbw=None, samebb=None, phasesnr=None, intphasesnr=None, intphasesnrmin=None,
                     phaseupmaxsolint=None, bwedgefrac=None, hm_nantennas=None, maxfracflagged=None, combine=None,
                     refant=None, minblperant=None, minsnr=None, unregister_existing=None):
-    """Compute phase calibration spw map and per spw phase offsets
+    """Compute phase calibration spw map and per spw phase offsets.
 
     The spw map for phase calibration is computed. Phase offsets as a function of
     spectral window are computed using high signal-to-noise calibration observations.

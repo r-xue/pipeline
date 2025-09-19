@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifa.tasks.unlock_refant.unlock_refant.UnlockRefAntInputs.__init__
 @utils.cli_wrapper
 def hifa_unlock_refant(vis=None):
-    """Unlock reference antenna list
+    """Unlock reference antenna list.
 
     hifa_unlock_refant marks the reference antenna list as "unlocked" for
     specified measurement sets, allowing the list to be modified by subsequent

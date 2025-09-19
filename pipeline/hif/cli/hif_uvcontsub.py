@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hif.tasks.uvcontsub.uvcontsub.UvcontSubInputs.__init__
 @utils.cli_wrapper
 def hif_uvcontsub(vis=None, field=None, intent=None, spw=None, fitorder=None, parallel=None):
-    """Fit and subtract continuum from the data
+    """Fit and subtract continuum from the data.
 
     hif_uvcontsub fits the continuum for the frequency ranges given in the cont.dat
     file, subtracts that fit from the uv data and generates a new set of MSes
@@ -35,8 +35,6 @@ def hif_uvcontsub(vis=None, field=None, intent=None, spw=None, fitorder=None, pa
         >>> hif_uvcontsub(fitorder={'3C279': {'15': 1, '17': 2}, 'M82': {'13': 2}})
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

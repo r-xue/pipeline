@@ -7,7 +7,6 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_circfeedpolcal(vis=None, Dterm_solint=None, refantignore=None, leakage_poltype=None, mbdkcross=None,
                         clipminmax=None, refant=None, run_setjy=None):
-
     """Perform polarization calibration for VLA circular feeds.
 
     Only validated for VLA sky survey data in S-band continuum mode with 3C138
@@ -23,8 +22,6 @@ def hifv_circfeedpolcal(vis=None, Dterm_solint=None, refantignore=None, leakage_
         >>> hifv_circfeedpolcal()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

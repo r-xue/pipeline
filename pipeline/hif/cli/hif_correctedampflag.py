@@ -10,7 +10,6 @@ def hif_correctedampflag(
         antpossig=None, tmantint=None,
         tmint=None, tmbl=None, antblnegsig=None,
         antblpossig=None, relaxed_factor=None, niter=None):
-
     """Flag corrected - model amplitudes based on calibrators.
 
     This task computes the flagging heuristics on a calibrator by calling hif_correctedampflag
@@ -31,8 +30,6 @@ def hif_correctedampflag(
         >>> hif_correctedampflag()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

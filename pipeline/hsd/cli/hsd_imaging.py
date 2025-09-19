@@ -6,7 +6,6 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hsd.tasks.imaging.imaging.SDImagingInputs.__init__
 @utils.cli_wrapper
 def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None):
-
     """Generate single dish images.
 
     The hsd_imaging task generates single dish images per antenna as
@@ -30,8 +29,6 @@ def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None):
         >>> hsd_imaging(mode='ampcal', field='*Sgr*,M100', spw='17,19')
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
