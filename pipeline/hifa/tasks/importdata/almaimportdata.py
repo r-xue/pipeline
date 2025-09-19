@@ -62,13 +62,13 @@ class ALMAImportDataInputs(importdata.ImportDataInputs):
         """Initialize Inputs.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
 
             vis: List of visibility data files. These may be ASDMs, tar
                 files of ASDMs, MSes, or tar files of MSes. If ASDM files
                 are specified, they will be converted to MS format.
 
-                Example: vis=['X227.ms', 'asdms.tar.gz']
+                Example: ``vis=['X227.ms', 'asdms.tar.gz']``
 
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
@@ -82,19 +82,19 @@ class ALMAImportDataInputs(importdata.ImportDataInputs):
             session: List of session names, one for each visibility dataset,
                 used to group the MSes into sessions.
 
-                Example: session=['session_1', 'session_2']
+                Example: ``session=['session_1', 'session_2']``
 
             overwrite: Overwrite existing files on import; defaults to False.
                 When converting ASDM to MS, if overwrite=False and the MS
                 already exists in the output directory, then this existing
                 MS dataset will be used instead.
 
-                Example: overwrite=True
+                Example: ``overwrite=True``
 
             nocopy: Disable copying of MS to working directory; defaults to
                 False.
 
-                Example: nocopy=True
+                Example: ``nocopy=True``
 
             bdfflags: Apply BDF flags on import.
 
@@ -111,11 +111,11 @@ class ALMAImportDataInputs(importdata.ImportDataInputs):
             datacolumns: Dictionary defining the data types of existing columns.
                 The format is:
 
-                {'data': 'data type 1'}
+                ``{'data': 'data type 1'}``
 
                 or
 
-                {'data': 'data type 1', 'corrected': 'data type 2'}.
+                ``{'data': 'data type 1', 'corrected': 'data type 2'}``.
 
                 For ASDMs the data type can only be RAW and one
                 can only specify it for the data column.
@@ -143,8 +143,8 @@ class ALMAImportDataInputs(importdata.ImportDataInputs):
                 non-polarisation processing.
 
             parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
-                options: 'automatic', 'true', 'false', True, False
-                default: None (equivalent to False)
+                options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
+                default: ``None`` (equivalent to ``False``)
 
         """
         super().__init__(context, vis=vis, output_dir=output_dir, asis=asis,

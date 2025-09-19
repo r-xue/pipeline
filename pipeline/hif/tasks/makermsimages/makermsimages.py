@@ -61,12 +61,12 @@ class MakermsimagesInputs(vdp.StandardInputs):
         """Initialize Inputs.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
 
             vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSs, or tar files of MSs, If ASDM files are specified, they will be
                 converted  to MS format.
 
-                Example: vis=['X227.ms', 'asdms.tar.gz']
+                Example: ``vis=['X227.ms', 'asdms.tar.gz']``
 
         """
         super().__init__()

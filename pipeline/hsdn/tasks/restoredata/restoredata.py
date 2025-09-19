@@ -43,11 +43,11 @@ class NRORestoreDataInputs(restoredata.RestoreDataInputs):
             vis: List of raw visibility data files to be restored.
                 Assumed to be in the directory specified by rawdata_dir.
 
-                Example: vis=['mg2.ms']
+                Example: ``vis=['mg2.ms']``
 
             caltable: Name of output gain calibration tables.
 
-                Example: caltable='ngc5921.gcal'
+                Example: ``caltable='ngc5921.gcal'``
 
             reffile: Path to a file containing scaling factors between beams.
                 The format is equals to jyperk.csv with five fields:
@@ -81,26 +81,26 @@ class NRORestoreDataInputs(restoredata.RestoreDataInputs):
                 If no file name is specified or specified file doesn't exist,
                 all the factors are set to 1.0.
 
-                Example: reffile='', reffile='nroscalefile.csv'
+                Example: ``reffile=''``, ``reffile='nroscalefile.csv'``
 
             products_dir: Name of the data products directory.
 
-                Example: products_dir='myproductspath'
+                Example: ``products_dir='myproductspath'``
 
-                Default: None (equivalent to '../products')
+                Default: ``None`` (equivalent to ``'../products'``)
 
             copytoraw: Copy calibration and flagging tables to
                 raw data directory.
 
-                Example: copytoraw=False
+                Example: ``copytoraw=False``
 
-                Default: None (equivalent to True)
+                Default: ``None`` (equivalent to ``True``)
 
             rawdata_dir: Name of the raw data directory.
 
-                Example: rawdata_dir='myrawdatapath'
+                Example: ``rawdata_dir='myrawdatapath'``
 
-                Default: None (equivalent to '../rawdata')
+                Default: ``None`` (equivalent to ``'../rawdata'``)
 
             output_dir: the working directory for the restored data
 
@@ -108,12 +108,12 @@ class NRORestoreDataInputs(restoredata.RestoreDataInputs):
                 Two analysis modes, time-domain analysis ('time') and
                 direction analysis ('direction'), are available.
 
-                Default: None (equivalent to 'time')
+                Default: ``None`` (equivalent to ``'time'``)
 
         """
-        super(NRORestoreDataInputs, self).__init__(context, vis=vis, products_dir=products_dir,
-                                                   copytoraw=copytoraw, rawdata_dir=rawdata_dir,
-                                                   output_dir=output_dir)
+        super().__init__(context, vis=vis, products_dir=products_dir,
+                         copytoraw=copytoraw, rawdata_dir=rawdata_dir,
+                         output_dir=output_dir)
 
         self.caltable = caltable
         self.reffile = reffile

@@ -16,8 +16,6 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None, hm_imsize=None, h
                 parallel=None):
     """Determine and apply self-calibration with the science target data.
 
-    Determine and apply self-calibration with the science target data
-
     Returns:
         The results object for the pipeline task is returned.
 

@@ -155,7 +155,7 @@ class ValidateLineResults(common.SingleDishResults):
         No specific merge operation is done.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
         """
         super(ValidateLineResults, self).merge_with_context(context)
 
