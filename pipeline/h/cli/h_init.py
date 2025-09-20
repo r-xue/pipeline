@@ -6,7 +6,6 @@ from . import cli, utils
 
 @utils.cli_wrapper
 def h_init(loglevel='info', plotlevel='default', weblog=True, processing_intents=dict()):
-
     """Initialize the pipeline.
 
     The h_init task initializes the pipeline.
@@ -39,9 +38,6 @@ def h_init(loglevel='info', plotlevel='default', weblog=True, processing_intents
         >>> h_init()
 
     """
-
-    # TBD: CASA PARAMETER CHECKS BEFORE CREATING A CONTEXT ?
-
     # Create the pipeline and store the Pipeline object in the stack
     pipeline = launcher.Pipeline(loglevel=loglevel, plotlevel=plotlevel, processing_intents=processing_intents)
     cli.stack[cli.PIPELINE_NAME] = pipeline
