@@ -8,6 +8,7 @@ import subprocess
 import sys
 import setuptools
 from setuptools.command.build_py import build_py
+from setuptools.command.develop import develop
 
 ENCODING = 'utf-8'  # locale.getpreferredencoding()
 PIPELINE_PACKAGES = ['h', 'hif', 'hifa', 'hifv', 'hsd', 'hsdn']
@@ -231,6 +232,8 @@ class GenerateRecipeCommand(distutils.cmd.Command):
         command = shlex.split(command_string)
         build_path = os.path.dirname(os.path.realpath(__file__))
         recipe_dir = os.path.join(build_path, 'pipeline', 'recipes')
+        self.announce(f'Creating recipe script: {recipe_dir}',
+                      level=distutils.log.INFO)
         ret = subprocess.run(command, cwd=recipe_dir)
         if ret.returncode != 0:
             RuntimeWarning('Recipe generation failed. Recipe scripts may not be included.')
@@ -243,6 +246,12 @@ class PipelineBuildPyCommand(build_py):
         self.run_command('minify_css')
         self.run_command('minify_js')
         self.run_command('version')
+
+
+class PipelineDevelopCommand(develop):
+    def run(self):
+        self.run_command('generate_recipe')
+        super().run()
 
 
 # The pipeline.XXX.cli packages are not recognised by find_packages as they do
@@ -264,6 +273,7 @@ setuptools.setup(
     description='CASA pipeline',
     cmdclass={
         'build_py': PipelineBuildPyCommand,
+        'develop': PipelineDevelopCommand,
         'generate_recipe': GenerateRecipeCommand,
         'minify_js': MinifyJSCommand,
         'minify_css': MinifyCSSCommand,
