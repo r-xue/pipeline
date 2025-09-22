@@ -2,7 +2,7 @@ import collections
 import distutils.cmd
 import distutils.log
 import os
-import re
+import shlex
 import shutil
 import subprocess
 import sys
