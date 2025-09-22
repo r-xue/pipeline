@@ -585,7 +585,7 @@ class SerialTimeGaincal(gtypegaincal.GTypeGaincal):
             # would not get a phase-up solution here.
             elif "DIFFGAINSRC" in fld_intents:
                 for dg_intent in {"DIFFGAINREF", "DIFFGAINSRC"}:
-                    combine, gaintype, interp, solint, spwmap = self._get_phasecal_params(dg_intent, field)
+                    combine, gaintype, interp, solint, spwmap = self._get_phasecal_params(dg_intent, field.name)
                     phasecal_results.append(
                         self._do_calibrator_phasecal(field=field.name, intent=dg_intent, spw=inputs.spw,
                                                      gaintype=gaintype, combine=combine, solint=solint, minsnr=minsnr,
