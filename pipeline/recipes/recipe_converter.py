@@ -13,6 +13,7 @@ Usage:
 
 """
 import argparse
+import functools
 import glob
 import logging
 import os
@@ -83,6 +84,18 @@ def get_recipe_dir() -> str:
     recipe_dir = os.path.abspath(recipe_dir)
     LOG.debug(f'recipe directory is {recipe_dir}')
     return recipe_dir
+
+
+def insert_pipeline_path(f):
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        pipeline_src = f'{get_recipe_dir()}/../../'
+        sys.path.insert(0, pipeline_src)
+        try:
+            return f(*args, **kwargs)
+        finally:
+            sys.path.pop(0)
+    return wrapper
 
 
 def get_cli_dir(category: str) -> str:
@@ -156,6 +169,7 @@ def parse_parameter(node: DOM) -> tuple[str, str]:
     return get_data(key_element), get_data(value_element)
 
 
+@insert_pipeline_path
 def parse_command(node: DOM) -> dict:
     """Parse DOM object into dictionary.
 
@@ -201,7 +215,6 @@ def parse_command(node: DOM) -> dict:
     note = get_data(comment_elements[0]) if comment_elements else ''
     task_property['note'] = note
 
-    sys.path.insert(0, f'{get_recipe_dir()}/../..')
     import pipeline.cli as cli
 
     try:
@@ -280,6 +293,7 @@ def get_comment(task_name: str, config: dict) -> str:
     return comment
 
 
+@insert_pipeline_path
 def get_execution_command(task_name: str, config: dict) -> str:
     """Generate execution command from given task name and configuration.
 
@@ -305,7 +319,6 @@ def get_execution_command(task_name: str, config: dict) -> str:
 
     args = ''
     if parameter:
-        sys.path.insert(0, f'{get_recipe_dir()}/../..')
         import pipeline.extern.XmlObjectifier as XmlObjectifier
 
         def construct_arg(key, value):
