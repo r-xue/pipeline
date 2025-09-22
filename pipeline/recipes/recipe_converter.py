@@ -395,11 +395,12 @@ def to_procedure(commands: list[dict]) -> str:
     return '\n\n'.join([c2p(command) for command in commands])
 
 
-def export(func_name: str, commands: list[dict], script_name: str, plotlevel_summary: bool = False) -> None:
+@insert_pipeline_path
+def export(recipe_name: str, commands: list[dict], script_name: str, plotlevel_summary: bool = False) -> None:
     """Export parsed information as a Python script.
 
     Args:
-        func_name: Name of the function defined in the Python script.
+        recipe_name: Name of the function defined in the Python script.
         commands: List of pipeline tasks and their custom parameters.
         script_name: Output script name.
         plotlevel_summary: Set True to initialize pipeline with "summary" plotlevel.
@@ -407,9 +408,18 @@ def export(func_name: str, commands: list[dict], script_name: str, plotlevel_sum
     template = string.Template(TEMPLATE_TEXT)
     procedure = to_procedure(commands)
     init_args = "plotlevel='summary'" if plotlevel_summary else ''
+
+    from pipeline.infrastructure.executeppr import knownProcessingIntents
+    processing_intents = dict(
+        (k, True) for k, v in knownProcessingIntents.items()
+        if recipe_name in v
+    )
+    if processing_intents:
+        init_args = ', '.join([init_args, f'processing_intents={processing_intents}']).strip(', ')
+
     with open(script_name, 'w') as f:
         f.write(template.safe_substitute(
-            func_name=func_name,
+            func_name=recipe_name,
             procedure=procedure,
             init_args=init_args
         ))
