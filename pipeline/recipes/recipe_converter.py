@@ -21,8 +21,6 @@ import string
 import sys
 import xml.dom.minidom as minidom
 
-import pipeline.cli as cli
-import pipeline.extern.XmlObjectifier as XmlObjectifier
 
 # logger
 logging.basicConfig(level=logging.INFO, stream=sys.stderr)
@@ -203,6 +201,9 @@ def parse_command(node: DOM) -> dict:
     note = get_data(comment_elements[0]) if comment_elements else ''
     task_property['note'] = note
 
+    sys.path.insert(0, f'{get_recipe_dir()}/../..')
+    import pipeline.cli as cli
+
     try:
         docstring = cli.get_pipeline_task_with_name(command).__doc__
     except Exception:
@@ -304,6 +305,9 @@ def get_execution_command(task_name: str, config: dict) -> str:
 
     args = ''
     if parameter:
+        sys.path.insert(0, f'{get_recipe_dir()}/../..')
+        import pipeline.extern.XmlObjectifier as XmlObjectifier
+
         def construct_arg(key, value):
             cast_value = XmlObjectifier.castType(value)
 
