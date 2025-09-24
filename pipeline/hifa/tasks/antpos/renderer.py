@@ -67,8 +67,8 @@ def make_antpos_table(context, results, sort_by=lambda x: getattr(x, 'antenna'),
             xoffset = '%0.2e' % item[1][0]
             yoffset = '%0.2e' % item[1][1]
             zoffset = '%0.2e' % item[1][2]
-            total_offset = '%0.2f' % item[1][3]
-            total_offset_in_wavelengths = '%0.2f' % item[1][4]
+            total_offset = '%0.2e' % item[1][3]
+            total_offset_in_wavelengths = '%0.2e' % item[1][4]
             tr = AntposTR(vis_cell, antname, xoffset, yoffset, zoffset, total_offset, total_offset_in_wavelengths)
             rows.append(tr)
 

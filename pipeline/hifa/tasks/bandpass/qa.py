@@ -413,16 +413,21 @@ def _fraction_of_impacted_spws(spw_dict: dict, caltable: str, ms: MeasurementSet
     # Only include FDM spws in the calculation as the heuristic is not evaluated for other modes
     fdm_spws = [spw for spw in spws_in_caltable if 'FDM' in ms.get_spectral_window(spw).type]
 
-    total_fdm_spws = len(fdm_spws)
+    # Do not include any spws that weren't evaluated as part of the heuristic
+    # spw_dict contains FDM spws from the caltable that either had subband issues detected
+    # or were unevaluated (binning/bandwidth)
+    unevaluated_spws = [spw for spw in spw_dict if spw_dict[spw]['failure'] in ("binning", "bandwidth")]
+    relevant_spws = list(set(fdm_spws) - set(unevaluated_spws))
 
-    if total_fdm_spws == 0:
+    total_relevant_spws = len(relevant_spws)
+
+    if total_relevant_spws == 0:
         return 0.0
 
-    # Exclude spws that didn't go through the heuristic due to high spectral smoothing
-    heuristics_spws = [spw for spw in spw_dict if spw_dict[spw]['failure'] not in ("binning", "bandwidth")] 
-    spws_impacted = len(heuristics_spws)
+    # Select only spws that went through the heuristic (spws with binning or bandwidth 'failures' were excluded)
+    spws_impacted = [spw for spw in spw_dict if spw_dict[spw]['failure'] not in ("binning", "bandwidth")]
 
-    return spws_impacted/total_fdm_spws
+    return len(spws_impacted)/total_relevant_spws
 
 
 def _calc_subband_spw_failures(spw_dict: dict, ms: MeasurementSet, caltable: str) -> pqa.QAScore | None:
@@ -513,14 +518,14 @@ def _calc_subband_qa_score(spw_dict: dict, ms: MeasurementSet, caltable: str) ->
     if f_spw <= 0.0:
         score = 1.0
         shortmsg = "No correlator subband issues detected"
-        longmsg = "No correlator subband issues detected"
+        longmsg = f"{ms.basename}: No correlator subband issues detected"
     else:
         # See PIPE-2103 for more information
         qa_max = 0.65
         qa_min = 0.5
 
         # Check if reference spw is impacted
-        ref_spw_impacted = ms.get_representative_source_spw() in spw_dict
+        ref_spw_impacted = ms.get_representative_source_spw()[1] in spw_dict
 
         if ref_spw_impacted:
             qa_ref = 0.15
@@ -576,7 +581,7 @@ def _subband_handler(context: Context, result: BandpassResults) -> list[pqa.QASc
     if "ALMA_BASELINE" not in ms.correlator_name or not result.final:
         not_blc_qa_score = pqa.QAScore(
             1.0,
-            longmsg="No BLC FDM bandpass tables. Bandpass subband QA is not evaluated.",
+            longmsg=f"{ms.basename}: No BLC FDM bandpass tables. Bandpass subband QA is not evaluated.",
             shortmsg="Bandpass subband QA not evaluated",
             vis=vis,
             origin=pqa.QAOrigin(
