@@ -26,6 +26,13 @@ if TYPE_CHECKING:
     from . launcher import Context
 
 
+# Dictionary with known processing intents and their possible recipe
+# names. The latter is fragile, but initially necessary until the PPR
+# contains the actual intents.
+knownProcessingIntents = {'INTERFEROMETRY_FULL_POL_CUBE_IMAGING': ['hifa_polcalimage', 'hifa_polimage'],
+                          'INTERFEROMETRY_HETEROGENEOUS_IMAGING': []}
+
+
 def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'breakpoint', bpaction: str = 'ignore',
                loglevel: str = 'info', plotlevel: str = 'default', interactive: bool = True) -> None:
     """
@@ -585,12 +592,6 @@ def _getProcessingIntents(intentsDict: dict, procedureName: str) -> dict:
     Returns:
         processingIntents: The dictionary with the real processing intents.
     """
-
-    # Dictionary with known processing intents and their possible recipe
-    # names. The latter is fragile, but initially necessary until the PPR
-    # contains the actual intents.
-    knownProcessingIntents = {'INTERFEROMETRY_FULL_POL_CUBE_IMAGING': ['hifa_polcalimage', 'hifa_polimage'],
-                              'INTERFEROMETRY_HETEROGENEOUS_IMAGING': []}
 
     # Initial filtering of PPR intents
     processingIntents = dict((k, v) for (k, v) in intentsDict.items() if k in knownProcessingIntents)
