@@ -12,7 +12,8 @@ def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None):
     etc.) is automatically determined based on meta data such as
     antenna diameter, map extent, etc.
 
-    Note that generated images are always in LSRK frame.
+    Generated images are either in REST frame (ephemeris sources)
+    or in LSRK frame (others).
 
     Returns:
         The results object for the pipeline task is returned.
