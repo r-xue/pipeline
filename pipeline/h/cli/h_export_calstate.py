@@ -17,7 +17,7 @@ def h_export_calstate(filename=None, state=None):
     call) or the applied calibration state (calibrations that were previously
     applied to the MeasurementSet using hif_applycal). The default is to export
     the active calibration state.
-    
+
     Args:
         filename: Name for saved calibration state.
 

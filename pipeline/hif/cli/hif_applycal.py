@@ -11,9 +11,6 @@ def hif_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, para
     context to the set of visibility files using predetermined field and
     spectral window maps and default values for the interpolation schemes.
 
-    Users can interact with the pipeline calibration state using the tasks
-    h_export_calstate and h_import_calstate.
-
     Returns:
         The results object for the pipeline task is returned.
 

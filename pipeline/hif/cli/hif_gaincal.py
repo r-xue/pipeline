@@ -15,10 +15,6 @@ def hif_gaincal(vis=None, caltable=None, field=None, intent=None, spw=None, ante
     Good candidate reference antennas can be determined using the hif_refant
     task.
 
-    Previous calibrations that have been stored in the pipeline context are
-    applied on the fly. Users can interact with these calibrations via the
-    h_export_calstate and h_import_calstate tasks.
-
     Returns:
         The results object for the pipeline task is returned.
 
