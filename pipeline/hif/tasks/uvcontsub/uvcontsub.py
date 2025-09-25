@@ -285,8 +285,8 @@ class SerialUVcontSub(basetask.StandardTaskTemplate):
             result.line_mses.extend(observing_run.measurement_sets)
 
         return result
-    
-    def _skip_uvcontsub(self):
+
+    def _skip_uvcontsub(self) -> bool:
         """Check if we should skip the continuum finding heuristics.
 
         Note: this is only relevant for VLA to check if we should proceed with VLA cube imaging sequence

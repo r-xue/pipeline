@@ -413,7 +413,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         # Check if this stage has been disabled for vla (never set for ALMA)
         if self._skip_mfs_and_cube_imaging():
             result.set_info({
-                'msg': 'Cube imaging stages have been disabled due the absence of data with suitable Datatype.',
+                'msg': 'Cube imaging stages have been disabled due to the absence of data in suitable Datatypes.',
                 'intent': inputs.intent,
                 'specmode': inputs.specmode,
                 'stokes': inputs.stokes,
@@ -1723,7 +1723,7 @@ class MakeImList(basetask.StandardTaskTemplate):
 
         return drcorrect, maxthreshold
 
-    def _skip_mfs_and_cube_imaging(self):
+    def _skip_mfs_and_cube_imaging(self) -> bool:
         """Check if we can proceed with the cube imaging planning.
 
         Note: this is only relevant for VLA to check if we should proceed with VLA cube imaging

@@ -215,7 +215,7 @@ class CheckProductSize(basetask.StandardTaskTemplate):
     def analyse(self, result):
         return result
 
-    def _skip_cube_mitigation(self):
+    def _skip_cube_mitigation(self) -> bool:
         """Check if we need to skip the cube imaging migitation heuristics.
 
         Note: this is only relevant for VLA to detect if we can proceed with VLA cube imaging

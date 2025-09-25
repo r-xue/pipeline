@@ -470,7 +470,7 @@ class FindCont(basetask.StandardTaskTemplate):
     def analyse(self, result):
         return result
 
-    def _skip_findcont(self):
+    def _skip_findcont(self) -> bool:
         """Check if we can proceed with the continuum finding heuristics.
 
         Note: this is only relevant for VLA to detect if we should proceed with VLA cube imaging sequence
