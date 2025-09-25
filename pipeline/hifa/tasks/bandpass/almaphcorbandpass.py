@@ -533,7 +533,7 @@ class SerialALMAPhcorBandpass(bandpassworker.BandpassWorker):
             # For all other datasets, restrict the refinement to the SpWs of a
             # single SpectralSpec. Start with retrieving mapping of SpectralSpec
             # to science spectral windows.
-            spspec_to_spwid = utils.get_spectralspec_to_spwid_map(inputs.ms.get_spectral_windows())
+            spspec_to_spwid = utils.get_spectralspec_to_spwid_map(inputs.ms.get_spectral_windows(inputs.spw))
 
             # If there is only 1 SpectralSpec, then use that one.
             if len(spspec_to_spwid) == 1:
