@@ -22,7 +22,6 @@ from pipeline.infrastructure import exceptions
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.pipelineqa import TargetDataSelection
 from pipeline.infrastructure.utils.math import round_up
-import pipeline.infrastructure.sessionutils as sessionutils
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -526,8 +525,7 @@ class SerialALMAPhcorBandpass(bandpassworker.BandpassWorker):
             )
             spwindex = [
                 snr_result.spwids.index(s.id)
-                for s in inputs.ms.get_spectral_windows(intent='TARGET')
-                if s.id in snr_result.spwids
+                for s in inputs.ms.get_spectral_windows(inputs.spw, intent='TARGET')
             ]
         else:
             # For all other datasets, restrict the refinement to the SpWs of a
@@ -537,9 +535,7 @@ class SerialALMAPhcorBandpass(bandpassworker.BandpassWorker):
 
             # If there is only 1 SpectralSpec, then use that one.
             if len(spspec_to_spwid) == 1:
-                spwindex = [
-                    snr_result.spwids.index(s) for s in next(iter(spspec_to_spwid.values())) if s in snr_result.spwids
-                ]
+                spwindex = [snr_result.spwids.index(s) for s in next(iter(spspec_to_spwid.values()))]
             # Otherwise, with 2+ SpectralSpec, select which SpectralSpec to use.
             # PIPE-2442: in this case, it is assumed that the representative
             # SpectralSpec to use is the one that has the lowest value of
@@ -549,7 +545,7 @@ class SerialALMAPhcorBandpass(bandpassworker.BandpassWorker):
                 max_snr_spspec = []
                 for spwids in spspec_to_spwid.values():
                     # Get the indices of these SpWs into the SNR result.
-                    spwi = [snr_result.spwids.index(s) for s in spwids if s in snr_result.spwids]
+                    spwi = [snr_result.spwids.index(s) for s in spwids]
 
                     # Identify SNRs for all SpWs in this SpectralSpec. It is
                     # possible for "phintsnrs" in the SNR result to contain None
