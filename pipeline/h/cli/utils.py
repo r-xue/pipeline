@@ -78,6 +78,11 @@ def cli_wrapper(func: Callable) -> Callable:
 
 
 def get_context():
+    """Retrieve the current pipeline context."""
+    if cli.PIPELINE_NAME not in cli.stack:
+        raise exceptions.PipelineException(
+            'Pipeline has not been initialized. Please call h_init() or h_resume() first.'
+        )
     return cli.stack[cli.PIPELINE_NAME].context
 
 
