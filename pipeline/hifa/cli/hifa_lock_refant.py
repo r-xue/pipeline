@@ -7,7 +7,7 @@ def hifa_lock_refant(vis=None):
     """Lock reference antenna list.
 
     hifa_lock_refant marks the reference antenna list as "locked" for specified
-    measurement sets, preventing modification of the refant list by subsequent
+    MeasurementSets, preventing modification of the refant list by subsequent
     tasks.
 
     After executing hifa_lock_refant, all subsequent gaincal calls will by

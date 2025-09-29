@@ -24,7 +24,6 @@ from .hif_uvcontsub import hif_uvcontsub
 
 __all__ = [
     'hif_analyzealpha',
-    'hif_antpos',
     'hif_applycal',
     'hif_checkproductsize',
     'hif_correctedampflag',

@@ -7,7 +7,7 @@ def hifa_unlock_refant(vis=None):
     """Unlock reference antenna list.
 
     hifa_unlock_refant marks the reference antenna list as "unlocked" for
-    specified measurement sets, allowing the list to be modified by subsequent
+    specified MeasurementSets, allowing the list to be modified by subsequent
     tasks.
 
     After executing hifa_unlock_refant, all subsequent gaincal calls will by

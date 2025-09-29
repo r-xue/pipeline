@@ -3,11 +3,11 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hif_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=None, antposfile=None):
-    """Derive the antenna position calibration table for list of MeasurementSets.
+    """Derive antenna position calibration tables for a list of MeasurementSets.
 
-    `hif_antpos` corrects the antenna positions recorded in the ASDMs using
+    The `hif_antpos` task corrects the antenna positions recorded in the ASDMs using
     updated antenna position calibration information determined after the
-    observation was taken.
+    observation.
 
     Corrections can be input by hand, read from a file on disk, or in the future
     by querying an ALMA database service.

@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_vlasetjy(vis=None, field=None, intent=None, spw=None, model=None, reffile=None, fluxdensity=None, spix=None,
                   reffreq=None, scalebychan=None, standard=None):
-    """Sets flux density scale and fills calibrator model to measurement set.
+    """Sets flux density scale and fills calibrator model to MeasurementSets.
 
     The hifv_vlasetjy task does an initial run of setjy on the vis.
 

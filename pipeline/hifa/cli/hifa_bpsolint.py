@@ -7,9 +7,9 @@ def hifa_bpsolint(vis=None, field=None, intent=None, spw=None, phaseupsnr=None, 
                   bpsnr=None, minbpsnr=None, minbpnchan=None, hm_nantennas=None, maxfracflagged=None):
     """Compute optimal bandpass calibration solution intervals.
 
-    The optimal bandpass phaseup time and frequency solution intervals required
-    to achieve the required signal-to-noise ratio is estimated based on nominal
-    ALMA array characteristics the metadata associated with the observation.
+    The task estimates the optimal time and frequency solution intervals needed to
+    achieve the required signal-to-noise ratio. This estimation is based on nominal
+    ALMA array characteristics and the observation's metadata.
 
     The phaseup gain time and bandpass frequency intervals are determined as
     follows:
@@ -68,7 +68,7 @@ def hifa_bpsolint(vis=None, field=None, intent=None, spw=None, phaseupsnr=None, 
 
     - If strong atmospheric features are detected in the Tsys spectrum for a
       given spw, the frequency interval of bandpass solution is recalculated to
-      meet the lower threshold, ``minbpsnr`` - i.e. a lower snr is tolerated in
+      meet the lower threshold ``minbpsnr``, i.e., a lower snr is tolerated in
       order to preserve enough frequency intervals to capture the atmospheric
       line.
 

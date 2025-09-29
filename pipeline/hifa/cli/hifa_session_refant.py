@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 def hifa_session_refant(vis=None, phase_threshold=None):
     """Select best reference antenna for session(s).
 
-    This task re-evaluates the reference antenna lists from all measurement sets
+    This task re-evaluates the reference antenna lists from all MeasurementSets
     within a session and combines these to select a single common reference
     antenna (per session) that is to be used by any subsequent pipeline stages.
 

@@ -35,7 +35,7 @@ def h_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, raw
     - restores the final calibration tables for each MS
     - applies the calibration tables to each MS
 
-    When importing the ASDM and converting it to a Measurement Set (MS), if the
+    When importing the ASDM and converting it to a MeasurementSet (MS), if the
     output MS already exists in the output directory, then the importasdm
     conversion step is skipped, and the existing MS will be imported instead.
 

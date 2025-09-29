@@ -7,7 +7,7 @@ def hifa_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
                      bdfflags=None, ocorr_mode=None, asis=None):
     """Restore flagged and calibration interferometry data from a pipeline run.
 
-    The hifa_restoredata task restores flagged and calibrated MeasurementSets
+    The `hifa_restoredata` task restores flagged and calibrated MeasurementSets
     from archived ASDMs and pipeline flagging and calibration data products.
 
     hifa_restoredata assumes that the ASDMs to be restored are present in the
@@ -44,7 +44,7 @@ def hifa_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
     - restores the final calibration tables for each MS
     - applies the calibration tables to each MS
 
-    When importing the ASDM and converting it to a Measurement Set (MS), if the
+    When importing the ASDM and converting it to a MeasurementSet (MS), if the
     output MS already exists in the output directory, then the importasdm
     conversion step is skipped, and instead the existing MS will be imported.
 

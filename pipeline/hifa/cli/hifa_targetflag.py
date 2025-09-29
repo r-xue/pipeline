@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 def hifa_targetflag(vis=None, parallel=None):
     """Flag target source outliers.
 
-    This task flags very obvious target source outliers. The calibration tables and
+    This task flags obvious outliers in the target source data. The calibration tables and
     flags accumulated in the cal library up to this point are pre-applied, then
     hif_correctedampflag is called for just the TARGET intent. Any resulting
     flags are applied and the calibration library is restored to the state before
