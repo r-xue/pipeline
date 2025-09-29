@@ -200,13 +200,17 @@ class EditimlistInputs(vdp.StandardInputs):
 
             search_radius_arcsec: Size of the field finding beam search radius in arcsec.
 
-            cell: Image X and Y cell size(s) with units or pixels per beam. Single value same for both. '<number>ppb' for pixels per beam.
-                Compute cell size based on the UV coverage of all the fields
-                to be imaged and use a 5 pix per beam sampling.
-                The pix per beam specification uses the above default cell size
-                (``'5ppb'``) and scales it accordingly.
+            cell: Image cell size(s) in X and Y, specified in angular units or pixels per beam.
 
-                Example: ``['0.5arcsec', '0.5arcsec']``, ``'3ppb'``
+                - A single value applies to both axes.
+
+                - Use the format ``'<number>ppb'`` to specify pixels per beam.
+
+                By default, the cell size is computed from the UV coverage of all fields to be imaged,
+                assuming a sampling of 5 pixels per beam, i.e., `'5ppb'``. When using the pixels-per-beam format
+                (e.g., ``'3ppb'``), the cell size is scaled accordingly.
+
+                Examples: ``['0.5arcsec', '0.5arcsec']``, ``'3ppb'``
 
             cfcache: Convolution function cache directory name
 

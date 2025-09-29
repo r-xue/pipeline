@@ -20,9 +20,9 @@ def h_resume(filename: str | None = None):
 
             >>> h_resume()
 
-        Resume a specific saved session:
+        Resume from a saved session using the `context` snapshot after the processing stage-35:
 
-            >>> h_resume(filename='context.s3.2012-02-13T10:49:11')
+            >>> h_resume(filename='pipeline-20230227T202157/saved_state/context-stage35.pickle')
     """
     _filename = filename or 'last'
     pipeline = launcher.Pipeline(context=_filename)
