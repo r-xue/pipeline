@@ -240,6 +240,7 @@ class SDBaselineInputs(vdp.StandardInputs):
                 ('spline' or 'cspline'), polynomial ('poly' or 'polynomial').
 
                 Accepts:
+
                 - A string: Applies the same function to all spectral windows (SPWs).
                 - A dictionary: Maps SPW IDs (int or str) to a specific fitting function.
 
@@ -251,6 +252,7 @@ class SDBaselineInputs(vdp.StandardInputs):
                 much the spectrum is segmented into.
 
                 Accepts:
+
                 - An integer: Applies the same order to all SPWs. Valid values: ``-1`` (automatic), ``0``, or any positive integer.
                 - A dictionary: Maps SPW IDs (int or str) to a specific fitting order.
 
