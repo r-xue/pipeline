@@ -1,13 +1,13 @@
 import collections
 
-import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
+from pipeline import infrastructure
 from pipeline.h.tasks.common import commonfluxresults
 from pipeline.infrastructure import casa_tasks
 from . import vlasetjy
 
-LOG = logging.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class VLASetjyQAHandler(pqa.QAPlugin):
@@ -17,7 +17,8 @@ class VLASetjyQAHandler(pqa.QAPlugin):
 
     def handle(self, context, result):
         standard_source_names, standard_source_fields = vlasetjy.standard_sources(result.inputs['vis'])
-        m = context.observing_run.get_ms(result.inputs['vis'])
+        vis = result.inputs['vis']
+        m = context.observing_run.get_ms(vis)
         scores = []
         if sum(standard_source_fields, []):
             scorevalue = 0.0
