@@ -11,15 +11,12 @@ def h_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, parang
     context to the set of visibility files using predetermined field and
     spectral window maps and default values for the interpolation schemes.
 
-    Users can interact with the pipeline calibration state using the tasks
-    h_export_calstate and h_import_calstate.
-
     Returns:
         The results object for the pipeline task is returned.
 
     Examples:
         1. Apply the calibration to the target data
 
-        >>> hif_applycal (intent='TARGET')
+        >>> hif_applycal(intent='TARGET')
 
     """

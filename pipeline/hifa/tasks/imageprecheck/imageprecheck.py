@@ -130,8 +130,10 @@ class ImagePreCheckInputs(vdp.StandardInputs):
             calcsb: Force (re-)calculation of sensitivities and beams; defaults to False
 
             parallel: Use the CASA imager parallel processing when possible.
-                options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
-                default: ``'automatic'``
+
+                Options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
+
+                Default: ``'automatic'``
 
         """
         self.context = context

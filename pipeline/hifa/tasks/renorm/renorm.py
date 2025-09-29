@@ -141,8 +141,10 @@ class RenormInputs(vdp.StandardInputs):
             caltable:
 
             parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
-                options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
-                default: ``None`` (equivalent to ``'automatic'``)
+
+                Options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
+
+                Default: ``None`` (equivalent to ``antomatic``)
 
         """
         super().__init__()

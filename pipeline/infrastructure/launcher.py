@@ -21,7 +21,7 @@ MIN_CASA_REVISION = [6, 6, 6, 16]
 MAX_CASA_REVISION = None
 
 
-class Context(object):
+class Context:
     """
     Context holds all pipeline state, consisting of metadata describing the
     data set, objects describing the pipeline calibration state, the tree of
@@ -291,7 +291,7 @@ class Context(object):
         return 'VLA' in telescope.upper() and not ms_list
 
 
-class Pipeline(object):
+class Pipeline:
     """
     Pipeline is the entry point for initialising the pipeline. It is
     responsible for the creation of new Context objects and for loading

@@ -316,8 +316,11 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
                 Example: minsnr=3.0
 
             parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
-                options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
-                default: ``None`` (equivalent to ``False``)
+
+                Options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
+
+                Default: ``None`` (equivalent to ``False``)
+
         """
         super().__init__(context, output_dir=output_dir, vis=vis, mode=mode, **parameters)
         self.bpnsols = bpnsols

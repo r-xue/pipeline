@@ -40,25 +40,25 @@ class ALMAImportDataInputs(importdata.ImportDataInputs):
 
     # docstring and type hints: supplements hifa_importdata
     def __init__(
-            self,
-            context: Context,
-            vis: list[str] | None = None,
-            output_dir: str | None = None,
-            asis: str | None = None,
-            process_caldevice: bool | None = None,
-            session: str | None = None,
-            overwrite: bool | None = None,
-            nocopy: bool | None = None,
-            bdfflags: bool | None = None,
-            lazy: bool | None = None,
-            save_flagonline: bool | None = None,
-            dbservice: bool | None = None,
-            createmms: str | None = None,
-            ocorr_mode: str | None = None,
-            datacolumns: dict[str, str] | None = None,
-            minparang: float | None = None,
-            parallel: bool | None = None
-            ):
+        self,
+        context: Context,
+        vis: list[str] | None = None,
+        output_dir: str | None = None,
+        asis: str | None = None,
+        process_caldevice: bool | None = None,
+        session: str | None = None,
+        overwrite: bool | None = None,
+        nocopy: bool | None = None,
+        bdfflags: bool | None = None,
+        lazy: bool | None = None,
+        save_flagonline: bool | None = None,
+        dbservice: bool | None = None,
+        createmms: str | None = None,
+        ocorr_mode: str | None = None,
+        datacolumns: dict[str, str] | None = None,
+        minparang: float | None = None,
+        parallel: bool | None = None,
+    ):
         """Initialize Inputs.
 
         Args:
@@ -143,9 +143,10 @@ class ALMAImportDataInputs(importdata.ImportDataInputs):
                 non-polarisation processing.
 
             parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
-                options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
-                default: ``None`` (equivalent to ``False``)
 
+                Options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
+
+                Default: ``None`` (equivalent to ``False``)
         """
         super().__init__(context, vis=vis, output_dir=output_dir, asis=asis,
                          process_caldevice=process_caldevice, session=session,

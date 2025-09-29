@@ -33,11 +33,6 @@ class AnalyzealphaInputs(vdp.StandardInputs):
         Args:
             context: Pipeline context object containing state information.
 
-            vis: List of visisbility  data files. These may be ASDMs, tar files of ASDMs, MSs, or tar files of MSs, If ASDM files are specified, they will be
-                converted  to MS format.
-
-                Example: ``vis=['X227.ms', 'asdms.tar.gz']``
-
             image: Restored subimage
 
             alphafile: Input spectral index map

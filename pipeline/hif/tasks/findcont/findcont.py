@@ -66,11 +66,12 @@ class FindContInputs(vdp.StandardInputs):
             datacolumn: Data column to image. Only to be used for manual overriding when the automatic choice by data type is not appropriate.
 
             parallel: Use CASA/tclean built-in parallel imaging when possible.
-                options: 'automatic', 'true', 'false', True, False
-                default: 'automatic'            
 
+                Options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
+
+                Default: ``'automatic'``
         """
-        super(FindContInputs, self).__init__()
+        super().__init__()
         self.context = context
         self.output_dir = output_dir
         self.vis = vis

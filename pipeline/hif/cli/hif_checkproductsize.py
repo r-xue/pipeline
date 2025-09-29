@@ -8,7 +8,7 @@ def hif_checkproductsize(vis=None, maxcubesize=None, maxcubelimit=None, maxprodu
     """Check imaging product size.
 
     Check interferometry imaging product size and try to mitigate to maximum
-    allowed values. The task implements a mitigation cascade computing the largest
+    allowed values. `hif_checkproductsize` implements a mitigation cascade computing the largest
     cube size and tries to reduce it below a given limit by adjusting the ``nbins``,
     ``hm_imsize`` and ``hm_cell`` parameters. If this step succeeds, it also checks the
     overall imaging product size and if necessary reduces the number of fields to
@@ -18,7 +18,7 @@ def hif_checkproductsize(vis=None, maxcubesize=None, maxcubelimit=None, maxprodu
     mitigated by trying to adjust ``hm_cell`` parameter. If the pixel count is still
     greater than ``maximsize`` at ``hm_cell`` of 4ppb, then this value is kept and
     the image field is truncated around the phase center by forcing ``hm_imsize``
-    = ``maximsize``.
+    to ``maximsize``.
 
     Note that mitigation for image pixel count and for the product size currently
     are mutually exclusive, with maximsize taking precedence if set.

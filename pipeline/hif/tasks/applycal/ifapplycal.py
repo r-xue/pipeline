@@ -37,12 +37,12 @@ class IFApplycalInputs(applycal.ApplycalInputs):
             field: A string containing the list of field names or field ids to which the calibration will be applied. Defaults to all fields in the pipeline
                 context.
 
-                Example: ``'3C279'``, ``'3C279, M82'``
+                Examples: ``'3C279'``, ``'3C279, M82'``
 
             spw: The list of spectral windows and channels to which the calibration will be applied. Defaults to all science windows in the pipeline
                 context.
 
-                Example: ``'17'``, ``'11, 15'``
+                Examples: ``'17'``, ``'11, 15'``
 
             antenna: The selection of antennas to which the calibration will be applied. Defaults to all antennas. Not currently supported.
 
@@ -53,7 +53,7 @@ class IFApplycalInputs(applycal.ApplycalInputs):
 
             parang: Apply parallactic angle correction
 
-            applymode: Calibration apply mode
+            applymode: Calibration apply mode. Options:
 
                 - ``'calflag'``: calibrate data and apply flags from solutions
                 - ``'calflagstrict'``: (default) same as above except flag spws for which calibration is
@@ -63,7 +63,7 @@ class IFApplycalInputs(applycal.ApplycalInputs):
                 - ``'flagonly'``: apply flags from solutions only, data not calibrated
                 - ``'flagonlystrict'``: same as above except flag spws for which calibration is
                   unavailable in one or more tables
-                - ``'calonly'``: calibrate data only, flags from solutions NOT applied
+                - ``'calonly'``: calibrate data only, flags from solutions **not** applied
 
             calwt: Calibrate the weights as well as the data
 
@@ -74,8 +74,10 @@ class IFApplycalInputs(applycal.ApplycalInputs):
             flagdetailedsum: Compute detailed before and after flagging statistics summaries. Parameter available only when if flagsum is True.
 
             parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
-                options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
-                default: ``None`` (equivalent to ``False``)
+
+                Options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
+
+                Default: ``None`` (equivalent to ``False``)
         """
         super().__init__(context, output_dir=output_dir, vis=vis, field=field, spw=spw,
                          antenna=antenna, intent=intent, parang=parang, applymode=applymode,

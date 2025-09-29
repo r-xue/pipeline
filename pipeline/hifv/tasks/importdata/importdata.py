@@ -29,9 +29,26 @@ class VLAImportDataInputs(importdata.ImportDataInputs):
     parallel = sessionutils.parallel_inputs_impl(default=False)
 
     # docstring and type hints: supplements hifv_importdata
-    def __init__(self, context, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
-                 overwrite=None, nocopy=None, bdfflags=None, lazy=None, save_flagonline=None, createmms=None,
-                 ocorr_mode=None, datacolumns=None, specline_spws=None, minparang=None, parallel=None):
+    def __init__(
+        self,
+        context,
+        vis=None,
+        output_dir=None,
+        asis=None,
+        process_caldevice=None,
+        session=None,
+        overwrite=None,
+        nocopy=None,
+        bdfflags=None,
+        lazy=None,
+        save_flagonline=None,
+        createmms=None,
+        ocorr_mode=None,
+        datacolumns=None,
+        specline_spws=None,
+        minparang=None,
+        parallel=None,
+    ):
         """Initialize Inputs.
 
         Args:
@@ -115,8 +132,10 @@ class VLAImportDataInputs(importdata.ImportDataInputs):
                 non-polarisation processing.
 
             parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
-                options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
-                default: ``False``
+
+                Options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
+
+                Default: ``None`` (equivalent to ``False``)
 
         """
         super().__init__(context, vis=vis, output_dir=output_dir, asis=asis,

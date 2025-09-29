@@ -206,7 +206,7 @@ class SelfcalInputs(vdp.StandardInputs):
                  usermask=None, usermodel=None, allow_wproject=None,
                  apply=None, parallel=None, recal=None, restore_only=None, overwrite=None,
                  restore_resources=None):
-        """Initialize Inputs.
+        r"""Initialize Inputs.
 
         Args:
             context: Pipeline context object containing state information.
@@ -221,19 +221,19 @@ class SelfcalInputs(vdp.StandardInputs):
 
 
             hm_imsize: self-calibration imaging dimension in pixels, or PB level for single fields.
-            
+
             hm_cell: self-calibration imaging cell size.
 
             n_solints: number of solution intervals to attempt for self-calibration. Defaults to ``4``.
 
-            amplitude_selfcal: Attempt amplitude self-calibration following phase-only self-calibration; if median time 
-                between scans of a given target is < 150s, solution intervals of ``300s`` and ``inf`` will be attempted, 
+            amplitude_selfcal: Attempt amplitude self-calibration following phase-only self-calibration; if median time
+                between scans of a given target is < 150s, solution intervals of ``300s`` and ``inf`` will be attempted,
                 otherwise just ``inf`` will be attempted. Defaults to ``False``.
 
             gaincal_minsnr: Minimum S/N for a solution to not be flagged by gaincal. Defaults to ``2.0``.
 
             refantignore: Antennas to be ignored as reference antennas. Defaults to ``''``. Examples:
-                
+
                 * ``refantignore='ea02,ea03'``
                 * ``refantignore={'ms1.ms':'ea02,ea03','ms2.ms': 'ea03'}``, specified at the per-ms level.
 
@@ -246,23 +246,23 @@ class SelfcalInputs(vdp.StandardInputs):
             apply_cal_mode_default: Apply mode to use for applycal task during self-calibration; same options as applycal.
                 Defaults to ``'calflag'``.
 
-            rel_thresh_scaling: Scaling type to determine how clean thresholds per solution interval should be determined going 
+            rel_thresh_scaling: Scaling type to determine how clean thresholds per solution interval should be determined going
                 from the starting clean threshold to 3.0 * RMS for the final solution interval. Defaults to ``'log10'``.
                 Available options: ``'linear'``, ``'log10'``, or ``'loge'`` (natural log)
 
             dividing_factor: Scaling factor to determine clean threshold for first self-calibration solution interval.
                 Equivalent to (Peak S/N / dividing_factor) \* RMS as the first clean threshold;
-                however, if  `(Peak S/N / dividing_factor) < 5.0`; 
+                however, if  `(Peak S/N / dividing_factor) < 5.0`;
                 a value of 5.0 is used for the first clean threshold.
                 Defaults to ``40`` for < 8 GHz or ``15`` for > 8 GHz.
 
-            check_all_spws: If ``True``, the S/N of mfs images created on a per-spectral-window basis will be compared at the 
+            check_all_spws: If ``True``, the S/N of mfs images created on a per-spectral-window basis will be compared at the
                 initial stages final self-calibration. Defaults to ``False``.
 
-            inf_EB_gaincal_combine: change gain solution combination parameters for the inf_EB solution interval. if ``True``, 
+            inf_EB_gaincal_combine: change gain solution combination parameters for the inf_EB solution interval. if ``True``,
                 the gaincal combine parameter will be set to ``'scan,spw'``; if ``False``, the gaincal combine parameter will
                 be set to ``'scan'``. Defaults to ``False``.
-         
+
 
             allow_wproject: Allow the wproject heuristics for self-calibration imaging. Defaults to ``False``.
 
@@ -270,23 +270,25 @@ class SelfcalInputs(vdp.StandardInputs):
 
             parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework, and use CASA/tclean
                 parallel imaging, when possible.
-                Available options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``.
-                Defaults to ``None`` (equivalent to ``'automatic'``).
+
+                Options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
+
+                Default: ``None`` (equivalent to ```'automatic'``)
 
             recal: Always re-do self-calibration even solutions/caltables are found in the Pipeline context or json restore file.
                 Defaults to `False`.
-                
+
                 Note that the selfcal solutions might not be applied if self-calibrated data labeled by the pipeline Datatypes already
                 exists. See ``overwrite`` below.
 
-            restore_only:   Only attempt to apply pre-existing selfcal calibration tables and would not run 
+            restore_only:   Only attempt to apply pre-existing selfcal calibration tables and would not run
                             the self-calibration sequence if their records (.selfcal.json, gaintables) are not present.
                             Defaults to `False`. ``restore_only`` will take precedence over ``recal``.
 
             overwrite: Allow overwriting pre-existing self-calibrated data of applicable field/spw labeled by DataType.
                 Defaults to ``False``.
 
-            restore_resources: Path to the restore resources from a standard run of hif_selfcal. hif_selfcal will automatically 
+            restore_resources: Path to the restore resources from a standard run of hif_selfcal. hif_selfcal will automatically
                 do an exhaustive search to lookup/extract/verify
                 the selfcal restore resources, i.e., selfcal.json and all selfcal-caltable referred
                 in selfcal.json, starting from *working/*, to *products/* and *rawdata/*.
@@ -295,8 +297,8 @@ class SelfcalInputs(vdp.StandardInputs):
                 The value can be the file path of *\*auxproducts.tgz* file or *\*selfcal.json* file.
 
             usermask: User mask to be used for self-calibration imaging. (not implemented)
-            
-            usermodel: User model to be used for self-calibration imaging. (not implemented)                      
+
+            usermodel: User model to be used for self-calibration imaging. (not implemented)
 
         """
         super().__init__()

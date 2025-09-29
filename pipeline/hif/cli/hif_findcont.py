@@ -7,7 +7,7 @@ def hif_findcont(vis=None, target_list=None, hm_mosweight=None, hm_perchanweight
                  datacolumn=None, parallel=None):
     """Find continuum frequency ranges for a list of specified targets.
 
-    If the cont.dat file is not already present in the working directory, then dirty image
+    If a `cont.dat` file is not already present in the working directory, then dirty image
     cubes are created for each spectral window of each science target at the native channel
     resolution unless the ``nbins`` parameter was used in the preceding hif_makeimlist stage.
     Robust=1 Briggs weighting is used for optimal line sensitivity, even if a different
@@ -18,12 +18,12 @@ def hif_findcont(vis=None, target_list=None, hm_mosweight=None, hm_perchanweight
     the channel ranges contain a small fraction of the bandwidth, or sample only a limited
     extent of the spectrum.
 
-    If the cont.dat file already exists in the working directory before this task is executed,
+    If a `cont.dat` file already exists in the working directory before this task is executed,
     then it will first examine the contents. For any spw that already has frequency ranges
     defined in this file, it will not perform the analysis described above in favor of the
     a priori ranges. For spws not listed in a pre-existing file, it will analyze them as
-    normal and update the file. In either case, the cont.dat file is used by the subsequent
-    hif_uvcontsub and hif_makeimages stages.
+    normal and update the file. In either case, the `cont.dat` file is used by the subsequent
+    `hif_uvcontsub` and `hif_makeimages` stages.
 
     Returns:
         The results object for the pipeline task is returned.

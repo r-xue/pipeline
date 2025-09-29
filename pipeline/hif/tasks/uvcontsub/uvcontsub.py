@@ -64,9 +64,10 @@ class UVcontSubInputs(vdp.StandardInputs):
                 Example: ``{'3C279': {'15': 1, '17': 2}, 'M82': {'13': 2}}``
 
             parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
-                options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
-                default: ``None`` (equivalent to ``False``)
 
+                Options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
+
+                Default: ``None`` (equivalent to ``False``)
         """
         self.context = context
         self.output_dir = output_dir
