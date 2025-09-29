@@ -1227,7 +1227,7 @@ class SessionGcorFluxscale(basetask.StandardTaskTemplate):
         vis_list = sessionutils.as_list(inputs.vis)
 
         assessed = []
-        with sessionutils.VDPTaskFactory(inputs, self._executor, GcorFluxscale) as factory:
+        with sessionutils.VDPTaskFactory(inputs, self._executor, SerialGcorFluxscale) as factory:
             task_queue = [(vis, factory.get_task(vis)) for vis in vis_list]
 
             for (vis, (task_args, task)) in task_queue:
