@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifa.tasks.fluxscale.gcorfluxscale.GcorFluxscaleInputs.__init__
 @utils.cli_wrapper
 def hifa_gfluxscale(vis=None, reference=None, transfer=None, refintent=None, transintent=None, refspwmap=None,
-                    reffile=None, phaseupsolint=None, solint=None, minsnr=None, refant=None, hm_resolvecals=None,
+                    reffile=None, phaseupsolint=None, solint=None, minsnr=None, refant=None, hm_resolvedcals=None,
                     antenna=None, peak_fraction=None, amp_outlier_sigma=None, parallel=None):
     """Derive flux density scales from standard calibrators.
 
@@ -15,7 +15,7 @@ def hifa_gfluxscale(vis=None, reference=None, transfer=None, refintent=None, tra
 
     - computing phase-up solutions for all the science spectral windows
       using the calibrator data selected by the ``reference`` and ``refintent``
-      parameters and the ``transfer`` and ``transintent`` parameters, with 
+      parameters and the ``transfer`` and ``transintent`` parameters, with
       solint and gaintype parameters, and spw mapping or combination as
       determined in hifa_spwphaseup. If no solint is defined, ``phaseupsolint``
       is used (default = 'int').
@@ -50,7 +50,7 @@ def hifa_gfluxscale(vis=None, reference=None, transfer=None, refintent=None, tra
     that longer solint, an optimal phaseup will not be able to be calculated,
     and this also results in an artificial increase in amplitudes because
     the amplitude gains compensate for the uncorrected decorrelation.
-    
+
 
     Returns:
         The results object for the pipeline task is returned.
