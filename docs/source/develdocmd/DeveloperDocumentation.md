@@ -43,7 +43,7 @@ Context key properties:
 - project_[summary|structure|performance_parameters]: information about the observing project
 - processing_intents: list of processing intents
 - observing_run: metadata about the observing run that is (being) processed
-- calimlist, sciimlist, rmsimlist, subimlist: lists of images that have been compute in (calibrator, science, RMS, cutout) imaging stages
+- calimlist, sciimlist, rmsimlist, subimlist: lists of images that have been computed in (calibrator, science, RMS, cutout) imaging stages
 - contfile, linesfile, clean_list_info, imaging_mode, imaging_mode, imaging_parameters, etc: Parameters / info used in imaging stages
 - vla_skip_mfs_and_cube_imaging: property declaring stage skipping condition for VLA specmode=mfs/cube imaging workflow
 
