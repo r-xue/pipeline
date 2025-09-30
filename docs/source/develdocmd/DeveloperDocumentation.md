@@ -475,7 +475,7 @@ b.) demote an antenna to the end of the list (lowest priority):
 Note: [PIPE-1664](https://open-jira.nrao.edu/browse/PIPE-1664) proposes to add a "refant list update" step to `hifa_gfluxscaleflag`.
 
 A couple of reference antenna utility functions are bundled in
-`pipeline.infrastructure.refantflag` (introduced inPIPE-1759): 
+`pipeline.infrastructure.refantflag` (introduced in PIPE-1759): 
 - identifying fully flagged antennas from flagging view or from flagging commands
 - marking antennas for refant update
 - aggregating and formatting fully flagged antenna notifications
