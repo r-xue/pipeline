@@ -510,8 +510,81 @@ As of September 2025, the following Pipeline tasks include steps based on Spectr
 - `hifa_polcalflag`: the gaincal step in this task creates separate gaincal jobs for each SpectralSpec.
 - SD common raster utility `flag_raster_map` consolidates its results per SpectralSpec and field (PIPE-1990)
 - SpW ID vs. Frequency plot in MS-summary page uses a different colour coding per SpectralSpec.
-- `hifa_timegaincal`: the steps computing phase solutions for phase calibrators and for the target will create separate solutions for each SpectralSpec in case of spw combination (PIPE-390)
-- `hifa_tsysflagcontamination`: uses SpectralSpec to determine if a dataset is multi-tuning and multi-source (which gets its own dedicated "unprocessable" score).
+- `hifa_timegaincal`: the steps computing phase solutions for phase calibrators and for the target will create separate
+  solutions for each SpectralSpec in case of spw combination (PIPE-390)
+- `hifa_tsysflagcontamination`: uses SpectralSpec to determine if a dataset is multi-tuning and multi-source (which gets 
+  its own dedicated "unprocessable" score).
 - `tsysspwmap` heuristic module:
     - Creates a Tsys SpW map where science SpW and Tsys SpW need to have matching SpectralSpec.
     - This tsysspwmap heuristic is used in both `h_tsyscal` and in `AtmHeuristics` (itself used in `hifa_wvrgcal` and `phasemetrics`).
+
+
+## Spectral Windows in Pipeline
+The Pipeline has defined the `domain.spectralwindow.SpectralWindow` domain class to represent spectral windows,
+and these get generated during the importdata stage by
+`infrastructure.tablereader.SpectralWindowTable.get_spectral_windows` and added to the `MeasurementSet` object
+(`ms.spectral_windows`) in `infrastructure.tablereader.MeasurementSetReader.get_measurement_set`.
+
+Throughout all Pipeline tasks, it is a common pattern to retrieve information about spectral windows via the
+`MeasurementSet.get_spectral_windows` method.
+
+The Pipeline heuristics distinguish a number of different kinds of spectral windows, such as:
+- "science" spectral windows
+- Tsys spectral windows
+- Diffgain reference spectral windows
+- Diffgain science spectral windows
+
+Here, it should be noted that this "kind" of spectral window is *not* the same as its "type". The "type" of a
+spectral window is recorded as the `type` property of the `SpectralWindow` domain class, and covers e.g. WVR, 
+CHANAVG, FDM, TDM; for reference, see this description in CASA docs:
+https://casadocs.readthedocs.io/en/stable/api/tt/casatools.msmetadata.html#casatools.msmetadata.msmetadata.almaspwse description of almaspw
+
+The above-mentioned "kinds" of spectral windows are not recorded as a property in `SpectralWindow` and instead are
+determined in different manners for the different kinds. Moreover, these "kinds" are local definitions used by Pipeline
+that may not be recognized by other ALMA subsystems. 
+
+### Science spectral windows
+The definition of "science" spectral windows is implemented in the `MeasurementSet.get_spectral_windows` method,
+and depends on whether the MS is from ALMA, VLA, or NRO. For ALMA, a science spectral window is a spectral window
+that:
+- covers one of the "science" intents; currently: 'TARGET', 'PHASE', 'BANDPASS', 'AMPLITUDE', 'POLARIZATION',
+'POLANGLE', 'POLLEAKAGE','CHECK', 'DIFFGAINREF', 'DIFFGAINSRC'
+- has a number of channels that is not 1 or 4 (specifically: not in `MeasurementSet.exclude_num_chans`)
+
+By this definition, the science spectral windows exclude for example:
+- 1-channel wide CHANAVG
+- 1-channel wide SQLD
+- 4-channel wide WVR
+- spectral windows used for scans that only cover POINTING and WVR intents
+
+Conceptually, the science spectral windows are the main spectral windows used to observe the astronomical targets,
+and the majority of ALMA Pipeline tasks and heuristics typically only work on the science spectral windows.
+As such, it is even the default behaviour of the `MeasurementSet.get_spectral_windows` method to return only the
+science spectral windows. If a task does need all spectral windows, they can override this behaviour with:
+`all_spws = ms.get_spectral_windows(science_windows_only=False)`.
+
+### Tsys spectral windows
+Tsys spectral windows are used to measure the system temperature, and used during Tsys calibration scans that
+cover the "ATMOSPHERE" intent.
+
+Depending on how the observation is set up, the Tsys SpWs can be the same as the science SpWs or they can be defined
+as separate dedicated SpWs. The latter can occur for example when the science scans use high spectral resolution
+(FDM mode) spectral windows while the Tsys scans are normally performed with lower resolution (TDM mode)
+spectral windows.
+
+Identifying a Tsys spectral window is defined in `h.heuristics.tsysspwmap` as either:
+- spectral windows that are present in a Tsys solutions caltable created by CASA, or
+- spectral windows in MS that cover 'ATMOSPHERE' intent and whose type is 'TDM'
+
+### Diffgain reference and diffgain science spectral windows
+The concept of "diffgain reference" and "diffgain science" spectral windows was introduced in PL2024 as part of adding
+support for calibration band-to-band observations that use a differential gain calibrator. Relevant tickets:
+- [PIPE-2079](https://open-jira.nrao.edu/browse/PIPE-2079)
+- [PIPE-2145](https://open-jira.nrao.edu/browse/PIPE-2145)
+
+Within Pipeline, these two kinds are identified as science spectral windows that cover either the `DIFFGAINREF` or
+the `DIFFGAINSRC` intent, e.g.:
+```python
+dg_refspws = ms.get_spectral_windows(intent='DIFFGAINREF')
+dg_srcspws = ms.get_spectral_windows(intent='DIFFGAINSRC')
+```
