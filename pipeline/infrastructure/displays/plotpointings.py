@@ -4,6 +4,8 @@ from __future__ import annotations
 import contextlib
 import copy
 import os
+import re
+from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any, TypedDict
 
 import matplotlib.pyplot as plt
@@ -366,21 +368,7 @@ def plot_tsys_scans(ms: MeasurementSet, source: Source, figfile: str) -> None:
     """
     LOG.info("Creating Tsys plot for source %s.", source.name)
     # Retrieve correct Tsys field for source based on mapping
-    tsys_fields = get_intent_to_tsysfield_map(ms, is_single_dish=False)['TARGET'].split(',')
-    if not tsys_fields:
-        raise Exception('No Tsys fields associated with TARGET.')
-
-    try:
-        # Grabs correct field if more that one Tsys field and/or the returned ID or name match
-        tsys_field = [
-            field for field in source.fields if str(field.id) in tsys_fields or field.name in tsys_fields
-            ][0]
-    except IndexError:
-        # Defaults to first Tsys TARGET field if there are no Tsys fields associated with source
-        if tsys_fields[0].isdigit():
-            tsys_field = ms.get_fields(field_id=int(tsys_fields[0]))[0]
-        else:
-            tsys_field = ms.get_fields(name=tsys_fields[0])[0]
+    tsys_field = select_tsys_field(ms, source)
 
     # Retrieve TARGET field positions and configurations
     fields = [f for f in source.fields if not is_tsys_only(f)]
@@ -473,6 +461,51 @@ def label_format(x: float, _: Any) -> str:
         formatted = f"{arcmin:.{precision}f}" + r"$^\prime$"
 
     return formatted
+
+
+def select_tsys_field(
+        ms: MeasurementSet,
+        source: Source,
+        ) -> Field:
+    """
+    Pick the best-matching Tsys field for a given source.
+
+    Selection order (stop at first non-empty result):
+      1) Exact ID match among the source's fields
+      2) Exact NAME match among the source's fields (case-insensitive configurable)
+      3) Partial NAME match to account for prefix/suffix additions
+
+    Args:
+        ms: MeasurementSet object.
+        source: Source object.
+
+    Returns:
+        A Field object of the associated Tsys field.
+    """
+    # Retrieve correct Tsys field for source based on mapping
+    is_sd = ms.array_name == 'TP'
+    tsys_fields = get_intent_to_tsysfield_map(ms, is_single_dish=is_sd)['TARGET'].split(',')
+    if not tsys_fields:
+        raise LookupError('No Tsys fields associated with TARGET.')
+
+    # Precompute lookup structures
+    src_fields = source.fields
+    src_by_id = {f.id: f for f in src_fields}
+    src_by_name = {f.name: f for f in src_fields}
+
+    # ID or name match to a source field
+    for field_str in tsys_fields:
+        if field_str.isdigit() and int(field_str) in src_by_id:
+            return src_by_id[field_str]
+        if field_str in src_by_name:
+            return src_by_name[field_str]
+        # PIPE-2869: Partial name match
+        for name in src_by_name:
+            if name in field_str:
+                return ms.get_fields(name=field_str)[0]
+
+    # If truly nothing matched, raise a clear error instead of returning a wrong field silently.
+    raise LookupError(f"No Tsys field match for Tsys fields: {tsys_fields}")
 
 
 def is_tsys_only(field: Field) -> bool:
@@ -624,7 +657,7 @@ def tsys_scans_radec(
         if observatory == 'ALMA':
             ALMA_cycle_number = ms.get_alma_cycle_number()
             if ALMA_cycle_number:
-                if ms.get_alma_cycle_number() < '11':
+                if int(ms.get_alma_cycle_number()) < 11:
                     LOG.attention("This is likely fine for data before Cycle 11.")
                 else:
                     LOG.warning("Result may be inaccurate, especially if it's (0,0).")
