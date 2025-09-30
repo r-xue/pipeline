@@ -11,6 +11,7 @@ Think of it as a place for a new team member to look for useful bits of informat
 The Pipeline Context is the Pipeline's record of state, used to:
 - Transfer state from task to task
 - Quickly access (cached) info about the dataset without expensive I/O to disk
+- Save the state of a pipeline run to disk to be able to restore/resume from disk in a future session
 
 The domain objects are logical representations of real-world concepts in the radio interferometry domain, and form
 the core building blocks for the Pipeline application.
@@ -45,7 +46,6 @@ Context key properties:
 - observing_run: metadata about the observing run that is (being) processed
 - calimlist, sciimlist, rmsimlist, subimlist: lists of images that have been computed in (calibrator, science, RMS, cutout) imaging stages
 - contfile, linesfile, clean_list_info, imaging_mode, imaging_mode, imaging_parameters, etc: Parameters / info used in imaging stages
-- vla_skip_mfs_and_cube_imaging: property declaring stage skipping condition for VLA specmode=mfs/cube imaging workflow
 
 Context key functions:
 - get_oussid(): returns the parent OUS “ousstatus” name

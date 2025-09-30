@@ -295,7 +295,8 @@ casa -c ../debug.script
 ```
 
 Note: as an alternative to re-running an entire task for investigating and debugging issues, see the
-`infrastructure.utils.utils.function_io_dumper` decorator functionality that is documented in `FunctionIODumper.md`.
+`infrastructure.utils.utils.function_io_dumper` decorator functionality that is documented in `FunctionIODumper.md`,
+introduced in [PIPE-2354 (2025 release)](https://open-jira.nrao.edu/browse/PIPE-2354).
 
 Note: a Pipeline run is relocatable, so one can resume from a working directory (and context) that is located at
 a different path from where the run was originally started. Depending on the ticket at hand, this can allow a developer
