@@ -135,10 +135,16 @@ Upon resuming a user-specified context:
 context = h_resume(filename='pipeline-procedure_hifa_cal.context')
 ```
 
-Get reference to Pipeline context that was initialized/resumed earlier in the CASA session:
+In case a Pipeline context was initialized or resumed without capturing the returned reference:
 ```python
+# Context gets initialized but the returned context is not captured:
 h_init()
-context = pipeline.h.cli.cli.stack.get('_heuristics_context')
+```
+then this can still be retrieved with:
+```python
+# Later in the session, you can get a reference to the context in the current CASA session with:
+from pipeline.h.cli import cli
+context = cli.stack.get(cli.PIPELINE_NAME)
 ```
 
 
