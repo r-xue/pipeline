@@ -16,8 +16,8 @@ class VLASetjyQAHandler(pqa.QAPlugin):
     generating_task = vlasetjy.VLASetjy
 
     def handle(self, context, result):
-        standard_source_names, standard_source_fields = vlasetjy.standard_sources(result.inputs['vis'])
         vis = result.inputs['vis']
+        _, standard_source_fields = vlasetjy.standard_sources(vis)
         m = context.observing_run.get_ms(vis)
         scores = []
         if sum(standard_source_fields, []):
@@ -25,7 +25,7 @@ class VLASetjyQAHandler(pqa.QAPlugin):
             msg = ''
             field_ids = [str(fieldid) for sublist in standard_source_fields for fieldid in sublist]
             calfields = ",".join(field_ids)
-            flagdata_task = casa_tasks.flagdata(vis=result.inputs['vis'], mode="summary", field=calfields)
+            flagdata_task = casa_tasks.flagdata(vis=vis, mode="summary", field=calfields, intent='*CALIBRATE*')
             flagdata_result = flagdata_task.execute()
             for fields in standard_source_fields:
                 field_intents = set()
