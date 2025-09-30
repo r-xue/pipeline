@@ -532,7 +532,7 @@ The Pipeline heuristics distinguish a number of different kinds of spectral wind
 - "science" spectral windows
 - Tsys spectral windows
 - Diffgain reference spectral windows
-- Diffgain science spectral windows
+- Diffgain on-source spectral windows
 
 Here, it should be noted that this "kind" of spectral window is *not* the same as its "type". The "type" of a
 spectral window is recorded as the `type` property of the `SpectralWindow` domain class, and covers e.g. WVR, 
@@ -576,8 +576,8 @@ Identifying a Tsys spectral window is defined in `h.heuristics.tsysspwmap` as ei
 - spectral windows that are present in a Tsys solutions caltable created by CASA, or
 - spectral windows in MS that cover 'ATMOSPHERE' intent and whose type is 'TDM'
 
-### Diffgain reference and diffgain science spectral windows
-The concept of "diffgain reference" and "diffgain science" spectral windows was introduced in PL2024 as part of adding
+### Diffgain reference and diffgain on-source spectral windows
+The concept of "diffgain reference" and "diffgain on-source" spectral windows was introduced in PL2024 as part of adding
 support for calibration band-to-band observations that use a differential gain calibrator. Relevant tickets:
 - [PIPE-2079](https://open-jira.nrao.edu/browse/PIPE-2079)
 - [PIPE-2145](https://open-jira.nrao.edu/browse/PIPE-2145)
@@ -588,3 +588,76 @@ the `DIFFGAINSRC` intent, e.g.:
 dg_refspws = ms.get_spectral_windows(intent='DIFFGAINREF')
 dg_srcspws = ms.get_spectral_windows(intent='DIFFGAINSRC')
 ```
+
+## Spectral Window mapping in Pipeline
+Various calibration heuristics in Pipeline require spectral window mapping, as supported by the `spwmap` parameter in
+various CASA tasks such as `applycal`, `gaincal`, `bandpass`, `polcal`. Here, the `spwmap` is a simple list of integers,
+where the index of the list corresponds to the target SpW ID in the MeasurementSet (i.e. the SpW you want to calibrate)
+and the value in the list corresponds to the SpW ID in the calibration table whose solution should be applied to that
+target SpW ID.
+
+If spwmap is unspecified or an empty list, it signifies that each SpW ID is mapped to itself, i.e. no SpW re-mapping or
+combination.
+
+In some cases, typically when a calibrator has low SNR in one or more SpWs, the Pipeline can derive a SpW re-mapping
+to map the calibration from a higher SNR SpW to the target SpWs where the calibrator had low SNR. In cases where a
+calibrator has too low SNR in all SpWs, the Pipeline can decide to use spectral window combination instead, whereby
+the SpWs-to-combine are all re-mapped to the lowest SpW ID among the SpWs-to-combine, and the CASA task using this
+spwmap should be passed `combine=True` (which is otherwise False by default).
+
+Pipeline has implemented SpW-to-SpW mapping heuristics for a number of distinct use-cases:
+- Tsys-SpW to target SpW mapping
+- Phase-offset gaincal calibrator SpW to target SpW mapping
+- Diffgain reference SpW to diffgain on-source SpW mapping
+
+### Tsys SpW to target SpW mapping
+The Tsys spectral window to target (science) spectral window mapping is defined in `h.heuristics.tsysspwmap.tsysspwmap`.
+
+The resulting `spwmap` is primarily used in the `h_tsyscal` task that creates and registers the Tsys calibration.
+This task first creates the Tsys caltable and then creates the `spwmap` that maps each target SpW to its appropriate Tsys
+SpW. This `spwmap` is then used in the step that creates the `CalApplications` that will register (in the callibrary)
+how the Tsys caltable should be applied to the measurement set. Any subsequent task downstream that needs to (pre-)apply
+the calibrations (e.g. `gaincal`, `applycal`) would then apply this Tsys caltable with the correct value of `spwmap`.
+
+Note: a secondary use of `h.heuristics.tsysspwmap.tsysspwmap` occurs in
+`hifa.heuristics.atm.AtmHeuristics._calculate_median_tsys`, used only
+locally to compute median Tsys per science SpW.
+
+### Phase-offset gaincal calibrator SpW to target SpW mapping
+Various stages in ALMA calibration pipeline compute a phase-offset gain calibration table, in many cases even
+just a temporary one that is only pre-applied during certain steps in the task without being registered to the
+top-level Pipeline context.
+
+To enable consistency in how those phase-offset gain calibrations are applied across various tasks,
+ALMA IF calibration pipeline recipes include the `hifa_spwphaseup` stage. This stage evaluates for a number of
+calibrator intents ('AMPLITUDE,BANDPASS,CHECK,DIFFGAINREF,DIFFGAINSRC,PHASE') and each of their corresponding fields,
+what the optimal SpW maps are, based by default on calibrator SNR. See implementation details in 
+`hifa.tasks.spwphaseup.spwphaseup.SpwPhaseup._derive_spwmaps`, which invokes the `hifa.heuristics.phasespwmap`
+to generate the `spwmap` lists for the case of narrow-to-wide (low-to-high-SNR) SpW mapping, or SpW-combination mapping.
+
+The resulting `spwmap` lists are combined into a `SpwMapping` object together with:
+- other recommended values to use: `combine`, `solint`, `gaintype`
+- extra info such as SNR info / thresholds used in the SpW map derivation
+
+The primary use-case is `combine`, i.e. whether or not to use SpW combination, which is currently not part of the 
+`CalApplication`. This is denoted with `combine=True` though in downstream tasks this gets converted to `combine='spw'`
+before passing to a CASA task.
+
+These `SpwMapping` are created for each combination of `intent, field` and stored by that key in a dictionary in the
+context (`MeasurementSet.spwmaps`).
+
+Downstream tasks that make use of this `SpwMapping` information include:
+- hifa_gfluxscale: `hifa.tasks.fluxscale.gcorfluxscale.SerialGcorFluxscale._get_phasecal_params`
+- hifa_gfluxscaleflag: `hifa.tasks.gfluxscaleflag.gfluxscaleflag.SerialGfluxscaleflag._get_phasecal_params`
+- hifa_timegaincal: `hifa.tasks.gainal.timegaincal.SerialTimeGaincal._get_phasecal_params`
+- hifa_diffgaincal: `hifa.tasks.diffgaincal.diffgaincal._assess_spw_combine_based_on_spwmapping_and_snr`
+
+Note: each of these tasks may have their own task-specific heuristic for which values from the `SpwMapping`
+to adopt.
+
+### Diffgain reference SpW to diffgain on-source SpW mapping
+For band-to-band calibrations, the phase SpW-to-Spw mapping derived in `hifa_spwphaseup` for the `PHASE` calibrator
+requires an adjustment to ensure that diffgain on-source SpWs are remapped to an associated diffgain reference SpW.
+This kind of diffgain-specific `spwmap` adjustment is implemented in
+`hifa.heuristics.phasespwmap.update_spwmap_for_band_to_band`, and is used in `hifa_spwphaseup` and
+`hifa_diffgaincal`.
