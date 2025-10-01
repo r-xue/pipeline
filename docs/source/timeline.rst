@@ -1,11 +1,24 @@
+====================================
 Roadmap & Branching Strategy
-=============================
+====================================
+
+.. contents:: Table of Contents
+   :depth: 2
+   :local:
+
+--------
+
+PL2026 Timeline
+---------------
+
+The following Gantt chart illustrates the complete PL2026 development timeline, including management activities, development phases, ALMA testing cycles, and delivery milestones.
 
 .. mermaid::
 
     gantt
         title PL2026 Timeline
         dateFormat  YYYY-MM-DD
+        tickInterval 1month
         excludes weekends
 
         section Management
@@ -37,8 +50,55 @@ Roadmap & Branching Strategy
         ALMA E2E13 Pre-release                :active, crit, milestone, 2026-07-10, 1d
         ALMA Cycle-13 and VLA/SRDP Pipeline (2026.2.0, CASA 6.7.x-py3.12)     :active, crit, milestone, 2026-08-01, 1d
 
-PL2025/2026 Branching
----------------------
+--------
+
+Key Milestones
+--------------
+
+Delivery Schedule
+^^^^^^^^^^^^^^^^^
+
+:October 2025:
+    **ALMA Cycle-12 and VLA/SRDP Pipeline**
+    
+    * Version: 2025.1.0.35
+    * CASA: 6.6.6-17-py3.10
+    * Status: Completed
+
+:March 2026:
+    **VLASS Pipeline**
+    
+    * Version: 2026.1.0
+    * CASA: 6.7.1-py3.10+gpu
+    * Status: In Development
+
+:July 2026:
+    **ALMA E2E13 Pre-release**
+    
+    * Version: 2026.2.0 (pre-release)
+    * Status: Planned
+
+:August 2026:
+    **ALMA Cycle-13 and VLA/SRDP Pipeline**
+    
+    * Version: 2026.2.0
+    * CASA: 6.7.x-py3.12
+    * Status: Planned
+
+--------
+
+PL2025/2026 Branching Strategy
+------------------------------
+
+The branching diagram below illustrates the development workflow across PL2025 and PL2026 cycles, showing the relationship between the main development branch and release branches.
+
+Branch Overview
+^^^^^^^^^^^^^^^
+
+* **Main Branch**: Continuous development with new features and improvements
+* **release/2025.1.0**: Stable release for ALMA Cycle-12 (CASA 6.6.6-py3.10)
+* **release/2026.1.0**: VLASS-focused release (CASA 6.7.1-py3.10+hpg)
+* **release/2026.2.0**: ALMA Cycle-13 and VLA release (CASA 6.7.x-py3.12)
 
 .. mermaid::
 
@@ -81,11 +141,11 @@ PL2025/2026 Branching
         commit id:"feature4"
         commit id:"bugfix4" tag:"2025.1.1.10"
         commit id:"feature5"
-        commit id:"feature6" tag: "2026.0.0.0"
+        commit id:"feature6" tag:"2026.0.0.0"
 
         %% === VLASS 2026 Development ===
         commit id:"feature7"
-        commit id:"bugfix5" tag: "2026.0.1.0"
+        commit id:"bugfix5" tag:"2026.0.1.0"
         commit id:"bugfix6"
         commit id:"feature8" tag:"2026.0.1.14" tag:"2026.1.0.0" tag:"2026.1.1.0"
 
@@ -93,9 +153,9 @@ PL2025/2026 Branching
         branch "release/2026.1.0 (casa-6.7.1-py3.10+hpg)" order: 3
         checkout "release/2026.1.0 (casa-6.7.1-py3.10+hpg)"
         commit id:"bugfix7"
-        commit id:"bugfix8" tag: "2026.1.0.2"
+        commit id:"bugfix8" tag:"2026.1.0.2"
         commit id:"hotfix1"
-        commit id:"hotfix2" tag: "2026.1.0.3" type: HIGHLIGHT
+        commit id:"hotfix2" tag:"2026.1.0.3" type: HIGHLIGHT
         checkout main
 
         %% === ALMA/VLA 2026 Development ===
@@ -110,15 +170,56 @@ PL2025/2026 Branching
         branch "release/2026.2.0 (casa-6.7.x-py3.12)" order: 4
         checkout "release/2026.2.0 (casa-6.7.x-py3.12)"
         commit id:"bugfix10"
-        commit id:"hotfix3" tag: "2026.2.0.5"
+        commit id:"hotfix3" tag:"2026.2.0.5"
         checkout main
 
         %% === Post-Release Maintenance & Mainline Dev ===
         commit id:"refactor3" tag:"2026.3.0.1"
-        commit id:"bugfix11" tag: "2026.2.0.2"
+        commit id:"bugfix11" tag:"2026.2.0.2"
         cherry-pick id:"hotfix3" tag:"2026.3.0.7"
         commit id:"refactor4"
         commit id:"refactor5"
         checkout "release/2026.2.0 (casa-6.7.x-py3.12)"
         cherry-pick id:"bugfix11" tag:"2026.2.0.3"
-        commit id:"hotfix4" tag: "2026.2.0.4" type: HIGHLIGHT
+        commit id:"hotfix4" tag:"2026.2.0.4" type: HIGHLIGHT
+
+--------
+
+Branching Workflow
+------------------
+
+Development Phases
+^^^^^^^^^^^^^^^^^^
+
+1. **Feature Development**
+   
+   * New features developed on main branch
+   * Feature branches merged back to main
+   * Regular integration and testing
+
+2. **Release Branching**
+   
+   * Release branches created at feature freeze
+   * Stabilization and bug fixes on release branches
+   * Critical fixes cherry-picked back to main
+
+3. **Maintenance**
+   
+   * Hotfixes applied to release branches
+   * Important fixes backported as needed
+   * Main branch continues with new development
+
+Version Numbering
+^^^^^^^^^^^^^^^^^
+
+The project follows `semantic versioning <https://peps.python.org/pep-0440/#semantic-versioning>`_ with the format: ``YEAR.MAJOR.MINOR.MICRO``
+
+* **YEAR**: Calendar year (e.g., 2025, 2026)
+* **MAJOR**: Major release number within the year
+* **MINOR**: Minor feature releases
+* **MICRO**: Merges of features, bug fixes and hotfixes
+
+--------
+
+.. note::
+   For detailed information about specific releases or development schedules, please refer to the project documentation or contact the development team.
