@@ -481,6 +481,9 @@ def select_tsys_field(
 
     Returns:
         A Field object of the associated Tsys field.
+
+    Raises:
+        LookupError if no Tsys fields are found or if no Tsys field is matched to the source.
     """
     # Retrieve correct Tsys field for source based on mapping
     is_sd = ms.array_name == 'TP'
@@ -496,7 +499,7 @@ def select_tsys_field(
     # ID or name match to a source field
     for field_str in tsys_fields:
         if field_str.isdigit() and int(field_str) in src_by_id:
-            return src_by_id[field_str]
+            return src_by_id[int(field_str)]
         if field_str in src_by_name:
             return src_by_name[field_str]
         # PIPE-2869: Partial name match

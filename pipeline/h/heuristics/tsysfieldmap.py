@@ -131,10 +131,10 @@ def get_solution_map(ms: MeasurementSet, is_single_dish: bool) -> list[Gainfield
             head, tail = intent.split(',', 1)
             # the 'if o' test filters out results for intents that do not have
             # fields, e.g., PHASE for SD data
-            return ','.join(o for o in (f(head, exclude=exclude), f(tail, exclude=exclude)) if o)
-        # de-deuplicate list before joining as a string
-        tsys_fields = list(set(str(s) for s in get_tsys_fields_for_intent(ms, intent, exclude_intents=exclude)))
-        return ','.join(tsys_fields)
+            # de-deuplicate list before joining as a string
+            tsys_fields = list(set((o for o in (f(head, exclude=exclude), f(tail, exclude=exclude)) if o)))
+            return ','.join(tsys_fields)
+        return ','.join(str(s) for s in get_tsys_fields_for_intent(ms, intent, exclude_intents=exclude))
 
     # return different gainfield maps for single dish and interferometric
     if is_single_dish:
