@@ -105,7 +105,8 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_tsysflagcontamination_external_heuristic',
            'score_syspowerdata',
            'score_solint',
-           'score_longsolint']
+           'score_longsolint',
+           'score_fluxboot']
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -5074,3 +5075,55 @@ def score_longsolint(context, result) -> list[pqa.QAScore]:
                           metric_score=score,
                           metric_units='')
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
+@log_qa
+def score_fluxboot(context, result) -> list[pqa.QAScore]:
+    from IPython import embed; embed()
+    qascores = []
+    ms = context.observing_run.get_ms(result.vis)
+    sci_spws = ms.get_spectral_windows(science_windows_only=True)
+    total_sci_spws = len(sci_spws)
+    flagdata_task = casa_tasks.flagdata(vis="calibrators.ms", mode="summary")
+    flagdata_result = flagdata_task.execute()
+    flag_spw = flagdata_result["spw"]
+    ignored_spw_count = 0
+
+    for spw in sci_spws:
+        str_spwid = str(spw.id)
+        if str_spwid in flag_spw.keys():
+            flag_percentage = flagdata_result['spw'][str(0)]['flagged']/flagdata_result['spw'][str(0)]['total']
+            if flag_percentage > 0.5:
+                ignored_spw_count = ignored_spw_count + 1
+        else:
+            ignored_spw_count = ignored_spw_count + 1
+    # PIPE-2584, part-1: If > 50% of science spws are fully flagged
+    # or missing from calibrators.ms: QA score < 0.5
+    flag_ratio = (ignored_spw_count/total_sci_spws )
+    score = 1 - flag_ratio
+    msg = f"{flag_ratio*100}% of science SPWs flagged or not present in calibrator.ms"
+    origin = pqa.QAOrigin(metric_name='score_fluxboot',
+                        metric_score=score,
+                        metric_units='')
+    qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin))
+
+    # PIPE-2584, part-2: If > 50% of all calibrators.ms data flagged
+    tota_flag_ratio = flagdata_result["flagged"]/flagdata_result["total"]
+    score = 1 - tota_flag_ratio
+    msg = f"{tota_flag_ratio*100}% of data flagged in calibrator.ms"
+    origin = pqa.QAOrigin(metric_name='score_fluxboot',
+                        metric_score=score,
+                        metric_units='')
+    qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin))
+
+    # PIPE-2584, part-3: IF spectral index > +/- 5: QA score < 0.5
+    for sp_result in result.spindex_results:
+        if abs(float(sp_result["spix"])) > 5:
+            score = 0.3
+            msg = "spectral index > +- 5"
+            origin = pqa.QAOrigin(metric_name='score_fluxboot',
+                                  metric_score=score,
+                                  metric_units='')
+            qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin))
+            break
+
+    return qascores
