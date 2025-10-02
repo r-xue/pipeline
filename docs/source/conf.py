@@ -223,6 +223,10 @@ html_favicon = '_static/favicon-16x16.png'
 html_static_path = ['_static']
 html_css_files = ['custom_theme.css']
 
+# -- Options for Mermaid output ---------------------------------------
+
+mermaid_d3_zoom = True
+
 # -- Options for HTMLHelp output ---------------------------------------
 
 # Output file base name for HTML help builder.
