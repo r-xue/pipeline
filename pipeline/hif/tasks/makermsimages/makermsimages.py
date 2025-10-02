@@ -7,6 +7,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.imagelibrary as imagelibrary
 from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 import pipeline.infrastructure.mpihelpers as mpihelpers
 
@@ -14,16 +15,18 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class MakermsimagesResults(basetask.Results):
-    def __init__(self, rmsimagelist=None, rmsimagenames=None):
+    def __init__(self, rmsimagelist=None, rmsimagenames=None, rmsstats=None):
         super().__init__()
 
         if rmsimagelist is None:
             rmsimagelist = []
         if rmsimagenames is None:
             rmsimagenames = []
-
+        if rmsstats is None:
+            rmsstats = {}
         self.rmsimagelist = rmsimagelist[:]
         self.rmsimagenames = rmsimagenames[:]
+        self.rmsstats = rmsstats
 
     def merge_with_context(self, context):
         """
@@ -93,7 +96,7 @@ class Makermsimages(basetask.StandardTaskTemplate):
         tier0_imdev_enabled = True
         rmsimagenames = []
         queued_job_rmsimagename = []
-
+        rmsstats = {}
         for imagename in imagenames:
             rmsimagename = imagename + '.rms'
             if not os.path.exists(rmsimagename) and 'residual' not in imagename:
@@ -111,12 +114,21 @@ class Makermsimages(basetask.StandardTaskTemplate):
             queue_job.get_result()
             if os.path.exists(rmsimagename):
                 rmsimagenames.append(rmsimagename)
+                # PIPE-1163: avoid saving stats from .tt1
+                if '.tt1.' not in rmsimagename:
+                    with casa_tools.ImageReader(rmsimagename) as image:
+
+                        rmsstats[rmsimagename] = image.statistics(robust=True)
+                        # Note to self: for CubeRmsimages axes=[0, 1, 3]
+                        # is used while getting statistics
+
 
         LOG.info("RMS image list: " + ','.join(rmsimagenames))
 
-        return MakermsimagesResults(rmsimagelist=imlist, rmsimagenames=rmsimagenames)
+        return MakermsimagesResults(rmsimagelist=imlist, rmsimagenames=rmsimagenames, rmsstats=rmsstats)
 
     def analyse(self, results):
+
         return results
 
     def _get_imdev_args(self, imagename):
