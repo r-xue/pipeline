@@ -336,7 +336,7 @@ class SerialTimeGaincal(gtypegaincal.GTypeGaincal):
         calibrator.
 
         Separate phase solutions are created for each PHASE field, and for each
-        SpectralSpec where not using "combine" SpW mapping.
+        SpectralSpec when a "combine" SpW mapping is used.
 
         The resulting caltable(s) will be part of the final task result, with
         separate CalApplications to register the caltable(s) to be applicable
