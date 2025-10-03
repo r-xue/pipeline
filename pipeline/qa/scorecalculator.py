@@ -5078,7 +5078,6 @@ def score_longsolint(context, result) -> list[pqa.QAScore]:
 
 @log_qa
 def score_fluxboot(context, result) -> list[pqa.QAScore]:
-    from IPython import embed; embed()
     qascores = []
     ms = context.observing_run.get_ms(result.vis)
     sci_spws = ms.get_spectral_windows(science_windows_only=True)
@@ -5125,5 +5124,18 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
                                   metric_units='')
             qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin))
             break
+
+    # PIPE-2584, part-4: Ensure flux density is measured.
+    # If not measured, model_data column will be filled up with 1.
+    with casa_tools.TableReader("calibrators.ms") as table:
+        stats = table.statistics(column='MODEL_DATA', complex_value='amp')
+
+    if stats["MODEL_DATA"]["max"] == 1 and stats["MODEL_DATA"]["min"] == 1:
+            score = 0.3
+            msg = "Flux density is not measured"
+            origin = pqa.QAOrigin(metric_name='score_fluxboot',
+                                  metric_score=score,
+                                  metric_units='')
+            qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin))
 
     return qascores
