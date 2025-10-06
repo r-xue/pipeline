@@ -3,6 +3,7 @@ import collections
 import copy
 import datetime
 import enum
+import re
 
 from typing import Dict, List, Set, Union
 
@@ -25,6 +26,7 @@ from . import logging
 
 LOG = logging.get_logger(__name__)
 
+
 # useful helper functions:
 def determine_import_program(context: Context, ms: MeasurementSet) -> str:
     """
@@ -39,6 +41,12 @@ def determine_import_program(context: Context, ms: MeasurementSet) -> str:
         return "hifv_importdata"
     else:
         return "unknown"
+
+
+def strip_html(text: str):
+    pattern = re.compile('<.*?>')
+    clean_text = re.sub(pattern, '', text)
+    return clean_text
 
 
 class PipelineStatisticLevel(enum.Enum):
@@ -109,20 +117,6 @@ class PipelineStatistic:
             stats_dict['origin'] = self.origin
 
         return stats_dict
-
-def determine_import_program(context: Context, ms: MeasurementSet) -> str:
-    """
-    Returns the name of the import program used to create the MS
-    """
-    if ms.antenna_array.name == 'ALMA':
-        if utils.contains_single_dish(context):
-            return "hsd_importdata"
-        else:
-            return "hifa_importdata"
-    elif ms.antenna_array.name == "VLA":
-        return "hifv_importdata"
-    else:
-        return "unknown"
 
 
 class PipelineStatsCollection:
@@ -271,8 +265,9 @@ def n_eb(context) -> str:
 def stage_duration(context) -> list:
     #TODO: copied from htmlrenderer.py. Should be pulled out into a common function.
 
-    ## Obtain time duration of tasks by the difference of start times successive tasks.
+    ## Obtain time duration of tasks by the difference of start times from successive tasks.
     ## The end time of the last task is tentatively defined as the time of current time.
+
     timestamps = [r.read().timestamps.start for r in context.results]
     
     # tentative task end time stamp for the last stage
@@ -287,6 +282,12 @@ def stage_duration(context) -> list:
 
 
 def execution_duration(context) -> float:
+    """
+    Return the execution duration as reported in the aquareport. 
+    This is the difference between the time the first stage was
+    run in the pipeline and the time the last stage was completed. 
+    """
+
     # Processing time
     exec_start = context.results[0].read().timestamps.start
     exec_end = context.results[-1].read().timestamps.end
@@ -299,7 +300,7 @@ def execution_duration(context) -> float:
 def stage_info(context) -> dict:
     info = {}
     for i in range(len(context.results)):
-        info[context.results[i].read().stage_number] = htmlrenderer.get_task_description(context.results[i].read(), context)
+        info[context.results[i].read().stage_number] = strip_html(htmlrenderer.get_task_description(context.results[i].read(), context))
     return info
 
 
@@ -770,8 +771,6 @@ class StatsExtractorRegistry(object):
                 self.add_handler(plugin_class())
             self.__plugins_loaded = True
 
-        print(f"handlers: {self.__handlers}")
-
         extracted = []
 
         # Process leaf results first
@@ -781,7 +780,6 @@ class StatsExtractorRegistry(object):
                 LOG.info("Extracting stats for {}".format(r.__class__.__name__))
                 LOG.info("Descending... calling self with result: {}".format(r))
                 d = self.handle(r, context)
-                print(f" leaf-level d: {d}")
                 extracted = union(extracted, d)
 
         # process the group-level results.
@@ -790,7 +788,6 @@ class StatsExtractorRegistry(object):
                 LOG.info('{} extracting stats results for {}'.format(handler.__class__.__name__,
                                                                            result.__class__.__name__))
                 d = handler.handle(result, context)
-                print(f"group-level d: {d}")
                 extracted = union(extracted, d)
 
         return extracted
