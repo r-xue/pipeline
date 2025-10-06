@@ -1099,13 +1099,13 @@ class SDImaging(basetask.StandardTaskTemplate):
         _sensitivity = Sensitivity(array='TP', intent='TARGET', field=rgp.source_name,
                                    spw=_spwid, is_representative=pp.is_representative_source_and_spw,
                                    bandwidth=_bw, bwmode='cube', beam=pp.beam, cell=pp.qcell,
-                                   sensitivity=_cqa.quantity(pp.image_rms, pp.brightnessunit),
+                                   observed_sensitivity=_cqa.quantity(pp.image_rms, pp.brightnessunit),
                                    effective_bw=_effective_bw, imagename=rgp.imagename,
-                                   datatype=self.inputs.datatype.name, theoretical_rms=_theoretical_rms_aqua)
+                                   datatype=self.inputs.datatype.name, theoretical_sensitivity=_theoretical_rms_aqua)
         _theoretical_noise = Sensitivity(array='TP', intent='TARGET', field=rgp.source_name,
                                          spw=_spwid, is_representative=pp.is_representative_source_and_spw,
                                          bandwidth=_bw, bwmode='cube', beam=pp.beam, cell=pp.qcell,
-                                         sensitivity=pp.theoretical_rms)
+                                         theoretical_sensitivity=pp.theoretical_rms, observed_sensitivity=None)
         _sensitivity_info = SensitivityInfo(_sensitivity, pp.stat_freqs, (cp.is_not_nro()))
         effbw = float(_cqa.getvalue(_effective_bw)[0])
         self._finalize_worker_result(self.inputs.context, rgp.imager_result, session=','.join(cp.session_names), sourcename=rgp.source_name,

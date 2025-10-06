@@ -24,6 +24,7 @@ import copy
 import os
 import shutil
 import string
+import traceback
 import textwrap
 from typing import List, Optional
 
@@ -260,54 +261,90 @@ class SkyDisplay:
             # PIPE-1401: plot mask sky images for different stokes plane even when the mask file has a single Stokes plane.
             # note: the fallback is required for vlass-se-cube because the user input mask is from vlass-se-cont with only Stokes=I.
             if isinstance(stokes, str):
-                LOG.warning(f'Stokes {stokes} is requested, but only Stokes={stokes_present} is present.')
-                LOG.warning(f'We will try to create a plot with a fallback of Stokes={stokes_select}.')
+                LOG.warning('Stokes %s is requested, but only Stokes=%s is present.', stokes, stokes_present)
+                LOG.warning('We will try to create a plot with a fallback of Stokes=%s.', stokes_present)
             else:
                 LOG.info(
-                    f'No Stokes selection is specified, we will use the first present Stokes plane: Stokes={stokes_select}.')
+                    'No Stokes selection is specified, we will use the first present Stokes plane: Stokes=%s.',
+                    stokes_select,
+                )
         else:
             stokes_select = stokes
             LOG.info(f'Stokes={stokes_select} is selected.')
 
-        with casa_tools.ImageReader(imagename) as image:
-
-            try:
-                if collapseFunction == 'center':
-                    collapsed = image.collapse(function='mean', chans=str(
-                        image.summary()['shape'][3]//2), stokes=stokes_select, axes=3)
-                elif collapseFunction == 'mom0':
-                    # image.collapse does not have a true "mom0" option. "sum" is close, but the
-                    # scaling is different.
-                    # TODO: Switch the whole _plot_panel method to using immoments(?) Though the
-                    #       downside is that images can no longer be made just in memory. They
-                    #       always have to be written to disk.
-                    tmpfile = f'{os.path.basename(imagename)}_mom0_tmp.img'
-                    casa_tasks.immoments(imagename=imagename, moments=[0], outfile=tmpfile, stokes=stokes_select).execute()
-                    assert os.path.exists(tmpfile)
-                    collapsed = image.newimagefromimage(infile=tmpfile)
-                    shutil.rmtree(tmpfile)
-                elif collapseFunction == 'mom8':
-                    collapsed = image.collapse(function='max', stokes=stokes_select, axes=3)
+        if not os.path.exists(plotfile) or self.overwrite:
+            with casa_tools.ImageReader(imagename) as image:
+                _, _, _, nchan = image.shape()
+                if nchan == 1:
+                    # Use Stokes-axis slicing instead of frequency collapsing
+                    rgtool = casa_tools.regionmanager
+                    region = rgtool.frombcs(csys=image.coordsys().torecord(), shape=image.shape(),
+                                            stokes=stokes_select, stokescontrol='a')
+                    collapsed = image.subimage(region=region)
                 else:
-                    # Note: in case 'max' and non-pbcor image a moment 0 map was written to disk
-                    # in the past. With PIPE-558 this is done in hif/tasks/tclean.py tclean._calc_mom0_8()
-                    collapsed = image.collapse(function=collapseFunction, stokes=stokes_select, axes=3)
-            except:
-                # All channels flagged or some other error. Make collapsed zero image.
-                collapsed_new = image.newimagefromimage(infile=imagename)
-                collapsed_new.set(pixelmask=True, pixels='0')
-                collapsed = collapsed_new.collapse(function='mean', stokes=stokes_select, axes=3)
-                collapsed_new.done()
+                    try:
+                        if collapseFunction == 'center':
+                            collapsed = image.collapse(function='mean', chans=str(
+                                image.summary()['shape'][3]//2), stokes=stokes_select, axes=3)
+                        elif collapseFunction == 'mom0':
+                            # image.collapse does not have a true "mom0" option. "sum" is close, but the
+                            # scaling is different.
+                            # TODO: Switch the whole _plot_panel method to using immoments(?) Though the
+                            #       downside is that images can no longer be made just in memory. They
+                            #       always have to be written to disk.
+                            tmpfile = f'{os.path.basename(imagename)}_mom0_tmp.img'
+                            casa_tasks.immoments(imagename=imagename, moments=[
+                                0], outfile=tmpfile, stokes=stokes_select).execute()
+                            assert os.path.exists(tmpfile)
+                            collapsed = image.newimagefromimage(infile=tmpfile)
+                            shutil.rmtree(tmpfile)
+                        elif collapseFunction == 'mom8':
+                            collapsed = image.collapse(function='max', stokes=stokes_select, axes=3)
+                        else:
+                            # Note: in case 'max' and non-pbcor image a moment 0 map was written to disk
+                            # in the past. With PIPE-558 this is done in hif/tasks/tclean.py tclean._calc_mom0_8()
+                            collapsed = image.collapse(function=collapseFunction, stokes=stokes_select, axes=3)
+                    except Exception as ex:
+                        LOG.info(ex)
+                        traceback_msg = traceback.format_exc()
+                        LOG.debug(traceback_msg)
+                        # All channels flagged or some other error. Make collapsed zero image.
+                        collapsed_new = image.newimagefromimage(infile=imagename)
+                        collapsed_new.set(pixelmask=True, pixels='0')
+                        collapsed = collapsed_new.collapse(function='mean', stokes=stokes_select, axes=3)
+                        collapsed_new.done()
+        else:
+            collapsed = casa_tools.image
+            collapsed.open(imagename)
 
         cs = collapsed.coordsys()  # needs to explicitly close later
         coord_names = cs.names()
+        miscinfo = collapsed.miscinfo()
+
+        vla_cont_band = self._get_vla_band(context, miscinfo)
+        if vla_cont_band is not None:
+            # VLA-specmode='cont' only, not triggered for ALMA, VLASS.
+            miscinfo['band'] = vla_cont_band
+        else:
+            # Use the reference-frequencey (in Hz) as the fallback value of the 'band' key
+            # This key is only used for VLASS and VLA so will not affect ALMA
+            miscinfo['band'] = cs.referencevalue(format='n')['numeric'][3]
+
+        field_name = miscinfo.get('field', None)
+        band_name = miscinfo.get('band', None)
+
+        # early abort: don't replot if a file with the required name already exists
+        if os.path.exists(plotfile) and not self.overwrite:
+            LOG.info('plotfile already exists: %s', plotfile)
+            # done with ia/cs tool instances
+            collapsed.done()
+            cs.done()
+            return plotfile, coord_names, field_name, band_name
+        
         cs.setunits(type='direction', value='arcsec arcsec')
         coord_units = cs.units()
         coord_refs = cs.referencevalue(format='s')
-
         brightness_unit = collapsed.brightnessunit()
-        miscinfo = collapsed.miscinfo()
-
         beam_rec = collapsed.restoringbeam()
         if 'major' in beam_rec:
             cqa = casa_tools.quanta
@@ -317,22 +354,6 @@ class SkyDisplay:
             beam = [bmaj, bmin, bpa]
         else:
             beam = None
-
-        vla_cont_band = self._get_vla_band(context, miscinfo)
-        if vla_cont_band is not None:
-            # VLA-specmode='cont' only, not triggered for ALMA, VLASS.
-            miscinfo['band'] = vla_cont_band
-        else:
-            # Use the reference-frequencey (in Hz) as the fallback value of the 'band' key
-            # This key is only used for VLASS and VLA.
-            miscinfo['band'] = cs.referencevalue(format='n')['numeric'][3]
-
-        # don't replot if a file of the required name already exists
-        if os.path.exists(plotfile) and not self.overwrite:
-            LOG.info('plotfile already exists: %s', plotfile)
-            # done with ia.coordsys()
-            cs.done()
-            return plotfile, coord_names, miscinfo.get('field', None), miscinfo.get('band', None)
 
         # otherwise do the plot
         data = collapsed.getchunk()
@@ -349,7 +370,10 @@ class SkyDisplay:
 
         # remove any incomplete matplotlib plots, if left these can cause weird errors
         plt.close('all')
-        fig, ax = plt.subplots(figsize=self.figsize, constrained_layout=True)
+
+        # PIPE-2843: disable constrained layout to prevent potential bad interaction with AnnotationBbox
+        # Also see: https://github.com/matplotlib/matplotlib/issues/24453
+        fig, ax = plt.subplots(figsize=self.figsize, constrained_layout=False)
 
         # plot data
         if 'cmap' not in imshow_args:
@@ -372,7 +396,7 @@ class SkyDisplay:
         for line in ax.xaxis.get_ticklines() + ax.yaxis.get_ticklines():
             line.set_color('white')
         for labels in ax.xaxis.get_ticklabels() + ax.yaxis.get_ticklabels():
-            labels.set_fontsize(0.75 * labels.get_fontsize())
+            labels.set_fontsize(0.5 * labels.get_fontsize())
 
         # colour bar
         if self.exclude_desc:
@@ -496,7 +520,8 @@ class SkyDisplay:
 
         # done with ia.coordsys()
         cs.done()
-        return plotfile, coord_names, miscinfo.get('field', None), miscinfo.get('band', None)
+        
+        return plotfile, coord_names, field_name, band_name
 
     def _plot_psf_inset(self, ax, mdata, imshow_args, beam=None, cs=None):
         """Plot the PSF inset panel."""

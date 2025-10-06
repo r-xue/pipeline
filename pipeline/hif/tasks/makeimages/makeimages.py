@@ -227,7 +227,7 @@ class MakeImagesInputs(vdp.StandardInputs):
 
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
-#api.ImagingMeasurementSetsPreferred.register(MakeImagesInputs)
+# api.ImagingMeasurementSetsPreferred.register(MakeImagesInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_makeimages')
@@ -369,14 +369,23 @@ class MakeImages(basetask.StandardTaskTemplate):
 
         # update tclean_result.imaging_metadata['keep'] based on the beam size and flagging percentage
         if bminor_list:
-            ref_idx = np.argsort(bminor_list)[len(bminor_list)//2]
 
-            bmajor_expected = bmajor_list[ref_idx]*freq_list[ref_idx]/np.array(freq_list)
-            bminor_expected = bminor_list[ref_idx]*freq_list[ref_idx]/np.array(freq_list)
-            c1 = (bmajor_expected*(1.-beamdev_thresh) < np.array(bmajor_list))
-            c2 = (bmajor_expected*(1.+beamdev_thresh) > np.array(bmajor_list))
-            c3 = (bminor_expected*(1.-beamdev_thresh) < np.array(bminor_list))
-            c4 = (bminor_expected*(1.+beamdev_thresh) > np.array(bminor_list))
+            bminor_array = np.array(bminor_list)
+            freq_array = np.array(freq_list)
+            weighted_values = bminor_array * freq_array
+            sorted_indices = np.argsort(weighted_values)
+            ref_idx = sorted_indices[len(bminor_list) // 2]
+
+            bmajor_expected = (
+                bmajor_list[ref_idx] * freq_list[ref_idx] / np.array(freq_list)
+            )
+            bminor_expected = (
+                bminor_list[ref_idx] * freq_list[ref_idx] / np.array(freq_list)
+            )
+            c1 = bmajor_expected * (1.0 - beamdev_thresh) < np.array(bmajor_list)
+            c2 = bmajor_expected * (1.0 + beamdev_thresh) > np.array(bmajor_list)
+            c3 = bminor_expected * (1.0 - beamdev_thresh) < np.array(bminor_list)
+            c4 = bminor_expected * (1.0 + beamdev_thresh) > np.array(bminor_list)
             c5 = (np.array(flagpct_list) < flagpct_thresh)
 
             spwgroup_keep = [False]*len(spwgroup_list)
@@ -487,11 +496,28 @@ class MakeImages(basetask.StandardTaskTemplate):
         array = ('%dm' % min(diameters))
 
         # Check if this sensitivity is for the representative source and SpW
-        _, repr_source, repr_spw, _, _, _, _, _, _, _ = heuristics.representative_target()
-        if str(repr_spw) in result.spw.split(',') and repr_source == utils.dequote(result.sourcename):
-            is_representative = True
-        else:
+        if heuristics.imaging_mode == 'VLA':
             is_representative = False
+        else:
+            _, repr_source, repr_spw, _, _, _, _, _, _, _ = heuristics.representative_target()
+            if str(repr_spw) in result.spw.split(',') and repr_source == utils.dequote(result.sourcename):
+                is_representative = True
+            else:
+                is_representative = False
+
+        # Sensitivities are currently reported for Stokes I only. For IQUV imaging the
+        # correct values have to be fetched from the new parameters since the previous
+        # ones will contain mixtures of I, Q, U and V due to the "axes" parameter in
+        # the ia.statistics() calls (PIPE-2464). TODO: Refactor the code to have just
+        # one set of statistical parameters.
+        if result.stokes == 'IQUV':
+            image_rms = result.image_rms_iquv[0]
+            image_min = result.image_min_iquv[0]
+            image_max = result.image_max_iquv[0]
+        else:
+            image_rms = result.image_rms
+            image_min = result.image_min
+            image_max = result.image_max
 
         return Sensitivity(array=array,
                            intent=target['intent'],
@@ -505,9 +531,10 @@ class MakeImages(basetask.StandardTaskTemplate):
                            cell=cell,
                            robust=target['robust'],
                            uvtaper=target['uvtaper'],
-                           sensitivity=cqa.quantity(result.image_rms, 'Jy/beam'),
-                           pbcor_image_min=cqa.quantity(result.image_min, 'Jy/beam'),
-                           pbcor_image_max=cqa.quantity(result.image_max, 'Jy/beam'),
+                           theoretical_sensitivity=cqa.quantity(result.sensitivity, 'Jy/beam'),
+                           observed_sensitivity=cqa.quantity(image_rms, 'Jy/beam'),
+                           pbcor_image_min=cqa.quantity(image_min, 'Jy/beam'),
+                           pbcor_image_max=cqa.quantity(image_max, 'Jy/beam'),
                            imagename=result.image.replace('.pbcor', ''),
                            datatype=result.datatype)
 

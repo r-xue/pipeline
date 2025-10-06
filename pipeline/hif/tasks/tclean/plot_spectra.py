@@ -758,7 +758,15 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, 
                  transform=desc.transAxes, ha='left', fontsize=fontsize+1, color='b')
 
     # Noise spectrum
-    noise = image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_robust_rms'] * 1000.
+    #
+    # For PL2025 there was no time to properly pass the Stokes information
+    # and most of the new IQUV statistics is in new variables. The following
+    # conditional is thus only a quick and dirty "solution" that should be
+    # replaced later.
+    if len(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_robust_rms_iquv'].shape) == 2:
+        noise = image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_robust_rms_iquv'][0] * 1000.
+    else:
+        noise = image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_robust_rms'] * 1000.
     plt.text(0.025, 0.93, 'Black spectrum is per-channel scaled MAD from imstat annulus and outside clean mask',
              transform=desc.transAxes, ha='left', fontsize=fontsize+1)
     # Turn off rightside y-axis ticks to make way for second y-axis
