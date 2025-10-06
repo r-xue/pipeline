@@ -418,7 +418,6 @@ class MakeImages(basetask.StandardTaskTemplate):
                 info['VLASSSPW'] = tclean_result.spw
                 info['VLASSPC'] = tclean_result.inputs["phasecenter"]
                 info['VLASSPL'] = tclean_result.stokes
-                info['VLASSRMS'] = tclean_result.image_rms
                 info['VLASSPT'] = tclean_result.imaging_mode
                 info['VLASSPV'] = environment.pipeline_revision
                 info['VLASSPK'] = tclean_result.image_max

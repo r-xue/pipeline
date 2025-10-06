@@ -136,6 +136,13 @@ class Makermsimages(basetask.StandardTaskTemplate):
 
                         else:
                             rmsstats[rmsimagename] = image.statistics(robust=True)
+                    # PIPE-2461, adding rms values to image header
+                    imagename, _ = os.path.splitext(rmsimagename)
+                    with casa_tools.ImageReader(imagename) as image:
+                        info = image.miscinfo()
+                        info["VLASSRMS"] = np.median(rmsstats[rmsimagename]['madrms'])
+                        image.setmiscinfo(info)
+
         LOG.info("RMS image list: " + ','.join(rmsimagenames))
         return MakermsimagesResults(rmsimagelist=imlist, rmsimagenames=rmsimagenames, rmsstats=rmsstats)
 
