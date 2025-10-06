@@ -49,21 +49,18 @@ class VlassCubeRmsimagesSummary(object):
 
         LOG.info("Making PNG RMS images for weblog")
         plot_wrappers = []
+
         for rmsimagename in self.result.rmsimagenames:
             plot_wrappers.extend(sky.SkyDisplay().plot_per_stokes(self.context, rmsimagename,
                                                                   reportdir=stage_dir, intent='', stokes_list=None,
                                                                   collapseFunction='mean'))
-
-            with casa_tools.ImageReader(rmsimagename) as image:
-                stats = image.statistics(robust=True, axes=[0, 1, 3])
-                stats['virtspw'] = plot_wrappers[-1].parameters['virtspw']
-                stats['madrms'] = stats.get('medabsdevmed') * 1.4826  # see CAS-9631
-                self.result.stats.append(stats)
+            self.result.rmsstats[rmsimagename]['virtspw'] = plot_wrappers[-1].parameters['virtspw']
+            self.result.rmsstats[rmsimagename]['madrms'] = self.result.rmsstats[rmsimagename]['medabsdevmed'] * 1.4826  # see CAS-9631
 
         stats_summary = {}
         for item in ['max', 'min', 'mean', 'median', 'sigma', 'madrms']:
-            stats_summary[item] = {'range': np.percentile([stats[item] for stats in self.result.stats], (0, 100))}
-            value_arr = np.array([stats[item] for stats in self.result.stats])
+            stats_summary[item] = {'range': np.percentile([self.result.rmsstats[rmsimage][item] for rmsimage in self.result.rmsstats], (0, 100))}
+            value_arr = np.array([self.result.rmsstats[rmsimage][item] for rmsimage in self.result.rmsstats])
             # note: np.stats.median_absolute_deviation has the default scale=1.4826 and is deprecated with scipy>1.5.0.
             # TODO: It should replaced with scipy.stats.median_abs_deviation(x, scale='normal') in the future.
             mad_func = compatibility.get_scipy_function_for_mad()

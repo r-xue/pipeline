@@ -117,12 +117,10 @@ class Makermsimages(basetask.StandardTaskTemplate):
                 # PIPE-1163: avoid saving stats from .tt1
                 if '.tt1.' not in rmsimagename:
                     with casa_tools.ImageReader(rmsimagename) as image:
-
-                        rmsstats[rmsimagename] = image.statistics(robust=True)
-                        # Note to self: for CubeRmsimages axes=[0, 1, 3]
-                        # is used while getting statistics
-
-
+                        if self.context.imaging_mode == "VLASS-SE-CUBE":
+                            rmsstats[rmsimagename] = image.statistics(robust=True, axes=[0, 1, 3])
+                        else:
+                            rmsstats[rmsimagename] = image.statistics(robust=True)
         LOG.info("RMS image list: " + ','.join(rmsimagenames))
 
         return MakermsimagesResults(rmsimagelist=imlist, rmsimagenames=rmsimagenames, rmsstats=rmsstats)
