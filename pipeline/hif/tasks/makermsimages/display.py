@@ -1,11 +1,8 @@
 import collections
 import os
-import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.utils.compatibility as compatibility
 from pipeline.h.tasks.common.displays import sky as sky
-from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -55,17 +52,5 @@ class VlassCubeRmsimagesSummary(object):
                                                                   reportdir=stage_dir, intent='', stokes_list=None,
                                                                   collapseFunction='mean'))
             self.result.rmsstats[rmsimagename]['virtspw'] = plot_wrappers[-1].parameters['virtspw']
-            self.result.rmsstats[rmsimagename]['madrms'] = self.result.rmsstats[rmsimagename]['medabsdevmed'] * 1.4826  # see CAS-9631
-
-        stats_summary = {}
-        for item in ['max', 'min', 'mean', 'median', 'sigma', 'madrms']:
-            stats_summary[item] = {'range': np.percentile([self.result.rmsstats[rmsimage][item] for rmsimage in self.result.rmsstats], (0, 100))}
-            value_arr = np.array([self.result.rmsstats[rmsimage][item] for rmsimage in self.result.rmsstats])
-            # note: np.stats.median_absolute_deviation has the default scale=1.4826 and is deprecated with scipy>1.5.0.
-            # TODO: It should replaced with scipy.stats.median_abs_deviation(x, scale='normal') in the future.
-            mad_func = compatibility.get_scipy_function_for_mad()
-            stats_summary[item]['spwwise_madrms'] = mad_func(value_arr, axis=0)
-            stats_summary[item]['spwwise_median'] = np.median(value_arr, axis=0)
-        self.result.stats_summary = stats_summary
 
         return [p for p in plot_wrappers if p is not None]

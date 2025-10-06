@@ -1,10 +1,13 @@
+import numpy as np
 import os
+
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.imagelibrary as imagelibrary
+import pipeline.infrastructure.utils.compatibility as compatibility
 from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -117,12 +120,23 @@ class Makermsimages(basetask.StandardTaskTemplate):
                 # PIPE-1163: avoid saving stats from .tt1
                 if '.tt1.' not in rmsimagename:
                     with casa_tools.ImageReader(rmsimagename) as image:
-                        if self.context.imaging_mode == "VLASS-SE-CUBE":
+                        if self.inputs.context.imaging_mode == "VLASS-SE-CUBE":
                             rmsstats[rmsimagename] = image.statistics(robust=True, axes=[0, 1, 3])
+                            rmsstats[rmsimagename]['madrms'] = rmsstats[rmsimagename]['medabsdevmed'] * 1.4826  # see CAS-9631
+                            stats_summary = {}
+                            for item in ['max', 'min', 'mean', 'median', 'sigma', 'madrms']:
+                                stats_summary[item] = {'range': np.percentile([rmsstats[rmsimage][item] for rmsimage in rmsstats], (0, 100))}
+                                value_arr = np.array([rmsstats[rmsimage][item] for rmsimage in rmsstats])
+                                # note: np.stats.median_absolute_deviation has the default scale=1.4826 and is deprecated with scipy>1.5.0.
+                                # TODO: It should replaced with scipy.stats.median_abs_deviation(x, scale='normal') in the future.
+                                mad_func = compatibility.get_scipy_function_for_mad()
+                                stats_summary[item]['spwwise_madrms'] = mad_func(value_arr, axis=0)
+                                stats_summary[item]['spwwise_median'] = np.median(value_arr, axis=0)
+                            stats_summary = stats_summary
+
                         else:
                             rmsstats[rmsimagename] = image.statistics(robust=True)
         LOG.info("RMS image list: " + ','.join(rmsimagenames))
-
         return MakermsimagesResults(rmsimagelist=imlist, rmsimagenames=rmsimagenames, rmsstats=rmsstats)
 
     def analyse(self, results):
