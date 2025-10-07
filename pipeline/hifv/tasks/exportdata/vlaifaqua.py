@@ -3,6 +3,7 @@ import numpy
 import operator
 import os
 import xml.etree.ElementTree as ElementTree
+from xml.etree.ElementTree import ParseError
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure.logging as logging
@@ -381,176 +382,78 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         """
             return xml for image sensitivity
         """
-
         root = ElementTree.Element("Imaging")
 
         for result in context.results:
             topic = result.read()
-            if topic.taskname == "hif_makeimages":
-                sensitivities = topic.sensitivities_for_aqua
-                for index, sensitivity in enumerate(sensitivities):
-                    nx = ElementTree.Element("image")
-                    try:
-                        if sensitivity['array'] is None:
-                            ElementTree.SubElement(nx, "Array").text = 'N/A'
-                        else:
-                            ElementTree.SubElement(nx, "Array").text = str(sensitivity['array'])
-                    except:
-                        ElementTree.SubElement(nx, "Array").text = 'N/A'
+            if topic.taskname != "hif_makeimages":
+                continue
 
-                    try:
-                        if sensitivity['intent'] is None:
-                            ElementTree.SubElement(nx, "intent").text = 'N/A'
-                        else:
-                            ElementTree.SubElement(nx, "intent").text = str(sensitivity['intent'])
-                    except:
-                        ElementTree.SubElement(nx, "intent").text = 'N/A'
+            sensitivities = topic.sensitivities_for_aqua
+            for index, sensitivity in enumerate(sensitivities):
+                nx = ElementTree.Element("image")
 
-                    try:
-                        if sensitivity['field'] is None:
-                            ElementTree.SubElement(nx, "field").text = 'N/A'
-                        else:
-                            ElementTree.SubElement(nx, "field").text = str(sensitivity['field'])
-                    except:
-                        ElementTree.SubElement(nx, "field").text = 'N/A'
+                simple_tags = [
+                    "array", "intent", "field", "spw",
+                    "is_representative", "bwmode", "cell",
+                    "robust", "datatype"
+                ]
 
+                for tag in simple_tags:
                     try:
-                        if sensitivity['spw'] is None:
-                            ElementTree.SubElement(nx, "spw").text = 'N/A'
-                        else:
-                            ElementTree.SubElement(nx, "spw").text = str(sensitivity['spw'])
-                    except:
-                        ElementTree.SubElement(nx, "spw").text = 'N/A'
+                        value = sensitivity.get(tag)
+                        ElementTree.SubElement(nx, tag).text = 'N/A' if value is None else str(value)
+                    except (KeyError, AttributeError, TypeError) as e:
+                        raise ParseError(f"Error processing field '{tag}': {e}")
 
+                nested_tags = [
+                    ("bandwidth", nx),
+                    ("observed_sensitivity", nx),
+                    ("effective_bw", nx),
+                    ("pbcor_image_min", nx),
+                    ("pbcor_image_max", nx),
+                    ("theoretical_sensitivity", nx if index < len(topic.results) else None),
+                ]
+                for tag, nx in nested_tags:
+                    if nx is None:
+                        continue
                     try:
-                        if sensitivity['is_representative'] is None:
-                            ElementTree.SubElement(nx, "is_representative").text = 'N/A'
+                        data = sensitivity.get(tag)
+                        if data is None or "value" not in data or "unit" not in data:
+                            ElementTree.SubElement(nx, tag).text = 'N/A'
                         else:
-                            ElementTree.SubElement(nx, "is_representative").text = str(sensitivity['is_representative'])
-                    except:
-                        ElementTree.SubElement(nx, "is_representative").text = 'N/A'
+                            ElementTree.SubElement(
+                                nx, tag, Units=str(data["unit"])
+                            ).text = str(data["value"])
+                    except (KeyError, AttributeError, TypeError) as e:
+                        raise ParseError(f"Error processing '{tag}': {e}")
 
+                try:
+                    bw = sensitivity.get("bandwidth")
+                    if bw is None or "value" not in bw or "unit" not in bw:
+                        ElementTree.SubElement(nx, "bandwidth").text = 'N/A'
+                    else:
+                        ElementTree.SubElement(
+                            nx, "bandwidth", Units=str(bw["unit"])
+                        ).text = str(bw["value"])
+                except (KeyError, AttributeError, TypeError) as e:
+                    raise ParseError(f"Error processing 'bandwidth': {e}")
+
+                nx_beam = ElementTree.SubElement(nx, "beam")
+                beam_tags = ["major", "minor"]
+                for tag in beam_tags:
                     try:
-                        if sensitivity['bwmode'] is None:
-                            ElementTree.SubElement(nx, "bwmode").text = 'N/A'
+                        data = sensitivity["beam"][tag]
+                        if data is None or "value" not in data or "unit" not in data:
+                            ElementTree.SubElement(nx_beam, tag).text = 'N/A'
                         else:
-                            ElementTree.SubElement(nx, "bwmode").text = str(sensitivity['bwmode'])
-                    except:
-                        ElementTree.SubElement(nx, "bwmode").text = 'N/A'
+                            ElementTree.SubElement(
+                                nx_beam, tag, Units=str(data["unit"])
+                            ).text = str(data["value"])
+                    except (KeyError, AttributeError, TypeError) as e:
+                        raise ParseError(f"Error processing 'beam.major': {e}")
 
-                    try:
-                        if sensitivity['cell'] is None:
-                            ElementTree.SubElement(nx, "cell").text = 'N/A'
-                        else:
-                            ElementTree.SubElement(nx, "cell").text = str(sensitivity['cell'])
-                    except:
-                        ElementTree.SubElement(nx, "cell").text = 'N/A'
-
-                    try:
-                        if sensitivity['robust'] is None:
-                            ElementTree.SubElement(nx, "robust").text = 'N/A'
-                        else:
-                            ElementTree.SubElement(nx, "robust").text = str(sensitivity['robust'])
-                    except:
-                        ElementTree.SubElement(nx, "robust").text = 'N/A'
-
-                    try:
-                        if sensitivity['bandwidth'] is None:
-                            nx_bandwidth = ElementTree.SubElement(nx, "bandwidth")
-                            nx_bandwidth.text = 'N/A'
-                        else:
-                            nx_bandwidth = ElementTree.SubElement(nx, "bandwidth", Units=str(sensitivity['bandwidth']["unit"]))
-                            nx_bandwidth.text = str(sensitivity['bandwidth']["value"])
-                    except:
-                        nx_bandwidth = ElementTree.SubElement(nx, "bandwidth")
-                        nx_bandwidth.text = 'N/A'
-
-                    nx_beam = ElementTree.SubElement(nx, "beam")
-                    try:
-                        if sensitivity['beam']["major"] is None:
-                            nx_beam_major = ElementTree.SubElement(nx_beam, "major")
-                            nx_beam_major.text = 'N/A'
-                        else:
-                            nx_beam_major = ElementTree.SubElement(nx_beam, "major", Units=str(sensitivity['beam']["major"]["unit"]))
-                            nx_beam_major.text = str(sensitivity['beam']["major"]["value"])
-                    except:
-                        nx_beam_major = ElementTree.SubElement(nx_beam, "major")
-                        nx_beam_major.text = 'N/A'
-
-                    try:
-                        if sensitivity['beam']["minor"] is None:
-                            nx_beam_minor = ElementTree.SubElement(nx_beam, "minor")
-                            nx_beam_minor.text = 'N/A'
-                        else:
-                            nx_beam_minor = ElementTree.SubElement(nx_beam, "minor", Units=str(sensitivity['beam']["minor"]["unit"]))
-                            nx_beam_minor.text = str(sensitivity['beam']["minor"]["value"])
-                    except:
-                        nx_beam_minor = ElementTree.SubElement(nx_beam, "minor")
-                        nx_beam_minor.text = 'N/A'
-
-                    try:
-                        if sensitivity['observed_sensitivity'] is None:
-                            nx_sensitivity = ElementTree.SubElement(nx, "ObservedSensitivity")
-                            nx_sensitivity.text = 'N/A'
-                        else:
-                            nx_sensitivity = ElementTree.SubElement(nx, "ObservedSensitivity", Units=str(sensitivity['observed_sensitivity']["unit"]))
-                            nx_sensitivity.text = str(sensitivity['observed_sensitivity']["value"])
-                    except:
-                        nx_sensitivity = ElementTree.SubElement(nx, "ObservedSensitivity")
-                        nx_sensitivity.text = 'N/A'
-
-                    try:
-                        if sensitivity['effective_bw'] is None:
-                            nx_effective_bw = ElementTree.SubElement(nx, "effective_bw")
-                            nx_effective_bw.text = 'N/A'
-                        else:
-                            nx_effective_bw = ElementTree.SubElement(nx, "effective_bw", Units=str(sensitivity['effective_bw']["unit"]))
-                            nx_effective_bw.text = str(sensitivity['effective_bw']["value"])
-                    except:
-                        nx_effective_bw = ElementTree.SubElement(nx, "effective_bw")
-                        nx_effective_bw.text = 'N/A'
-
-                    try:
-                        if sensitivity['pbcor_image_min'] is None:
-                            nx_pbcor_image_min = ElementTree.SubElement(nx, "pbcor_image_min")
-                            nx_pbcor_image_min.text = 'N/A'
-                        else:
-                            nx_pbcor_image_min = ElementTree.SubElement(nx, "pbcor_image_min", Units=str(sensitivity['pbcor_image_min']["unit"]))
-                            nx_pbcor_image_min.text = str(sensitivity['pbcor_image_min']["value"])
-                    except:
-                        nx_pbcor_image_min = ElementTree.SubElement(nx, "pbcor_image_min")
-                        nx_pbcor_image_min.text = 'N/A'
-
-                    try:
-                        if sensitivity['pbcor_image_max'] is None:
-                            nx_pbcor_image_max = ElementTree.SubElement(nx, "pbcor_image_max")
-                            nx_pbcor_image_max.text = 'N/A'
-                        else:
-                            nx_pbcor_image_max = ElementTree.SubElement(nx, "pbcor_image_max", Units=str(sensitivity['pbcor_image_max']["unit"]))
-                            nx_pbcor_image_max.text = str(sensitivity['pbcor_image_max']["value"])
-                    except:
-                        nx_pbcor_image_max = ElementTree.SubElement(nx, "pbcor_image_max")
-                        nx_pbcor_image_max.text = 'N/A'
-
-                    try:
-                        datatype = ElementTree.SubElement(nx, "datatype")
-                        if sensitivity['datatype'] is None:
-                            datatype.text = 'N/A'
-                        else:
-                            datatype.text = str(sensitivity['datatype'])
-                    except:
-                        datatype.text = 'N/A'
-
-                    if index < len(topic.results):
-                        try:
-                            if sensitivity['theoretical_sensitivity'] is None:
-                                ElementTree.SubElement(nx, "TheoreticalSensitivity").text = 'N/A'
-                            else:
-                                ElementTree.SubElement(nx, "TheoreticalSensitivity",
-                                                       Units=str(sensitivity['theoretical_sensitivity']["unit"])).text = str(sensitivity['theoretical_sensitivity']["value"])
-                        except:
-                            ElementTree.SubElement(nx, "TheoreticalSensitivity").text = 'N/A'
-                    root.append(nx)
+                root.append(nx)
 
         return root
 
