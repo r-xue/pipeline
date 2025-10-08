@@ -30,7 +30,6 @@ from urllib.parse import urlparse
 
 import numpy as np
 import numpy.typing as npt
-from pympler.asizeof import asizeof
 
 from .. import casa_tools, logging
 from .conversion import commafy, dequote, range_to_list
@@ -536,7 +535,7 @@ def get_taskhistory_fromimage(imagename: str):
     return taskhistory_list
 
 
-def get_obj_size(obj: Any, serialize: bool = False) -> int:
+def get_obj_size(obj: Any, serialize: bool = True) -> int:
     """Estimate the size of a Python object.
 
     If serialize is True, returns the size of the serialized object. Note that this is NOT
@@ -546,10 +545,12 @@ def get_obj_size(obj: Any, serialize: bool = False) -> int:
     method of Pympler (https://pypi.org/project/Pympler).
     An alternative is the get_deep_size() function from objsize (https://pypi.org/project/objsize).
 
-    The serialization-based approach was a fallback solution for the issues described in PIPE-1698, but
-    was resolved in Pympler ver 1.1.
+    The serialization-based approach was a fallback solution for the issues described in PIPE-1698/PIPE-2877.
+    The `asize.py` bug described in PIPE-2877 remain unresolved as of Pympler ver 1.1.
 
-    See https://github.com/pympler/pympler/issues/155 for details and PIPE-1698 and PIPE-2877 for background.
+    See the GH issues for details and PIPE-1698 and PIPE-2877 for background:
+        https://github.com/pympler/pympler/issues/155
+        https://github.com/pympler/pympler/issues/151
 
     Args:
         obj: The Python object to measure.
@@ -563,8 +564,14 @@ def get_obj_size(obj: Any, serialize: bool = False) -> int:
     """
     if serialize:
         return len(pickle.dumps(obj, protocol=-1))
-
-    return asizeof(obj)
+    try:
+        from pympler.asizeof import asizeof
+        return asizeof(obj)
+    except ImportError as err:
+        LOG.debug('Pympler import failed: %s', err)
+        raise ModuleNotFoundError(
+            'Pympler is required for in-memory size calculation. Please install it with: pip install pympler'
+        ) from err
 
 
 def glob_ordered(pattern: str, *args, order: Optional[str] = None, **kwargs) -> List[str]:
