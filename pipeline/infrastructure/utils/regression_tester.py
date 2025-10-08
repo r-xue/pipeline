@@ -1,28 +1,28 @@
-"""
-Pipeline Regression framework.
+"""Pipeline Regression Testing Framework.
 
-PipelineRegression class runs on pytest framework, so it needs to implement
-test_* methods for testing.
+This module provides the `PipelineRegression` class and associated pytest test functions
+for automated regression testing of the NRAO pipeline. It supports both ALMA and VLA
+pipelines, using either Pipeline Processing Request (PPR) files or recipe XML files.
+
+See individual test functions or class methods for examples of ALMA, VLA, and VLASS 
+regression tests.
 """
+
 from __future__ import annotations
 
 import ast
-import shutil
-import datetime
 import glob
 import os
-import packaging.version
-import platform
-import pytest
 import re
+import shutil
 from typing import TYPE_CHECKING, Optional
 
-from casatasks.private import tec_maps
+import packaging.version
+import pytest
 
 from pipeline import environment, infrastructure, recipereducer
 from pipeline.infrastructure import casa_tools, executeppr, executevlappr, launcher, utils
 from pipeline.infrastructure.renderer import regression
-from pipeline.infrastructure import mpihelpers
 
 if TYPE_CHECKING:
     from packaging.version import Version
