@@ -520,8 +520,13 @@ class Editimlist(basetask.StandardTaskTemplate):
         if img_mode.startswith('VLASS-SE-CONT'):
             # If 0 hif_makeimlist results are found, then we are in stage 1
             th.vlass_stage = utils.get_task_result_count(inp.context, 'hif_makeimages') + 1
+
             # Below method only exists for ImageParamsHeuristicsVlassSeCont and ImageParamsHeuristicsVlassSeContAWPP001
             th.set_user_cycleniter_final_image_nomask(inpdict['cycleniter_final_image_nomask'])
+
+            # PIPE-2834: set custom wprojplanes for VLASS-SE-CONT-AWP modes if speciefied by user
+            if img_mode in ('VLASS-SE-CONT', 'VLASS-SE-CONT-AWP', 'VLASS-SE-CONT-AWP2', 'VLASS-SE-CONT-AWPHPG'):
+                imlist_entry['wprojplanes'] = inpdict.get('wprojplanes', None)
 
         # For VLASS-SE-CUBE, we only run hif_makeimages once and reuse most imaging heuristics
         # from SE-CONT-MOSAIC/vlass_stage=3. Therefore, ImageParamsHeuristicsVlassSeCube is constructed
