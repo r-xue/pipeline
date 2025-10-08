@@ -1,8 +1,4 @@
-"""
-The utils module contains general-purpose uncategorised utility functions and
-classes.
-"""
-# Do not evaluate type annotations at definition time.
+"""general-purpose uncategorised utility functions and classes."""
 from __future__ import annotations
 
 import ast
@@ -28,12 +24,13 @@ from collections.abc import Iterable
 from datetime import datetime
 from functools import wraps
 from numbers import Number
-from typing import (Any, Callable, Collection, Dict, List, Optional, Sequence,
-                    Tuple, TYPE_CHECKING, Union, Iterator, TextIO)
+from typing import (TYPE_CHECKING, Any, Callable, Collection, Dict, Iterator,
+                    List, Optional, Sequence, TextIO, Tuple, Union)
 from urllib.parse import urlparse
 
 import numpy as np
 import numpy.typing as npt
+from pympler.asizeof import asizeof
 
 from .. import casa_tools, logging
 from .conversion import commafy, dequote, range_to_list
@@ -539,38 +536,39 @@ def get_taskhistory_fromimage(imagename: str):
     return taskhistory_list
 
 
-def get_obj_size(obj, serialize=True):
+def get_obj_size(obj: Any, serialize: bool = False) -> int:
     """Estimate the size of a Python object.
 
-    If serialize=True, the size of a serialized object is returned. Note that this is NOT the
-    same as the object size in memory.
+    If serialize is True, returns the size of the serialized object. Note that this is NOT
+    the same as the object size in memory.
 
-    When serialize=False, the memory consumption of the object is returned via
-    the asizeof method of Pympler.:
-        pympler.asizeof.asizeof(obj) # https://pypi.org/project/Pympler
-    An alternative is the get_deep_size() function from objsize.
-        objsize.get_deep_size(obj)   # https://pypi.org/project/objsize
+    When serialize is False, returns the memory consumption of the object via the asizeof
+    method of Pympler (https://pypi.org/project/Pympler).
+    An alternative is the get_deep_size() function from objsize (https://pypi.org/project/objsize).
+
+    The serialization-based approach was a fallback solution for the issues described in PIPE-1698, but
+    was resolved in Pympler ver 1.1.
+
+    See https://github.com/pympler/pympler/issues/155 for details and PIPE-1698 and PIPE-2877 for background.
+
+    Args:
+        obj: The Python object to measure.
+        serialize: If True, measure serialized size; if False, measure memory size using Pympler.
+
+    Returns:
+        The size of the object in bytes.
+
+    Raises:
+        Exception: If serialize is False and Pympler is not installed.
     """
-
     if serialize:
         return len(pickle.dumps(obj, protocol=-1))
-    else:
-        try:
-            from pympler.asizeof import asizeof
 
-            # PIPE-1698: a workaround for NumPy-related issues with the recent Pympler/asizeof versions
-            # see https://github.com/pympler/pympler/issues/155
-            _ = asizeof(np.str_())
-        except ImportError as err:
-            LOG.debug('Import error: {!s}'.format(err))
-            raise Exception(
-                "Pympler/asizeof is not installed, which is required to run get_obj_size(obj, serialize=False).")
-        return asizeof(obj)
+    return asizeof(obj)
 
 
 def glob_ordered(pattern: str, *args, order: Optional[str] = None, **kwargs) -> List[str]:
     """Return a sorted list of paths matching a pathname pattern."""
-
     path_list = glob.glob(pattern, *args, **kwargs)
 
     if order == 'mtime':
