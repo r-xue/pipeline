@@ -7,7 +7,6 @@ pipelines, using either Pipeline Processing Request (PPR) files or recipe XML fi
 See individual test functions or class methods for examples of ALMA, VLA, and VLASS 
 regression tests.
 """
-
 from __future__ import annotations
 
 import ast
@@ -274,7 +273,7 @@ class PipelineRegression:
             casa_tools.casalog.ompSetNumThreads(omp_num_threads)
 
         try:
-            with utils.working_directory(os.path.join(self.output_dir, 'working'), create=True) as cwd:
+            with utils.work_directory(self.output_dir, create=True, subdir=True):
                 if not self.compare_only:
                     # run the pipeline for new results
                     if self.ppr:
@@ -283,8 +282,8 @@ class PipelineRegression:
                         self.__run_reducer(input_vis)
 
                 # Do sanity checks
-                self.__do_sanity_checks()                        
-                
+                self.__do_sanity_checks()
+
                 # Get new results
                 new_results = self.__get_results_of_from_current_context()
 
@@ -298,7 +297,6 @@ class PipelineRegression:
                 self.__compare_results(new_file, default_relative_tolerance)
 
         finally:
-
             # clean up if requested
             if not self.compare_only and self.remove_workdir and os.path.isdir(self.output_dir):
                 shutil.rmtree(self.output_dir)

@@ -4,18 +4,16 @@ import os
 import platform
 import shutil
 import sys
+import traceback
 from datetime import datetime, timezone
 from typing import IO, Generator
-import traceback
 
 import casaplotms
+import casatasks
 import casatasks.private.tec_maps as tec_maps
 
 from .. import casa_tools, daskhelpers, mpihelpers
 from .. import logging as pipeline_logging
-
-
-import casatasks
 
 old_stdout, old_stderr = sys.stdout, sys.stderr
 
@@ -24,7 +22,7 @@ __all__ = [
     'get_casa_session_details',
     'request_omp_threading',
     'reset_logfiles',
-    'working_directory',
+    'work_directory',
     'capture_output',
     'exec_func',
     'change_stream_for_all_streamhandlers',
@@ -98,8 +96,8 @@ def capture(fd):
     # * sys.stdout is also being directed to f filedescriotor
     # clean out
 
-    from wurlitzer import STDOUT, pipes
     import casatasks
+    from wurlitzer import STDOUT, pipes
 
     casatasks.casalog.showconsole(onconsole=False)
 
@@ -183,38 +181,64 @@ def exec_func(fn: callable, *args, include_client: bool = True, **kwargs) -> Non
 
 
 @contextlib.contextmanager
-def working_directory(
-    path: str, create: bool = False, cleanup: bool = False, reset=True, capture=False
+def work_directory(
+    workdir: str,
+    create: bool = False,
+    cleanup: bool = False,
+    reset: bool = True,
+    capture: bool | str = False,
+    subdir: bool = False,
 ) -> Generator[str, None, None]:
-    """Context manager that temporarily changes the working directory.
+    """A context manager to temporarily change the working directory.
 
-    Changes the current working directory to the specified path and returns to the original
-    directory when the context is exited. Optionally creates the directory or cleans it before use.
+    Changes the current working directory for a Pipeline session to the specified path.
+    Optionally, it can restore the original directory upon exiting the context, create the
+    directory, clean its contents, and manage CASA-specific configurations (e.g. casalog files)
 
     Args:
-        path: The path to the directory to change to.
-        create: If True, create the directory if it doesn't exist.
-        cleanup: If True, remove all files in the directory before using it.
+        workdir: The path to the target directory.
+        create: If True, creates the directory (and subdirectories if `subdir`
+            is True) if it does not already exist.
+        cleanup: If True, recursively removes all files and directories within
+            the target working directory before execution.
+        reset: If True, resets CASA log files and other modules before execution
+            and upon exit.
+        capture: If True, captures CASA logs to a new timestamped log file. If
+            a string is provided, it is used as the log file path.
+        subdir: If True, creates and uses a standard subdirectory structure
+            (products, working, rawdata) within `workdir`. The context will
+            change into the 'working' subdirectory.
 
     Yields:
-        The absolute path of the working directory.
+        The absolute path to the CASA log file being used within the context.
 
     Example:
-        with working_directory('/path/to/workdir', create=True, cleanup=True) as work_dir:
-            print(f"Working in {work_dir}")
-            run_job()
+        with work_directory('/tmp/my_analysis', create=True, cleanup=True) as log_file:
+            print(f"Working in directory. Logs are being saved to {log_file}")
+            # Your code runs here, in the '/tmp/my_analysis' directory
     """
     current_dir = os.getcwd()
+    workdir_path = os.path.abspath(workdir)
 
-    # Create directory if requested and doesn't exist
-    if create and not os.path.exists(path):
-        os.makedirs(path)
+    if subdir:
+        # Define and check the standard subdirectory structure
+        path = os.path.join(workdir_path, 'working')
+        dir_checklist = [os.path.join(workdir_path, name) for name in ['products', 'working', 'rawdata']]
+    else:
+        path = workdir_path
+        dir_checklist = [path]
 
-    # Clean up directory if requested
-    if cleanup and os.path.exists(path):
+    if create:
+        # Create directory structure if it doesn't exist
+        # From a mpicasa-enabled CASA session, only the client process should create directories.
+        for dir_to_create in dir_checklist:
+            os.makedirs(dir_to_create, exist_ok=True)
+
+    if cleanup and os.path.isdir(path):
+        # Clean up the target directory's contents
         for item in os.listdir(path):
             item_path = os.path.join(path, item)
-            if os.path.isfile(item_path):
+            if os.path.isfile(item_path) or os.path.islink(item_path):
                 os.unlink(item_path)
             elif os.path.isdir(item_path):
                 shutil.rmtree(item_path)
@@ -229,12 +253,14 @@ def working_directory(
             now_str = datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S')
             ret_casa_logfile = os.path.abspath(f'casa-{now_str}.log')
 
+    # The following operations are performed on all processes (using exec_func) to maintain consistency
+
     try:
         exec_func(os.chdir, path)
         if reset:
             exec_func(reset_logfiles, casa_logfile=ret_casa_logfile, prepend=False)
-            # PIPE-1301: shut down the existing plotms process to avoid side-effects from changing CWD.
-            # This is implemented as a workaround for CAS-13626
+            # PIPE-1301: Shut down existing plotms to avoid side-effects from changing CWD.
+            # This is a workaround for CAS-13626.
             exec_func(shutdown_plotms)
             exec_func(reset_tec_maps_module)
         if capture:
