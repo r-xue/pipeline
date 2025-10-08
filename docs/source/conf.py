@@ -308,9 +308,17 @@ html_sidebars = {
 # -- napoleon
 
 napoleon_google_docstring = True
-apoleon_numpy_docstring = False
-napoleon_use_param = False
-napoleon_use_ivar = True
+napoleon_numpy_docstring = True
+napoleon_include_init_with_doc = True
+napoleon_include_private_with_doc = False
+napoleon_include_special_with_doc = True
+napoleon_use_admonition_for_examples = False
+napoleon_use_admonition_for_notes = False
+napoleon_use_admonition_for_references = False
+napoleon_use_ivar = False
+napoleon_use_param = True
+napoleon_use_rtype = True
+napoleon_attr_annotations = True
 
 
 verbatimwrapslines = False
@@ -325,8 +333,8 @@ autosummary_ignore_module_all = False  # respect `__alll__` in autosummary to ge
 # autodoc_mock_imports = ["pipeline"]
 # autodoc_default_options = ['members']
 
-# disable type hints for the task refernece PDF
-autodoc_typehints = 'none'
+# Optionally, could disable type hints for the cleaner-look task refernece PDF
+autodoc_typehints = 'signature'  # 'none'
 
 autodoc_default_options = {
     # other options
