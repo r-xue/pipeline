@@ -44,8 +44,7 @@ class PipelineRegression:
             expectedoutput_file: Optional[str] = None,
             expectedoutput_dir: Optional[str] = None
             ):
-        """
-        Initializes a PipelineRegression instance.
+        """Initializes a PipelineRegression instance.
 
         A list of MeasurementSet names (`visname`) is required. Either `ppr` or `recipe` must be provided; 
         if both are given, `ppr` takes precedence.
@@ -283,6 +282,10 @@ class PipelineRegression:
 
                 # Do sanity checks
                 self.__do_sanity_checks()
+
+                # Copy the reference results file to current working directory for record
+                if self.expectedoutput_file and os.path.exists(self.expectedoutput_file):
+                    shutil.copyfile(self.expectedoutput_file, os.path.basename(self.expectedoutput_file))
 
                 # Get new results
                 new_results = self.__get_results_of_from_current_context()
