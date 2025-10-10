@@ -1,12 +1,15 @@
+import contextlib
+import contextvars
 import inspect
 from functools import wraps
-from typing import Callable, Any
+from typing import Any, Callable, Generator
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure.argmapper as argmapper
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import exceptions, task_registry, utils
+from pipeline.infrastructure.launcher import current_task_name
 
 from .. import heuristics
 from . import cli
@@ -70,12 +73,21 @@ def cli_wrapper(func: Callable) -> Callable:
         all_inputs = dict(bound_arguments.arguments)
 
         context = get_context()
-        results = execute_task(context, task_name, all_inputs)
+        with set_contextvar(current_task_name, task_name):
+            results = execute_task(context, task_name, all_inputs)
 
         return results
 
     return wrapper
 
+@contextlib.contextmanager
+def set_contextvar(var: contextvars.ContextVar, value: Any) -> Generator[None, None, None]:
+    """A context manager to safely set and reset a ContextVar."""
+    token = var.set(value)
+    try:
+        yield
+    finally:
+        var.reset(token)
 
 def get_context():
     """Retrieve the current pipeline context."""

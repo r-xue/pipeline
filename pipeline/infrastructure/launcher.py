@@ -2,6 +2,7 @@
 The launcher module contains classes to initialize the pipeline, potentially
 from a saved context state.
 """
+import contextvars
 import datetime
 import os
 import pickle
@@ -9,8 +10,8 @@ import pprint
 from typing import Any
 
 from pipeline import domain, environment
-from . import (callibrary, casa_tools, eventbus, imagelibrary, logging,
-               project, utils)
+
+from . import callibrary, casa_tools, eventbus, imagelibrary, logging, project, utils
 from .eventbus import ContextCreatedEvent, ContextResumedEvent
 
 LOG = logging.get_logger(__name__)
@@ -19,6 +20,9 @@ LOG = logging.get_logger(__name__)
 MIN_CASA_REVISION = [6, 6, 6, 16]
 # maximum allowed CASA revision. Set to 0 or None to disable
 MAX_CASA_REVISION = None
+
+# Define the thread-safe context variable here for the current task executaton state
+current_task_name = contextvars.ContextVar('current_task_name', default=None)
 
 
 class Context:
