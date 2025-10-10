@@ -73,8 +73,7 @@ class PipelineStatistic:
     """
     def __init__(self, name: str, value: Union[str, int, float, List, Dict, Set, np.int64, np.ndarray],
                  longdesc: str, origin: str = '', units: str = '',
-                 level: PipelineStatisticLevel = None, spw: str = None, mous: str = None, eb: str = None,
-                 source: str = None):
+                 level: PipelineStatisticLevel = None):
 
         self.name = name
         self.value = value
@@ -82,7 +81,6 @@ class PipelineStatistic:
         self.units = units
         # The level indicates whether a given quantity applies to the whole MOUS, EB, or SPW
         self.level = level
-        # The spw, mous, and/or eb are set, if applicable.
         self.origin = origin
 
         # Convert initial value from the pipeline to a value that can be serialized by JSON
