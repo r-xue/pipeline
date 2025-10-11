@@ -261,7 +261,7 @@ def log_host_environment():
             f'\tAvailable memory: {domain.measures.FileSize(env.casa_memory, domain.measures.FileSizeUnits.BYTES)}'
         )
 
-        if not infrastructure.daskhelpers.is_worker():
+        if infrastructure.daskhelpers.is_daskclient_allowed():
             LOG.debug('Dependency details:')
             for dep_name, dep_detail in environment.dependency_details.items():
                 if dep_detail is None:
@@ -328,11 +328,27 @@ def inherit_docstring_and_type_hints():
 
 inherit_docstring_and_type_hints()
 
-if not infrastructure.daskhelpers.is_worker():
+if infrastructure.daskhelpers.is_daskclient_allowed():
     log_host_environment()
 
 if config.config['pipeconfig'].get('xvfb', False):
-    start_xvfb()
+    if not infrastructure.mpihelpers.is_mpi_server():
+        # Avoid starting Xvfb in the MPI server process to prevent multiple nested instances.
+        # By design, casampi already starts Xvfb for all MPI worker processes.
+        if os.getenv("XVFB_RUN") == "1":
+            # Avoid starting another Xvfb instance if already running under xvfb-run
+            start_xvfb()
 
-if config.config['pipeconfig']['dask']['autostart']:
+if config.config['pipeconfig']['dask']['autostart'] and infrastructure.daskhelpers.is_daskclient_allowed():
+    # Automatically start a Dask cluster if allowed.
+    # However, this is generally discouraged because it can cause:
+    #   - Accidental recursive process creation
+    #   - Unintended Dask configurations in interactive sessions
+    #   - Slower import times due to Dask and distributed initialization
+    #   - Limited flexibility in cluster configuration
+    #     (we rely on configuration files and environment variables)
+    #   - Increased difficulty in testing
+    #   - etc.
+    # Therefore, it is recommended to start the Dask cluster explicitly
+    # within the main program when needed.
     infrastructure.daskhelpers.start_daskcluster()

@@ -98,7 +98,6 @@ def show_config(verbose: bool = True) -> list:
     Returns:
         A list containing the flattened key-value pairs of the configuration.
     """
-
     config_list = _get_flat_keys_and_values(config)
 
     if verbose:

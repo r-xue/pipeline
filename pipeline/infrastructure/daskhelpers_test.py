@@ -15,6 +15,7 @@ To run these tests, use the following command:
 
 ```bash
 pytest -vs pipeline/infrastructure/daskhelpers_test.py
+casa_python -m pytest -vs pipeline/infrastructure/daskhelpers_test.py
 ```
 """
 
