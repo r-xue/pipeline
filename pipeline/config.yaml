@@ -10,7 +10,10 @@ pipeconfig:
   xvfb: false # option for directly spawn xvfb server from the python session, pyvirtualdisplay is required for xvfb=True
   omp_num_threads: 4 # not used yet
   dask:
-    dashboard_address: "localhost:0"
+    tier0futures: true
+    autostart: false
+    host: null # 0.0.0.0 to bind to all interfaces / acessile from network, null for default localhost
+    dashboard_address: ":0" # Port for the dask dashboard: ":0" to auto-select a port, null to disable
     clustertype: "local" # htcondor / slurm
     n_workers: null
     distributed:
@@ -28,15 +31,15 @@ pipeconfig:
         heartbeat_interval: 10000 # Heartbeat interval in milliseconds
     jobqueue:
       slurm:
-        name: "pipe-dask-worker"
-        queue: "queue"
+        name: null # default to daskhelper.default_worker_name()
+        # queue: "queue"
         cores: 1 # Total number of cores per job
         processes: 1 # Number of Python processes per job        
         memory: "10gb" # Total memory per job
         walltime: "1-0:0:0"
         # interface: "eno1"        
       htcondor:
-        name: "pipe-dask-worker" # Name of the worker jobs
+        name: null  # default to daskhelper.default_worker_name()
         cores: 1 # Number of cores per job
         processes: 1 # Number of processes per worker        
         memory: "8GB" # Memory per job
@@ -50,15 +53,10 @@ pipeconfig:
           # when_to_transfer_output: "ON_EXIT"
           max_retries: 3
         # Other settings
-        
-
         # interface: "eno1" # Network interface to use
         death_timeout: "60s" # Timeout for worker death
         # local_directory: "/tmp"     # Directory to store local worker files
         log_directory: "/tmp/htcondor_logs/" # Directory to store logs
-
-    tier0futures: true
-    autostart: false
 
 casaconfig: # all values are null for now, so the settings determined by casaconfig remain unchanged.
   measures_auto_update: null

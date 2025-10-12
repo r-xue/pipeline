@@ -23,6 +23,7 @@ import datetime
 import importlib.util
 import os
 import socket
+import subprocess
 from importlib.resources import files
 from pprint import pformat
 from typing import Dict, Optional, Tuple, Union
@@ -42,8 +43,8 @@ dask_available = all([dask_spec, distributed_spec, dask_jobqueue_spec])
 is_mpi_session = False
 is_mpi_worker = False
 if importlib.util.find_spec('casampi'):
-    from mpi4py import MPI
     from casampi.MPIEnvironment import MPIEnvironment
+    from mpi4py import MPI
 
     is_mpi_session = MPIEnvironment.is_mpi_enabled
     is_mpi_worker = MPIEnvironment.is_mpi_enabled and not MPIEnvironment.is_mpi_client
@@ -56,7 +57,7 @@ if dask_available and not is_mpi_worker:
     # We should avoid importing dask in MPI worker processes as some Python libraaries (e.g. signal)
     # are only allowed in main thread of the main interpreter.
     import dask
-    from dask.distributed import Client, LocalCluster, WorkerPlugin
+    from dask.distributed import Client, LocalCluster
     from dask.distributed.worker import Worker
     from dask_jobqueue import HTCondorCluster, SLURMCluster
 else:
@@ -80,20 +81,34 @@ __all__ = [
 ]
 
 
-def sanitize_env_for_children():
-    # Remove the usual OpenMPI/PMIx env keys that confuse MPI_Init in child processes.
-    # This is best done on rank 0 *only* and only when you know removing them won't break other MPI ranks.
-
+def sanitize_env_for_children() -> None:
+    """Remove MPI/PMIx environment variables that can confuse child processes.
+    
+    This function removes environment variables with specific MPI-related prefixes
+    that can cause MPI_Init failures in child processes. These variables may confuse
+    OpenMPI when child processes are not properly registered as ranks.
+    
+    Note:
+        This should typically be called on rank 0 only, and only when removing
+        these variables won't affect other MPI ranks.
+    
+    Warning:
+        Child processes inheriting MPI environment variables may experience
+        MPI_Init failures due to registration conflicts.
+    """
+    # MPI-related prefixes that should be removed from child process environments,
+    # mainly relevant to LocalCluster which uses multiprocessing.
     # mpi_prefixes=("OMPI_", "PMI_", "PMIX", "PRTE", "SLURM_", 'OPAL_')
     mpi_prefixes = ('PMIX', 'PRTE', 'OMPI', 'PMIX_SERVER', 'PRTE_')
+    
     for prefix in mpi_prefixes:
         for key in list(os.environ):
             if key.startswith(prefix):
-                os.environ.pop(key, None)
+                os.environ.pop(key, None)                
 
 
 def is_worker() -> bool:
-    """Determine if the current process is running as a Dask worker or MPI-Server
+    """Determine if the current process is running as a Dask worker or MPI-Server.
 
     This function checks if the current Python process is executing inside a Dask
     worker. It uses a reliable method that works even during the worker setup
@@ -116,7 +131,7 @@ def is_worker() -> bool:
 
 
 def is_daskclient_allowed():
-    """Check if Dask client/initialization is allowed in the current process
+    """Check if Dask client/initialization is allowed in the current process.
 
     Returns:
         bool: True if a Dask client/cluster initialization is permitted, False otherwise.
@@ -157,7 +172,16 @@ class FutureTask:
             executable,
             human_file_size(get_obj_size(executable)),
         )
-        self.future = daskclient.submit(future_exec, executable)
+        # pure=False to disable dask caching, as the same task with same args might be submitted multiple times
+        # but with different underlying data (e.g. different MS files)
+        #
+        # see: https://distributed.dask.org/en/stable/client.html#pure-functions-by-default
+        #
+        # Note:
+        # - The task (myfunc(arg1, arg2)) is sent to a Dask worker.
+        # - The worker computes the result and stores it in memory on that worker.
+        # - The future object (on the client) is just a reference to that in-memory result.
+        self.future = daskclient.submit(future_exec, executable, pure=True)
 
     def get_result(self):
         """Retrieves the result from the Dask future and merges CASA logs.
@@ -298,18 +322,40 @@ def start_daskcluster(
         Client: A Dask client instance if the cluster is successfully started,
                 None otherwise.
     """
+    from dask.distributed import WorkerPlugin
+    
     global daskclient, tier0futures
 
-    def custom_worker_init(logfile):
-        # os.environ['_CASA_LOGFILE'] = logfile
-        print(f'Initialized worker with PID: {os.getpid()}, logfile: {logfile}')
+    class SetupPlugin(WorkerPlugin):
+        """A Dask WorkerPlugin to run custom setup code on each worker."""
 
-    class CustomInitPlugin(WorkerPlugin):
+        def __init__(self, config=None):
+            self.config = config or {}
+
         def setup(self, worker):
+            last_logfile = casatasks.casalog.logfile()
+            if self.config.get('logfile'):
+                logfile = self.config.get('logfile')
+                if logfile != last_logfile:
+                    casatasks.casalog.setlogfile(logfile)
+                    try:
+                        os.remove(last_logfile)
+                    except FileNotFoundError:
+                        pass
+            else:
+                logfile = last_logfile
             logfile = casatasks.casalog.logfile()
-            print(
+            LOG.info(
                 f'Initialized {worker.id} @ {worker.address} - {socket.gethostname()} - PID: {os.getpid()}\n    logfile: {logfile}'
             )
+
+    class RemoteCondorCluster(HTCondorCluster):
+        def _submit_job(self, script_filename):
+            # Override to call condor_submit remotely
+            cmd = ['ssh', 'localhost', 'condor_submit', script_filename]
+            print('condor_submit command:', ' '.join(cmd))
+            return subprocess.check_output(cmd).decode().strip()
+
 
     if not dask_available:
         LOG.warning('dask[distributed] not installed; skipping...')
@@ -317,6 +363,8 @@ def start_daskcluster(
 
     dask_config_session = config['pipeconfig']['dask']
     LOG.debug('dask config (session): \n %s', pformat(dask_config_session))
+    # `dask.config` is the module containing the global configuration state.
+    # we merge the session config with the package built-in defaults and then consolidate into `dask.config`.
     dask.config.update_defaults(dask_config_session)
     if dask_config is not None:
         LOG.debug('dask config (user): \n %s', pformat(dask_config))
@@ -332,50 +380,84 @@ def start_daskcluster(
     # scheduler_port = dask.config.get('distributed.scheduler.port', default=None)
 
     dashboard_address: Optional[str] = dask.config.get('dashboard_address', default=None)
+    host: Optional[str] = dask.config.get('host', default=None)
     n_workers: Optional[int] = dask.config.get('n_workers', default=None)
     clustertype: Optional[str] = dask.config.get('clustertype', default=None)
 
     if is_daskclient_allowed():
         cluster: Union[LocalCluster, SLURMCluster, None] = None
+
         path_to_resources_pkg = str(files('pipeline'))
         preload_script = os.path.join(path_to_resources_pkg, 'cleanup_mpi_environment.py')
+        pythonpath_pkg = os.path.abspath(os.path.join(path_to_resources_pkg, os.pardir))
 
         if clustertype == 'local':
             sanitize_env_for_children()
             if n_workers is None or n_workers <= 0:
-                n_workers = _default_n_workers()
+                n_workers = default_n_workers()
+            preload = []
+            if os.path.exists(preload_script):
+                LOG.info('Using dask worker preload script: %s', preload_script)
+                preload.extend([preload_script])
             cluster = LocalCluster(
                 n_workers=n_workers,
+                host=host,
                 dashboard_address=dashboard_address,
-                processes=True,  # True to avoid GIL, but risk of worker process inherit the MPI environment, leading to MPI_Init failure:  Open MPI gets confused because those child processes are not properly registered as ranks
+                processes=True,  # True to avoid GIL; False to use threads but casatools is not fully thread-safe.
                 threads_per_worker=1,
-                # multiprocessing_context="spawn",
                 scheduler_port=0,  # random free port to avoid conflicts
-                # preload=[preload_script]
+                preload=preload,
             )
         elif clustertype == 'slurm':
             if n_workers is None or n_workers <= 0:
-                n_workers = _default_n_workers()
+                n_workers = default_n_workers()
+            sanitize_env_for_children()
+            worker_extra_args = []
+            if os.path.exists(preload_script):
+                LOG.info('Using dask worker preload script: %s', preload_script)
+                worker_extra_args.extend(['--preload', preload_script])
             cluster = SLURMCluster(
                 n_workers=n_workers,
-                name=dask.config.get('jobqueue.slurm.name', default=None),
+                job_name=default_worker_name('jobqueue.slurm.name1'),
+                name=default_worker_name('jobqueue.slurm.name'),
+                queue=dask.config.get('jobqueue.slurm.queue', default=default_slurm_queue()),
                 silence_logs='debug',
                 # log_directory='dask-logs',
+                # job_extra_directives=[
+                #     "#SBATCH --job-name=pipeline/dask-worker",
+                #     "#SBATCH --output=dask-worker-%j.out",
+                #     "#SBATCH --error=dask-worker-%j.err",
+                # ],       
+                # job_script_epilogue=[
+                #     # Any final cleanup steps if needed
+                #     "echo Worker exiting on $(hostname) at $(date)"
+                # ],                #          
+                host=host,
                 scheduler_options={'dashboard_address': dashboard_address},
-                worker_extra_args=['--preload', preload_script],
+                death_timeout="60s",
+                worker_extra_args=worker_extra_args,
+                job_script_prologue=[f'export PYTHONPATH={pythonpath_pkg}:$PYTHONPATH'],
             )
-            cluster.scale(n_workers)
+            # cluster.scale(n_workers)
             LOG.debug('dask SLURMCluster job script: \n %s', pformat(cluster.job_script()))
         elif clustertype == 'htcondor':
             sanitize_env_for_children()
             if n_workers is None or n_workers <= 0:
-                n_workers = _default_n_workers()
-            cluster = HTCondorCluster(
+                n_workers = default_n_workers()
+            worker_extra_args = []
+            if os.path.exists(preload_script):
+                LOG.info('Using dask worker preload script: %s', preload_script)
+                worker_extra_args.extend(['--preload', preload_script])
+            cluster = RemoteCondorCluster(
                 n_workers=n_workers,
-                name=dask.config.get('jobqueue.htcondor.name', default=None),
+                job_name=default_worker_name('jobqueue.htcondor.name'),
+                name=default_worker_name('jobqueue.htcondor.name'),
+                host=host,
                 scheduler_options={'dashboard_address': dashboard_address},
-                worker_extra_args=['--preload', preload_script],
+                worker_extra_args=worker_extra_args,
+                job_script_prologue=[f'export PYTHONPATH={pythonpath_pkg}:$PYTHONPATH'],
             )
+            # cluster.scale(n_workers)
             LOG.debug('dask HTCondorCluster job script: \n %s', pformat(cluster.job_script()))
         else:
             LOG.warning('dask cluster specification (%s) not valid, skipping!', clustertype)
@@ -407,13 +489,17 @@ def start_daskcluster(
         )
 
         # prefer using plugin which automatically applied to new workers joined by scaling
-        daskclient.register_plugin(CustomInitPlugin())
+        plugin = SetupPlugin(config={'logfile': casatasks.casalog.logfile()})
+        daskclient.register_plugin(plugin)
 
         # daskclient.run(session_startup, {})
         # casaconfig: Dict[str, Optional[str]] = {"logfile": casalogfile}
         # import casatasks
         # casalogfile: Optional[str] = None
         # casalogfile = casatasks.casalog.logfile()
+        # def custom_worker_init(logfile):
+        #     # os.environ['_CASA_LOGFILE'] = logfile
+        #     print(f'Initialized worker with PID: {os.getpid()}, logfile: {logfile}')        
         # daskclient.run(custom_worker_init, casalogfile)
 
         tier0futures = bool(dask.config.get('tier0futures', default=None))
@@ -490,20 +576,43 @@ def stop_daskcluster() -> None:
     return
 
 
-def _default_n_workers():
-    """default n_worker heuristics."""
-
-    from dask.system import CPU_COUNT as _num_core_cgroup
+def default_n_workers():
+    """Dynamically determins the optimal default n_worker."""
+    from dask.system import CPU_COUNT
 
     # cape the fallback local/jobqueue worker number at 4
-    _default_n_workers_local = min(_num_core_cgroup, 4)
+    default_n_workers_local = min(CPU_COUNT, 4)
 
     # discover the cores assigned to slurm/htcondor jobs
-    _num_slurm_core = int(os.getenv('SLURM_NTASKS', 0))
-    if _num_slurm_core > 0:
-        _default_n_workers_local = _num_slurm_core
-    _num_condor_core = int(os.getenv('PYTHON_CPU_COUNT', 0))
-    if _num_condor_core > 0:
-        _default_n_workers_local = _num_condor_core
+    num_slurm_core = int(os.getenv('SLURM_NTASKS', 0))
+    if num_slurm_core > 0:
+        default_n_workers_local = num_slurm_core
+    num_condor_core = int(os.getenv('PYTHON_CPU_COUNT', 0))
+    if num_condor_core > 0:
+        default_n_workers_local = num_condor_core
 
-    return _default_n_workers_local
+    return default_n_workers_local
+
+
+def default_worker_name(key, override_with=None):
+    """Dynamically generate a default worker name.
+    
+    See references in config.yaml for usage.
+    https://docs.dask.org/en/latest/configuration.html
+    """
+    val = dask.config.get(key, default=None, override_with=override_with)
+    if val is not None:
+        return val
+
+    default_name = 'pipeline/dask-worker'
+    if os.getenv('SLURM_JOB_NAME') is not None:
+        default_name = os.getenv('SLURM_JOB_NAME') + '/dask-worker'
+    return default_name
+
+
+def default_slurm_queue():
+    """Dynamically determines the SLURM queue to use."""
+    default_queue = 'batch'
+    if os.getenv('SLURM_JOB_PARTITION') is not None:
+        default_queue = os.getenv('SLURM_JOB_PARTITION')
+    return default_queue

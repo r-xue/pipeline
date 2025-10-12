@@ -181,3 +181,17 @@ docs/source/references/pipeline-resolved.bib
 **/*.zip
 **/*.fits
 **/*.im
+**/*.image
+**/*.model
+**/*.residual
+**/*.mask
+**/*.pbcor
+**/*.sumwt
+**/*.flux
+**/*.weight
+**/*.sigma
+**/*.cube
+**/*.moment
+**/*.moment0
+**/*.moment1
+**/*.moment2
