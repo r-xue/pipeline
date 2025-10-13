@@ -17,6 +17,8 @@ pipeline.domain.measurementset.MeasurementSet
       :nosignatures:
    
       ~MeasurementSet.all_colnames
+      ~MeasurementSet.compute_az_el_for_ms
+      ~MeasurementSet.compute_az_el_to_field
       ~MeasurementSet.data_colnames
       ~MeasurementSet.get_all_spectral_windows
       ~MeasurementSet.get_alma_corrstring
@@ -45,6 +47,7 @@ pipeline.domain.measurementset.MeasurementSet
       ~MeasurementSet.get_vla_spw2band
       ~MeasurementSet.get_vla_tst_bpass_spw
       ~MeasurementSet.set_data_column
+      ~MeasurementSet.set_data_type_dicts
       ~MeasurementSet.update_reference_antennas
    
    

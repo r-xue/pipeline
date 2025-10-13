@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.cli.hsd_imaging &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -127,31 +128,32 @@ well as combined image over whole antennas for each field and
 spectral window. Image configuration (grid size, number of pixels,
 etc.) is automatically determined based on meta data such as
 antenna diameter, map extent, etc.</p>
-<p>Note that generated images are always in LSRK frame.</p>
-<dl class="field-list">
+<p>Generated images are either in REST frame (ephemeris sources)
+or in LSRK frame (others).</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
-<li><p><strong>mode</strong> – Imaging mode controls imaging parameters in the task.
-Accepts either “line” (spectral line imaging) or “ampcal”
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mode</strong> -- <p>Imaging mode controls imaging parameters in the task.
+Accepts either &quot;line&quot; (spectral line imaging) or &quot;ampcal&quot;
 (image settings for amplitude calibrator).</p>
-<p>Default: None (equivalent to ‘line’)</p>
-</li>
-<li><p><strong>restfreq</strong> – Rest frequency. Defaults to None,
+<p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code> (equivalent to <code class="docutils literal notranslate"><span class="pre">'line'</span></code>)</p>
+</p></li>
+<li><p><strong>restfreq</strong> -- Rest frequency. Defaults to None,
 it executes without rest frequency.</p></li>
-<li><p><strong>infiles</strong> – List of data files. These must be a name of
+<li><p><strong>infiles</strong> -- <p>List of data files. These must be a name of
 MeasurementSets that are registered to context via
 hsd_importdata or hsd_restoredata tasks.</p>
-<p>Example: vis=[‘uid___A002_X85c183_X36f.ms’, ‘uid___A002_X85c183_X60b.ms’]</p>
-<p>Default: None (process all registered MeasurementSets)</p>
-</li>
-<li><p><strong>field</strong> – Data selection by field names or ids.</p>
-<p>Example: “<cite>*Sgr*,M100</cite>”</p>
-<p>Default: None (process all science fields)</p>
-</li>
-<li><p><strong>spw</strong> – Data selection by spw ids.</p>
-<p>Example: “3,4” (generate images for spw 3 and 4)</p>
-<p>Default: None (process all science spws)</p>
-</li>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">vis=['uid___A002_X85c183_X36f.ms',</span> <span class="pre">'uid___A002_X85c183_X60b.ms']</span></code></p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code> (process all registered MeasurementSets)</p>
+</p></li>
+<li><p><strong>field</strong> -- <p>Data selection by field names or ids.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">&quot;*Sgr*,M100&quot;</span></code></p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code> (process all science fields)</p>
+</p></li>
+<li><p><strong>spw</strong> -- <p>Data selection by spw ids.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">&quot;3,4&quot;</span></code> (generate images for spw 3 and 4)</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code> (process all science spws)</p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -186,7 +188,7 @@ hsd_importdata or hsd_restoredata tasks.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

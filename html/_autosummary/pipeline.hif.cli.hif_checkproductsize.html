@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.cli.hif_checkproductsize &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -29,7 +29,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pipeline.hif.cli.hif_correctedampflag" href="pipeline.hif.cli.hif_correctedampflag.html" />
-    <link rel="prev" title="pipeline.hif.cli.hif_bandpass" href="pipeline.hif.cli.hif_bandpass.html" /> 
+    <link rel="prev" title="pipeline.hif.cli.hif_applycal" href="pipeline.hif.cli.hif_applycal.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -121,9 +122,9 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hif.cli.hif_checkproductsize">
 <span class="sig-name descname"><span class="pre">hif_checkproductsize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxcubesize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxcubelimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxproductsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maximsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calcsb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Results</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_checkproductsize.html#hif_checkproductsize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.cli.hif_checkproductsize" title="Link to this definition"></a></dt>
-<dd><p>Check imaging product size</p>
+<dd><p>Check imaging product size.</p>
 <p>Check interferometry imaging product size and try to mitigate to maximum
-allowed values. The task implements a mitigation cascade computing the largest
+allowed values. <cite>hif_checkproductsize</cite> implements a mitigation cascade computing the largest
 cube size and tries to reduce it below a given limit by adjusting the <code class="docutils literal notranslate"><span class="pre">nbins</span></code>,
 <code class="docutils literal notranslate"><span class="pre">hm_imsize</span></code> and <code class="docutils literal notranslate"><span class="pre">hm_cell</span></code> parameters. If this step succeeds, it also checks the
 overall imaging product size and if necessary reduces the number of fields to
@@ -132,28 +133,35 @@ be imaged.</p>
 mitigated by trying to adjust <code class="docutils literal notranslate"><span class="pre">hm_cell</span></code> parameter. If the pixel count is still
 greater than <code class="docutils literal notranslate"><span class="pre">maximsize</span></code> at <code class="docutils literal notranslate"><span class="pre">hm_cell</span></code> of 4ppb, then this value is kept and
 the image field is truncated around the phase center by forcing <code class="docutils literal notranslate"><span class="pre">hm_imsize</span></code>
-= <code class="docutils literal notranslate"><span class="pre">maximsize</span></code>.</p>
+to <code class="docutils literal notranslate"><span class="pre">maximsize</span></code>.</p>
 <p>Note that mitigation for image pixel count and for the product size currently
 are mutually exclusive, with maximsize taking precedence if set.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
-<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
-‘’: use all MeasurementSets in the context</p>
-<p>Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p>
-</li>
-<li><p><strong>maxcubesize</strong> – Maximum allowed cube size in gigabytes (mitigation goal) -1: automatic from performance parameters</p></li>
-<li><p><strong>maxcubelimit</strong> – Maximum allowed cube limit in gigabytes (mitigation failure limit)
--1: automatic from performance parameters</p></li>
-<li><p><strong>maxproductsize</strong> – Maximum allowed product size in gigabytes (mitigation goal and failure limit)
--1: automatic from performance parameters</p></li>
-<li><p><strong>maximsize</strong> – Maximum allowed image count size (mitigation goal and hard maximum).
-Parameter <code class="docutils literal notranslate"><span class="pre">maximsize</span></code> must be even and divisible by 2,3,5,7 only.
-Note that <code class="docutils literal notranslate"><span class="pre">maximsize</span></code> is disabled by default and cannot be set at
-the same time as <code class="docutils literal notranslate"><span class="pre">maxcubesize</span></code>, <code class="docutils literal notranslate"><span class="pre">maxcubelimit</span></code> and <code class="docutils literal notranslate"><span class="pre">maxproductsize</span></code>!
--1: disables mitigation for this parameter</p></li>
-<li><p><strong>calcsb</strong> – Force (re-)calculation of sensitivities and beams</p></li>
-<li><p><strong>parallel</strong> – Use MPI cluster where possible</p></li>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> -- <p>The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in <cite>hifa_importdata</cite> and <cite>hifv_importdata</cite>.</p>
+<p>Examples: <code class="docutils literal notranslate"><span class="pre">'ngc5921.ms'</span></code>, <code class="docutils literal notranslate"><span class="pre">['ngc5921a.ms',</span> <span class="pre">ngc5921b.ms',</span> <span class="pre">'ngc5921c.ms']</span></code></p>
+</p></li>
+<li><p><strong>maxcubesize</strong> -- <p>Maximum allowed cube size in gigabytes (mitigation goal)</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">-1</span></code> - automatic from performance parameters</p>
+</p></li>
+<li><p><strong>maxcubelimit</strong> -- <p>Maximum allowed cube limit in gigabytes (mitigation failure limit)</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">-1</span></code> - automatic from performance parameters</p>
+</p></li>
+<li><p><strong>maxproductsize</strong> -- <p>Maximum allowed product size in gigabytes (mitigation goal and failure limit)</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">-1</span></code> - automatic from performance parameters</p>
+</p></li>
+<li><p><strong>maximsize</strong> -- <p>Maximum allowed image count size (mitigation goal and hard maximum).
+Parameter <code class="docutils literal notranslate"><span class="pre">maximsize</span></code> must be even and divisible by <code class="docutils literal notranslate"><span class="pre">2,</span> <span class="pre">3,</span> <span class="pre">5,</span> <span class="pre">7</span></code> only.
+<strong>*Caution*</strong> <code class="docutils literal notranslate"><span class="pre">maximsize</span></code> is disabled by default and cannot be set at
+the same time as <code class="docutils literal notranslate"><span class="pre">maxcubesize</span></code>, <code class="docutils literal notranslate"><span class="pre">maxcubelimit</span></code> and <code class="docutils literal notranslate"><span class="pre">maxproductsize</span></code>.</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">-1</span></code> - disables mitigation for this parameter</p>
+</p></li>
+<li><p><strong>calcsb</strong> -- Force (re-)calculation of sensitivities and beams</p></li>
+<li><p><strong>parallel</strong> -- <p>Use the CASA imager parallelization when possible.</p>
+<p>Options: <code class="docutils literal notranslate"><span class="pre">'automatic'</span></code>, <code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code>, <code class="docutils literal notranslate"><span class="pre">True</span></code>, <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'automatic'</span></code></p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -181,14 +189,14 @@ the same time as <code class="docutils literal notranslate"><span class="pre">ma
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.hif.cli.hif_bandpass.html" class="btn btn-neutral float-left" title="pipeline.hif.cli.hif_bandpass" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hif.cli.hif_applycal.html" class="btn btn-neutral float-left" title="pipeline.hif.cli.hif_applycal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pipeline.hif.cli.hif_correctedampflag.html" class="btn btn-neutral float-right" title="pipeline.hif.cli.hif_correctedampflag" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

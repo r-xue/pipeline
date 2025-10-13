@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.infrastructure.launcher.Context.stage &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -28,7 +28,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.infrastructure.launcher.Context.vla_skip_mfs_and_cube_imaging" href="pipeline.infrastructure.launcher.Context.vla_skip_mfs_and_cube_imaging.html" />
+    <link rel="next" title="Antenna" href="../_automodapi/pipeline.domain.Antenna.html" />
     <link rel="prev" title="pipeline.infrastructure.launcher.Context.products_dir" href="pipeline.infrastructure.launcher.Context.products_dir.html" /> 
 </head>
 
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
@@ -66,12 +67,42 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="pipeline.domain.html">pipeline.domain</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html">pipeline.infrastructure.launcher.Context</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.name"><code class="docutils literal notranslate"><span class="pre">name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.output_dir"><code class="docutils literal notranslate"><span class="pre">output_dir</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.products_dir"><code class="docutils literal notranslate"><span class="pre">products_dir</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.report_dir"><code class="docutils literal notranslate"><span class="pre">report_dir</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.logs"><code class="docutils literal notranslate"><span class="pre">logs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.results"><code class="docutils literal notranslate"><span class="pre">results</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.task_counter"><code class="docutils literal notranslate"><span class="pre">task_counter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.subtask_counter"><code class="docutils literal notranslate"><span class="pre">subtask_counter</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.observing_run"><code class="docutils literal notranslate"><span class="pre">observing_run</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.project_performance_parameters"><code class="docutils literal notranslate"><span class="pre">project_performance_parameters</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.project_structure"><code class="docutils literal notranslate"><span class="pre">project_structure</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.project_summary"><code class="docutils literal notranslate"><span class="pre">project_summary</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.calimlist"><code class="docutils literal notranslate"><span class="pre">calimlist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.callibrary"><code class="docutils literal notranslate"><span class="pre">callibrary</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_list_info"><code class="docutils literal notranslate"><span class="pre">clean_list_info</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_list_pending"><code class="docutils literal notranslate"><span class="pre">clean_list_pending</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_masks"><code class="docutils literal notranslate"><span class="pre">clean_masks</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_thresholds"><code class="docutils literal notranslate"><span class="pre">clean_thresholds</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.contfile"><code class="docutils literal notranslate"><span class="pre">contfile</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.imaging_mode"><code class="docutils literal notranslate"><span class="pre">imaging_mode</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.imaging_parameters"><code class="docutils literal notranslate"><span class="pre">imaging_parameters</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.linesfile"><code class="docutils literal notranslate"><span class="pre">linesfile</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.per_spw_cont_sensitivities_all_chan"><code class="docutils literal notranslate"><span class="pre">per_spw_cont_sensitivities_all_chan</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.processing_intents"><code class="docutils literal notranslate"><span class="pre">processing_intents</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.rmsimlist"><code class="docutils literal notranslate"><span class="pre">rmsimlist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.sciimlist"><code class="docutils literal notranslate"><span class="pre">sciimlist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.selfcal_resources"><code class="docutils literal notranslate"><span class="pre">selfcal_resources</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.selfcal_targets"><code class="docutils literal notranslate"><span class="pre">selfcal_targets</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.size_mitigation_parameters"><code class="docutils literal notranslate"><span class="pre">size_mitigation_parameters</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.subimlist"><code class="docutils literal notranslate"><span class="pre">subimlist</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.synthesized_beams"><code class="docutils literal notranslate"><span class="pre">synthesized_beams</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.products_dir.html">pipeline.infrastructure.launcher.Context.products_dir</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">pipeline.infrastructure.launcher.Context.stage</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#pipeline.infrastructure.launcher.Context.stage"><code class="docutils literal notranslate"><span class="pre">Context.stage</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.vla_skip_mfs_and_cube_imaging.html">pipeline.infrastructure.launcher.Context.vla_skip_mfs_and_cube_imaging</a></li>
 </ul>
 </li>
 </ul>
@@ -143,13 +174,13 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="pipeline.infrastructure.launcher.Context.products_dir.html" class="btn btn-neutral float-left" title="pipeline.infrastructure.launcher.Context.products_dir" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.infrastructure.launcher.Context.vla_skip_mfs_and_cube_imaging.html" class="btn btn-neutral float-right" title="pipeline.infrastructure.launcher.Context.vla_skip_mfs_and_cube_imaging" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../_automodapi/pipeline.domain.Antenna.html" class="btn btn-neutral float-right" title="Antenna" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

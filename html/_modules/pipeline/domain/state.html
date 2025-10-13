@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.state &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../_static/favicon-16x16.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -142,6 +180,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span> <span class="o">=</span> <span class="n">state</span>
 
+<div class="viewcode-block" id="State.__init__">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.State.html#pipeline.domain.State.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a State object.</span>
@@ -153,7 +193,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">state_id</span>
         <span class="c1"># work around NumPy bug with empty strings</span>
         <span class="c1"># http://projects.scipy.org/numpy/ticket/1239</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">obs_mode</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">obs_mode</span><span class="p">)</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">(</span><span class="si">{1!r}</span><span class="s1">, </span><span class="si">{2!r}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -258,6 +299,8 @@
         <span class="s1">&#39;OBSERVE_TARGET_OFF_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;REFERENCE&#39;</span>
     <span class="p">}</span>
 
+<div class="viewcode-block" id="StateALMA.__init__">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateALMA.html#pipeline.domain.StateALMA.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a StateALMA object.</span>
@@ -271,6 +314,7 @@
         <span class="k">if</span> <span class="s1">&#39;CALIBRATE_FLUX&#39;</span> <span class="ow">in</span> <span class="n">obs_mode</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Translating </span><span class="si">%s</span><span class="s1"> intent to AMPLITUDE for state #</span><span class="si">%s</span><span class="s1">&#39;</span>
                       <span class="s1">&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">obs_mode</span><span class="p">,</span> <span class="n">state_id</span><span class="p">))</span></div>
+</div>
 
 
 
@@ -290,6 +334,8 @@
     <span class="c1"># Check whether these states co-exist with PHASE</span>
     <span class="n">_PHASE_BYPASS_INTENTS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">))</span>
 
+<div class="viewcode-block" id="StateALMACycle0.__init__">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateALMACycle0.html#pipeline.domain.StateALMACycle0.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a StateALMACycle0 object.</span>
@@ -326,6 +372,7 @@
             <span class="c1"># PHASE intent</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dephased_obs_modes</span><span class="p">)</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;After: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">())</span></div>
+</div>
 
 
 
@@ -401,6 +448,8 @@
         <span class="s1">&#39;SYSTEM_CONFIGURATION#UNSPECIFIED&#39;</span>   <span class="p">:</span> <span class="s1">&#39;SYSTEM_CONFIGURATION&#39;</span>
     <span class="p">}</span>
 
+<div class="viewcode-block" id="StateVLA.__init__">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateVLA.html#pipeline.domain.StateVLA.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a StateVLA object.</span>
@@ -410,6 +459,7 @@
 <span class="sd">            obs_mode: Unique obs_mode values associated with this State.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">StateVLA</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state_id</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">)</span></div>
+</div>
 
 
 
@@ -430,6 +480,8 @@
         <span class="s1">&#39;OBSERVE_TARGET#ON_SOURCE&#39;</span><span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span>
     <span class="p">}</span>
 
+<div class="viewcode-block" id="StateAPEX.__init__">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateAPEX.html#pipeline.domain.StateAPEX.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a StateAPEX object.</span>
@@ -439,6 +491,7 @@
 <span class="sd">            obs_mode: Unique obs_mode values associated with this State.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">StateAPEX</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state_id</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">)</span></div>
+</div>
 
 
 
@@ -459,6 +512,8 @@
         <span class="s1">&#39;OBSERVE_TARGET#ON_SOURCE&#39;</span><span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span>
     <span class="p">}</span>
 
+<div class="viewcode-block" id="StateSMT.__init__">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateSMT.html#pipeline.domain.StateSMT.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a StateSMT object.</span>
@@ -468,6 +523,7 @@
 <span class="sd">            obs_mode: Unique obs_mode values associated with this State.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">StateSMT</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state_id</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">)</span></div>
+</div>
 
 
 
@@ -492,6 +548,8 @@
         <span class="s1">&#39;CALIBRATE_ATMOSPHERE#ZERO_SOURCE&#39;</span>   <span class="p">:</span> <span class="s1">&#39;ATMOSPHERE&#39;</span>
     <span class="p">}</span>
 
+<div class="viewcode-block" id="StateNAOJ.__init__">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateNAOJ.html#pipeline.domain.StateNAOJ.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a StateNAOJ object.</span>
@@ -501,6 +559,7 @@
 <span class="sd">            obs_mode: Unique obs_mode values associated with this State.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">StateNAOJ</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">state_id</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">)</span></div>
+</div>
 
 
 
@@ -511,6 +570,8 @@
 <span class="sd">    Factory class to create State objects based on given observatory and</span>
 <span class="sd">    observation/measurement set start time.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="StateFactory.__init__">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateFactory.html#pipeline.domain.StateFactory.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observatory</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a StateFactory object.</span>
@@ -534,7 +595,8 @@
         <span class="k">elif</span> <span class="n">observatory</span> <span class="o">==</span> <span class="s1">&#39;NRO&#39;</span> <span class="ow">or</span> <span class="n">observatory</span> <span class="o">==</span> <span class="s1">&#39;ASTE&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_constructor</span> <span class="o">=</span> <span class="n">StateNAOJ</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> has no matching State class&#39;</span> <span class="o">%</span> <span class="n">observatory</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> has no matching State class&#39;</span> <span class="o">%</span> <span class="n">observatory</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="StateFactory.create_state">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateFactory.html#pipeline.domain.StateFactory.create_state">[docs]</a>
@@ -552,7 +614,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

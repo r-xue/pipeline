@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ways to run the Pipeline &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -55,26 +55,35 @@
               <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Ways to run the Pipeline</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#ppr">PPR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ppr-pipeline-processing-request">PPR: pipeline processing request</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#series-of-steps-invoking-casa-pipeline-tasks">Series of steps invoking CASA Pipeline tasks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#creating-and-running-pipeline-tasks-bypassing-casa-task-interface">Creating and running Pipeline tasks, bypassing CASA task interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-and-running-pipeline-tasks-in-python-bypassing-the-task-interface">Creating and running Pipeline tasks in Python, bypassing the task interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#running-pipeline-with-the-recipereducer">Running Pipeline with the “recipereducer”</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#create-custom-pipeline-processing-recipes-from-srdp-mustache-templates">Create custom Pipeline processing recipes from SRDP Mustache templates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#simple-recipereducer-example">Simple “recipereducer” example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#about-the-procedure-parameter">About the procedure parameter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#examples-with-a-different-procedure-file">Examples with a different procedure file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#examples-of-stopping-starting-at-specific-stages">Examples of stopping / starting at specific stages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-with-sessions">Example with sessions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-changing-log-level">Example changing log level</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-workflows-for-a-pipeline-developer">Example workflows for a Pipeline developer</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#create-custom-pipeline-processing-recipes-from-srdp-mustache-templates">Create custom Pipeline processing recipes from SRDP Mustache templates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#workflow-break-resume">Workflow Break/Resume</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#context-by-stage">Context-by-Stage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#break-resume">Break/Resume</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#re-render-weblog">Re-render Weblog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#re-run-qa-heuristics">Re-run QA heuristics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#note-on-using-executeppr-recipereducer-and-pipeline-cli-tasks">Note on using executeppr/recipereducer and Pipeline CLI tasks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#known-issues">Known issues</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -133,10 +142,11 @@
              
   <section class="tex2jax_ignore mathjax_ignore" id="ways-to-run-the-pipeline">
 <h1>Ways to run the Pipeline<a class="headerlink" href="#ways-to-run-the-pipeline" title="Link to this heading"></a></h1>
-<section id="ppr">
-<h2>PPR<a class="headerlink" href="#ppr" title="Link to this heading"></a></h2>
-<p>At the highest level of abstraction, we can execute a pipeline processing request (ppr)
-This can be done at the command line, or at a CASA command prompt.</p>
+<section id="ppr-pipeline-processing-request">
+<h2>PPR: pipeline processing request<a class="headerlink" href="#ppr-pipeline-processing-request" title="Link to this heading"></a></h2>
+<p>At the highest level of abstraction, we can execute a pipeline processing request (ppr), which is how Pipeline
+is run in operations at the ALMA centers.</p>
+<p>This can be done at the command line, or at a CASA command prompt.</p>
 <p>Execute PPR from the command line:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>casa<span class="w"> </span>--nologger<span class="w"> </span>--nogui<span class="w"> </span>--log2term<span class="w"> </span>--agg<span class="w"> </span>-c<span class="w"> </span><span class="nv">$SCIPIPE_HEURISTICS</span>/pipeline/runvlapipeline.py<span class="w"> </span>PPRnew_VLAT003.xml
 </pre></div>
@@ -174,11 +184,11 @@ like the following</p>
 </pre></div>
 </div>
 <p>We can also turn weblog and plotting off:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">CASA</span> <span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">h_init</span><span class="p">(</span><span class="n">loglevel</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span><span class="n">plotlevel</span><span class="o">=</span><span class="s2">&quot;summary&quot;</span><span class="p">,</span><span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;./&quot;</span><span class="p">,</span><span class="n">weblog</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">CASA</span> <span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">h_init</span><span class="p">(</span><span class="n">loglevel</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="s2">&quot;summary&quot;</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;./&quot;</span><span class="p">,</span> <span class="n">weblog</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Or we can turn debug mode on, weblog off:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">CASA</span> <span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">h_init</span><span class="p">(</span><span class="n">loglevel</span><span class="o">=</span><span class="s2">&quot;debug&quot;</span><span class="p">,</span><span class="n">plotlevel</span><span class="o">=</span><span class="s2">&quot;summary&quot;</span><span class="p">,</span><span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;./&quot;</span><span class="p">,</span><span class="n">weblog</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">CASA</span> <span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">h_init</span><span class="p">(</span><span class="n">loglevel</span><span class="o">=</span><span class="s2">&quot;debug&quot;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="s2">&quot;summary&quot;</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="s2">&quot;./&quot;</span><span class="p">,</span> <span class="n">weblog</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Full example of running Pipeline importdata task on CASA prompt:</p>
@@ -190,28 +200,24 @@ like the following</p>
 <span class="n">CASA</span> <span class="o">&lt;</span><span class="mi">6</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">exit</span>
 </pre></div>
 </div>
+<p>Resuming from a previous Pipeline run on CASA prompt:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">casa</span>
 <span class="n">CASA</span> <span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">context</span> <span class="o">=</span> <span class="n">h_resume</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
-<section id="creating-and-running-pipeline-tasks-bypassing-casa-task-interface">
-<h2>Creating and running Pipeline tasks, bypassing CASA task interface<a class="headerlink" href="#creating-and-running-pipeline-tasks-bypassing-casa-task-interface" title="Link to this heading"></a></h2>
+<section id="creating-and-running-pipeline-tasks-in-python-bypassing-the-task-interface">
+<h2>Creating and running Pipeline tasks in Python, bypassing the task interface<a class="headerlink" href="#creating-and-running-pipeline-tasks-in-python-bypassing-the-task-interface" title="Link to this heading"></a></h2>
 <p>At the lowest level of abstraction, we can bypass the CASA Pipeline Task interface, and work directly within
-CASA / Python, by instantiating a Pipeline InputsContainer object for the Pipeline Task, using it to instantiate a Pipeline Task object,
-and then running its ‘execute’ method to get the task result, as shown in this example (assumed to run in a
-directory where the Pipeline has already been partly run, i.e. a context already exists):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">CASA</span> <span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">context</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
-
-<span class="n">CASA</span> <span class="o">&lt;</span><span class="mi">1</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">vis</span><span class="o">=</span><span class="s1">&#39;13A-537.sb24066356.eb24324502.56514.05971091435.ms&#39;</span>
-<span class="n">CASA</span> <span class="o">&lt;</span><span class="mi">2</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">m</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
-<span class="n">CASA</span> <span class="o">&lt;</span><span class="mi">3</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">spws</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">()</span>
-
-<span class="n">CASA</span> <span class="o">&lt;</span><span class="mi">4</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">inputs</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">infrastructure</span><span class="o">.</span><span class="n">vdp</span><span class="o">.</span><span class="n">InputsContainer</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">hifv</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">hanning</span><span class="o">.</span><span class="n">Hanning</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
-<span class="n">CASA</span> <span class="o">&lt;</span><span class="mi">5</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">task</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">hifv</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">hanning</span><span class="o">.</span><span class="n">Hanning</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
-<span class="n">CASA</span> <span class="o">&lt;</span><span class="mi">6</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">result</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
-<span class="n">CASA</span> <span class="o">&lt;</span><span class="mi">7</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-<span class="n">CASA</span> <span class="o">&lt;</span><span class="mi">8</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">context</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+CASA / Python, by instantiating a Pipeline <code class="docutils literal notranslate"><span class="pre">InputsContainer</span></code> object for the Pipeline Task, using it to instantiate a
+Pipeline Task object, and then running its <code class="docutils literal notranslate"><span class="pre">execute</span></code> method to get the task result, as shown in the example below. Here,
+the example should be run in a directory where the Pipeline has been partly run, i.e. a context already exists.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">context</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
+<span class="n">inputs</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">infrastructure</span><span class="o">.</span><span class="n">vdp</span><span class="o">.</span><span class="n">InputsContainer</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">hifv</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">hanning</span><span class="o">.</span><span class="n">Hanning</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+<span class="n">task</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">hifv</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">hanning</span><span class="o">.</span><span class="n">Hanning</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+<span class="n">result</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="n">context</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>If we don’t have a PPR or an executable script available.</p>
@@ -224,7 +230,7 @@ directory where the Pipeline has already been partly run, i.e. a context already
 <span class="n">context</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
 <span class="n">vis</span> <span class="o">=</span> <span class="s1">&#39;13A-537.foofoof.eb.barbar.2378.2934723984397.ms&#39;</span>
 <span class="c1"># get the domain object</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observering_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
 <span class="nb">type</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
 <span class="c1"># study this m object for INTENTS</span>
 <span class="c1"># &lt;class &#39;pipeline.domain.measurementset.MeasurementSet&gt;</span>
@@ -235,40 +241,189 @@ directory where the Pipeline has already been partly run, i.e. a context already
 </section>
 <section id="running-pipeline-with-the-recipereducer">
 <h2>Running Pipeline with the “recipereducer”<a class="headerlink" href="#running-pipeline-with-the-recipereducer" title="Link to this heading"></a></h2>
-<p>To run one of the standard recipes we can use a recipereducer:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">recipereducer</span></code> module is a tool for Pipeline developer to be able to run
+the Pipeline without using the Pipeline Processing Request (PPR) system that is
+only available at the ALMA centers.</p>
+<p>All that you need to pass along to the <code class="docutils literal notranslate"><span class="pre">recipereducer</span></code> is the recipe name and the
+path to a directory containing the raw ASDM datasets.</p>
+<section id="simple-recipereducer-example">
+<h3>Simple “recipereducer” example<a class="headerlink" href="#simple-recipereducer-example" title="Link to this heading"></a></h3>
+<p>Run pipeline for your ASDM, with default pipeline recipe (hifa_calimage):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.recipereducer</span>
-<span class="n">pipeline</span><span class="o">.</span><span class="n">recipereducer</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;../rawdata/yourasdm&#39;</span><span class="p">],</span> <span class="n">procedure</span><span class="o">=</span><span class="s1">&#39;procedure_hifv.xml&#39;</span><span class="p">)</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">recipereducer</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
+  <span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;../rawdata/yourasdm&#39;</span><span class="p">],</span>
+  <span class="c1"># procedure=&#39;procedure_hifa_calimage.xml&#39;,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
-<p>To run a standard recipe until the end of a specified stage number (dependent on recipe) and running it with
-a different log level:</p>
+</section>
+<section id="about-the-procedure-parameter">
+<h3>About the procedure parameter<a class="headerlink" href="#about-the-procedure-parameter" title="Link to this heading"></a></h3>
+<p>For the <code class="docutils literal notranslate"><span class="pre">procedure</span></code> parameter, you can specify either:</p>
+<ul class="simple">
+<li><p>the filename of one of the standard recipes (procedure files) located in <code class="docutils literal notranslate"><span class="pre">pipeline/recipes</span></code></p></li>
+<li><p>a relative/absolute path to a file containing your own (customized) recipe file,
+e.g. <code class="docutils literal notranslate"><span class="pre">procedure='/path/to/local/procedure.xml'</span></code>, or <code class="docutils literal notranslate"><span class="pre">procedure='../test_procedure_for_PIPE-1234.xml'</span></code></p></li>
+</ul>
+<p>If the <code class="docutils literal notranslate"><span class="pre">procedure</span></code> parameter is not specified, <code class="docutils literal notranslate"><span class="pre">recipereducer</span></code> will by default
+run the full ALMA calibration + imaging recipe, <code class="docutils literal notranslate"><span class="pre">procedure_hifa_calimage.xml</span></code>.</p>
+</section>
+<section id="examples-with-a-different-procedure-file">
+<h3>Examples with a different procedure file<a class="headerlink" href="#examples-with-a-different-procedure-file" title="Link to this heading"></a></h3>
+<p>Run Single-Dish calibration + imaging on 2 ASDMs:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.recipereducer</span>
-<span class="n">pipeline</span><span class="o">.</span><span class="n">recipereducer</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;../rawdata/yourasdm&#39;</span><span class="p">],</span> <span class="n">procedure</span><span class="o">=</span><span class="s1">&#39;procedure_hifa.xml&#39;</span><span class="p">,</span> <span class="n">exitstage</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;trace&#39;</span><span class="p">)</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">recipereducer</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
+  <span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;../rawdata/yourasdm&#39;</span><span class="p">,</span> <span class="s1">&#39;../rawdata/yourasdm_2&#39;</span><span class="p">],</span>
+  <span class="n">procedure</span><span class="o">=</span><span class="s1">&#39;procedure_hsd_calimage.xml&#39;</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
-<p>This can be useful to run the Pipeline just up to the stage that you want to debug / develop. Once the PL run has exited
-after e.g. stage 6, you could tarball the “working” directory (to be able to restore the run up to this point),
-then create a short script in “…/debug.script” with:</p>
+<p>Run VLA standard recipe:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.recipereducer</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">recipereducer</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
+  <span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;../rawdata/yourasdm&#39;</span><span class="p">],</span>
+  <span class="n">procedure</span><span class="o">=</span><span class="s1">&#39;procedure_hifv.xml&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Run with a local copy of a recipe that you may have modified for development:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.recipereducer</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">recipereducer</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
+  <span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;../rawdata/yourasdm&#39;</span><span class="p">],</span>
+  <span class="n">procedure</span><span class="o">=</span><span class="s1">&#39;../test_procedure_for_PIPE-1234.xml&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="examples-of-stopping-starting-at-specific-stages">
+<h3>Examples of stopping / starting at specific stages<a class="headerlink" href="#examples-of-stopping-starting-at-specific-stages" title="Link to this heading"></a></h3>
+<p>Stop after stage 3 has completed. It will depend on the recipe which task this
+stage number corresponds to.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.recipereducer</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">recipereducer</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
+    <span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;../rawdata/yourasdm&#39;</span><span class="p">],</span>
+    <span class="n">procedure</span><span class="o">=</span><span class="s1">&#39;procedure_hifa_calimage.xml&#39;</span><span class="p">,</span>
+    <span class="n">exitstage</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Assuming the developer developed / debugged stage 4, once that is done, it is
+possible to use <code class="docutils literal notranslate"><span class="pre">recipereducer</span></code> to resume with the remainder of the recipe, with:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.recipereducer</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">recipereducer</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
+    <span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;../rawdata/yourasdm&#39;</span><span class="p">],</span>
+    <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
+    <span class="n">procedure</span><span class="o">=</span><span class="s1">&#39;procedure_hifa_calimage.xml&#39;</span><span class="p">,</span>
+    <span class="n">startstage</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Here, since Pipeline is resuming from an earlier run, so the existing context is passed into <code class="docutils literal notranslate"><span class="pre">recipereducer</span></code>.</p>
+</section>
+<section id="example-with-sessions">
+<h3>Example with sessions<a class="headerlink" href="#example-with-sessions" title="Link to this heading"></a></h3>
+<p>Some datasets will have measurement sets grouped together in separate sessions, which can be specified with:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.recipereducer</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">recipereducer</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
+    <span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;../rawdata/yourasdm_1&#39;</span><span class="p">,</span> <span class="s1">&#39;../rawdata/yourasdm_2&#39;</span><span class="p">,</span> <span class="s1">&#39;../rawdata/yourasdm_3&#39;</span><span class="p">],</span>
+    <span class="n">session</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;session1&#39;</span><span class="p">,</span> <span class="s1">&#39;session3&#39;</span><span class="p">,</span> <span class="s1">&#39;session3&#39;</span><span class="p">],</span>
+    <span class="n">procedure</span><span class="o">=</span><span class="s1">&#39;procedure_hifa_calimage.xml&#39;</span><span class="p">,</span>
+    <span class="n">exitstage</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Here, the 1st ASDM belongs to “session1” while the latter 2 ASDMs are both in “session3”.
+Note, session names are assigned during operations, will normally be populated in the PPR files, and may not
+always appear to have sequential numbers.</p>
+</section>
+<section id="example-changing-log-level">
+<h3>Example changing log level<a class="headerlink" href="#example-changing-log-level" title="Link to this heading"></a></h3>
+<p>If not specified, the loglevel is <code class="docutils literal notranslate"><span class="pre">info</span></code> by default, but this can be change to e.g. <code class="docutils literal notranslate"><span class="pre">debug</span></code> or <code class="docutils literal notranslate"><span class="pre">trace</span></code> to get
+(a lot) more diagnostic information during the run:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.recipereducer</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">recipereducer</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
+    <span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;../rawdata/yourasdm_1&#39;</span><span class="p">],</span>
+    <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span>
+    <span class="n">plotlevel</span><span class="o">=</span><span class="s1">&#39;summary&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="example-workflows-for-a-pipeline-developer">
+<h3>Example workflows for a Pipeline developer<a class="headerlink" href="#example-workflows-for-a-pipeline-developer" title="Link to this heading"></a></h3>
+<p>For developers, a common workflow is to iteratively run a specific task to reproduce an issue, debug a specific task,
+and/or implement a new stage.</p>
+<p>Pipeline does not currently support snapshotting of the state after each run, and various pipeline tasks do
+permanently change the stage of the measurement set (flagging, corrected, and/or model column) or calibration state in
+the context. As a result, it would normally not be representative to keep re-running the same stage multiple times in
+a row, as each subsequent execution starts from a different state.</p>
+<p>Since a full Pipeline run can take a significant amount of time (hours to days depending on the size and complexity of
+the dataset), a recommended workflow for developers would be to:</p>
+<ul class="simple">
+<li><p>run with recipereducer and the <code class="docutils literal notranslate"><span class="pre">exitstage</span></code> option up to the start of the stage you want to debug / implement</p></li>
+<li><p>create a tarball of the <code class="docutils literal notranslate"><span class="pre">working</span></code> directory, or restore the <code class="docutils literal notranslate"><span class="pre">working</span></code> directory from a previously created tarball</p></li>
+<li><p>run the stage-to-develop/debug individually (regular or in interactive debugger mode)</p></li>
+</ul>
+<p>To this end, it may help to create a couple of custom Python scripts:</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">template.script</span></code> that runs pipeline up to just before the stage where you wish to implement / debug a task.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.recipereducer</span>
+<span class="n">pipeline</span><span class="o">.</span><span class="n">recipereducer</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
+    <span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;../rawdata/yourasdm&#39;</span><span class="p">],</span>
+    <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;info&#39;</span><span class="p">,</span>
+    <span class="c1"># exitstage=1,  # uncomment this line and set correct stage to stop after.</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Place it in the parent of the working directory, and run with:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd working</span>
+<span class="go">casa -c ../template.script</span>
+</pre></div>
+</div>
+<p>A <code class="docutils literal notranslate"><span class="pre">debug.script</span></code> that executes an individual task:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">task_to_run</span> <span class="o">=</span> <span class="s1">&#39;hifa_tsysflag&#39;</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+
 <span class="n">context</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
+
 <span class="n">taskclass</span> <span class="o">=</span> <span class="n">task_registry</span><span class="o">.</span><span class="n">get_pipeline_class_for_task</span><span class="p">(</span><span class="n">task_to_run</span><span class="p">)</span>
 <span class="n">inputs</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">infrastructure</span><span class="o">.</span><span class="n">vdp</span><span class="o">.</span><span class="n">InputsContainer</span><span class="p">(</span><span class="n">taskclass</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+
 <span class="c1"># Optionally override input parameter(s) for debugging, e.g.:</span>
 <span class="c1"># inputs.normalize_tsys = True</span>
+
 <span class="n">task</span> <span class="o">=</span> <span class="n">taskclass</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 <span class="n">result</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 <span class="n">context</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>and then run this with:</p>
+<p>Place it in the parent of the working directory, and run with:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">casa -c ../debug.script</span>
 </pre></div>
 </div>
+<p>Note: as an alternative to re-running an entire task for investigating and debugging issues, see the
+<code class="docutils literal notranslate"><span class="pre">infrastructure.utils.utils.function_io_dumper</span></code> decorator functionality that is documented in <code class="docutils literal notranslate"><span class="pre">FunctionIODumper.md</span></code>,
+introduced in <a class="reference external" href="https://open-jira.nrao.edu/browse/PIPE-2354">PIPE-2354 (2025 release)</a>.</p>
+<p>Note: a Pipeline run is relocatable, so one can resume from a working directory (and context) that is located at
+a different path from where the run was originally started. Depending on the ticket at hand, this can allow a developer
+a couple of short-cuts:</p>
+<ul class="simple">
+<li><p>Create a run up through stage N, tarball <code class="docutils literal notranslate"><span class="pre">working</span></code> to snapshot, and optionally unpack to multiple copies
+(working1, working2, working3) to run (in parallel) a given stage with different checkouts of the Pipeline.</p></li>
+<li><p>When working on a shared cluster such as at NRAO Charlottesville, one can copy the run from a different developer /
+PWG member into their own workspace, and resume the context (optionally even one of the pickled results from the
+stage, located under <code class="docutils literal notranslate"><span class="pre">pipeline-[...]/saved_state</span></code>) to inspect the context, re-run a stage with the
+interactive debugger, etc. This can be particularly useful for times where one has to urgently debug an issue that
+occurred for a large dataset.</p></li>
+</ul>
+</section>
+</section>
 <section id="create-custom-pipeline-processing-recipes-from-srdp-mustache-templates">
-<h3>Create custom Pipeline processing recipes from SRDP Mustache templates<a class="headerlink" href="#create-custom-pipeline-processing-recipes-from-srdp-mustache-templates" title="Link to this heading"></a></h3>
+<h2>Create custom Pipeline processing recipes from SRDP Mustache templates<a class="headerlink" href="#create-custom-pipeline-processing-recipes-from-srdp-mustache-templates" title="Link to this heading"></a></h2>
 <p>The SDRP templates are <a class="reference external" href="http://mustache.github.io/">mustache</a> templates that can be used to generate custom SDRP processing recipe XML files.
 All templates are located in the <a class="reference internal" href="#pipeline/recipes"><span class="xref myst">pipeline/recipes</span></a> directory (template_*.xml).
 A mustache template contains both the XML and the mustache tags, the latter of which allows the insertion of values from the JSON file into the XML during rendering.</p>
@@ -286,7 +441,6 @@ Two <a class="reference external" href="https://open-jira.nrao.edu/browse/PIPE-7
         <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pystache</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">d</span><span class="p">))</span>
 </pre></div>
 </div>
-</section>
 </section>
 <section id="workflow-break-resume">
 <h2>Workflow Break/Resume<a class="headerlink" href="#workflow-break-resume" title="Link to this heading"></a></h2>
@@ -374,14 +528,49 @@ All break/resume approaches use the <strong>current</strong> files (e.g. MSs/cal
 </section>
 <section id="re-render-weblog">
 <h2>Re-render Weblog<a class="headerlink" href="#re-render-weblog" title="Link to this heading"></a></h2>
-<p>A common development task is improving weblog. Without re-running a time-consuming pipeline task itself, you can only re-render the weblog using the existing context/result to test a small weblog-related change (e.g., minor tweaks in mako templates). Note: this will only rerun the weblog rendering portion of a pipeline stage (therefore limits your testing scope).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.renderer</span><span class="w"> </span><span class="kn">import</span> <span class="n">htmlrenderer</span> <span class="k">as</span> <span class="n">hr</span>
+<p>A common development task is improving weblog. Without re-running a
+time-consuming pipeline task itself, you can only re-render the weblog using the
+existing context/result to test a small weblog-related change (e.g., minor tweaks
+in mako templates). Note: this will only rerun the weblog rendering portion of a
+pipeline stage (therefore limits your testing scope).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.renderer.htmlrenderer</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">hr</span>
+
+<span class="c1"># Modify this to select which stage number to re-render weblog for.</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;WEBLOG_RERENDER_STAGES&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;16&quot;</span>
+
 <span class="n">context</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
-<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;WEBLOG_RERENDER_STAGES&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;16&#39;</span>
 <span class="n">hr</span><span class="o">.</span><span class="n">WebLogGenerator</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="re-run-qa-heuristics">
+<h2>Re-run QA heuristics<a class="headerlink" href="#re-run-qa-heuristics" title="Link to this heading"></a></h2>
+<p>A common development task is to implement or improve the QA heuristics for a task.
+The QA step is normally run after the main task heuristics are completed and the
+task <code class="docutils literal notranslate"><span class="pre">Results</span></code> have been created.</p>
+<p>As such, after having run the task at least once, one can rapidly re-run the QA
+heuristic on the existing task result in the context to iterate more rapidly on
+the heuristic without having to re-run the time-consuming pipeline task itself.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">pipelineqa</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
+
+<span class="c1"># Modify this to select which stage to run QA for.</span>
+<span class="n">stage_number</span> <span class="o">=</span> <span class="mi">14</span>
+
+<span class="n">task_results</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">stage_number</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">pipelineqa</span><span class="o">.</span><span class="n">qa_registry</span><span class="o">.</span><span class="n">do_qa</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">task_results</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note, the snippet above only re-runs the QA heuristic on a copy of the results read
+in from disk, and updates the QA scores in this copy of the results in-place.
+However, this does not modify the results on disk nor does it attempt to re-run
+the weblog rendering; therefore re-running the QA this way will not update the QA
+scores that are displayed in the task weblog. Instead, the snippet is primarily
+useful for interactively debugging the QA heuristics. Once debugged, it would be
+recommended to re-run the entire stage.</p>
 </section>
 <section id="note-on-using-executeppr-recipereducer-and-pipeline-cli-tasks">
 <h2>Note on using executeppr/recipereducer and Pipeline CLI tasks<a class="headerlink" href="#note-on-using-executeppr-recipereducer-and-pipeline-cli-tasks" title="Link to this heading"></a></h2>
@@ -428,7 +617,7 @@ but it doesn’t mean the pipeline was unsuccessful.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

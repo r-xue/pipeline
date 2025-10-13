@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.cli.hifa_restoredata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -121,15 +122,15 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hifa.cli.hifa_restoredata">
 <span class="sig-name descname"><span class="pre">hifa_restoredata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">products_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copytoraw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rawdata_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lazy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bdfflags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ocorr_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Results</span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_restoredata.html#hifa_restoredata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_restoredata" title="Link to this definition"></a></dt>
-<dd><p>Restore flagged and calibration interferometry data from a pipeline run</p>
-<p>The hifa_restoredata task restores flagged and calibrated MeasurementSets
+<dd><p>Restore flagged and calibration interferometry data from a pipeline run.</p>
+<p>The <cite>hifa_restoredata</cite> task restores flagged and calibrated MeasurementSets
 from archived ASDMs and pipeline flagging and calibration data products.</p>
 <p>hifa_restoredata assumes that the ASDMs to be restored are present in the
-directory specified by the <code class="docutils literal notranslate"><span class="pre">rawdata_dir</span></code> (default: ‘../rawdata’).</p>
+directory specified by the <code class="docutils literal notranslate"><span class="pre">rawdata_dir</span></code> (default: '../rawdata').</p>
 <p>By default (<code class="docutils literal notranslate"><span class="pre">copytoraw</span></code> = True), hifa_restoredata assumes that for each
 ASDM in the input list, the corresponding pipeline flagging and calibration
 data products (in the format produced by the hifa_exportdata task) are
-present in the directory specified by <code class="docutils literal notranslate"><span class="pre">products_dir</span></code> (default: ‘../products’).
+present in the directory specified by <code class="docutils literal notranslate"><span class="pre">products_dir</span></code> (default: '../products').
 At the start of the task, these products are copied from the <code class="docutils literal notranslate"><span class="pre">products_dir</span></code>
 to the <code class="docutils literal notranslate"><span class="pre">rawdata_dir</span></code>.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">copytoraw</span></code> = False, hifa_restoredata assumes that these products are
@@ -155,54 +156,54 @@ e.g. uid___A001_X74_X29.session_3.caltables.tar.gz</p></li>
 <li><p>restores the final calibration tables for each MS</p></li>
 <li><p>applies the calibration tables to each MS</p></li>
 </ul>
-<p>When importing the ASDM and converting it to a Measurement Set (MS), if the
+<p>When importing the ASDM and converting it to a MeasurementSet (MS), if the
 output MS already exists in the output directory, then the importasdm
 conversion step is skipped, and instead the existing MS will be imported.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
-<li><p><strong>vis</strong> – List of raw visibility data files to be restored.
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> -- <p>List of raw visibility data files to be restored.
 Assumed to be in the directory specified by rawdata_dir.</p>
-<p>Example: vis=[‘uid___A002_X30a93d_X43e’]</p>
-</li>
-<li><p><strong>session</strong> – List of sessions one per visibility file.</p>
-<p>Example: session=[‘session_3’]</p>
-</li>
-<li><p><strong>products_dir</strong> – Name of the data products directory to copy calibration
+<p>Example: <code class="docutils literal notranslate"><span class="pre">vis=['uid___A002_X30a93d_X43e']</span></code></p>
+</p></li>
+<li><p><strong>session</strong> -- <p>List of sessions one per visibility file.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">session=['session_3']</span></code></p>
+</p></li>
+<li><p><strong>products_dir</strong> -- <p>Name of the data products directory to copy calibration
 products from.
-Default: ‘../products’
+Default: '../products'
 The parameter is effective only when <code class="docutils literal notranslate"><span class="pre">copytoraw</span></code> = True.
 When <code class="docutils literal notranslate"><span class="pre">copytoraw</span></code> = False, calibration products in
 <code class="docutils literal notranslate"><span class="pre">rawdata_dir</span></code> will be used.</p>
-<p>Example: products_dir=’myproductspath’</p>
-</li>
-<li><p><strong>copytoraw</strong> – Copy calibration and flagging tables from <code class="docutils literal notranslate"><span class="pre">products_dir</span></code> to
+<p>Example: <code class="docutils literal notranslate"><span class="pre">products_dir='myproductspath'</span></code></p>
+</p></li>
+<li><p><strong>copytoraw</strong> -- <p>Copy calibration and flagging tables from <code class="docutils literal notranslate"><span class="pre">products_dir</span></code> to
 <code class="docutils literal notranslate"><span class="pre">rawdata_dir</span></code> directory.</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">copytoraw=False</span></code></p>
+</p></li>
+<li><p><strong>rawdata_dir</strong> -- <p>Name of the raw data directory.</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'../rawdata'</span></code>.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">rawdata_dir='myrawdatapath'</span></code></p>
+</p></li>
+<li><p><strong>lazy</strong> -- <p>Use the lazy filler option.</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">lazy=True</span></code></p>
+</p></li>
+<li><p><strong>bdfflags</strong> -- <p>Set the BDF flags.</p>
 <p>Default: True.</p>
-<p>Example: copytoraw=False</p>
-</li>
-<li><p><strong>rawdata_dir</strong> – Name of the raw data directory.</p>
-<p>Default: ‘../rawdata’.</p>
-<p>Example: rawdata_dir=’myrawdatapath’</p>
-</li>
-<li><p><strong>lazy</strong> – Use the lazy filler option.</p>
-<p>Default: False.</p>
-<p>Example: lazy=True</p>
-</li>
-<li><p><strong>bdfflags</strong> – Set the BDF flags.</p>
-<p>Default: True.</p>
-<p>Example: bdfflags=False</p>
-</li>
-<li><p><strong>ocorr_mode</strong> – Set ocorr_mode.</p>
-<p>Default: ‘ca’.</p>
-<p>Example: ocorr_mode=’ca’</p>
-</li>
-<li><p><strong>asis</strong> – Creates verbatim copies of the ASDM tables in the output MS.
+<p>Example: <code class="docutils literal notranslate"><span class="pre">bdfflags=False</span></code></p>
+</p></li>
+<li><p><strong>ocorr_mode</strong> -- <p>Set ocorr_mode.</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'ca'</span></code>.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">ocorr_mode='ca'</span></code></p>
+</p></li>
+<li><p><strong>asis</strong> -- <p>Creates verbatim copies of the ASDM tables in the output MS.
 The value given to this option must be a string containing a
 list of table names separated by whitespace characters.</p>
-<p>Default: ‘SBSummary ExecBlock Antenna Annotation Station Receiver Source CalAtmosphere CalWVR CalPointing’.</p>
-<p>Example: asis=’Source Receiver’</p>
-</li>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'SBSummary</span> <span class="pre">ExecBlock</span> <span class="pre">Antenna</span> <span class="pre">Annotation</span> <span class="pre">Station</span> <span class="pre">Receiver</span> <span class="pre">Source</span> <span class="pre">CalAtmosphere</span> <span class="pre">CalWVR</span> <span class="pre">CalPointing'</span></code>.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">asis='Source</span> <span class="pre">Receiver'</span></code></p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -231,7 +232,7 @@ list of table names separated by whitespace characters.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

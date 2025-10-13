@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.h.cli.h_init &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../_static/favicon-16x16.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -122,28 +160,25 @@
 <div class="viewcode-block" id="h_init">
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.h.cli.h_init.html#pipeline.h.cli.h_init">[docs]</a>
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">h_init</span><span class="p">(</span><span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">weblog</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">h_init</span><span class="p">(</span><span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">weblog</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">processing_intents</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the pipeline state and context.</span>
 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the pipeline</span>
-
-<span class="sd">    The h_init task initializes the pipeline.</span>
-
-<span class="sd">    h_init  must be called before any other pipeline task. The pipeline</span>
+<span class="sd">    `h_init`  must be called before any other pipeline task. The pipeline</span>
 <span class="sd">    can be initialized in one of two ways: by creating a new pipeline</span>
-<span class="sd">    state (h_init) or be loading a saved pipeline state (h_resume).</span>
+<span class="sd">    state (`h_init`) or be loading a saved pipeline state (`h_resume`).</span>
 
-<span class="sd">    h_init creates an empty pipeline context but does not load visibility data</span>
-<span class="sd">    into the context. hif_importdata or hsd_importdata can be used to load data.</span>
+<span class="sd">    `h_init` creates an empty pipeline context but does not load visibility data</span>
+<span class="sd">    into the context. Any of the pipeline `h*_importdata` tasks can be used to load data.</span>
 
-<span class="sd">    The pipeline context is returned.</span>
-<span class="sd">    </span>
 <span class="sd">    Args:</span>
 <span class="sd">        loglevel: Log level for pipeline messages. Log messages below this threshold will not be displayed.</span>
 
-<span class="sd">        plotlevel: Toggle generation of detail plots in the web log. A level of &#39;all&#39; generates all plots; &#39;summary&#39; omits detail plots; &#39;default&#39; generates all plots</span>
-<span class="sd">            apart from for the hif_applycal task.</span>
+<span class="sd">        plotlevel: Toggle generation of detail plots in the web log. A level of &#39;all&#39; generates all plots;</span>
+<span class="sd">            &#39;summary&#39; omits detail plots; &#39;default&#39; generates all plots apart from for the hif_applycal task.</span>
 
 <span class="sd">        weblog: Generate the web log</span>
+
+<span class="sd">        processing_intents: Dictionary of processing intents for the current pipeline run.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The results object for the pipeline task is returned.</span>
@@ -154,14 +189,8 @@
 <span class="sd">        &gt;&gt;&gt; h_init()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># TBD: DECIDE WHETHER DRY RUN REALLY MAKES SENSE FOR THIS TASK AND IF</span>
-    <span class="c1"># SO HOW TO IMPLEMENT IT.</span>
-
-    <span class="c1"># TBD: CASA PARAMETER CHECKS BEFORE CREATING A CONTEXT ?</span>
-
     <span class="c1"># Create the pipeline and store the Pipeline object in the stack</span>
-    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">loglevel</span><span class="o">=</span><span class="n">loglevel</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="n">plotlevel</span><span class="p">)</span>
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">loglevel</span><span class="o">=</span><span class="n">loglevel</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="n">plotlevel</span><span class="p">,</span> <span class="n">processing_intents</span><span class="o">=</span><span class="n">processing_intents</span><span class="p">)</span>
     <span class="n">cli</span><span class="o">.</span><span class="n">stack</span><span class="p">[</span><span class="n">cli</span><span class="o">.</span><span class="n">PIPELINE_NAME</span><span class="p">]</span> <span class="o">=</span> <span class="n">pipeline</span>
 
     <span class="n">basetask</span><span class="o">.</span><span class="n">DISABLE_WEBLOG</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">weblog</span>
@@ -177,7 +206,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

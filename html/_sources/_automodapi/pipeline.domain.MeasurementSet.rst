@@ -24,6 +24,8 @@ MeasurementSet
    .. autosummary::
 
       ~MeasurementSet.all_colnames
+      ~MeasurementSet.compute_az_el_for_ms
+      ~MeasurementSet.compute_az_el_to_field
       ~MeasurementSet.data_colnames
       ~MeasurementSet.get_all_spectral_windows
       ~MeasurementSet.get_alma_corrstring
@@ -52,6 +54,7 @@ MeasurementSet
       ~MeasurementSet.get_vla_spw2band
       ~MeasurementSet.get_vla_tst_bpass_spw
       ~MeasurementSet.set_data_column
+      ~MeasurementSet.set_data_type_dicts
       ~MeasurementSet.update_reference_antennas
 
    .. rubric:: Attributes Documentation
@@ -68,6 +71,8 @@ MeasurementSet
    .. rubric:: Methods Documentation
 
    .. automethod:: all_colnames
+   .. automethod:: compute_az_el_for_ms
+   .. automethod:: compute_az_el_to_field
    .. automethod:: data_colnames
    .. automethod:: get_all_spectral_windows
    .. automethod:: get_alma_corrstring
@@ -96,4 +101,5 @@ MeasurementSet
    .. automethod:: get_vla_spw2band
    .. automethod:: get_vla_tst_bpass_spw
    .. automethod:: set_data_column
+   .. automethod:: set_data_type_dicts
    .. automethod:: update_reference_antennas

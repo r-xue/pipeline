@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.cli.hif_makeimlist &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -120,8 +121,8 @@
 <h1>pipeline.hif.cli.hif_makeimlist<a class="headerlink" href="#pipeline-hif-cli-hif-makeimlist" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hif.cli.hif_makeimlist">
-<span class="sig-name descname"><span class="pre">hif_makeimlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imagename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linesfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvrange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outframe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_imsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_cell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calmaxpix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phasecenter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nchan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robust</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvtaper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clearlist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_eb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calcsb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacolumn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Results</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_makeimlist.html#hif_makeimlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.cli.hif_makeimlist" title="Link to this definition"></a></dt>
-<dd><p>Compute list of clean images to be produced</p>
+<span class="sig-name descname"><span class="pre">hif_makeimlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imagename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stokes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linesfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvrange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outframe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_imsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_cell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calmaxpix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phasecenter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nchan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">robust</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvtaper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clearlist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_eb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">per_session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calcsb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datatype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datacolumn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_wproject</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Results</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_makeimlist.html#hif_makeimlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.cli.hif_makeimlist" title="Link to this definition"></a></dt>
+<dd><p>Compute list of clean images to be produced.</p>
 <p>Generate a list of images to be cleaned. By default, the list will include
 one image per science target per spw. Calibrator targets can be selected
 by setting appropriate values for <code class="docutils literal notranslate"><span class="pre">intent</span></code>.</p>
@@ -129,44 +130,46 @@ by setting appropriate values for <code class="docutils literal notranslate"><sp
 consistent with the UV coverage.</p>
 <p>By default, the image size in pixels is set to values determined by the
 cell size and the primary beam size. If a calibrator is being
-imaged (intents ‘PHASE’, ‘BANDPASS’, ‘FLUX’ or ‘AMPLITUDE’) then the
-image dimensions are limited to ‘calmaxpix’ pixels.</p>
+imaged (intents 'PHASE', 'BANDPASS', 'FLUX' or 'AMPLITUDE') then the
+image dimensions are limited to 'calmaxpix' pixels.</p>
 <p>By default, science target images are cubes and calibrator target images
 are mfs. Science target images may be mosaics or single fields.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
-<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
-“”: use all MeasurementSets in the context</p>
-<p>Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p>
-</li>
-<li><p><strong>imagename</strong> – Prefix for output image names, “” for automatic.</p></li>
-<li><p><strong>intent</strong> – Select intents for which associated fields will be imaged. Possible choices are PHASE, BANDPASS, AMPLITUDE, CHECK and
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> -- <p>The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the &lt;hifa,hifv&gt;_importdata task.
+&quot;&quot;: use all MeasurementSets in the context</p>
+<p>Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']</p>
+</p></li>
+<li><p><strong>imagename</strong> -- Prefix for output image names, &quot;&quot; for automatic.</p></li>
+<li><p><strong>intent</strong> -- <p>Select intents for which associated fields will be imaged. Possible choices are PHASE, BANDPASS, AMPLITUDE, CHECK and
 TARGET or combinations thereof.</p>
-<p>Examples: ‘PHASE,BANDPASS’, ‘TARGET’</p>
-</li>
-<li><p><strong>field</strong> – Select fields to image. Use field name(s) NOT id(s). Mosaics are assumed to have common source / field names.  If intent is
+<p>Examples: 'PHASE,BANDPASS', 'TARGET'</p>
+</p></li>
+<li><p><strong>field</strong> -- Select fields to image. Use field name(s) NOT id(s). Mosaics are assumed to have common source / field names.  If intent is
 specified only fields with data matching the intent will be
 selected. The fields will be selected from MeasurementSets in
-“vis”.
-“” Fields matching intent, one image per target source.</p></li>
-<li><p><strong>spw</strong> – Select spectral windows to image. “”: Images will be computed for all science spectral windows.</p></li>
-<li><p><strong>contfile</strong> – Name of file with frequency ranges to use for continuum images.</p></li>
-<li><p><strong>linesfile</strong> – Name of file with line frequency ranges to exclude for continuum images.</p></li>
-<li><p><strong>uvrange</strong> – Select a set of uv ranges to image. “”: All uv data is included</p>
-<p>Examples: ‘0~1000klambda’, [‘0~100klambda’, 100~1000klambda]</p>
-</li>
-<li><p><strong>specmode</strong> – Frequency imaging mode, ‘mfs’, ‘cont’, ‘cube’, ‘repBW’. ‘’ defaults to ‘cube’ if <code class="docutils literal notranslate"><span class="pre">intent</span></code> parameter includes ‘TARGET’
-otherwise ‘mfs’.
-specmode=’mfs’ produce one image per source and spw
-specmode=’cont’ produce one image per source and aggregate
+&quot;vis&quot;.
+&quot;&quot; Fields matching intent, one image per target source.</p></li>
+<li><p><strong>spw</strong> -- Select spectral windows to image. &quot;&quot;: Images will be computed for all science spectral windows.</p></li>
+<li><p><strong>stokes</strong> -- Select the Stokes parameters to image. &quot;&quot;: Stokes I will be computed except for polarization calibrators, where the
+automatic heuristics selects IQUV. Setting a value here will override the heuristics. Allowed values are 'I' and 'IQUV'.</p></li>
+<li><p><strong>contfile</strong> -- Name of file with frequency ranges to use for continuum images.</p></li>
+<li><p><strong>linesfile</strong> -- Name of file with line frequency ranges to exclude for continuum images.</p></li>
+<li><p><strong>uvrange</strong> -- <p>Select a set of uv ranges to image. &quot;&quot;: All uv data is included</p>
+<p>Examples: '0~1000klambda', ['0~100klambda', 100~1000klambda]</p>
+</p></li>
+<li><p><strong>specmode</strong> -- Frequency imaging mode, 'mfs', 'cont', 'cube', 'repBW'. '' defaults to 'cube' if <code class="docutils literal notranslate"><span class="pre">intent</span></code> parameter includes 'TARGET'
+otherwise 'mfs'.
+specmode='mfs' produce one image per source and spw
+specmode='cont' produce one image per source and aggregate
 over all specified spws
-specmode=’cube’ produce an LSRK frequency cube, channels are
+specmode='cube' produce an LSRK frequency cube, channels are
 specified in frequency
-specmode=’repBW’ produce an LSRK frequency cube at
+specmode='repBW' produce an LSRK frequency cube at
 representative channel width</p></li>
-<li><p><strong>outframe</strong> – velocity frame of output image (LSRK, ‘’ for automatic) (not implemented)</p></li>
-<li><p><strong>hm_imsize</strong> – Image X and Y size in pixels or PB level for single fields. The explicit sizes must be even and divisible by 2,3,5,7 only.
+<li><p><strong>outframe</strong> -- velocity frame of output image (LSRK, '' for automatic) (not implemented)</p></li>
+<li><p><strong>hm_imsize</strong> -- <p>Image X and Y size in pixels or PB level for single fields. The explicit sizes must be even and divisible by 2,3,5,7 only.
 The default values are derived as follows:
 1. Determine phase center and spread of field centers
 around it.
@@ -178,55 +181,59 @@ number of pixels required.
 The PB level setting for single fields leads to an imsize
 extending to the specified level plus 5% padding in all
 directions.</p>
-<p>Examples: ‘0.3pb’, [120, 120]</p>
-</li>
-<li><p><strong>hm_cell</strong> – Image X and Y cell sizes. “” computes the cell size based on the UV coverage of all the fields to be imaged and uses a
+<p>Examples: '0.3pb', [120, 120]</p>
+</p></li>
+<li><p><strong>hm_cell</strong> -- <p>Image X and Y cell sizes. &quot;&quot; computes the cell size based on the UV coverage of all the fields to be imaged and uses a
 5 pix per beam sampling.
-The pix per beam specification (‘&lt;number&gt;ppb’) uses the above
-default cell size (‘5ppb’) and scales it accordingly.
+The pix per beam specification ('&lt;number&gt;ppb') uses the above
+default cell size ('5ppb') and scales it accordingly.
 The cells can also be specified as explicit measures.</p>
-<p>Examples: ‘3ppb’, [‘0.5arcsec’, ‘0.5arcsec’]</p>
-</li>
-<li><p><strong>calmaxpix</strong> – Maximum image X or Y size in pixels if a calibrator is being imaged (‘PHASE’, ‘BANDPASS’, ‘AMPLITUDE’ or ‘FLUX’ intent).</p></li>
-<li><p><strong>phasecenter</strong> – Direction measure or field id of the image center. The default phase center is set to the mean of the field
+<p>Examples: '3ppb', ['0.5arcsec', '0.5arcsec']</p>
+</p></li>
+<li><p><strong>calmaxpix</strong> -- Maximum image X or Y size in pixels if a calibrator is being imaged ('PHASE', 'BANDPASS', 'AMPLITUDE' or 'FLUX' intent).</p></li>
+<li><p><strong>phasecenter</strong> -- <p>Direction measure or field id of the image center. The default phase center is set to the mean of the field
 directions of all fields that are to be image together.</p>
-<p>Examples: ‘J2000 19h30m00 -40d00m00’, 0</p>
-</li>
-<li><p><strong>nchan</strong> – Total number of channels in the output image(s) -1 selects enough channels to cover the data selected by
+<p>Examples: 'J2000 19h30m00 -40d00m00', 0</p>
+</p></li>
+<li><p><strong>nchan</strong> -- Total number of channels in the output image(s) -1 selects enough channels to cover the data selected by
 spw consistent with start and width.</p></li>
-<li><p><strong>start</strong> – Start of image frequency axis as frequency or velocity. “” selects start frequency automatically.</p></li>
-<li><p><strong>width</strong> – Output channel width. Difference in frequency between 2 selected channels for
+<li><p><strong>start</strong> -- Start of image frequency axis as frequency or velocity. &quot;&quot; selects start frequency automatically.</p></li>
+<li><p><strong>width</strong> -- Output channel width. Difference in frequency between 2 selected channels for
 frequency mode images.
-‘pilotimage’ for 15 MHz / 8 channel heuristic</p></li>
-<li><p><strong>nbins</strong> – Channel binning factors for each spw. Format: ‘spw1:nb1,spw2:nb2,…’ with optional wildcards: ‘<a href="#id1"><span class="problematic" id="id2">*</span></a>:nb’</p>
-<p>Examples: ‘9:2,11:4,13:2,15:8’, ‘<a href="#id3"><span class="problematic" id="id4">*</span></a>:2’</p>
-</li>
-<li><p><strong>robust</strong> – Briggs robustness parameter Values range from -2.0 (uniform) to 2.0 (natural)</p></li>
-<li><p><strong>uvtaper</strong> – uv-taper on outer baselines</p></li>
-<li><p><strong>clearlist</strong> – Clear any existing target list</p></li>
-<li><p><strong>per_eb</strong> – Make an image target per EB</p></li>
-<li><p><strong>per_session</strong> – Make an image target per session</p></li>
-<li><p><strong>calcsb</strong> – Force (re-)calculation of sensitivities and beams</p></li>
-<li><p><strong>datatype</strong> – Data type(s) to image. The default ‘’ selects the best available data type (e.g. selfcal over regcal) with
+'pilotimage' for 15 MHz / 8 channel heuristic</p></li>
+<li><p><strong>nbins</strong> -- <p>Channel binning factors for each spw. Format: 'spw1:nb1,spw2:nb2,...' with optional wildcards: '<a href="#id1"><span class="problematic" id="id2">*</span></a>:nb'</p>
+<p>Examples: '9:2,11:4,13:2,15:8', '<a href="#id3"><span class="problematic" id="id4">*</span></a>:2'</p>
+</p></li>
+<li><p><strong>robust</strong> -- Briggs robustness parameter Values range from -2.0 (uniform) to 2.0 (natural)</p></li>
+<li><p><strong>uvtaper</strong> -- uv-taper on outer baselines</p></li>
+<li><p><strong>clearlist</strong> -- Clear any existing target list</p></li>
+<li><p><strong>per_eb</strong> -- Make an image target per EB</p></li>
+<li><p><strong>per_session</strong> -- Make an image target per session</p></li>
+<li><p><strong>calcsb</strong> -- Force (re-)calculation of sensitivities and beams</p></li>
+<li><p><strong>datatype</strong> -- <p>Data type(s) to image. The default '' selects the best available data type (e.g. selfcal over regcal) with
 an automatic fallback to the next available data type.
 With the <code class="docutils literal notranslate"><span class="pre">datatype</span></code> parameter one can force the use of only
 given data type(s) without a fallback. The data type(s) are
 specified as comma separated string of keywords. Accepted
 values are the standard data types such as
-‘REGCAL_CONTLINE_ALL’, ‘REGCAL_CONTLINE_SCIENCE’,
-‘SELFCAL_CONTLINE_SCIENCE’, ‘REGCAL_LINE_SCIENCE’,
-‘SELFCAL_LINE_SCIENCE’. The shortcuts ‘regcal’ and ‘selfcal’
+'REGCAL_CONTLINE_ALL', 'REGCAL_CONTLINE_SCIENCE',
+'SELFCAL_CONTLINE_SCIENCE', 'REGCAL_LINE_SCIENCE',
+'SELFCAL_LINE_SCIENCE'. The shortcuts 'regcal' and 'selfcal'
 are also accepted. They are expanded into the full data types
 using the <code class="docutils literal notranslate"><span class="pre">specmode</span></code> parameter and the available data types for
-the given MSes. In addition the strings ‘best’ and ‘all’ are
-accepted, where ‘best’ means the above mentioned automatic
-mode and ‘all’ means all available data types for a given
+the given MSes. In addition the strings 'best' and 'all' are
+accepted, where 'best' means the above mentioned automatic
+mode and 'all' means all available data types for a given
 specmode. The data type strings are case insensitive.</p>
-<p>Examples: ‘selfcal’, ‘regcal, ‘selfcal,regcal’,
-‘REGCAL_LINE_SCIENCE,selfcal_line_science’</p>
-</li>
-<li><p><strong>datacolumn</strong> – Data column to image. Only to be used for manual overriding when the automatic choice by data type is not appropriate.</p></li>
-<li><p><strong>parallel</strong> – Use MPI cluster where possible</p></li>
+<p>Examples: 'selfcal', 'regcal, 'selfcal,regcal',
+'REGCAL_LINE_SCIENCE,selfcal_line_science'</p>
+</p></li>
+<li><p><strong>datacolumn</strong> -- Data column to image. Only to be used for manual overriding when the automatic choice by data type is not appropriate.</p></li>
+<li><p><strong>allow_wproject</strong> -- Allow the wproject heuristics for imaging</p></li>
+<li><p><strong>parallel</strong> -- <p>Use the CASA imager parallel processing when possible.</p>
+<p>Options: <code class="docutils literal notranslate"><span class="pre">'automatic'</span></code>, <code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code>, <code class="docutils literal notranslate"><span class="pre">True</span></code>, <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'automatic'</span></code></p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -264,7 +271,7 @@ one image per science spw.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

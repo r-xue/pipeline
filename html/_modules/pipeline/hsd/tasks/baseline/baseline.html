@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.tasks.baseline.baseline &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -118,7 +156,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
@@ -127,7 +165,6 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.sessionutils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sessionutils</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataType</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain.singledish</span><span class="w"> </span><span class="kn">import</span> <span class="n">MSReductionGroupDesc</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hsd.heuristics</span><span class="w"> </span><span class="kn">import</span> <span class="n">MaskDeviationHeuristic</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">maskline</span>
@@ -137,7 +174,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hsd.tasks.common.inspection_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_ms</span><span class="p">,</span> <span class="n">inspect_reduction_group</span><span class="p">,</span> <span class="n">merge_reduction_group</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..common</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">LineWindow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">FitFunc</span><span class="p">,</span> <span class="n">FitOrder</span><span class="p">,</span> <span class="n">LineWindow</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">Heuristic</span>
@@ -166,6 +203,7 @@
     <span class="n">switchpoly</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">clusteringalgorithm</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;hierarchy&#39;</span><span class="p">)</span>
     <span class="n">deviationmask</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">deviationmask_sigma_threshold</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
 
     <span class="c1"># Synchronization between infiles and vis is still necessary</span>
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
@@ -213,11 +251,12 @@
                  <span class="n">linewindowmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">edge</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">broadline</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">fitorder</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">fitfunc</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">fitfunc</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FitFunc</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">fitorder</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FitOrder</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">switchpoly</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">clusteringalgorithm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">deviationmask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">deviationmask_sigma_threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">parallel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct SDBaselineInputs instance.</span>
 
@@ -227,32 +266,32 @@
 <span class="sd">            infiles: List of data files. These must be a name of MeasurementSets that are</span>
 <span class="sd">                registered to context via hsd_importdata or hsd_restoredata task.</span>
 
-<span class="sd">                Example: vis=[&#39;X227.ms&#39;, &#39;X228.ms&#39;]</span>
-<span class="sd">                Default: None (process all registered MeasurementSets)</span>
+<span class="sd">                Example: ``vis=[&#39;X227.ms&#39;, &#39;X228.ms&#39;]``</span>
+<span class="sd">                Default: ``None`` (process all registered MeasurementSets)</span>
 
 <span class="sd">            antenna: Data selection by antenna.</span>
 
 <span class="sd">                Example: &#39;1&#39; (select by ANTENNA_ID), &#39;PM03&#39; (select by antenna name), &#39;&#39; (all antennas)</span>
 
-<span class="sd">                Default: None (equivalent to &#39;&#39;)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;&#39;``)</span>
 
 <span class="sd">            spw: Data selection by spw.</span>
 
-<span class="sd">                Example: &#39;3,4&#39; (process spw 3 and 4), [&#39;0&#39;,&#39;2&#39;] (spw 0 for first data, 2 for second), &#39;&#39; (all spws)</span>
+<span class="sd">                Example: ``&#39;3,4&#39;`` (process spw 3 and 4), [&#39;0&#39;,&#39;2&#39;] (spw 0 for first data, 2 for second), ``&#39;&#39;`` (all spws)</span>
 
-<span class="sd">                Default: None (equivalent to &#39;&#39;)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;&#39;``)</span>
 
 <span class="sd">            pol: Data selection by polarizations.</span>
 
-<span class="sd">                Example: &#39;0&#39; (process pol 0), [&#39;0~1&#39;,&#39;0&#39;] (pol 0 and 1 for first data, only 0 for second), &#39;&#39; (all polarizations)</span>
+<span class="sd">                Example: ``&#39;0&#39;`` (process pol 0), ``[&#39;0~1&#39;,&#39;0&#39;]`` (pol 0 and 1 for first data, only 0 for second), ``&#39;&#39;`` (all polarizations)</span>
 
-<span class="sd">                Default: None (equivalent to &#39;&#39;)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;&#39;``)</span>
 
 <span class="sd">            field: Data selection by field.</span>
 
-<span class="sd">                Example: &#39;1&#39; (select by FIELD_ID), &#39;M100*&#39; (select by field name), &#39;&#39; (all fields)</span>
+<span class="sd">                Example: ``&#39;1&#39;`` (select by FIELD_ID), ``&#39;M100*&#39;`` (select by field name), ``&#39;&#39;`` (all fields)</span>
 
-<span class="sd">                Default: None (equivalent to &#39;&#39;)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;&#39;``)</span>
 
 <span class="sd">            linewindow: Pre-defined line window. If this is set, specified line windows are used as</span>
 <span class="sd">                a line mask for baseline subtraction instead to determine masks based on line detection and</span>
@@ -342,23 +381,37 @@
 <span class="sd">                The value must be a list with length of 2, whose values specify left and right edge channels,</span>
 <span class="sd">                respectively.</span>
 
-<span class="sd">                Example: [10,10]</span>
+<span class="sd">                Example: ``[10,10]``</span>
 
-<span class="sd">                Default: None</span>
+<span class="sd">                Default: ``None``</span>
 
-<span class="sd">            broadline: Try to detect broad component of spectral line if True.</span>
+<span class="sd">            broadline: Try to detect broad component of spectral line if ``True``.</span>
 
-<span class="sd">                Default: None (equivalent to True)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``True``)</span>
 
 <span class="sd">            fitfunc: Fitting function for baseline subtraction. You can choose either cubic spline</span>
-<span class="sd">                (&#39;spline&#39; or &#39;cspline&#39;) or polynomial (&#39;poly&#39; or &#39;polynomial&#39;).</span>
+<span class="sd">                (&#39;spline&#39; or &#39;cspline&#39;), polynomial (&#39;poly&#39; or &#39;polynomial&#39;).</span>
 
-<span class="sd">                Default: None (equivalent to &#39;cspline&#39;)</span>
+<span class="sd">                Accepts:</span>
+
+<span class="sd">                - A string: Applies the same function to all spectral windows (SPWs).</span>
+<span class="sd">                - A dictionary: Maps SPW IDs (int or str) to a specific fitting function.</span>
+
+<span class="sd">                If an SPW ID is not present in the dictionary, ``&#39;cspline&#39;`` will be used as the default.</span>
+
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;cspline&#39;``)</span>
 
 <span class="sd">            fitorder: Fitting order for polynomial. For cubic spline, it is used to determine how</span>
-<span class="sd">                much the spectrum is segmented into. If -1 is given, the task determines the order automatically.</span>
+<span class="sd">                much the spectrum is segmented into.</span>
 
-<span class="sd">                Default: None (equivalent to -1)</span>
+<span class="sd">                Accepts:</span>
+
+<span class="sd">                - An integer: Applies the same order to all SPWs. Valid values: ``-1`` (automatic), ``0``, or any positive integer.</span>
+<span class="sd">                - A dictionary: Maps SPW IDs (int or str) to a specific fitting order.</span>
+
+<span class="sd">                If an SPW ID is not present in the dictionary, ``-1`` will be used as the default, triggering automatic order selection.</span>
+
+<span class="sd">                Default: ``None`` (equivalent to ``-1``)</span>
 
 <span class="sd">            switchpoly: Whether to fall back the fits from cubic spline to 1st or 2nd order polynomial</span>
 <span class="sd">                when large masks exist at the edges of the spw. Condition for switching is as follows:</span>
@@ -370,27 +423,32 @@
 <span class="sd">                where nmask is a number of channels for mask at edge while</span>
 <span class="sd">                nchan is a number of channels of entire spectral window.</span>
 
-<span class="sd">                Default: None (equivalent to True)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``True``)</span>
 
 <span class="sd">            clusteringalgorithm: Selection of the algorithm used in the clustering analysis</span>
 <span class="sd">                to check the validity of detected line features. The &#39;kmean&#39; algorithm,</span>
 <span class="sd">                hierarchical clustering algorithm, &#39;hierarchy&#39;, and their combination (&#39;both&#39;)</span>
 <span class="sd">                are so far implemented.</span>
 
-<span class="sd">                Default: None (equivalent to &#39;hierarchy&#39;)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;hierarchy&#39;``)</span>
 
 <span class="sd">            deviationmask: Apply deviation mask in addition to masks determined by the automatic line detection.</span>
 
-<span class="sd">                Default: None (equivalent to True)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``True``)</span>
+
+<span class="sd">            deviationmask_sigma_threshold: Threshold factor (F) to detect the deviation.</span>
+<span class="sd">                Actual threshold will be median + F * standard-deviation of the spectrum.</span>
+
+<span class="sd">                Default: ``None`` (equivallent to ``5.0``)</span>
 
 <span class="sd">            parallel: Execute using CASA HPC functionality, if available.</span>
 
-<span class="sd">                Options: &#39;automatic&#39;, &#39;true&#39;, &#39;false&#39;, True, False.</span>
+<span class="sd">                Options: ``&#39;automatic&#39;``, ``&#39;true&#39;``, ``&#39;false&#39;``, ``True``, ``False``.</span>
 
-<span class="sd">                Default: None (equivalent to &#39;automatic&#39;).</span>
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;automatic&#39;``).</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">SDBaselineInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">infiles</span> <span class="o">=</span> <span class="n">infiles</span>
@@ -407,6 +465,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">switchpoly</span> <span class="o">=</span> <span class="n">switchpoly</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clusteringalgorithm</span> <span class="o">=</span> <span class="n">clusteringalgorithm</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">deviationmask</span> <span class="o">=</span> <span class="n">deviationmask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deviationmask_sigma_threshold</span> <span class="o">=</span> <span class="n">deviationmask_sigma_threshold</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
@@ -457,7 +516,7 @@
 <span class="sd">          - register deviation mask to each measurementset domain object</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            context: Pipeline context object containing state information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SDBaselineResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 
@@ -571,11 +630,12 @@
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">: window=</span><span class="si">{}</span><span class="s1">, windowmode=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">window</span><span class="p">,</span> <span class="n">windowmode</span><span class="p">))</span>
         <span class="n">edge</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">edge</span>
         <span class="n">broadline</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">broadline</span>
-        <span class="n">fitorder</span> <span class="o">=</span> <span class="s1">&#39;automatic&#39;</span> <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">fitorder</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">inputs</span><span class="o">.</span><span class="n">fitorder</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">inputs</span><span class="o">.</span><span class="n">fitorder</span>
+        <span class="n">fitorder</span> <span class="o">=</span> <span class="s1">&#39;automatic&#39;</span> <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">fitorder</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">inputs</span><span class="o">.</span><span class="n">fitorder</span>
         <span class="n">fitfunc</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">fitfunc</span>
         <span class="n">switchpoly</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">switchpoly</span>
         <span class="n">clusteringalgorithm</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">clusteringalgorithm</span>
         <span class="n">deviationmask</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">deviationmask</span>
+        <span class="n">deviationmask_sigma_threshold</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">deviationmask_sigma_threshold</span>
 
         <span class="c1"># mkdir stage_dir if it doesn&#39;t exist</span>
         <span class="n">stage_number</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">task_counter</span>
@@ -673,8 +733,13 @@
                         <span class="n">deviation_mask</span><span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">][(</span><span class="n">fieldid</span><span class="p">,</span> <span class="n">antennaid</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)]</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">deviation_mask</span><span class="p">[(</span><span class="n">fieldid</span><span class="p">,</span> <span class="n">antennaid</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)]</span>
                 <span class="k">for</span> <span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dvparams</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="n">field_list</span><span class="p">,</span> <span class="n">antenna_list</span><span class="p">,</span> <span class="n">spw_list</span> <span class="o">=</span> <span class="n">params</span>
-                    <span class="n">dvtasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">deviation_mask_heuristic</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">field_list</span><span class="o">=</span><span class="n">field_list</span><span class="p">,</span> <span class="n">antenna_list</span><span class="o">=</span><span class="n">antenna_list</span><span class="p">,</span>
-                                                            <span class="n">spw_list</span><span class="o">=</span><span class="n">spw_list</span><span class="p">,</span> <span class="n">consider_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">parallel</span><span class="p">))</span>
+                    <span class="n">dvtasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">deviation_mask_heuristic</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span>
+                                                            <span class="n">field_list</span><span class="o">=</span><span class="n">field_list</span><span class="p">,</span>
+                                                            <span class="n">antenna_list</span><span class="o">=</span><span class="n">antenna_list</span><span class="p">,</span>
+                                                            <span class="n">spw_list</span><span class="o">=</span><span class="n">spw_list</span><span class="p">,</span>
+                                                            <span class="n">deviationmask_sigma_threshold</span><span class="o">=</span><span class="n">deviationmask_sigma_threshold</span><span class="p">,</span>
+                                                            <span class="n">consider_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                            <span class="n">parallel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">parallel</span><span class="p">))</span>
                 <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">dvtask</span> <span class="ow">in</span> <span class="n">dvtasks</span><span class="p">:</span>
                     <span class="n">dvmasks</span> <span class="o">=</span> <span class="n">dvtask</span><span class="o">.</span><span class="n">get_result</span><span class="p">()</span>
                     <span class="n">field_list</span><span class="p">,</span> <span class="n">antenna_list</span><span class="p">,</span> <span class="n">spw_list</span> <span class="o">=</span> <span class="n">dvparams</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span>
@@ -820,6 +885,7 @@
 </div>
 
 
+
 <span class="k">class</span><span class="w"> </span><span class="nc">HeuristicsTask</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Executor for heuristics class. It is an adaptor to mpihelper framework.&quot;&quot;&quot;</span>
 
@@ -862,6 +928,7 @@
                  <span class="n">field_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
                  <span class="n">antenna_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
                  <span class="n">spw_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+                 <span class="n">deviationmask_sigma_threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
                  <span class="n">consider_flag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct DeviationMaskHeuristicsTask instance.</span>
 
@@ -876,6 +943,8 @@
 <span class="sd">            field_list: List of field ids to process</span>
 <span class="sd">            antenna_list: List of antenna ids to process</span>
 <span class="sd">            spw_list: List of spectral window ids to process</span>
+<span class="sd">            deviationmask_sigma_threshold: Threshold factor to detect the deviation.</span>
+<span class="sd">                                     (see SDBaselineInputs for details)</span>
 <span class="sd">            consider_flag: Consider flag when perofrming heuristics. Defaults to False.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">DeviationMaskHeuristicsTask</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">heuristics_cls</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">consider_flag</span><span class="o">=</span><span class="n">consider_flag</span><span class="p">)</span>
@@ -883,6 +952,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">field_list</span> <span class="o">=</span> <span class="n">field_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">antenna_list</span> <span class="o">=</span> <span class="n">antenna_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spw_list</span> <span class="o">=</span> <span class="n">spw_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deviationmask_sigma_threshold</span> <span class="o">=</span> <span class="n">deviationmask_sigma_threshold</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute heuristics.</span>
@@ -892,8 +962,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+
         <span class="k">for</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw_list</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;field_id&#39;</span><span class="p">:</span> <span class="n">field_id</span><span class="p">,</span> <span class="s1">&#39;antenna_id&#39;</span><span class="p">:</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="s1">&#39;spw_id&#39;</span><span class="p">:</span> <span class="n">spw_id</span><span class="p">})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;field_id&#39;</span><span class="p">:</span> <span class="n">field_id</span><span class="p">,</span>
+                                <span class="s1">&#39;antenna_id&#39;</span><span class="p">:</span> <span class="n">antenna_id</span><span class="p">,</span>
+                                <span class="s1">&#39;spw_id&#39;</span><span class="p">:</span> <span class="n">spw_id</span><span class="p">,</span>
+                                <span class="s1">&#39;detection&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">deviationmask_sigma_threshold</span><span class="p">})</span>
             <span class="n">mask_list</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">DeviationMaskHeuristicsTask</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
             <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mask_list</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
@@ -904,6 +978,7 @@
         <span class="n">field_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
         <span class="n">antenna_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
         <span class="n">spw_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">deviationmask_sigma_threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
         <span class="n">consider_flag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">parallel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">mpihelpers</span><span class="o">.</span><span class="n">SyncTask</span><span class="p">,</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">AsyncTask</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Prepare task instance that can be executed in mpihelpers framework.</span>
@@ -914,6 +989,8 @@
 <span class="sd">        antenna_list: List of antenna ids to process</span>
 <span class="sd">        spw_list: List of spectral window ids to process</span>
 <span class="sd">        consider_flag: Consider flag when performing heuristics. Defaults to False.</span>
+<span class="sd">        deviationmask_sigma_threshold: Threshold factor (F) to detect the deviation.</span>
+<span class="sd">                                 (see SDBaselineInputs for detail)</span>
 <span class="sd">        parallel: Parallel execution or not. Currently disabled.</span>
 <span class="sd">                  Task is always executed in serial mode. Defaults to None.</span>
 
@@ -921,8 +998,13 @@
 <span class="sd">        Name of the MS and the task instance for mpihelpers framework.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># parallel_wanted = mpihelpers.parse_mpi_input_parameter(parallel)</span>
-    <span class="n">mytask</span> <span class="o">=</span> <span class="n">DeviationMaskHeuristicsTask</span><span class="p">(</span><span class="n">MaskDeviationHeuristic</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">field_list</span><span class="o">=</span><span class="n">field_list</span><span class="p">,</span>
-                                         <span class="n">antenna_list</span><span class="o">=</span><span class="n">antenna_list</span><span class="p">,</span> <span class="n">spw_list</span><span class="o">=</span><span class="n">spw_list</span><span class="p">,</span> <span class="n">consider_flag</span><span class="o">=</span><span class="n">consider_flag</span><span class="p">)</span>
+    <span class="n">mytask</span> <span class="o">=</span> <span class="n">DeviationMaskHeuristicsTask</span><span class="p">(</span><span class="n">MaskDeviationHeuristic</span><span class="p">,</span>
+                                         <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span>
+                                         <span class="n">field_list</span><span class="o">=</span><span class="n">field_list</span><span class="p">,</span>
+                                         <span class="n">antenna_list</span><span class="o">=</span><span class="n">antenna_list</span><span class="p">,</span>
+                                         <span class="n">spw_list</span><span class="o">=</span><span class="n">spw_list</span><span class="p">,</span>
+                                         <span class="n">deviationmask_sigma_threshold</span><span class="o">=</span><span class="n">deviationmask_sigma_threshold</span><span class="p">,</span>
+                                         <span class="n">consider_flag</span><span class="o">=</span><span class="n">consider_flag</span><span class="p">)</span>
     <span class="c1"># if parallel_wanted:</span>
     <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
         <span class="n">task</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">AsyncTask</span><span class="p">(</span><span class="n">mytask</span><span class="p">)</span>
@@ -977,7 +1059,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.fluxscale.gcorfluxscale &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -132,21 +170,18 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.callibrary</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">callibrary</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.sessionutils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sessionutils</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">FluxMeasurement</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">FluxMeasurement</span><span class="p">,</span> <span class="n">MeasurementSet</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">commonfluxresults</span><span class="p">,</span> <span class="n">mstools</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.flagging.flagdatasetter</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlagdataSetter</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">applycal</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">gaincal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">applycal</span><span class="p">,</span> <span class="n">gaincal</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks.fluxscale</span><span class="w"> </span><span class="kn">import</span> <span class="n">fluxscale</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks.gaincal.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaincalResults</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks.setmodel</span><span class="w"> </span><span class="kn">import</span> <span class="n">setjy</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">exceptions</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">fluxes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">exceptions</span><span class="p">,</span>
+                                     <span class="n">task_registry</span><span class="p">)</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">...</span><span class="w"> </span><span class="kn">import</span> <span class="n">heuristics</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">fluxes</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;GcorFluxscale&#39;</span><span class="p">,</span>
@@ -164,7 +199,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">GcorFluxscaleResults</span><span class="p">(</span><span class="n">commonfluxresults</span><span class="o">.</span><span class="n">FluxCalibrationResults</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">resantenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">measurements</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fluxscale_measurements</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">applies_adopted</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ampcal_flagcmds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">GcorFluxscaleResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">resantenna</span><span class="o">=</span><span class="n">resantenna</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="n">uvrange</span><span class="p">,</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">resantenna</span><span class="o">=</span><span class="n">resantenna</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="n">uvrange</span><span class="p">,</span>
                                                    <span class="n">measurements</span><span class="o">=</span><span class="n">measurements</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">applies_adopted</span> <span class="o">=</span> <span class="n">applies_adopted</span>
 
@@ -219,15 +254,17 @@
                                                    <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">)</span>
     <span class="n">uvrange</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 
+    <span class="n">parallel</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">parallel_inputs_impl</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
     <span class="c1"># docstring and type hints: supplements hifa_gfluxscale</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fluxtable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reffile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">transfer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refspwmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refintent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transintent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupsolint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">minsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_resolvedcals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">peak_fraction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">amp_outlier_sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">amp_outlier_sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            context: Pipeline context object containing state information.</span>
 
 <span class="sd">            output_dir: Output directory.</span>
 <span class="sd">                Defaults to None, which corresponds to the current working directory.</span>
@@ -235,7 +272,7 @@
 <span class="sd">            vis: The list of input MeasurementSets. Defaults to the list of</span>
 <span class="sd">                MeasurementSets specified in the pipeline context.</span>
 
-<span class="sd">                Example: [&#39;M32A.ms&#39;, &#39;M32B.ms&#39;]</span>
+<span class="sd">                Example: ``[&#39;M32A.ms&#39;, &#39;M32B.ms&#39;]``</span>
 
 <span class="sd">            caltable:</span>
 
@@ -248,53 +285,53 @@
 <span class="sd">                by hifa_importdata, consisting of catalogue fluxes extracted from the ASDM</span>
 <span class="sd">                and / or edited by the user.</span>
 
-<span class="sd">                Example: reffile=&#39;&#39;, reffile=&#39;working/flux.csv&#39;</span>
+<span class="sd">                Example: ``reffile=&#39;&#39;``, ``reffile=&#39;working/flux.csv&#39;``</span>
 
 <span class="sd">            reference: A string containing a comma delimited list of field names</span>
-<span class="sd">                defining the reference calibrators. Defaults to field names with</span>
-<span class="sd">                intent &#39;`*AMP*`&#39;.</span>
+<span class="sd">                defining the reference calibrators. Defaults to names of fields</span>
+<span class="sd">                with intents in ``refintent``.</span>
 
-<span class="sd">                Example: reference=&#39;M82,3C273&#39;</span>
+<span class="sd">                Example: ``reference=&#39;M82,3C273&#39;``</span>
 
 <span class="sd">            transfer: A string containing a comma delimited list of field names</span>
-<span class="sd">                defining the transfer calibrators. Defaults to field names with</span>
-<span class="sd">                intent &#39;`*PHASE*`&#39;.</span>
+<span class="sd">                defining the transfer calibrators. Defaults to names of fields</span>
+<span class="sd">                with intents in ``transintent``.</span>
 
-<span class="sd">                Example: transfer=&#39;J1328+041,J1206+30&#39;</span>
+<span class="sd">                Example: ``transfer=&#39;J1328+041,J1206+30&#39;``</span>
 
 <span class="sd">            refspwmap: Vector of spectral window ids enabling scaling across</span>
 <span class="sd">                spectral windows. Defaults to no scaling.</span>
 
-<span class="sd">                Example: refspwmap=[1,1,3,3] - (4 spws, reference fields in 1 and 3, transfer</span>
+<span class="sd">                Example: ``refspwmap=[1,1,3,3]`` - (4 spws, reference fields in 1 and 3, transfer</span>
 <span class="sd">                fields in 0,1,2,3)</span>
 
 <span class="sd">            refintent: A string containing a comma delimited list of intents</span>
 <span class="sd">                used to select the reference calibrators. Defaults to &#39;AMPLITUDE&#39;.</span>
 
-<span class="sd">                Example: refintent=&#39;&#39;, refintent=&#39;AMPLITUDE&#39;</span>
+<span class="sd">                Example: ``refintent=&#39;&#39;``, r``efintent=&#39;AMPLITUDE&#39;``</span>
 
 <span class="sd">            transintent: A string containing a comma delimited list of intents</span>
 <span class="sd">                defining the transfer calibrators. Defaults to</span>
-<span class="sd">                &#39;PHASE,BANDPASS,CHECK,POLARIZATION,POLANGLE,POLLEAKAGE&#39;.</span>
+<span class="sd">                &#39;PHASE,BANDPASS,CHECK,DIFFGAINREF,DIFFGAINSRC,POLARIZATION,POLANGLE,POLLEAKAGE&#39;.</span>
 
-<span class="sd">                Example: transintent=&#39;&#39;, transintent=&#39;PHASE,BANDPASS&#39;</span>
+<span class="sd">                Example: ``transintent=&#39;&#39;``, ``transintent=&#39;PHASE,BANDPASS&#39;``</span>
 
 <span class="sd">            solint: Time solution intervals in CASA syntax for the amplitude solution.</span>
 
-<span class="sd">                Example: solint=&#39;inf&#39;, solint=&#39;int&#39;, solint=&#39;100sec&#39;</span>
+<span class="sd">                Example: ``solint=&#39;inf&#39;``, ``solint=&#39;int&#39;``, ``solint=&#39;100sec&#39;``</span>
 
 <span class="sd">            phaseupsolint: Time solution intervals in CASA syntax for the phase solution.</span>
 
-<span class="sd">                Example: phaseupsolint=&#39;inf&#39;, phaseupsolint=&#39;int&#39;, phaseupsolint=&#39;100sec&#39;</span>
+<span class="sd">                Example: ``phaseupsolint=&#39;inf&#39;``, ``phaseupsolint=&#39;int&#39;``, ``phaseupsolint=&#39;100sec&#39;``</span>
 
 <span class="sd">            minsnr: Minimum signal-to-noise ratio for gain calibration solutions.</span>
 
-<span class="sd">                Example: minsnr=1.5, minsnr=0.0</span>
+<span class="sd">                Example: ``minsnr=1.5``, ``minsnr=0.0``</span>
 
 <span class="sd">            refant: A string specifying the reference antenna(s). By default,</span>
 <span class="sd">                this is read from the context.</span>
 
-<span class="sd">                Example: refant=&#39;DV05&#39;</span>
+<span class="sd">                Example: ``refant=&#39;DV05&#39;``</span>
 
 <span class="sd">            hm_resolvedcals: Heuristics method for handling resolved calibrators. The</span>
 <span class="sd">                options are &#39;automatic&#39; and &#39;manual&#39;. In automatic mode,</span>
@@ -305,9 +342,9 @@
 
 <span class="sd">            antenna: A comma delimited string specifying the antenna names or ids</span>
 <span class="sd">                to be used for the fluxscale determination. Used in</span>
-<span class="sd">                ``hm_resolvedcals`` = &#39;manual&#39; mode.</span>
+<span class="sd">                ``hm_resolvedcals=&#39;manual&#39;`` mode.</span>
 
-<span class="sd">                Example: antenna=&#39;DV16,DV07,DA12,DA08&#39;</span>
+<span class="sd">                Example: ``antenna=&#39;DV16,DV07,DA12,DA08&#39;``</span>
 
 <span class="sd">            uvrange:</span>
 
@@ -319,12 +356,18 @@
 <span class="sd">            amp_outlier_sigma: Sigma threshold used to identify outliers in the amplitude</span>
 <span class="sd">                caltable. Default: 50.0.</span>
 
-<span class="sd">                Example: amp_outlier_sigma=30.0</span>
+<span class="sd">                Example: ``amp_outlier_sigma=30.0``</span>
+
+<span class="sd">            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.</span>
+
+<span class="sd">                Options: ``&#39;automatic&#39;``, ``&#39;true&#39;``, ``&#39;false&#39;``, ``True``, ``False``</span>
+
+<span class="sd">                Default: ``None`` (equivalent to ``False``)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">GcorFluxscaleInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="n">caltable</span><span class="p">,</span>
-                                                  <span class="n">fluxtable</span><span class="o">=</span><span class="n">fluxtable</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="n">reference</span><span class="p">,</span> <span class="n">transfer</span><span class="o">=</span><span class="n">transfer</span><span class="p">,</span>
-                                                  <span class="n">refspwmap</span><span class="o">=</span><span class="n">refspwmap</span><span class="p">,</span> <span class="n">refintent</span><span class="o">=</span><span class="n">refintent</span><span class="p">,</span> <span class="n">transintent</span><span class="o">=</span><span class="n">transintent</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="n">caltable</span><span class="p">,</span>
+                         <span class="n">fluxtable</span><span class="o">=</span><span class="n">fluxtable</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="n">reference</span><span class="p">,</span> <span class="n">transfer</span><span class="o">=</span><span class="n">transfer</span><span class="p">,</span>
+                         <span class="n">refspwmap</span><span class="o">=</span><span class="n">refspwmap</span><span class="p">,</span> <span class="n">refintent</span><span class="o">=</span><span class="n">refintent</span><span class="p">,</span> <span class="n">transintent</span><span class="o">=</span><span class="n">transintent</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reffile</span> <span class="o">=</span> <span class="n">reffile</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">solint</span> <span class="o">=</span> <span class="n">solint</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">phaseupsolint</span> <span class="o">=</span> <span class="n">phaseupsolint</span>
@@ -336,21 +379,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">peak_fraction</span> <span class="o">=</span> <span class="n">peak_fraction</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">amp_outlier_sigma</span> <span class="o">=</span> <span class="n">amp_outlier_sigma</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
 
-<div class="viewcode-block" id="GcorFluxscale">
-<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.GcorFluxscale.html#pipeline.hifa.tasks.GcorFluxscale">[docs]</a>
-<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_gfluxscale&#39;</span><span class="p">)</span>
-<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
-    <span class="s1">&#39;The absolute flux calibration is transferred to secondary calibrator sources.&#39;</span>
-<span class="p">)</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">GcorFluxscale</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SerialGcorFluxscale</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">GcorFluxscaleInputs</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">GcorFluxscale</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 
-<div class="viewcode-block" id="GcorFluxscale.prepare">
-<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.GcorFluxscale.html#pipeline.hifa.tasks.GcorFluxscale.prepare">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -363,9 +400,26 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> has no data with reference intent </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">refintent</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">result</span>
 
-        <span class="c1"># Run setjy for sources in the reference list which have transfer intents.</span>
+        <span class="c1"># If the reference intent field(s) (amplitude calibrator) also covered</span>
+        <span class="c1"># one or more of the transfer intents, then:</span>
         <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">reference</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">transintent</span><span class="p">):</span>
+            <span class="c1"># First run setjy on the reference field(s), where the setjy always</span>
+            <span class="c1"># acts on the transfer intent scans. This is essential to ensure</span>
+            <span class="c1"># that the transfer intent scans on this reference field (typically</span>
+            <span class="c1"># amplitude calibrator) get their model flux set.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_do_setjy</span><span class="p">(</span><span class="n">reffile</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">reffile</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">reference</span><span class="p">)</span>
+
+            <span class="c1"># PIPE-2822: after the setjy step, update the list of transfer</span>
+            <span class="c1"># intents to only keep those intents that are not already covered by</span>
+            <span class="c1"># the reference field.</span>
+            <span class="n">transintent_to_keep</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">transintent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">reference</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">):</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">: removing </span><span class="si">{</span><span class="n">intent</span><span class="si">}</span><span class="s2"> from the amplitude solve list as this intent is&quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot; already covered by the amplitude calibrator field(s) </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">reference</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">transintent_to_keep</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">transintent</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">transintent_to_keep</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Flux calibrator field(s) </span><span class="si">{!r}</span><span class="s1"> in </span><span class="si">{!s}</span><span class="s1"> have no data with &#39;</span>
                      <span class="s1">&#39;intent </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">reference</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">transintent</span><span class="p">))</span>
@@ -431,14 +485,10 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unable to complete flux scaling operation for MS </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Flux scaling error&#39;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">e</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">result</span></div>
+        <span class="k">return</span> <span class="n">result</span>
 
-
-<div class="viewcode-block" id="GcorFluxscale.analyse">
-<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.GcorFluxscale.html#pipeline.hifa.tasks.GcorFluxscale.analyse">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">result</span></div>
-
+        <span class="k">return</span> <span class="n">result</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_check_caltable</span><span class="p">(</span><span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">reference</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">transfer</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -653,11 +703,10 @@
                     <span class="n">append</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
-        <span class="c1"># Use only valid science spws</span>
+        <span class="c1"># Use only valid science spws covered by current intent(s) and field(s).</span>
         <span class="n">fieldlist</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">field</span><span class="p">)</span>
-        <span class="n">sci_spws</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-        <span class="n">spw_ids</span> <span class="o">=</span> <span class="p">{</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">fld</span> <span class="ow">in</span> <span class="n">fieldlist</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">fld</span><span class="o">.</span><span class="n">valid_spws</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">sci_spws</span><span class="p">)}</span>
-        <span class="n">spw_ids</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">spw_ids</span><span class="p">))</span>
+        <span class="n">sci_spws</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">))</span>
+        <span class="n">spws_to_solve</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">({</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">fld</span> <span class="ow">in</span> <span class="n">fieldlist</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">fld</span><span class="o">.</span><span class="n">valid_spws</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">sci_spws</span><span class="p">)})</span>
 
         <span class="c1"># Initialize gaincal task inputs.</span>
         <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
@@ -666,7 +715,7 @@
             <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="n">caltable</span><span class="p">,</span>
             <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span>
             <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intent</span><span class="p">,</span>
-            <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spw_ids</span><span class="p">,</span>
+            <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spws_to_solve</span><span class="p">,</span>
             <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="n">solint</span><span class="p">,</span>
             <span class="s1">&#39;gaintype&#39;</span><span class="p">:</span> <span class="n">gaintype</span><span class="p">,</span>
             <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="n">calmode</span><span class="p">,</span>
@@ -751,7 +800,8 @@
         <span class="n">phase_results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_do_phase_for_phase_check_no_overlap</span><span class="p">(</span><span class="n">pc_intents</span><span class="p">,</span> <span class="n">exclude_intents</span><span class="p">,</span> <span class="n">all_ants</span><span class="p">,</span> <span class="n">refant</span><span class="p">))</span>
 
         <span class="c1"># PIPE-1490: for PHASE fields that do cover other calibrator intents,</span>
-        <span class="c1"># create a separate solve.</span>
+        <span class="c1"># create a separate solve to ensure those solutions are put in a</span>
+        <span class="c1"># separate caltable.</span>
         <span class="n">phase_results</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_do_phase_for_phase_with_overlap</span><span class="p">(</span><span class="n">exclude_intents</span><span class="p">,</span> <span class="n">all_ants</span><span class="p">,</span> <span class="n">refant</span><span class="p">))</span>
 
         <span class="c1"># PIPE-1154: for the remaining calibrator intents, compute phase</span>
@@ -808,26 +858,62 @@
 
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">intent_field</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_do_phasecal_for_amp_calibrator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">minblperant</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                                        <span class="n">uvrange</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">non_pc_intents</span><span class="p">:</span> <span class="n">Set</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaincalResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_phasecal_for_amp_calibrator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">minblperant</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">uvrange</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                        <span class="n">non_pc_intents</span><span class="p">:</span> <span class="nb">set</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaincalResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Worker method to compute the phase calibration for the amplitude</span>
+<span class="sd">        calibrator.</span>
+
+<span class="sd">        Retrieve optimal gaincal parameters from SpW maps in MS, preferentially</span>
+<span class="sd">        for AMPLITUDE intent, but fall-back to BANDPASS intent in cases where</span>
+<span class="sd">        amplitude calibrator == bandpass calibrator (PIPE-2499).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            antenna: A comma-delimited string specifying the antenna names or</span>
+<span class="sd">                ids to be used.</span>
+<span class="sd">            refant: A string specifying the reference antenna(s) to use.</span>
+<span class="sd">            minblperant: Minimum number of baselines required per antenna in</span>
+<span class="sd">                phase solve.</span>
+<span class="sd">            uvrange: String specifying whether and how to select data by</span>
+<span class="sd">                length in the phase solve.</span>
+<span class="sd">            non_pc_intents: set of non phase/check calibrator intents, that</span>
+<span class="sd">                resulting caltable should be registered to as well.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            GaincalResults object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
-        <span class="c1"># Compute phase caltable for the amplitude calibrator (set by</span>
-        <span class="c1"># &quot;refintent&quot;). PIPE-1154: for amplitude calibrator, always use</span>
-        <span class="c1"># combine=&#39;&#39; and gaintype=&quot;G&quot;, no spwmap or interp.</span>
+        <span class="c1"># Get optimal phase solution parameters for the amplitude calibrator</span>
+        <span class="c1"># based on spw mapping info in MS. By default, retrieve these for the</span>
+        <span class="c1"># amplitude intent (aka inputs.refintent).</span>
+        <span class="n">intent_for_param</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">refintent</span>
+        <span class="c1"># PIPE-2499: however, if the amplitude calibrator field was also used as</span>
+        <span class="c1"># the bandpass calibrator, then assume hifa_spwphaseup will only have</span>
+        <span class="c1"># stored SpwMapping for BANDPASS intent (having skipped AMPLITUDE) and</span>
+        <span class="c1"># therefore retrieve parameters for BANDPASS intent.</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="s2">&quot;BANDPASS&quot;</span> <span class="ow">in</span> <span class="n">fld</span><span class="o">.</span><span class="n">intents</span> <span class="k">for</span> <span class="n">fld</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">reference</span><span class="p">)):</span>
+            <span class="n">intent_for_param</span> <span class="o">=</span> <span class="s2">&quot;BANDPASS&quot;</span>
+        <span class="n">combine</span><span class="p">,</span> <span class="n">gaintype</span><span class="p">,</span> <span class="n">interp</span><span class="p">,</span> <span class="n">solint</span><span class="p">,</span> <span class="n">spwmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_phasecal_params</span><span class="p">(</span><span class="n">intent_for_param</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">reference</span><span class="p">)</span>
+
+        <span class="c1"># Compute phase caltable for the amplitude calibrator.</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Compute phase gaincal table for flux calibrator (intent=</span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">refintent</span><span class="si">}</span><span class="s1">,&#39;</span>
                  <span class="sa">f</span><span class="s1">&#39; field=</span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">reference</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
-        <span class="n">phase_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_gaincal</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">reference</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">refintent</span><span class="p">,</span> <span class="n">gaintype</span><span class="o">=</span><span class="s2">&quot;G&quot;</span><span class="p">,</span> <span class="n">calmode</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">,</span>
-                                        <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">phaseupsolint</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="n">antenna</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="n">uvrange</span><span class="p">,</span>
-                                        <span class="n">minsnr</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">minsnr</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="n">refant</span><span class="p">,</span> <span class="n">minblperant</span><span class="o">=</span><span class="n">minblperant</span><span class="p">,</span> <span class="n">spwmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                        <span class="n">interp</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">phase_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_gaincal</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">reference</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">refintent</span><span class="p">,</span> <span class="n">gaintype</span><span class="o">=</span><span class="n">gaintype</span><span class="p">,</span> <span class="n">calmode</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">,</span>
+                                        <span class="n">combine</span><span class="o">=</span><span class="n">combine</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="n">solint</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="n">antenna</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="n">uvrange</span><span class="p">,</span>
+                                        <span class="n">minsnr</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">minsnr</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="n">refant</span><span class="p">,</span> <span class="n">minblperant</span><span class="o">=</span><span class="n">minblperant</span><span class="p">,</span> <span class="n">spwmap</span><span class="o">=</span><span class="n">spwmap</span><span class="p">,</span>
+                                        <span class="n">interp</span><span class="o">=</span><span class="n">interp</span><span class="p">)</span>
+
         <span class="c1"># PIPE-1831: update the CalApplication to add the other non-phase/check</span>
         <span class="c1"># calibrator intents as valid intents that this phase caltable can be</span>
-        <span class="c1"># applied to. This is necessary for datasets where a field that covers</span>
-        <span class="c1"># both the amplitude calibrator and other (non-phase/check)</span>
-        <span class="c1"># calibrators. Without this, any subsequent gaincal on this field would</span>
-        <span class="c1"># split the call for this field into separate ones for AMP and other</span>
-        <span class="c1"># intents, leading to undesired duplicate solutions.</span>
+        <span class="c1"># applied to. This is necessary for datasets where the amplitude</span>
+        <span class="c1"># calibrator field(s) also cover one or more of the &quot;other&quot; (non-phase/</span>
+        <span class="c1"># non-check) calibrator intents. Without this, any subsequent gaincal on</span>
+        <span class="c1"># this field would split the call for this field into separate ones for</span>
+        <span class="c1"># AMP and other intents, leading to undesired duplicate solutions.</span>
+        <span class="c1"># This does assume that the AMPLITUDE *scans* on the amplitude</span>
+        <span class="c1"># calibrator field(s) also covered those &quot;other&quot; calibrator intents;</span>
+        <span class="c1"># this is not always the case, see discussion on PIPE-2822.</span>
         <span class="k">if</span> <span class="n">phase_result</span><span class="o">.</span><span class="n">pool</span><span class="p">:</span>
             <span class="n">original_calapp</span> <span class="o">=</span> <span class="n">phase_result</span><span class="o">.</span><span class="n">pool</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">intents_str</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">({</span><span class="n">original_calapp</span><span class="o">.</span><span class="n">intent</span><span class="p">}</span> <span class="o">|</span> <span class="n">non_pc_intents</span><span class="p">)</span>
@@ -837,8 +923,23 @@
 
         <span class="k">return</span> <span class="n">phase_result</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_do_phase_for_phase_check_no_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pc_intents</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">exclude_intents</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                                             <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">GaincalResults</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_phase_for_phase_check_no_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pc_intents</span><span class="p">:</span> <span class="nb">set</span><span class="p">,</span> <span class="n">exclude_intents</span><span class="p">:</span> <span class="nb">set</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                             <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">GaincalResults</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the phase calibration for the phase and check calibrator fields</span>
+<span class="sd">        that have no overlap with the other calibrator intents specified by</span>
+<span class="sd">        `exclude_intents`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pc_intents: Phase and check intents to compute phase gaincal for.</span>
+<span class="sd">            exclude_intents: Exclude fields that also cover these intents.</span>
+<span class="sd">            antenna: A comma-delimited string specifying the antenna names or</span>
+<span class="sd">                ids to be used.</span>
+<span class="sd">            refant: A string specifying the reference antenna(s) to use.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of GaincalResults objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Collect phase cal results.</span>
         <span class="n">phase_results</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -850,13 +951,27 @@
         <span class="c1"># spwmapping registered in the measurement set.</span>
         <span class="n">intent_field_to_assess</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_intent_field</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">intents</span><span class="o">=</span><span class="n">pc_intents</span><span class="p">,</span>
                                                         <span class="n">exclude_intents</span><span class="o">=</span><span class="n">exclude_intents</span><span class="p">)</span>
-
         <span class="k">for</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">intent_field_to_assess</span><span class="p">:</span>
             <span class="n">phase_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_do_phasecal_for_intent_field</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">refant</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">phase_results</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_do_phase_for_phase_with_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclude_intents</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">GaincalResults</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_phase_for_phase_with_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclude_intents</span><span class="p">:</span> <span class="nb">set</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">GaincalResults</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the phase calibration for the phase calibrator fields that</span>
+<span class="sd">        overlap with one or more of the other calibrator intents specified by</span>
+<span class="sd">        `exclude_intents`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            exclude_intents: Only solve for phase calibrator fields that also</span>
+<span class="sd">                cover these intents that were excluded before.</span>
+<span class="sd">            antenna: A comma-delimited string specifying the antenna names or</span>
+<span class="sd">                ids to be used.</span>
+<span class="sd">            refant: A string specifying the reference antenna(s) to use.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of GaincalResults objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Collect phase cal results.</span>
         <span class="n">phase_results</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -875,6 +990,19 @@
         <span class="k">return</span> <span class="n">phase_results</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_do_phasecal_for_intent_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaincalResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform the phase gaincal computation for a given intent and field.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            intent: intent(s) to perform phase calibration for.</span>
+<span class="sd">            field: field to perform phase calibration for.</span>
+<span class="sd">            antenna: A comma-delimited string specifying the antenna names or</span>
+<span class="sd">                ids to be used.</span>
+<span class="sd">            refant: A string specifying the reference antenna(s) to use.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            GaincalResults object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Get optimal phase solution parameters for current intent and</span>
         <span class="c1"># field, based on spw mapping info in MS.</span>
         <span class="n">combine</span><span class="p">,</span> <span class="n">gaintype</span><span class="p">,</span> <span class="n">interp</span><span class="p">,</span> <span class="n">solint</span><span class="p">,</span> <span class="n">spwmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_phasecal_params</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
@@ -888,7 +1016,21 @@
 
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_do_phasecal_for_other_calibrators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">GaincalResults</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_phasecal_for_other_calibrators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intents</span><span class="p">:</span> <span class="nb">set</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">GaincalResults</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the phase calibration for the &quot;other&quot; (not: phase, check, or</span>
+<span class="sd">        amplitude) calibrators, typically bandpass, diffgain, and/or</span>
+<span class="sd">        polarization intents.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            intents: set of intents to perform phase calibration for.</span>
+<span class="sd">            antenna: A comma-delimited string specifying the antenna names or</span>
+<span class="sd">                ids to be used.</span>
+<span class="sd">            refant: A string specifying the reference antenna(s) to use.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of GaincalResults objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
         <span class="n">phase_results</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -896,24 +1038,93 @@
         <span class="c1"># inputs.transfer will skip any field that already covers the intent</span>
         <span class="c1"># inputs.refintent (the amplitude calibrator), as that is covered by a</span>
         <span class="c1"># separate gaincal.</span>
-        <span class="n">fields</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">transfer</span><span class="p">)</span>
-                          <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">intents</span><span class="p">)))</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">transfer</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">intents</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">intents</span><span class="p">)]</span>
 
-        <span class="c1"># Only proceed if valid fields were found.</span>
-        <span class="k">if</span> <span class="n">fields</span><span class="p">:</span>
-            <span class="c1"># Intents as string for CASA input.</span>
-            <span class="n">intents_str</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
+        <span class="c1"># PIPE-2499: for each field, check whether it is used for multiple</span>
+        <span class="c1"># calibrator intents, and handle these as special cases.</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="c1"># Matching intents in current field.</span>
+            <span class="n">fld_intents</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">intents</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">intents</span><span class="p">)</span>
+            <span class="n">fld_intents_str</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fld_intents</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Compute phase gaincal table for other calibrators (intent=</span><span class="si">{</span><span class="n">fld_intents_str</span><span class="si">}</span><span class="s1">,&#39;</span>
+                     <span class="sa">f</span><span class="s1">&#39; field=</span><span class="si">{</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
 
-            <span class="c1"># PIPE-1154: the phase solves for the remaining calibrators should</span>
-            <span class="c1"># always use combine=&#39;&#39;, gaintype=&quot;G&quot;, no spwmap or interp.</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Compute phase gaincal table for other calibrators (intent=</span><span class="si">{</span><span class="n">intents_str</span><span class="si">}</span><span class="s1">, field=</span><span class="si">{</span><span class="n">fields</span><span class="si">}</span><span class="s1">).&#39;</span><span class="p">)</span>
-            <span class="n">phase_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_do_gaincal</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">fields</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intents_str</span><span class="p">,</span> <span class="n">gaintype</span><span class="o">=</span><span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="n">calmode</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">,</span>
-                                                  <span class="n">combine</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">phaseupsolint</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="n">antenna</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                                                  <span class="n">minsnr</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">minsnr</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="n">refant</span><span class="p">,</span> <span class="n">minblperant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                                  <span class="n">interp</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
+            <span class="c1"># If this field is used both as diffgain and bandpass calibrator,</span>
+            <span class="c1"># then assume that hifa_spwphaseup will only have stored SpwMapping</span>
+            <span class="c1"># for BANDPASS intent (having skipped DIFFGAINSRC and DIFFGAINREF)</span>
+            <span class="c1"># and therefore retrieve parameters for BANDPASS intent, and solve</span>
+            <span class="c1"># for all intents at once.</span>
+            <span class="c1"># Note: it assumed there is no support for band-to-band polarization</span>
+            <span class="c1"># observations, therefore if DIFFGAIN is present, there cannot be</span>
+            <span class="c1"># any of the POL* intents (but if there were, those would get solved</span>
+            <span class="c1"># for here).</span>
+            <span class="k">if</span> <span class="s2">&quot;DIFFGAINSRC&quot;</span> <span class="ow">in</span> <span class="n">fld_intents</span> <span class="ow">and</span> <span class="s2">&quot;BANDPASS&quot;</span> <span class="ow">in</span> <span class="n">fld_intents</span><span class="p">:</span>
+                <span class="n">combine</span><span class="p">,</span> <span class="n">gaintype</span><span class="p">,</span> <span class="n">interp</span><span class="p">,</span> <span class="n">solint</span><span class="p">,</span> <span class="n">spwmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_phasecal_params</span><span class="p">(</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">phase_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_do_gaincal</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">fld_intents_str</span><span class="p">,</span> <span class="n">gaintype</span><span class="o">=</span><span class="n">gaintype</span><span class="p">,</span>
+                                                      <span class="n">calmode</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="n">combine</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="n">solint</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="n">antenna</span><span class="p">,</span>
+                                                      <span class="n">uvrange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">minsnr</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="n">refant</span><span class="p">,</span>
+                                                      <span class="n">spwmap</span><span class="o">=</span><span class="n">spwmap</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="n">interp</span><span class="p">))</span>
+            <span class="c1"># If this field is used as the diffgain calibrator, with no overlap</span>
+            <span class="c1"># with bandpass calibrator, then assume that hifa_spwphaseup will</span>
+            <span class="c1"># have stored separate SpwMapping info for DIFFGAINREF and</span>
+            <span class="c1"># DIFFGAINSRC and create separate solves for those. It is assumed</span>
+            <span class="c1"># here that if DIFFGAINSRC is present, DIFFGAINREF must be present</span>
+            <span class="c1"># as well. It is further assumed that there is no support for</span>
+            <span class="c1"># band-to-band polarization, so this field should not have also POL*</span>
+            <span class="c1"># intents (but if there were, then those POL* intents would not get</span>
+            <span class="c1"># solved).</span>
+            <span class="k">elif</span> <span class="s2">&quot;DIFFGAINSRC&quot;</span> <span class="ow">in</span> <span class="n">fld_intents</span> <span class="ow">and</span> <span class="s2">&quot;BANDPASS&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fld_intents</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">dg_intent</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;DIFFGAINREF&quot;</span><span class="p">,</span> <span class="s2">&quot;DIFFGAINSRC&quot;</span><span class="p">}:</span>
+                    <span class="n">combine</span><span class="p">,</span> <span class="n">gaintype</span><span class="p">,</span> <span class="n">interp</span><span class="p">,</span> <span class="n">solint</span><span class="p">,</span> <span class="n">spwmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_phasecal_params</span><span class="p">(</span><span class="n">dg_intent</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="n">phase_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_do_gaincal</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">dg_intent</span><span class="p">,</span> <span class="n">gaintype</span><span class="o">=</span><span class="n">gaintype</span><span class="p">,</span>
+                                                          <span class="n">calmode</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="n">combine</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="n">solint</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="n">antenna</span><span class="p">,</span>
+                                                          <span class="n">uvrange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">minsnr</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="n">refant</span><span class="p">,</span>
+                                                          <span class="n">spwmap</span><span class="o">=</span><span class="n">spwmap</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="n">interp</span><span class="p">))</span>
+            <span class="c1"># For all other cases, use all intents of current field to retrieve</span>
+            <span class="c1"># optimal parameters and compute phase solutions. At present, this</span>
+            <span class="c1"># is expected to handle the following cases:</span>
+            <span class="c1">#</span>
+            <span class="c1"># - field is a bandpass calibrator (no overlap with polarization):</span>
+            <span class="c1">#   In this case, a matching SpwMapping should be present in MS, so</span>
+            <span class="c1">#   it would use the optimal parameters for BANDPASS.</span>
+            <span class="c1">#</span>
+            <span class="c1"># - field is a polarization calibrator, with or without overlap with</span>
+            <span class="c1">#   bandpass:</span>
+            <span class="c1">#   In this case, because it is a polarization calibrator, it is</span>
+            <span class="c1">#   required to use the default gaincal parameters. hifa_spwphaseup</span>
+            <span class="c1">#   currently explicitly does not derive optimal parameters for any</span>
+            <span class="c1">#   field covering polarization intents, so therefore the look-up of</span>
+            <span class="c1">#   optimal parameters for current field will find not find a</span>
+            <span class="c1">#   matching SpwMapping, and thus it should use default phasecal</span>
+            <span class="c1">#   parameters.</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">combine</span><span class="p">,</span> <span class="n">gaintype</span><span class="p">,</span> <span class="n">interp</span><span class="p">,</span> <span class="n">solint</span><span class="p">,</span> <span class="n">spwmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_phasecal_params</span><span class="p">(</span><span class="n">fld_intents_str</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">phase_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_do_gaincal</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">fld_intents_str</span><span class="p">,</span> <span class="n">gaintype</span><span class="o">=</span><span class="n">gaintype</span><span class="p">,</span>
+                                                      <span class="n">calmode</span><span class="o">=</span><span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="n">combine</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="n">solint</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="n">antenna</span><span class="p">,</span>
+                                                      <span class="n">uvrange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">minsnr</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="n">refant</span><span class="p">,</span>
+                                                      <span class="n">spwmap</span><span class="o">=</span><span class="n">spwmap</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="n">interp</span><span class="p">))</span>
+
         <span class="k">return</span> <span class="n">phase_results</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_phasecal_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_phasecal_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve the optimal parameters to use for phase calibration for a given</span>
+<span class="sd">        single intent and single field. These parameters are retrieved from the</span>
+<span class="sd">        SpW maps stored in the MS object for the MS currently being processed.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            intent: intent to retrieve phase cal parameters for.</span>
+<span class="sd">            field: field name to retrieve phase cal parameters for.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            5-tuple containing:</span>
+<span class="sd">              * combine parameter (&#39;&#39; or &#39;spw&#39;)</span>
+<span class="sd">              * gaintype parameter (&#39;G&#39; or &#39;T&#39;)</span>
+<span class="sd">              * interpolation parameter (None, &#39;linearPD,linear&#39;, or &#39;linear,linear&#39;)</span>
+<span class="sd">              * solution interval parameter</span>
+<span class="sd">              * spwmap: List representing a spectral window map that specifies</span>
+<span class="sd">                  which SpW IDs should be re-mapped / combined.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
         <span class="n">ms</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span>
 
@@ -932,18 +1143,14 @@
         <span class="c1"># depending on whether it is a combine spw mapping.</span>
         <span class="k">if</span> <span class="n">spwmapping</span><span class="p">:</span>
             <span class="n">spwmap</span> <span class="o">=</span> <span class="n">spwmapping</span><span class="o">.</span><span class="n">spwmap</span>
+            <span class="n">solint</span> <span class="o">=</span> <span class="n">spwmapping</span><span class="o">.</span><span class="n">solint</span>
+            <span class="n">gaintype</span> <span class="o">=</span> <span class="n">spwmapping</span><span class="o">.</span><span class="n">gaintype</span>
 
-            <span class="c1"># If the spwmap is for combining spws, then override combine,</span>
-            <span class="c1"># interp, and gaintype accordingly, and compute an optimal solint.</span>
+            <span class="c1"># If the spwmap is for combining spws, then override combine and</span>
+            <span class="c1"># interp accordingly.</span>
             <span class="k">if</span> <span class="n">spwmapping</span><span class="o">.</span><span class="n">combine</span><span class="p">:</span>
                 <span class="n">combine</span> <span class="o">=</span> <span class="s1">&#39;spw&#39;</span>
-                <span class="n">gaintype</span> <span class="o">=</span> <span class="s1">&#39;T&#39;</span>
                 <span class="n">interp</span> <span class="o">=</span> <span class="s1">&#39;linearPD,linear&#39;</span>
-
-                <span class="c1"># Compute optimal solint.</span>
-                <span class="n">spwidlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
-                <span class="n">exptimes</span> <span class="o">=</span> <span class="n">heuristics</span><span class="o">.</span><span class="n">exptimes</span><span class="o">.</span><span class="n">get_scan_exptimes</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="p">[</span><span class="n">field</span><span class="p">],</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">)</span>
-                <span class="n">solint</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%0.3f</span><span class="s1">s&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">min</span><span class="p">([</span><span class="n">exptime</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">exptime</span> <span class="ow">in</span> <span class="n">exptimes</span><span class="p">])</span> <span class="o">/</span> <span class="mf">4.0</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># PIPE-1154: when using a phase up spw mapping, ensure that</span>
                 <span class="c1"># interp = &#39;linear,linear&#39;; though this may need to be changed</span>
@@ -1127,8 +1334,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">flagsettertask</span><span class="p">)</span>
 
         <span class="c1"># Return flag commands for rendering in weblog.</span>
-        <span class="k">return</span> <span class="n">flagcmds</span></div>
+        <span class="k">return</span> <span class="n">flagcmds</span>
 
+<div class="viewcode-block" id="GcorFluxscale">
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.GcorFluxscale.html#pipeline.hifa.tasks.GcorFluxscale">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_gfluxscale&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
+    <span class="s1">&#39;The absolute flux calibration is transferred to secondary calibrator sources.&#39;</span>
+<span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GcorFluxscale</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">GcorFluxscaleInputs</span>
+    <span class="n">Task</span> <span class="o">=</span> <span class="n">SerialGcorFluxscale</span></div>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">SessionGcorFluxscaleInputs</span><span class="p">(</span><span class="n">GcorFluxscaleInputs</span><span class="p">):</span>
@@ -1139,7 +1355,7 @@
                  <span class="n">transfer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refspwmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refintent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transintent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupsolint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">minsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_resolvedcals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">peak_fraction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">SessionGcorFluxscaleInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="n">caltable</span><span class="p">,</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="n">caltable</span><span class="p">,</span>
                                                          <span class="n">fluxtable</span><span class="o">=</span><span class="n">fluxtable</span><span class="p">,</span> <span class="n">reffile</span><span class="o">=</span><span class="n">reffile</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="n">reference</span><span class="p">,</span>
                                                          <span class="n">transfer</span><span class="o">=</span><span class="n">transfer</span><span class="p">,</span> <span class="n">refspwmap</span><span class="o">=</span><span class="n">refspwmap</span><span class="p">,</span> <span class="n">refintent</span><span class="o">=</span><span class="n">refintent</span><span class="p">,</span>
                                                          <span class="n">transintent</span><span class="o">=</span><span class="n">transintent</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="n">solint</span><span class="p">,</span>
@@ -1159,7 +1375,7 @@
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SessionGcorFluxscaleInputs</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">SessionGcorFluxscale</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 
     <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -1171,7 +1387,7 @@
         <span class="n">vis_list</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">as_list</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
 
         <span class="n">assessed</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">with</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">VDPTaskFactory</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="p">,</span> <span class="n">GcorFluxscale</span><span class="p">)</span> <span class="k">as</span> <span class="n">factory</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">VDPTaskFactory</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="p">,</span> <span class="n">SerialGcorFluxscale</span><span class="p">)</span> <span class="k">as</span> <span class="n">factory</span><span class="p">:</span>
             <span class="n">task_queue</span> <span class="o">=</span> <span class="p">[(</span><span class="n">vis</span><span class="p">,</span> <span class="n">factory</span><span class="o">.</span><span class="n">get_task</span><span class="p">(</span><span class="n">vis</span><span class="p">))</span> <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vis_list</span><span class="p">]</span>
 
             <span class="k">for</span> <span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="p">(</span><span class="n">task_args</span><span class="p">,</span> <span class="n">task</span><span class="p">))</span> <span class="ow">in</span> <span class="n">task_queue</span><span class="p">:</span>
@@ -1405,7 +1621,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pipeline Flagging Tasks &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -85,12 +86,16 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Pipeline Flagging Tasks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#summary-current-pipeline-tasks">Summary current pipeline tasks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#general-overview-of-a-flagging-task-within-framework">General overview of a flagging task within framework</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#how-individual-flagging-tasks-work">How individual flagging tasks work</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#task-hif-rawflagchans">Task: hif_rawflagchans</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#task-hif-lowgainflag">Task: hif_lowgainflag</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#task-hifa-tsysflag-hsd-tsysflag">Task: hifa_tsysflag, hsd_tsysflag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#summary-of-flagging-tasks-based-on-task-specific-heuristics-and-or-input-flags">Summary of flagging tasks based on task-specific heuristics and/or input flags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#summary-of-tasks-using-corrected-amplitude-flagging">Summary of tasks using corrected-amplitude flagging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#summary-of-tasks-using-the-view-flagging-framework">Summary of tasks using the view-flagging framework</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#general-overview-of-a-view-flagging-task">General overview of a view-flagging task:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-individual-view-flagging-tasks-work">How individual view-flagging tasks work</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#task-hif-rawflagchans">Task: hif_rawflagchans</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#task-hif-lowgainflag">Task: hif_lowgainflag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#task-hifa-tsysflag-hsd-tsysflag">Task: hifa_tsysflag, hsd_tsysflag</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -126,35 +131,75 @@
              
   <section class="tex2jax_ignore mathjax_ignore" id="pipeline-flagging-tasks">
 <h1>Pipeline Flagging Tasks<a class="headerlink" href="#pipeline-flagging-tasks" title="Link to this heading"></a></h1>
-<p>The Pipeline contains a number of tasks that flag bad data, based on e.g. online flags or user-provided flags. A
-sub-set of the pipeline flagging tasks will flag data based on evaluation of their own flagging heuristics, and a
-majority of this sub-set use a common Pipeline Flagging framework. The following note provides a description of the
-common flagging framework, and an in-depth explanation of individual flagging tasks.</p>
-<section id="summary-current-pipeline-tasks">
-<h2>Summary current pipeline tasks<a class="headerlink" href="#summary-current-pipeline-tasks" title="Link to this heading"></a></h2>
-<p>Status as of May 2021:</p>
-<p>The following pipeline tasks make use of the flagging framework and are part of (at least) one of the standard pipeline recipes:</p>
+<p>The Pipeline contains a number of tasks that flag bad data, based on e.g. online flags, user-provided flags, or
+evaluation of custom heuristics defined by the Pipeline Working Group.</p>
+<p>The Pipeline flagging tasks can be categorized into three groups:</p>
+<ul class="simple">
+<li><p>tasks based on task-specific heuristics and/or input flags</p></li>
+<li><p>tasks using the common “corrected amplitude” flagging task</p></li>
+<li><p>tasks using the common View Flagging Framework</p></li>
+</ul>
+<p>The following note provides a description of each group, and an in-depth
+explanation for some individual flagging tasks.</p>
+<section id="summary-of-flagging-tasks-based-on-task-specific-heuristics-and-or-input-flags">
+<h2>Summary of flagging tasks based on task-specific heuristics and/or input flags<a class="headerlink" href="#summary-of-flagging-tasks-based-on-task-specific-heuristics-and-or-input-flags" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">hifa_flagdata</span></code>: performs basic deterministic flagging on MS (shadowed antennas, online flags, spw edges, autocorrelations, etc).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hifa_flagtargets</span></code>: performs deterministic flagging on science target MS (input template file).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hifa_fluxcalflag</span></code>: locates and flags line regions in solar-system flux calibrators.</p></li>
+</ul>
+</section>
+<section id="summary-of-tasks-using-corrected-amplitude-flagging">
+<h2>Summary of tasks using corrected-amplitude flagging<a class="headerlink" href="#summary-of-tasks-using-corrected-amplitude-flagging" title="Link to this heading"></a></h2>
+<p>The corrected-amplitude flagging task, <code class="docutils literal notranslate"><span class="pre">hif_correctedampflag</span></code> was introduced in CAS-9437 Spring 2017 for Cycle 5 release
+as a pipeline data flagging heuristic that is based on comparing the amplitude of corrected data with the model for each
+major calibrator.</p>
+<p><code class="docutils literal notranslate"><span class="pre">hif_correctedampflag</span></code> is not run as a top-level stage in recipes, but rather as a worker task common to various
+calibrator / target flagging stages.</p>
+<p>As of September 2025, the following pipeline tasks make use of <code class="docutils literal notranslate"><span class="pre">hif_correctedampflag</span></code> and are part of (at least) one
+of the standard pipeline recipes:</p>
+<ul class="simple">
+<li><p>hifa_bandpassflag (CAS-9438): flags corrected-model amplitude outliers for the bandpass calibrator.</p></li>
+<li><p>hifa_gfluxscaleflag (CAS-10158, CAS-10387): flags corrected-model amplitude outliers for the phase and flux calibrators.</p></li>
+<li><p>hifa_polcalflag (PIPE-607): flags corrected-model amplitude outliers for the polarisation calibrator(s).</p></li>
+<li><p>hifa_targetflag (PIPE-337): flags corrected-model amplitude outliers for the target source.</p></li>
+</ul>
+<p>The common workflow in these stages is to:</p>
+<ul class="simple">
+<li><p>generate a number of temporary caltables</p></li>
+<li><p>create a backup of the flagging state in the MS</p></li>
+<li><p>run applycal to apply all registered caltables</p>
+<ul>
+<li><p>this updates the CORRECTED_DATA column in the MS, but also propagates flags from caltables to the FLAG column in the MS</p></li>
+</ul>
+</li>
+<li><p>run the corrected amplitude flagging heuristic based on the MODEL column (<code class="docutils literal notranslate"><span class="pre">hif_correctedampflag</span></code>)</p></li>
+<li><p>restore the backup of the flagging state</p></li>
+<li><p>apply the newly found flags from correctedampflag.</p></li>
+</ul>
+<p>The steps to backup and restore the flagging state is done to ensure that the flags propagated from caltables into the
+MS during the temporary applycal do not remain there at the end of the stage, so as to not affect subsequent stages.
+The only new flags that would remain in the MS are the new flags found by <code class="docutils literal notranslate"><span class="pre">hif_correctedampflag</span></code>, which are re-applied
+after the flagging state is restored.</p>
+<p>Note: besides propagating flags, the applycal step also affects the CORRECTED_DATA column in the MS. However,
+it is deemed unnecessary to “restore” this CORRECTED_DATA column to what it was before the ‘applycal’ step, because
+any subsequent applycal step will overwrite the entire column. Here, it is assumed that no subsequent calibration
+pipeline tasks ever act on the CORRECTED_DATA column without first running their own local applycal step (or before the
+top-level <code class="docutils literal notranslate"><span class="pre">hif_applycal</span></code> stage has run).</p>
+</section>
+<section id="summary-of-tasks-using-the-view-flagging-framework">
+<h2>Summary of tasks using the view-flagging framework<a class="headerlink" href="#summary-of-tasks-using-the-view-flagging-framework" title="Link to this heading"></a></h2>
+<p>As of September 2025, the following pipeline tasks make use of the view-flagging
+framework and are part of (at least) one of the standard pipeline recipes:</p>
 <ul class="simple">
 <li><p>hif_rawflagchans: flags raw data in MS.</p></li>
-<li><p>[hifa/hsd]_tsysflag: flags Tsys caltable created by [hifa/hsd]_tsyscal.</p></li>
+<li><p>[hifa/hsd]_tsysflag: flags the Tsys caltable that is created by [hifa/hsd]_tsyscal.</p></li>
 <li><p>hif_lowgainflag: flags antennas in MS, based on evaluating heuristics on gain amplitude caltable created within task.</p></li>
 <li><p>hifa_wvrgcalflag: evaluates if applying WVR correction provides tangible improvement, flagging WVR caltable in process where needed, using WVR caltable created within task (using hifa_wvrgcal).</p></li>
 </ul>
-<p>The following pipeline tasks perform flagging but do not make use of the common flagging framework:</p>
-<ul class="simple">
-<li><p>hif_correctedampflag: Flag corrected - model amplitudes based on calibrators.</p></li>
-<li><p>hifa_bandpassflag: uses hif_correctedampflag to flag corrected-model amplitude outliers for the bandpass calibrator.</p></li>
-<li><p>hifa_gfluxscaleflag: uses hif_correctedampflag to flag corrected-model amplitude outliers for the phase and flux calibrators.</p></li>
-<li><p>hifa_polcalflag: uses hif_correctedampflag to flag corrected-model amplitude outliers for the polarisation calibrators.</p></li>
-<li><p>hifa_targetflag: uses hif_correctedampflag to flag corrected-model amplitude outliers for the target source.</p></li>
-<li><p>hifa_flagdata: performs basic deterministic flagging on MS (e.g. shadowed antennas, online flags, autocorrelations, etc).</p></li>
-<li><p>hifa_flagtargets: performs deterministic flagging on science target MS (input template file).</p></li>
-<li><p>hifa_fluxcalflag: locates and flags line regions in solar-system flux calibrators.</p></li>
-</ul>
-</section>
-<section id="general-overview-of-a-flagging-task-within-framework">
-<h2>General overview of a flagging task within framework<a class="headerlink" href="#general-overview-of-a-flagging-task-within-framework" title="Link to this heading"></a></h2>
-<p>The main flagging pipeline tasks are done in two steps:</p>
+<section id="general-overview-of-a-view-flagging-task">
+<h3>General overview of a view-flagging task:<a class="headerlink" href="#general-overview-of-a-view-flagging-task" title="Link to this heading"></a></h3>
+<p>The workflow of view-flagging tasks comprises two steps:</p>
 <ol class="arabic">
 <li><p>Generate a “flagging view”</p>
 <p>Some quantity of interest is taken from the MS or a caltable, depending on the flagging task, and this quantity is represented in a 1D or 2D matrix called the “flagging view”. Flagging views are typically generated separately for each spw, often also separately for each polarisation. Typical examples of flagging views include:</p>
@@ -170,10 +215,10 @@ The flagging view is evaluated against a series of 1 or more flagging rules. Eac
 </li>
 </ol>
 </section>
-<section id="how-individual-flagging-tasks-work">
-<h2>How individual flagging tasks work<a class="headerlink" href="#how-individual-flagging-tasks-work" title="Link to this heading"></a></h2>
+<section id="how-individual-view-flagging-tasks-work">
+<h3>How individual view-flagging tasks work<a class="headerlink" href="#how-individual-view-flagging-tasks-work" title="Link to this heading"></a></h3>
 <section id="task-hif-rawflagchans">
-<h3>Task: hif_rawflagchans<a class="headerlink" href="#task-hif-rawflagchans" title="Link to this heading"></a></h3>
+<h4>Task: hif_rawflagchans<a class="headerlink" href="#task-hif-rawflagchans" title="Link to this heading"></a></h4>
 <p>This task uses raw data for the intent = ‘BANDPASS’ to identify outliers. Flagging commands for outlier data points are applied to all intents in the MS.</p>
 <p><strong>View generation</strong></p>
 <p>Rawflagchans creates a separate view for each spw and each polarisation. Each view is created by calculating the following:</p>
@@ -219,7 +264,7 @@ The flagging view is evaluated against a series of 1 or more flagging rules. Eac
 </ol>
 </section>
 <section id="task-hif-lowgainflag">
-<h3>Task: hif_lowgainflag<a class="headerlink" href="#task-hif-lowgainflag" title="Link to this heading"></a></h3>
+<h4>Task: hif_lowgainflag<a class="headerlink" href="#task-hif-lowgainflag" title="Link to this heading"></a></h4>
 <p>This task first creates a phased-up bandpass caltable, then a gain phase caltable, and finally a gain amplitude caltable. This final gain amplitude caltable is used to identify antennas with outlier gains, for each spw. Flagging commands for outlier antennas (per spw) are applied to the entire MS.</p>
 <p><strong>View generation</strong></p>
 <p>A separate view is created for spw. Each view is a matrix with axes “scan” vs. “antenna”. Each point in the matrix is the absolute gain amplitude for that antenna/scan.</p>
@@ -232,7 +277,7 @@ The flagging view is evaluated against a series of 1 or more flagging rules. Eac
 <p>Flagging commands are generated for each of the identified outlier data points.</p>
 </section>
 <section id="task-hifa-tsysflag-hsd-tsysflag">
-<h3>Task: hifa_tsysflag, hsd_tsysflag<a class="headerlink" href="#task-hifa-tsysflag-hsd-tsysflag" title="Link to this heading"></a></h3>
+<h4>Task: hifa_tsysflag, hsd_tsysflag<a class="headerlink" href="#task-hifa-tsysflag-hsd-tsysflag" title="Link to this heading"></a></h4>
 <p>This task flags the Tsys cal table created by the [hifa/hsd]_tsyscal pipeline task.</p>
 <p>Tsysflag provides six separate flagging metrics, where each metric creates its own flagging view and has its own corresponding flagging rule(s).</p>
 <p>In the current standard pipeline, all six metrics are active, and evaluated in the order set by “metric_order” (default: ‘nmedian, derivative, edgechans, fieldshape, birdies, toomany’).</p>
@@ -248,7 +293,7 @@ The flagging view is evaluated against a series of 1 or more flagging rules. Eac
 <p><strong>View generation</strong></p>
 <p>A separate view is generated for each polarisation and each spw. Each view is a matrix with axes “time” vs. “antenna”. Each point in the matrix is calculated as follows:</p>
 <ul class="simple">
-<li><p>calculate “valid_data” as the channel-to-channel difference in Tsys for that antenna/timestamp (for unflagged channels)</p></li>
+<li><p>calculate “valid_data” as the channel-to-channel difference in the normalized Tsys (by median over frequency) for that antenna/timestamp (for unflagged channels)</p></li>
 <li><p>calculate <code class="docutils literal notranslate"><span class="pre">median(</span> <span class="pre">abs(</span> <span class="pre">valid_data</span> <span class="pre">-</span> <span class="pre">median(valid_data)</span> <span class="pre">)</span> <span class="pre">)</span> <span class="pre">*</span> <span class="pre">100.0</span></code></p></li>
 </ul>
 <p><strong>View flagging</strong></p>
@@ -303,6 +348,7 @@ The flagging view is evaluated against a series of 1 or more flagging rules. Eac
 </section>
 </section>
 </section>
+</section>
 
 
            </div>
@@ -315,7 +361,7 @@ The flagging view is evaluated against a series of 1 or more flagging rules. Eac
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

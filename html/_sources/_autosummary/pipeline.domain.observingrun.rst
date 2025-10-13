@@ -15,6 +15,7 @@ pipeline.domain.observingrun
       :toctree:
       :nosignatures:
    
+      match_spw_basename
       sort_measurement_set
    
    
@@ -29,7 +30,6 @@ pipeline.domain.observingrun
       :nosignatures:
    
       DataType
-      MeasurementSet
       ObservingRun
    
    

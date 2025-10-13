@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.infrastructure.launcher &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../_static/favicon-16x16.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -117,6 +155,7 @@
 <span class="sd">The launcher module contains classes to initialize the pipeline, potentially</span>
 <span class="sd">from a saved context state.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextvars</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
@@ -124,21 +163,24 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">domain</span><span class="p">,</span> <span class="n">environment</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">callibrary</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">eventbus</span><span class="p">,</span> <span class="n">imagelibrary</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span>
-               <span class="n">project</span><span class="p">,</span> <span class="n">utils</span><span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">callibrary</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">eventbus</span><span class="p">,</span> <span class="n">imagelibrary</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span> <span class="n">project</span><span class="p">,</span> <span class="n">utils</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.eventbus</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContextCreatedEvent</span><span class="p">,</span> <span class="n">ContextResumedEvent</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="c1"># minimum allowed CASA revision. Set to 0 or None to disable</span>
-<span class="n">MIN_CASA_REVISION</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">MIN_CASA_REVISION</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
 <span class="c1"># maximum allowed CASA revision. Set to 0 or None to disable</span>
 <span class="n">MAX_CASA_REVISION</span> <span class="o">=</span> <span class="kc">None</span>
 
+<span class="c1"># Define the thread-safe context variable here for the current task executaton state</span>
+<span class="n">current_task_name</span> <span class="o">=</span> <span class="n">contextvars</span><span class="o">.</span><span class="n">ContextVar</span><span class="p">(</span><span class="s1">&#39;current_task_name&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="Context">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.Context.html#pipeline.infrastructure.launcher.Context">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Context</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Context</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Context holds all pipeline state, consisting of metadata describing the</span>
 <span class="sd">    data set, objects describing the pipeline calibration state, the tree of</span>
@@ -181,6 +223,10 @@
 <span class="sd">        clean_list_pending: List of hif.tasks.makeimlist.cleantarget.CleanTarget</span>
 <span class="sd">            objects representing what target images are to be cleaned; typically</span>
 <span class="sd">            populated by hif_makeimlist, or edited by hif_editimlist.</span>
+<span class="sd">        clean_masks: Dictionary to store the names of clean masks to be re-used</span>
+<span class="sd">            for TARGET IQUV imaging.</span>
+<span class="sd">        clean_thresholds: Dictionary to store thresholds to be re-used for</span>
+<span class="sd">            TARGET IQUV imaging.</span>
 <span class="sd">        contfile: Name of file with frequency ranges to use for continuum</span>
 <span class="sd">            images; typically populated by hif_makeimlist.</span>
 <span class="sd">        imaging_mode: Imaging mode string; may be used to switch between imaging</span>
@@ -195,6 +241,13 @@
 <span class="sd">            parameters as well as sensitivity information; typically populated</span>
 <span class="sd">            by hifa_imageprecheck, and potentially updated by hif_makeimages or</span>
 <span class="sd">            hif_tclean.</span>
+<span class="sd">        processing_intents: Dictionary of processing intents for the current</span>
+<span class="sd">            pipeline run. Currently, the following options are known:</span>
+<span class="sd">            - {&#39;INTERFEROMETRY_STANDARD_OBSERVING_MODE&#39;: &#39;Undefined&#39;}</span>
+<span class="sd">            - {&#39;VLA_INTERFEROMETRY_STANDARD_OBSERVING_MODE&#39;: &#39;Undefined&#39;}</span>
+<span class="sd">            - {&#39;INTERFEROMETRY_FULL_POL_CUBE_IMAGING&#39;: True}</span>
+<span class="sd">            - {&#39;INTERFEROMETRY_HETEROGENEOUS_IMAGING&#39;: True}</span>
+<span class="sd">            - {&#39;SINGLEDISH_STANDARD_OBSERVING_MODE&#39;: &#39;Undefined&#39;}</span>
 <span class="sd">        rmsimlist: The ImageLibrary object holding RMS uncertainty images of the</span>
 <span class="sd">            science targets.</span>
 <span class="sd">        sciimlist: The ImageLibrary object holding final images of science targets.</span>
@@ -247,6 +300,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">subtask_counter</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Pipeline stage counter set to </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="p">))</span>
 
+        <span class="c1"># Define list of processing intents.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">processing_intents</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
         <span class="c1"># Define observing run.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">observing_run</span> <span class="o">=</span> <span class="n">domain</span><span class="o">.</span><span class="n">ObservingRun</span><span class="p">()</span>
 
@@ -260,6 +316,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">callibrary</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalLibrary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clean_list_info</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># CAS-9456</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clean_list_pending</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># CAS-10146</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clean_masks</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># PIPE-2464</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clean_thresholds</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># PIPE-2464</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">contfile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imaging_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># PIPE-592</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imaging_parameters</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># CAS-10146</span>
@@ -305,7 +363,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_products_dir</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="Context.save">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.Context.html#pipeline.infrastructure.launcher.Context.save">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.save">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save a pickle of the Context to a file with given filename.</span>
@@ -334,7 +392,7 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;Context(name=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;)&gt;&quot;</span>
 
 <div class="viewcode-block" id="Context.set_state">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.Context.html#pipeline.infrastructure.launcher.Context.set_state">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.set_state">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set a context property using the class name, property name and property</span>
@@ -364,7 +422,7 @@
 
 
 <div class="viewcode-block" id="Context.get_oussid">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.Context.html#pipeline.infrastructure.launcher.Context.get_oussid">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.get_oussid">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_oussid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the parent OUS &#39;ousstatus&#39; name. This is the sanitized OUS</span>
@@ -378,7 +436,7 @@
 
 
 <div class="viewcode-block" id="Context.get_recipe_name">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.Context.html#pipeline.infrastructure.launcher.Context.get_recipe_name">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.get_recipe_name">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_recipe_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the recipe name from project structure.&quot;&quot;&quot;</span>
         <span class="n">ps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_structure</span>
@@ -386,28 +444,13 @@
             <span class="k">return</span> <span class="s1">&#39;&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ps</span><span class="o">.</span><span class="n">recipe_name</span></div>
-
-
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">vla_skip_mfs_and_cube_imaging</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the stage skipping condition for the VLA specmode=mfs/cube imaging workflow.</span>
-
-<span class="sd">        This is currently used to skip the following stages for VLA:</span>
-<span class="sd">        - hif_makeimlist (mfs, cube)</span>
-<span class="sd">        - hif_findcont</span>
-<span class="sd">        - hif_uvcontsub</span>
-<span class="sd">        - hif_makeimages(mfs, cube)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ms_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_measurement_sets_of_type</span><span class="p">([</span><span class="n">domain</span><span class="o">.</span><span class="n">datatype</span><span class="o">.</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_SCIENCE</span><span class="p">],</span> <span class="n">msonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">telescope</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_summary</span><span class="o">.</span><span class="n">telescope</span>
-
-        <span class="k">return</span> <span class="s1">&#39;VLA&#39;</span> <span class="ow">in</span> <span class="n">telescope</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ms_list</span></div>
+</div>
 
 
 
 <div class="viewcode-block" id="Pipeline">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.Pipeline.html#pipeline.infrastructure.launcher.Pipeline">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Pipeline</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Pipeline</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pipeline is the entry point for initialising the pipeline. It is</span>
 <span class="sd">    responsible for the creation of new Context objects and for loading</span>
@@ -417,7 +460,8 @@
 <span class="sd">        context: Context object containing the Pipeline state information.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">loglevel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="n">casa_version_check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                 <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">plotlevel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">path_overrides</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+                 <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">plotlevel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">path_overrides</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">processing_intents</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialise the pipeline, creating a new Context or loading a saved</span>
 <span class="sd">        Context from disk.</span>
@@ -434,6 +478,8 @@
 <span class="sd">            plotlevel: Pipeline plots level.</span>
 <span class="sd">            path_overrides: Optional dictionary containing context properties to</span>
 <span class="sd">                be redefined when loading existing context (e.g. &quot;name&quot;).</span>
+<span class="sd">            processing_intents: Dictionary of processing intents for the current</span>
+<span class="sd">                pipeline run.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># configure logging with the preferred log level</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">set_logging_level</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">loglevel</span><span class="p">)</span>
@@ -475,6 +521,9 @@
             <span class="k">if</span> <span class="n">path_overrides</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">path_overrides</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">processing_intents</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">processing_intents</span> <span class="o">=</span> <span class="n">processing_intents</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_link_casa_log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
 
@@ -550,7 +599,7 @@
         <span class="k">return</span> <span class="s1">&#39;Pipeline(</span><span class="si">{0}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms_names</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Pipeline.close">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.Pipeline.html#pipeline.infrastructure.launcher.Pipeline.close">[docs]</a>
+<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Save a pickle of the Pipeline Context to a file.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
@@ -565,7 +614,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

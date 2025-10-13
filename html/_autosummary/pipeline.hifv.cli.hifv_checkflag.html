@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifv.cli.hifv_checkflag &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -125,13 +126,12 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.</p></li>
-<li><p><strong>checkflagmode</strong> –</p>
-<ul>
-<li><p>Standard VLA modes with improved RFI flagging heuristics: ‘bpd-vla’, ‘allcals-vla’, ‘target-vla’</p></li>
+<li><p><strong>vis</strong> -- The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.</p></li>
+<li><p><strong>checkflagmode</strong> -- <ul>
+<li><p>Standard VLA modes with improved RFI flagging heuristics: 'bpd-vla', 'allcals-vla', 'target-vla'</p></li>
 <li><p>blank string default use of rflag on bandpass and delay calibrators</p></li>
-<li><p>use string ‘semi’ after hifv_semiFinalBPdcals() for executing rflag on calibrators</p></li>
-<li><p>use string ‘bpd’, for the bandpass and delay calibrators:
+<li><p>use string 'semi' after hifv_semiFinalBPdcals() for executing rflag on calibrators</p></li>
+<li><p>use string 'bpd', for the bandpass and delay calibrators:
 execute rflag on all calibrated cross-hand corrected data;
 extend flags to all correlations
 execute rflag on all calibrated parallel-hand residual data;
@@ -140,30 +140,30 @@ execute tfcrop on all calibrated cross-hand corrected data,
 per visibility; extend flags to all correlations
 execute tfcrop on all calibrated parallel-hand corrected data,
 per visibility; extend flags to all correlations</p></li>
-<li><p>use string ‘allcals’, for all the other calibrators, with delays and BPcal applied:
-similar procedure as ‘bpd’ mode, but uses corrected data throughout</p></li>
-<li><p>use string ‘target’, for the target data:
-similar procedure as ‘allcals’ mode, but with a higher SNR cutoff
+<li><p>use string 'allcals', for all the other calibrators, with delays and BPcal applied:
+similar procedure as 'bpd' mode, but uses corrected data throughout</p></li>
+<li><p>use string 'target', for the target data:
+similar procedure as 'allcals' mode, but with a higher SNR cutoff
 for rflag to avoid flagging data due to source structure, and
 with an additional series of tfcrop executions to make up for
 the higher SNR cutoff in rflag</p></li>
-<li><p>VLASS specific modes include ‘bpd-vlass’, ‘allcals-vlass’, and ‘target-vlass’
-which calculate thresholds to use per spw/field/scan (action=’calculate’, then,
+<li><p>VLASS specific modes include 'bpd-vlass', 'allcals-vlass', and 'target-vlass'
+which calculate thresholds to use per spw/field/scan (action='calculate', then,
 per baseband/field/scan, replace all spw thresholds above the median with the median,
 before re-running rflag with the new thresholds.  This has the effect of
 lowering the thresholds for spws with RFI to be closer to the RFI-free
 thresholds, and catches more of the RFI.</p></li>
-<li><p>Mode ‘vlass-imaging’ is similar to ‘target-vlass’, except that it executes on the split off target
-data, intent=’<a href="#id1"><span class="problematic" id="id2">*</span></a>TARGET’, datacolumn=’data’ and uses a timedevscale of 4.0.</p></li>
+<li><p>Mode 'vlass-imaging' is similar to 'target-vlass', except that it executes on the split off target
+data, intent='<a href="#id1"><span class="problematic" id="id2">*</span></a>TARGET', datacolumn='data' and uses a timedevscale of 4.0.</p></li>
 </ul>
-</li>
-<li><p><strong>growflags</strong> – Grow flags in time at the end of the following checkflagmodes:</p>
+</p></li>
+<li><p><strong>growflags</strong> -- <p>Grow flags in time at the end of the following checkflagmodes:</p>
 <ul>
-<li><p>default=True, for ‘bpd-vla’, ‘allcals-vla’, ‘bpd’, and ‘allcals.’</p></li>
-<li><p>default=False, for ‘’ and ‘semi’</p></li>
+<li><p>default=True, for 'bpd-vla', 'allcals-vla', 'bpd', and 'allcals.'</p></li>
+<li><p>default=False, for '' and 'semi'</p></li>
 </ul>
-</li>
-<li><p><strong>overwrite_modelcol</strong> – Always write the model column, even if it already exists.</p></li>
+</p></li>
+<li><p><strong>overwrite_modelcol</strong> -- Always write the model column, even if it already exists.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -192,7 +192,7 @@ data, intent=’<a href="#id1"><span class="problematic" id="id2">*</span></a>TA
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

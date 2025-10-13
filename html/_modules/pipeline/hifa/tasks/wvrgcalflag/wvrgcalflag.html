@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -121,6 +159,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.logging</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.sessionutils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sessionutils</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">commonhelpermethods</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">viewflaggers</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hifa.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">bandpass</span>
@@ -169,17 +208,19 @@
         <span class="n">value_set</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag_intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
         <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">value_set</span><span class="p">)</span>
 
+    <span class="n">parallel</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">parallel_inputs_impl</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
     <span class="c1"># docstring and type hints: supplements hifa_wvrgcalflag</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetstable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_toffset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">toffset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">segsource</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_tie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sourceflag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nsol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">disperse</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">wvrflag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_smooth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxdistm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minnumants</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">mingoodfrac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa_bandpass_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">accept_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag_hi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fhi_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fhi_minsample</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ants_with_wvr_thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">ants_with_wvr_nr_thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">ants_with_wvr_nr_thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            context: Pipeline context object containing state information.</span>
 
 <span class="sd">            output_dir: Output directory.</span>
 <span class="sd">                Defaults to None, which corresponds to the current working directory.</span>
@@ -188,20 +229,20 @@
 <span class="sd">                Default: none, in which case the vis files to be used</span>
 <span class="sd">                will be read from the context.</span>
 
-<span class="sd">                Example: vis=[&#39;ngc5921.ms&#39;]</span>
+<span class="sd">                Example: ``vis=[&#39;ngc5921.ms&#39;]``</span>
 
 <span class="sd">            caltable: List of output gain calibration tables.</span>
 <span class="sd">                Default: none, in which case the names of the caltables</span>
 <span class="sd">                will be generated automatically.</span>
 
-<span class="sd">                Example: caltable=&#39;ngc5921.wvr&#39;</span>
+<span class="sd">                Example: ``caltable=&#39;ngc5921.wvr&#39;``</span>
 
 <span class="sd">            offsetstable: List of input temperature offsets table files to</span>
 <span class="sd">                subtract from WVR measurements before calculating phase</span>
 <span class="sd">                corrections.</span>
 <span class="sd">                Default: none, in which case no offsets are applied.</span>
 
-<span class="sd">                Example: offsetstable=[&#39;ngc5921.cloud_offsets&#39;]</span>
+<span class="sd">                Example: ``offsetstable=[&#39;ngc5921.cloud_offsets&#39;]``</span>
 
 <span class="sd">            hm_toffset: If &#39;manual&#39;, set the &#39;toffset&#39; parameter to the user-specified</span>
 <span class="sd">                value. If &#39;automatic&#39;, set the &#39;toffset&#39; parameter according to the</span>
@@ -228,13 +269,13 @@
 <span class="sd">                the ``tie``. If ``tie`` is not empty then ``segsource``</span>
 <span class="sd">                is forced to be True. Ignored unless ``hm_tie`` = &#39;manual&#39;.</span>
 
-<span class="sd">                Example: tie=[&#39;3C273,NGC253&#39;, &#39;IC433,3C279&#39;]</span>
+<span class="sd">                Example: ``tie=[&#39;3C273,NGC253&#39;, &#39;IC433,3C279&#39;]``</span>
 
 <span class="sd">            sourceflag: Flag the WVR data for these source(s) as bad and do not</span>
 <span class="sd">                produce corrections for it. Requires</span>
-<span class="sd">                ``segsource`` = True.</span>
+<span class="sd">                ``segsource=True``.</span>
 
-<span class="sd">                Example: sourceflag=[&#39;3C273&#39;]</span>
+<span class="sd">                Example: ``sourceflag=[&#39;3C273&#39;]``</span>
 
 <span class="sd">            nsol: Number of solutions for phase correction coefficients during this</span>
 <span class="sd">                observation, evenly distributed in time throughout the observation. It</span>
@@ -248,7 +289,7 @@
 <span class="sd">            wvrflag: Flag the WVR data for these antenna(s) as bad and replace its data</span>
 <span class="sd">                with interpolated values.</span>
 
-<span class="sd">                Example: wvrflag=[&#39;DV03&#39;,&#39;DA05&#39;,&#39;PM02&#39;]</span>
+<span class="sd">                Example: ``wvrflag=[&#39;DV03&#39;,&#39;DA05&#39;,&#39;PM02&#39;]``</span>
 
 <span class="sd">            hm_smooth: If &#39;manual&#39; set the &#39;smooth&#39; parameter to the user-specified value.</span>
 <span class="sd">                If &#39;automatic&#39;, run the wvrgcal task with the range of &#39;smooth&#39; parameters</span>
@@ -256,7 +297,7 @@
 <span class="sd">                interferometric data in each spectral window.</span>
 
 <span class="sd">            smooth: Smooth WVR data on this timescale before calculating the correction.</span>
-<span class="sd">                Ignored unless hm_smooth=&#39;manual&#39;.</span>
+<span class="sd">                Ignored unless ``hm_smooth=&#39;manual&#39;``.</span>
 
 <span class="sd">            scale: Scale the entire phase correction by this factor.</span>
 
@@ -266,20 +307,20 @@
 <span class="sd">                antennas are 7m antennas without WVR and otherwise set</span>
 <span class="sd">                to 500m).</span>
 
-<span class="sd">                Example: maxdistm=550</span>
+<span class="sd">                Example: ``maxdistm=550``</span>
 
 <span class="sd">            minnumants: Minimum number of nearby antennas (up to 3) used for</span>
 <span class="sd">                interpolation from a flagged antenna.</span>
 
-<span class="sd">                Example: minnumants=3</span>
+<span class="sd">                Example: ``minnumants=3``</span>
 
 <span class="sd">            mingoodfrac: Minimum fraction of good data per antenna.</span>
 
-<span class="sd">                Example: mingoodfrac=0.7</span>
+<span class="sd">                Example: ``mingoodfrac=0.7``</span>
 
 <span class="sd">            refant: Ranked comma delimited list of reference antennas.</span>
 
-<span class="sd">                Example: refant=&#39;DV02,DV06&#39;</span>
+<span class="sd">                Example: ``refant=&#39;DV02,DV06&#39;``</span>
 
 <span class="sd">            flag_intent: The data intent(s) on whose WVR correction results the</span>
 <span class="sd">                search for bad WVR antennas is to be based.</span>
@@ -328,13 +369,18 @@
 <span class="sd">                same threshold is used to determine, after flagging, whether there remain</span>
 <span class="sd">                enough unflagged antennas with WVR data for the WVR calibration to be</span>
 <span class="sd">                applied.</span>
-<span class="sd">                Example: ants_with_wvr_thresh=0.5</span>
+<span class="sd">                Example: ``ants_with_wvr_thresh=0.5``</span>
 
 <span class="sd">            ants_with_wvr_nr_thresh:</span>
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.</span>
 
-        <span class="nb">super</span><span class="p">(</span><span class="n">WvrgcalflagInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+<span class="sd">                Options: ``&#39;automatic&#39;``, ``&#39;true&#39;``, ``&#39;false&#39;``, ``True``, ``False``</span>
+
+<span class="sd">                Default: ``None`` (equivalent to ``False``)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="n">caltable</span><span class="p">,</span> <span class="n">offsetstable</span><span class="o">=</span><span class="n">offsetstable</span><span class="p">,</span>
             <span class="n">hm_toffset</span><span class="o">=</span><span class="n">hm_toffset</span><span class="p">,</span> <span class="n">toffset</span><span class="o">=</span><span class="n">toffset</span><span class="p">,</span> <span class="n">segsource</span><span class="o">=</span><span class="n">segsource</span><span class="p">,</span> <span class="n">hm_tie</span><span class="o">=</span><span class="n">hm_tie</span><span class="p">,</span> <span class="n">tie</span><span class="o">=</span><span class="n">tie</span><span class="p">,</span> <span class="n">sourceflag</span><span class="o">=</span><span class="n">sourceflag</span><span class="p">,</span>
             <span class="n">nsol</span><span class="o">=</span><span class="n">nsol</span><span class="p">,</span> <span class="n">disperse</span><span class="o">=</span><span class="n">disperse</span><span class="p">,</span> <span class="n">wvrflag</span><span class="o">=</span><span class="n">wvrflag</span><span class="p">,</span> <span class="n">hm_smooth</span><span class="o">=</span><span class="n">hm_smooth</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="n">smooth</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span>
@@ -351,22 +397,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fhi_limit</span> <span class="o">=</span> <span class="n">fhi_limit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fhi_minsample</span> <span class="o">=</span> <span class="n">fhi_minsample</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
 
-<div class="viewcode-block" id="Wvrgcalflag">
-<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Wvrgcalflag.html#pipeline.hifa.tasks.Wvrgcalflag">[docs]</a>
-<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_wvrgcalflag&#39;</span><span class="p">)</span>
-<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
-    <span class="s1">&#39;Water vapour radiometer corrections are calculated for each antenna. The quality of the correction is assessed by &#39;</span>
-    <span class="s1">&#39;comparing a phase gain solution calculated with and without the WVR correction. This requires calculation of a &#39;</span>
-    <span class="s1">&#39;temporary phase gain on the bandpass calibrator, a temporary bandpass using that temporary gain, followed by phase&#39;</span>
-    <span class="s1">&#39; gains with the temporary bandpass, with and without the WVR correction. After that, some antennas are wvrflagged &#39;</span>
-    <span class="s1">&#39;(so that their WVR corrections are interpolated), and then the quality of the correction recalculated.&#39;</span>
-<span class="p">)</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">Wvrgcalflag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SerialWvrgcalflag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">WvrgcalflagInputs</span>
 
-<div class="viewcode-block" id="Wvrgcalflag.prepare">
-<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Wvrgcalflag.html#pipeline.hifa.tasks.Wvrgcalflag.prepare">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -401,11 +438,8 @@
             <span class="n">result</span> <span class="o">=</span> <span class="n">WvrgcalflagResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
                                         <span class="n">flaggerresult</span><span class="o">=</span><span class="n">flaggerresult</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">result</span></div>
+        <span class="k">return</span> <span class="n">result</span>
 
-
-<div class="viewcode-block" id="Wvrgcalflag.analyse">
-<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Wvrgcalflag.html#pipeline.hifa.tasks.Wvrgcalflag.analyse">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -444,8 +478,7 @@
                     <span class="ow">and</span> <span class="n">result</span><span class="o">.</span><span class="n">flaggerresult</span><span class="o">.</span><span class="n">dataresult</span><span class="o">.</span><span class="n">qa_wvr</span><span class="o">.</span><span class="n">overall_score</span> <span class="o">&lt;</span> <span class="n">inputs</span><span class="o">.</span><span class="n">accept_threshold</span><span class="p">:</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">flaggerresult</span><span class="o">.</span><span class="n">dataresult</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">return</span> <span class="n">result</span></div>
-
+        <span class="k">return</span> <span class="n">result</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_identify_ants_with_wvr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -558,8 +591,7 @@
         <span class="k">with</span> <span class="n">logging</span><span class="o">.</span><span class="n">SuspendCapturingLogger</span><span class="p">():</span>
             <span class="n">flaggerresult</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">flaggertask</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">flaggerresult</span></div>
-
+        <span class="k">return</span> <span class="n">flaggerresult</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">WvrgcalflagDataInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
@@ -613,15 +645,30 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">skip</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;context&#39;</span><span class="p">,</span> <span class="s1">&#39;ms&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">dd_name</span><span class="p">:</span> <span class="n">dd</span>
-                <span class="k">for</span> <span class="n">dd_name</span><span class="p">,</span> <span class="n">dd</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="ow">not</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">isroutine</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
+                <span class="k">for</span> <span class="n">dd_name</span><span class="p">,</span> <span class="n">dd</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="ow">not</span> <span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">isroutine</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">dd_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">dd_name</span> <span class="ow">in</span> <span class="n">skip</span><span class="p">)}</span>
+
+
+<div class="viewcode-block" id="Wvrgcalflag">
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Wvrgcalflag.html#pipeline.hifa.tasks.Wvrgcalflag">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_wvrgcalflag&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
+    <span class="s1">&#39;Water vapour radiometer corrections are calculated for each antenna. The quality of the correction is assessed by &#39;</span>
+    <span class="s1">&#39;comparing a phase gain solution calculated with and without the WVR correction. This requires calculation of a &#39;</span>
+    <span class="s1">&#39;temporary phase gain on the bandpass calibrator, a temporary bandpass using that temporary gain, followed by phase&#39;</span>
+    <span class="s1">&#39; gains with the temporary bandpass, with and without the WVR correction. After that, some antennas are wvrflagged &#39;</span>
+    <span class="s1">&#39;(so that their WVR corrections are interpolated), and then the quality of the correction recalculated.&#39;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Wvrgcalflag</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">WvrgcalflagInputs</span>
+    <span class="n">Task</span> <span class="o">=</span> <span class="n">SerialWvrgcalflag</span></div>
+
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">WvrgcalflagData</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">WvrgcalflagDataInputs</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">WvrgcalflagData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 
         <span class="c1"># Initialize parameters that should persist across multiple flagging</span>
         <span class="c1"># iterations. These will be populated by the output from Wvrgcal on</span>
@@ -757,7 +804,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

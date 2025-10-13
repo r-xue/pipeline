@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.bpsolint.bpsolint &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -185,7 +223,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            context: Pipeline context object containing state information.</span>
 
 <span class="sd">            output_dir: Output directory.</span>
 <span class="sd">                Defaults to None, which corresponds to the current working directory.</span>
@@ -193,35 +231,35 @@
 <span class="sd">            vis: The list of input MeasurementSets. Defaults to the list of</span>
 <span class="sd">                MeasurementSets specified in the pipeline context.</span>
 
-<span class="sd">                Example: vis=[&#39;M82A.ms&#39;, &#39;M82B.ms&#39;]</span>
+<span class="sd">                Example: ``vis=[&#39;M82A.ms&#39;, &#39;M82B.ms&#39;]``</span>
 
 <span class="sd">            field: The list of field names of sources to be used for</span>
 <span class="sd">                signal-to-noise estimation. Defaults to all fields with the</span>
 <span class="sd">                standard intent.</span>
 
-<span class="sd">                Example: field=&#39;3C279&#39;</span>
+<span class="sd">                Example: ``field=&#39;3C279&#39;``</span>
 
 <span class="sd">            intent: A string containing a comma delimited list of intents against</span>
 <span class="sd">                which the selected fields are matched. Defaults to</span>
 <span class="sd">                &#39;BANDPASS&#39;.</span>
 
-<span class="sd">                Example: intent=&#39;PHASE&#39;</span>
+<span class="sd">                Example: ``intent=&#39;PHASE&#39;``</span>
 
 <span class="sd">            spw: The list of spectral windows and channels for which gain</span>
 <span class="sd">                solutions are computed. Defaults to all the science spectral</span>
 <span class="sd">                windows for which there are both &#39;intent&#39; and TARGET intents.</span>
 
-<span class="sd">                Example: spw=&#39;13,15&#39;</span>
+<span class="sd">                Example: ``spw=&#39;13,15&#39;``</span>
 
 <span class="sd">            phaseupsnr: The required phase-up gain time interval solution</span>
 <span class="sd">                signal-to-noise.</span>
 
-<span class="sd">                Example: phaseupsnr=10.0</span>
+<span class="sd">                Example: ``phaseupsnr=10.0``</span>
 
 <span class="sd">            minphaseupints: The minimum number of time intervals in the phase-up gain</span>
 <span class="sd">                solution.</span>
 
-<span class="sd">                Example: minphaseupints=4</span>
+<span class="sd">                Example: ``minphaseupints=4``</span>
 
 <span class="sd">            evenbpints: Use a bandpass frequency solint that is an integer divisor of</span>
 <span class="sd">                the spw bandwidth, to prevent the occurrence of one narrower</span>
@@ -230,34 +268,33 @@
 <span class="sd">            bpsnr: The required bandpass frequency interval solution</span>
 <span class="sd">                signal-to-noise.</span>
 
-<span class="sd">                Example: bpsnr=30.0</span>
+<span class="sd">                Example: ``bpsnr=30.0``</span>
 
 <span class="sd">            minbpsnr: The minimum required bandpass frequency interval solution</span>
 <span class="sd">                signal-to-noise when strong atmospheric lines exist in Tsys</span>
 <span class="sd">                spectra.</span>
 
-<span class="sd">                Example: minbpsnr=10.0</span>
+<span class="sd">                Example: ``minbpsnr=10.0``</span>
 
 <span class="sd">            minbpnchan: The minimum number of frequency intervals in the bandpass</span>
 <span class="sd">                solution.</span>
 
-<span class="sd">                Example: minbpnchan=16</span>
+<span class="sd">                Example: ``minbpnchan=16``</span>
 
 <span class="sd">            hm_nantennas: The heuristics for determines the number of antennas to use</span>
-<span class="sd">                in the signal-to-noise estimate. The options are &#39;all&#39; and</span>
-<span class="sd">                &#39;unflagged&#39;. The &#39;unflagged&#39; options is not currently</span>
+<span class="sd">                in the signal-to-noise estimate. The options are ``&#39;all&#39;`` and</span>
+<span class="sd">                ``&#39;unflagged&#39;``. The &#39;unflagged&#39; options is not currently</span>
 <span class="sd">                supported.</span>
 
-<span class="sd">                Example: hm_nantennas=&#39;unflagged&#39;</span>
+<span class="sd">                Example: ``hm_nantennas=&#39;unflagged&#39;``</span>
 
 <span class="sd">            maxfracflagged: The maximum fraction of an antenna that can be flagged before</span>
 <span class="sd">                it is excluded from the signal-to-noise estimate.</span>
 
-<span class="sd">                Example: maxfracflagged=0.80</span>
+<span class="sd">                Example: ``maxfracflagged=0.80``</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="nb">super</span><span class="p">(</span><span class="n">BpSolintInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
@@ -350,10 +387,6 @@
     <span class="c1"># Get final results from the spw dictionary</span>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_results</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">,</span> <span class="n">solint_dict</span><span class="p">):</span>
-
-        <span class="c1"># Initialize result structure.</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">BpSolintResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">spwids</span><span class="o">=</span><span class="n">spwidlist</span><span class="p">)</span>
-
         <span class="c1"># Initialize the lists</span>
         <span class="n">phsolints</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">phintsolints</span> <span class="o">=</span> <span class="p">[]</span>
@@ -405,6 +438,9 @@
                 <span class="n">bpchansnrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;snr_per_channel&#39;</span><span class="p">])</span>
                 <span class="n">bandwidths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%f</span><span class="s1">Hz&#39;</span> <span class="o">%</span> <span class="n">solint_dict</span><span class="p">[</span><span class="n">spwid</span><span class="p">][</span><span class="s1">&#39;bandwidth&#39;</span><span class="p">])</span>
 
+            <span class="c1"># Initialize result structure.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">BpSolintResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">spwids</span><span class="o">=</span><span class="n">spwidlist</span><span class="p">)</span>
+
         <span class="c1"># Populate the result.</span>
         <span class="n">result</span><span class="o">.</span><span class="n">phsolints</span> <span class="o">=</span> <span class="n">phsolints</span>
         <span class="n">result</span><span class="o">.</span><span class="n">phintsolints</span> <span class="o">=</span> <span class="n">phintsolints</span>
@@ -419,6 +455,7 @@
         <span class="n">result</span><span class="o">.</span><span class="n">bpchansensitivities</span> <span class="o">=</span> <span class="n">bpsensitivities</span>
         <span class="n">result</span><span class="o">.</span><span class="n">bpchansnrs</span> <span class="o">=</span> <span class="n">bpchansnrs</span>
         <span class="n">result</span><span class="o">.</span><span class="n">bandwidths</span> <span class="o">=</span> <span class="n">bandwidths</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">low_channel_solutions</span> <span class="o">=</span> <span class="n">solint_dict</span><span class="p">[</span><span class="s1">&#39;low_channel_solutions&#39;</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="n">result</span>
 
@@ -430,10 +467,15 @@
 
 <span class="sd">        Inputs: solution interval dictionary returned by snr.estimate_bpsolint</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">max_solint</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">spw_solint</span> <span class="ow">in</span> <span class="n">solint_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="n">max_solint</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">spw_solint</span><span class="p">[</span><span class="s1">&#39;nchan_bpsolint&#39;</span><span class="p">],</span> <span class="n">max_solint</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">max_solint</span>
+        <span class="c1"># the original code assumed a dict of int spw IDs to data, but the</span>
+        <span class="c1"># introduction of low_channel_solutions in PIPE-1760 breaks that</span>
+        <span class="c1"># assumption so we identify that case and skip it.</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">spw_solint</span><span class="p">[</span><span class="s1">&#39;nchan_bpsolint&#39;</span><span class="p">]</span>
+             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">spw_solint</span> <span class="ow">in</span> <span class="n">solint_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+             <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;low_channel_solutions&#39;</span><span class="p">),</span>
+            <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_tsys_caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">):</span>
         <span class="n">caltables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">get_caltable</span><span class="p">(</span>
@@ -453,15 +495,45 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">BpSolintResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwids</span><span class="o">=</span><span class="p">[],</span>
-                 <span class="n">phsolints</span><span class="o">=</span><span class="p">[],</span> <span class="n">phintsolints</span><span class="o">=</span><span class="p">[],</span> <span class="n">nphsolutions</span><span class="o">=</span><span class="p">[],</span>
-                 <span class="n">phsensitivities</span><span class="o">=</span><span class="p">[],</span> <span class="n">phintsnrs</span><span class="o">=</span><span class="p">[],</span> <span class="n">exptimes</span> <span class="o">=</span> <span class="p">[],</span>
-                 <span class="n">bpsolints</span><span class="o">=</span><span class="p">[],</span> <span class="n">bpchansolints</span><span class="o">=</span><span class="p">[],</span> <span class="n">nbpsolutions</span><span class="o">=</span><span class="p">[],</span>
-                 <span class="n">bpsensitivities</span><span class="o">=</span><span class="p">[],</span> <span class="n">bpchansnrs</span><span class="o">=</span><span class="p">[],</span> <span class="n">bandwidths</span> <span class="o">=</span> <span class="p">[]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">phsolints</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phintsolints</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nphsolutions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">phsensitivities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phintsnrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exptimes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">bpsolints</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bpchansolints</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nbpsolutions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">bpsensitivities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bpchansnrs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bandwidths</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">low_channel_solutions</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialise the results object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">BpSolintResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">spwids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">spwids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">phsolints</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">phsolints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">phintsolints</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">phintsolints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">nphsolutions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">nphsolutions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">phsensitivities</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">phsensitivities</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">phintsnrs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">phintsnrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">exptimes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">exptimes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">bpsolints</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bpsolints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">bpchansolints</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bpchansolints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">nbpsolutions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">nbpsolutions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">bpsensitivities</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bpsensitivities</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">bpchansnrs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bpchansnrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">bandwidths</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bandwidths</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">low_channel_solutions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">low_channel_solutions</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
 
@@ -483,6 +555,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">bpchansensitivities</span> <span class="o">=</span> <span class="n">bpsensitivities</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bpchansnrs</span> <span class="o">=</span> <span class="n">bpchansnrs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bandwidths</span> <span class="o">=</span> <span class="n">bandwidths</span>
+
+        <span class="c1"># PIPE-1760: processed as a QA score in hifa_bandpass</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">low_channel_solutions</span> <span class="o">=</span> <span class="n">low_channel_solutions</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">spwids</span><span class="p">:</span>
@@ -650,7 +725,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

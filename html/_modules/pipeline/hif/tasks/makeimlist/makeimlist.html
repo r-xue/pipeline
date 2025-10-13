@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.makeimlist.makeimlist &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -117,6 +155,8 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.domain.measures</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">measures</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
@@ -128,7 +168,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks.makeimages.resultobjects</span><span class="w"> </span><span class="kn">import</span> <span class="n">MakeImagesResult</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">task_registry</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.cleantarget</span><span class="w"> </span><span class="kn">import</span> <span class="n">CleanTarget</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.cleantarget</span><span class="w"> </span><span class="kn">import</span> <span class="n">CleanTarget</span><span class="p">,</span> <span class="n">CleanTargetInfo</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.resultobjects</span><span class="w"> </span><span class="kn">import</span> <span class="n">MakeImListResult</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -159,6 +199,8 @@
     <span class="n">parallel</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;automatic&#39;</span><span class="p">)</span>
     <span class="n">robust</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">uvtaper</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="n">allow_wproject</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">stokes</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 
     <span class="c1"># properties requiring some processing or MS-dependent logic -------------------------------------------------------</span>
 
@@ -185,8 +227,6 @@
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">hm_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="ow">and</span> <span class="s1">&#39;hm_cell&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">[]</span>
 
     <span class="nd">@hm_cell</span><span class="o">.</span><span class="n">convert</span>
@@ -206,8 +246,6 @@
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">hm_imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="ow">and</span> <span class="s1">&#39;hm_imsize&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_imsize&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">[]</span>
 
     <span class="nd">@hm_imsize</span><span class="o">.</span><span class="n">convert</span>
@@ -269,47 +307,56 @@
 <span class="sd">        returned.</span>
 
 <span class="sd">        TODO: refactor and make hif_checkproductsize() (or a new task) spwlist aware.&quot;&quot;&quot;</span>
+
         <span class="n">mitigated_hm_cell</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="ow">and</span> <span class="s1">&#39;hm_cell&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">:</span>
+            <span class="n">mitigated_hm_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">]</span>
+
         <span class="n">multi_target_size_mitigation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;multi_target_size_mitigation&#39;</span><span class="p">,</span> <span class="p">{})</span>
         <span class="k">if</span> <span class="n">multi_target_size_mitigation</span><span class="p">:</span>
-            <span class="n">multi_target_spwlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">spws</span> <span class="k">for</span> <span class="n">spws</span> <span class="ow">in</span> <span class="n">multi_target_size_mitigation</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">spwlist</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">spws</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))]</span>
+            <span class="n">multi_target_spwlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">spws</span> <span class="k">for</span> <span class="n">spws</span> <span class="ow">in</span> <span class="n">multi_target_size_mitigation</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="nb">set</span><span class="p">(</span>
+                <span class="n">spwlist</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">spws</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))]</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">multi_target_spwlist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">mitigated_hm_cell</span> <span class="o">=</span> <span class="n">multi_target_size_mitigation</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">multi_target_spwlist</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">mitigated_hm_cell</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">{}]:</span>
-            <span class="k">return</span> <span class="n">mitigated_hm_cell</span>
-        <span class="k">else</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">mitigated_hm_cell</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">{}]</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">hm_cell</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hm_cell</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">mitigated_hm_cell</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_spw_hm_imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;If possible obtain spwlist specific hm_imsize, otherwise return generic value.</span>
 
 <span class="sd">        TODO: refactor and make hif_checkproductsize() (or a new task) spwlist aware.&quot;&quot;&quot;</span>
         <span class="n">mitigated_hm_imsize</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="ow">and</span> <span class="s1">&#39;hm_imsize&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">:</span>
+            <span class="n">mitigated_hm_imsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_imsize&#39;</span><span class="p">]</span>
         <span class="n">multi_target_size_mitigation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;multi_target_size_mitigation&#39;</span><span class="p">,</span> <span class="p">{})</span>
         <span class="k">if</span> <span class="n">multi_target_size_mitigation</span><span class="p">:</span>
-            <span class="n">multi_target_spwlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">spws</span> <span class="k">for</span> <span class="n">spws</span> <span class="ow">in</span> <span class="n">multi_target_size_mitigation</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">spwlist</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">spws</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))]</span>
+            <span class="n">multi_target_spwlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">spws</span> <span class="k">for</span> <span class="n">spws</span> <span class="ow">in</span> <span class="n">multi_target_size_mitigation</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="nb">set</span><span class="p">(</span>
+                <span class="n">spwlist</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">spws</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))]</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">multi_target_spwlist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">mitigated_hm_imsize</span> <span class="o">=</span> <span class="n">multi_target_size_mitigation</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">multi_target_spwlist</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;hm_imsize&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">mitigated_hm_imsize</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">{}]:</span>
-            <span class="k">return</span> <span class="n">mitigated_hm_imsize</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">mitigated_hm_imsize</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">{}]</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">hm_imsize</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hm_imsize</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">mitigated_hm_imsize</span>
 
     <span class="c1"># docstring and type hints: supplements hif_makeimlist</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imagename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imagename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stokes</span><span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">contfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linesfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outframe</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_imsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">hm_cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calmaxpix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phasecenter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">psf_phasecenter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nchan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">robust</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvtaper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clearlist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">per_eb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">per_session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calcsb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">datacolumn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">known_synthesized_beams</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scal</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                 <span class="n">datacolumn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">known_synthesized_beams</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">allow_wproject</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">scal</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            context: Pipeline context object containing state information.</span>
 
 <span class="sd">            output_dir: Output directory.</span>
 <span class="sd">                Defaults to None, which corresponds to the current working directory.</span>
 
-<span class="sd">            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.</span>
+<span class="sd">            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the &lt;hifa,hifv&gt;_importdata task.</span>
 <span class="sd">                &quot;&quot;: use all MeasurementSets in the context</span>
 
 <span class="sd">                Examples: &#39;ngc5921.ms&#39;, [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
@@ -328,6 +375,9 @@
 <span class="sd">                &quot;&quot; Fields matching intent, one image per target source.</span>
 
 <span class="sd">            spw: Select spectral windows to image. &quot;&quot;: Images will be computed for all science spectral windows.</span>
+
+<span class="sd">            stokes: Select the Stokes parameters to image. &quot;&quot;: Stokes I will be computed except for polarization calibrators, where the</span>
+<span class="sd">                automatic heuristics selects IQUV. Setting a value here will override the heuristics. Allowed values are &#39;I&#39; and &#39;IQUV&#39;.</span>
 
 <span class="sd">            contfile: Name of file with frequency ranges to use for continuum images.</span>
 
@@ -427,9 +477,15 @@
 
 <span class="sd">            datacolumn: Data column to image. Only to be used for manual overriding when the automatic choice by data type is not appropriate.</span>
 
-<span class="sd">            parallel: Use MPI cluster where possible</span>
+<span class="sd">            parallel: Use the CASA imager parallel processing when possible.</span>
+
+<span class="sd">                Options: ``&#39;automatic&#39;``, ``&#39;true&#39;``, ``&#39;false&#39;``, ``True``, ``False``</span>
+
+<span class="sd">                Default: ``&#39;automatic&#39;``</span>
 
 <span class="sd">            known_synthesized_beams:</span>
+
+<span class="sd">            allow_wproject: Allow the wproject heuristics for imaging</span>
 
 <span class="sd">            scal:</span>
 
@@ -442,6 +498,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stokes</span> <span class="o">=</span> <span class="n">stokes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">contfile</span> <span class="o">=</span> <span class="n">contfile</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">linesfile</span> <span class="o">=</span> <span class="n">linesfile</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">uvrange</span> <span class="o">=</span> <span class="n">uvrange</span>
@@ -466,6 +523,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">datacolumn</span> <span class="o">=</span> <span class="n">datacolumn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">known_synthesized_beams</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allow_wproject</span> <span class="o">=</span> <span class="n">allow_wproject</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scal</span> <span class="o">=</span> <span class="n">scal</span>
 
 
@@ -505,19 +563,23 @@
 
         <span class="c1"># describe the function of this task by interpreting the inputs</span>
         <span class="c1"># parameters to give an execution context</span>
-        <span class="n">long_descriptions</span> <span class="o">=</span> <span class="p">[</span><span class="n">_DESCRIPTIONS</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">intent</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">),</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">)</span> <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
+        <span class="n">long_descriptions</span> <span class="o">=</span> <span class="p">[</span><span class="n">_get_description</span><span class="p">(</span><span class="n">intent</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">)</span> <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)]</span>
         <span class="n">result</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;long description&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Set-up parameters for </span><span class="si">%s</span><span class="s1"> imaging&#39;</span> <span class="o">%</span> <span class="s1">&#39; &amp; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">deduplicate</span><span class="p">(</span><span class="n">long_descriptions</span><span class="p">))</span>
 
-        <span class="n">sidebar_suffixes</span> <span class="o">=</span> <span class="p">{</span><span class="n">_SIDEBAR_SUFFIX</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="n">intent</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">),</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">)</span> <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)}</span>
+        <span class="n">sidebar_suffixes</span> <span class="o">=</span> <span class="p">{</span><span class="n">_get_sidebar_suffix</span><span class="p">(</span><span class="n">intent</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">)</span> <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)}</span>
         <span class="n">result</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;sidebar suffix&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sidebar_suffixes</span><span class="p">)</span>
 
         <span class="c1"># Check if this stage has been disabled for vla (never set for ALMA)</span>
-        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">vla_skip_mfs_and_cube_imaging</span> <span class="ow">and</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;mfs&#39;</span><span class="p">,</span> <span class="s1">&#39;cube&#39;</span><span class="p">):</span>
-            <span class="n">result</span><span class="o">.</span><span class="n">set_info</span><span class="p">({</span><span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;Line imaging stages have been disabled for VLA due to no MS being produced for line imaging.&#39;</span><span class="p">,</span>
-                                 <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
-                                 <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">})</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip_mfs_and_cube_imaging</span><span class="p">():</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">set_info</span><span class="p">({</span>
+                <span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;Cube imaging stages have been disabled due to the absence of data in suitable Datatypes.&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
+                <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">,</span>
+                <span class="s1">&#39;stokes&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">,</span>
+            <span class="p">})</span>
             <span class="n">result</span><span class="o">.</span><span class="n">contfile</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">result</span><span class="o">.</span><span class="n">linesfile</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">skip_stage</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">return</span> <span class="n">result</span>
 
         <span class="c1"># Check for size mitigation errors.</span>
@@ -526,7 +588,8 @@
                 <span class="n">result</span><span class="o">.</span><span class="n">mitigation_error</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">set_info</span><span class="p">({</span><span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;Size mitigation had failed. No imaging targets were created.&#39;</span><span class="p">,</span>
                                  <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
-                                 <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">})</span>
+                                 <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">,</span>
+                                 <span class="s1">&#39;stokes&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">})</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">contfile</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">linesfile</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="k">return</span> <span class="n">result</span>
@@ -558,6 +621,14 @@
         <span class="c1"># validate datacolumn</span>
         <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">datacolumn</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;DATA&#39;</span><span class="p">,</span> <span class="s1">&#39;CORRECTED&#39;</span><span class="p">):</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;&quot;datacolumn&quot; must be &quot;data&quot; or &quot;corrected&quot;&#39;</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">error_msg</span> <span class="o">=</span> <span class="n">msg</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="c1"># validate stokes</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;IQUV&#39;</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;&quot;stokes&quot; must be &quot;I&quot; or &quot;IQUV&quot;&#39;</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="n">result</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">result</span><span class="o">.</span><span class="n">error_msg</span> <span class="o">=</span> <span class="n">msg</span>
@@ -629,7 +700,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ms_objects_and_columns</span><span class="p">:</span>
             <span class="n">result</span><span class="o">.</span><span class="n">set_info</span><span class="p">({</span><span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;No data found. No imaging targets were created.&#39;</span><span class="p">,</span>
                              <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
-                             <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">})</span>
+                             <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">,</span>
+                             <span class="s1">&#39;stokes&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">})</span>
             <span class="n">result</span><span class="o">.</span><span class="n">contfile</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">result</span><span class="o">.</span><span class="n">linesfile</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">return</span> <span class="n">result</span>
@@ -662,10 +734,11 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Using data type </span><span class="si">{</span><span class="n">selected_datatype</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> for imaging.&#39;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">selected_datatype</span> <span class="o">==</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">:</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Falling back to raw data for imaging.&#39;</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Falling back to raw data for imaging.&#39;</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">global_column</span> <span class="o">==</span> <span class="n">global_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">global_column</span> <span class="ow">in</span> <span class="n">global_columns</span><span class="p">):</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Data type based column selection changes among MSes: </span><span class="si">{</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">ms_objects_and_columns</span><span class="o">.</span><span class="n">items</span><span class="p">())</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+                <span class="n">details_string</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ms_objects_and_columns</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Data type based column selection changes among MSes: </span><span class="si">{</span><span class="n">details_string</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">datacolumn</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
             <span class="n">ms_datacolumn</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">datacolumn</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
@@ -686,14 +759,20 @@
             <span class="n">selected_datatypes_str</span> <span class="o">=</span> <span class="p">[</span><span class="n">global_datatype_str</span><span class="p">]</span>
             <span class="n">selected_datatypes_info</span> <span class="o">=</span> <span class="p">[</span><span class="n">global_datatype_info</span><span class="p">]</span>
             <span class="n">automatic_datatype_choice</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Manual override of datacolumn to </span><span class="si">{</span><span class="n">global_datacolumn</span><span class="si">}</span><span class="s1">. Automatic data type (</span><span class="si">{</span><span class="n">selected_datatype</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">) based datacolumn would have been &quot;</span><span class="si">{</span><span class="s2">&quot;DATA&quot;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">global_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;DATA&quot;</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s2">&quot;CORRECTED&quot;</span><span class="si">}</span><span class="s1">&quot;. Data type of </span><span class="si">{</span><span class="n">global_datacolumn</span><span class="si">}</span><span class="s1"> column is </span><span class="si">{</span><span class="n">global_datatype_str</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+            <span class="n">automatic_datacolumn_guess</span> <span class="o">=</span> <span class="s1">&#39;DATA&#39;</span> <span class="k">if</span> <span class="n">global_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;DATA&#39;</span> <span class="k">else</span> <span class="s1">&#39;CORRECTED&#39;</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Manual override of datacolumn to </span><span class="si">{</span><span class="n">global_datacolumn</span><span class="si">}</span><span class="s1">. &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;Automatic data type (</span><span class="si">{</span><span class="n">selected_datatype</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">) based datacolumn &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;would have been &quot;</span><span class="si">{</span><span class="n">automatic_datacolumn_guess</span><span class="si">}</span><span class="s1">&quot;. &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;Data type of </span><span class="si">{</span><span class="n">global_datacolumn</span><span class="si">}</span><span class="s1"> column is </span><span class="si">{</span><span class="n">global_datatype_str</span><span class="si">}</span><span class="s1">.&#39;</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">global_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;DATA&#39;</span><span class="p">:</span>
                 <span class="n">global_datacolumn</span> <span class="o">=</span> <span class="s1">&#39;data&#39;</span>
             <span class="k">elif</span> <span class="n">global_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">:</span>
                 <span class="n">global_datacolumn</span> <span class="o">=</span> <span class="s1">&#39;corrected&#39;</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown column name </span><span class="si">{</span><span class="n">global_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown column name </span><span class="si">{</span><span class="n">global_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="n">global_datacolumn</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
         <span class="n">datacolumn</span> <span class="o">=</span> <span class="n">global_datacolumn</span>
@@ -787,12 +866,20 @@
             <span class="n">contfile</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">contfile</span><span class="p">,</span>
             <span class="n">linesfile</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">linesfile</span><span class="p">,</span>
             <span class="n">imaging_params</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">imaging_parameters</span><span class="p">,</span>
+            <span class="n">processing_intents</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">processing_intents</span><span class="p">,</span>
             <span class="n">imaging_mode</span><span class="o">=</span><span class="n">imaging_mode</span>
         <span class="p">)</span>
 
         <span class="c1"># Get representative target information</span>
-        <span class="n">repr_target</span><span class="p">,</span> <span class="n">repr_source</span><span class="p">,</span> <span class="n">repr_spw</span><span class="p">,</span> <span class="n">repr_freq</span><span class="p">,</span> <span class="n">reprBW_mode</span><span class="p">,</span> <span class="n">real_repr_target</span><span class="p">,</span> <span class="n">minAcceptableAngResolution</span><span class="p">,</span> <span class="n">maxAcceptableAngResolution</span><span class="p">,</span> <span class="n">maxAllowedBeamAxialRatio</span><span class="p">,</span> <span class="n">sensitivityGoal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">representative_target</span><span class="p">()</span>
-
+        <span class="c1"># PIPE-2625: The following logic is executed only when inputs.specmode is &#39;repBW&#39;</span>
+        <span class="c1"># or &#39;TARGET&#39; is present in inputs.intent. This is a performance optimization</span>
+        <span class="c1"># (per PIPE-2625) to prevent costly I/O operations from representative_target()</span>
+        <span class="c1"># when not strictly required.</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;repBW&#39;</span> <span class="ow">or</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">:</span>
+            <span class="n">repr_target</span><span class="p">,</span> <span class="n">repr_source</span><span class="p">,</span> <span class="n">repr_spw</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">reprBW_mode</span><span class="p">,</span> <span class="n">real_repr_target</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">representative_target</span><span class="p">()</span>
+            <span class="p">)</span>
+        
         <span class="c1"># representative target case</span>
         <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;repBW&#39;</span><span class="p">:</span>
             <span class="n">repr_target_mode</span> <span class="o">=</span> <span class="kc">True</span>
@@ -803,7 +890,8 @@
                 <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;No representative target found. No PI cube will be made.&#39;</span><span class="p">)</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">set_info</span><span class="p">({</span><span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;No representative target found. No PI cube will be made.&#39;</span><span class="p">,</span>
                                  <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
-                                 <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="s1">&#39;repBW&#39;</span><span class="p">})</span>
+                                 <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="s1">&#39;repBW&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;stokes&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">})</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">contfile</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">linesfile</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="k">return</span> <span class="n">result</span>
@@ -814,7 +902,8 @@
                 <span class="n">result</span><span class="o">.</span><span class="n">set_info</span><span class="p">({</span><span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s2">&quot;Representative target bandwidth specifies aggregate continuum. No PI cube will&quot;</span>
                                         <span class="s2">&quot; be made since specmode=&#39;cont&#39; already covers this case.&quot;</span><span class="p">,</span>
                                  <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
-                                 <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="s1">&#39;repBW&#39;</span><span class="p">})</span>
+                                 <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="s1">&#39;repBW&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;stokes&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">})</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">contfile</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">linesfile</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="k">return</span> <span class="n">result</span>
@@ -824,7 +913,8 @@
                 <span class="n">result</span><span class="o">.</span><span class="n">set_info</span><span class="p">({</span><span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s2">&quot;Representative target bandwidth specifies per spw continuum. No PI cube will&quot;</span>
                                         <span class="s2">&quot; be made since specmode=&#39;mfs&#39; already covers this case.&quot;</span><span class="p">,</span>
                                  <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
-                                 <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="s1">&#39;repBW&#39;</span><span class="p">})</span>
+                                 <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="s1">&#39;repBW&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;stokes&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">})</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">contfile</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">linesfile</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="k">return</span> <span class="n">result</span>
@@ -860,7 +950,8 @@
                                             <span class="s1">&#39; averaged default cube channel width. No PI cube will be made since the&#39;</span>
                                             <span class="s1">&#39; default cube already covers this case.&#39;</span><span class="p">,</span>
                                      <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">,</span>
-                                     <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="s1">&#39;repBW&#39;</span><span class="p">})</span>
+                                     <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="s1">&#39;repBW&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;stokes&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">})</span>
                     <span class="n">result</span><span class="o">.</span><span class="n">contfile</span> <span class="o">=</span> <span class="kc">None</span>
                     <span class="n">result</span><span class="o">.</span><span class="n">linesfile</span> <span class="o">=</span> <span class="kc">None</span>
                     <span class="k">return</span> <span class="n">result</span>
@@ -947,6 +1038,7 @@
                         <span class="n">contfile</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">contfile</span><span class="p">,</span>
                         <span class="n">linesfile</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">linesfile</span><span class="p">,</span>
                         <span class="n">imaging_params</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">imaging_parameters</span><span class="p">,</span>
+                        <span class="n">processing_intents</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">processing_intents</span><span class="p">,</span>
                         <span class="n">imaging_mode</span><span class="o">=</span><span class="n">imaging_mode</span>
                     <span class="p">)</span>
                     <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span><span class="p">:</span>
@@ -1097,31 +1189,29 @@
 
                     <span class="c1"># Select only the lowest / highest frequency spw to get the smallest (for cell size)</span>
                     <span class="c1"># and largest beam (for imsize)</span>
-                    <span class="n">min_freq</span> <span class="o">=</span> <span class="mf">1e15</span>
-                    <span class="n">max_freq</span> <span class="o">=</span> <span class="mf">0.0</span>
-                    <span class="n">min_freq_spwid</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-                    <span class="n">max_freq_spwid</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+                    <span class="n">filtered_spwlist_center_freq</span> <span class="o">=</span> <span class="p">[]</span>
                     <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">filtered_spwlist</span><span class="p">:</span>
                         <span class="k">try</span><span class="p">:</span>
                             <span class="n">ref_msname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">get_ref_msname</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span>
                             <span class="n">ref_ms</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">ref_msname</span><span class="p">)</span>
                             <span class="n">real_spwid</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">virtual2real_spw_id</span><span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">ref_ms</span><span class="p">)</span>
-                            <span class="n">spwid_centre_freq</span> <span class="o">=</span> <span class="n">ref_ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">real_spwid</span><span class="p">)</span><span class="o">.</span><span class="n">centre_frequency</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span>
-                            <span class="k">if</span> <span class="n">spwid_centre_freq</span> <span class="o">&lt;</span> <span class="n">min_freq</span><span class="p">:</span>
-                                <span class="n">min_freq</span> <span class="o">=</span> <span class="n">spwid_centre_freq</span>
-                                <span class="n">min_freq_spwid</span> <span class="o">=</span> <span class="n">spwid</span>
-                            <span class="k">if</span> <span class="n">spwid_centre_freq</span> <span class="o">&gt;</span> <span class="n">max_freq</span><span class="p">:</span>
-                                <span class="n">max_freq</span> <span class="o">=</span> <span class="n">spwid_centre_freq</span>
-                                <span class="n">max_freq_spwid</span> <span class="o">=</span> <span class="n">spwid</span>
+                            <span class="n">spwid_centre_freq</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ref_ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span>
+                                <span class="n">real_spwid</span><span class="p">)</span><span class="o">.</span><span class="n">centre_frequency</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">))</span>
+                            <span class="n">filtered_spwlist_center_freq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spwid_centre_freq</span><span class="p">)</span>
                         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                            <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Could not determine min/max frequency for spw </span><span class="si">{</span><span class="n">spwid</span><span class="si">}</span><span class="s1">. Exception: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Could not determine center frequency for spw </span><span class="si">{</span><span class="n">spwid</span><span class="si">}</span><span class="s1">. Exception: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                            <span class="n">filtered_spwlist_center_freq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 
-                    <span class="k">if</span> <span class="n">min_freq_spwid</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">max_freq_spwid</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not determine min/max frequency spw IDs for </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">filtered_spwlist_local</span><span class="p">)))</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="ow">in</span> <span class="n">filtered_spwlist_center_freq</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Could not determine min/max frequency spw IDs for </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span>
+                                  <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">filtered_spwlist_local</span><span class="p">)))</span>
                         <span class="k">continue</span>
 
-                    <span class="n">min_freq_spwlist</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">min_freq_spwid</span><span class="p">)]</span>
-                    <span class="n">max_freq_spwlist</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">max_freq_spwid</span><span class="p">)]</span>
+                    <span class="c1"># get a spw list ranked from highest freq to the lowest freq</span>
+                    <span class="n">filtered_spwlist_by_freq</span> <span class="o">=</span> <span class="p">[</span><span class="n">filtered_spwlist</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                                                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">filtered_spwlist_center_freq</span><span class="p">)][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">min_freq_spwlist</span> <span class="o">=</span> <span class="p">[</span><span class="n">filtered_spwlist_by_freq</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
 
                     <span class="c1"># Get robust and uvtaper values</span>
                     <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">robust</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mf">999.0</span><span class="p">):</span>
@@ -1145,7 +1235,7 @@
                     <span class="k">if</span> <span class="n">cell</span> <span class="o">==</span> <span class="p">[]:</span>
                         <span class="n">synthesized_beams</span> <span class="o">=</span> <span class="p">{}</span>
                         <span class="n">min_cell</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;3600arcsec&#39;</span><span class="p">]</span>
-                        <span class="k">for</span> <span class="n">spwspec</span> <span class="ow">in</span> <span class="n">max_freq_spwlist</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">spwspec</span> <span class="ow">in</span> <span class="n">filtered_spwlist_by_freq</span><span class="p">:</span>
                             <span class="c1"># Use only fields that were observed in spwspec</span>
                             <span class="n">actual_field_intent_list</span> <span class="o">=</span> <span class="p">[]</span>
                             <span class="k">for</span> <span class="n">field_intent</span> <span class="ow">in</span> <span class="n">field_intent_list</span><span class="p">:</span>
@@ -1160,20 +1250,31 @@
                                 <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
                             <span class="k">if</span> <span class="n">synthesized_beams</span><span class="p">[</span><span class="n">spwspec</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;invalid&#39;</span><span class="p">:</span>
-                                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Beam for virtual spw </span><span class="si">%s</span><span class="s1"> and robust value of </span><span class="si">%.1f</span><span class="s1"> is invalid. Cannot continue.&#39;</span>
-                                          <span class="s1">&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spwspec</span><span class="p">,</span> <span class="n">robust</span><span class="p">))</span>
-                                <span class="n">result</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="kc">True</span>
-                                <span class="n">result</span><span class="o">.</span><span class="n">error_msg</span> <span class="o">=</span> <span class="s1">&#39;Invalid beam&#39;</span>
-                                <span class="k">return</span> <span class="n">result</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                                    <span class="s1">&#39;Beam for virtual spw </span><span class="si">%s</span><span class="s1"> and robust value of </span><span class="si">%.1f</span><span class="s1"> is invalid likely due to heavy flagging.&#39;</span><span class="p">,</span> <span class="n">spwspec</span><span class="p">,</span> <span class="n">robust</span><span class="p">)</span>
+                                <span class="k">continue</span>
 
                             <span class="c1"># Avoid recalculating every time since the dictionary will be cleared with the first recalculation request.</span>
                             <span class="n">calcsb</span> <span class="o">=</span> <span class="kc">False</span>
                             <span class="c1"># the heuristic cell is always the same for x and y as</span>
                             <span class="c1"># the value derives from the single value returned by</span>
                             <span class="c1"># imager.advise</span>
-                            <span class="n">cells</span><span class="p">[</span><span class="n">spwspec</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">beam</span><span class="o">=</span><span class="n">synthesized_beams</span><span class="p">[</span><span class="n">spwspec</span><span class="p">],</span> <span class="n">pixperbeam</span><span class="o">=</span><span class="n">pixperbeam</span><span class="p">)</span>
+                            <span class="n">cells</span><span class="p">[</span><span class="n">spwspec</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span>
+                                <span class="n">beam</span><span class="o">=</span><span class="n">synthesized_beams</span><span class="p">[</span><span class="n">spwspec</span><span class="p">],</span> <span class="n">pixperbeam</span><span class="o">=</span><span class="n">pixperbeam</span><span class="p">)</span>
                             <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;invalid&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">[</span><span class="n">spwspec</span><span class="p">]):</span>
-                                <span class="n">min_cell</span> <span class="o">=</span> <span class="n">cells</span><span class="p">[</span><span class="n">spwspec</span><span class="p">]</span> <span class="k">if</span> <span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cells</span><span class="p">[</span><span class="n">spwspec</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">min_cell</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">])</span> <span class="k">else</span> <span class="n">min_cell</span>
+                                <span class="n">min_cell</span> <span class="o">=</span> <span class="n">cells</span><span class="p">[</span><span class="n">spwspec</span><span class="p">]</span> <span class="k">if</span> <span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cells</span><span class="p">[</span><span class="n">spwspec</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)[</span>
+                                                              <span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">min_cell</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">])</span> <span class="k">else</span> <span class="n">min_cell</span>
+
+                            <span class="k">if</span> <span class="s1">&#39;3600arcsec&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">min_cell</span><span class="p">:</span>
+                                <span class="k">break</span>
+
+                        <span class="k">if</span> <span class="s1">&#39;3600arcsec&#39;</span> <span class="ow">in</span> <span class="n">min_cell</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                                <span class="s1">&#39;Beams for all virtual spw list </span><span class="si">%s</span><span class="s1"> with robust value of </span><span class="si">%.1f</span><span class="s1"> is invalid. Cannot continue.&#39;</span><span class="p">,</span> <span class="n">filtered_spwlist_by_freq</span><span class="p">,</span> <span class="n">robust</span><span class="p">)</span>
+                            <span class="n">result</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="n">result</span><span class="o">.</span><span class="n">error_msg</span> <span class="o">=</span> <span class="s1">&#39;Invalid beam&#39;</span>
+                            <span class="k">return</span> <span class="n">result</span>
+
                         <span class="c1"># Rounding to two significant figures</span>
                         <span class="n">min_cell</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">%.2g%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">qaTool</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">min_cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">qaTool</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="n">min_cell</span><span class="p">[</span><span class="mi">0</span><span class="p">]))]</span>
                         <span class="c1"># Need to populate all spw keys because the imsize heuristic picks</span>
@@ -1363,7 +1464,8 @@
 
                                 <span class="k">if</span> <span class="n">local_selected_datatype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                                     <span class="n">expected_num_targets</span> <span class="o">-=</span> <span class="mi">1</span>
-                                    <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Data type </span><span class="si">{</span><span class="n">selected_datatype_str</span><span class="si">}</span><span class="s1"> is not available for field </span><span class="si">{</span><span class="n">field_intent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">adjusted_spwspec</span><span class="si">}</span><span class="s1"> in the chosen vis list. Skipping imaging target.&#39;</span><span class="p">)</span>
+                                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                                        <span class="sa">f</span><span class="s1">&#39;Data type </span><span class="si">{</span><span class="n">selected_datatype_str</span><span class="si">}</span><span class="s1"> is not available for field </span><span class="si">{</span><span class="n">field_intent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">adjusted_spwspec</span><span class="si">}</span><span class="s1"> in the chosen vis list. Skipping imaging target.&#39;</span><span class="p">)</span>
                                     <span class="k">continue</span>
 
                                 <span class="n">local_selected_datatype_str</span> <span class="o">=</span> <span class="n">local_selected_datatype</span><span class="o">.</span><span class="n">name</span>
@@ -1372,17 +1474,20 @@
 
                                 <span class="k">if</span> <span class="n">local_selected_datatype_str</span> <span class="o">!=</span> <span class="n">selected_datatype_str</span><span class="p">:</span>
                                     <span class="k">if</span> <span class="n">automatic_datatype_choice</span><span class="p">:</span>
-                                        <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Data type </span><span class="si">{</span><span class="n">selected_datatype_str</span><span class="si">}</span><span class="s1"> is not available for field </span><span class="si">{</span><span class="n">field_intent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">adjusted_spwspec</span><span class="si">}</span><span class="s1">. Falling back to data type </span><span class="si">{</span><span class="n">local_selected_datatype_str</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+                                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                                            <span class="sa">f</span><span class="s1">&#39;Data type </span><span class="si">{</span><span class="n">selected_datatype_str</span><span class="si">}</span><span class="s1"> is not available for field </span><span class="si">{</span><span class="n">field_intent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">adjusted_spwspec</span><span class="si">}</span><span class="s1">. Falling back to data type </span><span class="si">{</span><span class="n">local_selected_datatype_str</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
                                         <span class="n">local_selected_datatype_info</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">local_selected_datatype_str</span><span class="si">}</span><span class="s1"> instead of </span><span class="si">{</span><span class="n">selected_datatype_str</span><span class="si">}</span><span class="s1"> due to source/spw selection&#39;</span>
                                     <span class="k">else</span><span class="p">:</span>
                                         <span class="c1"># Manually selected data type unavailable -&gt; skip making an imaging target</span>
                                         <span class="n">expected_num_targets</span> <span class="o">-=</span> <span class="mi">1</span>
-                                        <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Data type </span><span class="si">{</span><span class="n">selected_datatype_str</span><span class="si">}</span><span class="s1"> is not available for field </span><span class="si">{</span><span class="n">field_intent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">adjusted_spwspec</span><span class="si">}</span><span class="s1"> in the chosen vis list. Skipping imaging target.&#39;</span><span class="p">)</span>
+                                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                                            <span class="sa">f</span><span class="s1">&#39;Data type </span><span class="si">{</span><span class="n">selected_datatype_str</span><span class="si">}</span><span class="s1"> is not available for field </span><span class="si">{</span><span class="n">field_intent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> SPW </span><span class="si">{</span><span class="n">adjusted_spwspec</span><span class="si">}</span><span class="s1"> in the chosen vis list. Skipping imaging target.&#39;</span><span class="p">)</span>
                                         <span class="k">continue</span>
 
                                 <span class="k">if</span> <span class="n">local_columns</span> <span class="o">!=</span> <span class="p">[]:</span>
                                     <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">local_column</span> <span class="o">==</span> <span class="n">local_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">local_column</span> <span class="ow">in</span> <span class="n">local_columns</span><span class="p">):</span>
-                                        <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Data type based column selection changes among MSes: </span><span class="si">{</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">local_ms_objects_and_columns</span><span class="o">.</span><span class="n">items</span><span class="p">())</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+                                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                                            <span class="sa">f</span><span class="s1">&#39;Data type based column selection changes among MSes: </span><span class="si">{</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">k</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">local_ms_objects_and_columns</span><span class="o">.</span><span class="n">items</span><span class="p">())</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
 
                                 <span class="k">if</span> <span class="n">local_columns</span> <span class="o">!=</span> <span class="p">[]:</span>
                                     <span class="k">if</span> <span class="n">local_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;DATA&#39;</span><span class="p">:</span>
@@ -1390,10 +1495,10 @@
                                     <span class="k">elif</span> <span class="n">local_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">:</span>
                                         <span class="n">local_datacolumn</span> <span class="o">=</span> <span class="s1">&#39;corrected&#39;</span>
                                     <span class="k">else</span><span class="p">:</span>
-                                        <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown column name </span><span class="si">{</span><span class="n">local_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown column name </span><span class="si">{</span><span class="n">local_columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                                         <span class="n">local_datacolumn</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
                                 <span class="k">else</span><span class="p">:</span>
-                                    <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Empty list of columns&#39;</span><span class="p">)</span>
+                                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Empty list of columns&#39;</span><span class="p">)</span>
                                     <span class="n">local_datacolumn</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
                                 <span class="n">datacolumn</span> <span class="o">=</span> <span class="n">local_datacolumn</span>
@@ -1401,12 +1506,15 @@
                                 <span class="k">if</span> <span class="ow">not</span> <span class="n">inputs</span><span class="o">.</span><span class="n">per_eb</span> <span class="ow">and</span> <span class="n">original_vislist_field_intent_spw_combinations</span><span class="p">[</span><span class="n">field_intent</span><span class="p">][</span><span class="s1">&#39;vislist&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="p">[</span><span class="n">k</span><span class="o">.</span><span class="n">basename</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">local_ms_objects_and_columns</span><span class="o">.</span><span class="n">keys</span><span class="p">()]:</span>
                                     <span class="n">vislist_field_intent_spw_combinations</span><span class="p">[</span><span class="n">field_intent</span><span class="p">][</span><span class="s1">&#39;vislist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span><span class="o">.</span><span class="n">basename</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">local_ms_objects_and_columns</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
                                     <span class="k">if</span> <span class="n">automatic_datatype_choice</span> <span class="ow">and</span> <span class="n">local_selected_datatype_str</span> <span class="o">!=</span> <span class="n">selected_datatype_str</span><span class="p">:</span>
-                                        <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;Modifying vis list from </span><span class="si">{</span><span class="n">original_vislist_field_intent_spw_combinations</span><span class="p">[</span><span class="n">field_intent</span><span class="p">][</span><span class="s1">&#39;vislist&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">vislist_field_intent_spw_combinations</span><span class="p">[</span><span class="n">field_intent</span><span class="p">][</span><span class="s1">&#39;vislist&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> for fallback data type </span><span class="si">{</span><span class="n">local_selected_datatype_str</span><span class="si">}</span><span class="s1">.&#39;&#39;&#39;</span><span class="p">)</span>
+                                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                                            <span class="sa">f</span><span class="s1">&#39;&#39;&#39;Modifying vis list from </span><span class="si">{</span><span class="n">original_vislist_field_intent_spw_combinations</span><span class="p">[</span><span class="n">field_intent</span><span class="p">][</span><span class="s1">&#39;vislist&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">vislist_field_intent_spw_combinations</span><span class="p">[</span><span class="n">field_intent</span><span class="p">][</span><span class="s1">&#39;vislist&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> for fallback data type </span><span class="si">{</span><span class="n">local_selected_datatype_str</span><span class="si">}</span><span class="s1">.&#39;&#39;&#39;</span><span class="p">)</span>
                                     <span class="k">else</span><span class="p">:</span>
-                                        <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;Modifying vis list from </span><span class="si">{</span><span class="n">original_vislist_field_intent_spw_combinations</span><span class="p">[</span><span class="n">field_intent</span><span class="p">][</span><span class="s1">&#39;vislist&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">vislist_field_intent_spw_combinations</span><span class="p">[</span><span class="n">field_intent</span><span class="p">][</span><span class="s1">&#39;vislist&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> for data type </span><span class="si">{</span><span class="n">local_selected_datatype_str</span><span class="si">}</span><span class="s1">.&#39;&#39;&#39;</span><span class="p">)</span>
+                                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                                            <span class="sa">f</span><span class="s1">&#39;&#39;&#39;Modifying vis list from </span><span class="si">{</span><span class="n">original_vislist_field_intent_spw_combinations</span><span class="p">[</span><span class="n">field_intent</span><span class="p">][</span><span class="s1">&#39;vislist&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">vislist_field_intent_spw_combinations</span><span class="p">[</span><span class="n">field_intent</span><span class="p">][</span><span class="s1">&#39;vislist&#39;</span><span class="p">]</span><span class="si">}</span><span class="s1"> for data type </span><span class="si">{</span><span class="n">local_selected_datatype_str</span><span class="si">}</span><span class="s1">.&#39;&#39;&#39;</span><span class="p">)</span>
 
                                     <span class="k">if</span> <span class="n">vislist_field_intent_spw_combinations</span><span class="p">[</span><span class="n">field_intent</span><span class="p">][</span><span class="s1">&#39;vislist&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="p">[]:</span>
-                                        <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Empty vis list for field </span><span class="si">{</span><span class="n">field_intent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> specmode </span><span class="si">{</span><span class="n">specmode</span><span class="si">}</span><span class="s1"> data type </span><span class="si">{</span><span class="n">local_selected_datatype_str</span><span class="si">}</span><span class="s1">. Skipping imaging target.&#39;</span><span class="p">)</span>
+                                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                                            <span class="sa">f</span><span class="s1">&#39;Empty vis list for field </span><span class="si">{</span><span class="n">field_intent</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1"> specmode </span><span class="si">{</span><span class="n">specmode</span><span class="si">}</span><span class="s1"> data type </span><span class="si">{</span><span class="n">local_selected_datatype_str</span><span class="si">}</span><span class="s1">. Skipping imaging target.&#39;</span><span class="p">)</span>
                                         <span class="k">continue</span>
                             <span class="k">else</span><span class="p">:</span>
                                 <span class="n">datacolumn</span> <span class="o">=</span> <span class="n">global_datacolumn</span>
@@ -1511,7 +1619,10 @@
                             <span class="c1"># (inputs.intent) is used to decide whether to do IQUV</span>
                             <span class="c1"># for ALMA as PIPE-1829 asked for Stokes I only if other</span>
                             <span class="c1"># calibration intents are done together with POLARIZATION.</span>
-                            <span class="n">stokes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">stokes</span><span class="p">(</span><span class="n">field_intent</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                                <span class="n">stokes</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">stokes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">stokes</span><span class="p">(</span><span class="n">field_intent</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
 
                             <span class="k">if</span> <span class="n">spwspec_ok</span> <span class="ow">and</span> <span class="p">(</span><span class="n">field_intent</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">spwspec</span><span class="p">)</span> <span class="ow">in</span> <span class="n">imsizes</span> <span class="ow">and</span> <span class="p">(</span><span class="s1">&#39;invalid&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">[</span><span class="n">spwspec</span><span class="p">]):</span>
                                 <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
@@ -1533,7 +1644,8 @@
 
                                 <span class="c1"># Save the filtered vislist</span>
                                 <span class="k">if</span> <span class="n">target_heuristics</span><span class="o">.</span><span class="n">vislist</span> <span class="o">!=</span> <span class="n">filtered_vislist</span><span class="p">:</span>
-                                    <span class="n">LOG</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&#39;&#39;Modifying vis list from </span><span class="si">{</span><span class="n">target_heuristics</span><span class="o">.</span><span class="n">vislist</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">filtered_vislist</span><span class="si">}</span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+                                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                                        <span class="sa">f</span><span class="s1">&#39;&#39;&#39;Modifying vis list from </span><span class="si">{</span><span class="n">target_heuristics</span><span class="o">.</span><span class="n">vislist</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">filtered_vislist</span><span class="si">}</span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
                                     <span class="n">target_heuristics</span><span class="o">.</span><span class="n">vislist</span> <span class="o">=</span> <span class="n">filtered_vislist</span>
 
                                 <span class="c1"># Get list of antenna IDs</span>
@@ -1548,12 +1660,16 @@
                                 <span class="n">drcorrect</span><span class="p">,</span> <span class="n">maxthreshold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_drcorrect_maxthreshold</span><span class="p">(</span>
                                     <span class="n">field_intent</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">actual_spwspec</span><span class="p">,</span> <span class="n">local_selected_datatype_str</span><span class="p">)</span>
                                 <span class="n">target_heuristics</span><span class="o">.</span><span class="n">imaging_params</span><span class="p">[</span><span class="s1">&#39;maxthreshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">maxthreshold</span>
+                                <span class="n">nfrms_multiplier</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_nfrms_multiplier</span><span class="p">(</span>
+                                    <span class="n">field_intent</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">actual_spwspec</span><span class="p">,</span> <span class="n">local_selected_datatype_str</span><span class="p">)</span>
+                                <span class="n">target_heuristics</span><span class="o">.</span><span class="n">imaging_params</span><span class="p">[</span><span class="s1">&#39;nfrms_multiplier&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nfrms_multiplier</span>
 
                                 <span class="n">deconvolver</span><span class="p">,</span> <span class="n">nterms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_deconvolver_nterms</span><span class="p">(</span><span class="n">field_intent</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">field_intent</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                                                                                    <span class="n">actual_spwspec</span><span class="p">,</span> <span class="n">stokes</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">,</span>
                                                                                    <span class="n">local_selected_datatype_str</span><span class="p">,</span> <span class="n">target_heuristics</span><span class="p">)</span>
 
                                 <span class="n">reffreq</span> <span class="o">=</span> <span class="n">target_heuristics</span><span class="o">.</span><span class="n">reffreq</span><span class="p">(</span><span class="n">deconvolver</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">,</span> <span class="n">spwsel</span><span class="p">)</span>
+                                <span class="n">target_heuristics</span><span class="o">.</span><span class="n">imaging_params</span><span class="p">[</span><span class="s1">&#39;allow_wproject&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">allow_wproject</span>
                                 <span class="n">gridder</span> <span class="o">=</span> <span class="n">target_heuristics</span><span class="o">.</span><span class="n">gridder</span><span class="p">(</span><span class="n">field_intent</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">field_intent</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">spwspec</span><span class="o">=</span><span class="n">actual_spwspec</span><span class="p">)</span>
 
                                 <span class="c1"># Get field-specific uvrange value</span>
@@ -1567,6 +1683,15 @@
                                         <span class="c1"># Nevertheless, we retain this exception handler as an extra precaution.</span>
                                         <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Error calculating the heuristics uvrange value for field </span><span class="si">%s</span><span class="s2"> spw </span><span class="si">%s</span><span class="s2"> : </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
                                                     <span class="n">field_intent</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">actual_spwspec</span><span class="p">,</span> <span class="n">ex</span><span class="p">)</span>
+
+                                <span class="c1"># Check for pre-existing Stokes I masks to be re-used for TARGET IQUV imaging</span>
+                                <span class="k">if</span> <span class="n">field_intent</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">and</span> <span class="n">stokes</span> <span class="o">==</span> <span class="s1">&#39;IQUV&#39;</span><span class="p">:</span>
+                                    <span class="n">cleanTargetKey</span> <span class="o">=</span> <span class="n">CleanTargetInfo</span><span class="p">(</span><span class="n">datatype</span><span class="o">=</span><span class="n">local_selected_datatype_str</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">field_intent</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">intent</span><span class="o">=</span><span class="n">field_intent</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">virtspw</span><span class="o">=</span><span class="n">actual_spwspec</span><span class="p">,</span> <span class="n">stokes</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">)</span>
+                                    <span class="n">mask</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">clean_masks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cleanTargetKey</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                    <span class="n">threshold</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">clean_thresholds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">cleanTargetKey</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="n">mask</span> <span class="o">=</span> <span class="kc">None</span>
+                                    <span class="n">threshold</span> <span class="o">=</span> <span class="kc">None</span>
 
                                 <span class="n">target</span> <span class="o">=</span> <span class="n">CleanTarget</span><span class="p">(</span>
                                     <span class="n">antenna</span><span class="o">=</span><span class="n">antenna</span><span class="p">,</span>
@@ -1585,6 +1710,7 @@
                                     <span class="n">psf_phasecenter</span><span class="o">=</span><span class="n">psf_phasecenters</span><span class="p">[</span><span class="n">field_intent</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
                                     <span class="n">specmode</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">,</span>
                                     <span class="n">gridder</span><span class="o">=</span><span class="n">gridder</span><span class="p">,</span>
+                                    <span class="n">wprojplanes</span><span class="o">=</span><span class="n">target_heuristics</span><span class="o">.</span><span class="n">wprojplanes</span><span class="p">(</span><span class="n">gridder</span><span class="o">=</span><span class="n">gridder</span><span class="p">,</span> <span class="n">spwspec</span><span class="o">=</span><span class="n">actual_spwspec</span><span class="p">),</span>
                                     <span class="n">imagename</span><span class="o">=</span><span class="n">imagename</span><span class="p">,</span>
                                     <span class="n">start</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">start</span><span class="p">,</span>
                                     <span class="n">width</span><span class="o">=</span><span class="n">widths</span><span class="p">[(</span><span class="n">field_intent</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">spwspec</span><span class="p">)],</span>
@@ -1606,26 +1732,29 @@
                                     <span class="n">drcorrect</span><span class="o">=</span><span class="n">drcorrect</span><span class="p">,</span>
                                     <span class="n">deconvolver</span><span class="o">=</span><span class="n">deconvolver</span><span class="p">,</span>
                                     <span class="n">nterms</span><span class="o">=</span><span class="n">nterms</span><span class="p">,</span>
-                                    <span class="n">reffreq</span><span class="o">=</span><span class="n">reffreq</span><span class="p">)</span>
+                                    <span class="n">reffreq</span><span class="o">=</span><span class="n">reffreq</span><span class="p">,</span>
+                                    <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span>
+                                    <span class="n">threshold</span><span class="o">=</span><span class="n">threshold</span><span class="p">)</span>
 
                                 <span class="n">result</span><span class="o">.</span><span class="n">add_target</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">and</span> <span class="n">result</span><span class="o">.</span><span class="n">num_targets</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">clean_list_info</span><span class="p">:</span>
             <span class="n">result</span><span class="o">.</span><span class="n">set_info</span><span class="p">({</span><span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="s1">&#39;No data found. No imaging targets were created.&#39;</span><span class="p">,</span>
                              <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
-                             <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">})</span>
+                             <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">,</span>
+                             <span class="s1">&#39;stokes&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">})</span>
 
         <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">have_targets</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
                 <span class="n">info_msg</span> <span class="o">=</span> <span class="s1">&#39;No check source found.&#39;</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">info_msg</span><span class="p">)</span>
-                <span class="n">result</span><span class="o">.</span><span class="n">set_info</span><span class="p">({</span><span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="n">info_msg</span><span class="p">,</span> <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">})</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">set_info</span><span class="p">({</span><span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="n">info_msg</span><span class="p">,</span> <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">,</span> <span class="s1">&#39;stokes&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">})</span>
             <span class="k">elif</span> <span class="n">inputs</span><span class="o">.</span><span class="n">per_eb</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">have_targets</span><span class="o">.</span><span class="n">values</span><span class="p">())):</span>
                 <span class="n">info_msg</span> <span class="o">=</span> <span class="s1">&#39;No check source data found in EBs </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
                                                                                 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">have_targets</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
                                                                                 <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span><span class="p">]))</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">info_msg</span><span class="p">)</span>
-                <span class="n">result</span><span class="o">.</span><span class="n">set_info</span><span class="p">({</span><span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="n">info_msg</span><span class="p">,</span> <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">})</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">set_info</span><span class="p">({</span><span class="s1">&#39;msg&#39;</span><span class="p">:</span> <span class="n">info_msg</span><span class="p">,</span> <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;specmode&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span><span class="p">,</span> <span class="s1">&#39;stokes&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">stokes</span><span class="p">})</span>
 
         <span class="c1"># Record total number of expected clean targets</span>
         <span class="n">result</span><span class="o">.</span><span class="n">set_expected_num_targets</span><span class="p">(</span><span class="n">expected_num_targets</span><span class="p">)</span>
@@ -1646,6 +1775,47 @@
         <span class="k">return</span> <span class="n">result</span></div>
 
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_nfrms_multiplier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">datatype_str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the nfrms multiplier for the selfcal-succesfull imaging target for VLA.&quot;&quot;&quot;</span>
+        <span class="n">nfrms_multiplier</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">project_summary</span><span class="o">.</span><span class="n">telescope</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;VLA&#39;</span><span class="p">,</span> <span class="s1">&#39;JVLA&#39;</span><span class="p">,</span> <span class="s1">&#39;EVLA&#39;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">datatype_str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;SELFCAL_&#39;</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span>
+        <span class="p">):</span>
+            <span class="k">for</span> <span class="n">sc_target</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">selfcal_targets</span><span class="p">:</span>
+                <span class="n">sc_spw</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">sc_target</span><span class="p">[</span><span class="s2">&quot;spw&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span>
+                <span class="n">im_spw</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span>
+                <span class="c1"># PIPE-1878: use previous succesfully selfcal results to derive the optimal nfrms multiplier value</span>
+                <span class="k">if</span> <span class="n">sc_target</span><span class="p">[</span><span class="s2">&quot;field&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">field</span> <span class="ow">and</span> <span class="n">im_spw</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">sc_spw</span><span class="p">)</span> <span class="ow">and</span> <span class="n">sc_target</span><span class="p">[</span><span class="s2">&quot;sc_success&quot;</span><span class="p">]:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">nfrms</span> <span class="o">=</span> <span class="n">sc_target</span><span class="p">[</span><span class="s2">&quot;sc_lib&quot;</span><span class="p">][</span><span class="s2">&quot;RMS_NF_final&quot;</span><span class="p">]</span>
+                        <span class="n">rms</span> <span class="o">=</span> <span class="n">sc_target</span><span class="p">[</span><span class="s2">&quot;sc_lib&quot;</span><span class="p">][</span><span class="s2">&quot;RMS_final&quot;</span><span class="p">]</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                            <span class="s2">&quot;The ratio of nf_rms and rms from the selfcal-final imaging for field </span><span class="si">%s</span><span class="s2"> and spw </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="n">field</span><span class="p">,</span>
+                            <span class="n">spw</span><span class="p">,</span>
+                            <span class="n">nfrms</span> <span class="o">/</span> <span class="n">rms</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="n">nfrms_multiplier</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">nfrms</span> <span class="o">/</span> <span class="n">rms</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                            <span class="s2">&quot;Using nfrms_multiplier=</span><span class="si">%s</span><span class="s2"> for field </span><span class="si">%s</span><span class="s2"> and spw </span><span class="si">%s</span><span class="s2"> based &quot;</span>
+                            <span class="s2">&quot;on previous selfcal aggregate continuum imaging results.&quot;</span><span class="p">,</span>
+                            <span class="n">nfrms_multiplier</span><span class="p">,</span>
+                            <span class="n">field</span><span class="p">,</span>
+                            <span class="n">spw</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Error calculating the nfrms multiplier value for field </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2"> spw </span><span class="si">{</span><span class="n">spw</span><span class="si">}</span><span class="s2"> from previous succesful self-calibration outcome: </span><span class="si">{</span><span class="n">ex</span><span class="si">}</span><span class="s2">&quot;</span>
+                        <span class="p">)</span>
+
+                    <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">nfrms_multiplier</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_deconvolver_nterms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">stokes</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">datatype_str</span><span class="p">,</span> <span class="n">image_heuristics</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get deconvolver and nterms. First check for any modified parameters based</span>
@@ -1655,7 +1825,7 @@
         <span class="n">deconvolver</span><span class="p">,</span> <span class="n">nterms</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
         <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
 
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="s1">&#39;selfcal_targets&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">datatype_str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;SELFCAL_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">datatype_str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;SELFCAL_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">sc_target</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">selfcal_targets</span><span class="p">:</span>
                 <span class="n">sc_spw</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">sc_target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
                 <span class="n">im_spw</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
@@ -1683,7 +1853,7 @@
         <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">project_summary</span><span class="o">.</span><span class="n">telescope</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;VLA&#39;</span><span class="p">,</span> <span class="s1">&#39;JVLA&#39;</span><span class="p">,</span> <span class="s1">&#39;EVLA&#39;</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">drcorrect</span><span class="p">,</span> <span class="n">maxthreshold</span>
 
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="s1">&#39;selfcal_targets&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">datatype_str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;SELFCAL_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">datatype_str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;SELFCAL_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span><span class="p">:</span>
 
             <span class="k">for</span> <span class="n">sc_target</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">selfcal_targets</span><span class="p">:</span>
                 <span class="n">sc_spw</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">sc_target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
@@ -1700,10 +1870,13 @@
                         <span class="n">result</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
                         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">MakeImagesResult</span><span class="p">):</span>
                             <span class="k">for</span> <span class="n">tclean_result</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
-                                <span class="k">if</span> <span class="n">tclean_result</span><span class="o">.</span><span class="n">datatype_info</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;REGCAL_CONTLINE&#39;</span><span class="p">)</span> <span class="ow">and</span> \
-                                        <span class="n">tclean_result</span><span class="o">.</span><span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span> <span class="ow">and</span> \
-                                        <span class="n">tclean_result</span><span class="o">.</span><span class="n">sourcename</span> <span class="o">==</span> <span class="n">field</span> <span class="ow">and</span> \
-                                        <span class="n">im_spw</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">tclean_result</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))):</span>
+                                <span class="k">if</span> <span class="p">(</span>
+                                    <span class="n">tclean_result</span><span class="o">.</span><span class="n">datatype_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                                    <span class="ow">and</span> <span class="n">tclean_result</span><span class="o">.</span><span class="n">datatype_info</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;REGCAL_CONTLINE&#39;</span><span class="p">)</span>
+                                    <span class="ow">and</span> <span class="n">tclean_result</span><span class="o">.</span><span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span>
+                                    <span class="ow">and</span> <span class="n">tclean_result</span><span class="o">.</span><span class="n">sourcename</span> <span class="o">==</span> <span class="n">field</span>
+                                    <span class="ow">and</span> <span class="n">im_spw</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">tclean_result</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))</span>
+                                <span class="p">):</span>
                                     <span class="n">maxthreshold</span> <span class="o">=</span> <span class="n">tclean_result</span><span class="o">.</span><span class="n">threshold</span>
                     <span class="k">if</span> <span class="n">maxthreshold</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
@@ -1711,60 +1884,84 @@
                             <span class="s2">&quot;based on previous regular aggregate continuum imaging results.&quot;</span><span class="p">)</span>
                     <span class="k">break</span>
 
-        <span class="k">return</span> <span class="n">drcorrect</span><span class="p">,</span> <span class="n">maxthreshold</span></div>
+        <span class="k">return</span> <span class="n">drcorrect</span><span class="p">,</span> <span class="n">maxthreshold</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_skip_mfs_and_cube_imaging</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if we can proceed with the cube imaging planning.</span>
+
+<span class="sd">        Note: this is only relevant for VLA to check if we should proceed with VLA cube imaging</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cube_imaging_datatypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_LINE_SCIENCE</span><span class="p">,</span>
+            <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_LINE_SCIENCE</span><span class="p">,</span>
+            <span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_CONTLINE_SCIENCE</span><span class="p">,</span>
+            <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_SCIENCE</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">ms_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_measurement_sets_of_type</span><span class="p">(</span><span class="n">cube_imaging_datatypes</span><span class="p">,</span> <span class="n">msonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">telescope</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">project_summary</span><span class="o">.</span><span class="n">telescope</span>
+        <span class="k">return</span> <span class="s1">&#39;VLA&#39;</span> <span class="ow">in</span> <span class="n">telescope</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">specmode</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;mfs&#39;</span><span class="p">,</span> <span class="s1">&#39;cube&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ms_list</span></div>
 
 
 
-<span class="c1"># maps intent and specmode Inputs parameters to textual description of execution context.</span>
-<span class="n">_DESCRIPTIONS</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="p">(</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;phase calibrator&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;phase calibrator&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;bandpass calibrator&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;bandpass calibrator&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;flux calibrator&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;flux calibrator&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;polarization calibrator&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;polarization calibrator&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;polarization calibrator&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;polarization calibrator&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;polarization calibrator&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;polarization calibrator&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;diffgain calibrator&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;diffgain calibrator&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;diffgain calibrator&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;diffgain calibrator&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;check source&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;check source&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;target per-spw continuum&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;target aggregate continuum&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="s1">&#39;cube&#39;</span><span class="p">):</span> <span class="s1">&#39;target cube&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="s1">&#39;repBW&#39;</span><span class="p">):</span> <span class="s1">&#39;representative bandwidth target cube&#39;</span>
-<span class="p">}</span>
+<span class="c1"># maps intent, specmode and stokes inputs parameters to textual description of execution context.</span>
 
-<span class="n">_SIDEBAR_SUFFIX</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="p">(</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;cals&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;cals&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;cals&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;cals&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;cals&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;cals&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;cals&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;cals&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;cals&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;cals&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;pol&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;pol&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;pol&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;pol&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;pol&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;pol&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;checksrc&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;checksrc&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="s1">&#39;mfs&#39;</span><span class="p">):</span> <span class="s1">&#39;mfs&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="s1">&#39;cont&#39;</span><span class="p">):</span> <span class="s1">&#39;cont&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="s1">&#39;cube&#39;</span><span class="p">):</span> <span class="s1">&#39;cube&#39;</span><span class="p">,</span>
-    <span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="s1">&#39;repBW&#39;</span><span class="p">):</span> <span class="s1">&#39;cube_repBW&#39;</span>
-<span class="p">}</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_description</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">stokes</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;phase calibrator&#39;</span>
+    <span class="k">elif</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;bandpass calibrator&#39;</span>
+    <span class="k">elif</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;flux calibrator&#39;</span>
+    <span class="k">elif</span> <span class="n">intent</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span> <span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span> <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;polarization calibrator&#39;</span>
+    <span class="k">elif</span> <span class="n">intent</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;diffgain calibrator&#39;</span>
+    <span class="k">elif</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;check source&#39;</span>
+    <span class="k">elif</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">stokes</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">):</span>
+            <span class="n">pol_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">elif</span> <span class="n">stokes</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span><span class="s1">&#39;IQUV&#39;</span><span class="p">:</span>
+            <span class="n">pol_str</span> <span class="o">=</span> <span class="s1">&#39;fullpol &#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown Stokes value &quot;</span><span class="si">{</span><span class="n">stokes</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;mfs&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;target per-spw </span><span class="si">{</span><span class="n">pol_str</span><span class="si">}</span><span class="s1">continuum&#39;</span>
+        <span class="k">elif</span> <span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;target </span><span class="si">{</span><span class="n">pol_str</span><span class="si">}</span><span class="s1">aggregate continuum&#39;</span>
+        <span class="k">elif</span> <span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cube&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;target </span><span class="si">{</span><span class="n">pol_str</span><span class="si">}</span><span class="s1">cube&#39;</span>
+        <span class="k">elif</span> <span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;repBW&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;representative bandwidth target </span><span class="si">{</span><span class="n">pol_str</span><span class="si">}</span><span class="s1">cube&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown specmode value &quot;</span><span class="si">{</span><span class="n">specmode</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_sidebar_suffix</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">stokes</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">intent</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;cals&#39;</span>
+    <span class="k">elif</span> <span class="n">intent</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;POLARIZATION&#39;</span><span class="p">,</span> <span class="s1">&#39;POLANGLE&#39;</span><span class="p">,</span> <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;pol&#39;</span>
+    <span class="k">elif</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;checksrc&#39;</span>
+    <span class="k">elif</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">stokes</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">):</span>
+            <span class="n">pol_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">elif</span> <span class="n">stokes</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span><span class="s1">&#39;IQUV&#39;</span><span class="p">:</span>
+            <span class="n">pol_str</span> <span class="o">=</span> <span class="s1">&#39;_fullpol&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown Stokes value &quot;</span><span class="si">{</span><span class="n">stokes</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;mfs&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;mfs</span><span class="si">{</span><span class="n">pol_str</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">elif</span> <span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cont&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;cont</span><span class="si">{</span><span class="n">pol_str</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">elif</span> <span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;cube&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;cube</span><span class="si">{</span><span class="n">pol_str</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">elif</span> <span class="n">specmode</span> <span class="o">==</span> <span class="s1">&#39;repBW&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;repBW</span><span class="si">{</span><span class="n">pol_str</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown specmode value &quot;</span><span class="si">{</span><span class="n">specmode</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
 </pre></div>
 
            </div>
@@ -1774,7 +1971,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

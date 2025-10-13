@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.measures.FrequencyRange &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
@@ -221,18 +222,41 @@
 </tbody>
 </table>
 <dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.measures.FrequencyRange.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frequency1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.measures.Frequency.html#pipeline.domain.measures.Frequency" title="pipeline.domain.measures.Frequency"><span class="pre">Frequency</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.measures.Frequency.html#pipeline.domain.measures.Frequency" title="pipeline.domain.measures.Frequency"><span class="pre">Frequency</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measures.html#FrequencyRange.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.measures.FrequencyRange.__init__" title="Link to this definition"></a></dt>
+<dd><p>Creates a new instance with the given endpoints.</p>
+<p>This method will set the lower value of its range to the lesser of the
+two parameter values. If either parameter is null, it will be
+interpreted as a signal to create a new default frequency. If both
+parameters are null, a frequency range spanning all positive
+frequencies will be returned.</p>
+<p>Note that this method makes copies of the parameters; it does not
+maintain a reference to either parameter. This is done in order to
+maintain the integrity of the relationship between the starting and
+ending points of this interval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frequency1</strong> -- One endpoint of this range.</p></li>
+<li><p><strong>frequency2</strong> -- The other endpoint of this range.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.measures.FrequencyRange.contains">
 <span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frequency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.measures.Frequency.html#pipeline.domain.measures.Frequency" title="pipeline.domain.measures.Frequency"><span class="pre">Frequency</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#pipeline.domain.measures.FrequencyRange" title="pipeline.domain.measures.FrequencyRange"><span class="pre">FrequencyRange</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measures.html#FrequencyRange.contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.measures.FrequencyRange.contains" title="Link to this definition"></a></dt>
 <dd><p>Returns true if this range contains given frequency (range).</p>
 <p>The frequency argument can be a frequency or a frequency range. If the
 argument given is a Frequency range, then FrequencyRange A is said to
-contain range B if A’s low frequency is less than or equal to B’s low
-frequency and A’s high frequency is greater than or each to B’s high
+contain range B if A's low frequency is less than or equal to B's low
+frequency and A's high frequency is greater than or each to B's high
 frequency. Notice that this means that if A equals B, it also contains
 B.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>frequency</strong> – The frequency or range to test for inclusion in this range.</p>
+<dd class="field-odd"><p><strong>frequency</strong> -- The frequency or range to test for inclusion in this range.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>True if this range contains frequency. If frequency is None, the
@@ -249,7 +273,7 @@ return value will be false.</p>
 units of units, and their values will have been converted accordingly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>newUnits</strong> – The new units for the endpoints of this range. If no units
+<dd class="field-odd"><p><strong>newUnits</strong> -- The new units for the endpoints of this range. If no units
 are specified, it will be treated as FrequencyUnits.GIGAHERTZ.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -281,7 +305,7 @@ overlaps, this range, None is returned. If the other range is None,
 None is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>other</strong> – Another range that might not overlap this one.</p>
+<dd class="field-odd"><p><strong>other</strong> -- Another range that might not overlap this one.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>FrequencyRange object representing the frequency gap between this
@@ -297,7 +321,7 @@ range and other, or None if there is no gap.</p>
 this range and other. If there is no overlap, None is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>other</strong> – Another range that may overlap this one.</p>
+<dd class="field-odd"><p><strong>other</strong> -- Another range that may overlap this one.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>FrequencyRange object representing the overlapping region of this
@@ -327,7 +351,7 @@ high frequency of this range.</p>
 contains both of its endpoints.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>other</strong> – another range that may overlap this one.</p>
+<dd class="field-odd"><p><strong>other</strong> -- another range that may overlap this one.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>True if this range overlaps with other. If <code class="docutils literal notranslate"><span class="pre">other</span></code> is not a
@@ -350,8 +374,8 @@ ending points of this interval.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>frequency1</strong> – One endpoint of this range.</p></li>
-<li><p><strong>frequency2</strong> – The other endpoint of this range.</p></li>
+<li><p><strong>frequency1</strong> -- One endpoint of this range.</p></li>
+<li><p><strong>frequency2</strong> -- The other endpoint of this range.</p></li>
 </ul>
 </dd>
 </dl>
@@ -372,7 +396,7 @@ ending points of this interval.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.DataType &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
@@ -164,22 +165,65 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DataType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/datatype.html#DataType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.DataType" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="pipeline.domain.datatype.Enum.html#pipeline.domain.datatype.Enum" title="enum.Enum"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
 <p>A class to define DataType enum.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Variables<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>RAW</strong> – raw data</p></li>
-<li><p><strong>REGCAL_CONTLINE_ALL</strong> – calibrated data</p></li>
-<li><p><strong>BASELINED</strong> – data after spectral baseline subtraction</p></li>
-<li><p><strong>ATMCORR</strong> – data corrected for residual ATM</p></li>
-<li><p><strong>REGCAL_CONT_SCIENCE</strong> – calibrated data of target scans used for cont only</p></li>
-<li><p><strong>SELFCAL_CONT_SCIENCE</strong> – self-calibrated data of target scans used for cont only</p></li>
-<li><p><strong>REGCAL_CONTLINE_SCIENCE</strong> – calibrated data of target scans</p></li>
-<li><p><strong>SELFCAL_CONTLINE_SCIENCE</strong> – self-calibrated data of target scans</p></li>
-<li><p><strong>REGCAL_LINE_SCIENCE</strong> – calibrated spectral line data</p></li>
-<li><p><strong>data</strong> (<em>SELFCAL_LINE_SCIENCE self-calibrated spectral line</em>)</p></li>
-</ul>
-</dd>
-</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.DataType.RAW">
+<span class="sig-name descname"><span class="pre">RAW</span></span><a class="headerlink" href="#pipeline.domain.DataType.RAW" title="Link to this definition"></a></dt>
+<dd><p>raw data</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.DataType.REGCAL_CONTLINE_ALL">
+<span class="sig-name descname"><span class="pre">REGCAL_CONTLINE_ALL</span></span><a class="headerlink" href="#pipeline.domain.DataType.REGCAL_CONTLINE_ALL" title="Link to this definition"></a></dt>
+<dd><p>calibrated data</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.DataType.BASELINED">
+<span class="sig-name descname"><span class="pre">BASELINED</span></span><a class="headerlink" href="#pipeline.domain.DataType.BASELINED" title="Link to this definition"></a></dt>
+<dd><p>data after spectral baseline subtraction</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.DataType.ATMCORR">
+<span class="sig-name descname"><span class="pre">ATMCORR</span></span><a class="headerlink" href="#pipeline.domain.DataType.ATMCORR" title="Link to this definition"></a></dt>
+<dd><p>data corrected for residual ATM</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.DataType.REGCAL_CONT_SCIENCE">
+<span class="sig-name descname"><span class="pre">REGCAL_CONT_SCIENCE</span></span><a class="headerlink" href="#pipeline.domain.DataType.REGCAL_CONT_SCIENCE" title="Link to this definition"></a></dt>
+<dd><p>calibrated data of target scans used for cont only</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.DataType.SELFCAL_CONT_SCIENCE">
+<span class="sig-name descname"><span class="pre">SELFCAL_CONT_SCIENCE</span></span><a class="headerlink" href="#pipeline.domain.DataType.SELFCAL_CONT_SCIENCE" title="Link to this definition"></a></dt>
+<dd><p>self-calibrated data of target scans used for cont only</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.DataType.REGCAL_CONTLINE_SCIENCE">
+<span class="sig-name descname"><span class="pre">REGCAL_CONTLINE_SCIENCE</span></span><a class="headerlink" href="#pipeline.domain.DataType.REGCAL_CONTLINE_SCIENCE" title="Link to this definition"></a></dt>
+<dd><p>calibrated data of target scans</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.DataType.SELFCAL_CONTLINE_SCIENCE">
+<span class="sig-name descname"><span class="pre">SELFCAL_CONTLINE_SCIENCE</span></span><a class="headerlink" href="#pipeline.domain.DataType.SELFCAL_CONTLINE_SCIENCE" title="Link to this definition"></a></dt>
+<dd><p>self-calibrated data of target scans</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.DataType.REGCAL_LINE_SCIENCE">
+<span class="sig-name descname"><span class="pre">REGCAL_LINE_SCIENCE</span></span><a class="headerlink" href="#pipeline.domain.DataType.REGCAL_LINE_SCIENCE" title="Link to this definition"></a></dt>
+<dd><p>calibrated spectral line data</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">SELFCAL_LINE_SCIENCE</span> <span class="pre">self-calibrated</span> <span class="pre">spectral</span> <span class="pre">line</span> <span class="pre">data</span></span></dt>
+<dd></dd></dl>
+
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -194,31 +238,31 @@
 <p class="rubric">Attributes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.RAW" title="pipeline.domain.DataType.RAW"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RAW</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.DataType.RAW" title="pipeline.domain.DataType.RAW"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RAW</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.REGCAL_CONTLINE_ALL" title="pipeline.domain.DataType.REGCAL_CONTLINE_ALL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">REGCAL_CONTLINE_ALL</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.DataType.REGCAL_CONTLINE_ALL" title="pipeline.domain.DataType.REGCAL_CONTLINE_ALL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">REGCAL_CONTLINE_ALL</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.ATMCORR" title="pipeline.domain.DataType.ATMCORR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ATMCORR</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.DataType.ATMCORR" title="pipeline.domain.DataType.ATMCORR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ATMCORR</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.BASELINED" title="pipeline.domain.DataType.BASELINED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASELINED</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.DataType.BASELINED" title="pipeline.domain.DataType.BASELINED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASELINED</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.REGCAL_CONTLINE_SCIENCE" title="pipeline.domain.DataType.REGCAL_CONTLINE_SCIENCE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">REGCAL_CONTLINE_SCIENCE</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.DataType.REGCAL_CONTLINE_SCIENCE" title="pipeline.domain.DataType.REGCAL_CONTLINE_SCIENCE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">REGCAL_CONTLINE_SCIENCE</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.SELFCAL_CONTLINE_SCIENCE" title="pipeline.domain.DataType.SELFCAL_CONTLINE_SCIENCE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SELFCAL_CONTLINE_SCIENCE</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.DataType.SELFCAL_CONTLINE_SCIENCE" title="pipeline.domain.DataType.SELFCAL_CONTLINE_SCIENCE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SELFCAL_CONTLINE_SCIENCE</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.REGCAL_CONT_SCIENCE" title="pipeline.domain.DataType.REGCAL_CONT_SCIENCE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">REGCAL_CONT_SCIENCE</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.DataType.REGCAL_CONT_SCIENCE" title="pipeline.domain.DataType.REGCAL_CONT_SCIENCE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">REGCAL_CONT_SCIENCE</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.SELFCAL_CONT_SCIENCE" title="pipeline.domain.DataType.SELFCAL_CONT_SCIENCE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SELFCAL_CONT_SCIENCE</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.DataType.SELFCAL_CONT_SCIENCE" title="pipeline.domain.DataType.SELFCAL_CONT_SCIENCE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SELFCAL_CONT_SCIENCE</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.REGCAL_LINE_SCIENCE" title="pipeline.domain.DataType.REGCAL_LINE_SCIENCE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">REGCAL_LINE_SCIENCE</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.DataType.REGCAL_LINE_SCIENCE" title="pipeline.domain.DataType.REGCAL_LINE_SCIENCE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">REGCAL_LINE_SCIENCE</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.SELFCAL_LINE_SCIENCE" title="pipeline.domain.DataType.SELFCAL_LINE_SCIENCE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SELFCAL_LINE_SCIENCE</span></code></a></p></td>
@@ -242,8 +286,8 @@ manually overridden).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>intent</strong> – Intent to select datatypes for.</p></li>
-<li><p><strong>specmode</strong> – Spectral gridding type to select datatypes for.</p></li>
+<li><p><strong>intent</strong> -- Intent to select datatypes for.</p></li>
+<li><p><strong>specmode</strong> -- Spectral gridding type to select datatypes for.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -267,7 +311,7 @@ manually overridden).</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

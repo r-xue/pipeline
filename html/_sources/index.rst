@@ -10,6 +10,7 @@
    develdocmd/recipes.md
    dependencies
    releases
+   timeline
    
 .. toctree::
    :hidden:

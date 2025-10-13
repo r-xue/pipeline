@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.h.tasks.exportdata.exportdata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -142,37 +180,36 @@
 <span class="sd">task = pipeline.tasks.exportdata.ExportData(inputs)</span>
 <span class="sd">  results = task.execute()</span>
 <span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">fnmatch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tarfile</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">astropy.io.fits</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">apfits</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.launcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.exportdata.aqua</span><span class="w"> </span><span class="kn">import</span> <span class="n">AquaXmlGenerator</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.exportdata.aqua</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_to_disk</span> <span class="k">as</span> <span class="n">export_aqua_to_disk</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.callibrary</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">callibrary</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.imagelibrary</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">imagelibrary</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">environment</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.filenamer</span><span class="w"> </span><span class="kn">import</span> <span class="n">fitsname</span><span class="p">,</span> <span class="n">PipelineProductNameBuilder</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataType</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">..common</span><span class="w"> </span><span class="kn">import</span> <span class="n">manifest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">manifest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.exportdata.aqua</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_to_disk</span> <span class="k">as</span> <span class="n">export_aqua_to_disk</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">environment</span><span class="p">,</span> <span class="n">infrastructure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">basetask</span><span class="p">,</span> <span class="n">callibrary</span><span class="p">,</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">imagelibrary</span><span class="p">,</span> <span class="n">task_registry</span><span class="p">,</span> <span class="n">utils</span><span class="p">,</span> <span class="n">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.filenamer</span><span class="w"> </span><span class="kn">import</span> <span class="n">fitsname</span><span class="p">,</span> <span class="n">PipelineProductNameBuilder</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.exportdata.aqua</span><span class="w"> </span><span class="kn">import</span> <span class="n">AquaXmlGenerator</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.launcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
 
 <span class="c1"># the logger for this module</span>
-<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="n">StdFileProducts</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;StdFileProducts&#39;</span><span class="p">,</span> <span class="s1">&#39;ppr_file weblog_file casa_commands_file casa_pipescript casa_restore_script&#39;</span><span class="p">)</span>
 
@@ -230,6 +267,7 @@
 
     <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span>
                             <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_CONTLINE_SCIENCE</span><span class="p">,</span>
+                            <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONT_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_CONT_SCIENCE</span><span class="p">,</span>
                             <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_LINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_LINE_SCIENCE</span><span class="p">]</span>
 
     <span class="n">calimages</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[])</span>
@@ -239,6 +277,7 @@
     <span class="n">session</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[])</span>
     <span class="n">targetimages</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[])</span>
     <span class="n">imaging_products_only</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">tarms</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">products_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -252,29 +291,22 @@
         <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">imaging_products_only</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">exportmses</span><span class="p">)</span>
 
     <span class="c1"># docstring and type hints: supplements h_exportdata, hsd_exportdata, hsdn_exportdata</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exportmses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">pprfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calintents</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calimages</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">targetimages</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">products_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imaging_products_only</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialise the Inputs, initialising any property values to those given</span>
-<span class="sd">        here.</span>
-
-<span class="sd">        :param context: the pipeline Context state object</span>
-<span class="sd">        :type context: :class:`~pipeline.infrastructure.launcher.Context`</span>
-<span class="sd">        :param output_dir: the working directory for pipeline data</span>
-<span class="sd">        :type output_dir: string</span>
-<span class="sd">        :param session: the  sessions for which data are to be exported</span>
-<span class="sd">        :type session: a string or list of strings</span>
-<span class="sd">        :param vis: the measurement set(s) for which products are to be exported</span>
-<span class="sd">        :type vis: a string or list of strings</span>
-<span class="sd">        :param pprfile: the pipeline processing request</span>
-<span class="sd">        :type pprfile: a string</span>
-<span class="sd">        :param calimages: the list of calibrator images to be saved</span>
-<span class="sd">        :type calimages: a list</span>
-<span class="sd">        :param targetimages: the list of target images to be saved</span>
-<span class="sd">        :type targetimages: a list</span>
-<span class="sd">        :param products_dir: the data products directory for pipeline data</span>
-<span class="sd">        :type products_dir: string</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span>
+            <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">session</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">vis</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">exportmses</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">tarms</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">pprfile</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">calintents</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">calimages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">targetimages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">products_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">imaging_products_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise the Inputs, initialising any property values to those given here.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            context: the pipeline Context state object</span>
@@ -285,57 +317,59 @@
 <span class="sd">                Defaults to a single virtual session containing all the</span>
 <span class="sd">                visibility files in vis.</span>
 
-<span class="sd">                Example: session=[&#39;session1&#39;, &#39;session2&#39;]</span>
+<span class="sd">                Example: ``session=[&#39;session1&#39;, &#39;session2&#39;]``</span>
 
 <span class="sd">            vis: List of visibility/autocorrelation data files for which</span>
 <span class="sd">                flagging and calibration information will be exported.</span>
 <span class="sd">                Defaults to the list maintained in the pipeline context.</span>
 
-<span class="sd">                Example: vis=[&#39;X227.ms&#39;, &#39;X228.ms&#39;]</span>
+<span class="sd">                Example: ``vis=[&#39;X227.ms&#39;, &#39;X228.ms&#39;]``</span>
 
 <span class="sd">            exportmses: Export MeasurementSets defined in vis instead of flags,</span>
 <span class="sd">                caltables, and calibration instructions.</span>
 
-<span class="sd">                Example: exportmses = True</span>
+<span class="sd">                Example: ``exportmses=True``</span>
 
-<span class="sd">                Default: None (equivalent to False)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``False``)</span>
+
+<span class="sd">            tarms: Tar final MeasurementSets</span>
 
 <span class="sd">            pprfile: Name of the pipeline processing request to be exported.</span>
 <span class="sd">                Defaults to a file matching the template &#39;PPR_*.xml&#39;.</span>
 
-<span class="sd">                Example: pprfile=[&#39;PPR_GRB021004.xml&#39;]</span>
+<span class="sd">                Example: ``pprfile=[&#39;PPR_GRB021004.xml&#39;]``</span>
 
 <span class="sd">            calintents: List of calibrator image types to be exported.</span>
 <span class="sd">                Defaults to all standard calibrator intents &#39;BANDPASS&#39;, &#39;PHASE&#39;, &#39;FLUX&#39;</span>
 
-<span class="sd">                Example: calintents=&#39;PHASE&#39;</span>
+<span class="sd">                Example: ``calintents=&#39;PHASE&#39;``</span>
 
 <span class="sd">            calimages: List of calibrator images to be exported.</span>
 <span class="sd">                Defaults to all calibrator images recorded in the pipeline context.</span>
 
-<span class="sd">                Example: calimages=[&#39;3C454.3.bandpass&#39;, &#39;3C279.phase&#39;]</span>
+<span class="sd">                Example: ``calimages=[&#39;3C454.3.bandpass&#39;, &#39;3C279.phase&#39;]``</span>
 
 <span class="sd">            targetimages: List of science target images to be exported.</span>
 <span class="sd">                Defaults to all science target images recorded in the pipeline context.</span>
 
-<span class="sd">                Example: targetimages=[&#39;NGC3256.band3&#39;, &#39;NGC3256.band6&#39;],</span>
-<span class="sd">                targetimages=[&#39;r_aqr.CM02.spw5.line0.XXYY.sd.im&#39;, &#39;r_aqr.CM02.spw5.XXYY.sd.cont.im&#39;]</span>
+<span class="sd">                Example: ``targetimages=[&#39;NGC3256.band3&#39;, &#39;NGC3256.band6&#39;]``,</span>
+<span class="sd">                ``targetimages=[&#39;r_aqr.CM02.spw5.line0.XXYY.sd.im&#39;, &#39;r_aqr.CM02.spw5.XXYY.sd.cont.im&#39;]``</span>
 
 <span class="sd">            products_dir: Name of the data products subdirectory.</span>
 <span class="sd">                Defaults to &#39;./&#39;.</span>
 
-<span class="sd">                Example: products_dir=&#39;../products&#39;</span>
+<span class="sd">                Example: ``products_dir=&#39;../products&#39;``</span>
 
 <span class="sd">            imaging_products_only: Export the science target image products only.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">ExportDataInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">exportmses</span> <span class="o">=</span> <span class="n">exportmses</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tarms</span> <span class="o">=</span> <span class="n">tarms</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pprfile</span> <span class="o">=</span> <span class="n">pprfile</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calintents</span> <span class="o">=</span> <span class="n">calintents</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calimages</span> <span class="o">=</span> <span class="n">calimages</span>
@@ -350,7 +384,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialise the results object with the given list of JobRequests.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">ExportDataResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">sessiondict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">sessiondict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
@@ -466,9 +500,13 @@
         <span class="c1">#    apply instructions</span>
         <span class="n">msvisdict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
         <span class="n">calvisdict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">exportmses_session_names</span><span class="p">,</span> <span class="n">exportmses_session_vislists</span><span class="p">,</span> <span class="n">exportmses_vislist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_lists</span><span class="p">(</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">session</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">imaging_only_mses</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inputs</span><span class="o">.</span><span class="n">imaging_products_only</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">exportmses</span><span class="p">:</span>
-                <span class="n">msvisdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_ms_products</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">products_dir</span><span class="p">)</span>
+                <span class="n">msvisdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_ms_products</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">exportmses_vislist</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">products_dir</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">exportcalprods</span><span class="p">:</span>
                 <span class="n">calvisdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_standard_ms_products</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">products_dir</span><span class="p">)</span>
         <span class="n">result</span><span class="o">.</span><span class="n">msvisdict</span> <span class="o">=</span> <span class="n">msvisdict</span>
@@ -483,9 +521,9 @@
                                                                  <span class="n">inputs</span><span class="o">.</span><span class="n">products_dir</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">inputs</span><span class="o">.</span><span class="n">exportmses</span><span class="p">:</span>
                 <span class="c1"># still needs sessiondict</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">session_names</span><span class="p">)):</span>
-                    <span class="n">sessiondict</span><span class="p">[</span><span class="n">session_names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> \
-                    <span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">visfile</span><span class="p">)</span> <span class="k">for</span> <span class="n">visfile</span> <span class="ow">in</span> <span class="n">session_vislists</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span> <span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">exportmses_session_names</span><span class="p">)):</span>
+                    <span class="n">sessiondict</span><span class="p">[</span><span class="n">exportmses_session_names</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> \
+                        <span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">visfile</span><span class="p">)</span> <span class="k">for</span> <span class="n">visfile</span> <span class="ow">in</span> <span class="n">exportmses_session_vislists</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span> <span class="p">)</span>
         <span class="n">result</span><span class="o">.</span><span class="n">sessiondict</span> <span class="o">=</span> <span class="n">sessiondict</span>
 
         <span class="c1"># Export calibrator images to FITS</span>
@@ -499,7 +537,6 @@
         <span class="n">result</span><span class="o">.</span><span class="n">targetimages</span><span class="o">=</span><span class="p">(</span><span class="n">targetimages_list</span><span class="p">,</span> <span class="n">targetimages_fitslist</span><span class="p">)</span>
 
         <span class="c1"># Export the pipeline manifest file</span>
-        <span class="c1">#</span>
         <span class="n">pipemanifest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_pipe_manifest</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">oussid</span><span class="p">,</span> <span class="n">stdfproducts</span><span class="p">,</span> <span class="n">sessiondict</span><span class="p">,</span> <span class="n">msvisdict</span><span class="p">,</span>
                                                 <span class="n">inputs</span><span class="o">.</span><span class="n">exportmses</span><span class="p">,</span> <span class="n">calvisdict</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">exportcalprods</span><span class="p">,</span>
                                                 <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">image</span><span class="p">)</span> <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">calimages_fitslist</span><span class="p">],</span> <span class="n">calimages_fitskeywords</span><span class="p">,</span>
@@ -546,32 +583,59 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_has_imaging_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Check if the given vis contains any imaging data.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">imaging_datatypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_LINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_LINE_SCIENCE</span><span class="p">]</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the given vis contains any imaging data.&quot;&quot;&quot;</span>
+        <span class="n">imaging_datatypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_CONT_SCIENCE</span><span class="p">,</span>
+                             <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONT_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_LINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_LINE_SCIENCE</span><span class="p">]</span>
         <span class="n">ms_object</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">vis</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">ms_object</span><span class="o">.</span><span class="n">get_data_column</span><span class="p">(</span><span class="n">datatype</span><span class="p">)</span> <span class="k">for</span> <span class="n">datatype</span> <span class="ow">in</span> <span class="n">imaging_datatypes</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_make_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">imaging_only_mses</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_make_lists</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span>
+            <span class="n">session</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+            <span class="n">vis</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">imaging_only_mses</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create the vis and sessions lists</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        Create the vis and sessions lists.</span>
 
-        <span class="c1"># Force inputs.vis to be a list.</span>
+<span class="sd">        This method processes input parameters to generate lists of sessions, session names,</span>
+<span class="sd">        visibility files, and measurement sets based on the provided context and flags.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context (Context): The Pipeline context object.</span>
+<span class="sd">            session (List[str]): Session names</span>
+<span class="sd">            vis (Optional[Union[List[str], str]]): A single visibility file name, a list of such names,</span>
+<span class="sd">                or None. If None, the method uses all measurement sets registered in the context.</span>
+<span class="sd">            imaging_only_mses (Optional[bool] = False): A flag to determine how to filter measurement</span>
+<span class="sd">                sets based on imaging data:</span>
+<span class="sd">                True: Includes only measurement sets with imaging data.</span>
+<span class="sd">                False: Includes only those without imaging data.</span>
+<span class="sd">                None: Disables filtering, including all measurement sets.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            session_list: A list of session identifiers.</span>
+<span class="sd">            session_names: A list of names corresponding to each session in session_list.</span>
+<span class="sd">            session_vislists: For each session, a list of visibility files associated</span>
+<span class="sd">                with that session.</span>
+<span class="sd">            vislist: The final filtered list of visibility files.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># process the &#39;vis&#39; parameter and ensure vislist is a list</span>
         <span class="n">vislist</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="k">if</span> <span class="n">vislist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vislist</span> <span class="o">=</span> <span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vislist</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">vislist</span> <span class="o">=</span> <span class="p">[</span><span class="n">vislist</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">imaging_only_mses</span><span class="p">:</span>
-            <span class="n">vislist</span> <span class="o">=</span> <span class="p">[</span><span class="n">vis</span> <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_imaging_data</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="p">)]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">vislist</span> <span class="o">=</span> <span class="p">[</span><span class="n">vis</span> <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_imaging_data</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="p">)]</span>
 
-        <span class="c1"># Get the session list and the visibility files associated with</span>
-        <span class="c1"># each session.</span>
-        <span class="n">session_list</span><span class="p">,</span> <span class="n">session_names</span><span class="p">,</span> <span class="n">session_vislists</span><span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sessions</span><span class="p">(</span> \
-            <span class="n">context</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">vislist</span><span class="p">)</span>
+        <span class="c1"># filter based on imaging_only_mses condition</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">imaging_only_mses</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">imaging_only_mses</span><span class="p">:</span>
+                <span class="n">vislist</span> <span class="o">=</span> <span class="p">[</span><span class="n">vis</span> <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_imaging_data</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">vislist</span> <span class="o">=</span> <span class="p">[</span><span class="n">vis</span> <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_imaging_data</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="p">)]</span>
+
+        <span class="c1"># Get the session list and the visibility files associated with each session.</span>
+        <span class="n">session_list</span><span class="p">,</span> <span class="n">session_names</span><span class="p">,</span> <span class="n">session_vislists</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sessions</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">vislist</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">session_list</span><span class="p">,</span> <span class="n">session_names</span><span class="p">,</span> <span class="n">session_vislists</span><span class="p">,</span> <span class="n">vislist</span>
 
@@ -694,7 +758,15 @@
 
         <span class="k">return</span> <span class="n">sessiondict</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_do_if_auxiliary_products</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">oussid</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">products_dir</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">imaging_products_only</span><span class="p">,</span> <span class="n">pipeline_stats_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_if_auxiliary_products</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">oussid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">products_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">vislist</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+            <span class="n">imaging_products_only</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+            <span class="n">pipeline_stats_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate the auxiliary products</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -708,12 +780,16 @@
             <span class="n">contfile_name</span> <span class="o">=</span> <span class="s1">&#39;cont.dat&#39;</span>
         <span class="n">empty</span> <span class="o">=</span> <span class="kc">True</span>
 
+        <span class="c1"># PIPE-51: Look for per-MS antennapos.json files</span>
+        <span class="n">antpos_files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;*.antennapos.json&quot;</span><span class="p">))</span>
+
         <span class="c1"># Get the flux, antenna position, and continuum subtraction</span>
         <span class="c1"># files and test to see if at least one of them exists</span>
         <span class="n">flux_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">fluxfile_name</span><span class="p">)</span>
         <span class="n">antpos_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">antposfile_name</span><span class="p">)</span>
         <span class="n">cont_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">contfile_name</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">flux_file</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">antpos_file</span><span class="p">)</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cont_file</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">flux_file</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">antpos_file</span><span class="p">),</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cont_file</span><span class="p">),</span> <span class="n">antpos_files</span><span class="p">]):</span>
             <span class="n">empty</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># Export the general and target source template flagging files</span>
@@ -772,12 +848,17 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Auxiliary data product flux.csv does not exist&#39;</span><span class="p">)</span>
 
-            <span class="c1"># Save antenna positions file</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">antpos_file</span><span class="p">):</span>
-                <span class="n">tar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">antpos_file</span><span class="p">,</span> <span class="n">arcname</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">antpos_file</span><span class="p">))</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Saving auxiliary data product </span><span class="si">%s</span><span class="s1"> in </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">antpos_file</span><span class="p">),</span> <span class="n">tarfilename</span><span class="p">)</span>
+            <span class="c1"># Save antenna positions file; check for both per-MS files and default file types</span>
+            <span class="k">if</span> <span class="n">antpos_files</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">antpos_files</span><span class="p">:</span>
+                    <span class="n">tar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">arcname</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Saving auxiliary data product </span><span class="si">%s</span><span class="s1"> in </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="n">tarfilename</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Auxiliary data product antennapos.csv does not exist&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">antpos_file</span><span class="p">):</span>
+                    <span class="n">tar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">antpos_file</span><span class="p">,</span> <span class="n">arcname</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">antpos_file</span><span class="p">))</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Saving auxiliary data product </span><span class="si">%s</span><span class="s1"> in </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">antpos_file</span><span class="p">),</span> <span class="n">tarfilename</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Auxiliary data product antennapos file(s) does not exist&#39;</span><span class="p">)</span>
 
             <span class="c1"># Save continuum regions file</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cont_file</span><span class="p">):</span>
@@ -932,21 +1013,47 @@
 
         <span class="k">return</span> <span class="n">pprmatchesout</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_export_final_ms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">products_dir</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Save the ms to a compressed tarfile in products.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_export_final_ms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">products_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export a CASA measurement set (MS) to the products directory.</span>
+
+<span class="sd">        If `self.inputs.tarms` is True, the MS will be saved as a compressed tarball (`.tgz`) in the products directory.</span>
+<span class="sd">        Otherwise, the MS will be copied directly to the products directory as a directory structure.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: The current pipeline context object (not used directly in this method).</span>
+<span class="sd">            vis: The path to the measurement set to be exported.</span>
+<span class="sd">            products_dir: The directory where the final MS will be stored.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The name of the exported file (compressed tarball or directory), or `None` if an error occurs.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Define the name of the output tarfile</span>
+        <span class="c1"># Define the name of the output tarfile or directory</span>
         <span class="n">visname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
-        <span class="n">tarfilename</span> <span class="o">=</span> <span class="n">visname</span> <span class="o">+</span> <span class="s1">&#39;.tgz&#39;</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Storing final ms </span><span class="si">%s</span><span class="s1"> in </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">visname</span><span class="p">,</span> <span class="n">tarfilename</span><span class="p">)</span>
 
-        <span class="c1"># Create the tar file</span>
-        <span class="n">tar</span> <span class="o">=</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">tarfilename</span><span class="p">),</span> <span class="s2">&quot;w:gz&quot;</span><span class="p">)</span>
-        <span class="n">tar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">visname</span><span class="p">)</span>
-        <span class="n">tar</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">tarms</span><span class="p">:</span>
+            <span class="c1"># Export as tarball</span>
+            <span class="n">tarfilename</span> <span class="o">=</span> <span class="n">visname</span> <span class="o">+</span> <span class="s1">&#39;.tgz&#39;</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Storing final MS </span><span class="si">%s</span><span class="s1"> in </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">visname</span><span class="p">,</span> <span class="n">tarfilename</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">tarfilename</span>
+            <span class="c1"># Create the tar file</span>
+            <span class="n">tar_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">tarfilename</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">tar_path</span><span class="p">,</span> <span class="s2">&quot;w:gz&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tar</span><span class="p">:</span>
+                    <span class="n">tar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">visname</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">tarfilename</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failed to create tarball </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">tar_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Copy MS directory directly</span>
+            <span class="n">target_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">visname</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Copying final MS </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">visname</span><span class="p">,</span> <span class="n">target_path</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">visname</span><span class="p">,</span> <span class="n">target_path</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">visname</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failed to copy MS </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">target_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_save_final_flagversion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">flag_version_name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1242,100 +1349,144 @@
                     <span class="n">intents</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">intents</span> <span class="o">=</span> <span class="n">calintents</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-                <span class="n">cleanlist</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">calimlist</span><span class="o">.</span><span class="n">get_imlist</span><span class="p">()</span>
+                <span class="n">original_cleanlist</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">calimlist</span><span class="o">.</span><span class="n">get_imlist</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Exporting target source images&#39;</span><span class="p">)</span>
                 <span class="n">intents</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TARGET&#39;</span><span class="p">]</span>
-                <span class="n">cleanlist</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">sciimlist</span><span class="o">.</span><span class="n">get_imlist</span><span class="p">()</span>
+                <span class="n">original_cleanlist</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">sciimlist</span><span class="o">.</span><span class="n">get_imlist</span><span class="p">()</span>
 
-            <span class="k">for</span> <span class="n">image_number</span><span class="p">,</span> <span class="n">image</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cleanlist</span><span class="p">):</span>
-                <span class="c1"># We need to store the image</span>
-                <span class="n">cleanlist</span><span class="p">[</span><span class="n">image_number</span><span class="p">][</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">cleanlist</span><span class="p">[</span><span class="n">image_number</span><span class="p">][</span><span class="s1">&#39;auxfitsfiles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">version</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-                <span class="c1"># Image name probably includes path</span>
-                <span class="k">if</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;sourcetype&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">intents</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;multiterm&#39;</span><span class="p">]:</span>
-                        <span class="k">for</span> <span class="n">nt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;multiterm&#39;</span><span class="p">]):</span>
-                            <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.image.tt</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nt</span><span class="p">))</span>
-                            <span class="n">images_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                            <span class="n">cleanlist</span><span class="p">[</span><span class="n">image_number</span><span class="p">][</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                        <span class="k">if</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.pbcor&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-                            <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image.pbcor&#39;</span><span class="p">,</span> <span class="s1">&#39;.alpha&#39;</span><span class="p">)</span>
-                            <span class="n">images_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                            <span class="n">cleanlist</span><span class="p">[</span><span class="n">image_number</span><span class="p">][</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                            <span class="n">imagename</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.error&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image.pbcor&#39;</span><span class="p">,</span> <span class="s1">&#39;.alpha&#39;</span><span class="p">))</span>
-                            <span class="n">images_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                            <span class="n">cleanlist</span><span class="p">[</span><span class="n">image_number</span><span class="p">][</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.alpha&#39;</span><span class="p">)</span>
-                            <span class="n">images_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                            <span class="n">cleanlist</span><span class="p">[</span><span class="n">image_number</span><span class="p">][</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                            <span class="n">imagename</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.error&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.alpha&#39;</span><span class="p">))</span>
-                            <span class="n">images_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                            <span class="n">cleanlist</span><span class="p">[</span><span class="n">image_number</span><span class="p">][</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                    <span class="k">elif</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;image.sd&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span> <span class="c1"># single dish</span>
-                        <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span>
-                        <span class="n">images_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                        <span class="n">cleanlist</span><span class="p">[</span><span class="n">image_number</span><span class="p">][</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                        <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;image.sd&#39;</span><span class="p">,</span> <span class="s1">&#39;image.sd.weight&#39;</span><span class="p">)</span>
-                        <span class="n">images_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                        <span class="n">cleanlist</span><span class="p">[</span><span class="n">image_number</span><span class="p">][</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span>
-                        <span class="n">images_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                        <span class="n">cleanlist</span><span class="p">[</span><span class="n">image_number</span><span class="p">][</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+            <span class="c1"># Walk through image list in reverse order to keep only the latest products</span>
+            <span class="c1"># based on the key tuple (field, intent, spw, specmode, stokes, version).</span>
+            <span class="c1"># If the key already exists, skip any previous products. In addition, skip</span>
+            <span class="c1"># any target Stokes I products if the corresponding Stokes IQUV product also</span>
+            <span class="c1"># exists (PIPE-2465).</span>
+            <span class="n">cleanlist_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">product_keys</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">deleted_keys</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">original_cleanlist</span><span class="p">):</span>
+                <span class="c1"># SD saves the spwlist as list of ints while IF uses a comma separated string.</span>
+                <span class="c1"># Since lists are not hashable, we need to convert them.</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;spwlist&#39;</span><span class="p">])</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">:</span>
+                    <span class="n">spwlist_key</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span> <span class="k">for</span> <span class="n">spwid</span> <span class="ow">in</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;spwlist&#39;</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">spwlist_key</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;spwlist&#39;</span><span class="p">]</span>
+                <span class="n">product_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;sourcename&#39;</span><span class="p">],</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;sourcetype&#39;</span><span class="p">],</span> <span class="n">spwlist_key</span><span class="p">,</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">],</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;stokes&#39;</span><span class="p">],</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">],</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">])</span>
 
-                    <span class="c1"># Add PBs for interferometry</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.image.sd&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.pbcor&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-                            <span class="k">if</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;multiterm&#39;</span><span class="p">]):</span>
-                                <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image.pbcor&#39;</span><span class="p">,</span> <span class="s1">&#39;.pb.tt0&#39;</span><span class="p">)</span>
-                                <span class="n">images_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                                <span class="n">cleanlist</span><span class="p">[</span><span class="n">image_number</span><span class="p">][</span><span class="s1">&#39;auxfitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                <span class="c1"># Store only Stokes IQUV if both I and IQUV exist</span>
+                <span class="k">if</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;sourcetype&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">and</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;stokes&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;IQUV&#39;</span><span class="p">:</span>
+                    <span class="c1"># Make corresponding Stokes I key</span>
+                    <span class="n">product_key_stokes_i</span> <span class="o">=</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;sourcename&#39;</span><span class="p">],</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;sourcetype&#39;</span><span class="p">],</span> <span class="n">spwlist_key</span><span class="p">,</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">],</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">],</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">])</span>
+
+                    <span class="c1"># Keep key to catch arbitrary sequences of I and IQUV</span>
+                    <span class="c1"># images of the same data selection.</span>
+                    <span class="n">deleted_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">product_key_stokes_i</span><span class="p">)</span>
+
+                    <span class="c1"># Remove any previously added Stokes I image</span>
+                    <span class="k">if</span> <span class="n">product_key_stokes_i</span> <span class="ow">in</span> <span class="n">cleanlist_dict</span><span class="p">:</span>
+                        <span class="k">del</span> <span class="n">cleanlist_dict</span><span class="p">[</span><span class="n">product_key_stokes_i</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">product_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cleanlist_dict</span> <span class="ow">and</span> <span class="n">product_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">deleted_keys</span><span class="p">:</span>
+                    <span class="c1"># We need to store the image</span>
+                    <span class="n">image</span><span class="p">[</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">image</span><span class="p">[</span><span class="s1">&#39;auxfitsfiles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename_version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">version</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="c1"># Image name probably includes path</span>
+                    <span class="k">if</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;sourcetype&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">intents</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;multiterm&#39;</span><span class="p">]:</span>
+                            <span class="k">for</span> <span class="n">nt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;multiterm&#39;</span><span class="p">]):</span>
+                                <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.image.tt</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nt</span><span class="p">))</span>
+                                <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename_version&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                                <span class="n">image</span><span class="p">[</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.pbcor&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                                <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image.pbcor&#39;</span><span class="p">,</span> <span class="s1">&#39;.alpha&#39;</span><span class="p">)</span>
+                                <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename_version&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                                <span class="n">image</span><span class="p">[</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                                <span class="n">imagename</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.error&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image.pbcor&#39;</span><span class="p">,</span> <span class="s1">&#39;.alpha&#39;</span><span class="p">))</span>
+                                <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename_version&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                                <span class="n">image</span><span class="p">[</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
                             <span class="k">else</span><span class="p">:</span>
-                                <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image.pbcor&#39;</span><span class="p">,</span> <span class="s1">&#39;.pb&#39;</span><span class="p">)</span>
-                                <span class="n">images_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                                <span class="n">cleanlist</span><span class="p">[</span><span class="n">image_number</span><span class="p">][</span><span class="s1">&#39;auxfitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                                <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.alpha&#39;</span><span class="p">)</span>
+                                <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename_version&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                                <span class="n">image</span><span class="p">[</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                                <span class="n">imagename</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.error&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.alpha&#39;</span><span class="p">))</span>
+                                <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename_version&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                                <span class="n">image</span><span class="p">[</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                        <span class="k">elif</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;image.sd&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span> <span class="c1"># single dish</span>
+                            <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span>
+                            <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename_version&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                            <span class="n">image</span><span class="p">[</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                            <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;image.sd&#39;</span><span class="p">,</span> <span class="s1">&#39;image.sd.weight&#39;</span><span class="p">)</span>
+                            <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename_version&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                            <span class="n">image</span><span class="p">[</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
                         <span class="k">else</span><span class="p">:</span>
-                            <span class="k">if</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;multiterm&#39;</span><span class="p">]):</span>
-                                <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.pb.tt0&#39;</span><span class="p">)</span>
-                                <span class="n">images_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                                <span class="n">cleanlist</span><span class="p">[</span><span class="n">image_number</span><span class="p">][</span><span class="s1">&#39;auxfitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                            <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span>
+                            <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename_version&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                            <span class="n">image</span><span class="p">[</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+
+                        <span class="c1"># Add PBs for interferometry</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.image.sd&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.pbcor&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                                <span class="k">if</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;multiterm&#39;</span><span class="p">]):</span>
+                                    <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image.pbcor&#39;</span><span class="p">,</span> <span class="s1">&#39;.pb.tt0&#39;</span><span class="p">)</span>
+                                    <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename_version&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                                    <span class="n">image</span><span class="p">[</span><span class="s1">&#39;auxfitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image.pbcor&#39;</span><span class="p">,</span> <span class="s1">&#39;.pb&#39;</span><span class="p">)</span>
+                                    <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename_version&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                                    <span class="n">image</span><span class="p">[</span><span class="s1">&#39;auxfitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
                             <span class="k">else</span><span class="p">:</span>
-                                <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.pb&#39;</span><span class="p">)</span>
-                                <span class="n">images_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                                <span class="n">cleanlist</span><span class="p">[</span><span class="n">image_number</span><span class="p">][</span><span class="s1">&#39;auxfitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                                <span class="k">if</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;multiterm&#39;</span><span class="p">]):</span>
+                                    <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.pb.tt0&#39;</span><span class="p">)</span>
+                                    <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename_version&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                                    <span class="n">image</span><span class="p">[</span><span class="s1">&#39;auxfitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.pb&#39;</span><span class="p">)</span>
+                                    <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename_version&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                                    <span class="n">image</span><span class="p">[</span><span class="s1">&#39;auxfitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
 
-                    <span class="c1"># Add auto-boxing masks for interferometry</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.image.sd&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.pbcor&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-                            <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image.pbcor&#39;</span><span class="p">,</span> <span class="s1">&#39;.mask&#39;</span><span class="p">)</span>
-                            <span class="n">imagename2</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image.pbcor&#39;</span><span class="p">,</span> <span class="s1">&#39;.cleanmask&#39;</span><span class="p">)</span>
-                            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename2</span><span class="p">):</span>
-                                <span class="n">images_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                                <span class="n">cleanlist</span><span class="p">[</span><span class="n">image_number</span><span class="p">][</span><span class="s1">&#39;auxfitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.mask&#39;</span><span class="p">)</span>
-                            <span class="n">imagename2</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.cleanmask&#39;</span><span class="p">)</span>
-                            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename2</span><span class="p">):</span>
-                                <span class="n">images_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                                <span class="n">cleanlist</span><span class="p">[</span><span class="n">image_number</span><span class="p">][</span><span class="s1">&#39;auxfitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                        <span class="c1"># Add auto-boxing masks for interferometry</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.image.sd&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.pbcor&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                                <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image.pbcor&#39;</span><span class="p">,</span> <span class="s1">&#39;.mask&#39;</span><span class="p">)</span>
+                                <span class="n">imagename2</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image.pbcor&#39;</span><span class="p">,</span> <span class="s1">&#39;.cleanmask&#39;</span><span class="p">)</span>
+                                <span class="c1"># Special case of IQUV target imaging (PIPE-2464) can use a &#39;.cleanmask&#39; from a previous</span>
+                                <span class="c1"># Stokes I imaging stage in which case &#39;.mask&#39; and &#39;.cleanmask&#39; both exist.</span>
+                                <span class="k">if</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename2</span><span class="p">))</span> <span class="ow">or</span> \
+                                   <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename2</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;IQUV&#39;</span> <span class="ow">in</span> <span class="n">imagename</span> <span class="ow">and</span> <span class="s1">&#39;IQUV&#39;</span> <span class="ow">in</span> <span class="n">imagename2</span><span class="p">):</span>
+                                    <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename_version&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                                    <span class="n">image</span><span class="p">[</span><span class="s1">&#39;auxfitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.mask&#39;</span><span class="p">)</span>
+                                <span class="n">imagename2</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.image&#39;</span><span class="p">,</span> <span class="s1">&#39;.cleanmask&#39;</span><span class="p">)</span>
+                                <span class="c1"># PIPE-2464 case like above</span>
+                                <span class="k">if</span> <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename2</span><span class="p">))</span> <span class="ow">or</span> \
+                                   <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename2</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;IQUV&#39;</span> <span class="ow">in</span> <span class="n">imagename</span> <span class="ow">and</span> <span class="s1">&#39;IQUV&#39;</span> <span class="ow">in</span> <span class="n">imagename2</span><span class="p">):</span>
+                                    <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename_version&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                                    <span class="n">image</span><span class="p">[</span><span class="s1">&#39;auxfitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
 
-                    <span class="c1"># Add POLI/POLA images for polarization calibrators</span>
-                    <span class="k">if</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;sourcetype&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.pbcor&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-                            <span class="k">for</span> <span class="n">polcal_imtype</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;POLI&#39;</span><span class="p">,</span> <span class="s1">&#39;POLA&#39;</span><span class="p">):</span>
-                                <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.pbcor&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;IQUV&#39;</span><span class="p">,</span> <span class="n">polcal_imtype</span><span class="p">)</span>
-                                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename</span><span class="p">):</span>
-                                    <span class="n">images_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                                    <span class="n">cleanlist</span><span class="p">[</span><span class="n">image_number</span><span class="p">][</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="k">for</span> <span class="n">polcal_imtype</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;POLI&#39;</span><span class="p">,</span> <span class="s1">&#39;POLA&#39;</span><span class="p">):</span>
-                                <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;IQUV&#39;</span><span class="p">,</span> <span class="n">polcal_imtype</span><span class="p">)</span>
-                                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename</span><span class="p">):</span>
-                                    <span class="n">images_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
-                                    <span class="n">cleanlist</span><span class="p">[</span><span class="n">image_number</span><span class="p">][</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                        <span class="c1"># Add POLI/POLA images for polarization calibrators</span>
+                        <span class="k">if</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;sourcetype&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;POLARIZATION&#39;</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.pbcor&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                                <span class="k">for</span> <span class="n">polcal_imtype</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;POLI&#39;</span><span class="p">,</span> <span class="s1">&#39;POLA&#39;</span><span class="p">):</span>
+                                    <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.pbcor&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;IQUV&#39;</span><span class="p">,</span> <span class="n">polcal_imtype</span><span class="p">)</span>
+                                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename</span><span class="p">):</span>
+                                        <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename_version&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                                        <span class="n">image</span><span class="p">[</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">for</span> <span class="n">polcal_imtype</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;POLI&#39;</span><span class="p">,</span> <span class="s1">&#39;POLA&#39;</span><span class="p">):</span>
+                                    <span class="n">imagename</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;IQUV&#39;</span><span class="p">,</span> <span class="n">polcal_imtype</span><span class="p">)</span>
+                                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imagename</span><span class="p">):</span>
+                                        <span class="n">image</span><span class="p">[</span><span class="s1">&#39;imagename_version&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+                                        <span class="n">image</span><span class="p">[</span><span class="s1">&#39;fitsfiles&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fitsname</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">imagename</span><span class="p">,</span> <span class="n">version</span><span class="p">))</span>
+
+                        <span class="n">cleanlist_dict</span><span class="p">[</span><span class="n">product_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">image</span>
+
+            <span class="n">cleanlist</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1"># Store remaining images in original order</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">cleanlist_dict</span><span class="p">):</span>
+                <span class="n">cleanlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cleanlist_dict</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+                <span class="n">images_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">cleanlist_dict</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;imagename_version&#39;</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Assume only the root image name was given.</span>
             <span class="n">cleanlib</span> <span class="o">=</span> <span class="n">imagelibrary</span><span class="o">.</span><span class="n">ImageLibrary</span><span class="p">()</span>
@@ -1565,7 +1716,31 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Moving </span><span class="si">{</span><span class="n">temp_weblog_tarball</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">products_weblog_tarball</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">temp_weblog_tarball</span><span class="p">,</span> <span class="n">products_weblog_tarball</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">out_aqua_file</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">out_aqua_file</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_export_stats_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">oussid</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate and output the stats file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">          context: the pipieline context</span>
+<span class="sd">          oussid: the ous id</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">          The filename of the outputfile.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats_extractor</span>
+
+        <span class="n">statsfile_name</span> <span class="o">=</span> <span class="s2">&quot;pipeline_stats_</span><span class="si">{}</span><span class="s2">.json&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">oussid</span><span class="p">)</span>
+        <span class="n">stats_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">statsfile_name</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Generating pipeline statistics file&#39;</span><span class="p">)</span>
+
+        <span class="n">stats_dict</span> <span class="o">=</span> <span class="n">stats_extractor</span><span class="o">.</span><span class="n">generate_stats</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="c1"># Write the stats file to disk</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">stats_file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">stats_dict</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">stats_file</span></div>
 
 </pre></div>
 
@@ -1576,7 +1751,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -16,6 +16,7 @@ pipeline.domain.spectralwindow
       :nosignatures:
    
       compress
+      match_spw_basename
    
    
 

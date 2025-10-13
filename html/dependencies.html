@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dependencies of Pipeline &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="_static/favicon-16x16.png"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="_static/documentation_options.js?v=e72a64b0"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -28,7 +28,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Past Releases" href="releases.html" />
+    <link rel="next" title="Releases" href="releases.html" />
     <link rel="prev" title="Pipeline Recipes" href="develdocmd/recipes.html" /> 
 </head>
 
@@ -72,7 +72,8 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -137,7 +138,7 @@
 <h3>A CASA6-equivalent Python environment<a class="headerlink" href="#a-casa6-equivalent-python-environment" title="Link to this heading"></a></h3>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><a class="reference external" href="https://open-bitbucket.nrao.edu/projects/PIPE">Pipeline</a> is a Python-based package with CASA6 components and other general-purpose Python libraries as dependencies. As with any python package, it’s only compatible and supported with certain Python and 3rd-party libraries versions. In reality, each release is only tested and validated against an ALMA-cycle-specific monolithic CASA6 release (a self-contained Python environment with a built-in portable Python interpreter and associated libraries in other languages). CASA6 distribution itself has limited platform support (see the <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/notebooks/introduction.html#Compatibility">CASA6 compatibility matrix</a>).; users are encouraged to check the OS/libraries compatibility and requirements for running CASA6.</p>
+<p><a class="reference external" href="https://open-bitbucket.nrao.edu/projects/PIPE">Pipeline</a> is a Python-based package with CASA6 components and other general-purpose Python libraries as dependencies. As with any python package, it's only compatible and supported with certain Python and 3rd-party libraries versions. In reality, each release is only tested and validated against an ALMA-cycle-specific monolithic CASA6 release (a self-contained Python environment with a built-in portable Python interpreter and associated libraries in other languages). CASA6 distribution itself has limited platform support (see the <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/notebooks/introduction.html#Compatibility">CASA6 compatibility matrix</a>).; users are encouraged to check the OS/libraries compatibility and requirements for running CASA6.</p>
 </div>
 <p>For transparency and encouraging the use and development of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code> in a standard Python environment (e.g. conda), we break down the essential components for a CASA6-equivalent environment as below. In reality, all of them are included in Pipeline-dedicated CASA releases with built-in portable Python interpreter.</p>
 <ul class="simple">
@@ -174,12 +175,12 @@
 <li><p>bdsf (for VLASS source detection &amp; mask creation)</p></li>
 <li><p>*unix-cmd tools</p></li>
 <li><p>ImageMagick</p></li>
-<li><p>the “convert” cmd:</p></li>
-<li><p>Linux only for generating thumbnails; macOS uses “sips” which comes with OS.</p></li>
+<li><p>the &quot;convert&quot; cmd:</p></li>
+<li><p>Linux only for generating thumbnails; macOS uses &quot;sips&quot; which comes with OS.</p></li>
 <li><p>Also used by ImageMagickWriter from matplotlib.animation in hsd/tasks/common/rasterutil.py (only for developers)</p></li>
-<li><p>the “montage” cmd: required from hifa_renorm</p></li>
+<li><p>the &quot;montage&quot; cmd: required from hifa_renorm</p></li>
 <li><p>poppler-utils</p></li>
-<li><p>the “pdfunite” cmd: required from hifa_renorm</p></li>
+<li><p>the &quot;pdfunite&quot; cmd: required from hifa_renorm</p></li>
 <li><p>Git: for obtaining the Pipeline revision description string.</p></li>
 <li><p>Xvfb/xvfb-run: xvfb from OS is required for the casampi module, which is mandatory for running</p></li>
 <li><p>uncompress: used by tec_maps.py in CASA for VLA pipeline task hifv_priorcals</p></li>
@@ -242,13 +243,13 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="develdocmd/recipes.html" class="btn btn-neutral float-left" title="Pipeline Recipes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="releases.html" class="btn btn-neutral float-right" title="Past Releases" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="releases.html" class="btn btn-neutral float-right" title="Releases" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

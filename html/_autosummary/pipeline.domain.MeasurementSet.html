@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.MeasurementSet &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
@@ -170,88 +171,438 @@ metadata and relationships can be quickly queried without additional disk I/O.</
 <p>MeasurementSet does not cache binary data or offer functions to facilitate
 processing of binary data held in the measurement set. For general reading
 of binary data, see the MSWrapper class.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.name" title="Link to this definition"></a></dt>
+<dd><p>Name of MeasurementSet, equivalent to file path to MeasurementSet.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Variables<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) – Name of MeasurementSet, equivalent to file path to MeasurementSet.</p></li>
-<li><p><strong>session</strong> (<em>str</em><em> | </em><em>None</em>) – Name of session associated with MS.</p></li>
-<li><p><strong>exclude_num_chans</strong> (<em>tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – Tuple containing spectral window sizes (in number of
-channels) used to filter out non-science-spectral-windows.</p></li>
-<li><p><strong>filesize</strong> (<a class="reference internal" href="pipeline.domain.measures.FileSize.html#pipeline.domain.measures.FileSize" title="pipeline.domain.measures.FileSize"><em>measures.FileSize</em></a>) – Disk size of MS.</p></li>
-<li><p><strong>acs_software_build_version</strong> (<em>str</em><em> | </em><em>None</em>) – ALMA Common Software build version used to
-create this MS (None if not ALMA).</p></li>
-<li><p><strong>acs_software_version</strong> (<em>str</em><em> | </em><em>None</em>) – ALMA Common Software version used to create this
-MS (None if not ALMA).</p></li>
-<li><p><strong>antenna_array</strong> (<a class="reference internal" href="pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray" title="pipeline.domain.AntennaArray"><em>AntennaArray</em></a><em> | </em><em>None</em>) – Antenna array information.</p></li>
-<li><p><strong>array_name</strong> (<em>str</em>) – Name of array configuration.</p></li>
-<li><p><strong>correlator_name</strong> (<em>str</em><em> | </em><em>None</em>) – The name of the correlator, populated from the
-PROCESSOR table. Example values: ALMA_ACA, ALMA_BASELINE.</p></li>
-<li><p><strong>data_column</strong> (<em>dict</em>) – A dictionary to store data type (key) and corresponding
-data column (value).</p></li>
-<li><p><strong>data_descriptions</strong> (<em>RetrieveByIndexContainer</em><em> | </em><em>list</em>) – A list of DataDescription objects associated with MS.</p></li>
-<li><p><strong>data_types_per_source_and_spw</strong> (<em>dict</em>) – A dictionary to store a list of
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.session">
+<span class="sig-name descname"><span class="pre">session</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.session" title="Link to this definition"></a></dt>
+<dd><p>Name of session associated with MS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.exclude_num_chans">
+<span class="sig-name descname"><span class="pre">exclude_num_chans</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.exclude_num_chans" title="Link to this definition"></a></dt>
+<dd><p>Tuple containing spectral window sizes (in number of
+channels) used to filter out non-science-spectral-windows.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[int, int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.filesize">
+<span class="sig-name descname"><span class="pre">filesize</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.filesize" title="Link to this definition"></a></dt>
+<dd><p>Disk size of MS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="pipeline.domain.measures.FileSize.html#pipeline.domain.measures.FileSize" title="pipeline.domain.measures.FileSize">measures.FileSize</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.acs_software_build_version">
+<span class="sig-name descname"><span class="pre">acs_software_build_version</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.acs_software_build_version" title="Link to this definition"></a></dt>
+<dd><p>ALMA Common Software build version used to
+create this MS (None if not ALMA).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.acs_software_version">
+<span class="sig-name descname"><span class="pre">acs_software_version</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.acs_software_version" title="Link to this definition"></a></dt>
+<dd><p>ALMA Common Software version used to create this
+MS (None if not ALMA).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.antenna_array">
+<span class="sig-name descname"><span class="pre">antenna_array</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.antenna_array" title="Link to this definition"></a></dt>
+<dd><p>Antenna array information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray" title="pipeline.domain.AntennaArray">AntennaArray</a> | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.array_name">
+<span class="sig-name descname"><span class="pre">array_name</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.array_name" title="Link to this definition"></a></dt>
+<dd><p>Name of array configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.correlator_name">
+<span class="sig-name descname"><span class="pre">correlator_name</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.correlator_name" title="Link to this definition"></a></dt>
+<dd><p>The name of the correlator, populated from the
+PROCESSOR table. Example values: ALMA_ACA, ALMA_BASELINE.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.data_column">
+<span class="sig-name descname"><span class="pre">data_column</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.data_column" title="Link to this definition"></a></dt>
+<dd><p>A dictionary to store data type (key) and corresponding
+data column (value).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.data_descriptions">
+<span class="sig-name descname"><span class="pre">data_descriptions</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.data_descriptions" title="Link to this definition"></a></dt>
+<dd><p>A list of DataDescription objects associated with MS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>RetrieveByIndexContainer | list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.data_types_per_source_and_spw">
+<span class="sig-name descname"><span class="pre">data_types_per_source_and_spw</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.data_types_per_source_and_spw" title="Link to this definition"></a></dt>
+<dd><p>A dictionary to store a list of
 available data types (values) in this MS per (source,spw) tuples
-(keys).</p></li>
-<li><p><strong>execblock_id</strong> (<em>str</em>) – Execution Block ID for this MS (only for ALMA, VLA).</p></li>
-<li><p><strong>fields</strong> (<em>RetrieveByIndexContainer</em><em> | </em><em>list</em>) – A list of Field objects associated with MS.</p></li>
-<li><p><strong>observer</strong> (<em>str</em>) – The name of the observer, as listed in the OBSERVATIONS table.</p></li>
-<li><p><strong>observing_modes</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – The name(s) of the Observing Mode(s) used for this MS,
-populated from the ASDM_SBSUMMARY table (empty list if not ALMA).</p></li>
-<li><p><strong>polarizations</strong> (<em>list</em><em>[</em><a class="reference internal" href="pipeline.domain.Polarization.html#pipeline.domain.Polarization" title="pipeline.domain.Polarization"><em>Polarization</em></a><em>]</em>) – A list of Polarization objects associated with the MS.</p></li>
-<li><p><strong>project_id</strong> (<em>str</em>) – Project ID associated with this MS, as listed in the
-OBSERVATIONS table.</p></li>
-<li><p><strong>representative_target</strong> (<em>tuple</em><em>[</em><em>str</em><em> | </em><em>None</em><em>, </em><em>dict</em><em> | </em><em>None</em><em>, </em><em>dict</em><em> | </em><em>None</em><em>]</em>) – A tuple of the name of representative source,
-frequency and bandwidth.</p></li>
-<li><p><strong>representative_window</strong> (<em>str</em><em> | </em><em>None</em>) – A representative spectral window name.</p></li>
-<li><p><strong>scans</strong> (<em>list</em>) – A list of Scan objects associated with MS.</p></li>
-<li><p><strong>schedblock_id</strong> (<em>str</em>) – Scheduling Block ID for this MS (only for ALMA, VLA).</p></li>
-<li><p><strong>science_goals</strong> (<em>dict</em>) – A science goal information consists of min/max acceptable
+(keys).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.execblock_id">
+<span class="sig-name descname"><span class="pre">execblock_id</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.execblock_id" title="Link to this definition"></a></dt>
+<dd><p>Execution Block ID for this MS (only for ALMA, VLA).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.fields">
+<span class="sig-name descname"><span class="pre">fields</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.fields" title="Link to this definition"></a></dt>
+<dd><p>A list of Field objects associated with MS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>RetrieveByIndexContainer | list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.observer">
+<span class="sig-name descname"><span class="pre">observer</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.observer" title="Link to this definition"></a></dt>
+<dd><p>The name of the observer, as listed in the OBSERVATIONS table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.observing_modes">
+<span class="sig-name descname"><span class="pre">observing_modes</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.observing_modes" title="Link to this definition"></a></dt>
+<dd><p>The name(s) of the Observing Mode(s) used for this MS,
+populated from the ASDM_SBSUMMARY table (empty list if not ALMA).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.polarizations">
+<span class="sig-name descname"><span class="pre">polarizations</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.polarizations" title="Link to this definition"></a></dt>
+<dd><p>A list of Polarization objects associated with the MS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="pipeline.domain.Polarization.html#pipeline.domain.Polarization" title="pipeline.domain.Polarization">Polarization</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.project_id">
+<span class="sig-name descname"><span class="pre">project_id</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.project_id" title="Link to this definition"></a></dt>
+<dd><p>Project ID associated with this MS, as listed in the
+OBSERVATIONS table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.representative_target">
+<span class="sig-name descname"><span class="pre">representative_target</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.representative_target" title="Link to this definition"></a></dt>
+<dd><p>A tuple of the name of representative source,
+frequency and bandwidth.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[str | None, dict | None, dict | None]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.representative_window">
+<span class="sig-name descname"><span class="pre">representative_window</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.representative_window" title="Link to this definition"></a></dt>
+<dd><p>A representative spectral window name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.scans">
+<span class="sig-name descname"><span class="pre">scans</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.scans" title="Link to this definition"></a></dt>
+<dd><p>A list of Scan objects associated with MS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.schedblock_id">
+<span class="sig-name descname"><span class="pre">schedblock_id</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.schedblock_id" title="Link to this definition"></a></dt>
+<dd><p>Scheduling Block ID for this MS (only for ALMA, VLA).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.science_goals">
+<span class="sig-name descname"><span class="pre">science_goals</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.science_goals" title="Link to this definition"></a></dt>
+<dd><p>A science goal information consists of min/max acceptable
 angular resolution, max allowed beam ratio, sensitivity, dynamic
-range, spectral dynamic range bandwidth (Cycle 10+), and SB name.</p></li>
-<li><p><strong>sources</strong> (<em>RetrieveByIndexContainer</em><em> | </em><em>list</em>) – A list of Source objects associated with MS.</p></li>
-<li><p><strong>spectral_windows</strong> (<em>RetrieveByIndexContainer</em><em> | </em><em>list</em>) – A list of SpectralWindow objects associated with MS.</p></li>
-<li><p><strong>spectralspec_spwmap</strong> (<em>dict</em>) – A dictionary to map each SpectralSpec to a list of
-corresponding spectral window IDs.</p></li>
-<li><p><strong>states</strong> (<em>RetrieveByIndexContainer</em><em> | </em><em>list</em>) – A list of State objects associated with MS.</p></li>
-<li><p><strong>derived_fluxes</strong> (<em>collections.defaultdict</em><em> | </em><em>None</em>) – Calibrated visibility based flux measurements derived
-during pipeline run, used in subsequent imaging stages.</p></li>
-<li><p><strong>fluxscale_fluxes</strong> (<em>collections.defaultdict</em><em> | </em><em>None</em>) – Flux measurements derived by CASA’s fluxscale during
+range, spectral dynamic range bandwidth (Cycle 10+), and SB name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.sources">
+<span class="sig-name descname"><span class="pre">sources</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.sources" title="Link to this definition"></a></dt>
+<dd><p>A list of Source objects associated with MS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>RetrieveByIndexContainer | list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.spectral_windows">
+<span class="sig-name descname"><span class="pre">spectral_windows</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.spectral_windows" title="Link to this definition"></a></dt>
+<dd><p>A list of SpectralWindow objects associated with MS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>RetrieveByIndexContainer | list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.spectralspec_spwmap">
+<span class="sig-name descname"><span class="pre">spectralspec_spwmap</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.spectralspec_spwmap" title="Link to this definition"></a></dt>
+<dd><p>A dictionary to map each SpectralSpec to a list of
+corresponding spectral window IDs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.states">
+<span class="sig-name descname"><span class="pre">states</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.states" title="Link to this definition"></a></dt>
+<dd><p>A list of State objects associated with MS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>RetrieveByIndexContainer | list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.derived_fluxes">
+<span class="sig-name descname"><span class="pre">derived_fluxes</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.derived_fluxes" title="Link to this definition"></a></dt>
+<dd><p>Calibrated visibility based flux measurements derived
+during pipeline run, used in subsequent imaging stages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>collections.defaultdict | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.fluxscale_fluxes">
+<span class="sig-name descname"><span class="pre">fluxscale_fluxes</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.fluxscale_fluxes" title="Link to this definition"></a></dt>
+<dd><p>Flux measurements derived by CASA's fluxscale during
 the hifa_gfluxscale task, for use by a subsequent hifa_polcal task
-(ALMA interferometry polarisation calibration only).</p></li>
-<li><p><strong>origin_ms</strong> (<em>str</em>) – A path to the first generation MeasurementSet from which
+(ALMA interferometry polarisation calibration only).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>collections.defaultdict | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.origin_ms">
+<span class="sig-name descname"><span class="pre">origin_ms</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.origin_ms" title="Link to this definition"></a></dt>
+<dd><p>A path to the first generation MeasurementSet from which
 the current MS is generated. This is typically set by tasks such as
-h_mssplit, hif_mstransform, hifv_mstransform, hif_transformimagedata.</p></li>
-<li><p><strong>phase_calapps_for_check_sources</strong> – List of CalApplications for the phase
+h_mssplit, hif_mstransform, hifv_mstransform, hif_transformimagedata.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.phase_calapps_for_check_sources">
+<span class="sig-name descname"><span class="pre">phase_calapps_for_check_sources</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.phase_calapps_for_check_sources" title="Link to this definition"></a></dt>
+<dd><p>List of CalApplications for the phase
 calibration of the check source(s) generated during hifa_gfluxscale.
 These are used in a subsequent hifa_timegaincal task to overplot
 the phase calibration for check source in its Diagnostic Phase Vs.
-Time plots.</p></li>
-<li><p><strong>phasecal_mapping</strong> (<em>dict</em>) – A dictionary mapping phase calibrator fields to
+Time plots.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.phasecal_mapping">
+<span class="sig-name descname"><span class="pre">phasecal_mapping</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.phasecal_mapping" title="Link to this definition"></a></dt>
+<dd><p>A dictionary mapping phase calibrator fields to
 corresponding fields with TARGET or CHECK intent; typically
-populated by the hifa_spwphaseup task (ALMA-only).</p></li>
-<li><p><strong>phaseup_caltable_for_phase_rms</strong> – The bandpass phase-up caltable created
-during the hifa_bandpass task (prior to deriving the bandpass
-solution), for use in subsequent phase RMS stability assessment
-during the hifa_spwphaseup task (ALMA-interferometry-only).</p></li>
-<li><p><strong>reference_antenna_locked</strong> (<em>bool</em>) – If True, reference antenna is locked to
-prevent modification. Typically used in polarization calibration
-stages / recipes.</p></li>
-<li><p><strong>reference_spwmap</strong> (<em>list</em><em>[</em><em>int</em><em>] </em><em>| </em><em>None</em>) – Vector of spectral window IDs, enabling flux scaling
-across spectral windows. Typically populated by the hifa_fluxcalflag
-task, and used by a subsequent hifa_gfluxscale task in its call to
-CASA <cite>fluxscale</cite> task (ALMA-interferometry-only).</p></li>
-<li><p><strong>spwmaps</strong> (<em>dict</em>) – Dictionary mapping (intent, field) keys to corresponding
-phase-up spectral window mapping to use for combining/mapping
-spectral windows; used in subsequent calibration tasks
-(ALMA-interferometry-only).</p></li>
-</ul>
+populated by the hifa_spwphaseup task (ALMA-only).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.phaseup_caltable_for_phase_rms">
+<span class="sig-name descname"><span class="pre">phaseup_caltable_for_phase_rms</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.phaseup_caltable_for_phase_rms" title="Link to this definition"></a></dt>
+<dd><p>The bandpass phase-up caltable created
+during the hifa_bandpass task (prior to deriving the bandpass
+solution), for use in subsequent phase RMS stability assessment
+during the hifa_spwphaseup task (ALMA-interferometry-only).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.reference_antenna_locked">
+<span class="sig-name descname"><span class="pre">reference_antenna_locked</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.reference_antenna_locked" title="Link to this definition"></a></dt>
+<dd><p>If True, reference antenna is locked to
+prevent modification. Typically used in polarization calibration
+stages / recipes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.reference_spwmap">
+<span class="sig-name descname"><span class="pre">reference_spwmap</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.reference_spwmap" title="Link to this definition"></a></dt>
+<dd><p>Vector of spectral window IDs, enabling flux scaling
+across spectral windows. Typically populated by the hifa_fluxcalflag
+task, and used by a subsequent hifa_gfluxscale task in its call to
+CASA <cite>fluxscale</cite> task (ALMA-interferometry-only).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[int] | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.spwmaps">
+<span class="sig-name descname"><span class="pre">spwmaps</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.spwmaps" title="Link to this definition"></a></dt>
+<dd><p>Dictionary mapping (intent, field) keys to corresponding
+phase-up spectral window mapping to use for combining/mapping
+spectral windows; used in subsequent calibration tasks
+(ALMA-interferometry-only).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.MeasurementSet.all_colnames" title="pipeline.domain.MeasurementSet.all_colnames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_colnames</span></code></a></p></td>
 <td><p>Return all available column names for this MS.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.MeasurementSet.compute_az_el_for_ms" title="pipeline.domain.MeasurementSet.compute_az_el_for_ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_az_el_for_ms</span></code></a></p></td>
+<td><p>Computes overall azimuth and elevation values across POINTING, SIDEBAND, ATMOSPHERE scans.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.MeasurementSet.compute_az_el_to_field" title="pipeline.domain.MeasurementSet.compute_az_el_to_field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_az_el_to_field</span></code></a></p></td>
+<td><p>Computes azimuth and elevation of a field at a given epoch.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.MeasurementSet.data_colnames" title="pipeline.domain.MeasurementSet.data_colnames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">data_colnames</span></code></a></p></td>
 <td><p>Return all data column names for this MS.</p></td>
@@ -263,7 +614,7 @@ spectral windows; used in subsequent calibration tasks
 <td><p>Get correlation string for ALMA for the science spectral windows.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.MeasurementSet.get_alma_cycle_number" title="pipeline.domain.MeasurementSet.get_alma_cycle_number"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_alma_cycle_number</span></code></a></p></td>
-<td><p>Get the ALMA cycle number from the ALMA control software version that this MeasurementSet was acquired with.</p></td>
+<td><p>Get the ALMA cycle number from the observation start time.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.MeasurementSet.get_antenna" title="pipeline.domain.MeasurementSet.get_antenna"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_antenna</span></code></a></p></td>
 <td><p>Return Antenna(s) for given antenna selection in CASA format.</p></td>
@@ -290,7 +641,7 @@ spectral windows; used in subsequent calibration tasks
 <td><p>Get the original obs_modes that correspond to the given pipeline observing intent(s).</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.MeasurementSet.get_representative_source_spw" title="pipeline.domain.MeasurementSet.get_representative_source_spw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_representative_source_spw</span></code></a></p></td>
-<td><p>Get the representative target source object:</p></td>
+<td><p>Get the representative target source object.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.MeasurementSet.get_scans" title="pipeline.domain.MeasurementSet.get_scans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_scans</span></code></a></p></td>
 <td><p>Return Scan(s) in MeasurementSet matching the given criteria (ID, intent, field, and/or spectral window).</p></td>
@@ -329,15 +680,18 @@ spectral windows; used in subsequent calibration tasks
 <td><p>Get number of channels for VLA</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.MeasurementSet.get_vla_spw2band" title="pipeline.domain.MeasurementSet.get_vla_spw2band"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_spw2band</span></code></a></p></td>
-<td><p>Find field spws for VLA</p></td>
+<td><p>Find spectral windows id-to-band mapping for VLA.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.MeasurementSet.get_vla_tst_bpass_spw" title="pipeline.domain.MeasurementSet.get_vla_tst_bpass_spw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_tst_bpass_spw</span></code></a></p></td>
 <td><p>Get VLA test bandpass or delay spws</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.MeasurementSet.set_data_column" title="pipeline.domain.MeasurementSet.set_data_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_data_column</span></code></a></p></td>
-<td><p>Set data type and column.</p></td>
+<td><p>Assign a data type to a column in the MS domain object.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.MeasurementSet.update_reference_antennas" title="pipeline.domain.MeasurementSet.update_reference_antennas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_reference_antennas</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.MeasurementSet.set_data_type_dicts" title="pipeline.domain.MeasurementSet.set_data_type_dicts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_data_type_dicts</span></code></a></p></td>
+<td><p>Set the data type lookup dictionaries directly without writing new MS HISTORY entries as they would already exist when calling this method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.MeasurementSet.update_reference_antennas" title="pipeline.domain.MeasurementSet.update_reference_antennas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_reference_antennas</span></code></a></p></td>
 <td><p>Update the reference antenna list for this MS to demote/remove specified antennas.</p></td>
 </tr>
 </tbody>
@@ -363,7 +717,7 @@ spectral windows; used in subsequent calibration tasks
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.MeasurementSet.reference_antenna" title="pipeline.domain.MeasurementSet.reference_antenna"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reference_antenna</span></code></a></p></td>
 <td><p>Get the reference antenna list for this MS.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.MeasurementSet.session" title="pipeline.domain.MeasurementSet.session"><code class="xref py py-obj docutils literal notranslate"><span class="pre">session</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id0" title="pipeline.domain.MeasurementSet.session"><code class="xref py py-obj docutils literal notranslate"><span class="pre">session</span></code></a></p></td>
 <td><p>Return name of session associated with this measurement set.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.MeasurementSet.start_time" title="pipeline.domain.MeasurementSet.start_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_time</span></code></a></p></td>
@@ -371,6 +725,20 @@ spectral windows; used in subsequent calibration tasks
 </tr>
 </tbody>
 </table>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize a MeasurementSet object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> -- A path to MS.</p></li>
+<li><p><strong>session</strong> -- Name of session associated with MS.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.all_colnames">
 <span class="sig-name descname"><span class="pre">all_colnames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.all_colnames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.all_colnames" title="Link to this definition"></a></dt>
@@ -390,6 +758,49 @@ spectral windows; used in subsequent calibration tasks
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.compute_az_el_for_ms">
+<span class="sig-name descname"><span class="pre">compute_az_el_for_ms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.compute_az_el_for_ms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.compute_az_el_for_ms" title="Link to this definition"></a></dt>
+<dd><p>Computes overall azimuth and elevation values across POINTING, SIDEBAND, ATMOSPHERE scans.</p>
+<p>Applies the given aggregation function (e.g. <cite>min</cite>, <cite>max</cite>, <cite>mean</cite>) to azimuth and elevation
+values computed at the start and end of each field in science scans.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>func</strong> (<em>callable</em>) -- A function that takes a list of floats and returns a single float.
+Common examples include <cite>min</cite>, <cite>max</cite>, or <cite>np.mean</cite>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing the aggregated azimuth and elevation values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[float, float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.compute_az_el_to_field">
+<span class="sig-name descname"><span class="pre">compute_az_el_to_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.Field.html#pipeline.domain.Field" title="pipeline.domain.Field"><span class="pre">Field</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epoch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.compute_az_el_to_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.compute_az_el_to_field" title="Link to this definition"></a></dt>
+<dd><p>Computes azimuth and elevation of a field at a given epoch.</p>
+<p>This method uses the CASA <cite>measures</cite> tool to convert the direction
+of a field to azimuth and elevation (AZELGEO frame) at the time
+specified by the epoch and location of the observatory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> -- Field domain object or None.</p></li>
+<li><p><strong>epoch</strong> -- A dictionary representing the time epoch.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list containing azimuth (degrees) and elevation (degrees), in that order.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.data_colnames">
 <span class="sig-name descname"><span class="pre">data_colnames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.data_colnames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.data_colnames" title="Link to this definition"></a></dt>
 <dd><p>Return all data column names for this MS.</p>
@@ -398,7 +809,7 @@ spectral windows; used in subsequent calibration tasks
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.end_time">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">end_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#pipeline.domain.MeasurementSet.end_time" title="Link to this definition"></a></dt>
-<dd><p>Return end time for this measurement set as CASA ‘epoch’ measure dictionary.</p>
+<dd><p>Return end time for this measurement set as CASA 'epoch' measure dictionary.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -412,9 +823,9 @@ as a list of SpectralWindowWithChannelSelection objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>task_arg</strong> – Spectral window selection to match, as either single
+<li><p><strong>task_arg</strong> -- Spectral window selection to match, as either single
 integer ID, or one-or-more IDs in CASA-style string format.</p></li>
-<li><p><strong>with_channels</strong> – If True, return spectral window with channel selection.</p></li>
+<li><p><strong>with_channels</strong> -- If True, return spectral window with channel selection.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -441,11 +852,10 @@ for given CASA-style search criteria.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.get_alma_cycle_number">
 <span class="sig-name descname"><span class="pre">get_alma_cycle_number</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_alma_cycle_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.get_alma_cycle_number" title="Link to this definition"></a></dt>
-<dd><p>Get the ALMA cycle number from the ALMA control software version that
-this MeasurementSet was acquired with.</p>
+<dd><p>Get the ALMA cycle number from the observation start time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int cycle_number or None if not found</p>
+<dd class="field-odd"><p>Cycle number or None if not found</p>
 </dd>
 </dl>
 </dd></dl>
@@ -458,7 +868,7 @@ this MeasurementSet was acquired with.</p>
 all antennas in the measurement set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>search_term</strong> – Antenna selection string in CASA format.</p>
+<dd class="field-odd"><p><strong>search_term</strong> -- Antenna selection string in CASA format.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of Antenna objects matching search term.</p>
@@ -468,7 +878,7 @@ all antennas in the measurement set.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.get_data_column">
-<span class="sig-name descname"><span class="pre">get_data_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.datatype.DataType.html#pipeline.domain.datatype.DataType" title="pipeline.domain.datatype.DataType"><span class="pre">DataType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_data_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.get_data_column" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_data_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.DataType.html#pipeline.domain.DataType" title="pipeline.domain.DataType"><span class="pre">DataType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_data_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.get_data_column" title="Link to this definition"></a></dt>
 <dd><p>Return the column name associated with a DataType in an MS domain
 object for given source and spectral window.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">source</span></code> and <code class="docutils literal notranslate"><span class="pre">spw</span></code> are both unset, the method will just look
@@ -478,10 +888,10 @@ the requested data type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dtype</strong> – DataType to fetch column name for</p></li>
-<li><p><strong>source</strong> – Source names (comma separated name selection string) to
+<li><p><strong>dtype</strong> -- DataType to fetch column name for</p></li>
+<li><p><strong>source</strong> -- Source names (comma separated name selection string) to
 filter for. If unset, all sources will be used.</p></li>
-<li><p><strong>spw</strong> – Spectral windows (comma separated real spw ID selection string)
+<li><p><strong>spw</strong> -- Spectral windows (comma separated real spw ID selection string)
 to filter for. If unset, all real spw IDs will be used.</p></li>
 </ul>
 </dd>
@@ -502,8 +912,8 @@ only.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>spw</strong> – Spectral window to match (as ID or SpectralWindow object).</p></li>
-<li><p><strong>id</strong> – Data description numerical identifier to match.</p></li>
+<li><p><strong>spw</strong> -- Spectral window to match (as ID or SpectralWindow object).</p></li>
+<li><p><strong>id</strong> -- Data description numerical identifier to match.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -514,7 +924,7 @@ only.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.get_data_type">
-<span class="sig-name descname"><span class="pre">get_data_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pipeline.domain.datatype.DataType.html#pipeline.domain.datatype.DataType" title="pipeline.domain.datatype.DataType"><span class="pre">DataType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_data_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.get_data_type" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_data_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pipeline.domain.DataType.html#pipeline.domain.DataType" title="pipeline.domain.DataType"><span class="pre">DataType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_data_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.get_data_type" title="Link to this definition"></a></dt>
 <dd><p>Return the DataType associated with a column in an MS domain object for
 given source and spectral window.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">source</span></code> and <code class="docutils literal notranslate"><span class="pre">spw</span></code> are both unset, the method will just look at
@@ -524,10 +934,10 @@ requested data type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>column</strong> – Name of column in MS</p></li>
-<li><p><strong>source</strong> – Source names (comma separated name selection string) to
+<li><p><strong>column</strong> -- Name of column in MS</p></li>
+<li><p><strong>source</strong> -- Source names (comma separated name selection string) to
 filter for. If unset, all sources will be used.</p></li>
-<li><p><strong>spw</strong> – Spectral windows (comma separated real spw ID selection string)
+<li><p><strong>spw</strong> -- Spectral windows (comma separated real spw ID selection string)
 to filter for. If unset, all real spw IDs will be used.</p></li>
 </ul>
 </dd>
@@ -548,17 +958,17 @@ calibrator: BandToBand (B2B) or BandwidthSwitching (BWSW).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><ul class="simple">
-<li><p>‘B2B’ if the ratio of frequencies between on-source and reference spws is above 1.661;</p></li>
-<li><p>’BWSW’ if the ratio of bandwidths between reference and on-source is above 1.5;</p></li>
+<li><p>'B2B' if the ratio of frequencies between on-source and reference spws is above 1.661;</p></li>
+<li><p>'BWSW' if the ratio of bandwidths between reference and on-source is above 1.5;</p></li>
 <li><p>None if there are no DIFFGAIN* intents in this MS.</p></li>
 </ul>
 </p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>ValueError if the DIFFGAIN* intents are present in the MS</strong><strong>, </strong><strong>but either</strong> – </p></li>
-<li><p><strong>a. the MS is missing diffgain reference</strong><strong> or </strong><strong>on-source SpWs</strong><strong>, </strong><strong>or</strong> – </p></li>
-<li><p><strong>b. the SpW setup does not match either BandToBand</strong><strong> or </strong><strong>BandwidthSwitching.</strong> – </p></li>
+<li><p><strong>ValueError if the DIFFGAIN* intents are present in the MS</strong><strong>, </strong><strong>but either</strong> -- </p></li>
+<li><p><strong>a. the MS is missing diffgain reference</strong><strong> or </strong><strong>on-source SpWs</strong><strong>, </strong><strong>or</strong> -- </p></li>
+<li><p><strong>b. the SpW setup does not match either BandToBand</strong><strong> or </strong><strong>BandwidthSwitching.</strong> -- </p></li>
 </ul>
 </dd>
 </dl>
@@ -571,16 +981,16 @@ calibrator: BandToBand (B2B) or BandwidthSwitching (BWSW).</p>
 criteria are given, all Fields in the MeasurementSet will be returned.</p>
 <p>Arguments can be given as either single items of the expected type,
 sequences of the expected type, or as comma separated strings in the
-case of name and/or intent. For instance, name could be ‘HOIX’,
-‘HOIX,0841+708’ or (‘HOIX’,’0841+708’).</p>
+case of name and/or intent. For instance, name could be 'HOIX',
+'HOIX,0841+708' or ('HOIX','0841+708').</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>task_arg</strong> – A field selection in CASA format to match.</p></li>
-<li><p><strong>field_id</strong> – Field ID(s) to match.</p></li>
-<li><p><strong>name</strong> – Field name(s) to match.</p></li>
-<li><p><strong>intent</strong> – Select fields that are associated with these intents. If
-set to an empty string or ‘*’, this is the equivalent to all
+<li><p><strong>task_arg</strong> -- A field selection in CASA format to match.</p></li>
+<li><p><strong>field_id</strong> -- Field ID(s) to match.</p></li>
+<li><p><strong>name</strong> -- Field name(s) to match.</p></li>
+<li><p><strong>intent</strong> -- Select fields that are associated with these intents. If
+set to an empty string or '*', this is the equivalent to all
 intents in the measurement set.</p></li>
 </ul>
 </dd>
@@ -592,15 +1002,17 @@ intents in the measurement set.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.get_integration_time_stats">
-<span class="sig-name descname"><span class="pre">get_integration_time_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">science_windows_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stat_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'max'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_integration_time_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.get_integration_time_stats" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_integration_time_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">science_windows_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stat_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'max'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_integration_time_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.get_integration_time_stats" title="Link to this definition"></a></dt>
 <dd><p>Get the given statistcs of integration time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>intent</strong> – The intent of the data of interest.</p></li>
-<li><p><strong>spw</strong> – spw string list - ‘1,7,11,18’.</p></li>
-<li><p><strong>science_windows_only</strong> – Use integration time of science spws only to compute the given statistics.</p></li>
-<li><p><strong>stat_type</strong> – Type of the statistics.</p></li>
+<li><p><strong>intent</strong> -- The intent of the data of interest.</p></li>
+<li><p><strong>spw</strong> -- spw string list - '1,7,11,18'.</p></li>
+<li><p><strong>science_windows_only</strong> -- Use integration time of science spws only to compute the given statistics.</p></li>
+<li><p><strong>stat_type</strong> -- Type of the statistics.</p></li>
+<li><p><strong>band</strong> -- return maximum integration time for the given VLA band.
+Ignored for non-VLA datasets; has no effect in that case. Default is None.default None</p></li>
 </ul>
 </dd>
 </dl>
@@ -617,7 +1029,7 @@ intents in the measurement set.</p></li>
 observing intent(s).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>intent</strong> – Pipeline intent(s) to convert.</p>
+<dd class="field-odd"><p><strong>intent</strong> -- Pipeline intent(s) to convert.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Set of original CASA intent(s) (obs_modes) corresponding to given
@@ -629,7 +1041,7 @@ Pipeline intent(s).</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.get_representative_source_spw">
 <span class="sig-name descname"><span class="pre">get_representative_source_spw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_spwid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_representative_source_spw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.get_representative_source_spw" title="Link to this definition"></a></dt>
-<dd><p>Get the representative target source object:</p>
+<dd><p>Get the representative target source object.</p>
 <ul class="simple">
 <li><p>Use user name if <code class="docutils literal notranslate"><span class="pre">source_name</span></code> is supplied by user and it has TARGET intent.</p></li>
 <li><p>Otherwise, use the source defined in the ASDM SBSummary table if it has TARGET intent.</p></li>
@@ -638,8 +1050,8 @@ Pipeline intent(s).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>source_name</strong> – A string with the source name, or None for an automatic selection.</p></li>
-<li><p><strong>source_spwid</strong> – An int with the spw id, or None for an automatic selection.</p></li>
+<li><p><strong>source_name</strong> -- A string with the source name, or None for an automatic selection.</p></li>
+<li><p><strong>source_spwid</strong> -- An int with the spw id, or None for an automatic selection.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -659,14 +1071,14 @@ Scans in the MeasurementSet will be returned.</p>
 <p>Criteria arguments can be given as either single items of the expected
 type, sequences of the expected type, or in the case of intent or spw,
 as a comma-separated values string. For example, intent could be
-‘ATMOSPHERE’, ‘ATMOSPHERE,BANDPASS’, or (‘ATMOSPHERE’, ‘BANDPASS’).</p>
+'ATMOSPHERE', 'ATMOSPHERE,BANDPASS', or ('ATMOSPHERE', 'BANDPASS').</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scan_id</strong> – Scan ID(s) to match.</p></li>
-<li><p><strong>scan_intent</strong> – Intent(s) to match.</p></li>
-<li><p><strong>field</strong> – Field(s) to match, as field selection in CASA format.</p></li>
-<li><p><strong>spw</strong> – Spectral window(s) to match.</p></li>
+<li><p><strong>scan_id</strong> -- Scan ID(s) to match.</p></li>
+<li><p><strong>scan_intent</strong> -- Intent(s) to match.</p></li>
+<li><p><strong>field</strong> -- Field(s) to match, as field selection in CASA format.</p></li>
+<li><p><strong>spw</strong> -- Spectral window(s) to match.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -688,13 +1100,13 @@ as a comma-separated values string. For example, intent could be
 The identifier can be provided as an integer or string of integer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>spw_id</strong> – Numerical identifier of spectral window to match.</p>
+<dd class="field-odd"><p><strong>spw_id</strong> -- Numerical identifier of spectral window to match.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>SpectralWindow object for spectral window matching the identifier.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>KeyError if no matching spectral window is found for given identifier.</strong> – </p>
+<dd class="field-odd"><p><strong>KeyError if no matching spectral window is found for given identifier.</strong> -- </p>
 </dd>
 </dl>
 </dd></dl>
@@ -713,17 +1125,17 @@ as a list of SpectralWindowWithChannelSelection objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>task_arg</strong> – Spectral window selection to match, as either single
+<li><p><strong>task_arg</strong> -- Spectral window selection to match, as either single
 integer ID, or one-or-more IDs in CASA-style string format.</p></li>
-<li><p><strong>with_channels</strong> – If True, return spectral window with channel selection.</p></li>
-<li><p><strong>num_channels</strong> – Optional list of spectral window sizes in number of
+<li><p><strong>with_channels</strong> -- If True, return spectral window with channel selection.</p></li>
+<li><p><strong>num_channels</strong> -- Optional list of spectral window sizes in number of
 channels; if set, only return spectral windows whose number of
 channels matches any of the given sizes.</p></li>
-<li><p><strong>science_windows_only</strong> – If True, only return “science” spectral
+<li><p><strong>science_windows_only</strong> -- If True, only return &quot;science&quot; spectral
 windows, aka spectral windows associated with science intents.</p></li>
-<li><p><strong>spectralspecs</strong> – Optional list of spectral specs; if set, only return
+<li><p><strong>spectralspecs</strong> -- Optional list of spectral specs; if set, only return
 spectral windows associated with given spectral specs.</p></li>
-<li><p><strong>intent</strong> – Optional string of comma-separated intents; if set, only
+<li><p><strong>intent</strong> -- Optional string of comma-separated intents; if set, only
 return spectral windows that observed given intent(s).</p></li>
 </ul>
 </dd>
@@ -740,7 +1152,7 @@ for given search criteria.</p>
 <dd><p>Return State in MeasurementSet matching the given identifier.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>state_id</strong> – Numerical identifier of state to search for.</p>
+<dd class="field-odd"><p><strong>state_id</strong> -- Numerical identifier of state to search for.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>State object associated with matched identifier, or None if no match
@@ -751,13 +1163,13 @@ was found.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.get_times_on_source_per_field_id">
-<span class="sig-name descname"><span class="pre">get_times_on_source_per_field_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_times_on_source_per_field_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.get_times_on_source_per_field_id" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_times_on_source_per_field_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">np.float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_times_on_source_per_field_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.get_times_on_source_per_field_id" title="Link to this definition"></a></dt>
 <dd><p>Return on-source time for given field ID(s) and intent(s).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>field</strong> – Field name(s) to return times for.</p></li>
-<li><p><strong>intent</strong> – Intent(s) to filter for.</p></li>
+<li><p><strong>field</strong> -- Field name(s) to return times for.</p></li>
+<li><p><strong>intent</strong> -- Intent(s) to filter for.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -768,26 +1180,27 @@ was found.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.get_vla_baseband_spws">
-<span class="sig-name descname"><span class="pre">get_vla_baseband_spws</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">science_windows_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_select_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_vla_baseband_spws"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.get_vla_baseband_spws" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_vla_baseband_spws</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">science_windows_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_select_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_vla_baseband_spws"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.get_vla_baseband_spws" title="Link to this definition"></a></dt>
 <dd><p>Get the SPW information from individual VLA band/baseband.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>science_windows_only</strong> (<em>bool, optional</em>) – Defaults to True.</p></li>
-<li><p><strong>return_select_list</strong> (<em>bool, optional</em>) – return spw list of each baseband. Defaults to True.</p></li>
-<li><p><strong>warning</strong> (<em>bool, optional</em>) – Defaults to True.</p></li>
+<li><p><strong>science_windows_only</strong> -- Whether to include only science spectral windows.</p></li>
+<li><p><strong>return_select_list</strong> -- Whether to return SPW list of each baseband instead of full band/subband info.</p></li>
+<li><p><strong>warning</strong> -- Whether to log warnings for parsing errors.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>spws info of individual basebands as baseband_spws[band][baseband]
-baseband_spws_list: spw_list of individual basebands</p>
-<blockquote>
-<div><p>e.g., [[0,1,2,3],[4,5,6,7]]</p>
-</div></blockquote>
+<dd class="field-even"><p><dl class="simple">
+<dt>Dictionary with SPW info organized as baseband_spws[band][baseband], where each</dt><dd><p>entry contains a list of spw info as {spwid, (min_freq, max_freq, mean_freq, chan_width)}.</p>
+</dd>
+<dt>If return_select_list is True:</dt><dd><p>List of SPW ID lists for each band.baseband, e.g., [[0,1,2,3], [4,5,6,7]].</p>
+</dd>
+</dl>
 </p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>baseband_spws</p>
+<dd class="field-odd"><p>If return_select_list is False</p>
 </dd>
 </dl>
 </dd></dl>
@@ -798,7 +1211,7 @@ baseband_spws_list: spw_list of individual basebands</p>
 <dd><p>Get all VLA correlation labels as a list of string from selected spw(s).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>spw</strong> – a spw selection string or None. Defaults to None.</p>
+<dd class="field-odd"><p><strong>spw</strong> -- a spw selection string or None. Defaults to None.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a list of correlation labels.</p>
@@ -840,7 +1253,7 @@ baseband_spws_list: spw_list of individual basebands</p>
 <dd><p>Find field spws for VLA</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>spwlist</strong> (<em>List, optional</em>) – list of string spws   [‘1’, ‘2’, ‘3’]</p>
+<dd class="field-odd"><p><strong>spwlist</strong> (<em>List</em><em>, </em><em>optional</em>) -- list of string spws   ['1', '2', '3']</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of dictionaries</p>
@@ -870,14 +1283,14 @@ baseband_spws_list: spw_list of individual basebands</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.get_vla_spw2band">
-<span class="sig-name descname"><span class="pre">get_vla_spw2band</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_vla_spw2band"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.get_vla_spw2band" title="Link to this definition"></a></dt>
-<dd><p>Find field spws for VLA</p>
+<span class="sig-name descname"><span class="pre">get_vla_spw2band</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_vla_spw2band"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.get_vla_spw2band" title="Link to this definition"></a></dt>
+<dd><p>Find spectral windows id-to-band mapping for VLA.</p>
+<p>Creat spw id-to-band mapping from spw names or derives it from reference frequency
+when name parsing fails. Handles special cases for KU and KA band naming conventions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dictionary with each string key spw index giving a single letter string value of the band</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>spw2band</p>
+<dd class="field-odd"><p>Dictionary mapping spectral window IDs to single-letter band codes (e.g., '4', 'P', 'L',
+'S', 'C', 'X', 'U', 'K', 'A', 'Q').</p>
 </dd>
 </dl>
 </dd></dl>
@@ -891,10 +1304,10 @@ baseband_spws_list: spw_list of individual basebands</p>
 </dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>spwlist</strong> (<em>List, optional</em>) – list of string spws   [‘1’, ‘2’, ‘3’]</p>
+<dd class="field-odd"><p><strong>spwlist</strong> (<em>List</em><em>, </em><em>optional</em>) -- list of string spws   ['1', '2', '3']</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>CASA argument format of spws:channels    ‘0:10~80, 1:15~60, 2:30~70’</p>
+<dd class="field-even"><p>CASA argument format of spws:channels    '0:10~80, 1:15~60, 2:30~70'</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tst_bpass_spws</p>
@@ -915,7 +1328,7 @@ baseband_spws_list: spw_list of individual basebands</p>
 <p>Criteria adopted from PIPE-2084: an MS is deemed to be for band-to-band
 interferometry if either the observing mode declares it as band-to-band,
 or if the diffgain intent + SpW setup are consistent with band-to-band.
-The latter covers datasets that don’t have correct observing mode set in
+The latter covers datasets that don't have correct observing mode set in
 their metadata.</p>
 </dd></dl>
 
@@ -924,38 +1337,40 @@ their metadata.</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reference_antenna</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pipeline.domain.MeasurementSet.reference_antenna" title="Link to this definition"></a></dt>
 <dd><p>Get the reference antenna list for this MS. The refant value is
 a comma-separated string.</p>
-<p>Example: ‘DV01,DV02,DV03’</p>
+<p>Example: 'DV01,DV02,DV03'</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.session">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">session</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.session" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id0">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">session</span></span><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
 <dd><p>Return name of session associated with this measurement set.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.set_data_column">
-<span class="sig-name descname"><span class="pre">set_data_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.datatype.DataType.html#pipeline.domain.datatype.DataType" title="pipeline.domain.datatype.DataType"><span class="pre">DataType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.set_data_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.set_data_column" title="Link to this definition"></a></dt>
-<dd><p>Set data type and column.</p>
+<span class="sig-name descname"><span class="pre">set_data_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.DataType.html#pipeline.domain.DataType" title="pipeline.domain.DataType"><span class="pre">DataType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_to_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.set_data_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.set_data_column" title="Link to this definition"></a></dt>
+<dd><p>Assign a data type to a column in the MS domain object.</p>
 <p>Set data type and column to MS domain object and record the available
 data types per (source,spw) tuple. If source or spw are unset, they
 will be expanded to all available values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dtype</strong> – data type to set</p></li>
-<li><p><strong>column</strong> – name of column in MS associated with the data type</p></li>
-<li><p><strong>source</strong> – source name selection string (comma separated names). If
+<li><p><strong>dtype</strong> -- data type to set</p></li>
+<li><p><strong>column</strong> -- name of column in MS associated with the data type</p></li>
+<li><p><strong>source</strong> -- source name selection string (comma separated names). If
 unset, all sources will be used.</p></li>
-<li><p><strong>spw</strong> – real spectral window selection string (string of comma
+<li><p><strong>spw</strong> -- real spectral window selection string (string of comma
 separated IDs). If unset, all real spw IDs will be used.</p></li>
-<li><p><strong>overwrite</strong> – if True existing data colum is overwritten by the new
+<li><p><strong>overwrite</strong> -- if True existing data colum is overwritten by the new
 column. If False and if type is already associated with other
 column, the function raises ValueError.</p></li>
+<li><p><strong>save_to_ms</strong> (<em>bool</em><em>, </em><em>optional</em>) -- If True, persists the datatype-to-column mapping
+to the MS history subtable. Defaults to True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – An error raised when the column does not exist
+<dd class="field-even"><p><strong>ValueError</strong> -- An error raised when the column does not exist
     or the type is already associated with a column or the
     column is already assigned to a type and would not
     be overwritten.</p>
@@ -963,10 +1378,29 @@ column, the function raises ValueError.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.set_data_type_dicts">
+<span class="sig-name descname"><span class="pre">set_data_type_dicts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_type_per_column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_types_per_source_and_spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.set_data_type_dicts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet.set_data_type_dicts" title="Link to this definition"></a></dt>
+<dd><p>Set the data type lookup dictionaries directly without writing new
+MS HISTORY entries as they would already exist when calling this
+method. Also do not auto-generate the per source and spw lookup
+dictionary from the per column information since it might have a
+sparse structure (e.g. selfcal use case).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_type_per_column</strong> -- Data type per column lookup dictionary</p></li>
+<li><p><strong>data_types_per_source_and_spw</strong> -- Data type per source and spw
+lookup dictionary.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.start_time">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#pipeline.domain.MeasurementSet.start_time" title="Link to this definition"></a></dt>
-<dd><p>Return start time for this measurement set as CASA ‘epoch’ measure dictionary.</p>
+<dd><p>Return start time for this measurement set as CASA 'epoch' measure dictionary.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -976,8 +1410,8 @@ column, the function raises ValueError.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ants_to_demote</strong> – Set of antenna names to demote.</p></li>
-<li><p><strong>ants_to_remove</strong> – Set of antenna names to remove.</p></li>
+<li><p><strong>ants_to_demote</strong> -- Set of antenna names to demote.</p></li>
+<li><p><strong>ants_to_remove</strong> -- Set of antenna names to remove.</p></li>
 </ul>
 </dd>
 </dl>
@@ -998,7 +1432,7 @@ column, the function raises ValueError.</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

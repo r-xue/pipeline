@@ -27,25 +27,19 @@
       hifv_flagdata
       hifv_flagtargetsdata
       hifv_fluxboot
-      hifv_gaincurves
       hifv_hanning
       hifv_importdata
       hifv_mstransform
-      hifv_opcal
       hifv_pbcor
       hifv_plotsummary
       hifv_priorcals
       hifv_restoredata
       hifv_restorepims
-      hifv_rqcal
       hifv_selfcal
       hifv_semiFinalBPdcals
       hifv_solint
       hifv_statwt
-      hifv_swpowcal
       hifv_syspower
-      hifv_targetflag
-      hifv_tecmaps
       hifv_testBPdcals
       hifv_vlasetjy
       hifv_vlassmasking

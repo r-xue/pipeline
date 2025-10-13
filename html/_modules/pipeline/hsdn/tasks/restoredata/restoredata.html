@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsdn.tasks.restoredata.restoredata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -121,19 +159,18 @@
 <span class="sd">flagging and calibration data products.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.h.tasks.restoredata.restoredata</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">restoredata</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.applycal</span><span class="w"> </span><span class="kn">import</span> <span class="n">ApplycalResults</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hsd.tasks.applycal</span><span class="w"> </span><span class="kn">import</span> <span class="n">applycal</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">task_registry</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="kn">import</span> <span class="n">ResultsList</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">ampcal</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">..importdata</span><span class="w"> </span><span class="kn">import</span> <span class="n">importdata</span> <span class="k">as</span> <span class="n">importdata</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">ampcal</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -159,11 +196,11 @@
 <span class="sd">            vis: List of raw visibility data files to be restored.</span>
 <span class="sd">                Assumed to be in the directory specified by rawdata_dir.</span>
 
-<span class="sd">                Example: vis=[&#39;mg2.ms&#39;]</span>
+<span class="sd">                Example: ``vis=[&#39;mg2.ms&#39;]``</span>
 
 <span class="sd">            caltable: Name of output gain calibration tables.</span>
 
-<span class="sd">                Example: caltable=&#39;ngc5921.gcal&#39;</span>
+<span class="sd">                Example: ``caltable=&#39;ngc5921.gcal&#39;``</span>
 
 <span class="sd">            reffile: Path to a file containing scaling factors between beams.</span>
 <span class="sd">                The format is equals to jyperk.csv with five fields:</span>
@@ -197,26 +234,26 @@
 <span class="sd">                If no file name is specified or specified file doesn&#39;t exist,</span>
 <span class="sd">                all the factors are set to 1.0.</span>
 
-<span class="sd">                Example: reffile=&#39;&#39;, reffile=&#39;nroscalefile.csv&#39;</span>
+<span class="sd">                Example: ``reffile=&#39;&#39;``, ``reffile=&#39;nroscalefile.csv&#39;``</span>
 
 <span class="sd">            products_dir: Name of the data products directory.</span>
 
-<span class="sd">                Example: products_dir=&#39;myproductspath&#39;</span>
+<span class="sd">                Example: ``products_dir=&#39;myproductspath&#39;``</span>
 
-<span class="sd">                Default: None (equivalent to &#39;../products&#39;)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;../products&#39;``)</span>
 
 <span class="sd">            copytoraw: Copy calibration and flagging tables to</span>
 <span class="sd">                raw data directory.</span>
 
-<span class="sd">                Example: copytoraw=False</span>
+<span class="sd">                Example: ``copytoraw=False``</span>
 
-<span class="sd">                Default: None (equivalent to True)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``True``)</span>
 
 <span class="sd">            rawdata_dir: Name of the raw data directory.</span>
 
-<span class="sd">                Example: rawdata_dir=&#39;myrawdatapath&#39;</span>
+<span class="sd">                Example: ``rawdata_dir=&#39;myrawdatapath&#39;``</span>
 
-<span class="sd">                Default: None (equivalent to &#39;../rawdata&#39;)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;../rawdata&#39;``)</span>
 
 <span class="sd">            output_dir: the working directory for the restored data</span>
 
@@ -224,12 +261,12 @@
 <span class="sd">                Two analysis modes, time-domain analysis (&#39;time&#39;) and</span>
 <span class="sd">                direction analysis (&#39;direction&#39;), are available.</span>
 
-<span class="sd">                Default: None (equivalent to &#39;time&#39;)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;time&#39;``)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">NRORestoreDataInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">products_dir</span><span class="o">=</span><span class="n">products_dir</span><span class="p">,</span>
-                                                   <span class="n">copytoraw</span><span class="o">=</span><span class="n">copytoraw</span><span class="p">,</span> <span class="n">rawdata_dir</span><span class="o">=</span><span class="n">rawdata_dir</span><span class="p">,</span>
-                                                   <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">products_dir</span><span class="o">=</span><span class="n">products_dir</span><span class="p">,</span>
+                         <span class="n">copytoraw</span><span class="o">=</span><span class="n">copytoraw</span><span class="p">,</span> <span class="n">rawdata_dir</span><span class="o">=</span><span class="n">rawdata_dir</span><span class="p">,</span>
+                         <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">caltable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reffile</span> <span class="o">=</span> <span class="n">reffile</span>
@@ -388,7 +425,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

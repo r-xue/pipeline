@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.cli.hifa_antpos &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../_static/favicon-16x16.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -113,9 +151,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hifa.cli.hifa_antpos</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.h.cli.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.h.cli.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
 
 
 <span class="c1"># docstring and type hints: inherits from hifa.tasks.antpos.almaantpos.ALMAAntposInputs.__init__</span>
@@ -123,35 +159,35 @@
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.cli.hifa_antpos.html#pipeline.hifa.cli.hifa_antpos">[docs]</a>
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">hifa_antpos</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_antpos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antposfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Derive an antenna position calibration table</span>
+                <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">snr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">search</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Derive antenna position calibration tables for a list of MeasurementSets.</span>
 
-<span class="sd">    The hifa_antpos task corrects the antenna positions recorded in the ASDMs using</span>
-<span class="sd">    updated antenna position calibration information determined after the</span>
-<span class="sd">    observation was taken.</span>
+<span class="sd">    The `hifa_antpos` task corrects antenna positions recorded in the ASDMs using</span>
+<span class="sd">    updated calibration information obtained after the observation. Corrections can</span>
+<span class="sd">    be input by hand, read from a file on disk, or by querying an ALMA database service.</span>
 
-<span class="sd">    Corrections can be input by hand, read from a file on disk, or in the future</span>
-<span class="sd">    by querying an ALMA database service.</span>
+<span class="sd">    The `antposfile` parameter serves a dual purpose, depending on which mode is set.</span>
 
-<span class="sd">    The antenna positions file is in &#39;csv&#39; format containing 6 comma-delimited</span>
-<span class="sd">    columns as shown below. This file should not include blank lines, including</span>
-<span class="sd">    after the end of the last entry. The default name of this file is &#39;antennapos.csv&#39;.</span>
+<span class="sd">    For `hm_antpos=&#39;file&#39;`, `antposfile` defines the antenna positions file in &#39;csv&#39; format containing</span>
+<span class="sd">    6 comma-delimited columns as shown below. This file should not include blank lines, including</span>
+<span class="sd">    after the end of the last entry. This parameter is required for `hm_antpos=&#39;file&#39;`.</span>
 
-<span class="sd">    Example of contents for an &#39;antennapos.csv&#39; file::</span>
+<span class="sd">    Example of contents for a .csv file::</span>
 
-<span class="sd">        ms,antenna,xoffset,yoffset,zoffset,comment</span>
-<span class="sd">        uid___A002_X30a93d_X43e.ms,DV11,0.000,0.010,0.000,&quot;No comment&quot;</span>
-<span class="sd">        uid___A002_X30a93d_X43e.dup.ms,DV11,0.000,-0.010,0.000,&quot;No comment&quot;</span>
+<span class="sd">        ms, antenna, xoffset, yoffset, zoffset, comment</span>
+<span class="sd">        uid___A002_X30a93d_X43e.ms, DV11, 0.000, 0.010, 0.000, &#39;No comment&#39;</span>
+<span class="sd">        uid___A002_X30a93d_X43e.dup.ms, DV11, 0.000, -0.010, 0.000, &#39;No comment&#39;</span>
 
 <span class="sd">    The offset values in this file are in meters.</span>
+
+<span class="sd">    For `hm_antpos=&#39;online&#39;`, `antposfile` defines the base outfile name used by the CASA tasks</span>
+<span class="sd">    `getantposalma` and `gencal` with the MS basename prepended to it. The file must be in JSON format.</span>
+<span class="sd">    If no value is set, it will default to `antennapos.json`.</span>
 
 <span class="sd">    The corrections are used to generate a calibration table which is recorded</span>
 <span class="sd">    in the pipeline context and applied to the raw visibility data, on the fly to</span>
 <span class="sd">    generate other calibration tables, or permanently to generate calibrated</span>
 <span class="sd">    visibilities for imaging.</span>
-
-<span class="sd">    Note: the ``hm_antpos`` &#39;online&#39; option will be implemented when the</span>
-<span class="sd">    observing system provides an antenna position determination service.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The results object for the pipeline task is returned.</span>
@@ -169,28 +205,14 @@
 
 <span class="sd">        &gt;&gt;&gt; hifa_antpos(hm_antpos=&#39;file&#39;, antposfile=&#39;myantposfile.csv&#39;)</span>
 
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1">##########################################################################</span>
-    <span class="c1">#                                                                        #</span>
-    <span class="c1">#  CASA task interface boilerplate code starts here. No edits should be  #</span>
-    <span class="c1">#  needed beyond this point.                                             #</span>
-    <span class="c1">#                                                                        #</span>
-    <span class="c1">##########################################################################</span>
+<span class="sd">        3. Correct the position of antennas for all the visibility files in a single</span>
+<span class="sd">        pipeline run using antenna positions retrieved from DB, limiting the selection</span>
+<span class="sd">        to antennas with S/N of 5.0 or more and using the &#39;both_closest&#39; search algorithm.</span>
+<span class="sd">        A JSON file is returned and fed into the gencal task to apply corrections.</span>
 
-    <span class="c1"># create a dictionary containing all the arguments given in the</span>
-    <span class="c1"># constructor</span>
-    <span class="n">all_inputs</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">()</span>
+<span class="sd">        &gt;&gt;&gt; hifa_antpos(hm_antpos=&#39;online&#39;, snr=5.0, search=&#39;both_closest&#39;)</span>
 
-    <span class="c1"># get the name of this function for the weblog, eg. &#39;hif_flagdata&#39;</span>
-    <span class="n">task_name</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">_getframe</span><span class="p">()</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_name</span>
-
-    <span class="c1"># get the context on which this task operates</span>
-    <span class="n">context</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_context</span><span class="p">()</span>
-
-    <span class="c1"># execute the task</span>
-    <span class="n">results</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">execute_task</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">task_name</span><span class="p">,</span> <span class="n">all_inputs</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">results</span></div>
+<span class="sd">    &quot;&quot;&quot;</span></div>
 
 </pre></div>
 
@@ -201,7 +223,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

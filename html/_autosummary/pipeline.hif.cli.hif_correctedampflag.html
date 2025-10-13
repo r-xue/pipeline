@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.cli.hif_correctedampflag &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -122,41 +123,39 @@
 <dt class="sig sig-object py" id="pipeline.hif.cli.hif_correctedampflag">
 <span class="sig-name descname"><span class="pre">hif_correctedampflag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antnegsig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antpossig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmantint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmbl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antblnegsig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antblpossig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relaxed_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">niter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultsList</span><span class="p"><span class="pre">[</span></span><span class="pre">Results</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_correctedampflag.html#hif_correctedampflag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.cli.hif_correctedampflag" title="Link to this definition"></a></dt>
 <dd><p>Flag corrected - model amplitudes based on calibrators.</p>
-<p>This task computes the flagging heuristics on a calibrator by calling hif_correctedampflag
-which looks for outlier visibility points by statistically examining the scalar
+<p><code class="docutils literal notranslate"><span class="pre">hif_correctedampflag</span></code> looks for outlier visibility points by statistically examining the scalar
 difference of corrected amplitudes minus model amplitudes, and flags those outliers.
 The philosophy is that only outlier data points that have remained outliers after
 calibration will be flagged. The heuristic works equally well on resolved calibrators
 and point sources because it is not performing a vector difference, and thus is not
 sensitive to nulls in the flux density vs. uvdistance domain. Note that the phase of
 the data is not assessed.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
-<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
-‘’: use all MeasurementSets in the context</p>
-<p>Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p>
-</li>
-<li><p><strong>intent</strong> – A string containing a comma delimited list of intents against which the selected fields are matched. If undefined (default),
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> -- <p>The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the <cite>hifa_importdata</cite> and <cite>hifv_importdata</cite>.</p>
+<p>Examples: <code class="docutils literal notranslate"><span class="pre">'ngc5921.ms'</span></code>, <code class="docutils literal notranslate"><span class="pre">['ngc5921a.ms',</span> <span class="pre">ngc5921b.ms',</span> <span class="pre">'ngc5921c.ms']</span></code></p>
+</p></li>
+<li><p><strong>intent</strong> -- <p>A string containing a comma delimited list of intents against which the selected fields are matched. If undefined (default),
 it will select all data with the BANDPASS intent.</p>
-<p>Example: intent=’<cite>*PHASE*</cite>’</p>
-</li>
-<li><p><strong>field</strong> – The list of field names or field ids for which bandpasses are computed. If undefined (default), it will select all fields.</p>
-<p>Examples: field=’3C279’, ‘3C279, M82’</p>
-</li>
-<li><p><strong>spw</strong> – The list of spectral windows and channels for which bandpasses are computed. If undefined (default), it will select all
+<p>Example: <code class="docutils literal notranslate"><span class="pre">intent='*PHASE*'</span></code></p>
+</p></li>
+<li><p><strong>field</strong> -- <p>The list of field names or field ids for which bandpasses are computed. If undefined (default), it will select all fields.</p>
+<p>Examples: <code class="docutils literal notranslate"><span class="pre">'3C279'</span></code>, <code class="docutils literal notranslate"><span class="pre">'3C279,</span> <span class="pre">M82'</span></code></p>
+</p></li>
+<li><p><strong>spw</strong> -- <p>The list of spectral windows and channels for which bandpasses are computed. If undefined (default), it will select all
 science spectral windows.</p>
-<p>Example: spw=’11,13,15,17’</p>
-</li>
-<li><p><strong>antnegsig</strong> – Lower sigma threshold for identifying outliers as a result of bad antennas within individual timestamps</p></li>
-<li><p><strong>antpossig</strong> – Upper sigma threshold for identifying outliers as a result of bad antennas within individual timestamps</p></li>
-<li><p><strong>tmantint</strong> – Threshold for maximum fraction of timestamps that are allowed to contain outliers</p></li>
-<li><p><strong>tmint</strong> – Initial threshold for maximum fraction of “outlier timestamps” over “total timestamps” that a baseline may be a part of</p></li>
-<li><p><strong>tmbl</strong> – Initial threshold for maximum fraction of “bad baselines” over “all timestamps” that an antenna may be a part of</p></li>
-<li><p><strong>antblnegsig</strong> – Lower sigma threshold for identifying outliers as a result of “bad baselines” and/or “bad antennas” within baselines (across all timestamps)</p></li>
-<li><p><strong>antblpossig</strong> – Upper sigma threshold for identifying outliers as a result of “bad baselines” and/or “bad antennas” within baselines (across all timestamps)</p></li>
-<li><p><strong>relaxed_factor</strong> – Relaxed value to set the threshold scaling factor to under certain conditions (see task description)</p></li>
-<li><p><strong>niter</strong> – Maximum number of times to iterate on evaluation of flagging heuristics. If an iteration results in no new flags, then
+<p>Example: <code class="docutils literal notranslate"><span class="pre">spw='11,13,15,17'</span></code></p>
+</p></li>
+<li><p><strong>antnegsig</strong> -- Lower sigma threshold for identifying outliers as a result of bad antennas within individual timestamps</p></li>
+<li><p><strong>antpossig</strong> -- Upper sigma threshold for identifying outliers as a result of bad antennas within individual timestamps</p></li>
+<li><p><strong>tmantint</strong> -- Threshold for maximum fraction of timestamps that are allowed to contain outliers</p></li>
+<li><p><strong>tmint</strong> -- Initial threshold for maximum fraction of &quot;outlier timestamps&quot; over &quot;total timestamps&quot; that a baseline may be a part of</p></li>
+<li><p><strong>tmbl</strong> -- Initial threshold for maximum fraction of &quot;bad baselines&quot; over &quot;all timestamps&quot; that an antenna may be a part of</p></li>
+<li><p><strong>antblnegsig</strong> -- Lower sigma threshold for identifying outliers as a result of &quot;bad baselines&quot; and/or &quot;bad antennas&quot; within baselines (across all timestamps)</p></li>
+<li><p><strong>antblpossig</strong> -- Upper sigma threshold for identifying outliers as a result of &quot;bad baselines&quot; and/or &quot;bad antennas&quot; within baselines (across all timestamps)</p></li>
+<li><p><strong>relaxed_factor</strong> -- Relaxed value to set the threshold scaling factor to under certain conditions (see task description)</p></li>
+<li><p><strong>niter</strong> -- Maximum number of times to iterate on evaluation of flagging heuristics. If an iteration results in no new flags, then
 subsequent iterations are skipped.</p></li>
 </ul>
 </dd>
@@ -184,7 +183,7 @@ subsequent iterations are skipped.</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

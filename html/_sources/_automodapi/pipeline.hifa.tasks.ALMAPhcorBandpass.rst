@@ -5,13 +5,3 @@ ALMAPhcorBandpass
 
 .. autoclass:: ALMAPhcorBandpass
    :show-inheritance:
-
-   .. rubric:: Methods Summary
-
-   .. autosummary::
-
-      ~ALMAPhcorBandpass.prepare
-
-   .. rubric:: Methods Documentation
-
-   .. automethod:: prepare

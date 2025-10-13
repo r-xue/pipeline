@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.renorm.renorm &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -198,23 +236,23 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            context: Pipeline context object containing state information.</span>
 
 <span class="sd">            vis: List of input MeasurementSets. Defaults to the list of</span>
 <span class="sd">                MeasurementSets specified in the pipeline context.</span>
 
-<span class="sd">                Example: vis=[&#39;ngc5921.ms&#39;]</span>
+<span class="sd">                Example: ``vis=[&#39;ngc5921.ms&#39;]``</span>
 
 <span class="sd">            createcaltable: Boolean to select whether to create the renormalization</span>
 <span class="sd">                correction cal table (True), or only run the assessment</span>
 <span class="sd">                (False, default).</span>
 
-<span class="sd">                Example: createcaltable=True</span>
+<span class="sd">                Example: ``createcaltable=True``</span>
 
 <span class="sd">            threshold: Apply correction if max correction is above this threshold</span>
-<span class="sd">                value and ``apply`` = True. Default is 1.02 (i.e. 2%).</span>
+<span class="sd">                value and ``apply= True``. Default is 1.02 (i.e. 2%).</span>
 
-<span class="sd">                Example: threshold=1.02</span>
+<span class="sd">                Example: ``threshold=1.02``</span>
 
 <span class="sd">            spw: The list of real (not virtual - i.e. the actual spwIDs in</span>
 <span class="sd">                the MS) spectral windows to evaluate.</span>
@@ -226,8 +264,8 @@
 
 <span class="sd">                Examples:</span>
 
-<span class="sd">                - spw=&quot;11,13,15,17&quot;</span>
-<span class="sd">                - spw=[&quot;11,13,15,17&quot;, &quot;5,7,11,13&quot;]</span>
+<span class="sd">                - ``spw=&#39;11,13,15,17&#39;`</span>
+<span class="sd">                - ``spw=[&#39;11,13,15,17&#39;, &#39;5,7,11,13&#39;]``</span>
 
 <span class="sd">            excludechan: Channels to exclude in either channel or frequency space</span>
 <span class="sd">                (TOPO, GHz), specifying the real (not virtual) spectral</span>
@@ -238,9 +276,9 @@
 
 <span class="sd">                Examples:</span>
 
-<span class="sd">                - excludechan={&#39;22&#39;:&#39;100~150;800~850&#39;, &#39;24&#39;:&#39;100~200&#39;}</span>
-<span class="sd">                - excludechan={&#39;22&#39;:&#39;230.1GHz~230.2GHz&#39;}</span>
-<span class="sd">                - excludechan=[{&#39;22&#39;:&#39;100~150&#39;}, {&#39;15&#39;:&#39;100~150&#39;}]</span>
+<span class="sd">                - ``excludechan={&#39;22&#39;:&#39;100~150;800~850&#39;, &#39;24&#39;:&#39;100~200&#39;}``</span>
+<span class="sd">                - ``excludechan={&#39;22&#39;:&#39;230.1GHz~230.2GHz&#39;}``</span>
+<span class="sd">                - ``excludechan=[{&#39;22&#39;:&#39;100~150&#39;}, {&#39;15&#39;:&#39;100~150&#39;}]``</span>
 
 <span class="sd">            atm_auto_exclude: Automatically find and exclude regions with atmospheric</span>
 <span class="sd">                features. Default is False</span>
@@ -251,11 +289,15 @@
 <span class="sd">                due to needing potentially various &#39;nsegments&#39; when EBs</span>
 <span class="sd">                have very different SPW bandwidths.</span>
 
-<span class="sd">                Example: bwthreshspw={&#39;16: 64e6, &#39;22: 64e6}</span>
+<span class="sd">                Example: ``bwthreshspw={&#39;16: 64e6, &#39;22: 64e6}``</span>
 
 <span class="sd">            caltable:</span>
 
-<span class="sd">            parallel: Execute using CASA HPC functionality, if available.</span>
+<span class="sd">            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.</span>
+
+<span class="sd">                Options: ``&#39;automatic&#39;``, ``&#39;true&#39;``, ``&#39;false&#39;``, ``True``, ``False``</span>
+
+<span class="sd">                Default: ``None`` (equivalent to ``antomatic``)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -411,7 +453,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

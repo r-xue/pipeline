@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.FluxMeasurement &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
@@ -164,27 +165,76 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">FluxMeasurement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spw_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">I</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="pipeline.domain.measures.FluxDensity.html#pipeline.domain.measures.FluxDensity" title="pipeline.domain.measures.FluxDensity"><span class="pre">FluxDensity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="pipeline.domain.measures.FluxDensity.html#pipeline.domain.measures.FluxDensity" title="pipeline.domain.measures.FluxDensity"><span class="pre">FluxDensity</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">FluxDensity(0,</span> <span class="pre">FluxDensityUnits.JANSKY)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">U</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="pipeline.domain.measures.FluxDensity.html#pipeline.domain.measures.FluxDensity" title="pipeline.domain.measures.FluxDensity"><span class="pre">FluxDensity</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">FluxDensity(0,</span> <span class="pre">FluxDensityUnits.JANSKY)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">V</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="pipeline.domain.measures.FluxDensity.html#pipeline.domain.measures.FluxDensity" title="pipeline.domain.measures.FluxDensity"><span class="pre">FluxDensity</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">FluxDensity(0,</span> <span class="pre">FluxDensityUnits.JANSKY)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.fluxmeasurement.Decimal.html#pipeline.domain.fluxmeasurement.Decimal" title="decimal.Decimal"><span class="pre">Decimal</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Decimal('0.0')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvmin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.fluxmeasurement.Decimal.html#pipeline.domain.fluxmeasurement.Decimal" title="decimal.Decimal"><span class="pre">Decimal</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Decimal('0.0')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvmax</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.fluxmeasurement.Decimal.html#pipeline.domain.fluxmeasurement.Decimal" title="decimal.Decimal"><span class="pre">Decimal</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Decimal('0.0')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">age</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queried_at</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/fluxmeasurement.html#FluxMeasurement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.FluxMeasurement" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>FluxMeasurement is a logical representation of a flux measurement.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Variables<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>spw_id</strong> – ID of spectral window associated with flux measurement.</p></li>
-<li><p><strong>I</strong> – Stokes I flux density as FluxDensity object.</p></li>
-<li><p><strong>Q</strong> – Stokes Q flux density as FluxDensity object.</p></li>
-<li><p><strong>U</strong> – Stokes U flux density as FluxDensity object.</p></li>
-<li><p><strong>V</strong> – Stokes V flux density as FluxDensity object.</p></li>
-<li><p><strong>spix</strong> – Spectral index of the flux measurement.</p></li>
-<li><p><strong>uvmin</strong> – Scale (in klambda) of the measured (large scale) extent of the
-flux source (if greater than zero).</p></li>
-<li><p><strong>uvmax</strong> – Scale (in klambda) where (small scale) structure has been
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.FluxMeasurement.spw_id">
+<span class="sig-name descname"><span class="pre">spw_id</span></span><a class="headerlink" href="#pipeline.domain.FluxMeasurement.spw_id" title="Link to this definition"></a></dt>
+<dd><p>ID of spectral window associated with flux measurement.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.FluxMeasurement.I">
+<span class="sig-name descname"><span class="pre">I</span></span><a class="headerlink" href="#pipeline.domain.FluxMeasurement.I" title="Link to this definition"></a></dt>
+<dd><p>Stokes I flux density as FluxDensity object.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.FluxMeasurement.Q">
+<span class="sig-name descname"><span class="pre">Q</span></span><a class="headerlink" href="#pipeline.domain.FluxMeasurement.Q" title="Link to this definition"></a></dt>
+<dd><p>Stokes Q flux density as FluxDensity object.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.FluxMeasurement.U">
+<span class="sig-name descname"><span class="pre">U</span></span><a class="headerlink" href="#pipeline.domain.FluxMeasurement.U" title="Link to this definition"></a></dt>
+<dd><p>Stokes U flux density as FluxDensity object.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.FluxMeasurement.V">
+<span class="sig-name descname"><span class="pre">V</span></span><a class="headerlink" href="#pipeline.domain.FluxMeasurement.V" title="Link to this definition"></a></dt>
+<dd><p>Stokes V flux density as FluxDensity object.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.FluxMeasurement.spix">
+<span class="sig-name descname"><span class="pre">spix</span></span><a class="headerlink" href="#pipeline.domain.FluxMeasurement.spix" title="Link to this definition"></a></dt>
+<dd><p>Spectral index of the flux measurement.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.FluxMeasurement.uvmin">
+<span class="sig-name descname"><span class="pre">uvmin</span></span><a class="headerlink" href="#pipeline.domain.FluxMeasurement.uvmin" title="Link to this definition"></a></dt>
+<dd><p>Scale (in klambda) of the measured (large scale) extent of the
+flux source (if greater than zero).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.FluxMeasurement.uvmax">
+<span class="sig-name descname"><span class="pre">uvmax</span></span><a class="headerlink" href="#pipeline.domain.FluxMeasurement.uvmax" title="Link to this definition"></a></dt>
+<dd><p>Scale (in klambda) where (small scale) structure has been
 measured within the flux source, or a limit on the resolved
-structure.</p></li>
-<li><p><strong>origin</strong> – Origin of the flux measurement.</p></li>
-<li><p><strong>age</strong> – Age of the flux measurement.</p></li>
-<li><p><strong>queried_at</strong> – Date-timestamp when flux measurement was queried (e.g. from
-catalog service).</p></li>
-</ul>
-</dd>
-</dl>
+structure.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.FluxMeasurement.origin">
+<span class="sig-name descname"><span class="pre">origin</span></span><a class="headerlink" href="#pipeline.domain.FluxMeasurement.origin" title="Link to this definition"></a></dt>
+<dd><p>Origin of the flux measurement.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.FluxMeasurement.age">
+<span class="sig-name descname"><span class="pre">age</span></span><a class="headerlink" href="#pipeline.domain.FluxMeasurement.age" title="Link to this definition"></a></dt>
+<dd><p>Age of the flux measurement.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.FluxMeasurement.queried_at">
+<span class="sig-name descname"><span class="pre">queried_at</span></span><a class="headerlink" href="#pipeline.domain.FluxMeasurement.queried_at" title="Link to this definition"></a></dt>
+<dd><p>Date-timestamp when flux measurement was queried (e.g. from
+catalog service).</p>
+</dd></dl>
+
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -198,6 +248,43 @@ catalog service).</p></li>
 </tr>
 </tbody>
 </table>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.FluxMeasurement.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spw_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">I</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="pipeline.domain.measures.FluxDensity.html#pipeline.domain.measures.FluxDensity" title="pipeline.domain.measures.FluxDensity"><span class="pre">FluxDensity</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="pipeline.domain.measures.FluxDensity.html#pipeline.domain.measures.FluxDensity" title="pipeline.domain.measures.FluxDensity"><span class="pre">FluxDensity</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">FluxDensity(0,</span> <span class="pre">FluxDensityUnits.JANSKY)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">U</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="pipeline.domain.measures.FluxDensity.html#pipeline.domain.measures.FluxDensity" title="pipeline.domain.measures.FluxDensity"><span class="pre">FluxDensity</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">FluxDensity(0,</span> <span class="pre">FluxDensityUnits.JANSKY)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">V</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="pipeline.domain.measures.FluxDensity.html#pipeline.domain.measures.FluxDensity" title="pipeline.domain.measures.FluxDensity"><span class="pre">FluxDensity</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">FluxDensity(0,</span> <span class="pre">FluxDensityUnits.JANSKY)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.fluxmeasurement.Decimal.html#pipeline.domain.fluxmeasurement.Decimal" title="decimal.Decimal"><span class="pre">Decimal</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Decimal('0.0')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvmin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.fluxmeasurement.Decimal.html#pipeline.domain.fluxmeasurement.Decimal" title="decimal.Decimal"><span class="pre">Decimal</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Decimal('0.0')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uvmax</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.fluxmeasurement.Decimal.html#pipeline.domain.fluxmeasurement.Decimal" title="decimal.Decimal"><span class="pre">Decimal</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Decimal('0.0')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">age</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queried_at</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/fluxmeasurement.html#FluxMeasurement.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.FluxMeasurement.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize a FluxMeasurement object.</p>
+<p><code class="docutils literal notranslate"><span class="pre">uvmin</span></code> and <code class="docutils literal notranslate"><span class="pre">uvmax</span></code> are properties in the calibrator source catalog,
+see e.g. <a class="reference external" href="https://almascience.nrao.edu/alma-data/calibrator-catalogue">https://almascience.nrao.edu/alma-data/calibrator-catalogue</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spw_id</strong> -- ID of spectral window associated with flux measurement, as
+integer or string representation of integer.</p></li>
+<li><p><strong>I</strong> -- Stokes I flux density, either as int/float (assumed to be flux
+density in Jansky) or a FluxDensity object.</p></li>
+<li><p><strong>Q</strong> -- Stokes Q flux density, either as int/float (assumed to be flux
+density in Jansky) or a FluxDensity object; optional, defaults
+to 0 Jansky.</p></li>
+<li><p><strong>U</strong> -- Stokes U flux density, either as int/float (assumed to be flux
+density in Jansky) or a FluxDensity object; optional, defaults
+to 0 Jansky.</p></li>
+<li><p><strong>V</strong> -- Stokes V flux density, either as int/float (assumed to be flux
+density in Jansky) or a FluxDensity object; optional, defaults
+to 0 Jansky.</p></li>
+<li><p><strong>spix</strong> -- Spectral index of the flux measurement; optional, defaults to 0.</p></li>
+<li><p><strong>uvmin</strong> -- Scale (in klambda) of the measured (large scale) extent of
+the flux source (if greater than zero); optional, defaults to 0.</p></li>
+<li><p><strong>uvmax</strong> -- Scale (in klambda) where (small scale) structure has been
+measured within the flux source, or a limit on the resolved
+structure; optional, defaults to 0.</p></li>
+<li><p><strong>origin</strong> -- Origin of the flux measurement; optional, defaults to None.</p></li>
+<li><p><strong>age</strong> -- Age of the flux measurement; optional, defaults to None.</p></li>
+<li><p><strong>queried_at</strong> -- Date-timestamp when flux measurement was queried (e.g.
+from catalog service); optional, defaults to None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.FluxMeasurement.casa_flux_density">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">casa_flux_density</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pipeline.domain.FluxMeasurement.casa_flux_density" title="Link to this definition"></a></dt>
@@ -219,7 +306,7 @@ catalog service).</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

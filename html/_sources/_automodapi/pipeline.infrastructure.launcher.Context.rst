@@ -12,7 +12,6 @@ Context
 
       ~Context.products_dir
       ~Context.stage
-      ~Context.vla_skip_mfs_and_cube_imaging
 
    .. rubric:: Methods Summary
 
@@ -27,7 +26,6 @@ Context
 
    .. autoattribute:: products_dir
    .. autoattribute:: stage
-   .. autoattribute:: vla_skip_mfs_and_cube_imaging
 
    .. rubric:: Methods Documentation
 

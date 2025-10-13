@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.spectralwindow.SpectralWindow &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
@@ -96,6 +97,7 @@
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.source.html">pipeline.domain.source</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="pipeline.domain.spectralwindow.html">pipeline.domain.spectralwindow</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="pipeline.domain.spectralwindow.compress.html">pipeline.domain.spectralwindow.compress</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.domain.spectralwindow.match_spw_basename.html">pipeline.domain.spectralwindow.match_spw_basename</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.domain.spectralwindow.ArithmeticProgression.html">pipeline.domain.spectralwindow.ArithmeticProgression</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.domain.spectralwindow.Channel.html">pipeline.domain.spectralwindow.Channel</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.domain.spectralwindow.ChannelList.html">pipeline.domain.spectralwindow.ChannelList</a></li>
@@ -167,36 +169,126 @@
 <h1>pipeline.domain.spectralwindow.SpectralWindow<a class="headerlink" href="#pipeline-domain-spectralwindow-spectralwindow" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SpectralWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spw_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bandwidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chan_freqs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chan_widths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chan_effective_bws</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sideband</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseband</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">receiver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_lo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Unknown'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectralspec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transitions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sdm_num_bin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correlation_bits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">median_receptor_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specline_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/spectralwindow.html#SpectralWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SpectralWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spw_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bandwidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chan_freqs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chan_widths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chan_effective_bws</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sideband</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseband</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">receiver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_lo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Unknown'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectralspec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transitions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sdm_num_bin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correlation_bits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">median_receptor_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specline_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouping_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/spectralwindow.html#SpectralWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>SpectralWindow is a logical representation of a spectral window (spw).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Variables<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>id</strong> – The numerical identifier of this spectral window within the
-SPECTRAL_WINDOW subtable of the MeasurementSet.</p></li>
-<li><p><strong>band</strong> – Frequency band.</p></li>
-<li><p><strong>bandwidth</strong> – The total bandwidth.</p></li>
-<li><p><strong>baseband</strong> – The baseband.</p></li>
-<li><p><strong>channels</strong> – Frequency information of each channel in spectral window,
-i.e., frequencies, channel width, effective bandwidth.</p></li>
-<li><p><strong>freq_lo</strong> – A list of LO frequencies.</p></li>
-<li><p><strong>intents</strong> – the observing intents that have been observed using this
-spectral window.</p></li>
-<li><p><strong>mean_frequency</strong> – Mean frequency of spectral window.</p></li>
-<li><p><strong>name</strong> – Spectral window name.</p></li>
-<li><p><strong>receiver</strong> – Receiver type, e.g., ‘TSB’.</p></li>
-<li><p><strong>ref_frequency</strong> – The reference frequency.</p></li>
-<li><p><strong>sideband</strong> – Side band.</p></li>
-<li><p><strong>transitions</strong> – Spectral transitions recorded associated with spectral window.</p></li>
-<li><p><strong>type</strong> – Spectral window type, e.g., ‘TDM’.</p></li>
-<li><p><strong>sdm_num_bin</strong> – Number of bins for online spectral averaging.</p></li>
-<li><p><strong>correlation_bits</strong> – Number of bits used for correlation.</p></li>
-<li><p><strong>median_receptor_angle</strong> – Median feed receptor angle.</p></li>
-<li><p><strong>specline_window</strong> – Whether spw is intended for spectral line or continuum (VLA only).</p></li>
-</ul>
-</dd>
-</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.id" title="Link to this definition"></a></dt>
+<dd><p>The numerical identifier of this spectral window within the
+SPECTRAL_WINDOW subtable of the MeasurementSet.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.band">
+<span class="sig-name descname"><span class="pre">band</span></span><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.band" title="Link to this definition"></a></dt>
+<dd><p>Frequency band.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.bandwidth">
+<span class="sig-name descname"><span class="pre">bandwidth</span></span><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.bandwidth" title="Link to this definition"></a></dt>
+<dd><p>The total bandwidth.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.baseband">
+<span class="sig-name descname"><span class="pre">baseband</span></span><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.baseband" title="Link to this definition"></a></dt>
+<dd><p>The baseband.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.channels">
+<span class="sig-name descname"><span class="pre">channels</span></span><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.channels" title="Link to this definition"></a></dt>
+<dd><p>Frequency information of each channel in spectral window,
+i.e., frequencies, channel width, effective bandwidth.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.freq_lo">
+<span class="sig-name descname"><span class="pre">freq_lo</span></span><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.freq_lo" title="Link to this definition"></a></dt>
+<dd><p>A list of LO frequencies.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.intents">
+<span class="sig-name descname"><span class="pre">intents</span></span><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.intents" title="Link to this definition"></a></dt>
+<dd><p>the observing intents that have been observed using this
+spectral window.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.mean_frequency">
+<span class="sig-name descname"><span class="pre">mean_frequency</span></span><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.mean_frequency" title="Link to this definition"></a></dt>
+<dd><p>Mean frequency of spectral window.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.name" title="Link to this definition"></a></dt>
+<dd><p>Spectral window name.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.receiver">
+<span class="sig-name descname"><span class="pre">receiver</span></span><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.receiver" title="Link to this definition"></a></dt>
+<dd><p>Receiver type, e.g., 'TSB'.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.ref_frequency">
+<span class="sig-name descname"><span class="pre">ref_frequency</span></span><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.ref_frequency" title="Link to this definition"></a></dt>
+<dd><p>The reference frequency.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.sideband">
+<span class="sig-name descname"><span class="pre">sideband</span></span><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.sideband" title="Link to this definition"></a></dt>
+<dd><p>Side band.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.transitions">
+<span class="sig-name descname"><span class="pre">transitions</span></span><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.transitions" title="Link to this definition"></a></dt>
+<dd><p>Spectral transitions recorded associated with spectral window.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.type" title="Link to this definition"></a></dt>
+<dd><p>Spectral window type, e.g., 'TDM'.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.sdm_num_bin">
+<span class="sig-name descname"><span class="pre">sdm_num_bin</span></span><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.sdm_num_bin" title="Link to this definition"></a></dt>
+<dd><p>Number of bins for online spectral averaging.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.correlation_bits">
+<span class="sig-name descname"><span class="pre">correlation_bits</span></span><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.correlation_bits" title="Link to this definition"></a></dt>
+<dd><p>Number of bits used for correlation.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.median_receptor_angle">
+<span class="sig-name descname"><span class="pre">median_receptor_angle</span></span><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.median_receptor_angle" title="Link to this definition"></a></dt>
+<dd><p>Median feed receptor angle.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.specline_window">
+<span class="sig-name descname"><span class="pre">specline_window</span></span><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.specline_window" title="Link to this definition"></a></dt>
+<dd><p>Whether spw is intended for spectral line or continuum (VLA only).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.grouping_id">
+<span class="sig-name descname"><span class="pre">grouping_id</span></span><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.grouping_id" title="Link to this definition"></a></dt>
+<dd><p>Grouping ID to uniquely identify this spw in different MOUS within the same GOUS (ALMA-only, introduced in Cycle 12).</p>
+</dd></dl>
+
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -208,80 +300,128 @@ spectral window.</p></li>
 <p class="rubric">Attributes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.id" title="pipeline.domain.spectralwindow.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.id" title="pipeline.domain.spectralwindow.SpectralWindow.id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">id</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.band" title="pipeline.domain.spectralwindow.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">band</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.band" title="pipeline.domain.spectralwindow.SpectralWindow.band"><code class="xref py py-obj docutils literal notranslate"><span class="pre">band</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.bandwidth" title="pipeline.domain.spectralwindow.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bandwidth</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.bandwidth" title="pipeline.domain.spectralwindow.SpectralWindow.bandwidth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bandwidth</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.type" title="pipeline.domain.spectralwindow.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">type</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.type" title="pipeline.domain.spectralwindow.SpectralWindow.type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">type</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.intents" title="pipeline.domain.spectralwindow.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intents</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.intents" title="pipeline.domain.spectralwindow.SpectralWindow.intents"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intents</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.ref_frequency" title="pipeline.domain.spectralwindow.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ref_frequency</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.ref_frequency" title="pipeline.domain.spectralwindow.SpectralWindow.ref_frequency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ref_frequency</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.name" title="pipeline.domain.spectralwindow.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.name" title="pipeline.domain.spectralwindow.SpectralWindow.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.baseband" title="pipeline.domain.spectralwindow.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">baseband</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.baseband" title="pipeline.domain.spectralwindow.SpectralWindow.baseband"><code class="xref py py-obj docutils literal notranslate"><span class="pre">baseband</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.sideband" title="pipeline.domain.spectralwindow.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sideband</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.sideband" title="pipeline.domain.spectralwindow.SpectralWindow.sideband"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sideband</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.receiver" title="pipeline.domain.spectralwindow.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">receiver</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.receiver" title="pipeline.domain.spectralwindow.SpectralWindow.receiver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">receiver</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.freq_lo" title="pipeline.domain.spectralwindow.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">freq_lo</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.freq_lo" title="pipeline.domain.spectralwindow.SpectralWindow.freq_lo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">freq_lo</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.mean_frequency" title="pipeline.domain.spectralwindow.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mean_frequency</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.mean_frequency" title="pipeline.domain.spectralwindow.SpectralWindow.mean_frequency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mean_frequency</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.channels" title="pipeline.domain.spectralwindow.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">channels</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.channels" title="pipeline.domain.spectralwindow.SpectralWindow.channels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">channels</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.spectralspec" title="pipeline.domain.spectralwindow.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spectralspec</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.transitions" title="pipeline.domain.spectralwindow.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transitions</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.transitions" title="pipeline.domain.spectralwindow.SpectralWindow.transitions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transitions</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.sdm_num_bin" title="pipeline.domain.spectralwindow.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sdm_num_bin</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.sdm_num_bin" title="pipeline.domain.spectralwindow.SpectralWindow.sdm_num_bin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sdm_num_bin</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.correlation_bits" title="pipeline.domain.spectralwindow.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">correlation_bits</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.correlation_bits" title="pipeline.domain.spectralwindow.SpectralWindow.correlation_bits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">correlation_bits</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.median_receptor_angle" title="pipeline.domain.spectralwindow.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">median_receptor_angle</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.median_receptor_angle" title="pipeline.domain.spectralwindow.SpectralWindow.median_receptor_angle"><code class="xref py py-obj docutils literal notranslate"><span class="pre">median_receptor_angle</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.specline_window" title="pipeline.domain.spectralwindow.SpectralWindow"><code class="xref py py-obj docutils literal notranslate"><span class="pre">specline_window</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.specline_window" title="pipeline.domain.spectralwindow.SpectralWindow.specline_window"><code class="xref py py-obj docutils literal notranslate"><span class="pre">specline_window</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.centre_frequency" title="pipeline.domain.spectralwindow.SpectralWindow.centre_frequency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">centre_frequency</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.grouping_id" title="pipeline.domain.spectralwindow.SpectralWindow.grouping_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">grouping_id</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.centre_frequency" title="pipeline.domain.spectralwindow.SpectralWindow.centre_frequency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">centre_frequency</span></code></a></p></td>
 <td><p>Return the center frequency of the SpectralWindow.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.frame" title="pipeline.domain.spectralwindow.SpectralWindow.frame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frame</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.frame" title="pipeline.domain.spectralwindow.SpectralWindow.frame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">frame</span></code></a></p></td>
 <td><p>Return the reference frame code of the SpectralWindow.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.max_frequency" title="pipeline.domain.spectralwindow.SpectralWindow.max_frequency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_frequency</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.max_frequency" title="pipeline.domain.spectralwindow.SpectralWindow.max_frequency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">max_frequency</span></code></a></p></td>
 <td><p>Return the maximum frequency of the SpectralWindow.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.min_frequency" title="pipeline.domain.spectralwindow.SpectralWindow.min_frequency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">min_frequency</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.min_frequency" title="pipeline.domain.spectralwindow.SpectralWindow.min_frequency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">min_frequency</span></code></a></p></td>
 <td><p>Return the minimum frequency of the SpectralWindow.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.num_channels" title="pipeline.domain.spectralwindow.SpectralWindow.num_channels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_channels</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.spectralwindow.SpectralWindow.num_channels" title="pipeline.domain.spectralwindow.SpectralWindow.num_channels"><code class="xref py py-obj docutils literal notranslate"><span class="pre">num_channels</span></code></a></p></td>
 <td><p>Return the number of channels in the SpectralWindow.</p></td>
 </tr>
 </tbody>
 </table>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.__getstate__">
+<span class="sig-name descname"><span class="pre">__getstate__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/spectralwindow.html#SpectralWindow.__getstate__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.__getstate__" title="Link to this definition"></a></dt>
+<dd><p>Define what to pickle as a class instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spw_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bandwidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chan_freqs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chan_widths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chan_effective_bws</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sideband</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseband</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">receiver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_lo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Unknown'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectralspec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transitions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sdm_num_bin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correlation_bits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">median_receptor_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specline_window</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grouping_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/spectralwindow.html#SpectralWindow.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize SpectralWindow class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spw_id</strong> -- Spw ID.</p></li>
+<li><p><strong>name</strong> -- Spw name.</p></li>
+<li><p><strong>spw_type</strong> -- Spectral window type, e.g., 'TDM'.</p></li>
+<li><p><strong>bandwidth</strong> -- The total bandwidth.</p></li>
+<li><p><strong>ref_freq</strong> -- The reference frequency, as a CASA 'frequency' measure dictionary.</p></li>
+<li><p><strong>mean_freq</strong> -- Mean frequency of spectral window in Hz.</p></li>
+<li><p><strong>chan_freqs</strong> -- A list of frequency of each channel in spw in Hz.</p></li>
+<li><p><strong>chan_widths</strong> -- A list of channel width of each channel in spw in Hz.</p></li>
+<li><p><strong>chan_effective_bws</strong> -- A list of effective bandwidth of each channel in spw in Hz.</p></li>
+<li><p><strong>sideband</strong> -- Side band.</p></li>
+<li><p><strong>baseband</strong> -- The baseband.</p></li>
+<li><p><strong>receiver</strong> -- Receiver type, e.g., 'TSB'.</p></li>
+<li><p><strong>freq_lo</strong> -- A list of LO frequencies in Hz.</p></li>
+<li><p><strong>band</strong> -- Frequency band.</p></li>
+<li><p><strong>spectralspec</strong> -- SpectralSpec name.</p></li>
+<li><p><strong>transitions</strong> -- Spectral transitions recorded associated with spectral window.</p></li>
+<li><p><strong>sdm_num_bin</strong> -- Number of bins for online spectral averaging.</p></li>
+<li><p><strong>correlation_bits</strong> -- Number of bits used for correlation.</p></li>
+<li><p><strong>median_receptor_angle</strong> -- Median feed receptor angle.</p></li>
+<li><p><strong>specline_window</strong> -- Whether spw is intended for spectral line or continuum (VLA only).</p></li>
+<li><p><strong>grouping_id</strong> -- GOUS ID used to identify project group level (new in Cycle 12 ALMA data)  TODO improve description</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.__setstate__">
+<span class="sig-name descname"><span class="pre">__setstate__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/spectralwindow.html#SpectralWindow.__setstate__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.__setstate__" title="Link to this definition"></a></dt>
+<dd><p>Define how to unpickle a class instance.</p>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.spectralwindow.SpectralWindow.centre_frequency">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">centre_frequency</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="pipeline.domain.measures.Frequency.html#pipeline.domain.measures.Frequency" title="pipeline.domain.measures.Frequency"><span class="pre">Frequency</span></a></em><a class="headerlink" href="#pipeline.domain.spectralwindow.SpectralWindow.centre_frequency" title="Link to this definition"></a></dt>
@@ -295,8 +435,8 @@ spectral window.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>minfreq</strong> – Minimum frequency as measures.Frequency object.</p></li>
-<li><p><strong>maxfreq</strong> – Maximum frequency as measures.Frequency object.</p></li>
+<li><p><strong>minfreq</strong> -- Minimum frequency as measures.Frequency object.</p></li>
+<li><p><strong>maxfreq</strong> -- Maximum frequency as measures.Frequency object.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -345,7 +485,7 @@ end-points corresponding to given min/max frequency.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

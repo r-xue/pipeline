@@ -23,6 +23,7 @@ pipeline.domain.observingrun.ObservingRun
       ~ObservingRun.get_real_spw_id_by_name
       ~ObservingRun.get_real_spwsel
       ~ObservingRun.get_virtual_spw_id_by_name
+      ~ObservingRun.real2real_spw_id
       ~ObservingRun.real2virtual_spw_id
       ~ObservingRun.virtual2real_spw_id
    
@@ -42,5 +43,6 @@ pipeline.domain.observingrun.ObservingRun
       ~ObservingRun.schedblock_ids
       ~ObservingRun.start_datetime
       ~ObservingRun.start_time
+      ~ObservingRun.virtual_science_spw_shortnames
    
    

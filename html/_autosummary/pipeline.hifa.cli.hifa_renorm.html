@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.cli.hifa_renorm &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -121,64 +122,67 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hifa.cli.hifa_renorm">
 <span class="sig-name descname"><span class="pre">hifa_renorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createcaltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excludechan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atm_auto_exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bwthreshspw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultsList</span><span class="p"><span class="pre">[</span></span><span class="pre">Results</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_renorm.html#hifa_renorm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_renorm" title="Link to this definition"></a></dt>
-<dd><p>ALMA renormalization task</p>
+<dd><p>ALMA renormalization.</p>
 <p>This task makes an assessment, and optionally applies a correction, to data
 suffering from incorrect amplitude normalization caused by bright
 astronomical lines detected in the autocorrelations of some target sources.</p>
 <p>For a full description of the effects of bright emission lines and the
 correction heuristics used in this task, please see the Pipeline User Guide.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
-<li><p><strong>vis</strong> – List of input MeasurementSets. Defaults to the list of
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> -- <p>List of input MeasurementSets. Defaults to the list of
 MeasurementSets specified in the pipeline context.</p>
-<p>Example: vis=[‘ngc5921.ms’]</p>
-</li>
-<li><p><strong>createcaltable</strong> – Boolean to select whether to create the renormalization
+<p>Example: <code class="docutils literal notranslate"><span class="pre">vis=['ngc5921.ms']</span></code></p>
+</p></li>
+<li><p><strong>createcaltable</strong> -- <p>Boolean to select whether to create the renormalization
 correction cal table (True), or only run the assessment
 (False, default).</p>
-<p>Example: createcaltable=True</p>
-</li>
-<li><p><strong>threshold</strong> – Apply correction if max correction is above this threshold
-value and <code class="docutils literal notranslate"><span class="pre">apply</span></code> = True. Default is 1.02 (i.e. 2%).</p>
-<p>Example: threshold=1.02</p>
-</li>
-<li><p><strong>spw</strong> – The list of real (not virtual - i.e. the actual spwIDs in
+<p>Example: <code class="docutils literal notranslate"><span class="pre">createcaltable=True</span></code></p>
+</p></li>
+<li><p><strong>threshold</strong> -- <p>Apply correction if max correction is above this threshold
+value and <code class="docutils literal notranslate"><span class="pre">apply=</span> <span class="pre">True</span></code>. Default is 1.02 (i.e. 2%).</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">threshold=1.02</span></code></p>
+</p></li>
+<li><p><strong>spw</strong> -- <p>The list of real (not virtual - i.e. the actual spwIDs in
 the MS) spectral windows to evaluate.
-Set to spw=’’ by default, which means the task will select
+Set to spw='' by default, which means the task will select
 all relevant (science FDM) spectral windows.
 Note that for data with multiple MSs, a list with the
 correct spectral window selection for each MS can be
 provided.</p>
 <p>Examples:</p>
-<ul class="simple">
-<li><p>spw=”11,13,15,17”</p></li>
-<li><p>spw=[“11,13,15,17”, “5,7,11,13”]</p></li>
+<ul>
+<li><p><a href="#id1"><span class="problematic" id="id2">``</span></a>spw='11,13,15,17'`</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">spw=['11,13,15,17',</span> <span class="pre">'5,7,11,13']</span></code></p></li>
 </ul>
-</li>
-<li><p><strong>excludechan</strong> – Channels to exclude in either channel or frequency space
+</p></li>
+<li><p><strong>excludechan</strong> -- <p>Channels to exclude in either channel or frequency space
 (TOPO, GHz), specifying the real (not virtual) spectral
 window per selection.
 Note that for data with multiple MSs, a list of
 dictionaries with the correct selection for each MS can be
 provided.</p>
 <p>Examples:</p>
-<ul class="simple">
-<li><p>excludechan={‘22’:’100~150;800~850’, ‘24’:’100~200’}</p></li>
-<li><p>excludechan={‘22’:’230.1GHz~230.2GHz’}</p></li>
-<li><p>excludechan=[{‘22’:’100~150’}, {‘15’:’100~150’}]</p></li>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">excludechan={'22':'100~150;800~850',</span> <span class="pre">'24':'100~200'}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">excludechan={'22':'230.1GHz~230.2GHz'}</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">excludechan=[{'22':'100~150'},</span> <span class="pre">{'15':'100~150'}]</span></code></p></li>
 </ul>
-</li>
-<li><p><strong>atm_auto_exclude</strong> – Automatically find and exclude regions with atmospheric
+</p></li>
+<li><p><strong>atm_auto_exclude</strong> -- Automatically find and exclude regions with atmospheric
 features. Default is False</p></li>
-<li><p><strong>bwthreshspw</strong> – Bandwidth beyond which a SPW is split into chunks to fit
+<li><p><strong>bwthreshspw</strong> -- <p>Bandwidth beyond which a SPW is split into chunks to fit
 separately. The default value for all SPWs is 120e6, and
 this parameter allows one to override it for specific SPWs,
-due to needing potentially various ‘nsegments’ when EBs
+due to needing potentially various 'nsegments' when EBs
 have very different SPW bandwidths.</p>
-<p>Example: bwthreshspw={‘16: 64e6, ‘22: 64e6}</p>
-</li>
-<li><p><strong>parallel</strong> – Execute using CASA HPC functionality, if available.</p></li>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">bwthreshspw={'16:</span> <span class="pre">64e6,</span> <span class="pre">'22:</span> <span class="pre">64e6}</span></code></p>
+</p></li>
+<li><p><strong>parallel</strong> -- <p>Process multiple MeasurementSets in parallel using the casampi parallelization framework.</p>
+<p>Options: <code class="docutils literal notranslate"><span class="pre">'automatic'</span></code>, <code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code>, <code class="docutils literal notranslate"><span class="pre">True</span></code>, <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code> (equivalent to <code class="docutils literal notranslate"><span class="pre">antomatic</span></code>)</p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -211,7 +215,7 @@ and apply this correction if it exceeds a threshold of 3% (1.03).</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

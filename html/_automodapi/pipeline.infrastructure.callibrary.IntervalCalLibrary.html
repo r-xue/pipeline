@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>IntervalCalLibrary &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
@@ -221,11 +222,11 @@ the pipeline applycal task.</p>
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.IntervalCalLibrary.export">
 <span class="sig-name descname"><span class="pre">export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#IntervalCalLibrary.export"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.IntervalCalLibrary.export" title="Link to this definition"></a></dt>
 <dd><p>Export the pre-apply calibration state to disk.</p>
-<p>The pre-apply calibrations held in the ‘active’ CalState will be
+<p>The pre-apply calibrations held in the 'active' CalState will be
 written to disk as a set of equivalent applycal calls.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> – Name for saved calibration state file.</p>
+<dd class="field-odd"><p><strong>filename</strong> -- Name for saved calibration state file.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -234,11 +235,11 @@ written to disk as a set of equivalent applycal calls.</p>
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.IntervalCalLibrary.export_applied">
 <span class="sig-name descname"><span class="pre">export_applied</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#IntervalCalLibrary.export_applied"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.IntervalCalLibrary.export_applied" title="Link to this definition"></a></dt>
 <dd><p>Export the applied calibration state to disk.</p>
-<p>The calibrations held in the ‘applied’ CalState will be written to
+<p>The calibrations held in the 'applied' CalState will be written to
 disk as a set of equivalent applycal calls.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> – Name for saved calibration state file.</p>
+<dd class="field-odd"><p><strong>filename</strong> -- Name for saved calibration state file.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -250,8 +251,8 @@ disk as a set of equivalent applycal calls.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>calto</strong> – The data selection to retrieve active calibration state for.</p></li>
-<li><p><strong>ignore</strong> – CalFrom properties to ignore.</p></li>
+<li><p><strong>calto</strong> -- The data selection to retrieve active calibration state for.</p></li>
+<li><p><strong>ignore</strong> -- CalFrom properties to ignore.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -281,7 +282,7 @@ for a target data selection.</p>
 functions, e.g.,</p>
 <blockquote>
 <div><p>calto = callibrary.CalTo(self.inputs.vis)
-calfrom = callibrary.CalFrom(gaintable=ktypecaltable, interp=’’, calwt=False)
+calfrom = callibrary.CalFrom(gaintable=ktypecaltable, interp='', calwt=False)
 context.callibrary._remove(calto, calfrom, context.callibrary._active)</p>
 </div></blockquote>
 <p>This function makes calibration removal a first-class public function
@@ -294,7 +295,7 @@ calibrations should be unregistered. For example, Tsys caltable
 removal can be achieved with the code below.</p>
 <blockquote>
 <div><dl class="simple">
-<dt>def match_tsys(calto, calfrom):</dt><dd><p>return calfrom.type == ‘tsys’</p>
+<dt>def match_tsys(calto, calfrom):</dt><dd><p>return calfrom.type == 'tsys'</p>
 </dd>
 </dl>
 <p>callibrary.unregister_calibrations(match_tsys)</p>
@@ -304,14 +305,14 @@ which can be used to unregister caltables generated by that task. For
 example,</p>
 <blockquote>
 <div><dl class="simple">
-<dt>def match_task_caltable(calto, calfrom):</dt><dd><p>return ‘hifa_bandpass’ in calfrom.gaintable</p>
+<dt>def match_task_caltable(calto, calfrom):</dt><dd><p>return 'hifa_bandpass' in calfrom.gaintable</p>
 </dd>
 </dl>
 <p>context.callibrary.unregister_calibrations(match_task_caltable)</p>
 </div></blockquote>
 <p>If you wanted to match calwt, interp, vis, etc. then that could be
-done in the matcher function too, but if it’s not necessary to
-identify the caltable then it doesn’t need to be tested in the
+done in the matcher function too, but if it's not necessary to
+identify the caltable then it doesn't need to be tested in the
 predicate function.</p>
 </section>
 </dd></dl>
@@ -331,7 +332,7 @@ predicate function.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

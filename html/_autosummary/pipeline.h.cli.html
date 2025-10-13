@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.h.cli &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -28,8 +28,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="pipeline.h.cli.h_applycal" href="pipeline.h.cli.h_applycal.html" />
-    <link rel="prev" title="pipeline.Pipeline" href="pipeline.Pipeline.html" /> 
+    <link rel="next" title="pipeline.h.cli.h_init" href="pipeline.h.cli.h_init.html" />
+    <link rel="prev" title="pipeline.stop_xvfb" href="pipeline.stop_xvfb.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -121,44 +122,20 @@
 <p class="rubric">Functions</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_applycal.html#pipeline.h.cli.h_applycal" title="pipeline.h.cli.h_applycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_applycal</span></code></a></p></td>
-<td><p>Apply the calibration(s) to the data</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_init.html#pipeline.h.cli.h_init" title="pipeline.h.cli.h_init"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_init</span></code></a></p></td>
+<td><p>Initialize the pipeline state and context.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_export_calstate.html#pipeline.h.cli.h_export_calstate" title="pipeline.h.cli.h_export_calstate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_export_calstate</span></code></a></p></td>
-<td><p>Save the pipeline calibration state to disk</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_resume.html#pipeline.h.cli.h_resume" title="pipeline.h.cli.h_resume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_resume</span></code></a></p></td>
+<td><p>Restore a saved pipeline state.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_exportdata.html#pipeline.h.cli.h_exportdata" title="pipeline.h.cli.h_exportdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_exportdata</span></code></a></p></td>
-<td><p>Prepare interferometry data for export</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_import_calstate.html#pipeline.h.cli.h_import_calstate" title="pipeline.h.cli.h_import_calstate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_import_calstate</span></code></a></p></td>
-<td><p>Import a calibration state from disk</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_importdata.html#pipeline.h.cli.h_importdata" title="pipeline.h.cli.h_importdata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_importdata</span></code></a></p></td>
-<td><p>Imports data into the interferometry pipeline</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_init.html#pipeline.h.cli.h_init" title="pipeline.h.cli.h_init"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_init</span></code></a></p></td>
-<td><p>Initialize the pipeline</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_mssplit.html#pipeline.h.cli.h_mssplit" title="pipeline.h.cli.h_mssplit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_mssplit</span></code></a></p></td>
-<td><p>Select data from calibrated MS(s) to form new MS(s) for imaging</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_restoredata.html#pipeline.h.cli.h_restoredata" title="pipeline.h.cli.h_restoredata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_restoredata</span></code></a></p></td>
-<td><p>Restore flags and calibration state from a pipeline run</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_resume.html#pipeline.h.cli.h_resume" title="pipeline.h.cli.h_resume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_resume</span></code></a></p></td>
-<td><p>Restore a saved pipeline state</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_save.html#pipeline.h.cli.h_save" title="pipeline.h.cli.h_save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_save</span></code></a></p></td>
-<td><p>Save the pipeline state to disk</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_show_calstate.html#pipeline.h.cli.h_show_calstate" title="pipeline.h.cli.h_show_calstate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_show_calstate</span></code></a></p></td>
-<td><p>Show the current pipeline calibration state</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_save.html#pipeline.h.cli.h_save" title="pipeline.h.cli.h_save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_save</span></code></a></p></td>
+<td><p>Save the current pipeline state to disk.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.h.cli.h_tsyscal.html#pipeline.h.cli.h_tsyscal" title="pipeline.h.cli.h_tsyscal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_tsyscal</span></code></a></p></td>
-<td><p>Derive a Tsys calibration table</p></td>
+<td><p>Derive Tsys calibration tables for a list of ALMA MeasurementSets.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.h.cli.h_weblog.html#pipeline.h.cli.h_weblog" title="pipeline.h.cli.h_weblog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">h_weblog</span></code></a></p></td>
-<td><p>Open the pipeline weblog in a browser</p></td>
+<td><p>Open the pipeline weblog in a browser tab or window.</p></td>
 </tr>
 </tbody>
 </table>
@@ -168,14 +145,14 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.Pipeline.html" class="btn btn-neutral float-left" title="pipeline.Pipeline" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="pipeline.h.cli.h_applycal.html" class="btn btn-neutral float-right" title="pipeline.h.cli.h_applycal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline.stop_xvfb.html" class="btn btn-neutral float-left" title="pipeline.stop_xvfb" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.h.cli.h_init.html" class="btn btn-neutral float-right" title="pipeline.h.cli.h_init" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

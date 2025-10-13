@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.cli.hifa_antpos &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -120,60 +121,78 @@
 <h1>pipeline.hifa.cli.hifa_antpos<a class="headerlink" href="#pipeline-hifa-cli-hifa-antpos" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hifa.cli.hifa_antpos">
-<span class="sig-name descname"><span class="pre">hifa_antpos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_antpos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antposfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultsList</span><span class="p"><span class="pre">[</span></span><span class="pre">Results</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_antpos.html#hifa_antpos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_antpos" title="Link to this definition"></a></dt>
-<dd><p>Derive an antenna position calibration table</p>
-<p>The hifa_antpos task corrects the antenna positions recorded in the ASDMs using
-updated antenna position calibration information determined after the
-observation was taken.</p>
-<p>Corrections can be input by hand, read from a file on disk, or in the future
-by querying an ALMA database service.</p>
-<p>The antenna positions file is in ‘csv’ format containing 6 comma-delimited
-columns as shown below. This file should not include blank lines, including
-after the end of the last entry. The default name of this file is ‘antennapos.csv’.</p>
-<p>Example of contents for an ‘antennapos.csv’ file:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ms</span><span class="p">,</span><span class="n">antenna</span><span class="p">,</span><span class="n">xoffset</span><span class="p">,</span><span class="n">yoffset</span><span class="p">,</span><span class="n">zoffset</span><span class="p">,</span><span class="n">comment</span>
-<span class="n">uid___A002_X30a93d_X43e</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span><span class="n">DV11</span><span class="p">,</span><span class="mf">0.000</span><span class="p">,</span><span class="mf">0.010</span><span class="p">,</span><span class="mf">0.000</span><span class="p">,</span><span class="s2">&quot;No comment&quot;</span>
-<span class="n">uid___A002_X30a93d_X43e</span><span class="o">.</span><span class="n">dup</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span><span class="n">DV11</span><span class="p">,</span><span class="mf">0.000</span><span class="p">,</span><span class="o">-</span><span class="mf">0.010</span><span class="p">,</span><span class="mf">0.000</span><span class="p">,</span><span class="s2">&quot;No comment&quot;</span>
+<span class="sig-name descname"><span class="pre">hifa_antpos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_antpos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'online'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'manual'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'file'</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antposfile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'both_latest'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'both_closest'</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultsList</span><span class="p"><span class="pre">[</span></span><span class="pre">Results</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_antpos.html#hifa_antpos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_antpos" title="Link to this definition"></a></dt>
+<dd><p>Derive antenna position calibration tables for a list of MeasurementSets.</p>
+<p>The <cite>hifa_antpos</cite> task corrects antenna positions recorded in the ASDMs using
+updated calibration information obtained after the observation. Corrections can
+be input by hand, read from a file on disk, or by querying an ALMA database service.</p>
+<p>The <cite>antposfile</cite> parameter serves a dual purpose, depending on which mode is set.</p>
+<p>For <cite>hm_antpos='file'</cite>, <cite>antposfile</cite> defines the antenna positions file in 'csv' format containing
+6 comma-delimited columns as shown below. This file should not include blank lines, including
+after the end of the last entry. This parameter is required for <cite>hm_antpos='file'</cite>.</p>
+<p>Example of contents for a .csv file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ms</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">xoffset</span><span class="p">,</span> <span class="n">yoffset</span><span class="p">,</span> <span class="n">zoffset</span><span class="p">,</span> <span class="n">comment</span>
+<span class="n">uid___A002_X30a93d_X43e</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">DV11</span><span class="p">,</span> <span class="mf">0.000</span><span class="p">,</span> <span class="mf">0.010</span><span class="p">,</span> <span class="mf">0.000</span><span class="p">,</span> <span class="s1">&#39;No comment&#39;</span>
+<span class="n">uid___A002_X30a93d_X43e</span><span class="o">.</span><span class="n">dup</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">DV11</span><span class="p">,</span> <span class="mf">0.000</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.010</span><span class="p">,</span> <span class="mf">0.000</span><span class="p">,</span> <span class="s1">&#39;No comment&#39;</span>
 </pre></div>
 </div>
 <p>The offset values in this file are in meters.</p>
+<p>For <cite>hm_antpos='online'</cite>, <cite>antposfile</cite> defines the base outfile name used by the CASA tasks
+<cite>getantposalma</cite> and <cite>gencal</cite> with the MS basename prepended to it. The file must be in JSON format.
+If no value is set, it will default to <cite>antennapos.json</cite>.</p>
 <p>The corrections are used to generate a calibration table which is recorded
 in the pipeline context and applied to the raw visibility data, on the fly to
 generate other calibration tables, or permanently to generate calibrated
 visibilities for imaging.</p>
-<p>Note: the <code class="docutils literal notranslate"><span class="pre">hm_antpos</span></code> ‘online’ option will be implemented when the
-observing system provides an antenna position determination service.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
-<li><p><strong>vis</strong> – List of input MeasurementSets. Defaults to the list of
-MeasurementSets specified in the pipeline context.</p>
-<p>Example: vis=[‘ngc5921.ms’]</p>
-</li>
-<li><p><strong>caltable</strong> – List of names for the output calibration tables. Defaults
-to the standard pipeline naming convention.</p>
-<p>Example: caltable=[‘ngc5921.gcal’]</p>
-</li>
-<li><p><strong>hm_antpos</strong> – Heuristics method for retrieving the antenna position
-corrections. The options are ‘online’ (not yet implemented),
-‘manual’, and ‘file’.</p>
-<p>Example: hm_antpos=’manual’</p>
-</li>
-<li><p><strong>antenna</strong> – The list of antennas for which the positions are to be corrected
-if <code class="docutils literal notranslate"><span class="pre">hm_antpos</span></code> is ‘manual’.</p>
-<p>Example: antenna=’DV05,DV07’</p>
-</li>
-<li><p><strong>offsets</strong> – The list of antenna offsets for each antenna in ‘antennas’.
-Each offset is a set of 3 floating point numbers separated by
-commas, specified in the ITRF frame.</p>
-<p>Example: offsets=[0.01, 0.02, 0.03, 0.03, 0.02, 0.01]</p>
-</li>
-<li><p><strong>antposfile</strong> – The file(s) containing the antenna offsets. Used if
-<code class="docutils literal notranslate"><span class="pre">hm_antpos</span></code> is ‘file’.</p></li>
-<li><p><strong>threshold</strong> – Highlight antenna position offsets greater than this value in
-the weblog. Units are wavelengths and the default is 1.0.</p>
-<p>Example: threshold=1.0</p>
-</li>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> -- <p>List of input MeasurementSets.
+Defaults to those specified in the pipeline context.</p>
+<p>Example: ['ngc5921.ms']</p>
+</p></li>
+<li><p><strong>caltable</strong> -- <p>List of output calibration table names.
+Defaults to the standard pipeline naming convention.</p>
+<p>Example: ['ngc5921.gcal']</p>
+</p></li>
+<li><p><strong>hm_antpos</strong> -- <ul>
+<li><p><cite>'online'</cite> : Query ALMA database through CASA task <cite>getantposalma</cite> or reuse</p></li>
+</ul>
+<p>pre-existing queried/downloaded JSON files. Files follow the naming pattern
+<cite>{eb_name}.{antposfile}</cite>. For multi-MS pipeline runs, the MS basename
+is appended to the filename (e.g., <cite>uid___A002_X123_X4567.antennapos.json</cite>).
+- <cite>'manual'</cite> : Use user-provided corrections.
+- <cite>'file'</cite> : Load corrections from a single old-style CSV antenna position file.</p>
+<p>Example: 'manual'</p>
+</p></li>
+<li><p><strong>antenna</strong> -- <p>A comma-separated string of antennas whose positions are to be corrected (if <cite>hm_antpos</cite> is 'manual'
+or 'online').</p>
+<p>Example: 'DV05,DV07'</p>
+</p></li>
+<li><p><strong>offsets</strong> -- <p>A flat list of floating-point offsets (X, Y, Z) for all specified antennas.
+The length of the list must be three times the number of antennas.</p>
+<p>Example (for two antennas): <cite>[0.01, 0.02, 0.03, 0.03, 0.02, 0.01]</cite></p>
+</p></li>
+<li><p><strong>antposfile</strong> -- <dl class="simple">
+<dt>Path to a csv file containing antenna position offsets for <cite>hm_antpos='file'</cite> (required) or the name</dt><dd><p>of the outfile created by <cite>getantposalma</cite> for <cite>hm_antpos='online'</cite>. In order to work with multi-MS
+pipeline runs, the MS basename will be appended to the file name when using <cite>hm_antpos='online'</cite> (i.e.
+'uid___A002_X123_X4567.antennapos.json').</p>
+</dd>
+</dl>
+<p>Default: 'antennapos.json'</p>
+</p></li>
+<li><p><strong>threshold</strong> -- <p>Threshold value (in wavelengths) above which antenna position offsets are highlighted in the weblog.
+Defaults to 1.0.</p>
+<p>Example: 1.0</p>
+</p></li>
+<li><p><strong>snr</strong> -- <p>A float value describing the signal-to-noise threshold used by the getantposalma task. Antennas with
+snr below the threshold will not be retrieved. Only used with <cite>hm_antpos='online'</cite>. Defaults to 'default'.</p>
+<p>Example: 5.0</p>
+</p></li>
+<li><p><strong>search</strong> -- <p>Search algorithm used by the getantposalma task. Supports 'both_latest', 'both_closest', and 'auto'.
+Only used with <cite>hm_antpos='online'</cite>. Defaults to 'auto'.</p>
+<p>Example: 'both_closest'</p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -181,7 +200,7 @@ the weblog. Units are wavelengths and the default is 1.0.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>1. Correct the position of antenna ‘DV05’ for all the visibility files in a
+<p>1. Correct the position of antenna 'DV05' for all the visibility files in a
 single pipeline run:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_antpos</span><span class="p">(</span><span class="n">antenna</span><span class="o">=</span><span class="s1">&#39;DV05&#39;</span><span class="p">,</span> <span class="n">offsets</span><span class="o">=</span><span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">])</span>
 </pre></div>
@@ -191,6 +210,13 @@ pipeline run using antenna positions files on disk. These files are assumed
 to conform to a default naming scheme if <code class="docutils literal notranslate"><span class="pre">antposfile</span></code> is unspecified by the
 user:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_antpos</span><span class="p">(</span><span class="n">hm_antpos</span><span class="o">=</span><span class="s1">&#39;file&#39;</span><span class="p">,</span> <span class="n">antposfile</span><span class="o">=</span><span class="s1">&#39;myantposfile.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>3. Correct the position of antennas for all the visibility files in a single
+pipeline run using antenna positions retrieved from DB, limiting the selection
+to antennas with S/N of 5.0 or more and using the 'both_closest' search algorithm.
+A JSON file is returned and fed into the gencal task to apply corrections.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hifa_antpos</span><span class="p">(</span><span class="n">hm_antpos</span><span class="o">=</span><span class="s1">&#39;online&#39;</span><span class="p">,</span> <span class="n">snr</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">search</span><span class="o">=</span><span class="s1">&#39;both_closest&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -208,7 +234,7 @@ user:</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

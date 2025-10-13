@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.tasks.importdata.importdata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -184,7 +222,7 @@
 <span class="sd">                MSes, or tar files of MSes, If ASDM files are specified, they will be</span>
 <span class="sd">                converted to MS format.</span>
 
-<span class="sd">                Example: vis=[&#39;X227.ms&#39;, &#39;asdms.tar.gz&#39;]</span>
+<span class="sd">                Example: ``vis=[&#39;X227.ms&#39;, &#39;asdms.tar.gz&#39;]``</span>
 
 <span class="sd">            output_dir: path of output directory</span>
 
@@ -193,28 +231,28 @@
 <span class="sd">                separated by space characters. Default value, None, is</span>
 <span class="sd">                equivalent to the following list.</span>
 
-<span class="sd">                    &#39;SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR SpectralWindow&#39;</span>
+<span class="sd">                    ``&#39;SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR SpectralWindow&#39;``</span>
 
-<span class="sd">                Example: &#39;Receiver&#39;, &#39;&#39;</span>
+<span class="sd">                Example: ``&#39;Receiver&#39;``, ``&#39;&#39;``</span>
 
 <span class="sd">            process_caldevice: Import the ASDM caldevice table.</span>
 
-<span class="sd">                Example: True</span>
+<span class="sd">                Example: ``True``</span>
 
-<span class="sd">                Default: None (equivalent to True)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``True``)</span>
 
 <span class="sd">            session: List of sessions to which the visibility files belong.</span>
 <span class="sd">                Defaults to a single session containing all the visibility files,</span>
 <span class="sd">                otherwise a session must be assigned to each vis file.</span>
 
-<span class="sd">                Example: session=[&#39;Session_1&#39;, &#39;Sessions_2&#39;]</span>
+<span class="sd">                Example: ``session=[&#39;Session_1&#39;, &#39;Sessions_2&#39;]``</span>
 
 <span class="sd">            overwrite: Overwrite existing files on import. When converting</span>
 <span class="sd">                ASDM to MS, if overwrite=False and the MS already exists in</span>
 <span class="sd">                output directory, then this existing MS dataset will be used</span>
 <span class="sd">                instead.</span>
 
-<span class="sd">                Default: None (equivalent to False)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``False``)</span>
 
 <span class="sd">            nocopy: Disable copying of MS to working directory</span>
 
@@ -223,11 +261,11 @@
 <span class="sd">            datacolumns: Dictionary defining the data types of existing columns.</span>
 <span class="sd">                The format is:</span>
 
-<span class="sd">                    {&#39;data&#39;: &#39;data type 1&#39;}</span>
+<span class="sd">                    ``{&#39;data&#39;: &#39;data type 1&#39;}``</span>
 
 <span class="sd">                or</span>
 
-<span class="sd">                    {&#39;data&#39;: &#39;data type 1&#39;, &#39;corrected&#39;: &#39;data type 2&#39;}</span>
+<span class="sd">                    ``{&#39;data&#39;: &#39;data type 1&#39;, &#39;corrected&#39;: &#39;data type 2&#39;}``</span>
 
 <span class="sd">                For ASDMs the data type can only be RAW and one can only specify</span>
 <span class="sd">                it for the data column.</span>
@@ -246,39 +284,39 @@
 
 <span class="sd">            save_flagonline: Save flag commands, flagging template, imaging targets, to text files。</span>
 
-<span class="sd">                Default: None (equivalent to True)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``True``)</span>
 
 <span class="sd">            lazy: Use the lazy filter import.</span>
 
-<span class="sd">                Default: None (equivalent to False)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``False``)</span>
 
 <span class="sd">            with_pointing_correction: Apply pointing correction to DIRECTION.</span>
 <span class="sd">                Add (ASDM::Pointing::encoder - ASDM::Pointing::pointingDirection)</span>
 <span class="sd">                to the value to be written in MS::Pointing::direction.</span>
 
-<span class="sd">                Default: None (equivalent to True)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``True``)</span>
 
 <span class="sd">            createmms: Create an MMS.</span>
 
-<span class="sd">                Default: None (equivalent to False)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``False``)</span>
 
 <span class="sd">            ocorr_mode: Selection of baseline correlation to import.</span>
 <span class="sd">                Valid only if input visibility is ASDM. See a document of CASA,</span>
 <span class="sd">                casatasks::importasdm, for available options.</span>
 
-<span class="sd">                Default: None (equivalent to &#39;ao&#39;)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;ao&#39;``)</span>
 
 <span class="sd">            hm_rasterscan: Heuristics method for raster scan analysis.</span>
 <span class="sd">                Two analysis modes, time-domain analysis (&#39;time&#39;) and</span>
 <span class="sd">                direction analysis (&#39;direction&#39;), are available.</span>
 
-<span class="sd">                Default: None (equivalent to &#39;time&#39;)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;time&#39;``)</span>
 
 <span class="sd">            parallel: Execute using CASA HPC functionality, if available.</span>
 
-<span class="sd">                Options: &#39;automatic&#39;, &#39;true&#39;, &#39;false&#39;, True, False</span>
+<span class="sd">                Options: ``&#39;automatic&#39;``, ``&#39;true&#39;``, ``&#39;false&#39;``, ``True``, ``False``</span>
 
-<span class="sd">                Default: None (equivalent to &#39;automatic&#39;)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;automatic&#39;``)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">asis</span><span class="o">=</span><span class="n">asis</span><span class="p">,</span>
                          <span class="n">process_caldevice</span><span class="o">=</span><span class="n">process_caldevice</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
@@ -438,7 +476,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

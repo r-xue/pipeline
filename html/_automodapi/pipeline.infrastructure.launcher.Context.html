@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Context &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
@@ -145,65 +146,225 @@ small number of internal pipeline variables and objects.</p>
 pipeline state is attached. Keeping all state in one object makes it easy
 to persist this one object, and thus all state, to disk as a Python pickle,
 allowing pipeline sessions to be interrupted and resumed.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Variables<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – Name of the context; also forms the root of the filename used for
-the pickled state.</p></li>
-<li><p><strong>output_dir</strong> – The working directory where pipeline output data should be saved.</p></li>
-<li><p><strong>products_dir</strong> – The directory where pipeline products should be exported to.</p></li>
-<li><p><strong>report_dir</strong> – The directory where pipeline HTML reports should be saved.</p></li>
-<li><p><strong>logs</strong> – Dictionary containing the filenames to use for standard output
-files (CASA commands log, AQUA report, pipeline script, restore script).</p></li>
-<li><p><strong>results</strong> – The list of task result (proxy) objects containing summaries
-of each executed task in the pipeline run.</p></li>
-<li><p><strong>task_counter</strong> – Index of the last task to complete.</p></li>
-<li><p><strong>subtask_counter</strong> – Index of the last subtask to complete.</p></li>
-<li><p><strong>observing_run</strong> – The top-level ObservingRun object through which all other
-pipeline.domain objects can be accessed.</p></li>
-<li><p><strong>project_performance_parameters</strong> – ALMA OUS project performance information.</p></li>
-<li><p><strong>project_structure</strong> – ALMA project structure information.</p></li>
-<li><p><strong>project_summary</strong> – Project summary information.</p></li>
-<li><p><strong>calimlist</strong> – The ImageLibrary object holding final images of calibrators.</p></li>
-<li><p><strong>callibrary</strong> – The CalLibrary object holding the calibration state for
-registered measurement sets.</p></li>
-<li><p><strong>clean_list_info</strong> – Dictionary to store information about the target image
-to-be-cleaned list; typically populated by hif_makeimlist.</p></li>
-<li><p><strong>clean_list_pending</strong> – List of hif.tasks.makeimlist.cleantarget.CleanTarget
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.name" title="Link to this definition"></a></dt>
+<dd><p>Name of the context; also forms the root of the filename used for
+the pickled state.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.output_dir">
+<span class="sig-name descname"><span class="pre">output_dir</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.output_dir" title="Link to this definition"></a></dt>
+<dd><p>The working directory where pipeline output data should be saved.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.products_dir">
+<span class="sig-name descname"><span class="pre">products_dir</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.products_dir" title="Link to this definition"></a></dt>
+<dd><p>The directory where pipeline products should be exported to.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.report_dir">
+<span class="sig-name descname"><span class="pre">report_dir</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.report_dir" title="Link to this definition"></a></dt>
+<dd><p>The directory where pipeline HTML reports should be saved.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.logs">
+<span class="sig-name descname"><span class="pre">logs</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.logs" title="Link to this definition"></a></dt>
+<dd><p>Dictionary containing the filenames to use for standard output
+files (CASA commands log, AQUA report, pipeline script, restore script).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.results">
+<span class="sig-name descname"><span class="pre">results</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.results" title="Link to this definition"></a></dt>
+<dd><p>The list of task result (proxy) objects containing summaries
+of each executed task in the pipeline run.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.task_counter">
+<span class="sig-name descname"><span class="pre">task_counter</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.task_counter" title="Link to this definition"></a></dt>
+<dd><p>Index of the last task to complete.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.subtask_counter">
+<span class="sig-name descname"><span class="pre">subtask_counter</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.subtask_counter" title="Link to this definition"></a></dt>
+<dd><p>Index of the last subtask to complete.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.observing_run">
+<span class="sig-name descname"><span class="pre">observing_run</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.observing_run" title="Link to this definition"></a></dt>
+<dd><p>The top-level ObservingRun object through which all other
+pipeline.domain objects can be accessed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.project_performance_parameters">
+<span class="sig-name descname"><span class="pre">project_performance_parameters</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.project_performance_parameters" title="Link to this definition"></a></dt>
+<dd><p>ALMA OUS project performance information.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.project_structure">
+<span class="sig-name descname"><span class="pre">project_structure</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.project_structure" title="Link to this definition"></a></dt>
+<dd><p>ALMA project structure information.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.project_summary">
+<span class="sig-name descname"><span class="pre">project_summary</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.project_summary" title="Link to this definition"></a></dt>
+<dd><p>Project summary information.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.calimlist">
+<span class="sig-name descname"><span class="pre">calimlist</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.calimlist" title="Link to this definition"></a></dt>
+<dd><p>The ImageLibrary object holding final images of calibrators.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.callibrary">
+<span class="sig-name descname"><span class="pre">callibrary</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.callibrary" title="Link to this definition"></a></dt>
+<dd><p>The CalLibrary object holding the calibration state for
+registered measurement sets.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.clean_list_info">
+<span class="sig-name descname"><span class="pre">clean_list_info</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.clean_list_info" title="Link to this definition"></a></dt>
+<dd><p>Dictionary to store information about the target image
+to-be-cleaned list; typically populated by hif_makeimlist.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.clean_list_pending">
+<span class="sig-name descname"><span class="pre">clean_list_pending</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.clean_list_pending" title="Link to this definition"></a></dt>
+<dd><p>List of hif.tasks.makeimlist.cleantarget.CleanTarget
 objects representing what target images are to be cleaned; typically
-populated by hif_makeimlist, or edited by hif_editimlist.</p></li>
-<li><p><strong>contfile</strong> – Name of file with frequency ranges to use for continuum
-images; typically populated by hif_makeimlist.</p></li>
-<li><p><strong>imaging_mode</strong> – Imaging mode string; may be used to switch between imaging
+populated by hif_makeimlist, or edited by hif_editimlist.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.clean_masks">
+<span class="sig-name descname"><span class="pre">clean_masks</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.clean_masks" title="Link to this definition"></a></dt>
+<dd><p>Dictionary to store the names of clean masks to be re-used
+for TARGET IQUV imaging.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.clean_thresholds">
+<span class="sig-name descname"><span class="pre">clean_thresholds</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.clean_thresholds" title="Link to this definition"></a></dt>
+<dd><p>Dictionary to store thresholds to be re-used for
+TARGET IQUV imaging.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.contfile">
+<span class="sig-name descname"><span class="pre">contfile</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.contfile" title="Link to this definition"></a></dt>
+<dd><p>Name of file with frequency ranges to use for continuum
+images; typically populated by hif_makeimlist.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.imaging_mode">
+<span class="sig-name descname"><span class="pre">imaging_mode</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.imaging_mode" title="Link to this definition"></a></dt>
+<dd><p>Imaging mode string; may be used to switch between imaging
 parameter heuristics; currently only used for deciding what products
-to export.</p></li>
-<li><p><strong>imaging_parameters</strong> – Dictionary containing computed values to use for
+to export.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.imaging_parameters">
+<span class="sig-name descname"><span class="pre">imaging_parameters</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.imaging_parameters" title="Link to this definition"></a></dt>
+<dd><p>Dictionary containing computed values to use for
 certain parameters during imaging; typically populated by
-hifa_imageprecheck.</p></li>
-<li><p><strong>linesfile</strong> – Name of file with line frequency ranges to exclude for
-continuum images; typically populated by hif_makeimlist.</p></li>
-<li><p><strong>per_spw_cont_sensitivities_all_chan</strong> – Dictionary containing some imaging
+hifa_imageprecheck.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.linesfile">
+<span class="sig-name descname"><span class="pre">linesfile</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.linesfile" title="Link to this definition"></a></dt>
+<dd><p>Name of file with line frequency ranges to exclude for
+continuum images; typically populated by hif_makeimlist.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.per_spw_cont_sensitivities_all_chan">
+<span class="sig-name descname"><span class="pre">per_spw_cont_sensitivities_all_chan</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.per_spw_cont_sensitivities_all_chan" title="Link to this definition"></a></dt>
+<dd><p>Dictionary containing some imaging
 parameters as well as sensitivity information; typically populated
 by hifa_imageprecheck, and potentially updated by hif_makeimages or
-hif_tclean.</p></li>
-<li><p><strong>rmsimlist</strong> – The ImageLibrary object holding RMS uncertainty images of the
-science targets.</p></li>
-<li><p><strong>sciimlist</strong> – The ImageLibrary object holding final images of science targets.</p></li>
-<li><p><strong>selfcal_resources</strong> – List of files/tables required for the
-self-calibration restoration.</p></li>
-<li><p><strong>selfcal_targets</strong> – List of targets for which self-calibration is performed.</p></li>
-<li><p><strong>size_mitigation_parameters</strong> – Dictionary containing imaging product size
+hif_tclean.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.processing_intents">
+<span class="sig-name descname"><span class="pre">processing_intents</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.processing_intents" title="Link to this definition"></a></dt>
+<dd><p>Dictionary of processing intents for the current
+pipeline run. Currently, the following options are known:
+- {'INTERFEROMETRY_STANDARD_OBSERVING_MODE': 'Undefined'}
+- {'VLA_INTERFEROMETRY_STANDARD_OBSERVING_MODE': 'Undefined'}
+- {'INTERFEROMETRY_FULL_POL_CUBE_IMAGING': True}
+- {'INTERFEROMETRY_HETEROGENEOUS_IMAGING': True}
+- {'SINGLEDISH_STANDARD_OBSERVING_MODE': 'Undefined'}</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.rmsimlist">
+<span class="sig-name descname"><span class="pre">rmsimlist</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.rmsimlist" title="Link to this definition"></a></dt>
+<dd><p>The ImageLibrary object holding RMS uncertainty images of the
+science targets.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.sciimlist">
+<span class="sig-name descname"><span class="pre">sciimlist</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.sciimlist" title="Link to this definition"></a></dt>
+<dd><p>The ImageLibrary object holding final images of science targets.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.selfcal_resources">
+<span class="sig-name descname"><span class="pre">selfcal_resources</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.selfcal_resources" title="Link to this definition"></a></dt>
+<dd><p>List of files/tables required for the
+self-calibration restoration.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.selfcal_targets">
+<span class="sig-name descname"><span class="pre">selfcal_targets</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.selfcal_targets" title="Link to this definition"></a></dt>
+<dd><p>List of targets for which self-calibration is performed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.size_mitigation_parameters">
+<span class="sig-name descname"><span class="pre">size_mitigation_parameters</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.size_mitigation_parameters" title="Link to this definition"></a></dt>
+<dd><p>Dictionary containing imaging product size
 mitigation parameters; typically populated by hif_checkproductsize,
-and used by hif_makeimlist.</p></li>
-<li><p><strong>subimlist</strong> – The ImageLibrary object holding cut-out images of the science
-targets.</p></li>
-<li><p><strong>synthesized_beams</strong> – Dictionary containing some imaging parameters as well
+and used by hif_makeimlist.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.subimlist">
+<span class="sig-name descname"><span class="pre">subimlist</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.subimlist" title="Link to this definition"></a></dt>
+<dd><p>The ImageLibrary object holding cut-out images of the science
+targets.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.synthesized_beams">
+<span class="sig-name descname"><span class="pre">synthesized_beams</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.synthesized_beams" title="Link to this definition"></a></dt>
+<dd><p>Dictionary containing some imaging parameters as well
 computed synthesized beam information; typically populated/updated
 by hifa_imageprecheck, hif_checkproductsize, hif_makeimlist,
-hif_makeimages, and hif_tclean.</p></li>
-</ul>
-</dd>
-</dl>
+hif_makeimages, and hif_tclean.</p>
+</dd></dl>
+
 <p class="rubric">Attributes Summary</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -212,9 +373,6 @@ hif_makeimages, and hif_tclean.</p></li>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.Context.stage.html#pipeline.infrastructure.launcher.Context.stage" title="pipeline.infrastructure.launcher.Context.stage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stage</span></code></a></p></td>
 <td><p>Return task and sub-task stage number.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_autosummary/pipeline.infrastructure.launcher.Context.vla_skip_mfs_and_cube_imaging.html#pipeline.infrastructure.launcher.Context.vla_skip_mfs_and_cube_imaging" title="pipeline.infrastructure.launcher.Context.vla_skip_mfs_and_cube_imaging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vla_skip_mfs_and_cube_imaging</span></code></a></p></td>
-<td><p>Return the stage skipping condition for the VLA specmode=mfs/cube imaging workflow.</p></td>
 </tr>
 </tbody>
 </table>
@@ -237,8 +395,8 @@ hif_makeimages, and hif_tclean.</p></li>
 </table>
 <p class="rubric">Attributes Documentation</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.products_dir">
-<span class="sig-name descname"><span class="pre">products_dir</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.products_dir" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">products_dir</span></span><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
 <dd><p>Return path to the products directory.</p>
 </dd></dl>
 
@@ -248,22 +406,11 @@ hif_makeimages, and hif_tclean.</p></li>
 <dd><p>Return task and sub-task stage number.</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.vla_skip_mfs_and_cube_imaging">
-<span class="sig-name descname"><span class="pre">vla_skip_mfs_and_cube_imaging</span></span><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.vla_skip_mfs_and_cube_imaging" title="Link to this definition"></a></dt>
-<dd><p>Return the stage skipping condition for the VLA specmode=mfs/cube imaging workflow.</p>
-<p>This is currently used to skip the following stages for VLA:
-- hif_makeimlist (mfs, cube)
-- hif_findcont
-- hif_uvcontsub
-- hif_makeimages(mfs, cube)</p>
-</dd></dl>
-
 <p class="rubric">Methods Documentation</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.infrastructure.launcher.Context.get_oussid">
 <span class="sig-name descname"><span class="pre">get_oussid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/pipeline/infrastructure/launcher.html#Context.get_oussid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.launcher.Context.get_oussid" title="Link to this definition"></a></dt>
-<dd><p>Get the parent OUS ‘ousstatus’ name. This is the sanitized OUS
+<dd><p>Get the parent OUS 'ousstatus' name. This is the sanitized OUS
 status UID.</p>
 </dd></dl>
 
@@ -279,7 +426,7 @@ status UID.</p>
 <dd><p>Save a pickle of the Context to a file with given filename.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> – Name of the context file. If None, this will be set to
+<dd class="field-odd"><p><strong>filename</strong> -- Name of the context file. If None, this will be set to
 &lt;context name&gt;.context.</p>
 </dd>
 </dl>
@@ -293,9 +440,9 @@ value.</p>
 <p>The class name should be one of:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p>‘ProjectSummary’</p></li>
-<li><p>‘ProjectStructure’</p></li>
-<li><p>‘PerformanceParameters’</p></li>
+<li><p>'ProjectSummary'</p></li>
+<li><p>'ProjectStructure'</p></li>
+<li><p>'PerformanceParameters'</p></li>
 </ol>
 </div></blockquote>
 <p>Background: see CAS-9497 - add infrastructure to translate values from
@@ -303,9 +450,9 @@ intent.xml to setter functions in casa_pipescript.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cls</strong> – Class identifier.</p></li>
-<li><p><strong>name</strong> – Property to set.</p></li>
-<li><p><strong>value</strong> – Value to set.</p></li>
+<li><p><strong>cls</strong> -- Class identifier.</p></li>
+<li><p><strong>name</strong> -- Property to set.</p></li>
+<li><p><strong>value</strong> -- Value to set.</p></li>
 </ul>
 </dd>
 </dl>
@@ -326,7 +473,7 @@ intent.xml to setter functions in casa_pipescript.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

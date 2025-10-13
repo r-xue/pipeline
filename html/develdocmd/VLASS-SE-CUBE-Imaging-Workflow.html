@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VLASS-SE-CUBE imaging workflow &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -133,7 +134,7 @@
 <p>In general, the CCIP workflow uses similar imaging heuristics as the VLASS-SE-CONT workflow, with two major differences:</p>
 <ol class="arabic simple">
 <li><p>The CCIP workflow skips several selfcal/masking-related stages in VLASS-SE-CONT, and replaces them with a single equivalent <code class="docutils literal notranslate"><span class="pre">hifv_restorepims()</span></code> stage that utilizes the products from VLASS-SE-CONT (e.g. reimaging_esource.tgz and tier1/tier2 masks).
-<code class="docutils literal notranslate"><span class="pre">hifv_restorepims()</span></code> restores the <code class="docutils literal notranslate"><span class="pre">flag</span></code>, <code class="docutils literal notranslate"><span class="pre">corrected</span></code>, and <code class="docutils literal notranslate"><span class="pre">weight</span></code> columns in a PIMS to the same state of the final imaging-ready MS in the VLASS-SE-CONT production run.</p></li>
+<code class="docutils literal notranslate"><span class="pre">hifv_restorepims()</span></code> restores the <code class="docutils literal notranslate"><span class="pre">flag</span></code>, <code class="docutils literal notranslate"><span class="pre">corrected</span></code>, and <code class="docutils literal notranslate"><span class="pre">weight</span></code> columns in a Per-Image Measurement Set (PIMS) to the same state of the final imaging-ready MS in the VLASS-SE-CONT production run.</p></li>
 <li><p>The imaging operation will go through individual specified SPW groups and generate/analyze/export full-Stokes images, using slightly less expensive algorithms (mosaic gridder, nterm=1). However, the per-iteration imaging masks and sequence of each spw group are the same as that used in the final imaging stage (<code class="docutils literal notranslate"><span class="pre">vlass_stage=3</span></code>) of VLASS-SE-CONT.</p></li>
 </ol>
 <section id="task-changes">
@@ -166,7 +167,7 @@ At Stage 6, it will use <code class="docutils literal notranslate"><span class="
 Plese note that a channel-wise selection (e.g. <code class="docutils literal notranslate"><span class="pre">spw=['2:0~15','2:16~31']</span></code>) and a range-syntax selection (e.g. <code class="docutils literal notranslate"><span class="pre">spw=['1~4','5~7']</span></code> are not allowed.</p></li>
 </ul>
 </li>
-<li><p>the <code class="docutils literal notranslate"><span class="pre">reffreq</span></code> parameter for <code class="docutils literal notranslate"><span class="pre">tclean</span></code> will be expiciltly set to the mean frequency of  each spw/spwgroup.</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">reffreq</span></code> parameter for <code class="docutils literal notranslate"><span class="pre">tclean</span></code> will be explicitly set to the mean frequency of  each spw/spwgroup.</p></li>
 <li><p>If the spw-selected data is flagged above a percentage threshold (currently, hardcoded to 100%, i.e., completely flagged ), then that spw/spwgroup will not be added to the imaging target list, and a warning will be issued on the weblog.</p></li>
 <li><p>The weblog is improved to show imagename/mask/spw/frereq of each imaging target in separate rows.</p></li>
 </ul>
@@ -181,7 +182,7 @@ The imaging operations of targets will be put into a FIFO queue constructed from
 <li><p>CASA/tclean is run in the nterms=1 mode, and a Stokes IQUV cube is generated in a single tclean call.</p></li>
 <li><p>tclean input mask (iter1/iter2 from QL/combined mask of SE), are copied as *.iter1/2.cleanmask for each target.</p></li>
 <li><p>Only *.cleanmask/.image/.residual are preserved for iter1/iter2 to reduce storage I/O and disk space usage.</p></li>
-<li><p>If imaging fails on one target, the weblog will still present the succeed targets and show the failed target(s) in the top error message banner.</p></li>
+<li><p>If imaging fails on one target, the weblog will still present the successful targets and show the failed one(s) in the top error message banner.</p></li>
 <li><p>The weblog uses the VLASS-cube-specific template, which has a grid layout with four Stokes planes in columns and different imaging targets in rows.</p></li>
 <li><p>The tclean summary plot shows the peak residual model flux of each Stokes planes.</p></li>
 <li><p>A workaround for CAS-13401 is implemented: the beam information is missing in residual/restored image from CASA/tclean when Stokes=‘IQUV’.</p></li>
@@ -246,7 +247,7 @@ The imaging operations of targets will be put into a FIFO queue constructed from
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

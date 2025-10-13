@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifv.cli.hifv_testBPdcals &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -29,7 +29,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pipeline.hifv.cli.hifv_vlasetjy" href="pipeline.hifv.cli.hifv_vlasetjy.html" />
-    <link rel="prev" title="pipeline.hifv.cli.hifv_tecmaps" href="pipeline.hifv.cli.hifv_tecmaps.html" /> 
+    <link rel="prev" title="pipeline.hifv.cli.hifv_syspower" href="pipeline.hifv.cli.hifv_syspower.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -120,21 +121,25 @@
 <h1>pipeline.hifv.cli.hifv_testBPdcals<a class="headerlink" href="#pipeline-hifv-cli-hifv-testbpdcals" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hifv.cli.hifv_testBPdcals">
-<span class="sig-name descname"><span class="pre">hifv_testBPdcals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weakbp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refantignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doflagundernspwlimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultsList</span><span class="p"><span class="pre">[</span></span><span class="pre">Results</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_testBPdcals.html#hifv_testBPdcals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifv.cli.hifv_testBPdcals" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">hifv_testBPdcals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weakbp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refantignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doflagundernspwlimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flagbaddef</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iglist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultsList</span><span class="p"><span class="pre">[</span></span><span class="pre">Results</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifv/cli/hifv_testBPdcals.html#hifv_testBPdcals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifv.cli.hifv_testBPdcals" title="Link to this definition"></a></dt>
 <dd><p>Runs initial delay and bandpass calibration to setup for RFI flagging.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
-<li><p><strong>vis</strong> (<em>str, optional</em>) – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.</p></li>
-<li><p><strong>weakbp</strong> (<em>Boolean</em>) – Activate weak bandpass heuristics.
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> (<em>str</em><em>, </em><em>optional</em>) -- The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.</p></li>
+<li><p><strong>weakbp</strong> (<em>Boolean</em>) -- Activate weak bandpass heuristics.
 Weak bandpass heuristics on/off - currently not used - see PIPE-104.</p></li>
-<li><p><strong>refantignore</strong> (<em>str</em>) – String list of antennas to ignore.</p>
-<p>Example:  refantignore=’ea02, ea03’</p>
-</li>
-<li><p><strong>doflagundernspwlimit</strong> (<em>Boolean</em>) – If the number of bad spws is greater than zero, and the keyword is True, then spws are flagged individually.</p></li>
-<li><p><strong>refant</strong> (<em>str</em>) – A csv string of reference antenna(s). When used, disables <code class="docutils literal notranslate"><span class="pre">refantignore</span></code>.</p>
-<p>Example: refant = ‘ea01, ea02’</p>
-</li>
+<li><p><strong>refantignore</strong> (<em>str</em>) -- <p>String list of antennas to ignore.</p>
+<p>Example:  refantignore='ea02, ea03'</p>
+</p></li>
+<li><p><strong>doflagundernspwlimit</strong> (<em>Boolean</em>) -- If the number of bad spws is greater than zero, and the keyword is True, then spws are flagged individually.</p></li>
+<li><p><strong>flagbaddef</strong> (<em>Boolean</em><em>, </em><em>optional</em>) -- Enable/disable bad deformatter flagging. Default is True.</p></li>
+<li><p><strong>iglist</strong> (<em>dict</em><em>, </em><em>optional</em>) -- When flagbaddef is True, skip bad deformatter flagging for elements in the ignore list.
+Format: {antName:{band:{spw}}}
+Example: {'ea02': {'L': {0, 1, '10~13'}}}</p></li>
+<li><p><strong>refant</strong> (<em>str</em>) -- <p>A csv string of reference antenna(s). When used, disables <code class="docutils literal notranslate"><span class="pre">refantignore</span></code>.</p>
+<p>Example: refant = 'ea01, ea02'</p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -156,14 +161,14 @@ Weak bandpass heuristics on/off - currently not used - see PIPE-104.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline.hifv.cli.hifv_tecmaps.html" class="btn btn-neutral float-left" title="pipeline.hifv.cli.hifv_tecmaps" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline.hifv.cli.hifv_syspower.html" class="btn btn-neutral float-left" title="pipeline.hifv.cli.hifv_syspower" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pipeline.hifv.cli.hifv_vlasetjy.html" class="btn btn-neutral float-right" title="pipeline.hifv.cli.hifv_vlasetjy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

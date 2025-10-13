@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.makeimages.makeimages &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -143,8 +181,9 @@
 
     <span class="n">calcsb</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">cleancontranges</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">hm_cleaning</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;rms&#39;</span><span class="p">)</span>
+    <span class="n">hm_cleaning</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">hm_cyclefactor</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mf">999.0</span><span class="p">)</span>
+    <span class="n">hm_nmajor</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">hm_dogrowprune</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">hm_growiterations</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">999</span><span class="p">)</span>
     <span class="n">hm_lownoisethreshold</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mf">999.0</span><span class="p">)</span>
@@ -197,7 +236,7 @@
                  <span class="n">hm_masking</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_sidelobethreshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_noisethreshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">hm_lownoisethreshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_negativethreshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_minbeamfrac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_growiterations</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">hm_dogrowprune</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_minpercentchange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_fastnoise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_nsigma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">hm_perchanweightdensity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_npixels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_cyclefactor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_minpsffraction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">hm_perchanweightdensity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_npixels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_cyclefactor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_nmajor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_minpsffraction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">hm_maxpsffraction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_weighting</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_cleaning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tlimit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">drcorrect</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">masklimit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">cleancontranges</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calcsb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_mosweight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_on_export</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vlass_plane_reject_im</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -206,12 +245,12 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            context: Pipeline context object containing state information.</span>
 
 <span class="sd">            output_dir: Output directory.</span>
 <span class="sd">                Defaults to None, which corresponds to the current working directory.</span>
 
-<span class="sd">            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.</span>
+<span class="sd">            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the &lt;hifa,hifv&gt;_importdata task.</span>
 <span class="sd">                &#39;&#39;: use all MeasurementSets in the context</span>
 <span class="sd">                Examples: &#39;ngc5921.ms&#39;, [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
 
@@ -247,6 +286,8 @@
 <span class="sd">            hm_npixels: Number of pixels to determine uv-cell size for super-uniform weighting</span>
 
 <span class="sd">            hm_cyclefactor: Scaling on PSF sidelobe level to compute the minor-cycle stopping threshold</span>
+
+<span class="sd">            hm_nmajor: Controls the maximum number of major cycles to evaluate.</span>
 
 <span class="sd">            hm_minpsffraction: PSF fraction that marks the max depth of cleaning in the minor cycle</span>
 
@@ -296,8 +337,13 @@
 <span class="sd">                - beamdev_thresh: default: 0.2</span>
 <span class="sd">                  Threshold for the fractional beam deviation from the expected value required for the plane rejection.</span>
 
-<span class="sd">            parallel: Clean images using MPI cluster</span>
+<span class="sd">            parallel: Use CASA/tclean built-in parallel imaging for individual scientific targets, or, perform continuum imaging</span>
+<span class="sd">                of multiple target (calibrators) concurrently without the CASA/tclean built-in parallelization.</span>
 
+<span class="sd">                Options: ``&#39;automatic&#39;``, ``&#39;true&#39;``, ``&#39;false&#39;``, ``True``, ``False``</span>
+
+<span class="sd">                Default: ``&#39;automatic&#39;`` - optimizes the parallelization mode based on the imaging target type</span>
+<span class="sd">                    (scientific targets vs. calibrators) and the specific operation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
@@ -319,6 +365,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hm_npixels</span> <span class="o">=</span> <span class="n">hm_npixels</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hm_cleaning</span> <span class="o">=</span> <span class="n">hm_cleaning</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hm_cyclefactor</span> <span class="o">=</span> <span class="n">hm_cyclefactor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_nmajor</span> <span class="o">=</span> <span class="n">hm_nmajor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hm_minpsffraction</span> <span class="o">=</span> <span class="n">hm_minpsffraction</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hm_maxpsffraction</span> <span class="o">=</span> <span class="n">hm_maxpsffraction</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hm_weighting</span> <span class="o">=</span> <span class="n">hm_weighting</span>
@@ -335,7 +382,7 @@
 
 <span class="c1"># tell the infrastructure to give us mstransformed data when possible by</span>
 <span class="c1"># registering our preference for imaging measurement sets</span>
-<span class="c1">#api.ImagingMeasurementSetsPreferred.register(MakeImagesInputs)</span>
+<span class="c1"># api.ImagingMeasurementSetsPreferred.register(MakeImagesInputs)</span>
 
 
 <div class="viewcode-block" id="MakeImages">
@@ -403,14 +450,14 @@
 
         <span class="n">description</span> <span class="o">=</span> <span class="p">{</span>
             <span class="c1"># map specmode to description for every clean target</span>
-            <span class="n">_get_description_map</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">],</span> <span class="s1">&#39;Calculate clean products&#39;</span><span class="p">)</span>
+            <span class="n">_get_description_map</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">],</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;stokes&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">],</span> <span class="s1">&#39;Calculate clean products&#39;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">target_list</span>
         <span class="p">}</span>
         <span class="n">result</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;long description&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39; / &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">description</span><span class="p">))</span>
 
         <span class="n">sidebar</span> <span class="o">=</span> <span class="p">{</span>
             <span class="c1"># map specmode to description for every clean target</span>
-            <span class="n">_get_sidebar_map</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">],</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">_get_sidebar_map</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">],</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;stokes&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;specmode&#39;</span><span class="p">],</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">target_list</span>
         <span class="p">}</span>
         <span class="n">result</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;sidebar suffix&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sidebar</span><span class="p">)</span>
@@ -455,12 +502,14 @@
         <span class="c1"># as the ImageItem instance &#39;metadata&#39; attribute.</span>
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">tclean_result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">results</span><span class="p">):</span>
             <span class="n">target</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-            <span class="n">imaging_metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;keep&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                                <span class="c1"># Flagging percentage of a VLASS-SE-CUBE plane within a 1deg^2 box.</span>
-                                <span class="s1">&#39;flagpct&#39;</span><span class="p">:</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;flagpct&#39;</span><span class="p">],</span>
-                                <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">],</span>
-                                <span class="s1">&#39;freq&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;reffreq&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;GHz&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)),</span>
-                                <span class="s1">&#39;beam&#39;</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]}</span>
+            <span class="n">imaging_metadata</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;keep&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="c1"># Flagging percentage of a VLASS-SE-CUBE plane within a 1deg^2 box.</span>
+                <span class="s1">&#39;flagpct&#39;</span><span class="p">:</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;misc_vlass&#39;</span><span class="p">][</span><span class="s1">&#39;flagpct&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">],</span>
+                <span class="s1">&#39;freq&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;reffreq&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;GHz&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)),</span>
+                <span class="s1">&#39;beam&#39;</span><span class="p">:</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+            <span class="p">}</span>
 
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tclean_result</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">ext</span> <span class="o">=</span> <span class="s1">&#39;.tt0&#39;</span> <span class="k">if</span> <span class="n">tclean_result</span><span class="o">.</span><span class="n">multiterm</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
@@ -483,14 +532,23 @@
 
         <span class="c1"># update tclean_result.imaging_metadata[&#39;keep&#39;] based on the beam size and flagging percentage</span>
         <span class="k">if</span> <span class="n">bminor_list</span><span class="p">:</span>
-            <span class="n">ref_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">bminor_list</span><span class="p">)[</span><span class="nb">len</span><span class="p">(</span><span class="n">bminor_list</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">]</span>
 
-            <span class="n">bmajor_expected</span> <span class="o">=</span> <span class="n">bmajor_list</span><span class="p">[</span><span class="n">ref_idx</span><span class="p">]</span><span class="o">*</span><span class="n">freq_list</span><span class="p">[</span><span class="n">ref_idx</span><span class="p">]</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">freq_list</span><span class="p">)</span>
-            <span class="n">bminor_expected</span> <span class="o">=</span> <span class="n">bminor_list</span><span class="p">[</span><span class="n">ref_idx</span><span class="p">]</span><span class="o">*</span><span class="n">freq_list</span><span class="p">[</span><span class="n">ref_idx</span><span class="p">]</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">freq_list</span><span class="p">)</span>
-            <span class="n">c1</span> <span class="o">=</span> <span class="p">(</span><span class="n">bmajor_expected</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="n">beamdev_thresh</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bmajor_list</span><span class="p">))</span>
-            <span class="n">c2</span> <span class="o">=</span> <span class="p">(</span><span class="n">bmajor_expected</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span><span class="o">+</span><span class="n">beamdev_thresh</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bmajor_list</span><span class="p">))</span>
-            <span class="n">c3</span> <span class="o">=</span> <span class="p">(</span><span class="n">bminor_expected</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="n">beamdev_thresh</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bminor_list</span><span class="p">))</span>
-            <span class="n">c4</span> <span class="o">=</span> <span class="p">(</span><span class="n">bminor_expected</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span><span class="o">+</span><span class="n">beamdev_thresh</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bminor_list</span><span class="p">))</span>
+            <span class="n">bminor_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bminor_list</span><span class="p">)</span>
+            <span class="n">freq_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">freq_list</span><span class="p">)</span>
+            <span class="n">weighted_values</span> <span class="o">=</span> <span class="n">bminor_array</span> <span class="o">*</span> <span class="n">freq_array</span>
+            <span class="n">sorted_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">weighted_values</span><span class="p">)</span>
+            <span class="n">ref_idx</span> <span class="o">=</span> <span class="n">sorted_indices</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">bminor_list</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]</span>
+
+            <span class="n">bmajor_expected</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">bmajor_list</span><span class="p">[</span><span class="n">ref_idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">freq_list</span><span class="p">[</span><span class="n">ref_idx</span><span class="p">]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">freq_list</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">bminor_expected</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">bminor_list</span><span class="p">[</span><span class="n">ref_idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">freq_list</span><span class="p">[</span><span class="n">ref_idx</span><span class="p">]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">freq_list</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">c1</span> <span class="o">=</span> <span class="n">bmajor_expected</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">beamdev_thresh</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bmajor_list</span><span class="p">)</span>
+            <span class="n">c2</span> <span class="o">=</span> <span class="n">bmajor_expected</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">beamdev_thresh</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bmajor_list</span><span class="p">)</span>
+            <span class="n">c3</span> <span class="o">=</span> <span class="n">bminor_expected</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">beamdev_thresh</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bminor_list</span><span class="p">)</span>
+            <span class="n">c4</span> <span class="o">=</span> <span class="n">bminor_expected</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">beamdev_thresh</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bminor_list</span><span class="p">)</span>
             <span class="n">c5</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">flagpct_list</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">flagpct_thresh</span><span class="p">)</span>
 
             <span class="n">spwgroup_keep</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">spwgroup_list</span><span class="p">)</span>
@@ -554,6 +612,12 @@
         <span class="k">if</span> <span class="n">heuristics</span><span class="o">.</span><span class="n">imaging_mode</span> <span class="o">==</span> <span class="s1">&#39;ALMA&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">clean_result</span><span class="o">.</span><span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;TARGET&#39;</span>
 
+        <span class="c1"># VLA pipeline</span>
+        <span class="c1"># note: Need to check are their any conditions to</span>
+        <span class="c1"># export image sensitivities for VLA</span>
+        <span class="k">if</span> <span class="n">heuristics</span><span class="o">.</span><span class="n">imaging_mode</span> <span class="o">==</span> <span class="s1">&#39;VLA&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
         <span class="c1"># Representative source and SpW</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">repr_source</span><span class="p">,</span> <span class="n">repr_spw</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">heuristics</span><span class="o">.</span><span class="n">representative_target</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">)</span> <span class="ow">in</span> <span class="n">clean_result</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">repr_source</span> <span class="o">==</span> <span class="n">utils</span><span class="o">.</span><span class="n">dequote</span><span class="p">(</span><span class="n">clean_result</span><span class="o">.</span><span class="n">sourcename</span><span class="p">):</span>
@@ -595,11 +659,28 @@
         <span class="n">array</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">m&#39;</span> <span class="o">%</span> <span class="nb">min</span><span class="p">(</span><span class="n">diameters</span><span class="p">))</span>
 
         <span class="c1"># Check if this sensitivity is for the representative source and SpW</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">repr_source</span><span class="p">,</span> <span class="n">repr_spw</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">heuristics</span><span class="o">.</span><span class="n">representative_target</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">)</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">repr_source</span> <span class="o">==</span> <span class="n">utils</span><span class="o">.</span><span class="n">dequote</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">sourcename</span><span class="p">):</span>
-            <span class="n">is_representative</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">heuristics</span><span class="o">.</span><span class="n">imaging_mode</span> <span class="o">==</span> <span class="s1">&#39;VLA&#39;</span><span class="p">:</span>
             <span class="n">is_representative</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">repr_source</span><span class="p">,</span> <span class="n">repr_spw</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">heuristics</span><span class="o">.</span><span class="n">representative_target</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">repr_spw</span><span class="p">)</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">repr_source</span> <span class="o">==</span> <span class="n">utils</span><span class="o">.</span><span class="n">dequote</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">sourcename</span><span class="p">):</span>
+                <span class="n">is_representative</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">is_representative</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Sensitivities are currently reported for Stokes I only. For IQUV imaging the</span>
+        <span class="c1"># correct values have to be fetched from the new parameters since the previous</span>
+        <span class="c1"># ones will contain mixtures of I, Q, U and V due to the &quot;axes&quot; parameter in</span>
+        <span class="c1"># the ia.statistics() calls (PIPE-2464). TODO: Refactor the code to have just</span>
+        <span class="c1"># one set of statistical parameters.</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">stokes</span> <span class="o">==</span> <span class="s1">&#39;IQUV&#39;</span><span class="p">:</span>
+            <span class="n">image_rms</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">image_rms_iquv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">image_min</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">image_min_iquv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">image_max</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">image_max_iquv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">image_rms</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">image_rms</span>
+            <span class="n">image_min</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">image_min</span>
+            <span class="n">image_max</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">image_max</span>
 
         <span class="k">return</span> <span class="n">Sensitivity</span><span class="p">(</span><span class="n">array</span><span class="o">=</span><span class="n">array</span><span class="p">,</span>
                            <span class="n">intent</span><span class="o">=</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">],</span>
@@ -613,9 +694,10 @@
                            <span class="n">cell</span><span class="o">=</span><span class="n">cell</span><span class="p">,</span>
                            <span class="n">robust</span><span class="o">=</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;robust&#39;</span><span class="p">],</span>
                            <span class="n">uvtaper</span><span class="o">=</span><span class="n">target</span><span class="p">[</span><span class="s1">&#39;uvtaper&#39;</span><span class="p">],</span>
-                           <span class="n">sensitivity</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">image_rms</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">),</span>
-                           <span class="n">pbcor_image_min</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">image_min</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">),</span>
-                           <span class="n">pbcor_image_max</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">image_max</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">),</span>
+                           <span class="n">theoretical_sensitivity</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">sensitivity</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">),</span>
+                           <span class="n">observed_sensitivity</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">image_rms</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">),</span>
+                           <span class="n">pbcor_image_min</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">image_min</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">),</span>
+                           <span class="n">pbcor_image_max</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">image_max</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">),</span>
                            <span class="n">imagename</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.pbcor&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
                            <span class="n">datatype</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">datatype</span><span class="p">)</span></div>
 
@@ -765,13 +847,26 @@
 
         <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_masking</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
             <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]:</span>
-                <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;hm_masking&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;auto&#39;</span>
+                <span class="k">if</span> <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;stokes&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;IQUV&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+                        <span class="c1"># &quot;re-use&quot; is a hidden mode just for the special use case</span>
+                        <span class="c1"># of re-using a previously computed Stokes I mask.</span>
+                        <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;hm_masking&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;re-use&#39;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;hm_masking&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;none&#39;</span>
+                <span class="k">elif</span> <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+                    <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;hm_masking&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;manual&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;hm_masking&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;auto&#39;</span>
             <span class="k">elif</span> <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;POLARIZATION&#39;</span> <span class="ow">and</span> <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;stokes&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;IQUV&#39;</span><span class="p">:</span>
                 <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;hm_masking&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;centralregion&#39;</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;hm_masking&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;auto&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;hm_masking&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_masking</span>
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_masking</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="s1">&#39;centralregion&#39;</span><span class="p">,</span> <span class="s1">&#39;manual&#39;</span><span class="p">,</span> <span class="s1">&#39;none&#39;</span><span class="p">):</span>
+                <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;hm_masking&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_masking</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Masking mode </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">hm_masking</span><span class="si">}</span><span class="s1"> unknown.&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_masking</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
             <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;hm_sidelobethreshold&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_sidelobethreshold</span>
@@ -785,7 +880,10 @@
             <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;hm_fastnoise&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_fastnoise</span>
 
         <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_cleaning</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-            <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;hm_cleaning&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;rms&#39;</span>
+            <span class="k">if</span> <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;threshold&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+                <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;hm_cleaning&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;manual&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;hm_cleaning&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;rms&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;hm_cleaning&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_cleaning</span>
 
@@ -810,6 +908,9 @@
             <span class="c1"># we keep the name now. Could be refactored later.</span>
             <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;cyclefactor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_cyclefactor</span>
 
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_nmajor</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mf">999.0</span><span class="p">):</span>
+            <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;nmajor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_nmajor</span>
+
         <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_minpsffraction</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mf">999.0</span><span class="p">):</span>
             <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;hm_minpsffraction&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_minpsffraction</span>
 
@@ -819,7 +920,7 @@
         <span class="k">return</span> <span class="n">task_args</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_description_map</span><span class="p">(</span><span class="n">intent</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_description_map</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">stokes</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">intent</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">&#39;mfs&#39;</span><span class="p">:</span> <span class="s1">&#39;Make calibrator images&#39;</span><span class="p">,</span>
@@ -841,18 +942,28 @@
             <span class="s1">&#39;cont&#39;</span><span class="p">:</span> <span class="s1">&#39;Make check source images&#39;</span>
         <span class="p">}</span>
     <span class="k">elif</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;mfs&#39;</span><span class="p">:</span> <span class="s1">&#39;Make target per-spw continuum images&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;cont&#39;</span><span class="p">:</span> <span class="s1">&#39;Make target aggregate continuum images&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;cube&#39;</span><span class="p">:</span> <span class="s1">&#39;Make target cubes&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;repBW&#39;</span><span class="p">:</span> <span class="s1">&#39;Make representative bandwidth target cube&#39;</span>
+        <span class="k">if</span> <span class="n">stokes</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s1">&#39;mfs&#39;</span><span class="p">:</span> <span class="s1">&#39;Make target per-spw continuum images&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;cont&#39;</span><span class="p">:</span> <span class="s1">&#39;Make target aggregate continuum images&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;cube&#39;</span><span class="p">:</span> <span class="s1">&#39;Make target cubes&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;repBW&#39;</span><span class="p">:</span> <span class="s1">&#39;Make representative bandwidth target cube&#39;</span>
+            <span class="p">}</span>
+        <span class="k">elif</span> <span class="n">stokes</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;IQUV&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s1">&#39;mfs&#39;</span><span class="p">:</span> <span class="s1">&#39;Make target fullpol per-spw continuum images&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;cont&#39;</span><span class="p">:</span> <span class="s1">&#39;Make target fullpol aggregate continuum images&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;cube&#39;</span><span class="p">:</span> <span class="s1">&#39;Make target fullpol cubes&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;repBW&#39;</span><span class="p">:</span> <span class="s1">&#39;Make fullpol representative bandwidth target cube&#39;</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown Stokes value &quot;</span><span class="si">{</span><span class="n">stokes</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
 
-        <span class="p">}</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{}</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_sidebar_map</span><span class="p">(</span><span class="n">intent</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_sidebar_map</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">stokes</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">intent</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">&#39;mfs&#39;</span><span class="p">:</span> <span class="s1">&#39;cals&#39;</span><span class="p">,</span>
@@ -869,12 +980,22 @@
             <span class="s1">&#39;cont&#39;</span><span class="p">:</span> <span class="s1">&#39;checksrc&#39;</span>
         <span class="p">}</span>
     <span class="k">elif</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{</span>
-            <span class="s1">&#39;mfs&#39;</span><span class="p">:</span> <span class="s1">&#39;mfs&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;cont&#39;</span><span class="p">:</span> <span class="s1">&#39;cont&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;cube&#39;</span><span class="p">:</span> <span class="s1">&#39;cube&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;repBW&#39;</span><span class="p">:</span> <span class="s1">&#39;cube_repBW&#39;</span>
-        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">stokes</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s1">&#39;mfs&#39;</span><span class="p">:</span> <span class="s1">&#39;mfs&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;cont&#39;</span><span class="p">:</span> <span class="s1">&#39;cont&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;cube&#39;</span><span class="p">:</span> <span class="s1">&#39;cube&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;repBW&#39;</span><span class="p">:</span> <span class="s1">&#39;cube_repBW&#39;</span>
+            <span class="p">}</span>
+        <span class="k">elif</span> <span class="n">stokes</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;IQUV&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s1">&#39;mfs&#39;</span><span class="p">:</span> <span class="s1">&#39;mfs_fullpol&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;cont&#39;</span><span class="p">:</span> <span class="s1">&#39;cont_fullpol&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;cube&#39;</span><span class="p">:</span> <span class="s1">&#39;cube_fullpol&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;repBW&#39;</span><span class="p">:</span> <span class="s1">&#39;cube_repBW_fullpol&#39;</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown Stokes value &quot;</span><span class="si">{</span><span class="n">stokes</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{}</span>
 </pre></div>
@@ -886,7 +1007,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

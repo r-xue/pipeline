@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.cli.hifa_diffgaincal &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -120,22 +121,106 @@
 <h1>pipeline.hifa.cli.hifa_diffgaincal<a class="headerlink" href="#pipeline-hifa-cli-hifa-diffgaincal" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hifa.cli.hifa_diffgaincal">
-<span class="sig-name descname"><span class="pre">hifa_diffgaincal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultsList</span><span class="p"><span class="pre">[</span></span><span class="pre">DiffGaincalResults</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_diffgaincal.html#hifa_diffgaincal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_diffgaincal" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">hifa_diffgaincal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flagging_frac_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_spwmapmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">missing_scans_frac_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultsList</span><span class="p"><span class="pre">[</span></span><span class="pre">DiffGaincalResults</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_diffgaincal.html#hifa_diffgaincal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_diffgaincal" title="Link to this definition"></a></dt>
 <dd><p>Derive SpW phase offsets from differential gain calibrator.</p>
-<p>This task creates the spectral window phase gain offset table used to allow
-calibrating the “on-source” spectral setup with phase gains from a
-“reference” spectral setup. A bright point source Quasar, called the
-Differential Gain Calibrator (DIFFGAIN) source, is used for this purpose.
-This DIFFGAIN source typically observed in groups of interleaved “reference”
-and “on-source” scans, once at the start and once at the end of the
-observations. In very long observations, there may be a group of scans
-occurring during the middle. Scan groups are combined while solving for SpW
-offsets between “reference” and “on-source” spectral setups.</p>
-<dl class="field-list">
+<p>This task creates the spectral window phase offset table used to allow
+calibrating the &quot;on-source&quot; spectral setup with phase gains from a
+&quot;reference&quot; spectral setup. Currently this setup with two different
+SpectralSpecs is used by the band-to-band mode, for a high and low
+frequency band.</p>
+<p>A bright point source quasar, called the Differential Gain Calibrator
+(DIFFGAIN) source, is used for this purpose. This DIFFGAIN source is typically
+observed in groups of interleaved &quot;reference&quot; and &quot;on-source&quot; scans. These
+blocks typically occur once at the start and once at the end of the
+observation. In very long observations, there may be a group of scans
+occurring during the middle.</p>
+<p>The procedure for the phase calibration process is as follow:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">reference</span></code> calibration uses the &quot;reference&quot; spectral setup, the &quot;low&quot;
+frequency for band-to-band observations. The solint is fixed as 'inf' (i.e.
+solutions are made per scan). Spectral window combination is governed by
+the hm_spwmapmode options described below. In standard pipeline operation
+<code class="docutils literal notranslate"><span class="pre">auto</span></code> is used - basing spw combination upon SNR and flagging level.
+These reference phase solutions are later applied on-the-fly while solving
+the (band-to-band) <code class="docutils literal notranslate"><span class="pre">phase</span> <span class="pre">offset</span></code>. The premise being that the <code class="docutils literal notranslate"><span class="pre">reference</span></code>
+solutions correct for atmospheric phase variability.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">phase</span> <span class="pre">offset</span></code> (i.e. the band-to-band correction) calibration uses the
+&quot;on-source&quot; spectral setup, the &quot;high&quot; frequency for band-to-band observations.
+The above <code class="docutils literal notranslate"><span class="pre">reference</span></code> phase corrections are applied on-the-fly using a
+linearPD interpolation - this corrects (scales) the phases according to the
+different ratio of the frequency bands. The solint = 'inf' and each group of
+scan blocks (typically at the start and end of the observation) are combined
+respectively. The phase offset solution generally comprises of 2 time
+solutions per spw, per polarization. Spectral window combination is governed
+by the hm_spwmapmode options described below. <code class="docutils literal notranslate"><span class="pre">auto</span></code> is used - basing spw
+combination upon SNR and flag data. These solutions are stored in the
+pipeline context for later application to the TARGET and CHECK intent(s).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">residual</span> <span class="pre">offset</span></code> solutions are produced by applying both <code class="docutils literal notranslate"><span class="pre">reference</span></code> and
+band-to-band <code class="docutils literal notranslate"><span class="pre">phase</span> <span class="pre">offset</span></code> solutions to the 'on-source' DIFFGAIN intent
+on-the-fly, and subsequently solving phases per spw, per scan using
+solint='inf'.  Spectral window combination is governed by the hm_spwmapmode
+options described below. <code class="docutils literal notranslate"><span class="pre">auto</span></code> is used - basing spw combination upon SNR
+and flagging level.</p></li>
+</ul>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> -- <p>The list of input MeasurementSets. Defaults to the list of
 MeasurementSets specified in the pipeline context.</p>
-<p>Example: [‘M32A.ms’, ‘M32B.ms’]</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">['M32A.ms',</span> <span class="pre">'M32B.ms']</span></code></p>
+</p></li>
+<li><p><strong>flagging_frac_limit</strong> -- if the fraction of flagged data in the
+temporary phase gaintable exceeds this limit then SpW
+combination is triggered.</p></li>
+<li><p><strong>hm_spwmapmode</strong> -- <p>The spectral window mapping heuristic mode. The
+options are:</p>
+<ul>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">'all'</span></code>: SpW combination is forced for the diffgain</dt><dd><p>low-frequency reference intent solutions, the diffgain
+high-frequency source intent solutions (actual band-to-band
+offsets), and for the diagnostic residual phase offsets on
+the diffgain high-frequency source intent.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">'auto'</span></code>: Assess need for SpW combination based on SpwMapping</dt><dd><p>from hifa_spwphaseup, and where necessary check the
+gaintable for missing SpWs / too many flagged data / too few
+scan solutions.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">'both'</span></code>: SpW combination is forced for the diffgain</dt><dd><p>low-frequency reference intent solutions and for the
+diagnostic residual phase offsets on the diffgain
+high-frequency source intent.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">'offset'</span></code>: SpW combination is forced for the diffgain</dt><dd><p>high-frequency source intent solutions (actual band-to-band
+offsets).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">'reference'</span></code>: SpW combination is forced for the diffgain</dt><dd><p>low-frequency reference intent solutions.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">'residual'</span></code>: SpW combination is forced for the diagnostic</dt><dd><p>residual phase offsets on the diffgain high-frequency source
+intent.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">hm_spwmapmode='auto'</span></code></p>
+</p></li>
+<li><p><strong>missing_scans_frac_limit</strong> -- if the fraction of missing scans in the
+temporary phase gaintable exceeds this limit then SpW
+combination is triggered.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The results object for the pipeline task is returned.</p>
@@ -163,7 +248,7 @@ MeasurementSets specified in the pipeline context.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

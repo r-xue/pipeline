@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.imageprecheck.imageprecheck &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -230,21 +268,25 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            context: Pipeline context object containing state information.</span>
 
-<span class="sd">            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.</span>
+<span class="sd">            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifa_importdata task.</span>
 <span class="sd">                &#39;&#39;: use all MeasurementSets in the context</span>
 
-<span class="sd">                Examples: &#39;ngc5921.ms&#39;, [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
+<span class="sd">                Examples: ``&#39;ngc5921.ms&#39;``, ``[&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]``</span>
 
 <span class="sd">            desired_angular_resolution: User specified angular resolution goal string. When this parameter is set, uvtapering may be performed.</span>
 <span class="sd">                &#39;&#39;: automatic from performance parameters (default).</span>
 
-<span class="sd">                Example: &#39;1.0arcsec&#39;</span>
+<span class="sd">                Example: ``&#39;1.0arcsec&#39;``</span>
 
 <span class="sd">            calcsb: Force (re-)calculation of sensitivities and beams; defaults to False</span>
 
-<span class="sd">            parallel: Use MPI cluster where possible</span>
+<span class="sd">            parallel: Use the CASA imager parallel processing when possible.</span>
+
+<span class="sd">                Options: ``&#39;automatic&#39;``, ``&#39;true&#39;``, ``&#39;false&#39;``, ``True``, ``False``</span>
+
+<span class="sd">                Default: ``&#39;automatic&#39;``</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -312,6 +354,7 @@
             <span class="n">contfile</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">contfile</span><span class="p">,</span>
             <span class="n">linesfile</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">linesfile</span><span class="p">,</span>
             <span class="n">imaging_params</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">imaging_parameters</span><span class="p">,</span>
+            <span class="n">processing_intents</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">processing_intents</span><span class="p">,</span>
             <span class="n">imaging_mode</span><span class="o">=</span><span class="n">imaging_mode</span>
         <span class="p">)</span>
 
@@ -374,7 +417,7 @@
         <span class="c1"># Approximate reprBW with nbin</span>
         <span class="k">if</span> <span class="n">reprBW_mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">,</span> <span class="s1">&#39;repr_spw&#39;</span><span class="p">]:</span>
             <span class="n">physicalBW_of_1chan</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">real_repr_spw_obj</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">getWidth</span><span class="p">()</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-            <span class="n">nbin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">repr_target</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;Hz&#39;</span><span class="p">))</span><span class="o">/</span><span class="n">physicalBW_of_1chan</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+            <span class="n">nbin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">repr_target</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;Hz&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">physicalBW_of_1chan</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
             <span class="n">cont_sens_bw_modes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;aggBW&#39;</span><span class="p">]</span>
             <span class="n">scale_aggBW_to_repBW</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">elif</span> <span class="n">reprBW_mode</span> <span class="o">==</span> <span class="s1">&#39;multi_spw&#39;</span><span class="p">:</span>
@@ -446,7 +489,8 @@
                               <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cells</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)],</span>
                         <span class="n">robust</span><span class="o">=</span><span class="n">robust</span><span class="p">,</span>
                         <span class="n">uvtaper</span><span class="o">=</span><span class="n">default_uvtaper</span><span class="p">,</span>
-                        <span class="n">sensitivity</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">sensitivity</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">)))</span>
+                        <span class="n">theoretical_sensitivity</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">sensitivity</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">),</span>
+                        <span class="n">observed_sensitiviy</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
                 <span class="k">except</span><span class="p">:</span>
                     <span class="n">sensitivities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Sensitivity</span><span class="p">(</span>
                         <span class="n">array</span><span class="o">=</span><span class="n">array</span><span class="p">,</span>
@@ -460,7 +504,8 @@
                         <span class="n">cell</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;0.0 arcsec&#39;</span><span class="p">,</span> <span class="s1">&#39;0.0 arcsec&#39;</span><span class="p">],</span>
                         <span class="n">robust</span><span class="o">=</span><span class="n">robust</span><span class="p">,</span>
                         <span class="n">uvtaper</span><span class="o">=</span><span class="n">default_uvtaper</span><span class="p">,</span>
-                        <span class="n">sensitivity</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">)))</span>
+                        <span class="n">theoretical_sensitivity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">observed_sensitivity</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
                     <span class="n">sens_bw</span> <span class="o">=</span> <span class="mf">0.0</span>
 
                 <span class="n">sensitivity_bandwidth</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">sens_bw</span><span class="p">,</span> <span class="s1">&#39;Hz&#39;</span><span class="p">)</span>
@@ -506,7 +551,8 @@
                               <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cells</span><span class="p">[(</span><span class="n">robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">default_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)],</span>
                         <span class="n">robust</span><span class="o">=</span><span class="n">robust</span><span class="p">,</span>
                         <span class="n">uvtaper</span><span class="o">=</span><span class="n">default_uvtaper</span><span class="p">,</span>
-                        <span class="n">sensitivity</span><span class="o">=</span><span class="n">_sensitivity</span><span class="p">))</span>
+                        <span class="n">theoretical_sensitivity</span><span class="o">=</span><span class="n">_sensitivity</span><span class="p">,</span>
+                        <span class="n">observed_sensitivity</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">cont_sens_bw_modes</span><span class="p">:</span>
                     <span class="n">sensitivities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Sensitivity</span><span class="p">(</span>
@@ -521,7 +567,8 @@
                         <span class="n">cell</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;0.0 arcsec&#39;</span><span class="p">,</span> <span class="s1">&#39;0.0 arcsec&#39;</span><span class="p">],</span>
                         <span class="n">robust</span><span class="o">=</span><span class="n">robust</span><span class="p">,</span>
                         <span class="n">uvtaper</span><span class="o">=</span><span class="n">default_uvtaper</span><span class="p">,</span>
-                        <span class="n">sensitivity</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">)))</span>
+                        <span class="n">theoretical_sensitivity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">observed_sensitivity</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
                 <span class="n">sens_bw</span> <span class="o">=</span> <span class="mf">0.0</span>
 
             <span class="k">if</span> <span class="n">sensitivity_bandwidth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -623,7 +670,8 @@
                                       <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cells</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;repBW&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)],</span>
                                 <span class="n">robust</span><span class="o">=</span><span class="n">hm_robust</span><span class="p">,</span>
                                 <span class="n">uvtaper</span><span class="o">=</span><span class="n">hm_uvtaper</span><span class="p">,</span>
-                                <span class="n">sensitivity</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">sensitivity</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">)))</span>
+                                <span class="n">theoretical_sensitivity</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">sensitivity</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">),</span>
+                                <span class="n">observed_sensitiviy</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
                         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                             <span class="n">sensitivities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Sensitivity</span><span class="p">(</span>
                                 <span class="n">array</span><span class="o">=</span><span class="n">array</span><span class="p">,</span>
@@ -637,7 +685,8 @@
                                 <span class="n">cell</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;0.0 arcsec&#39;</span><span class="p">,</span> <span class="s1">&#39;0.0 arcsec&#39;</span><span class="p">],</span>
                                 <span class="n">robust</span><span class="o">=</span><span class="n">robust</span><span class="p">,</span>
                                 <span class="n">uvtaper</span><span class="o">=</span><span class="n">hm_uvtaper</span><span class="p">,</span>
-                                <span class="n">sensitivity</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">)))</span>
+                                <span class="n">theoretical_sensitivity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                <span class="n">observed_sensitivity</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
 
                     <span class="n">beams</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)],</span> <span class="n">known_synthesized_beams</span> <span class="o">=</span> <span class="n">image_heuristics</span><span class="o">.</span><span class="n">synthesized_beam</span><span class="p">(</span>
                         <span class="p">[(</span><span class="n">repr_field</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">)],</span> <span class="n">cont_spw</span><span class="p">,</span> <span class="n">robust</span><span class="o">=</span><span class="n">hm_robust</span><span class="p">,</span> <span class="n">uvtaper</span><span class="o">=</span><span class="n">hm_uvtaper</span><span class="p">,</span>
@@ -682,7 +731,8 @@
                                       <span class="n">cqa</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">cells</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span> <span class="s1">&#39;aggBW&#39;</span><span class="p">)][</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;arcsec&#39;</span><span class="p">)],</span>
                                 <span class="n">robust</span><span class="o">=</span><span class="n">hm_robust</span><span class="p">,</span>
                                 <span class="n">uvtaper</span><span class="o">=</span><span class="n">hm_uvtaper</span><span class="p">,</span>
-                                <span class="n">sensitivity</span><span class="o">=</span><span class="n">_sensitivity</span><span class="p">))</span>
+                                <span class="n">theoretical_sensitivity</span><span class="o">=</span><span class="n">_sensitivity</span><span class="p">,</span>
+                                <span class="n">observed_sensitivity</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
                     <span class="k">except</span><span class="p">:</span>
                         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">cont_sens_bw_modes</span><span class="p">:</span>
                             <span class="n">sensitivities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Sensitivity</span><span class="p">(</span>
@@ -697,7 +747,8 @@
                                 <span class="n">cell</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;0.0 arcsec&#39;</span><span class="p">,</span> <span class="s1">&#39;0.0 arcsec&#39;</span><span class="p">],</span>
                                 <span class="n">robust</span><span class="o">=</span><span class="n">robust</span><span class="p">,</span>
                                 <span class="n">uvtaper</span><span class="o">=</span><span class="n">hm_uvtaper</span><span class="p">,</span>
-                                <span class="n">sensitivity</span><span class="o">=</span><span class="n">cqa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;Jy/beam&#39;</span><span class="p">)))</span>
+                                <span class="n">theoretical_sensitivity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                <span class="n">observed_sensitivity</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
                     <span class="c1"># Update beamRatios</span>
                     <span class="k">if</span> <span class="n">reprBW_mode</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;nbin&#39;</span><span class="p">,</span> <span class="s1">&#39;repr_spw&#39;</span><span class="p">]:</span>
                         <span class="n">beamRatios</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">))]</span> <span class="o">=</span> <span class="n">cqa</span><span class="o">.</span><span class="n">tos</span><span class="p">(</span><span class="n">cqa</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">beams</span><span class="p">[(</span><span class="n">hm_robust</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hm_uvtaper</span><span class="p">),</span>
@@ -754,7 +805,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

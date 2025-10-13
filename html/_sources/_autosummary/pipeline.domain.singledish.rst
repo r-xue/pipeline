@@ -9,6 +9,14 @@ pipeline.domain.singledish
 
    
    
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      match_spw_basename
+   
    
 
    

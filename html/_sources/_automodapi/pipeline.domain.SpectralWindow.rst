@@ -18,6 +18,7 @@ SpectralWindow
       ~SpectralWindow.correlation_bits
       ~SpectralWindow.frame
       ~SpectralWindow.freq_lo
+      ~SpectralWindow.grouping_id
       ~SpectralWindow.id
       ~SpectralWindow.intents
       ~SpectralWindow.max_frequency
@@ -51,6 +52,7 @@ SpectralWindow
    .. autoattribute:: correlation_bits
    .. autoattribute:: frame
    .. autoattribute:: freq_lo
+   .. autoattribute:: grouping_id
    .. autoattribute:: id
    .. autoattribute:: intents
    .. autoattribute:: max_frequency

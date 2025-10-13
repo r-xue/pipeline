@@ -16,14 +16,11 @@
       :nosignatures:
    
       hif_analyzealpha
-      hif_antpos
       hif_applycal
-      hif_bandpass
       hif_checkproductsize
       hif_correctedampflag
       hif_editimlist
       hif_findcont
-      hif_gaincal
       hif_lowgainflag
       hif_makecutoutimages
       hif_makeimages

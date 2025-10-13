@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.analyzealpha.analyzealpha &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -122,12 +160,13 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">AnalyzealphaResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_location</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha_and_error</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">image_at_max</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_location</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alpha_and_error</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">image_at_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zenith_angle</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_casa_task</span> <span class="o">=</span> <span class="s1">&#39;Analyzealpha&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">max_location</span> <span class="o">=</span> <span class="n">max_location</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">alpha_and_error</span> <span class="o">=</span> <span class="n">alpha_and_error</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">image_at_max</span> <span class="o">=</span> <span class="n">image_at_max</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zenith_angle</span> <span class="o">=</span> <span class="n">zenith_angle</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -136,8 +175,6 @@
         <span class="k">return</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1">#return &#39;AnalyzealphaResults:\n\t{0}&#39;.format(</span>
-        <span class="c1">#    &#39;\n\t&#39;.join([ms.name for ms in self.mses]))</span>
         <span class="k">return</span> <span class="s1">&#39;AnalyzealphaResults:&#39;</span>
 
 
@@ -147,12 +184,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            context: Pipeline context.</span>
-
-<span class="sd">            vis: List of visisbility  data files. These may be ASDMs, tar files of ASDMs, MSs, or tar files of MSs, If ASDM files are specified, they will be</span>
-<span class="sd">                converted  to MS format.</span>
-
-<span class="sd">                Example: vis=[&#39;X227.ms&#39;, &#39;asdms.tar.gz&#39;]</span>
+<span class="sd">            context: Pipeline context object containing state information.</span>
 
 <span class="sd">            image: Restored subimage</span>
 
@@ -224,6 +256,7 @@
 
             <span class="c1"># Extract the value of that pixel from the alpha subimage</span>
             <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">alphafile</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">fitsheader</span><span class="p">()</span>
                 <span class="c1"># TODO possibly replace round with round_half_up in python3 pipeline</span>
                 <span class="n">alpha_val</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">pixelvalue</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">topixel</span><span class="p">(</span><span class="n">subim_worldcoords</span><span class="p">)[</span><span class="s1">&#39;numeric&#39;</span><span class="p">][:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">())</span>
 
@@ -240,7 +273,27 @@
             <span class="n">alpha_and_error</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> +/- </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">alpha_string</span><span class="p">,</span> <span class="n">alphaerror_string</span><span class="p">)</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;|* Alpha at restored max </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">alpha_and_error</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="n">AnalyzealphaResults</span><span class="p">(</span><span class="n">max_location</span><span class="o">=</span><span class="n">max_location</span><span class="p">,</span> <span class="n">alpha_and_error</span><span class="o">=</span><span class="n">alpha_and_error</span><span class="p">,</span> <span class="n">image_at_max</span><span class="o">=</span><span class="n">image_at_max</span><span class="p">)</span></div>
+            <span class="c1"># retrieve alpha image information</span>
+            <span class="n">ra_head</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;CUNIT1&#39;</span><span class="p">],</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;CRVAL&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]}</span>
+            <span class="n">dec_head</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;unit&#39;</span><span class="p">:</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;CUNIT2&#39;</span><span class="p">],</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;CRVAL&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]}</span>
+            <span class="c1"># Obtain observatory geographic coordinates</span>
+            <span class="n">observatory</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">observatory</span><span class="p">(</span><span class="s1">&#39;VLA&#39;</span><span class="p">)</span>
+            <span class="n">obs_long</span> <span class="o">=</span> <span class="n">observatory</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">]</span>
+            <span class="n">obs_lat</span> <span class="o">=</span> <span class="n">observatory</span><span class="p">[</span><span class="s1">&#39;m1&#39;</span><span class="p">]</span>
+            <span class="c1"># Mean observing time; mimics mid time calculation in exportvlassdata</span>
+            <span class="n">start_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">start_datetime</span>
+            <span class="n">end_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">end_datetime</span>
+            <span class="n">mid_time</span> <span class="o">=</span> <span class="n">start_time</span> <span class="o">+</span> <span class="p">(</span><span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">mid_time</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="s1">&#39;utc&#39;</span><span class="p">,</span> <span class="n">mid_time</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span>
+
+            <span class="c1"># retrieve zenith angle to 2 sig figs for reporting to weblog</span>
+            <span class="n">za_rad</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">positioncorrection</span><span class="o">.</span><span class="n">calc_zd_pa</span><span class="p">(</span>
+                <span class="n">ra</span><span class="o">=</span><span class="n">ra_head</span><span class="p">,</span> <span class="n">dec</span><span class="o">=</span><span class="n">dec_head</span><span class="p">,</span> <span class="n">obs_long</span><span class="o">=</span><span class="n">obs_long</span><span class="p">,</span> <span class="n">obs_lat</span><span class="o">=</span><span class="n">obs_lat</span><span class="p">,</span> <span class="n">date_time</span><span class="o">=</span><span class="n">mid_time</span><span class="p">)</span>
+            <span class="n">zenith_angle</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">za_rad</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;|* Zenith angle of alpha image in degrees </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">zenith_angle</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">AnalyzealphaResults</span><span class="p">(</span><span class="n">max_location</span><span class="o">=</span><span class="n">max_location</span><span class="p">,</span> <span class="n">alpha_and_error</span><span class="o">=</span><span class="n">alpha_and_error</span><span class="p">,</span>
+                                   <span class="n">image_at_max</span><span class="o">=</span><span class="n">image_at_max</span><span class="p">,</span> <span class="n">zenith_angle</span><span class="o">=</span><span class="n">zenith_angle</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Analyzealpha.analyse">
@@ -258,7 +311,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

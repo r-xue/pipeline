@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.cli.hif_setmodels &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -120,8 +121,8 @@
 <h1>pipeline.hif.cli.hif_setmodels<a class="headerlink" href="#pipeline-hif-cli-hif-setmodels" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hif.cli.hif_setmodels">
-<span class="sig-name descname"><span class="pre">hif_setmodels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refintent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transfer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transintent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reffile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normfluxes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalebychan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultsList</span><span class="p"><span class="pre">[</span></span><span class="pre">Results</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_setmodels.html#hif_setmodels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.cli.hif_setmodels" title="Link to this definition"></a></dt>
-<dd><p>Set calibrator source models</p>
+<span class="sig-name descname"><span class="pre">hif_setmodels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refintent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transfer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transintent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reffile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normfluxes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalebychan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultsList</span><span class="p"><span class="pre">[</span></span><span class="pre">Results</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_setmodels.html#hif_setmodels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.cli.hif_setmodels" title="Link to this definition"></a></dt>
+<dd><p>Set calibrator source models.</p>
 <p>Set model fluxes values for calibrator reference and transfer sources using lookup
 values. By default the reference sources are the flux calibrators and the transfer
 sources are the bandpass, phase, and check source calibrators. Reference sources
@@ -130,37 +131,41 @@ which are also in the transfer source list are removed from the transfer source 
 Point source models are used for other calibrators with flux densities provided in the reference file.
 Normalized fluxes are computed for transfer sources if the <code class="docutils literal notranslate"><span class="pre">normfluxes</span></code> parameter is
 set to True.</p>
-<p>The default reference file is ‘flux.csv’ in the current working directory.
+<p>The default reference file is 'flux.csv' in the current working directory.
 This file is usually created in the importdata stage. The file is in
-‘csv’ format and contains the following comma delimited columns.</p>
+'csv' format and contains the following comma delimited columns.</p>
 <p>vis,fieldid,spwid,I,Q,U,V,pix,comment</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
-<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the pipeline context.</p>
-<p>Example: [‘M32A.ms’, ‘M32B.ms’]</p>
-</li>
-<li><p><strong>reference</strong> – A string containing a comma delimited list of  field names defining the reference calibrators. Defaults to field names with
-intent ‘AMPLITUDE’.</p>
-<p>Example: ‘M82,3C273’</p>
-</li>
-<li><p><strong>refintent</strong> – A string containing a comma delimited list of intents used to select the reference calibrators. Defaults to ‘AMPLITUDE’.</p>
-<p>Example: ‘BANDPASS’</p>
-</li>
-<li><p><strong>transfer</strong> – A string containing a comma delimited list of  field names defining the transfer calibrators. Defaults to field names with
-intent ‘’.</p>
-<p>Example: ‘J1328+041,J1206+30’</p>
-</li>
-<li><p><strong>transintent</strong> – A string containing a comma delimited list of intents defining the transfer calibrators. Defaults to ‘BANDPASS,PHASE,CHECK’.
-‘’ stands for no transfer sources.</p>
-<p>Example: ‘PHASE’</p>
-</li>
-<li><p><strong>reffile</strong> – The reference file containing a lookup table of point source models This file currently defaults to ‘flux.csv’ in the working directory. This
-file must conform to the standard pipeline ‘flux.csv’ format</p>
-<p>Example: ‘myfluxes.csv’</p>
-</li>
-<li><p><strong>normfluxes</strong> – Normalize the transfer source flux densities.</p></li>
-<li><p><strong>scalebychan</strong> – Scale the flux density on a per channel basis or else on a per spw basis</p></li>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> -- <p>The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the pipeline context.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">['M32A.ms',</span> <span class="pre">'M32B.ms']</span></code></p>
+</p></li>
+<li><p><strong>reference</strong> -- <p>A string containing a comma delimited list of  field names defining the reference calibrators. Defaults to field names with
+intent 'AMPLITUDE'.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">'M82,3C273'</span></code></p>
+</p></li>
+<li><p><strong>refintent</strong> -- <p>A string containing a comma delimited list of intents used to select the reference calibrators. Defaults to 'AMPLITUDE'.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">'BANDPASS'</span></code></p>
+</p></li>
+<li><p><strong>transfer</strong> -- <p>A string containing a comma delimited list of  field names defining the transfer calibrators. Defaults to field names with
+intent ''.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">'J1328+041,J1206+30'</span></code></p>
+</p></li>
+<li><p><strong>transintent</strong> -- <p>A string containing a comma delimited list of intents defining the transfer calibrators. Defaults to <code class="docutils literal notranslate"><span class="pre">'BANDPASS,PHASE,CHECK'</span></code>.
+<code class="docutils literal notranslate"><span class="pre">''</span></code> stands for no transfer sources.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">'PHASE'</span></code></p>
+</p></li>
+<li><p><strong>reffile</strong> -- <p>The reference file containing a lookup table of point source models This file currently defaults to 'flux.csv' in the working directory. This
+file must conform to the standard pipeline 'flux.csv' format</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">'myfluxes.csv'</span></code></p>
+</p></li>
+<li><p><strong>normfluxes</strong> -- Normalize the transfer source flux densities.</p></li>
+<li><p><strong>scalebychan</strong> -- Scale the flux density on a per channel basis or else on a per spw basis</p></li>
+<li><p><strong>parallel</strong> -- <p>Process multiple MeasurementSets in parallel using the casampi parallelization framework.</p>
+<p>Options: <code class="docutils literal notranslate"><span class="pre">'automatic'</span></code>, <code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code>, <code class="docutils literal notranslate"><span class="pre">True</span></code>, <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code> (equivalent to <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -189,7 +194,7 @@ file must conform to the standard pipeline ‘flux.csv’ format</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

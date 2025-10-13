@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.measures.Latitude &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
@@ -227,6 +228,27 @@
 </tbody>
 </table>
 <dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.measures.Latitude.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="pipeline.domain.fluxmeasurement.Decimal.html#pipeline.domain.fluxmeasurement.Decimal" title="decimal.Decimal"><span class="pre">Decimal</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">units</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{'html':</span> <span class="pre">'&amp;#x00B0;',</span> <span class="pre">'name':</span> <span class="pre">'DEGREE',</span> <span class="pre">'symbol':</span> <span class="pre">'d',</span> <span class="pre">'units</span> <span class="pre">per</span> <span class="pre">circle':</span> <span class="pre">Decimal('360')}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measures.html#Latitude.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.measures.Latitude.__init__" title="Link to this definition"></a></dt>
+<dd><p>Creates a new latitude with the given magnitude and units.</p>
+<p>If no magnitude or units are give, a latitude of 0 degrees will be
+created.</p>
+<p>If magnitude is not a valid value for latitude, it will be normalised
+in a way that will transform it to a legal value. To be legal,
+magnitude must be greater than or equal to the negative of one-quarter
+of a circle and less than or equal to one-quarter of a circle, in the
+given units.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> -- The magnitude for this latitude.</p></li>
+<li><p><strong>units</strong> -- The units for this latitude.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.measures.Latitude.convert_to">
 <span class="sig-name descname"><span class="pre">convert_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">newUnits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{'html':</span> <span class="pre">'&amp;#x00B0;',</span> <span class="pre">'name':</span> <span class="pre">'DEGREE',</span> <span class="pre">'symbol':</span> <span class="pre">'d',</span> <span class="pre">'units</span> <span class="pre">per</span> <span class="pre">circle':</span> <span class="pre">Decimal('360')}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pipeline.domain.measures.EquatorialArc.html#pipeline.domain.measures.EquatorialArc" title="pipeline.domain.measures.EquatorialArc"><span class="pre">EquatorialArc</span></a></span></span><a class="headerlink" href="#pipeline.domain.measures.Latitude.convert_to" title="Link to this definition"></a></dt>
 <dd><p>Converts this arc to the new units.</p>
@@ -234,7 +256,7 @@
 value will have been converted accordingly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>newUnits</strong> – The new units for this arc. Default: degrees.</p>
+<dd class="field-odd"><p><strong>newUnits</strong> -- The new units for this arc. Default: degrees.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><p>This arc. The reason for this return type is to allow code of this
@@ -251,7 +273,7 @@ nature:</p>
 <dd><p>Returns True if this latitude is north of other.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>other</strong> – The latitude to be tested.</p>
+<dd class="field-odd"><p><strong>other</strong> -- The latitude to be tested.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>True if this latitude is north of other.</p>
@@ -276,7 +298,7 @@ nature:</p>
 <dd><p>Returns True if this latitude is south of other.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>other</strong> – The latitude to be tested.</p>
+<dd class="field-odd"><p><strong>other</strong> -- The latitude to be tested.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>True if this latitude is south of other.</p>
@@ -316,7 +338,7 @@ of a circle and less than or equal to one-quarter of a circle, in the
 given units.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>value</strong> – A string that will be converted into a latitude.</p>
+<dd class="field-odd"><p><strong>value</strong> -- A string that will be converted into a latitude.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A new Latitude. If parsing was successful, the value of the
@@ -324,7 +346,7 @@ latitude will be based on the parameter string. If it was not, the
 returned latitude will be of zero degrees.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ValueError - if text is not in the expected form.</strong> – </p>
+<dd class="field-odd"><p><strong>ValueError - if text is not in the expected form.</strong> -- </p>
 </dd>
 </dl>
 </dd></dl>
@@ -370,11 +392,11 @@ A float holding the number of seconds.</p>
 this with convert_to(ArcUnits).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>otherUnits</strong> – The units in which to express this arc’s magnitude
+<dd class="field-odd"><p><strong>otherUnits</strong> -- The units in which to express this arc's magnitude
 (default: degrees)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>This arc’s value converted to otherUnits.</p>
+<dd class="field-even"><p>This arc's value converted to otherUnits.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -394,7 +416,7 @@ this with convert_to(ArcUnits).</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

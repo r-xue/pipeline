@@ -20,10 +20,7 @@ pipeline.domain.measurementset
       :template: custom-class-template.rst
       :nosignatures:
    
-      AntennaArray
-      DataType
       MeasurementSet
-      Polarization
    
    
 

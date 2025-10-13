@@ -18,6 +18,7 @@ ObservingRun
       ~ObservingRun.schedblock_ids
       ~ObservingRun.start_datetime
       ~ObservingRun.start_time
+      ~ObservingRun.virtual_science_spw_shortnames
 
    .. rubric:: Methods Summary
 
@@ -30,6 +31,7 @@ ObservingRun
       ~ObservingRun.get_real_spw_id_by_name
       ~ObservingRun.get_real_spwsel
       ~ObservingRun.get_virtual_spw_id_by_name
+      ~ObservingRun.real2real_spw_id
       ~ObservingRun.real2virtual_spw_id
       ~ObservingRun.virtual2real_spw_id
 
@@ -43,6 +45,7 @@ ObservingRun
    .. autoattribute:: schedblock_ids
    .. autoattribute:: start_datetime
    .. autoattribute:: start_time
+   .. autoattribute:: virtual_science_spw_shortnames
 
    .. rubric:: Methods Documentation
 
@@ -53,5 +56,6 @@ ObservingRun
    .. automethod:: get_real_spw_id_by_name
    .. automethod:: get_real_spwsel
    .. automethod:: get_virtual_spw_id_by_name
+   .. automethod:: real2real_spw_id
    .. automethod:: real2virtual_spw_id
    .. automethod:: virtual2real_spw_id

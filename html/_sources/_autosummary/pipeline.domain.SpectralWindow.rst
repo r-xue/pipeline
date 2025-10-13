@@ -45,6 +45,7 @@ pipeline.domain.SpectralWindow
       ~SpectralWindow.correlation_bits
       ~SpectralWindow.median_receptor_angle
       ~SpectralWindow.specline_window
+      ~SpectralWindow.grouping_id
       ~SpectralWindow.centre_frequency
       ~SpectralWindow.frame
       ~SpectralWindow.max_frequency

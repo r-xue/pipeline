@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.measurementset &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../_static/favicon-16x16.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -119,39 +157,28 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Sequence</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">infrastructure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">measures</span><span class="p">,</span> <span class="n">spectralwindow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">tablereader</span><span class="p">,</span> <span class="n">utils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.launcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_task_name</span>
 
-<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>  <span class="c1"># Avoid circular import. Used only for type annotation.</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">Antenna</span><span class="p">,</span> <span class="n">AntennaArray</span><span class="p">,</span> <span class="n">DataDescription</span><span class="p">,</span> <span class="n">DataType</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">Polarization</span><span class="p">,</span> <span class="n">Scan</span><span class="p">,</span> <span class="n">State</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.tablereader</span><span class="w"> </span><span class="kn">import</span> <span class="n">RetrieveByIndexContainer</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">.antenna</span><span class="w"> </span><span class="kn">import</span> <span class="n">Antenna</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">.datadescription</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataDescription</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">.field</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">.scan</span><span class="w"> </span><span class="kn">import</span> <span class="n">Scan</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">.state</span><span class="w"> </span><span class="kn">import</span> <span class="n">State</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">logging</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">measures</span><span class="p">,</span> <span class="n">spectralwindow</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.antennaarray</span><span class="w"> </span><span class="kn">import</span> <span class="n">AntennaArray</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.datatype</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataType</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.polarization</span><span class="w"> </span><span class="kn">import</span> <span class="n">Polarization</span>
-
-<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="MeasurementSet">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MeasurementSet</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class to store logical representation of a MeasurementSet (MS).</span>
@@ -240,6 +267,8 @@
 <span class="sd">            spectral windows; used in subsequent calibration tasks</span>
 <span class="sd">            (ALMA-interferometry-only).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="MeasurementSet.__init__">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a MeasurementSet object.</span>
@@ -307,7 +336,8 @@
         <span class="c1"># the reference antenna list from being modified. I would have liked</span>
         <span class="c1"># to put the lock on a custom refant list class, but some tasks check</span>
         <span class="c1"># the type of reference_antenna directly which prevents that approach.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">reference_antenna_locked</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_antenna_locked</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_calc_filesize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">measures</span><span class="o">.</span><span class="n">FileSize</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -359,7 +389,7 @@
         <span class="k">return</span> <span class="s2">&quot;BandToBand Interferometry&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observing_modes</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_diffgain_mode</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;B2B&quot;</span>
 
 <div class="viewcode-block" id="MeasurementSet.get_antenna">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_antenna">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_antenna">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_term</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Antenna</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return Antenna(s) for given antenna selection in CASA format.</span>
@@ -381,7 +411,7 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_state">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_state">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_state">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">State</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return State in MeasurementSet matching the given identifier.</span>
@@ -401,7 +431,7 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_scans">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_scans">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_scans">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_scans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">scan_intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                   <span class="n">field</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
             <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Scan</span><span class="p">]:</span>
@@ -463,7 +493,7 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_data_description">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_data_description">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_data_description">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_data_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">spectralwindow</span><span class="o">.</span><span class="n">SpectralWindow</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
             <span class="o">-&gt;</span> <span class="n">DataDescription</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -497,11 +527,10 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_representative_source_spw">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_representative_source_spw">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_representative_source_spw">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_representative_source_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">source_spwid</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
             <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the representative target source object:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the representative target source object.</span>
 
 <span class="sd">        * Use user name if ``source_name`` is supplied by user and it has TARGET intent.</span>
 <span class="sd">        * Otherwise, use the source defined in the ASDM SBSummary table if it has TARGET intent.</span>
@@ -519,11 +548,12 @@
         <span class="n">qa</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
         <span class="n">cme</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
 
-        <span class="c1"># PIPE-1504: only issue certain messages at the WARNING level if they are executed by hifa_imageprecheck</span>
-        <span class="k">if</span> <span class="s1">&#39;hifa_imageprecheck&#39;</span> <span class="ow">in</span> <span class="p">[</span><span class="n">fn_name</span> <span class="k">for</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()]:</span>
-            <span class="n">log_level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span>
+        <span class="c1"># PIPE-1504/PIPE-2859: only issue certain messages at the WARNING level if they are executed by hifa_imageprecheck</span>
+        <span class="k">if</span> <span class="n">current_task_name</span><span class="o">.</span><span class="n">get</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;hifa_imageprecheck&#39;</span><span class="p">:</span>
+            <span class="c1"># Only issue messages at the WARNING level if they are executed by hifa_imageprecheck</span>
+            <span class="n">log_level</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">log_level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span>
+            <span class="n">log_level</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span>
 
         <span class="k">if</span> <span class="n">source_name</span><span class="p">:</span>
             <span class="c1"># Use the first target source that matches the user defined name</span>
@@ -617,7 +647,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna_array</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;VLA&#39;</span><span class="p">,</span> <span class="s1">&#39;EVLA&#39;</span><span class="p">):</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Undefined representative bandwidth for data set </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">target_source_name</span><span class="p">,</span> <span class="kc">None</span>
-        
+
         <span class="n">target_bw</span> <span class="o">=</span> <span class="n">cme</span><span class="o">.</span><span class="n">frequency</span><span class="p">(</span><span class="s1">&#39;TOPO&#39;</span><span class="p">,</span>
             <span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">representative_target</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
             <span class="n">qa</span><span class="o">.</span><span class="n">getunit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">representative_target</span><span class="p">[</span><span class="mi">2</span><span class="p">])))</span>
@@ -651,7 +681,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">target_frequency_topo</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">target_source_name</span><span class="p">,</span> <span class="kc">None</span>
 
-        <span class="c1"># Find the science spw </span>
+        <span class="c1"># Find the science spw</span>
 
         <span class="c1"># Get the science spw ids</span>
         <span class="n">science_spw_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">()]</span>
@@ -731,7 +761,7 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_fields">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_fields">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_fields">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_arg</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">field_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Field</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -785,7 +815,7 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_spectral_window">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_spectral_window">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_spectral_window">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_spectral_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">spectralwindow</span><span class="o">.</span><span class="n">SpectralWindow</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the SpectralWindow object matching the given identifier.</span>
@@ -812,7 +842,7 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_spectral_windows">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_spectral_windows">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_spectral_windows">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_spectral_windows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_arg</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">with_channels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                              <span class="n">num_channels</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">science_windows_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                              <span class="n">spectralspecs</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
@@ -886,14 +916,14 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_spectral_specs">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_spectral_specs">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_spectral_specs">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_spectral_specs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of all spectral specs used in the MS.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spectralspec_spwmap</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="MeasurementSet.get_all_spectral_windows">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_all_spectral_windows">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_all_spectral_windows">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_all_spectral_windows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_arg</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">with_channels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> \
             <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">spectralwindow</span><span class="o">.</span><span class="n">SpectralWindow</span> <span class="o">|</span> <span class="n">spectralwindow</span><span class="o">.</span><span class="n">SpectralWindowWithChannelSelection</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -914,7 +944,7 @@
 <span class="sd">            for given CASA-style search criteria.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># we may have more spectral windows in our MeasurementSet than have</span>
-        <span class="c1"># data in the measurement set on disk. Ask for all </span>
+        <span class="c1"># data in the measurement set on disk. Ask for all</span>
         <span class="k">if</span> <span class="n">task_arg</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
             <span class="n">task_arg</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
 
@@ -935,7 +965,7 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_diffgain_mode">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_diffgain_mode">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_diffgain_mode">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_diffgain_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determine if the intents and SpW setup in this measurement set are</span>
@@ -981,7 +1011,7 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_original_intent">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_original_intent">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_original_intent">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_original_intent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the original obs_modes that correspond to the given pipeline</span>
@@ -1000,21 +1030,35 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_alma_cycle_number">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_alma_cycle_number">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_alma_cycle_number">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_alma_cycle_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the ALMA cycle number from the ALMA control software version that</span>
-<span class="sd">        this MeasurementSet was acquired with.</span>
+<span class="sd">        Get the ALMA cycle number from the observation start time.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            int cycle_number or None if not found</span>
+<span class="sd">            Cycle number or None if not found</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;CYCLE(\d+)&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">acs_software_build_version</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
-            <span class="n">cycle_number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-            <span class="k">return</span> <span class="n">cycle_number</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span></div>
+        <span class="n">cycle_numbers</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;0&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2011-09-30&#39;</span><span class="p">,</span> <span class="s1">&#39;2013-01-20&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2013-01-21&#39;</span><span class="p">,</span> <span class="s1">&#39;2014-06-02&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2014-06-03&#39;</span><span class="p">,</span> <span class="s1">&#39;2015-09-30&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;3&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2015-10-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2016-09-30&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;4&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2016-10-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2017-09-30&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;5&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2017-10-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2018-09-30&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;6&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2018-10-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2019-09-30&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;7&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2019-10-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2021-09-30&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;8&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2021-10-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2022-09-30&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;9&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2022-10-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2023-09-30&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;10&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2023-10-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2024-09-30&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;11&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2024-10-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2025-09-30&#39;</span><span class="p">],</span>
+        <span class="p">}</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_epoch_as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">cycle</span><span class="p">,</span> <span class="p">(</span><span class="n">start_str</span><span class="p">,</span> <span class="n">end_str</span><span class="p">)</span> <span class="ow">in</span> <span class="n">cycle_numbers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">start_str</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">end_str</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;=</span> <span class="n">start_time</span> <span class="o">&lt;=</span> <span class="n">end</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">cycle</span>
+        <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># No match</span></div>
 
 
     <span class="nd">@property</span>
@@ -1032,7 +1076,7 @@
         <span class="k">return</span> <span class="n">latest</span><span class="o">.</span><span class="n">end_time</span>
 
 <div class="viewcode-block" id="MeasurementSet.get_vla_corrstring">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_corrstring">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_corrstring">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_vla_corrstring</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get correlation string for VLA</span>
 
@@ -1051,7 +1095,7 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_vla_corrlist_from_spw">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_corrlist_from_spw">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_corrlist_from_spw">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_vla_corrlist_from_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all VLA correlation labels as a list of string from selected spw(s).</span>
 
@@ -1071,7 +1115,7 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_alma_corrstring">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_alma_corrstring">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_alma_corrstring">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_alma_corrstring</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get correlation string for ALMA for the science spectral windows.</span>
 
@@ -1094,33 +1138,53 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_vla_spw2band">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_spw2band">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_vla_spw2band</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find field spws for VLA</span>
-
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_spw2band">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_vla_spw2band</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find spectral windows id-to-band mapping for VLA.</span>
+<span class="sd">        </span>
+<span class="sd">        Creat spw id-to-band mapping from spw names or derives it from reference frequency</span>
+<span class="sd">        when name parsing fails. Handles special cases for KU and KA band naming conventions.</span>
+<span class="sd">        </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            spw2band: dictionary with each string key spw index giving a single letter string value of the band</span>
+<span class="sd">            Dictionary mapping spectral window IDs to single-letter band codes (e.g., &#39;4&#39;, &#39;P&#39;, &#39;L&#39;, </span>
+<span class="sd">            &#39;S&#39;, &#39;C&#39;, &#39;X&#39;, &#39;U&#39;, &#39;K&#39;, &#39;A&#39;, &#39;Q&#39;).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">spw2band</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">spw2band</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectral_windows</span><span class="p">:</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Extract band from 6th character of SPW name</span>
+                <span class="n">spw_name_chars</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">band_char</span> <span class="o">=</span> <span class="n">spw_name_chars</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
 
-            <span class="n">strelems</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-            <span class="n">bandname</span> <span class="o">=</span> <span class="n">strelems</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">bandname</span> <span class="ow">in</span> <span class="s1">&#39;4PLSCXUKAQ&#39;</span><span class="p">:</span>
-                <span class="n">spw2band</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">strelems</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
-            <span class="c1"># Check for U / KU</span>
-            <span class="k">if</span> <span class="n">strelems</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;K&#39;</span> <span class="ow">and</span> <span class="n">strelems</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;U&#39;</span><span class="p">:</span>
-                <span class="n">spw2band</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;U&#39;</span>
-            <span class="k">if</span> <span class="n">strelems</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;K&#39;</span> <span class="ow">and</span> <span class="n">strelems</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;A&#39;</span><span class="p">:</span>
-                <span class="n">spw2band</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span>
+                <span class="k">if</span> <span class="n">band_char</span> <span class="ow">in</span> <span class="s1">&#39;4PLSCXUKAQ&#39;</span><span class="p">:</span>
+                    <span class="n">spw2band</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">band_char</span>
+
+                <span class="c1"># Handle special multi-character band names</span>
+                <span class="k">if</span> <span class="n">band_char</span> <span class="o">==</span> <span class="s1">&#39;K&#39;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">spw_name_chars</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">6</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">spw_name_chars</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;U&#39;</span><span class="p">:</span>  <span class="c1"># KU band</span>
+                        <span class="n">spw2band</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;U&#39;</span>
+                    <span class="k">elif</span> <span class="n">spw_name_chars</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;A&#39;</span><span class="p">:</span>  <span class="c1"># KA band</span>
+                        <span class="n">spw2band</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="c1"># SPW name too short or malformed</span>
+                <span class="k">pass</span>
+
+            <span class="c1"># Fallback to frequency-based band determination</span>
+            <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spw2band</span><span class="p">:</span>
+                <span class="n">evla_band</span> <span class="o">=</span> <span class="n">tablereader</span><span class="o">.</span><span class="n">find_EVLA_band</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">ref_frequency</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s2">&quot;Unable to extract band name from SPW ID </span><span class="si">%s</span><span class="s2"> (name: </span><span class="si">%s</span><span class="s2">); &quot;</span>
+                    <span class="s2">&quot;derived band name </span><span class="si">%s</span><span class="s2"> from reference frequency&quot;</span><span class="p">,</span>
+                    <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">evla_band</span><span class="p">)</span>
+                <span class="n">spw2band</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">evla_band</span>
 
         <span class="k">return</span> <span class="n">spw2band</span></div>
 
 
 <div class="viewcode-block" id="MeasurementSet.get_vla_field_spws">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_field_spws">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_field_spws">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_vla_field_spws</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwlist</span><span class="o">=</span><span class="p">[]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Find field spws for VLA</span>
 
@@ -1155,7 +1219,7 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_vla_numchan">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_numchan">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_numchan">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_vla_numchan</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get number of channels for VLA</span>
 
@@ -1174,7 +1238,7 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_vla_tst_bpass_spw">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_tst_bpass_spw">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_tst_bpass_spw">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_vla_tst_bpass_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwlist</span><span class="o">=</span><span class="p">[]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get VLA test bandpass or delay spws</span>
 <span class="sd">            This function replaced functionality for get_vla_tst_delay_spw - PIPE-1325</span>
@@ -1204,7 +1268,7 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_vla_critfrac">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_critfrac">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_critfrac">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_vla_critfrac</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Identify bands/basebands/spws</span>
 
@@ -1269,27 +1333,47 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_vla_baseband_spws">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_baseband_spws">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_vla_baseband_spws</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">science_windows_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">return_select_list</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                              <span class="n">warning</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">]:</span>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_baseband_spws">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_vla_baseband_spws</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">science_windows_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">return_select_list</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">warning</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the SPW information from individual VLA band/baseband.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            science_windows_only (bool, optional): Defaults to True.</span>
-<span class="sd">            return_select_list (bool, optional): return spw list of each baseband. Defaults to True.</span>
-<span class="sd">            warning (bool, optional): Defaults to True.</span>
+<span class="sd">            science_windows_only: Whether to include only science spectral windows.</span>
+<span class="sd">            return_select_list: Whether to return SPW list of each baseband instead of full band/subband info.</span>
+<span class="sd">            warning: Whether to log warnings for parsing errors.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            baseband_spws: spws info of individual basebands as baseband_spws[band][baseband]</span>
-<span class="sd">            baseband_spws_list: spw_list of individual basebands</span>
-<span class="sd">                e.g., [[0,1,2,3],[4,5,6,7]]</span>
+<span class="sd">            If return_select_list is False:</span>
+<span class="sd">                Dictionary with SPW info organized as baseband_spws[band][baseband], where each</span>
+<span class="sd">                entry contains a list of spw info as {spwid, (min_freq, max_freq, mean_freq, chan_width)}.</span>
+
+<span class="sd">            If return_select_list is True:</span>
+<span class="sd">                List of SPW ID lists for each band.baseband, e.g., [[0,1,2,3], [4,5,6,7]].</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">baseband_spws</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">))</span>
+        <span class="n">spw2band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_vla_spw2band</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="n">science_windows_only</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">band</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">baseband</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">band</span> <span class="o">=</span> <span class="n">spw2band</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s1">&#39;unknown&#39;</span><span class="p">)</span>
+                <span class="c1"># PIPE-2634: historically, the codes calling `ms.get_vla_baseband_spws` was imeplemented to</span>
+                <span class="c1"># use two-letter convetions for KU and KA bands, e.g. &#39;KU&#39; and &#39;KA&#39; instead of &#39;U&#39; and &#39;A&#39;.</span>
+                <span class="k">if</span> <span class="n">band</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">):</span>
+                    <span class="n">band</span> <span class="o">=</span> <span class="s1">&#39;K&#39;</span> <span class="o">+</span> <span class="n">band</span>
+                <span class="k">if</span> <span class="s1">&#39;#&#39;</span> <span class="ow">in</span> <span class="n">spw</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                    <span class="n">baseband</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># older VLA data might have this spw naming pattern:</span>
+                    <span class="c1"># spwid - name</span>
+                    <span class="c1">#   0   - Subband:7</span>
+                    <span class="c1">#   1   - Subband:5</span>
+                    <span class="c1">#     ..</span>
+                    <span class="c1">#   8   - Subband:7</span>
+                    <span class="c1"># Here as a fallback, we use the full spw name as baseband; likely band name is generated from</span>
+                    <span class="c1"># the frequency-base heuristics in ms.spw2band</span>
+                    <span class="n">baseband</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">name</span>
                 <span class="n">min_freq</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">min_frequency</span>
                 <span class="n">max_freq</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">max_frequency</span>
                 <span class="n">mean_freq</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">mean_frequency</span>
@@ -1297,7 +1381,7 @@
                 <span class="n">baseband_spws</span><span class="p">[</span><span class="n">band</span><span class="p">][</span><span class="n">baseband</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="p">(</span><span class="n">min_freq</span><span class="p">,</span> <span class="n">max_freq</span><span class="p">,</span> <span class="n">mean_freq</span><span class="p">,</span> <span class="n">chan_width</span><span class="p">)})</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">warning</span><span class="p">:</span>
-                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Exception: Baseband name cannot be parsed. </span><span class="si">{!s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">)))</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Exception: Baseband name cannot be parsed. </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ex</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">pass</span>
 
@@ -1306,14 +1390,15 @@
             <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">baseband_spws</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="k">for</span> <span class="n">baseband</span> <span class="ow">in</span> <span class="n">band</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                     <span class="n">baseband_spws_list</span><span class="o">.</span><span class="n">append</span><span class="p">([[</span><span class="o">*</span><span class="n">spw_info</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">spw_info</span> <span class="ow">in</span> <span class="n">baseband</span><span class="p">])</span>
-            <span class="k">return</span> <span class="n">baseband_spws</span><span class="p">,</span> <span class="n">baseband_spws_list</span>
+            <span class="k">return</span> <span class="n">baseband_spws_list</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">baseband_spws</span></div>
 
 
 <div class="viewcode-block" id="MeasurementSet.get_integration_time_stats">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_integration_time_stats">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_integration_time_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">science_windows_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">stat_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;max&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_integration_time_stats">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_integration_time_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">science_windows_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                                   <span class="n">stat_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="n">band</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the given statistcs of integration time.</span>
 
 <span class="sd">        Args:</span>
@@ -1321,6 +1406,8 @@
 <span class="sd">            spw: spw string list - &#39;1,7,11,18&#39;.</span>
 <span class="sd">            science_windows_only: Use integration time of science spws only to compute the given statistics.</span>
 <span class="sd">            stat_type: Type of the statistics.</span>
+<span class="sd">            band: return maximum integration time for the given VLA band.</span>
+<span class="sd">                Ignored for non-VLA datasets; has no effect in that case. Default is None.default None</span>
 <span class="sd">        Returns</span>
 <span class="sd">            Computed statistics value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1353,8 +1440,13 @@
                 <span class="n">spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">ispw</span> <span class="k">for</span> <span class="n">ispw</span> <span class="ow">in</span> <span class="n">all_spws</span> <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">ispw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">in</span> <span class="n">spw_string_list</span><span class="p">]</span>
             <span class="k">except</span><span class="p">:</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Incorrect spw string format.&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">science_windows_only</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">band</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna_array</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;VLA&#39;</span><span class="p">,</span> <span class="s1">&#39;EVLA&#39;</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;The band parameter is only applicable to VLA data. For non-VLA datasets, it has no effect on the maximum integration time calculation.&quot;</span><span class="p">)</span>
+            <span class="n">spw2band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_vla_spw2band</span><span class="p">()</span>
+            <span class="n">spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw_obj</span> <span class="k">for</span> <span class="n">spw_obj</span> <span class="ow">in</span> <span class="n">spws</span> <span class="k">if</span> <span class="n">spw2band</span><span class="p">[</span><span class="n">spw_obj</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">band</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+            <span class="n">science_spw_dd_ids</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">science_windows_only</span><span class="p">:</span>
             <span class="c1"># now get the science spws, those used for scientific intent</span>
             <span class="n">science_spws</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">ispw</span> <span class="k">for</span> <span class="n">ispw</span> <span class="ow">in</span> <span class="n">spws</span>
@@ -1381,10 +1473,10 @@
 
         <span class="n">state_str</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">science_state_ids</span> <span class="k">if</span> <span class="n">science_windows_only</span> <span class="k">else</span> <span class="n">state_ids</span><span class="p">)</span>
         <span class="n">field_str</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">science_field_ids</span> <span class="k">if</span> <span class="n">science_windows_only</span> <span class="k">else</span> <span class="n">field_ids</span><span class="p">)</span>
-        <span class="n">spw_str</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">science_spw_dd_ids</span><span class="p">)</span> <span class="k">if</span> <span class="n">science_windows_only</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">spw_str</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">science_spw_dd_ids</span><span class="p">)</span> <span class="k">if</span> <span class="n">science_windows_only</span> <span class="ow">or</span> <span class="n">band</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
 
         <span class="n">taql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(STATE_ID IN </span><span class="si">{</span><span class="n">state_str</span><span class="si">}</span><span class="s2"> AND FIELD_ID IN </span><span class="si">{</span><span class="n">field_str</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> \
-            <span class="p">(</span><span class="sa">f</span><span class="s2">&quot; AND DATA_DESC_ID IN </span><span class="si">{</span><span class="n">spw_str</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">science_windows_only</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+            <span class="p">(</span><span class="sa">f</span><span class="s2">&quot; AND DATA_DESC_ID IN </span><span class="si">{</span><span class="n">spw_str</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">spw_str</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
 
         <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">taql</span><span class="p">))</span> <span class="k">as</span> <span class="n">subtable</span><span class="p">:</span>
@@ -1397,7 +1489,7 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_times_on_source_per_field_id">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_times_on_source_per_field_id">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_times_on_source_per_field_id">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_times_on_source_per_field_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return on-source time for given field ID(s) and intent(s).</span>
@@ -1458,7 +1550,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_reference_antenna</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="MeasurementSet.update_reference_antennas">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.update_reference_antennas">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.update_reference_antennas">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_reference_antennas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ants_to_demote</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ants_to_remove</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
             <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the reference antenna list for this MS to demote/remove specified antennas.</span>
@@ -1515,7 +1607,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_session</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="MeasurementSet.all_colnames">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.all_colnames">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.all_colnames">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">all_colnames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all available column names for this MS.</span>
@@ -1526,7 +1618,7 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.data_colnames">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.data_colnames">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.data_colnames">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">data_colnames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all data column names for this MS.</span>
@@ -1534,12 +1626,30 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">colname</span> <span class="k">for</span> <span class="n">colname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_colnames</span><span class="p">()</span> <span class="k">if</span> <span class="n">colname</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;DATA&#39;</span><span class="p">,</span> <span class="s1">&#39;FLOAT_DATA&#39;</span><span class="p">,</span> <span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">)]</span></div>
 
 
-<div class="viewcode-block" id="MeasurementSet.set_data_column">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.set_data_column">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_data_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">DataType</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                        <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="MeasurementSet.set_data_type_dicts">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.set_data_type_dicts">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_data_type_dicts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_type_per_column</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">data_types_per_source_and_spw</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set data type and column.</span>
+<span class="sd">        Set the data type lookup dictionaries directly without writing new</span>
+<span class="sd">        MS HISTORY entries as they would already exist when calling this</span>
+<span class="sd">        method. Also do not auto-generate the per source and spw lookup</span>
+<span class="sd">        dictionary from the per column information since it might have a</span>
+<span class="sd">        sparse structure (e.g. selfcal use case).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data_type_per_column: Data type per column lookup dictionary</span>
+<span class="sd">            data_types_per_source_and_spw: Data type per source and spw</span>
+<span class="sd">                lookup dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_column</span> <span class="o">=</span> <span class="n">data_type_per_column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_types_per_source_and_spw</span> <span class="o">=</span> <span class="n">data_types_per_source_and_spw</span></div>
+
+
+<div class="viewcode-block" id="MeasurementSet.set_data_column">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.set_data_column">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_data_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">DataType</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">save_to_ms</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Assign a data type to a column in the MS domain object.</span>
 
 <span class="sd">        Set data type and column to MS domain object and record the available</span>
 <span class="sd">        data types per (source,spw) tuple. If source or spw are unset, they</span>
@@ -1555,6 +1665,8 @@
 <span class="sd">            overwrite: if True existing data colum is overwritten by the new</span>
 <span class="sd">                column. If False and if type is already associated with other</span>
 <span class="sd">                column, the function raises ValueError.</span>
+<span class="sd">            save_to_ms (bool, optional): If True, persists the datatype-to-column mapping</span>
+<span class="sd">                to the MS history subtable. Defaults to True.                </span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: An error raised when the column does not exist</span>
@@ -1599,11 +1711,25 @@
         <span class="c1"># Update MS domain object</span>
         <span class="k">if</span> <span class="n">dtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">[</span><span class="n">dtype</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Updated data column information of </span><span class="si">{}</span><span class="s1">. Set </span><span class="si">{}</span><span class="s1"> to column </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">column</span><span class="p">))</span></div>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Updated data column information of </span><span class="si">{}</span><span class="s1">. Set </span><span class="si">{}</span><span class="s1"> to column </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">column</span><span class="p">))</span>
+
+        <span class="c1"># Write data type lookup dictionaries to MS history (PIPEREQ-195). This is a</span>
+        <span class="c1"># minimum fallback implementation and should be replaced by a properly</span>
+        <span class="c1"># structured solution with sub-tables or other kind of metadata (maybe only in MSv4).</span>
+        <span class="k">if</span> <span class="n">save_to_ms</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">ms</span><span class="p">:</span>
+                <span class="n">ms</span><span class="o">.</span><span class="n">writehistory</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;data_type_per_column = </span><span class="si">{</span><span class="nb">dict</span><span class="p">((</span><span class="n">k</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="o">.</span><span class="n">items</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;Datatype Handler&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">ms</span><span class="o">.</span><span class="n">writehistory</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;data_types_per_source_and_spw = </span><span class="si">{</span><span class="nb">dict</span><span class="p">((</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">name</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">item</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">v</span><span class="p">])</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">data_types_per_source_and_spw</span><span class="o">.</span><span class="n">items</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;Datatype Handler&quot;</span><span class="p">,</span>
+                <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MeasurementSet.get_data_column">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_data_column">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_data_column">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_data_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">DataType</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the column name associated with a DataType in an MS domain</span>
@@ -1649,7 +1775,7 @@
 
 
 <div class="viewcode-block" id="MeasurementSet.get_data_type">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_data_type">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_data_type">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_data_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataType</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the DataType associated with a column in an MS domain object for</span>
@@ -1734,7 +1860,66 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">spw_list</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">range_to_list</span><span class="p">(</span><span class="n">spw_select</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">spw_list</span></div>
+        <span class="k">return</span> <span class="n">spw_list</span>
+
+    <span class="c1"># PIPE-2307: moving compute_az_el_to_field, compute_az_el_for_ms methods from pipeline.infrastructure.htmlrenderer to here</span>
+<div class="viewcode-block" id="MeasurementSet.compute_az_el_to_field">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.compute_az_el_to_field">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_az_el_to_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Field</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">epoch</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes azimuth and elevation of a field at a given epoch.</span>
+
+<span class="sd">        This method uses the CASA `measures` tool to convert the direction</span>
+<span class="sd">        of a field to azimuth and elevation (AZELGEO frame) at the time</span>
+<span class="sd">        specified by the epoch and location of the observatory.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            field : Field domain object or None.</span>
+<span class="sd">            epoch :  A dictionary representing the time epoch.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: A list containing azimuth (degrees) and elevation (degrees), in that order.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">me</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span>
+        <span class="n">me</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
+        <span class="n">me</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">me</span><span class="o">.</span><span class="n">observatory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">antenna_array</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+        <span class="n">myazel</span> <span class="o">=</span> <span class="n">me</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">mdirection</span><span class="p">,</span> <span class="s1">&#39;AZELGEO&#39;</span><span class="p">)</span>
+        <span class="n">myaz</span> <span class="o">=</span> <span class="n">myazel</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="n">myel</span> <span class="o">=</span> <span class="n">myazel</span><span class="p">[</span><span class="s1">&#39;m1&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
+        <span class="n">myaz</span> <span class="o">=</span> <span class="p">(</span><span class="n">myaz</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span>
+        <span class="n">myel</span> <span class="o">*=</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">myaz</span><span class="p">,</span> <span class="n">myel</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="MeasurementSet.compute_az_el_for_ms">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.compute_az_el_for_ms">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compute_az_el_for_ms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="nb">callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes overall azimuth and elevation values across POINTING, SIDEBAND, ATMOSPHERE scans.</span>
+
+<span class="sd">        Applies the given aggregation function (e.g. `min`, `max`, `mean`) to azimuth and elevation</span>
+<span class="sd">        values computed at the start and end of each field in science scans.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            func (callable): A function that takes a list of floats and returns a single float.</span>
+<span class="sd">                Common examples include `min`, `max`, or `np.mean`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple[float, float]: A tuple containing the aggregated azimuth and elevation values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cal_scans</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="s1">&#39;POINTING,SIDEBAND,ATMOSPHERE&#39;</span><span class="p">)</span>
+        <span class="n">scans</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">scans</span> <span class="k">if</span> <span class="n">s</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cal_scans</span><span class="p">]</span>
+
+        <span class="n">az</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">el</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">scan</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+                <span class="n">az0</span><span class="p">,</span> <span class="n">el0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_az_el_to_field</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">scan</span><span class="o">.</span><span class="n">start_time</span><span class="p">)</span>
+                <span class="n">az1</span><span class="p">,</span> <span class="n">el1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_az_el_to_field</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">scan</span><span class="o">.</span><span class="n">end_time</span><span class="p">)</span>
+                <span class="n">az</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func</span><span class="p">([</span><span class="n">az0</span><span class="p">,</span> <span class="n">az1</span><span class="p">]))</span>
+                <span class="n">el</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func</span><span class="p">([</span><span class="n">el0</span><span class="p">,</span> <span class="n">el1</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">az</span><span class="p">),</span> <span class="n">func</span><span class="p">(</span><span class="n">el</span><span class="p">)</span></div>
+</div>
 
 </pre></div>
 
@@ -1745,7 +1930,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

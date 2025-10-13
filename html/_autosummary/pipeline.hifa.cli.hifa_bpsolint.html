@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.cli.hifa_bpsolint &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -121,10 +122,10 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hifa.cli.hifa_bpsolint">
 <span class="sig-name descname"><span class="pre">hifa_bpsolint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phaseupsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minphaseupints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">evenbpints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bpsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minbpsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minbpnchan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_nantennas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxfracflagged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultsList</span><span class="p"><span class="pre">[</span></span><span class="pre">Results</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_bpsolint.html#hifa_bpsolint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_bpsolint" title="Link to this definition"></a></dt>
-<dd><p>Compute optimal bandpass calibration solution intervals</p>
-<p>The optimal bandpass phaseup time and frequency solution intervals required
-to achieve the required signal-to-noise ratio is estimated based on nominal
-ALMA array characteristics the metadata associated with the observation.</p>
+<dd><p>Compute optimal bandpass calibration solution intervals.</p>
+<p>The task estimates the optimal time and frequency solution intervals needed to
+achieve the required signal-to-noise ratio. This estimation is based on nominal
+ALMA array characteristics and the observation's metadata.</p>
 <p>The phaseup gain time and bandpass frequency intervals are determined as
 follows:</p>
 <ul class="simple">
@@ -138,8 +139,8 @@ catalog, the ASDM, or the user via the flux.csv file.</p></li>
 <li><p>If no fluxes are available the task terminates.</p></li>
 <li><p>Atmospheric calibration and observations scans are determined for each
 spw and source combination.</p></li>
-<li><p>If <code class="docutils literal notranslate"><span class="pre">intent</span></code> is set to ‘PHASE’ are there are no atmospheric scans
-associated with the ‘PHASE’ calibrator, ‘TARGET’ atmospheric scans will be
+<li><p>If <code class="docutils literal notranslate"><span class="pre">intent</span></code> is set to 'PHASE' are there are no atmospheric scans
+associated with the 'PHASE' calibrator, 'TARGET' atmospheric scans will be
 used instead.</p></li>
 <li><p>If atmospheric scans cannot be associated with any of the spw and source
 combinations the task terminates.</p></li>
@@ -166,66 +167,66 @@ receiver band provided by the ALMA project are used for this estimate.</p></li>
 than <code class="docutils literal notranslate"><span class="pre">minbpnchan</span></code> solutions.</p></li>
 <li><p>If strong atmospheric features are detected in the Tsys spectrum for a
 given spw, the frequency interval of bandpass solution is recalculated to
-meet the lower threshold, <code class="docutils literal notranslate"><span class="pre">minbpsnr</span></code> - i.e. a lower snr is tolerated in
+meet the lower threshold <code class="docutils literal notranslate"><span class="pre">minbpsnr</span></code>, i.e., a lower snr is tolerated in
 order to preserve enough frequency intervals to capture the atmospheric
 line.</p></li>
 </ul>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
-<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> -- <p>The list of input MeasurementSets. Defaults to the list of
 MeasurementSets specified in the pipeline context.</p>
-<p>Example: vis=[‘M82A.ms’, ‘M82B.ms’]</p>
-</li>
-<li><p><strong>field</strong> – The list of field names of sources to be used for
+<p>Example: <code class="docutils literal notranslate"><span class="pre">vis=['M82A.ms',</span> <span class="pre">'M82B.ms']</span></code></p>
+</p></li>
+<li><p><strong>field</strong> -- <p>The list of field names of sources to be used for
 signal-to-noise estimation. Defaults to all fields with the
 standard intent.</p>
-<p>Example: field=’3C279’</p>
-</li>
-<li><p><strong>intent</strong> – A string containing a comma delimited list of intents against
+<p>Example: <code class="docutils literal notranslate"><span class="pre">field='3C279'</span></code></p>
+</p></li>
+<li><p><strong>intent</strong> -- <p>A string containing a comma delimited list of intents against
 which the selected fields are matched. Defaults to
-‘BANDPASS’.</p>
-<p>Example: intent=’PHASE’</p>
-</li>
-<li><p><strong>spw</strong> – The list of spectral windows and channels for which gain
+'BANDPASS'.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">intent='PHASE'</span></code></p>
+</p></li>
+<li><p><strong>spw</strong> -- <p>The list of spectral windows and channels for which gain
 solutions are computed. Defaults to all the science spectral
-windows for which there are both ‘intent’ and TARGET intents.</p>
-<p>Example: spw=’13,15’</p>
-</li>
-<li><p><strong>phaseupsnr</strong> – The required phase-up gain time interval solution
+windows for which there are both 'intent' and TARGET intents.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">spw='13,15'</span></code></p>
+</p></li>
+<li><p><strong>phaseupsnr</strong> -- <p>The required phase-up gain time interval solution
 signal-to-noise.</p>
-<p>Example: phaseupsnr=10.0</p>
-</li>
-<li><p><strong>minphaseupints</strong> – The minimum number of time intervals in the phase-up gain
+<p>Example: <code class="docutils literal notranslate"><span class="pre">phaseupsnr=10.0</span></code></p>
+</p></li>
+<li><p><strong>minphaseupints</strong> -- <p>The minimum number of time intervals in the phase-up gain
 solution.</p>
-<p>Example: minphaseupints=4</p>
-</li>
-<li><p><strong>evenbpints</strong> – Use a bandpass frequency solint that is an integer divisor of
+<p>Example: <code class="docutils literal notranslate"><span class="pre">minphaseupints=4</span></code></p>
+</p></li>
+<li><p><strong>evenbpints</strong> -- Use a bandpass frequency solint that is an integer divisor of
 the spw bandwidth, to prevent the occurrence of one narrower
 fractional frequency interval.</p></li>
-<li><p><strong>bpsnr</strong> – The required bandpass frequency interval solution
+<li><p><strong>bpsnr</strong> -- <p>The required bandpass frequency interval solution
 signal-to-noise.</p>
-<p>Example: bpsnr=30.0</p>
-</li>
-<li><p><strong>minbpsnr</strong> – The minimum required bandpass frequency interval solution
+<p>Example: <code class="docutils literal notranslate"><span class="pre">bpsnr=30.0</span></code></p>
+</p></li>
+<li><p><strong>minbpsnr</strong> -- <p>The minimum required bandpass frequency interval solution
 signal-to-noise when strong atmospheric lines exist in Tsys
 spectra.</p>
-<p>Example: minbpsnr=10.0</p>
-</li>
-<li><p><strong>minbpnchan</strong> – The minimum number of frequency intervals in the bandpass
+<p>Example: <code class="docutils literal notranslate"><span class="pre">minbpsnr=10.0</span></code></p>
+</p></li>
+<li><p><strong>minbpnchan</strong> -- <p>The minimum number of frequency intervals in the bandpass
 solution.</p>
-<p>Example: minbpnchan=16</p>
-</li>
-<li><p><strong>hm_nantennas</strong> – The heuristics for determines the number of antennas to use
-in the signal-to-noise estimate. The options are ‘all’ and
-‘unflagged’. The ‘unflagged’ options is not currently
+<p>Example: <code class="docutils literal notranslate"><span class="pre">minbpnchan=16</span></code></p>
+</p></li>
+<li><p><strong>hm_nantennas</strong> -- <p>The heuristics for determines the number of antennas to use
+in the signal-to-noise estimate. The options are <code class="docutils literal notranslate"><span class="pre">'all'</span></code> and
+<code class="docutils literal notranslate"><span class="pre">'unflagged'</span></code>. The 'unflagged' options is not currently
 supported.</p>
-<p>Example: hm_nantennas=’unflagged’</p>
-</li>
-<li><p><strong>maxfracflagged</strong> – The maximum fraction of an antenna that can be flagged before
+<p>Example: <code class="docutils literal notranslate"><span class="pre">hm_nantennas='unflagged'</span></code></p>
+</p></li>
+<li><p><strong>maxfracflagged</strong> -- <p>The maximum fraction of an antenna that can be flagged before
 it is excluded from the signal-to-noise estimate.</p>
-<p>Example: maxfracflagged=0.80</p>
-</li>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">maxfracflagged=0.80</span></code></p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -254,7 +255,7 @@ solutions:</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

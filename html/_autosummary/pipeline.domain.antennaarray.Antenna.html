@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.antennaarray.Antenna &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
@@ -169,24 +170,68 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Antenna</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">antenna_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diameter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/antenna.html#Antenna"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.antennaarray.Antenna" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Antenna is a logical representation of an antenna.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Variables<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>id</strong> – The numerical identifier of this antenna within the ANTENNA subtable
-of the measurement set.</p></li>
-<li><p><strong>name</strong> – The (potentially empty) name of the antenna.</p></li>
-<li><p><strong>station</strong> – The station pad on which the antenna is situated.</p></li>
-<li><p><strong>diameter</strong> – The physical diameter of the antenna in meters.</p></li>
-<li><p><strong>position</strong> – Dictionary with longitude, latitude, and height of the antenna.</p></li>
-<li><p><strong>offset</strong> – The offset position of the antenna relative to AntennaArray.position
-(the antenna array reference position).</p></li>
-<li><p><strong>longitude</strong> – The longitude of the antenna.</p></li>
-<li><p><strong>latitude</strong> – The latitude of the antenna.</p></li>
-<li><p><strong>height</strong> – The radial distance of the antenna from the Earth’s centre.</p></li>
-<li><p><strong>direction</strong> – The J2000 position on the sky to which the antenna points.</p></li>
-</ul>
-</dd>
-</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.antennaarray.Antenna.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#pipeline.domain.antennaarray.Antenna.id" title="Link to this definition"></a></dt>
+<dd><p>The numerical identifier of this antenna within the ANTENNA subtable
+of the measurement set.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.antennaarray.Antenna.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pipeline.domain.antennaarray.Antenna.name" title="Link to this definition"></a></dt>
+<dd><p>The (potentially empty) name of the antenna.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.antennaarray.Antenna.station">
+<span class="sig-name descname"><span class="pre">station</span></span><a class="headerlink" href="#pipeline.domain.antennaarray.Antenna.station" title="Link to this definition"></a></dt>
+<dd><p>The station pad on which the antenna is situated.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.antennaarray.Antenna.diameter">
+<span class="sig-name descname"><span class="pre">diameter</span></span><a class="headerlink" href="#pipeline.domain.antennaarray.Antenna.diameter" title="Link to this definition"></a></dt>
+<dd><p>The physical diameter of the antenna in meters.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.antennaarray.Antenna.position">
+<span class="sig-name descname"><span class="pre">position</span></span><a class="headerlink" href="#pipeline.domain.antennaarray.Antenna.position" title="Link to this definition"></a></dt>
+<dd><p>Dictionary with longitude, latitude, and height of the antenna.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.antennaarray.Antenna.offset">
+<span class="sig-name descname"><span class="pre">offset</span></span><a class="headerlink" href="#pipeline.domain.antennaarray.Antenna.offset" title="Link to this definition"></a></dt>
+<dd><p>The offset position of the antenna relative to AntennaArray.position
+(the antenna array reference position).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.antennaarray.Antenna.longitude">
+<span class="sig-name descname"><span class="pre">longitude</span></span><a class="headerlink" href="#pipeline.domain.antennaarray.Antenna.longitude" title="Link to this definition"></a></dt>
+<dd><p>The longitude of the antenna.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.antennaarray.Antenna.latitude">
+<span class="sig-name descname"><span class="pre">latitude</span></span><a class="headerlink" href="#pipeline.domain.antennaarray.Antenna.latitude" title="Link to this definition"></a></dt>
+<dd><p>The latitude of the antenna.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.antennaarray.Antenna.height">
+<span class="sig-name descname"><span class="pre">height</span></span><a class="headerlink" href="#pipeline.domain.antennaarray.Antenna.height" title="Link to this definition"></a></dt>
+<dd><p>The radial distance of the antenna from the Earth's centre.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.antennaarray.Antenna.direction">
+<span class="sig-name descname"><span class="pre">direction</span></span><a class="headerlink" href="#pipeline.domain.antennaarray.Antenna.direction" title="Link to this definition"></a></dt>
+<dd><p>The J2000 position on the sky to which the antenna points.</p>
+</dd></dl>
+
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -200,6 +245,25 @@ of the measurement set.</p></li>
 </tr>
 </tbody>
 </table>
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.antennaarray.Antenna.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">antenna_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">station</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diameter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/antenna.html#Antenna.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.antennaarray.Antenna.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize an Antenna object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>antenna_id</strong> -- The numerical identifier of the antenna.</p></li>
+<li><p><strong>name</strong> -- The name of the antenna.</p></li>
+<li><p><strong>station</strong> -- The station pad on which the antenna is situated.</p></li>
+<li><p><strong>position</strong> -- Dictionary with longitude, latitude, and height of the antenna.</p></li>
+<li><p><strong>offset</strong> -- The offset position of the antenna relative to AntennaArray.position
+(the antenna array reference position).</p></li>
+<li><p><strong>diameter</strong> -- The physical diameter of the antenna in meters.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.antennaarray.Antenna.identifier">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">identifier</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pipeline.domain.antennaarray.Antenna.identifier" title="Link to this definition"></a></dt>
@@ -221,7 +285,7 @@ of the measurement set.</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

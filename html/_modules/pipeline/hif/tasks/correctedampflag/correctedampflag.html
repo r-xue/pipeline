@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.correctedampflag.correctedampflag &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -595,29 +633,28 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            context: Pipeline context object containing state information.</span>
 
 <span class="sd">            output_dir: Output directory.</span>
 <span class="sd">                Defaults to None, which corresponds to the current working directory.</span>
 
-<span class="sd">            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.</span>
-<span class="sd">                &#39;&#39;: use all MeasurementSets in the context</span>
+<span class="sd">            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the `hifa_importdata` and `hifv_importdata`.</span>
 
-<span class="sd">                Examples: &#39;ngc5921.ms&#39;, [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
+<span class="sd">                Examples: ``&#39;ngc5921.ms&#39;``, ``[&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]``</span>
 
 <span class="sd">            intent: A string containing a comma delimited list of intents against which the selected fields are matched. If undefined (default),</span>
 <span class="sd">                it will select all data with the BANDPASS intent.</span>
 
-<span class="sd">                Example: intent=&#39;`*PHASE*`&#39;</span>
+<span class="sd">                Example: ``intent=&#39;*PHASE*&#39;``</span>
 
 <span class="sd">            field: The list of field names or field ids for which bandpasses are computed. If undefined (default), it will select all fields.</span>
 
-<span class="sd">                Examples: field=&#39;3C279&#39;, &#39;3C279, M82&#39;</span>
+<span class="sd">                Examples: ``&#39;3C279&#39;``, ``&#39;3C279, M82&#39;``</span>
 
 <span class="sd">            spw: The list of spectral windows and channels for which bandpasses are computed. If undefined (default), it will select all</span>
 <span class="sd">                science spectral windows.</span>
 
-<span class="sd">                Example: spw=&#39;11,13,15,17&#39;</span>
+<span class="sd">                Example: ``spw=&#39;11,13,15,17&#39;``</span>
 
 <span class="sd">            antnegsig: Lower sigma threshold for identifying outliers as a result of bad antennas within individual timestamps</span>
 
@@ -639,7 +676,7 @@
 <span class="sd">                subsequent iterations are skipped.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">CorrectedampflagInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="c1"># pipeline inputs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -1059,6 +1096,11 @@
                 <span class="n">cmetric_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">cmetric_copol</span><span class="p">,</span> <span class="n">cmetric_crosspol</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
                 <span class="n">flag_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">flag_copol</span><span class="p">,</span> <span class="n">flag_crosspol</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
                 <span class="n">ncorrs</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="c1"># PIPE-2631: cast from MaskedArray back to regular Numpy array to</span>
+            <span class="c1"># avoid Numpy warnings in heuristics below (that use regular Numpy</span>
+            <span class="c1"># functions that ignore mask); heuristics below already select for</span>
+            <span class="c1"># non-flagged (i.e. unmasked) data.</span>
+            <span class="n">cmetric_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cmetric_all</span><span class="p">)</span>
 
         <span class="c1"># Evaluate flagging heuristics separately for each polarisation.</span>
         <span class="k">for</span> <span class="n">icorr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncorrs</span><span class="p">):</span>
@@ -1078,6 +1120,12 @@
             <span class="n">id_nonbad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">flag</span><span class="p">),</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">cmetric</span><span class="p">)))</span>
+
+            <span class="c1"># PIPE-1879: skip assessment of current polarization if there are no</span>
+            <span class="c1"># good data for at least 2 baselines.</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_nonbad</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">continue</span>
+
             <span class="n">cmetric_sel</span> <span class="o">=</span> <span class="n">cmetric</span><span class="p">[</span><span class="n">id_nonbad</span><span class="p">]</span>
             <span class="n">time_sel</span> <span class="o">=</span> <span class="n">time</span><span class="p">[</span><span class="n">id_nonbad</span><span class="p">]</span>
             <span class="n">ant1_sel</span> <span class="o">=</span> <span class="n">ant1</span><span class="p">[</span><span class="n">id_nonbad</span><span class="p">]</span>
@@ -1213,12 +1261,16 @@
 
             <span class="c1"># Based on the &quot;ultra low/high&quot; sigma outlier thresholds, identify</span>
             <span class="c1"># both negative and positive outliers.</span>
+            <span class="c1">#</span>
+            <span class="c1"># PIPE-655: for science target intent, use assessment based on</span>
+            <span class="c1"># interquartile means and difference in uvrange bins.</span>
             <span class="k">if</span> <span class="n">intent</span> <span class="o">==</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">:</span>
-                <span class="c1"># Identify UV bins.</span>
-                <span class="n">uvdist</span> <span class="o">=</span> <span class="n">uvdist_all</span><span class="p">[</span><span class="n">id_nonac</span><span class="p">]</span>
-                <span class="n">uvdist_sel</span> <span class="o">=</span> <span class="n">uvdist</span><span class="p">[</span><span class="n">id_nonbad</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">uvdist_sel</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,):</span>
-                    <span class="k">continue</span>  <span class="c1"># go on to the next polarization</span>
+                <span class="c1"># Select for assessment the UV distances for baselines that are</span>
+                <span class="c1"># not auto-correlations and that are not flagged/NaN for current</span>
+                <span class="c1"># polarization.</span>
+                <span class="n">uvdist_sel</span> <span class="o">=</span> <span class="n">uvdist_all</span><span class="p">[</span><span class="n">id_nonac</span><span class="p">][</span><span class="n">id_nonbad</span><span class="p">]</span>
+
+                <span class="c1"># Group UV distances together into bins.</span>
                 <span class="n">uvmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">uvdist_sel</span><span class="p">)</span>
                 <span class="n">uvmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">uvdist_sel</span><span class="p">)</span>
                 <span class="n">uvbins</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1342,6 +1394,8 @@
                          <span class="s1">&#39; half of the first bin&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">spwid</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_ultrahighsig</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">firsthalf_firstbin_flags</span><span class="p">)))</span>
                 <span class="n">id_ultrahighsig</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">union1d</span><span class="p">(</span><span class="n">id_ultrahighsig</span><span class="p">,</span> <span class="n">firsthalf_firstbin_flags</span><span class="p">)</span>
                 <span class="n">id_ultrahighsig</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">id_ultrahighsig</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+            <span class="c1"># PIPE-655: for all other intents, use assessment based on a single</span>
+            <span class="c1"># median and MAD computed over all data.</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">id_ultrahighsig</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span>
@@ -1754,7 +1808,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

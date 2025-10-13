@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.spectralwindow &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
@@ -96,6 +97,7 @@
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.source.html">pipeline.domain.source</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">pipeline.domain.spectralwindow</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.domain.spectralwindow.compress.html">pipeline.domain.spectralwindow.compress</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pipeline.domain.spectralwindow.match_spw_basename.html">pipeline.domain.spectralwindow.match_spw_basename</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.domain.spectralwindow.ArithmeticProgression.html">pipeline.domain.spectralwindow.ArithmeticProgression</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.domain.spectralwindow.Channel.html">pipeline.domain.spectralwindow.Channel</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.domain.spectralwindow.ChannelList.html">pipeline.domain.spectralwindow.ChannelList</a></li>
@@ -173,6 +175,9 @@ windows, channel frequency information, and channel selection.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.domain.spectralwindow.compress.html#pipeline.domain.spectralwindow.compress" title="pipeline.domain.spectralwindow.compress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compress</span></code></a></p></td>
 <td><p>Compress (if possible) a sequence of values.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.domain.spectralwindow.match_spw_basename.html#pipeline.domain.spectralwindow.match_spw_basename" title="pipeline.domain.spectralwindow.match_spw_basename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">match_spw_basename</span></code></a></p></td>
+<td><p>Determines if one SPW name is a suffix of the other, indicating equivalent SPW configurations.</p></td>
+</tr>
 </tbody>
 </table>
 <p class="rubric">Classes</p>
@@ -208,7 +213,7 @@ windows, channel frequency information, and channel selection.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

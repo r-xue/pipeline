@@ -15,17 +15,9 @@
       :toctree:
       :nosignatures:
    
-      h_applycal
-      h_export_calstate
-      h_exportdata
-      h_import_calstate
-      h_importdata
       h_init
-      h_mssplit
-      h_restoredata
       h_resume
       h_save
-      h_show_calstate
       h_tsyscal
       h_weblog
    

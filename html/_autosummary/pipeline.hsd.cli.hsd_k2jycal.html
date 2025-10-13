@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.cli.hsd_k2jycal &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -123,17 +124,17 @@
 <span class="sig-name descname"><span class="pre">hsd_k2jycal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dbservice</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reffile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infiles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultsList</span><span class="p"><span class="pre">[</span></span><span class="pre">SDK2JyCalResults</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/cli/hsd_k2jycal.html#hsd_k2jycal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.cli.hsd_k2jycal" title="Link to this definition"></a></dt>
 <dd><p>Derive Kelvin to Jy calibration tables.</p>
 <p>Derive the Kelvin to Jy calibration for list of MeasurementSets.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
-<li><p><strong>dbservice</strong> – Whether or not accessing Jy/K DB to retrieve conversion factors.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dbservice</strong> -- <p>Whether or not accessing Jy/K DB to retrieve conversion factors.</p>
 <p>Default: None (equivalent to True)</p>
-</li>
-<li><p><strong>endpoint</strong> – Which endpoints to use for query.</p>
-<p>Options: ‘asdm’, ‘model-fit’, ‘interpolation’</p>
-<p>Default: None (equivalent to ‘asdm’)</p>
-</li>
-<li><p><strong>reffile</strong> – Path to a file containing Jy/K factors for science data,
+</p></li>
+<li><p><strong>endpoint</strong> -- <p>Which endpoints to use for query.</p>
+<p>Options: 'asdm', 'model-fit', 'interpolation'</p>
+<p>Default: None (equivalent to 'asdm')</p>
+</p></li>
+<li><p><strong>reffile</strong> -- <p>Path to a file containing Jy/K factors for science data,
 which must be provided by associating calibrator reduction or the observatory
 measurements. Jy/K factor must take into account all efficiencies, i.e.,
 it must be a direct conversion factor from Ta* to Jy. The file must be
@@ -168,26 +169,26 @@ exist. Example for the session-based format is as follows:</p>
 <span class="mi">2</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">13</span> <span class="mi">01</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">13</span> <span class="mi">02</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">ANONYMOUS</span><span class="p">,</span><span class="mf">86243.0</span><span class="p">,</span><span class="mf">1000.0</span><span class="p">,</span><span class="n">I</span><span class="p">,</span><span class="mf">110.0</span>
 </pre></div>
 </div>
-<p>Lines starting with ‘#’ are meta data and header.
+<p>Lines starting with '#' are meta data and header.
 The header must exist. The factor to apply is identified by matching the
 session ID, antenna name, frequency and polarization of data in each line of
 the file. Note the observation date is supplementary information and not used
-for the matching so far. The lines whose antenna name is ‘ANONYMOUS’ are used
+for the matching so far. The lines whose antenna name is 'ANONYMOUS' are used
 when there is no measurement for specific antenna in the session. In the above
 example, if science observation of session 1 contains the antenna PM04, Jy/K
 factor for ANONYMOUS antenna will be applied since there is no measurement for
 PM04 in session 1.
-If no file name is specified or specified file doesn’t exist, all Jy/K factors
+If no file name is specified or specified file doesn't exist, all Jy/K factors
 are set to 1.0.</p>
-<p>Example: reffile=’’, reffile=’working/jyperk.csv’</p>
-</li>
-<li><p><strong>infiles</strong> – List of input MeasurementSets.</p>
-<p>Example: vis=’ngc5921.ms’</p>
-</li>
-<li><p><strong>caltable</strong> – Name of output gain calibration tables.
+<p>Example: reffile='', reffile='working/jyperk.csv'</p>
+</p></li>
+<li><p><strong>infiles</strong> -- <p>List of input MeasurementSets.</p>
+<p>Example: vis='ngc5921.ms'</p>
+</p></li>
+<li><p><strong>caltable</strong> -- <p>Name of output gain calibration tables.
 Name is automatically created from infiles if None is given.</p>
-<p>Example: caltable=’ngc5921.gcal’</p>
-</li>
+<p>Example: caltable='ngc5921.gcal'</p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -216,7 +217,7 @@ Name is automatically created from infiles if None is given.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.setmodel.setjy &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -314,25 +352,25 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            context: Pipeline context object containing state information.</span>
 
 <span class="sd">            output_dir: Output directory.</span>
-<span class="sd">                Defaults to None, which corresponds to the current working directory.</span>
+<span class="sd">                Defaults to ``None``, which corresponds to the current working directory.</span>
 
 <span class="sd">            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets defined in the pipeline context.</span>
 
 <span class="sd">            field: The list of field names or field ids for which the models are to be set. Defaults to all fields with intent &#39;`*AMPLITUDE*`&#39;.</span>
 
-<span class="sd">                Example: field=&#39;3C279&#39;, field=&#39;3C279, M82&#39;</span>
+<span class="sd">                Example: ``field=&#39;3C279&#39;``, ``field=&#39;3C279, M82&#39;``</span>
 
 <span class="sd">            intent: A string containing a comma delimited list of intents against which the selected fields are matched. Defaults to all data</span>
 <span class="sd">                with amplitude intent.</span>
 
-<span class="sd">                Example: intent=&#39;`*AMPLITUDE*`&#39;</span>
+<span class="sd">                Example: ``intent=&#39;*AMPLITUDE*&#39;``</span>
 
 <span class="sd">            spw: The list of spectral windows and channels for which bandpasses are computed. Defaults to all science spectral windows.</span>
 
-<span class="sd">                Example: spw=&#39;11,13,15,17&#39;</span>
+<span class="sd">                Example: ``spw=&#39;11,13,15,17&#39;``</span>
 
 <span class="sd">            model: Model image for setting model visibilities. Not fully supported.</span>
 
@@ -345,7 +383,7 @@
 <span class="sd">                ones recognized by &#39;standard&#39;, including 3C286, 3C48, 3C147, and several</span>
 <span class="sd">                planets, moons, and asteroids.</span>
 
-<span class="sd">                Example: [3.06,0.0,0.0,0.0]</span>
+<span class="sd">                Example: ``[3.06,0.0,0.0,0.0]``</span>
 
 <span class="sd">            spix: Spectral index for fluxdensity S = fluxdensity * (freq/reffreq)**spix Only used if fluxdensity is being used. If fluxdensity is positive, and</span>
 <span class="sd">                spix is nonzero, then reffreq must be set too. It is applied in the same</span>
@@ -358,7 +396,7 @@
 <span class="sd">                the other hand, if spix is 0, then any positive frequency can be used and</span>
 <span class="sd">                will be ignored.</span>
 
-<span class="sd">                Example: reffreq=&#39;86.0GHz&#39;, reffreq=&#39;4.65e9Hz&#39;</span>
+<span class="sd">                Example: ``reffreq=&#39;86.0GHz&#39;``, ``reffreq=&#39;4.65e9Hz&#39;``</span>
 
 <span class="sd">            standard: Flux density standard, used if fluxdensity[0] less than 0.0. The options are: &#39;Baars&#39;,&#39;Perley 90&#39;,&#39;Perley-Taylor 95&#39;, &#39;Perley-Taylor 99&#39;,</span>
 <span class="sd">                &#39;Perley-Butler 2010&#39; and &#39;Butler-JPL-Horizons 2010&#39;.</span>
@@ -371,12 +409,12 @@
 <span class="sd">                values for all calibrators except solar system calibrators. By default the</span>
 <span class="sd">                path is set to the CSV file created by h_importdata, consisting of</span>
 <span class="sd">                catalogue fluxes extracted from the ASDM.</span>
-<span class="sd">                example: reffile=&#39;&#39;, reffile=&#39;working/flux.csv&#39;</span>
+<span class="sd">                example: ``reffile=&#39;&#39;``, ``reffile=&#39;working/flux.csv&#39;``</span>
 
 <span class="sd">            normfluxes: Normalize lookup fluxes.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">SetjyInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
@@ -397,7 +435,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">normfluxes</span> <span class="o">=</span> <span class="n">normfluxes</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">SetjyInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
 
         <span class="n">d</span><span class="p">[</span><span class="s1">&#39;fluxdensity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;refspectra&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">try</span><span class="p">:</span>
@@ -444,14 +482,12 @@
                         <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">result</span>
 
-        <span class="c1"># Get the spectral windows for the spw inputs argument</span>
-        <span class="n">spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">)]</span>
+        <span class="c1"># Preserve original input SpW selection.</span>
+        <span class="n">orig_spw</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span>
 
         <span class="c1"># loop over fields so that we can use Setjy for sources with different</span>
         <span class="c1"># standards</span>
-
         <span class="n">setjy_dicts</span> <span class="o">=</span> <span class="p">[]</span>
-
         <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">safe_split</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">):</span>
             <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -468,10 +504,18 @@
                 <span class="n">field_is_unique</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">False</span>
 
             <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+                <span class="c1"># Determine the valid science spectral windows based on current</span>
+                <span class="c1"># field. PIPE-2458: in case of Band-to-Band observations,</span>
+                <span class="c1"># consider the correct SpWs that are appropriate for PHASE and</span>
+                <span class="c1"># CHECK intent fields.</span>
+                <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">is_band_to_band</span> <span class="ow">and</span> <span class="s1">&#39;PHASE&#39;</span> <span class="ow">in</span> <span class="n">field</span><span class="o">.</span><span class="n">intents</span><span class="p">:</span>
+                    <span class="n">spws</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">orig_spw</span><span class="p">,</span> <span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">is_band_to_band</span> <span class="ow">and</span> <span class="s1">&#39;CHECK&#39;</span> <span class="ow">in</span> <span class="n">field</span><span class="o">.</span><span class="n">intents</span><span class="p">:</span>
+                    <span class="n">spws</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">orig_spw</span><span class="p">,</span> <span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">spws</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">orig_spw</span><span class="p">,</span> <span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-                <span class="c1"># Determine the valid spws for that field</span>
-                <span class="n">valid_spwids</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">field</span><span class="o">.</span><span class="n">valid_spws</span><span class="p">]</span>
-
+                <span class="c1"># Determine field identifier (name if unique, otherwise ID).</span>
                 <span class="n">field_identifier</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">field_is_unique</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
                 <span class="c1"># We&#39;re specifying field PLUS intent, so we&#39;re unlikely to</span>
                 <span class="c1"># have duplicate data selections. We ensure no duplicate</span>
@@ -480,11 +524,14 @@
                 <span class="c1"># is time dependent.</span>
                 <span class="n">inputs</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field_identifier</span>
 
+                <span class="c1"># Create separate setjy job for each valid SpW for current field.</span>
                 <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">:</span>
-
-                    <span class="c1"># Skip invalid spws</span>
-                    <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_spwids</span><span class="p">:</span>
-                        <span class="k">continue</span>
+                    <span class="c1"># Override spw in inputs to current SpW. This is necessary</span>
+                    <span class="c1"># both for creating the SetJy job and for the subsequent</span>
+                    <span class="c1"># step to add the flux density to the result.measurements,</span>
+                    <span class="c1"># by ensuring that inputs.refspectra returns only the flux</span>
+                    <span class="c1"># for the relevant SpW (instead of a list of fluxes for all</span>
+                    <span class="c1"># SpWs).</span>
                     <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span>
 
                     <span class="n">orig_intent</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span>
@@ -506,6 +553,10 @@
                     <span class="c1"># Flux densities coming from a non-lookup are added to the</span>
                     <span class="c1"># results so that user-provided calibrator fluxes are</span>
                     <span class="c1"># committed back to the domain objects</span>
+                    <span class="c1"># NOTE: the following block expects inputs.refspectra to</span>
+                    <span class="c1"># return the reference flux values for a single SpW, and</span>
+                    <span class="c1"># therefore relies on inputs.spw being set to a single SpW</span>
+                    <span class="c1"># ID.</span>
                     <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">refspectra</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
                         <span class="k">try</span><span class="p">:</span>
                             <span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">refspectra</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -561,7 +612,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

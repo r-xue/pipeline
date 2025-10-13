@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifv.tasks.flagging.checkflag &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -146,9 +184,9 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            context: Pipeline context object containing state information.</span>
 
-<span class="sd">            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.</span>
+<span class="sd">            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.</span>
 
 <span class="sd">            checkflagmode:</span>
 <span class="sd">                - Standard VLA modes with improved RFI flagging heuristics: &#39;bpd-vla&#39;, &#39;allcals-vla&#39;, &#39;target-vla&#39;</span>
@@ -538,7 +576,6 @@
         <span class="n">calcftdev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;semi&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;target&#39;</span><span class="p">,</span> <span class="s1">&#39;bpd&#39;</span><span class="p">,</span> <span class="s1">&#39;allcals&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">rflag_standard</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-
             <span class="k">for</span> <span class="n">datacolumn</span><span class="p">,</span> <span class="n">correlation</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">extendflags</span> <span class="ow">in</span> <span class="n">rflag_standard</span><span class="p">:</span>
                 <span class="k">if</span> <span class="s1">&#39;_&#39;</span> <span class="ow">in</span> <span class="n">correlation</span><span class="p">:</span>
                     <span class="n">polselect</span> <span class="o">=</span> <span class="n">correlation</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
@@ -547,40 +584,110 @@
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">mssel_valid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">fieldselect</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spwselect</span><span class="p">,</span> <span class="n">correlation</span><span class="o">=</span><span class="n">polselect</span><span class="p">,</span>
                                        <span class="n">scan</span><span class="o">=</span><span class="n">scanselect</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intentselect</span><span class="p">):</span>
                         <span class="k">continue</span>
-                <span class="k">if</span> <span class="n">datacolumn</span> <span class="o">==</span> <span class="s1">&#39;residual&#39;</span><span class="p">:</span>
-                    <span class="c1"># PIPE-1256: determine if we can use the &#39;RESIDUAL&#39; column in the &#39;bpd-vlass/vla&#39; mode.</span>
-                    <span class="c1">#   The usage of &#39;RESIDUAL&#39; is only valid if the model of bpd source(s) is properly filled *AND*</span>
-                    <span class="c1">#   the first-order gain/passband calibration has been applied in &#39;CORRECTED&#39;.</span>
-                    <span class="c1">#   Here we check each field from the data selection and see if they all meet the above requirements.</span>
-                    <span class="c1">#   We only examine the parallel hand amplitude:</span>
-                    <span class="c1">#       - setjy() has only I models for 3C48/3C138/3C286/3C147.</span>
-                    <span class="c1">#       - setjy(fluxdensity=-1) will fill the cross-hand with zero values.</span>
-                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Determining if we can use the RESIDUAL column for rflag:&quot;</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_model_setjy</span><span class="p">():</span>
-                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  MODEL_DATA is present and none of the model(s) from selected data is a 1Jy point source.&quot;</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">datacolumn</span> <span class="o">=</span> <span class="s1">&#39;corrected&#39;</span>
-                        <span class="n">correlation</span> <span class="o">=</span> <span class="n">correlation</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;REAL_&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_&#39;</span><span class="p">)</span>
-                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  MODEL_DATA s not found or the model(s) from selected data contains 1Jy point source(s).&quot;</span><span class="p">)</span>
-                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  Use the </span><span class="si">{}</span><span class="s2"> column and correlation = </span><span class="si">{!r}</span><span class="s2"> for rflag&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datacolumn</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">correlation</span><span class="p">))</span>
-                <span class="n">method_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;rflag&#39;</span><span class="p">,</span>
-                               <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">fieldselect</span><span class="p">,</span>
-                               <span class="s1">&#39;correlation&#39;</span><span class="p">:</span> <span class="n">correlation</span><span class="p">,</span>
-                               <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">scanselect</span><span class="p">,</span>
-                               <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intentselect</span><span class="p">,</span>
-                               <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spwselect</span><span class="p">,</span>
-                               <span class="s1">&#39;ntime&#39;</span><span class="p">:</span> <span class="s1">&#39;scan&#39;</span><span class="p">,</span>
-                               <span class="s1">&#39;timedevscale&#39;</span><span class="p">:</span> <span class="n">scale</span><span class="p">,</span>
-                               <span class="s1">&#39;freqdevscale&#39;</span><span class="p">:</span> <span class="n">scale</span><span class="p">,</span>
-                               <span class="s1">&#39;datacolumn&#39;</span><span class="p">:</span> <span class="n">datacolumn</span><span class="p">,</span>
-                               <span class="s1">&#39;flagbackup&#39;</span><span class="p">:</span> <span class="n">flagbackup</span><span class="p">,</span>
-                               <span class="s1">&#39;savepars&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                               <span class="s1">&#39;calcftdev&#39;</span><span class="p">:</span> <span class="n">calcftdev</span><span class="p">,</span>
-                               <span class="s1">&#39;useheuristic&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-                               <span class="s1">&#39;ignore_sefd&#39;</span><span class="p">:</span> <span class="n">ignore_sefd</span><span class="p">,</span>
-                               <span class="s1">&#39;extendflags&#39;</span><span class="p">:</span> <span class="n">extendflags</span><span class="p">}</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span> <span class="o">==</span> <span class="s2">&quot;allcals-vla&quot;</span><span class="p">:</span>
+                    <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+                    <span class="n">fields</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">fieldselect</span><span class="p">)</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">_do_rflag</span><span class="p">(</span><span class="o">**</span><span class="n">method_args</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+                        <span class="n">field_scanselect</span> <span class="o">=</span> <span class="n">scanselect</span>
+                        <span class="n">field_spwselect</span> <span class="o">=</span> <span class="n">spwselect</span>
+                        <span class="n">field_intentselect</span> <span class="o">=</span> <span class="n">intentselect</span>
+
+                        <span class="k">if</span> <span class="n">field_scanselect</span><span class="p">:</span>
+                            <span class="n">scanlist</span> <span class="o">=</span> <span class="n">field_scanselect</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+                            <span class="n">scans</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                            <span class="n">sub_scanlist</span> <span class="o">=</span> <span class="p">[]</span>
+                            <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scans</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">in</span> <span class="n">scanlist</span><span class="p">:</span>
+                                    <span class="n">sub_scanlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">scan</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+                            <span class="n">field_scanselect</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sub_scanlist</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">field_spwselect</span><span class="p">:</span>
+                            <span class="n">spwlist</span> <span class="o">=</span> <span class="n">field_spwselect</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+                            <span class="n">spws</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">valid_spws</span>
+                            <span class="n">sub_spwlist</span> <span class="o">=</span> <span class="p">[]</span>
+                            <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">in</span> <span class="n">spwlist</span><span class="p">:</span>
+                                    <span class="n">sub_spwlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+                            <span class="n">field_spwselect</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sub_spwlist</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">field_intentselect</span><span class="p">:</span>
+                            <span class="n">intentlist</span> <span class="o">=</span> <span class="n">field_intentselect</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+                            <span class="n">intents</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">intents</span>
+                            <span class="n">sub_intentlist</span> <span class="o">=</span> <span class="p">[]</span>
+                            <span class="k">for</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">intents</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">intentlist</span><span class="p">:</span>
+                                    <span class="n">sub_intentlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
+                            <span class="n">field_intentselect</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sub_intentlist</span><span class="p">)</span>
+                        <span class="c1"># PIPE-1729: checking if flux calibrator is bandpass calibrator or not</span>
+                        <span class="k">if</span> <span class="s2">&quot;BANDPASS&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">field</span><span class="o">.</span><span class="n">intents</span><span class="p">:</span>
+                            <span class="c1"># PIPE-1729: checking if model is 1jy point source or not,</span>
+                            <span class="c1"># if model is not a 1 Jy point source, setting datacolumn to &#39;residual&#39;</span>
+                            <span class="c1"># otherwise setting it to &#39;corrected&#39;</span>
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_model_setjy</span><span class="p">(</span><span class="n">fieldselect</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">),</span> <span class="n">scanselect</span><span class="o">=</span><span class="n">field_scanselect</span><span class="p">,</span>
+                                                    <span class="n">intentselect</span><span class="o">=</span><span class="n">field_intentselect</span><span class="p">,</span> <span class="n">spwselect</span><span class="o">=</span><span class="n">field_spwselect</span><span class="p">):</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Model is not 1Jy point source, using data column residual for field </span><span class="si">{</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                                <span class="n">datacolumn</span> <span class="o">=</span> <span class="s2">&quot;residual&quot;</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; MODEL_DATA not found or model is 1Jy point source, using data column corrected for field </span><span class="si">{</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                                <span class="n">datacolumn</span> <span class="o">=</span> <span class="s2">&quot;corrected&quot;</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Flux calibrator is a bandpass calibrator, using data column corrected for field </span><span class="si">{</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                            <span class="n">datacolumn</span> <span class="o">=</span> <span class="s2">&quot;corrected&quot;</span>
+
+                        <span class="n">method_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;rflag&#39;</span><span class="p">,</span>
+                                       <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+                                       <span class="s1">&#39;correlation&#39;</span><span class="p">:</span> <span class="n">correlation</span><span class="p">,</span>
+                                       <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">field_scanselect</span><span class="p">,</span>
+                                       <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">field_intentselect</span><span class="p">,</span>
+                                       <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">field_spwselect</span><span class="p">,</span>
+                                       <span class="s1">&#39;ntime&#39;</span><span class="p">:</span> <span class="s1">&#39;scan&#39;</span><span class="p">,</span>
+                                       <span class="s1">&#39;timedevscale&#39;</span><span class="p">:</span> <span class="n">scale</span><span class="p">,</span>
+                                       <span class="s1">&#39;freqdevscale&#39;</span><span class="p">:</span> <span class="n">scale</span><span class="p">,</span>
+                                       <span class="s1">&#39;datacolumn&#39;</span><span class="p">:</span> <span class="n">datacolumn</span><span class="p">,</span>
+                                       <span class="s1">&#39;flagbackup&#39;</span><span class="p">:</span> <span class="n">flagbackup</span><span class="p">,</span>
+                                       <span class="s1">&#39;savepars&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                       <span class="s1">&#39;calcftdev&#39;</span><span class="p">:</span> <span class="n">calcftdev</span><span class="p">,</span>
+                                       <span class="s1">&#39;useheuristic&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                       <span class="s1">&#39;ignore_sefd&#39;</span><span class="p">:</span> <span class="n">ignore_sefd</span><span class="p">,</span>
+                                       <span class="s1">&#39;extendflags&#39;</span><span class="p">:</span> <span class="n">extendflags</span><span class="p">}</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_do_rflag</span><span class="p">(</span><span class="o">**</span><span class="n">method_args</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">datacolumn</span> <span class="o">==</span> <span class="s1">&#39;residual&#39;</span><span class="p">:</span>
+                        <span class="c1"># PIPE-1256: determine if we can use the &#39;RESIDUAL&#39; column in the &#39;bpd-vlass/vla&#39; mode.</span>
+                        <span class="c1">#   The usage of &#39;RESIDUAL&#39; is only valid if the model of bpd source(s) is properly filled *AND*</span>
+                        <span class="c1">#   the first-order gain/passband calibration has been applied in &#39;CORRECTED&#39;.</span>
+                        <span class="c1">#   Here we check each field from the data selection and see if they all meet the above requirements.</span>
+                        <span class="c1">#   We only examine the parallel hand amplitude:</span>
+                        <span class="c1">#       - setjy() has only I models for 3C48/3C138/3C286/3C147.</span>
+                        <span class="c1">#       - setjy(fluxdensity=-1) will fill the cross-hand with zero values.</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Determining if we can use the RESIDUAL column for rflag:&quot;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_model_setjy</span><span class="p">():</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  MODEL_DATA is present and none of the model(s) from selected data is a 1Jy point source.&quot;</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">datacolumn</span> <span class="o">=</span> <span class="s1">&#39;corrected&#39;</span>
+                            <span class="n">correlation</span> <span class="o">=</span> <span class="n">correlation</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;REAL_&#39;</span><span class="p">,</span> <span class="s1">&#39;ABS_&#39;</span><span class="p">)</span>
+                            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  MODEL_DATA s not found or the model(s) from selected data contains 1Jy point source(s).&quot;</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  Use the </span><span class="si">{}</span><span class="s2"> column and correlation = </span><span class="si">{!r}</span><span class="s2"> for rflag&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datacolumn</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">correlation</span><span class="p">))</span>
+
+                    <span class="n">method_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;rflag&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">fieldselect</span><span class="p">,</span>
+                                   <span class="s1">&#39;correlation&#39;</span><span class="p">:</span> <span class="n">correlation</span><span class="p">,</span>
+                                   <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">scanselect</span><span class="p">,</span>
+                                   <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intentselect</span><span class="p">,</span>
+                                   <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spwselect</span><span class="p">,</span>
+                                   <span class="s1">&#39;ntime&#39;</span><span class="p">:</span> <span class="s1">&#39;scan&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;timedevscale&#39;</span><span class="p">:</span> <span class="n">scale</span><span class="p">,</span>
+                                   <span class="s1">&#39;freqdevscale&#39;</span><span class="p">:</span> <span class="n">scale</span><span class="p">,</span>
+                                   <span class="s1">&#39;datacolumn&#39;</span><span class="p">:</span> <span class="n">datacolumn</span><span class="p">,</span>
+                                   <span class="s1">&#39;flagbackup&#39;</span><span class="p">:</span> <span class="n">flagbackup</span><span class="p">,</span>
+                                   <span class="s1">&#39;savepars&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                   <span class="s1">&#39;calcftdev&#39;</span><span class="p">:</span> <span class="n">calcftdev</span><span class="p">,</span>
+                                   <span class="s1">&#39;useheuristic&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                   <span class="s1">&#39;ignore_sefd&#39;</span><span class="p">:</span> <span class="n">ignore_sefd</span><span class="p">,</span>
+                                   <span class="s1">&#39;extendflags&#39;</span><span class="p">:</span> <span class="n">extendflags</span><span class="p">}</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_do_rflag</span><span class="p">(</span><span class="o">**</span><span class="n">method_args</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">tfcrop_standard</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 
@@ -991,14 +1098,31 @@
 
         <span class="k">return</span> <span class="n">summary_plots</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_is_model_setjy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_model_setjy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fieldselect</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">scanselect</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">intentselect</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">spwselect</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check the model column status of selected fields.</span>
 
-<span class="sd">        return True, if the below requirements are met:</span>
-<span class="sd">            - the model column is present.</span>
-<span class="sd">            - none of selected field(s) contain a model of 1Jy point source at the phasecenter (in the parallel hands)</span>
+<span class="sd">        Parameters:</span>
+<span class="sd">            fieldselect: Comma-separated list of field IDs or names to check.</span>
+<span class="sd">            scanselect: Comma-separated list of scan ids to include.</span>
+<span class="sd">            intentselect: Comma-separated list of intents to filter the data.</span>
+<span class="sd">            spwselect: Comma-separated list of spw ids to include.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if the model column is present and no 1 Jy point source at the</span>
+<span class="sd">            phase center is found in the selected fields; False otherwise.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">fieldselect</span><span class="p">,</span> <span class="n">scanselect</span><span class="p">,</span> <span class="n">intentselect</span><span class="p">,</span> <span class="n">columnselect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_data</span><span class="p">()</span>
+        <span class="n">field_list</span><span class="p">,</span> <span class="n">scan_list</span><span class="p">,</span> <span class="n">intent_list</span><span class="p">,</span> <span class="n">columnselect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_data</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">fieldselect</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fieldselect</span> <span class="o">=</span> <span class="n">field_list</span>
+        <span class="k">if</span> <span class="n">scanselect</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">scanselect</span> <span class="o">=</span> <span class="n">scan_list</span>
+        <span class="k">if</span> <span class="n">intentselect</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">intentselect</span> <span class="o">=</span> <span class="n">intent_list</span>
+        <span class="k">if</span> <span class="n">spwselect</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">spwselect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sci_spws</span>
+
         <span class="n">is_model_setjy</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="c1"># set False if the MODEL column is not present.</span>
@@ -1010,7 +1134,7 @@
             <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> <span class="k">as</span> <span class="n">msfile</span><span class="p">:</span>
                 <span class="c1"># we expect fieldselect is not an empty string here...</span>
                 <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fieldselect</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
-                    <span class="n">staql</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span> <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sci_spws</span><span class="p">,</span> <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">scanselect</span><span class="p">,</span>
+                    <span class="n">staql</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;field&#39;</span><span class="p">:</span> <span class="n">field</span><span class="p">,</span> <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">spwselect</span><span class="p">,</span> <span class="s1">&#39;scan&#39;</span><span class="p">:</span> <span class="n">scanselect</span><span class="p">,</span>
                              <span class="s1">&#39;scanintent&#39;</span><span class="p">:</span> <span class="n">intentselect</span><span class="p">,</span> <span class="s1">&#39;polarization&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;uvdist&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">}</span>
                     <span class="k">if</span> <span class="n">msfile</span><span class="o">.</span><span class="n">msselect</span><span class="p">(</span><span class="n">staql</span><span class="p">,</span> <span class="n">onlyparse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
                         <span class="n">vis_ampstats</span> <span class="o">=</span> <span class="n">msfile</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">scanselect</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intentselect</span><span class="p">,</span>
@@ -1038,7 +1162,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

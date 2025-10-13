@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.tasks.flagging.flagdeteralmasd &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -113,11 +151,17 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hsd.tasks.flagging.flagdeteralmasd</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">string</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
@@ -127,8 +171,11 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataTable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.flagging</span><span class="w"> </span><span class="kn">import</span> <span class="n">flagdeterbase</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.displays</span><span class="w"> </span><span class="kn">import</span> <span class="n">pointing</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hsd.heuristics.pointing_outlier</span><span class="w"> </span><span class="kn">import</span> <span class="n">PointingOutlierHeuristics</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hsd.tasks.common.flagcmd_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">datatable_rowid_to_timerange</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">SpectralWindow</span>
@@ -136,6 +183,11 @@
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
+<span class="n">PointingOutlierStats</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+    <span class="s2">&quot;PointingOutlierStats&quot;</span><span class="p">,</span>
+    <span class="p">[</span><span class="s2">&quot;cx&quot;</span><span class="p">,</span> <span class="s2">&quot;cy&quot;</span><span class="p">,</span> <span class="s2">&quot;median_distance&quot;</span><span class="p">,</span> <span class="s2">&quot;factor&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;outliers&quot;</span><span class="p">,</span> <span class="s2">&quot;timerange&quot;</span><span class="p">,</span> <span class="s2">&quot;separations&quot;</span><span class="p">]</span>
+<span class="p">)</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">FlagDeterALMASingleDishInputs</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -222,7 +274,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct FlagDeterALMASingleDishInputs instance.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            context: Pipeline context object containing state information.</span>
 
 <span class="sd">            vis: The list of input MeasurementSets. Defaults to the list of</span>
 <span class="sd">                MeasurementSets defined in the pipeline context.</span>
@@ -272,7 +324,7 @@
 <span class="sd">                Default: None (equivalent to True)</span>
 
 <span class="sd">            fileonline: File containing the online flags. These are computed</span>
-<span class="sd">                by the h_init or hif_importdata data tasks. If the online flags files</span>
+<span class="sd">                by the h_init or hsd_importdata data tasks. If the online flags files</span>
 <span class="sd">                are undefined a name of the form &#39;msname.flagonline.txt&#39; is assumed.</span>
 
 <span class="sd">            template: Apply a flagging template.</span>
@@ -349,6 +401,21 @@
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">FlagDeterALMASingleDishResults</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseResults</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">summaries</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+            <span class="n">flagcmds</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+            <span class="n">pointing_outlier_stats</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">PointingOutlierStats</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize results object for hsd_flagdata.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            summaries: List of flagging summaries.</span>
+<span class="sd">            flagcmds: List of flagging commands</span>
+<span class="sd">            pointing_outlier_stats: Statistics of pointing outliers.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">summaries</span><span class="p">,</span> <span class="n">flagcmds</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pointing_outlier_stats</span> <span class="o">=</span> <span class="n">pointing_outlier_stats</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># call parent&#39;s method</span>
@@ -435,19 +502,189 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">1.875e9</span>  <span class="c1"># 1.875GHz</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FlagDeterALMASingleDishResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generates results object.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">pointing</span><span class="p">:</span>
+            <span class="c1"># save flag status before flagging</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_execute_flagmanager</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;save&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># pre-apply deterministic flagging</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_deterministic_flagging</span><span class="p">()</span>
+
+            <span class="c1"># run pointing outlier heuristic for each target field</span>
+            <span class="n">outlier_stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detect_pointing_outliers</span><span class="p">()</span>
+
+            <span class="c1"># check if pointing outliers are detected or not</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">outlier_stats</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">),</span> <span class="n">stats</span> <span class="ow">in</span> <span class="n">outlier_stats</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">field_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">antenna</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">antenna_id</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="s1">&#39;[pointing_outlier_flagged] &#39;</span>
+                        <span class="s1">&#39;Pointing outliers are detected in &quot;</span><span class="si">%s</span><span class="s1">&quot;, &#39;</span>
+                        <span class="s1">&#39;Field &quot;</span><span class="si">%s</span><span class="s1">&quot;, Antenna &quot;</span><span class="si">%s</span><span class="s1">&quot;: time range &quot;</span><span class="si">%s</span><span class="s1">&quot;, &#39;</span>
+                        <span class="s1">&#39;max separation </span><span class="si">%.2f</span><span class="s1"> arcsec&#39;</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">antenna</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">timerange</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">separations</span><span class="p">)</span>
+                    <span class="p">)</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">pointing</span><span class="p">:</span>
+                    <span class="c1"># if outlier exists, update pointing flag file</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_append_outlier_flagcmd_to_flagpoinging_file</span><span class="p">(</span>
+                        <span class="n">outlier_stats</span>
+                    <span class="p">)</span>
+
+                    <span class="c1"># restore flag status</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_execute_flagmanager</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;restore&#39;</span><span class="p">)</span>
+
+                    <span class="c1"># apply deterministic flagging and update datatable again</span>
+                    <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_apply_deterministic_flagging</span><span class="p">()</span>
+
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">pointing</span><span class="p">:</span>
+                <span class="c1"># delete flag state for internal use</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_execute_flagmanager</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;delete&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">FlagDeterALMASingleDishResults</span><span class="p">(</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">summaries</span><span class="p">,</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">flagcmds</span><span class="p">(),</span>
+            <span class="n">pointing_outlier_stats</span><span class="o">=</span><span class="n">outlier_stats</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_deterministic_flagging</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply deterministic flagging.</span>
+
+<span class="sd">        It also updates the datatable.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Results object of the base class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
 
         <span class="c1"># update datatable</span>
-        <span class="c1"># this task uses _handle_multiple_vis framework</span>
-        <span class="n">msobj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
-        <span class="n">origin_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">msobj</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">)</span>
-        <span class="n">table_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">ms_datatable_name</span><span class="p">,</span> <span class="n">origin_basename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_datatable</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">results</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_execute_flagmanager</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run flagmanager to save/restore/delete flag status.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mode: Execution mode. Should be either</span>
+<span class="sd">                &#39;save&#39;, &#39;restore&#39;, or &#39;delete&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">flagversion_name</span> <span class="o">=</span> <span class="s1">&#39;SDPL_hsd_flagdata_internal_before_flagging&#39;</span>
+        <span class="n">args_save</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+            <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="n">mode</span><span class="p">,</span>
+            <span class="s1">&#39;versionname&#39;</span><span class="p">:</span> <span class="n">flagversion_name</span>
+        <span class="p">}</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">flagmanager</span><span class="p">(</span><span class="o">**</span><span class="n">args_save</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_datatable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update flag information in the datatable.</span>
+
+<span class="sd">        This is necessary to make datatable consistent with the MS.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">origin_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">)</span>
+        <span class="n">table_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">ms_datatable_name</span><span class="p">,</span>
+            <span class="n">origin_basename</span>
+        <span class="p">)</span>
         <span class="n">datatable</span> <span class="o">=</span> <span class="n">DataTable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">table_name</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">datatable</span><span class="o">.</span><span class="n">_update_flag</span><span class="p">(</span><span class="n">msobj</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">datatable</span><span class="o">.</span><span class="n">_update_flag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">)</span>
         <span class="n">datatable</span><span class="o">.</span><span class="n">exportdata</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">FlagDeterALMASingleDishResults</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">summaries</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">flagcmds</span><span class="p">())</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_detect_pointing_outliers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">PointingOutlierStats</span><span class="p">]:</span>
+        <span class="n">outlier_stats</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">origin_basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">)</span>
+        <span class="n">table_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">ms_datatable_name</span><span class="p">,</span>
+            <span class="n">origin_basename</span>
+        <span class="p">)</span>
+        <span class="n">msname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span>
+        <span class="n">datatable</span> <span class="o">=</span> <span class="n">DataTable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">table_name</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">antennas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">()</span>
+        <span class="n">target_fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s2">&quot;TARGET&quot;</span><span class="p">)</span>
+        <span class="n">ra_all</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;SHIFT_RA&quot;</span><span class="p">)</span>
+        <span class="n">dec_all</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;SHIFT_DEC&quot;</span><span class="p">)</span>
+        <span class="n">srctype_all</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;SRCTYPE&quot;</span><span class="p">)</span>
+        <span class="n">field_id_all</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;FIELD_ID&quot;</span><span class="p">)</span>
+        <span class="n">antenna_id_all</span> <span class="o">=</span> <span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;ANTENNA&quot;</span><span class="p">)</span>
+        <span class="n">flag_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">datatable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;FLAG_PERMANENT&quot;</span><span class="p">)[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">valid_on_source</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">srctype_all</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">flag_all</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">heuristic</span> <span class="o">=</span> <span class="n">PointingOutlierHeuristics</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">target_fields</span><span class="p">,</span> <span class="n">antennas</span><span class="p">):</span>
+            <span class="c1"># data selection</span>
+            <span class="n">field_antenna_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+                <span class="n">field_id_all</span> <span class="o">==</span> <span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="n">antenna_id_all</span> <span class="o">==</span> <span class="n">antenna</span><span class="o">.</span><span class="n">id</span>
+            <span class="p">)</span>
+            <span class="n">selection</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">valid_on_source</span><span class="p">,</span> <span class="n">field_antenna_flag</span><span class="p">)</span>
+            <span class="n">rows</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">selection</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">ra</span> <span class="o">=</span> <span class="n">ra_all</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span>
+            <span class="n">dec</span> <span class="o">=</span> <span class="n">dec_all</span><span class="p">[</span><span class="n">selection</span><span class="p">]</span>
+
+            <span class="c1"># run heuristic</span>
+            <span class="n">heuristic_result</span> <span class="o">=</span> <span class="n">heuristic</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">)</span>
+
+            <span class="n">outlier_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">heuristic_result</span><span class="o">.</span><span class="n">mask</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">outlier_mask</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">outliers</span> <span class="o">=</span> <span class="n">rows</span><span class="p">[</span><span class="n">outlier_mask</span><span class="p">]</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="s1">&#39;MS &quot;</span><span class="si">%s</span><span class="s1">&quot; field &quot;</span><span class="si">%s</span><span class="s1">&quot; antenna &quot;</span><span class="si">%s</span><span class="s1">&quot;: </span><span class="si">%d</span><span class="s1"> pointing outliers detected&#39;</span><span class="p">,</span>
+                    <span class="n">msname</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">antenna</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">outliers</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Outliers: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">outliers</span><span class="p">)</span>
+                <span class="n">separations</span> <span class="o">=</span> <span class="n">heuristic_result</span><span class="o">.</span><span class="n">dist</span><span class="p">[</span><span class="n">outlier_mask</span><span class="p">]</span>
+                <span class="n">timerange_list</span> <span class="o">=</span> <span class="n">datatable_rowid_to_timerange</span><span class="p">(</span>
+                    <span class="n">datatable</span><span class="p">,</span> <span class="n">rows</span><span class="p">[</span><span class="n">outlier_mask</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">outliers_for_field</span> <span class="o">=</span> <span class="n">PointingOutlierStats</span><span class="p">(</span>
+                        <span class="n">heuristic_result</span><span class="o">.</span><span class="n">cx</span><span class="p">,</span> <span class="n">heuristic_result</span><span class="o">.</span><span class="n">cy</span><span class="p">,</span>
+                        <span class="n">heuristic_result</span><span class="o">.</span><span class="n">med_dist</span><span class="p">,</span> <span class="n">heuristic_result</span><span class="o">.</span><span class="n">factor</span><span class="p">,</span>
+                        <span class="n">outliers</span><span class="p">,</span> <span class="n">timerange_list</span><span class="p">,</span> <span class="n">separations</span>
+                    <span class="p">)</span>
+                <span class="n">outlier_stats</span><span class="p">[(</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">antenna</span><span class="o">.</span><span class="n">id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">outliers_for_field</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="s1">&#39;MS &quot;</span><span class="si">%s</span><span class="s1">&quot; field &quot;</span><span class="si">%s</span><span class="s1">&quot; antenna &quot;</span><span class="si">%s</span><span class="s1">&quot;: no outliers detected&#39;</span><span class="p">,</span>
+                    <span class="n">msname</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">antenna</span><span class="o">.</span><span class="n">name</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">outlier_stats</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_append_outlier_flagcmd_to_flagpoinging_file</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">outlier_stats</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">PointingOutlierStats</span><span class="p">]):</span>
+        <span class="n">reason</span> <span class="o">=</span> <span class="s2">&quot;pointing_outlier&quot;</span>
+        <span class="n">cmd_template</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span>
+            <span class="s2">&quot;mode=&#39;manual&#39; field=&#39;$field_id&#39; antenna=&#39;$antenna_id&amp;&amp;&amp;&#39; timerange=&#39;$timerange&#39;&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; reason=&#39;SDPL:</span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># generate flag commands</span>
+        <span class="n">flagcmds</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">),</span> <span class="n">stats</span> <span class="ow">in</span> <span class="n">outlier_stats</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">timerange_list</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">timerange</span>
+            <span class="k">for</span> <span class="n">timerange</span> <span class="ow">in</span> <span class="n">timerange_list</span><span class="p">:</span>
+                <span class="n">flagcmds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">cmd_template</span><span class="o">.</span><span class="n">safe_substitute</span><span class="p">(</span>
+                        <span class="n">field_id</span><span class="o">=</span><span class="n">field_id</span><span class="p">,</span>
+                        <span class="n">antenna_id</span><span class="o">=</span><span class="n">antenna_id</span><span class="p">,</span>
+                        <span class="n">timerange</span><span class="o">=</span><span class="n">timerange</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="c1"># append flag commands only when flagpointing file exists</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">filepointing</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">filepointing</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="n">flagcmds</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_yield_edge_spw_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Yield flag commands to flag edge channels.</span>
@@ -543,7 +780,7 @@
 
         <span class="k">return</span> <span class="n">to_flag</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_fracspw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="s1">&#39;SpectralWindow&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_fracspw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="n">SpectralWindow</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get fraction of total number of spw channels that are to be flagged on each side of the spw.</span>
 
 <span class="sd">        Args:</span>
@@ -567,7 +804,7 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;fraction is </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">fracspw</span><span class="p">)</span>
             <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">fracspw</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">verify_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="s1">&#39;SpectralWindow&#39;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">verify_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="n">SpectralWindow</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if given spw needs to be processed by edgespw flagging.</span>
 
 <span class="sd">        Args:</span>
@@ -643,7 +880,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.tasks.skycal.skycal &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -114,11 +152,13 @@
              
   <h1>Source code for pipeline.hsd.tasks.skycal.skycal</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;The skycal task module to calibrate sky background.&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
@@ -130,8 +170,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain.datatable</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnlineFlagIndex</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">..common</span><span class="w"> </span><span class="kn">import</span> <span class="n">SingleDishResults</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.launcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
 
@@ -161,7 +202,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span>
 
     <span class="nd">@infiles</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert value into expected type.</span>
 
 <span class="sd">        Currently, no conversion is performed.</span>
@@ -178,24 +219,24 @@
     <span class="c1"># docstring and type hints: supplements hsd_skycal</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span>
-            <span class="n">calmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">fraction</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">noff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">elongated</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">output_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">infiles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">outfile</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">spw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">scan</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">parallel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span>
+            <span class="n">calmode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">fraction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">noff</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">elongated</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">infiles</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">outfile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">scan</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">parallel</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize SDK2JyCalInputs instance.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            context: Pipeline context object containing state information.</span>
 
 <span class="sd">            calmode: Calibration mode.</span>
 <span class="sd">                Available options are &#39;auto&#39; (default), &#39;ps&#39;, &#39;otf&#39;, and</span>
@@ -208,9 +249,9 @@
 <span class="sd">                generic scanning pattern such as Lissajous, while the latter is</span>
 <span class="sd">                specific use for raster scan.</span>
 
-<span class="sd">                Options: &#39;auto&#39;, &#39;ps&#39;, &#39;otf&#39;, &#39;otfraster&#39;</span>
+<span class="sd">                Options: ``&#39;auto&#39;``, ``&#39;ps&#39;``, ``&#39;otf&#39;``, ``&#39;otfraster&#39;``</span>
 
-<span class="sd">                Default: None (equivalent to &#39;auto&#39;)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;auto&#39;``)</span>
 
 <span class="sd">            fraction: Sub-parameter for calmode. Edge marking parameter for</span>
 <span class="sd">                &#39;otf&#39; and &#39;otfraster&#39; mode. It specifies a number of OFF scans</span>
@@ -219,7 +260,7 @@
 <span class="sd">                Options: String style like &#39;20%&#39;, or float value less than 1.0.</span>
 <span class="sd">                    For &#39;otfraster&#39; mode, you can also specify &#39;auto&#39;.</span>
 
-<span class="sd">                Default: None (equivalent to &#39;10%&#39;)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;10%&#39;``)</span>
 
 <span class="sd">            noff: Sub-parameter for calmode. Edge marking parameter for</span>
 <span class="sd">                &#39;otfraster&#39; mode. It is used to specify a number of OFF scans</span>
@@ -229,7 +270,7 @@
 
 <span class="sd">                Options: any positive integer value</span>
 
-<span class="sd">                Default: None (equivalent to &#39;&#39;)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;&#39;``)</span>
 
 <span class="sd">            width: Sub-parameter for calmode. Edge marking parameter for</span>
 <span class="sd">                &#39;otf&#39; mode. It specifies pixel width with respect to</span>
@@ -238,13 +279,13 @@
 
 <span class="sd">                Options: any float value</span>
 
-<span class="sd">                Default: None (equivalent to 0.5)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``0.5``)</span>
 
 <span class="sd">            elongated: Sub-parameter for calmode. Edge marking parameter</span>
 <span class="sd">                for &#39;otf&#39; mode. Please set True only if observed area is</span>
 <span class="sd">                elongated in one direction.</span>
 
-<span class="sd">                Default: None (equivalent to False)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``False``)</span>
 
 <span class="sd">            output_dir: Name of output directory.</span>
 
@@ -252,7 +293,7 @@
 <span class="sd">                MeasurementSets that are registered to context</span>
 <span class="sd">                via hsd_importdata or hsd_restoredata task.</span>
 
-<span class="sd">                Example: vis=[&#39;X227.ms&#39;, &#39;X228.ms&#39;]</span>
+<span class="sd">                Example: ``vis=[&#39;X227.ms&#39;, &#39;X228.ms&#39;]``</span>
 
 <span class="sd">            outfile: Name of the output file.</span>
 
@@ -260,23 +301,23 @@
 
 <span class="sd">            spw: Data selection by spw.</span>
 
-<span class="sd">                Example: &#39;3,4&#39; (generate caltable for spw 3 and 4), [&#39;0&#39;,&#39;2&#39;] (spw 0 for first data, 2 for second)</span>
+<span class="sd">                Example: ``&#39;3,4&#39;`` (generate caltable for spw 3 and 4), ``[&#39;0&#39;,&#39;2&#39;]`` (spw 0 for first data, 2 for second)</span>
 
-<span class="sd">                Default: None (process all science spws)</span>
+<span class="sd">                Default: ``None`` (process all science spws)</span>
 
 <span class="sd">            scan: Data selection by scan number. (default all scans)</span>
 
-<span class="sd">                Example: &#39;22,23&#39; (use scan 22 and 23 for calibration), [&#39;22&#39;,&#39;24&#39;] (scan 22 for first data, 24 for second)</span>
+<span class="sd">                Example: ``&#39;22,23&#39;`` (use scan 22 and 23 for calibration), ``[&#39;22&#39;,&#39;24&#39;]`` (scan 22 for first data, 24 for second)</span>
 
 <span class="sd">                Default: None (process all scans)</span>
 
 <span class="sd">            parallel: Execute using CASA HPC functionality, if available.</span>
 
-<span class="sd">                Options: &#39;automatic&#39;, &#39;true&#39;, &#39;false&#39;, True, False</span>
+<span class="sd">                Options: ``&#39;automatic&#39;``, ``&#39;true&#39;``, ``&#39;false&#39;``, ``True``, ``False``</span>
 
-<span class="sd">                Default: None (equivalent to &#39;automatic&#39;)</span>
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;automatic&#39;``)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">SDSkyCalInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="c1"># context and vis must be set first so that properties that require</span>
         <span class="c1"># domain objects can be function</span>
@@ -297,7 +338,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert Inputs instance to the list of keyword arguments for sdcal.</span>
 
 <span class="sd">        Returns:</span>
@@ -323,9 +364,9 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
-            <span class="n">task</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">success</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">outcome</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">task</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">success</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">outcome</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize SDSkyCalResults instance.</span>
 
@@ -338,14 +379,14 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">SDSkyCalResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">final</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcome</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge result instance into context.</span>
 
 <span class="sd">        The CalApplication instance updated by the skycal task is added to</span>
 <span class="sd">        the pipeline context.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            context: Pipeline context.</span>
+<span class="sd">            context: Pipeline context object containing state information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SDSkyCalResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 
@@ -507,11 +548,73 @@
     <span class="n">Task</span> <span class="o">=</span> <span class="n">SerialSDSkyCal</span></div>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_elevation_difference</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">SDSkyCalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_elevation</span><span class="p">(</span>
+        <span class="n">datatable_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">spw_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">antenna_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">field_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">on_source</span><span class="p">:</span> <span class="nb">bool</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get elevation and associated time and flag from datatable.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        datatable_name: Name of the datatable.</span>
+<span class="sd">        spw_id: Spectral window ID.</span>
+<span class="sd">        antenna_id: Antenna ID.</span>
+<span class="sd">        field_id: Field ID.</span>
+<span class="sd">        on_source: If True, get elevation for on-source data,</span>
+<span class="sd">            otherwise for off-source data.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary with time and elevation.</span>
+<span class="sd">        - time: Array of time in seconds.</span>
+<span class="sd">        - el: Array of elevation in radians.</span>
+<span class="sd">        - online_flag: Array of online flags</span>
+<span class="sd">            (False for valid, True for invalid data).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ro_datatable_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datatable_name</span><span class="p">,</span> <span class="s1">&#39;RO&#39;</span><span class="p">)</span>
+    <span class="n">rw_datatable_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datatable_name</span><span class="p">,</span> <span class="s1">&#39;RW&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">ro_datatable_name</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+        <span class="n">taql</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;IF==</span><span class="si">{</span><span class="n">spw_id</span><span class="si">}</span><span class="s1">&amp;&amp;ANTENNA==</span><span class="si">{</span><span class="n">antenna_id</span><span class="si">}</span><span class="s1">&amp;&amp;FIELD_ID==</span><span class="si">{</span><span class="n">field_id</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="n">on_source</span><span class="p">:</span>
+            <span class="n">taql</span> <span class="o">+=</span> <span class="s1">&#39;&amp;&amp;SRCTYPE==0&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">taql</span> <span class="o">+=</span> <span class="s1">&#39;&amp;&amp;SRCTYPE!=0&#39;</span>
+        <span class="n">selected</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">taql</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">selected</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">selected</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+                <span class="s1">&#39;el&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">),</span>
+                <span class="s1">&#39;online_flag&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="n">npol</span> <span class="o">=</span> <span class="n">selected</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="s1">&#39;NPOL&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">selected</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
+        <span class="n">el</span> <span class="o">=</span> <span class="n">selected</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;EL&#39;</span><span class="p">)</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="n">selected</span><span class="o">.</span><span class="n">rownumbers</span><span class="p">()</span>
+        <span class="n">selected</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">rw_datatable_name</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+        <span class="n">it</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">tb</span><span class="o">.</span><span class="n">getcellslice</span><span class="p">(</span>
+                <span class="s1">&#39;FLAG_PERMANENT&#39;</span><span class="p">,</span>
+                <span class="n">i</span><span class="p">,</span>
+                <span class="n">blc</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">OnlineFlagIndex</span><span class="p">],</span>
+                <span class="n">trc</span><span class="o">=</span><span class="p">[</span><span class="n">npol</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">OnlineFlagIndex</span><span class="p">],</span>
+                <span class="n">incr</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">rows</span>
+        <span class="p">)</span>
+        <span class="n">online_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">time</span><span class="p">,</span> <span class="s1">&#39;el&#39;</span><span class="p">:</span> <span class="n">el</span><span class="p">,</span> <span class="s1">&#39;online_flag&#39;</span><span class="p">:</span> <span class="n">online_flag</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_elevation_difference</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">SDSkyCalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute elevation difference.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        context: Pipeline context.</span>
+<span class="sd">        context: Pipeline context object containing state information.</span>
 <span class="sd">        results: SDSkyCalResults instance.</span>
 
 <span class="sd">    Returns:</span>
@@ -520,8 +623,10 @@
 <span class="sd">            contain the result from one MS (given that SDSkyCal is per-MS task).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ElevationDifference</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;ElevationDifference&#39;</span><span class="p">,</span>
-                                                 <span class="p">[</span><span class="s1">&#39;timeon&#39;</span><span class="p">,</span> <span class="s1">&#39;elon&#39;</span><span class="p">,</span> <span class="s1">&#39;timecal&#39;</span><span class="p">,</span> <span class="s1">&#39;elcal&#39;</span><span class="p">,</span>
-                                                  <span class="s1">&#39;time0&#39;</span><span class="p">,</span> <span class="s1">&#39;eldiff0&#39;</span><span class="p">,</span> <span class="s1">&#39;time1&#39;</span><span class="p">,</span> <span class="s1">&#39;eldiff1&#39;</span><span class="p">])</span>
+                                                 <span class="p">[</span><span class="s1">&#39;timeon&#39;</span><span class="p">,</span> <span class="s1">&#39;elon&#39;</span><span class="p">,</span> <span class="s1">&#39;flagon&#39;</span><span class="p">,</span>
+                                                  <span class="s1">&#39;timecal&#39;</span><span class="p">,</span> <span class="s1">&#39;elcal&#39;</span><span class="p">,</span>
+                                                  <span class="s1">&#39;time0&#39;</span><span class="p">,</span> <span class="s1">&#39;eldiff0&#39;</span><span class="p">,</span>
+                                                  <span class="s1">&#39;time1&#39;</span><span class="p">,</span> <span class="s1">&#39;eldiff1&#39;</span><span class="p">])</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">SDSkyCalResults</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Results type should be SDSkyCalResults&#39;</span><span class="p">)</span>
@@ -578,46 +683,57 @@
                         <span class="n">selected</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
                     <span class="c1"># access DataTable to get elevation</span>
-                    <span class="n">ro_datatable_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">ms_datatable_name</span><span class="p">,</span>
-                                                     <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">),</span> <span class="s1">&#39;RO&#39;</span><span class="p">)</span>
-                    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">ro_datatable_name</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
-                        <span class="n">selected</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;IF==</span><span class="si">{}</span><span class="s1">&amp;&amp;ANTENNA==</span><span class="si">{}</span><span class="s1">&amp;&amp;FIELD_ID==</span><span class="si">{}</span><span class="s1">&amp;&amp;SRCTYPE==0&#39;</span>
-                                            <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">field_id_on</span><span class="p">))</span>
-                        <span class="n">timeon</span> <span class="o">=</span> <span class="n">selected</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
-                        <span class="n">elon</span> <span class="o">=</span> <span class="n">selected</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;EL&#39;</span><span class="p">)</span>
-                        <span class="n">selected</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                        <span class="n">selected</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;IF==</span><span class="si">{}</span><span class="s1">&amp;&amp;ANTENNA==</span><span class="si">{}</span><span class="s1">&amp;&amp;FIELD_ID==</span><span class="si">{}</span><span class="s1">&amp;&amp;SRCTYPE!=0&#39;</span>
-                                            <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">field_id_off</span><span class="p">))</span>
-                        <span class="n">timeoff</span> <span class="o">=</span> <span class="n">selected</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;TIME&#39;</span><span class="p">)</span>
-                        <span class="n">eloff</span> <span class="o">=</span> <span class="n">selected</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;EL&#39;</span><span class="p">)</span>
-                        <span class="n">selected</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-                    <span class="n">elcal</span> <span class="o">=</span> <span class="n">eloff</span><span class="p">[[</span><span class="n">numpy</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">timeoff</span> <span class="o">-</span> <span class="n">t</span><span class="p">))</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">timecal</span><span class="p">]]</span>
-
-                    <span class="k">del</span> <span class="n">timeoff</span><span class="p">,</span> <span class="n">eloff</span>
+                    <span class="n">datatable_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">ms_datatable_name</span><span class="p">,</span>
+                        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="n">data_on</span> <span class="o">=</span> <span class="n">get_elevation</span><span class="p">(</span>
+                        <span class="n">datatable_name</span><span class="p">,</span>
+                        <span class="n">spw_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">field_id_on</span><span class="p">,</span> <span class="n">on_source</span><span class="o">=</span><span class="kc">True</span>
+                    <span class="p">)</span>
+                    <span class="n">timeon</span> <span class="o">=</span> <span class="n">data_on</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span>
+                    <span class="n">elon</span> <span class="o">=</span> <span class="n">data_on</span><span class="p">[</span><span class="s1">&#39;el&#39;</span><span class="p">]</span>
+                    <span class="n">flagon</span> <span class="o">=</span> <span class="n">data_on</span><span class="p">[</span><span class="s1">&#39;online_flag&#39;</span><span class="p">]</span>
+                    <span class="n">data_off</span> <span class="o">=</span> <span class="n">get_elevation</span><span class="p">(</span>
+                        <span class="n">datatable_name</span><span class="p">,</span>
+                        <span class="n">spw_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">field_id_off</span><span class="p">,</span> <span class="n">on_source</span><span class="o">=</span><span class="kc">False</span>
+                    <span class="p">)</span>
+                    <span class="n">timeoff</span> <span class="o">=</span> <span class="n">data_off</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span>
+                    <span class="n">eloff</span> <span class="o">=</span> <span class="n">data_off</span><span class="p">[</span><span class="s1">&#39;el&#39;</span><span class="p">]</span>
+                    <span class="n">flagoff</span> <span class="o">=</span> <span class="n">data_off</span><span class="p">[</span><span class="s1">&#39;online_flag&#39;</span><span class="p">]</span>
+                    <span class="n">eloff_valid</span> <span class="o">=</span> <span class="n">eloff</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">flagoff</span><span class="p">)]</span>
+                    <span class="n">timeoff_valid</span> <span class="o">=</span> <span class="n">timeoff</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">flagoff</span><span class="p">)]</span>
+                    <span class="n">elcal</span> <span class="o">=</span> <span class="n">eloff_valid</span><span class="p">[</span>
+                        <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">timeoff_valid</span> <span class="o">-</span> <span class="n">t</span><span class="p">))</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">timecal</span><span class="p">]</span>
+                    <span class="p">]</span>
 
                     <span class="n">eldiff0</span> <span class="o">=</span> <span class="p">[]</span>
                     <span class="n">eldiff1</span> <span class="o">=</span> <span class="p">[]</span>
                     <span class="n">time0</span> <span class="o">=</span> <span class="p">[]</span>
                     <span class="n">time1</span> <span class="o">=</span> <span class="p">[]</span>
-                    <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">el</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">timeon</span><span class="p">,</span> <span class="n">elon</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">el</span><span class="p">,</span> <span class="n">flg</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">timeon</span><span class="p">,</span> <span class="n">elon</span><span class="p">,</span> <span class="n">flagon</span><span class="p">):</span>
+                        <span class="c1"># do not process flagged data</span>
+                        <span class="k">if</span> <span class="n">flg</span><span class="p">:</span>
+                            <span class="k">continue</span>
+
                         <span class="n">dt</span> <span class="o">=</span> <span class="n">timecal</span> <span class="o">-</span> <span class="n">t</span>
-                        <span class="n">idx0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dt</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">idx0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dt</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
                         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                            <span class="n">i</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">timecal</span><span class="p">[</span><span class="n">idx0</span><span class="p">])</span>
+                            <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">timecal</span><span class="p">[</span><span class="n">idx0</span><span class="p">])</span>
                             <span class="n">time0</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
                             <span class="n">eldiff0</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span> <span class="o">-</span> <span class="n">elcal</span><span class="p">[</span><span class="n">idx0</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
-                        <span class="n">idx1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dt</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">idx1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dt</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
                         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                            <span class="n">i</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">timecal</span><span class="p">[</span><span class="n">idx1</span><span class="p">])</span>
+                            <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">timecal</span><span class="p">[</span><span class="n">idx1</span><span class="p">])</span>
                             <span class="n">time1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
                             <span class="n">eldiff1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span> <span class="o">-</span> <span class="n">elcal</span><span class="p">[</span><span class="n">idx1</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
-                    <span class="n">eldiff0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">eldiff0</span><span class="p">)</span>
-                    <span class="n">eldiff1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">eldiff1</span><span class="p">)</span>
-                    <span class="n">time0</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">time0</span><span class="p">)</span>
-                    <span class="n">time1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">time1</span><span class="p">)</span>
+                    <span class="n">eldiff0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">eldiff0</span><span class="p">)</span>
+                    <span class="n">eldiff1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">eldiff1</span><span class="p">)</span>
+                    <span class="n">time0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">time0</span><span class="p">)</span>
+                    <span class="n">time1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">time1</span><span class="p">)</span>
 
                     <span class="n">result</span> <span class="o">=</span> <span class="n">ElevationDifference</span><span class="p">(</span><span class="n">timeon</span><span class="o">=</span><span class="n">timeon</span><span class="p">,</span> <span class="n">elon</span><span class="o">=</span><span class="n">elon</span><span class="p">,</span>
+                                                 <span class="n">flagon</span><span class="o">=</span><span class="n">flagon</span><span class="p">,</span>
                                                  <span class="n">timecal</span><span class="o">=</span><span class="n">timecal</span><span class="p">,</span> <span class="n">elcal</span><span class="o">=</span><span class="n">elcal</span><span class="p">,</span>
                                                  <span class="n">time0</span><span class="o">=</span><span class="n">time0</span><span class="p">,</span> <span class="n">eldiff0</span><span class="o">=</span><span class="n">eldiff0</span><span class="p">,</span>
                                                  <span class="n">time1</span><span class="o">=</span><span class="n">time1</span><span class="p">,</span> <span class="n">eldiff1</span><span class="o">=</span><span class="n">eldiff1</span><span class="p">)</span>
@@ -638,7 +754,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

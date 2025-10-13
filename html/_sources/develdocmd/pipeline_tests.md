@@ -160,11 +160,9 @@ xvfb-run casa --nogui --nologger --log2term --agg -c"import pytest; pytest.main(
 
 ## `casa-data` and `pipeline-testdata`
 
-Even with the identical software stack, the numerical results from Pipeline tests is still sensitive to various factors: runtime session environments (e.g. serial vs. mpirun, openmp threadings), OS libraries, as well as the version of [`casa-data`](https://casadocs.readthedocs.io/en/latest/notebooks/external-data.html) (now managed by the [`casaconfig`](https://casadocs.readthedocs.io/en/latest/api/casaconfig.html) package).
+With an identical software stack, the numerical results from Pipeline tests can still differ due to various factors: runtime session environments (e.g. serial vs. mpicasa sessions, OpenMP threading), OS libraries, as well as the version of [`casa-data`](https://casadocs.readthedocs.io/en/latest/notebooks/external-data.html) (now managed by the [`casaconfig`](https://casadocs.readthedocs.io/en/latest/api/casaconfig.html) package).
 
-To streamline two typical uses cases developer needs to handle: 1) daily development and analysis, better use the latest casa-data version 2) benchmarking testing or producing reported issues (better use a specific casa-data version), a recommended code snippet is provided below to customize the casa-data and extra [`pipeline-testadata`](https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline-testdata/browse) path as below.
-
-In summary, a tester or developer might define a customized all-in-one discovery list suitable for different computing environments (e.g. nmpost vs. cvpost filesystems, NRAO computing nodes vs. work laptop) as a daily setup; however, for testing/benchmarking occasions, one could use an environment variable `CASADATA` to override the default setup from `~/.casa/config.py` and switch to a specific `casa-data` version checked out from the [`casa-data`](https://open-bitbucket.nrao.edu/projects/CASA/repos/casa-data/browse) repo. Note that `casaconfig` currently doesn't offer the capability of rollback to a specific casa-data version. To archive this, we are still relying on the git version control of `casa-data` repo.
+To streamline two typical use cases developers/testers usually encounter: Case 1, daily development and analysis with the latest `casa-data` version; Case 2: benchmarking tests or producing reported issues using a specific casa-data version, a recommended code snippet is provided below to customize the `casa-data` and extra [`pipeline-testadata`](https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline-testdata/browse) path for casa sessions from [`~/.casa/config`](https://casadocs.readthedocs.io/en/latest/api/casaconfig.html#config-py):
 
 ```python
 ###################################################################################################
@@ -181,7 +179,7 @@ measurespath_checklist = [
     '~/Workspace/local/nrao/casa_dist/casa-data',  # git-lfs clone
 ]
 
-# all user data paths to be appeneded
+# all user data paths to be appended
 datapath_list = ['~/Workspace/zfs/nrao/tests/pipeline-testdata']
 
 # note: if measurespath is not maintained by casaconfig (i.e. from git clone), auto_update will not
@@ -193,19 +191,45 @@ data_auto_update = True
 # Assign rundata/measurespath/datapath for casa6
 ###################################################################################################
 
-measurespath_checklist.insert(0, os.environ.get('CASADATA'))
-measurespath_checklist = [
-    os.path.abspath(os.path.expanduser(path)) for path in measurespath_checklist if isinstance(path, str)
-]
+if 'CASADATA' in os.environ:
+    measurespath_checklist = [os.environ.get('CASADATA')]
+else:
+    measurespath_checklist = [
+        os.path.abspath(os.path.expanduser(path)) for path in measurespath_checklist if isinstance(path, str)
+    ]
 datapath_list = [os.path.abspath(os.path.expanduser(path)) for path in datapath_list if isinstance(path, str)]
 
+measurespath = None
+datapath = []
 for path in measurespath_checklist:
     if os.path.isdir(os.path.join(path, 'geodetic')):
         rundata = measurespath = path
         datapath = [measurespath]
         break
 
+try:
+    import casaconfig
+except ImportError:
+    if measurespath is None:
+        print(
+            '!!! The value of rundata is not set and casatools can not find the expected data in datapath !!!'
+        )
+        print('!!! CASA6 can not continue. !!!')
+        os._exit(os.EX_CONFIG)
+
 datapath += [os.path.expanduser(path) for path in datapath_list if os.path.isdir(path)]
 
 ###################################################################################################
 ```
+
+The rationales of such a setup are as follows:
+
+For Case 1, a tester or developer might define a customized all-in-one discovery list suitable for different computing environments (e.g. nmpost vs. cvpost filesystems, NRAO computing nodes vs. work laptop) as a daily setup.
+For testing/benchmarking occasions, i.e. Case 2, one could also use an environment variable `CASADATA` to override the default setup from `~/.casa/config.py` and switch to a specific `casa-data` version checked out from the [`casa-data`](https://open-bitbucket.nrao.edu/projects/CASA/repos/casa-data/browse) repo.
+
+Note that `casaconfig` and the [`casa-data` Git repostory](https://open-bitbucket.nrao.edu/projects/CASA/repos/casa-data/browse) are two equivalent approaches managing the runtime data necessary for a CASA session. `casaconfig` was only introduced at CASA ver 6.6.4, offering Python API to fetch, auto-update, and examine `casa-data`.
+Meanwhile, the Git `casa-data` repo provide a manual "hands-on" way to manage the CASA external data.
+
+The CASA `measurespath`/`rundata` configuration values can be pointed at either a directory managed by casaconfig, or a `casa-data` repository local path. When `casaconfig` detects the path to be a directory structure managed by Git, `measure_auto_update` and `data_auto_update` will take no action as `casaconfig` is designed to only handle the directory structured initialized created by `casaconfig` itself.
+
+For testing cases where a specific casa-data is needed, because `casaconfig` currently doesn't offer the capability of rollback to a specific casa-data version, we would still rely on the Git version control of `casa-data` repo to achieve version management. Therefore, it's preferred that `measurespath` or `rundata` is set to a `casa-data` git repository for that instance. However, versions of certain data (e.g. geodetic measures) in such setup might be occasionally behind those offered from the `casaconfig` "auto-update" mechanism because the late can fetch data directly from an external provider (e.g. ASTRO FTP server).

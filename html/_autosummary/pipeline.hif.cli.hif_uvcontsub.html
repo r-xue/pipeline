@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.cli.hif_uvcontsub &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -121,35 +122,38 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hif.cli.hif_uvcontsub">
 <span class="sig-name descname"><span class="pre">hif_uvcontsub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitorder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultsList</span><span class="p"><span class="pre">[</span></span><span class="pre">Results</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_uvcontsub.html#hif_uvcontsub"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.cli.hif_uvcontsub" title="Link to this definition"></a></dt>
-<dd><p>Fit and subtract continuum from the data</p>
+<dd><p>Fit and subtract continuum from the data.</p>
 <p>hif_uvcontsub fits the continuum for the frequency ranges given in the cont.dat
 file, subtracts that fit from the uv data and generates a new set of MSes
 containing the continuum subtracted (i.e. line) data. The fit is attempted
 for all science targets and spws. If a fit is impossible, the corresponding
 data selection is not written to the output line MS.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
-<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
-‘’: use all MeasurementSets in the context</p>
-<p>Examples: ‘ngc5921.ms’, [‘ngc5921a.ms’, ngc5921b.ms’, ‘ngc5921c.ms’]</p>
-</li>
-<li><p><strong>field</strong> – The list of field names or field ids for which UV continuum fits are computed. Defaults to all fields.</p>
-<p>Examples: ‘3C279’, ‘3C279,M82’</p>
-</li>
-<li><p><strong>intent</strong> – A string containing a comma delimited list of intents against which the selected fields are matched.</p>
-<p>‘’: Defaults to all data with TARGET intent.</p>
-</li>
-<li><p><strong>spw</strong> – The list of spectral windows and channels for which uv continuum fits are computed.
-‘’, Defaults to all science spectral windows.</p>
-<p>Example: ‘11,13,15,17’</p>
-</li>
-<li><p><strong>fitorder</strong> – Polynomial order for the continuum fits per source and spw. Defaults to {} which means fit order 1 for all sources and
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> -- <p>The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the &lt;hifa,hifv&gt;_importdata task.
+'': use all MeasurementSets in the context</p>
+<p>Examples: <code class="docutils literal notranslate"><span class="pre">'ngc5921.ms'</span></code>, <code class="docutils literal notranslate"><span class="pre">['ngc5921a.ms',</span> <span class="pre">ngc5921b.ms',</span> <span class="pre">'ngc5921c.ms']</span></code></p>
+</p></li>
+<li><p><strong>field</strong> -- <p>The list of field names or field ids for which UV continuum fits are computed. Defaults to all fields.</p>
+<p>Examples: <code class="docutils literal notranslate"><span class="pre">'3C279'</span></code>, <code class="docutils literal notranslate"><span class="pre">'3C279,M82'</span></code></p>
+</p></li>
+<li><p><strong>intent</strong> -- <p>A string containing a comma delimited list of intents against which the selected fields are matched.</p>
+<p>'': Defaults to all data with TARGET intent.</p>
+</p></li>
+<li><p><strong>spw</strong> -- <p>The list of spectral windows and channels for which uv continuum fits are computed.
+'', Defaults to all science spectral windows.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">'11,13,15,17'</span></code></p>
+</p></li>
+<li><p><strong>fitorder</strong> -- <p>Polynomial order for the continuum fits per source and spw. Defaults to {} which means fit order 1 for all sources and
 spws. If an explicit dictionary is given then all unspecified
 selections still default to 1.</p>
-<p>Example: {‘3C279’: {‘15’: 1, ‘17’: 2}, ‘M82’: {‘13’: 2}}</p>
-</li>
-<li><p><strong>parallel</strong> – Execute using CASA HPC functionality, if available.</p></li>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">{'3C279':</span> <span class="pre">{'15':</span> <span class="pre">1,</span> <span class="pre">'17':</span> <span class="pre">2},</span> <span class="pre">'M82':</span> <span class="pre">{'13':</span> <span class="pre">2}}</span></code></p>
+</p></li>
+<li><p><strong>parallel</strong> -- <p>Process multiple MeasurementSets in parallel using the casampi parallelization framework.</p>
+<p>Options: <code class="docutils literal notranslate"><span class="pre">'automatic'</span></code>, <code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code>, <code class="docutils literal notranslate"><span class="pre">True</span></code>, <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code> (equivalent to <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -196,7 +200,7 @@ selections still default to 1.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

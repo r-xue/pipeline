@@ -12,7 +12,6 @@
    
       products_dir
       stage
-      vla_skip_mfs_and_cube_imaging
    
    
 

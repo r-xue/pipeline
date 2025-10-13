@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CalFrom &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
@@ -150,27 +151,36 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>CalFrom represents a calibration table and the CASA arguments that should
 be used when applying that calibration table.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Variables<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>CALTYPES</strong> – an enumeration of calibration table types identified by this code.</p></li>
-<li><p><strong>CALTYPE_TO_VISCAL</strong> – mapping of calibration type to caltable identifier as
-store in the table header.</p></li>
-<li><p><strong>VISCAL</strong> – mapping of calibration table header information to a description
-of that table type.</p></li>
-</ul>
-</dd>
-</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalFrom.CALTYPES">
+<span class="sig-name descname"><span class="pre">CALTYPES</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalFrom.CALTYPES" title="Link to this definition"></a></dt>
+<dd><p>an enumeration of calibration table types identified by this code.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalFrom.CALTYPE_TO_VISCAL">
+<span class="sig-name descname"><span class="pre">CALTYPE_TO_VISCAL</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalFrom.CALTYPE_TO_VISCAL" title="Link to this definition"></a></dt>
+<dd><p>mapping of calibration type to caltable identifier as
+store in the table header.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalFrom.VISCAL">
+<span class="sig-name descname"><span class="pre">VISCAL</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalFrom.VISCAL" title="Link to this definition"></a></dt>
+<dd><p>mapping of calibration table header information to a description
+of that table type.</p>
+</dd></dl>
+
 <p class="rubric">Attributes Summary</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalFrom.CALTYPES" title="pipeline.infrastructure.callibrary.CalFrom.CALTYPES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CALTYPES</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id0" title="pipeline.infrastructure.callibrary.CalFrom.CALTYPES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CALTYPES</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalFrom.CALTYPE_TO_VISCAL" title="pipeline.infrastructure.callibrary.CalFrom.CALTYPE_TO_VISCAL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CALTYPE_TO_VISCAL</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#id1" title="pipeline.infrastructure.callibrary.CalFrom.CALTYPE_TO_VISCAL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CALTYPE_TO_VISCAL</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalFrom.VISCAL" title="pipeline.infrastructure.callibrary.CalFrom.VISCAL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VISCAL</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#id2" title="pipeline.infrastructure.callibrary.CalFrom.VISCAL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VISCAL</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalFrom.caltype" title="pipeline.infrastructure.callibrary.CalFrom.caltype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">caltype</span></code></a></p></td>
@@ -203,18 +213,18 @@ of that table type.</p></li>
 </table>
 <p class="rubric">Attributes Documentation</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalFrom.CALTYPES">
-<span class="sig-name descname"><span class="pre">CALTYPES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'amp':</span> <span class="pre">13,</span> <span class="pre">'antpos':</span> <span class="pre">6,</span> <span class="pre">'bandpass':</span> <span class="pre">2,</span> <span class="pre">'finalcal':</span> <span class="pre">11,</span> <span class="pre">'gaincal':</span> <span class="pre">1,</span> <span class="pre">'gc':</span> <span class="pre">7,</span> <span class="pre">'kcross':</span> <span class="pre">17,</span> <span class="pre">'opac':</span> <span class="pre">8,</span> <span class="pre">'otf':</span> <span class="pre">18,</span> <span class="pre">'otfraster':</span> <span class="pre">15,</span> <span class="pre">'polarization':</span> <span class="pre">5,</span> <span class="pre">'ps':</span> <span class="pre">14,</span> <span class="pre">'rq':</span> <span class="pre">9,</span> <span class="pre">'swpow':</span> <span class="pre">10,</span> <span class="pre">'tecim':</span> <span class="pre">16,</span> <span class="pre">'tsys':</span> <span class="pre">3,</span> <span class="pre">'unknown':</span> <span class="pre">0,</span> <span class="pre">'uvcont':</span> <span class="pre">12,</span> <span class="pre">'wvr':</span> <span class="pre">4}</span></em><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalFrom.CALTYPES" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">CALTYPES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'amp':</span> <span class="pre">13,</span> <span class="pre">'antpos':</span> <span class="pre">6,</span> <span class="pre">'bandpass':</span> <span class="pre">2,</span> <span class="pre">'finalcal':</span> <span class="pre">11,</span> <span class="pre">'gaincal':</span> <span class="pre">1,</span> <span class="pre">'gc':</span> <span class="pre">7,</span> <span class="pre">'kcross':</span> <span class="pre">17,</span> <span class="pre">'opac':</span> <span class="pre">8,</span> <span class="pre">'otf':</span> <span class="pre">18,</span> <span class="pre">'otfraster':</span> <span class="pre">15,</span> <span class="pre">'polarization':</span> <span class="pre">5,</span> <span class="pre">'ps':</span> <span class="pre">14,</span> <span class="pre">'rq':</span> <span class="pre">9,</span> <span class="pre">'swpow':</span> <span class="pre">10,</span> <span class="pre">'tecim':</span> <span class="pre">16,</span> <span class="pre">'tsys':</span> <span class="pre">3,</span> <span class="pre">'unknown':</span> <span class="pre">0,</span> <span class="pre">'uvcont':</span> <span class="pre">12,</span> <span class="pre">'wvr':</span> <span class="pre">4}</span></em><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalFrom.CALTYPE_TO_VISCAL">
-<span class="sig-name descname"><span class="pre">CALTYPE_TO_VISCAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'antpos':</span> <span class="pre">('KANTPOS</span> <span class="pre">JONES',),</span> <span class="pre">'bandpass':</span> <span class="pre">('B</span> <span class="pre">JONES',</span> <span class="pre">'BPOLY'),</span> <span class="pre">'gaincal':</span> <span class="pre">('G</span> <span class="pre">JONES',</span> <span class="pre">'GSPLINE',</span> <span class="pre">'T</span> <span class="pre">JONES'),</span> <span class="pre">'otf':</span> <span class="pre">('SDSKY_OTF',),</span> <span class="pre">'otfraster':</span> <span class="pre">('SDSKY_RASTER',),</span> <span class="pre">'ps':</span> <span class="pre">('SDSKY_PS',),</span> <span class="pre">'tsys':</span> <span class="pre">('B</span> <span class="pre">TSYS',),</span> <span class="pre">'uvcont':</span> <span class="pre">('A</span> <span class="pre">MUELLER',)}</span></em><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalFrom.CALTYPE_TO_VISCAL" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">CALTYPE_TO_VISCAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'antpos':</span> <span class="pre">('KANTPOS</span> <span class="pre">JONES',),</span> <span class="pre">'bandpass':</span> <span class="pre">('B</span> <span class="pre">JONES',</span> <span class="pre">'BPOLY'),</span> <span class="pre">'gaincal':</span> <span class="pre">('G</span> <span class="pre">JONES',</span> <span class="pre">'GSPLINE',</span> <span class="pre">'T</span> <span class="pre">JONES'),</span> <span class="pre">'otf':</span> <span class="pre">('SDSKY_OTF',),</span> <span class="pre">'otfraster':</span> <span class="pre">('SDSKY_RASTER',),</span> <span class="pre">'ps':</span> <span class="pre">('SDSKY_PS',),</span> <span class="pre">'tsys':</span> <span class="pre">('B</span> <span class="pre">TSYS',),</span> <span class="pre">'uvcont':</span> <span class="pre">('A</span> <span class="pre">MUELLER',)}</span></em><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalFrom.VISCAL">
-<span class="sig-name descname"><span class="pre">VISCAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'A</span> <span class="pre">MUELLER':</span> <span class="pre">'A</span> <span class="pre">Mueller</span> <span class="pre">(baseline-based)',</span> <span class="pre">'B</span> <span class="pre">JONES':</span> <span class="pre">'B</span> <span class="pre">Jones</span> <span class="pre">(bandpass)',</span> <span class="pre">'B</span> <span class="pre">TSYS':</span> <span class="pre">'B</span> <span class="pre">TSYS</span> <span class="pre">(freq-dep</span> <span class="pre">Tsys)',</span> <span class="pre">'BPOLY':</span> <span class="pre">'B</span> <span class="pre">Jones</span> <span class="pre">Poly</span> <span class="pre">(bandpass)',</span> <span class="pre">'D</span> <span class="pre">JONES':</span> <span class="pre">'D</span> <span class="pre">Jones</span> <span class="pre">(instrumental</span> <span class="pre">polarization)',</span> <span class="pre">'DF</span> <span class="pre">JONES':</span> <span class="pre">'Df</span> <span class="pre">Jones</span> <span class="pre">(frequency-dependent</span> <span class="pre">instrumental</span> <span class="pre">polarization)',</span> <span class="pre">'DFGEN</span> <span class="pre">JONES':</span> <span class="pre">'Dfgen</span> <span class="pre">Jones</span> <span class="pre">(frequency-dependent</span> <span class="pre">instrumental</span> <span class="pre">polarization)',</span> <span class="pre">'DGEN</span> <span class="pre">JONES':</span> <span class="pre">'Dgen</span> <span class="pre">Jones</span> <span class="pre">(instrumental</span> <span class="pre">polarization)',</span> <span class="pre">'G</span> <span class="pre">JONES':</span> <span class="pre">'G</span> <span class="pre">Jones</span> <span class="pre">(electronic</span> <span class="pre">Gain)',</span> <span class="pre">'GLINXPH</span> <span class="pre">JONES':</span> <span class="pre">'GlinXph</span> <span class="pre">Jones</span> <span class="pre">(X-Y</span> <span class="pre">phase)',</span> <span class="pre">'GSPLINE':</span> <span class="pre">'G</span> <span class="pre">Jones</span> <span class="pre">SPLINE</span> <span class="pre">(elec.</span> <span class="pre">gain)',</span> <span class="pre">'J</span> <span class="pre">JONES':</span> <span class="pre">'J</span> <span class="pre">Jones</span> <span class="pre">(generic</span> <span class="pre">polarized</span> <span class="pre">gain)',</span> <span class="pre">'KANTPOS</span> <span class="pre">JONES':</span> <span class="pre">'KAntPos</span> <span class="pre">Jones</span> <span class="pre">(antenna</span> <span class="pre">position</span> <span class="pre">errors)',</span> <span class="pre">'M</span> <span class="pre">MUELLER':</span> <span class="pre">'M</span> <span class="pre">Mueller</span> <span class="pre">(baseline-based)',</span> <span class="pre">'MF</span> <span class="pre">MUELLER':</span> <span class="pre">'Mf</span> <span class="pre">Mueller</span> <span class="pre">(closure</span> <span class="pre">bandpass)',</span> <span class="pre">'P</span> <span class="pre">JONES':</span> <span class="pre">'P</span> <span class="pre">Jones</span> <span class="pre">(parallactic</span> <span class="pre">angle</span> <span class="pre">phase)',</span> <span class="pre">'T</span> <span class="pre">JONES':</span> <span class="pre">'T</span> <span class="pre">Jones</span> <span class="pre">(polarization-independent</span> <span class="pre">troposphere)',</span> <span class="pre">'TF</span> <span class="pre">JONES':</span> <span class="pre">'Tf</span> <span class="pre">Jones</span> <span class="pre">(frequency-dependent</span> <span class="pre">atmospheric</span> <span class="pre">complex</span> <span class="pre">gain)',</span> <span class="pre">'TFOPAC':</span> <span class="pre">'TfOpac</span> <span class="pre">(frequency-dependent</span> <span class="pre">opacity)',</span> <span class="pre">'TOPAC':</span> <span class="pre">'TOpac</span> <span class="pre">(Opacity</span> <span class="pre">corrections</span> <span class="pre">in</span> <span class="pre">amplitude)',</span> <span class="pre">'X</span> <span class="pre">JONES':</span> <span class="pre">'X</span> <span class="pre">Jones</span> <span class="pre">(antenna-based)',</span> <span class="pre">'X</span> <span class="pre">MUELLER':</span> <span class="pre">'X</span> <span class="pre">Mueller</span> <span class="pre">(baseline-based)',</span> <span class="pre">'XF</span> <span class="pre">JONES':</span> <span class="pre">'Xf</span> <span class="pre">Jones</span> <span class="pre">(antenna-based)'}</span></em><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalFrom.VISCAL" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">VISCAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'A</span> <span class="pre">MUELLER':</span> <span class="pre">'A</span> <span class="pre">Mueller</span> <span class="pre">(baseline-based)',</span> <span class="pre">'B</span> <span class="pre">JONES':</span> <span class="pre">'B</span> <span class="pre">Jones</span> <span class="pre">(bandpass)',</span> <span class="pre">'B</span> <span class="pre">TSYS':</span> <span class="pre">'B</span> <span class="pre">TSYS</span> <span class="pre">(freq-dep</span> <span class="pre">Tsys)',</span> <span class="pre">'BPOLY':</span> <span class="pre">'B</span> <span class="pre">Jones</span> <span class="pre">Poly</span> <span class="pre">(bandpass)',</span> <span class="pre">'D</span> <span class="pre">JONES':</span> <span class="pre">'D</span> <span class="pre">Jones</span> <span class="pre">(instrumental</span> <span class="pre">polarization)',</span> <span class="pre">'DF</span> <span class="pre">JONES':</span> <span class="pre">'Df</span> <span class="pre">Jones</span> <span class="pre">(frequency-dependent</span> <span class="pre">instrumental</span> <span class="pre">polarization)',</span> <span class="pre">'DFGEN</span> <span class="pre">JONES':</span> <span class="pre">'Dfgen</span> <span class="pre">Jones</span> <span class="pre">(frequency-dependent</span> <span class="pre">instrumental</span> <span class="pre">polarization)',</span> <span class="pre">'DGEN</span> <span class="pre">JONES':</span> <span class="pre">'Dgen</span> <span class="pre">Jones</span> <span class="pre">(instrumental</span> <span class="pre">polarization)',</span> <span class="pre">'G</span> <span class="pre">JONES':</span> <span class="pre">'G</span> <span class="pre">Jones</span> <span class="pre">(electronic</span> <span class="pre">Gain)',</span> <span class="pre">'GLINXPH</span> <span class="pre">JONES':</span> <span class="pre">'GlinXph</span> <span class="pre">Jones</span> <span class="pre">(X-Y</span> <span class="pre">phase)',</span> <span class="pre">'GSPLINE':</span> <span class="pre">'G</span> <span class="pre">Jones</span> <span class="pre">SPLINE</span> <span class="pre">(elec.</span> <span class="pre">gain)',</span> <span class="pre">'J</span> <span class="pre">JONES':</span> <span class="pre">'J</span> <span class="pre">Jones</span> <span class="pre">(generic</span> <span class="pre">polarized</span> <span class="pre">gain)',</span> <span class="pre">'KANTPOS</span> <span class="pre">JONES':</span> <span class="pre">'KAntPos</span> <span class="pre">Jones</span> <span class="pre">(antenna</span> <span class="pre">position</span> <span class="pre">errors)',</span> <span class="pre">'M</span> <span class="pre">MUELLER':</span> <span class="pre">'M</span> <span class="pre">Mueller</span> <span class="pre">(baseline-based)',</span> <span class="pre">'MF</span> <span class="pre">MUELLER':</span> <span class="pre">'Mf</span> <span class="pre">Mueller</span> <span class="pre">(closure</span> <span class="pre">bandpass)',</span> <span class="pre">'P</span> <span class="pre">JONES':</span> <span class="pre">'P</span> <span class="pre">Jones</span> <span class="pre">(parallactic</span> <span class="pre">angle</span> <span class="pre">phase)',</span> <span class="pre">'T</span> <span class="pre">JONES':</span> <span class="pre">'T</span> <span class="pre">Jones</span> <span class="pre">(polarization-independent</span> <span class="pre">troposphere)',</span> <span class="pre">'TF</span> <span class="pre">JONES':</span> <span class="pre">'Tf</span> <span class="pre">Jones</span> <span class="pre">(frequency-dependent</span> <span class="pre">atmospheric</span> <span class="pre">complex</span> <span class="pre">gain)',</span> <span class="pre">'TFOPAC':</span> <span class="pre">'TfOpac</span> <span class="pre">(frequency-dependent</span> <span class="pre">opacity)',</span> <span class="pre">'TOPAC':</span> <span class="pre">'TOpac</span> <span class="pre">(Opacity</span> <span class="pre">corrections</span> <span class="pre">in</span> <span class="pre">amplitude)',</span> <span class="pre">'X</span> <span class="pre">JONES':</span> <span class="pre">'X</span> <span class="pre">Jones</span> <span class="pre">(antenna-based)',</span> <span class="pre">'X</span> <span class="pre">MUELLER':</span> <span class="pre">'X</span> <span class="pre">Mueller</span> <span class="pre">(baseline-based)',</span> <span class="pre">'XF</span> <span class="pre">JONES':</span> <span class="pre">'Xf</span> <span class="pre">Jones</span> <span class="pre">(antenna-based)'}</span></em><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -262,7 +272,7 @@ of that table type.</p></li>
 header.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>viscal</strong> – VISCAL table identifier to convert to calibration table type.</p>
+<dd class="field-odd"><p><strong>viscal</strong> -- VISCAL table identifier to convert to calibration table type.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Type of calibration table.</p>
@@ -285,7 +295,7 @@ header.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

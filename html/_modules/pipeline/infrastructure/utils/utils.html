@@ -6,10 +6,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.infrastructure.utils.utils &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
@@ -19,11 +19,48 @@
     <link rel="shortcut icon" href="../../../../_static/favicon-16x16.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../../../../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+const load = async () => {
+    await mermaid.run();
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+    if(mermaids_to_add_zoom > 0) {
+        var svgs = d3.selectAll(".mermaid svg");
+        if(all_mermaids.length !== mermaids_processed.length) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else if(svgs.size() !== mermaids_to_add_zoom) {
+            // try again in a sec, wait for mermaids to load
+            setTimeout(load, 200);
+            return;
+        } else {
+            svgs.each(function() {
+                var svg = d3.select(this);
+                svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                var inner = svg.select("g");
+                var zoom = d3.zoom().on("zoom", function(event) {
+                    inner.attr("transform", event.transform);
+                });
+                svg.call(zoom);
+            });
+        }
+    }
+};
+
+window.addEventListener("load", load);
+</script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -54,7 +91,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -113,10 +151,9 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.infrastructure.utils.utils</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">The utils module contains general-purpose uncategorised utility functions and</span>
-<span class="sd">classes.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span></span><span class="sd">&quot;&quot;&quot;general-purpose uncategorised utility functions and classes.&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">bisect</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
@@ -125,8 +162,9 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">errno</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">fcntl</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Number</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
@@ -134,25 +172,63 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">string</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tarfile</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Iterable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Number</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span>
+                    <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span><span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlparse</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">casaplotms</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy.typing</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">npt</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span> <span class="n">mpihelpers</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.conversion</span><span class="w"> </span><span class="kn">import</span> <span class="n">dequote</span><span class="p">,</span> <span class="n">range_to_list</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.conversion</span><span class="w"> </span><span class="kn">import</span> <span class="n">commafy</span><span class="p">,</span> <span class="n">dequote</span><span class="p">,</span> <span class="n">range_to_list</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">MeasurementSet</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;find_ranges&#39;</span><span class="p">,</span> <span class="s1">&#39;dict_merge&#39;</span><span class="p">,</span> <span class="s1">&#39;are_equal&#39;</span><span class="p">,</span> <span class="s1">&#39;approx_equal&#39;</span><span class="p">,</span> <span class="s1">&#39;get_num_caltable_polarizations&#39;</span><span class="p">,</span> <span class="s1">&#39;fieldname_for_casa&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;flagged_intervals&#39;</span><span class="p">,</span> <span class="s1">&#39;get_field_identifiers&#39;</span><span class="p">,</span> <span class="s1">&#39;get_receiver_type_for_spws&#39;</span><span class="p">,</span> <span class="s1">&#39;get_spectralspec_to_spwid_map&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;imstat_items&#39;</span><span class="p">,</span> <span class="s1">&#39;get_stokes&#39;</span><span class="p">,</span> <span class="s1">&#39;get_taskhistory_fromimage&#39;</span><span class="p">,</span> <span class="s1">&#39;glob_ordered&#39;</span><span class="p">,</span> <span class="s1">&#39;deduplicate&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;get_casa_quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;get_si_prefix&#39;</span><span class="p">,</span> <span class="s1">&#39;absolute_path&#39;</span><span class="p">,</span> <span class="s1">&#39;relative_path&#39;</span><span class="p">,</span> <span class="s1">&#39;get_task_result_count&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;place_repr_source_first&#39;</span><span class="p">,</span> <span class="s1">&#39;shutdown_plotms&#39;</span><span class="p">,</span> <span class="s1">&#39;get_casa_session_details&#39;</span><span class="p">,</span> <span class="s1">&#39;get_obj_size&#39;</span><span class="p">,</span> <span class="s1">&#39;get_products_dir&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;export_weblog_as_tar&#39;</span><span class="p">,</span> <span class="s1">&#39;ensure_products_dir_exists&#39;</span><span class="p">,</span> <span class="s1">&#39;ignore_pointing&#39;</span><span class="p">,</span> <span class="s1">&#39;request_omp_threading&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;open_with_lock&#39;</span><span class="p">,</span> <span class="s1">&#39;nested_dict&#39;</span><span class="p">,</span> <span class="s1">&#39;string_to_val&#39;</span><span class="p">,</span> <span class="s1">&#39;remove_trailing_string&#39;</span><span class="p">,</span> <span class="s1">&#39;list_to_str&#39;</span><span class="p">,</span> <span class="s1">&#39;validate_url&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;absolute_path&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;approx_equal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;are_equal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;deduplicate&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;dict_merge&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ensure_products_dir_exists&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;export_weblog_as_tar&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;fieldname_clean&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;fieldname_for_casa&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;filter_intents_for_ms&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;find_ranges&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;flagged_intervals&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_casa_quantity&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_field_identifiers&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_obj_size&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_products_dir&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_receiver_type_for_spws&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_row_count&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_si_prefix&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_spectralspec_to_spwid_map&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_stokes&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_task_result_count&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_taskhistory_fromimage&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_valid_url&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;glob_ordered&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ignore_pointing&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;imstat_items&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;list_to_str&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;nested_dict&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;open_with_lock&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;place_repr_source_first&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;relative_path&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;remove_trailing_string&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;string_to_val&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;validate_url&#39;</span>
+<span class="p">]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">find_ranges</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -248,33 +324,6 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">lo</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">tol</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">hi</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">tol</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">get_num_caltable_polarizations</span><span class="p">(</span><span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Obtain number of polarisations from calibration table.</span>
-
-<span class="sd">    Seemingly the number of QA ID does not map directly to the number of</span>
-<span class="sd">    polarisations for the spw in the MS, but the number of polarisations for</span>
-<span class="sd">    the spw as held in the caltable.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">caltable</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
-        <span class="n">col_shapes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">tb</span><span class="o">.</span><span class="n">getcolshapestring</span><span class="p">(</span><span class="s1">&#39;CPARAM&#39;</span><span class="p">))</span>
-
-    <span class="c1"># get the number of pols stored in the caltable, checking that this</span>
-    <span class="c1"># is consistent across all rows</span>
-    <span class="n">fmt</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\[(?P&lt;num_pols&gt;\d+), (?P&lt;num_rows&gt;\d+)\]&#39;</span><span class="p">)</span>
-    <span class="n">col_pols</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">col_shapes</span><span class="p">:</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
-            <span class="n">col_pols</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;num_pols&#39;</span><span class="p">)))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Could not find shape of polarisation from </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">shape</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">col_pols</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Got </span><span class="si">%s</span><span class="s1"> polarisations from </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">col_pols</span><span class="p">),</span> <span class="n">col_shapes</span><span class="p">))</span>
-
-    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">col_pols</span><span class="o">.</span><span class="n">pop</span><span class="p">())</span>
-
-
 <span class="k">def</span><span class="w"> </span><span class="nf">flagged_intervals</span><span class="p">(</span><span class="n">vec</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Idendity isnads of ones in input array or list.</span>
 
@@ -332,6 +381,20 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">allowed</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span> <span class="o">+</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span> <span class="o">+</span> <span class="s1">&#39;+-&#39;</span>
     <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">c</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">allowed</span> <span class="k">else</span> <span class="s1">&#39;_&#39;</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">field</span><span class="p">])</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">filter_intents_for_ms</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">intents</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Filter string of comma-separated intents to keep only those that are present</span>
+<span class="sd">    in the given MS.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">intents</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">intents</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
+    <span class="n">removed_intents</span> <span class="o">=</span> <span class="n">intents</span> <span class="o">-</span> <span class="n">ms</span><span class="o">.</span><span class="n">intents</span>
+    <span class="k">if</span> <span class="n">removed_intents</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The following intents are not present in the MS </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2"> and will be skipped:&quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">commafy</span><span class="p">(</span><span class="n">removed_intents</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">intents</span><span class="o">.</span><span class="n">intersection_update</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">intents</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">intents</span><span class="p">))</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">get_field_accessor</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
@@ -593,54 +656,6 @@
     <span class="k">return</span> <span class="n">itemlist</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">shutdown_plotms</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Shutdown the existing plotms process in the current CASA session.</span>
-
-<span class="sd">    This utility function shuts down the persist plotms process in the current CASA session, so the next plotms call</span>
-<span class="sd">    can start from a new proc. It&#39;s implemented as a short-term workaround for two plotms behaviors due to the persistent</span>
-<span class="sd">    state of plotms once it&#39;s called in a CASA session.</span>
-<span class="sd">        1. a plotms process always uses the initial working directory to construct the output plot path when the</span>
-<span class="sd">           figure name is specified as a relative path (see CAS-13626), even after the working directory has changed</span>
-<span class="sd">           in the Python perspective.</span>
-<span class="sd">        2. a plotms process always uses the same casa logfile when it was started for its logging, even after</span>
-<span class="sd">           the casa log file location has been altered.</span>
-
-<span class="sd">    Note: This function follows the practice illustrated inside casaplotms.private.plotmstool.__stub_check()</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">plotmstool</span> <span class="o">=</span> <span class="n">casaplotms</span><span class="o">.</span><span class="n">plotmstool</span>
-
-    <span class="k">if</span> <span class="n">plotmstool</span><span class="o">.</span><span class="n">__proc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">plotmstool</span><span class="o">.</span><span class="n">__proc</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">plotmstool</span><span class="o">.</span><span class="n">__proc</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
-        <span class="n">plotmstool</span><span class="o">.</span><span class="n">__proc</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">plotmstool</span><span class="o">.</span><span class="n">__stub</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">plotmstool</span><span class="o">.</span><span class="n">__uri</span> <span class="o">=</span> <span class="kc">None</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">get_casa_session_details</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current CASA session details.</span>
-
-<span class="sd">    return a dictionary including the following keys:</span>
-<span class="sd">        casa_dir: the root directory of the monolithic CASA distribution.</span>
-<span class="sd">        omp_num_threads: the number of OpenMP threads in the current parallel region.</span>
-<span class="sd">        data_path: CASA data paths in-use.</span>
-<span class="sd">        numa_mem: memory properties from the NUMA software perspective.</span>
-<span class="sd">        numa_cpu: cpu properties from the NUMA software perspective.</span>
-<span class="sd">            The above CPU/mem properties might be different from the hardware specs obtained from</span>
-<span class="sd">            standard Python functions (e.g. os.cpu_count()) or pipeline.environment.</span>
-<span class="sd">            On the difference between the &quot;software&quot; and hardware nodes, see</span>
-<span class="sd">                https://www.kernel.org/doc/html/latest/vm/numa.html</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">casa_session_details</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">hostinfo</span><span class="p">()</span>
-    <span class="n">casa_session_details</span><span class="p">[</span><span class="s1">&#39;casa_dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">getrc</span><span class="p">()</span>
-    <span class="n">casa_session_details</span><span class="p">[</span><span class="s1">&#39;omp_num_threads&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">casalog</span><span class="o">.</span><span class="n">ompGetNumThreads</span><span class="p">()</span>
-    <span class="n">casa_session_details</span><span class="p">[</span><span class="s1">&#39;data_path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">defaultpath</span><span class="p">()</span>
-    <span class="n">casa_session_details</span><span class="p">[</span><span class="s1">&#39;numa_cpu&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">casa_session_details</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;cpus&#39;</span><span class="p">)</span>
-    <span class="n">casa_session_details</span><span class="p">[</span><span class="s1">&#39;numa_mem&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">casa_session_details</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;memory&#39;</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">casa_session_details</span>
-
-
 <span class="k">def</span><span class="w"> </span><span class="nf">get_taskhistory_fromimage</span><span class="p">(</span><span class="n">imagename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve past CASA/tclean() call parameters from the image history.</span>
 
@@ -676,37 +691,47 @@
     <span class="k">return</span> <span class="n">taskhistory_list</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">get_obj_size</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">serialize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_obj_size</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">serialize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate the size of a Python object.</span>
 
-<span class="sd">    If serialize=True, the size of a serialized object is returned. Note that this is NOT the</span>
-<span class="sd">    same as the object size in memory.</span>
+<span class="sd">    If serialize is True, returns the size of the serialized object. Note that this is NOT</span>
+<span class="sd">    the same as the object size in memory.</span>
 
-<span class="sd">    When serialize=False, the memory consumption of the object is returned via</span>
-<span class="sd">    the asizeof method of Pympler.:</span>
-<span class="sd">        pympler.asizeof.asizeof(obj) # https://pypi.org/project/Pympler</span>
-<span class="sd">    An alternative is the get_deep_size() function from objsize.</span>
-<span class="sd">        objsize.get_deep_size(obj)   # https://pypi.org/project/objsize</span>
+<span class="sd">    When serialize is False, returns the memory consumption of the object via the asizeof</span>
+<span class="sd">    method of Pympler (https://pypi.org/project/Pympler).</span>
+<span class="sd">    An alternative is the get_deep_size() function from objsize (https://pypi.org/project/objsize).</span>
+
+<span class="sd">    The serialization-based approach was a fallback solution for the issues described in PIPE-1698/PIPE-2877.</span>
+<span class="sd">    The `asize.py` bug described in PIPE-2877 remain unresolved as of Pympler ver 1.1.</span>
+
+<span class="sd">    See the GH issues for details and PIPE-1698 and PIPE-2877 for background:</span>
+<span class="sd">        https://github.com/pympler/pympler/issues/155</span>
+<span class="sd">        https://github.com/pympler/pympler/issues/151</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        obj: The Python object to measure.</span>
+<span class="sd">        serialize: If True, measure serialized size; if False, measure memory size using Pympler.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The size of the object in bytes.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        Exception: If serialize is False and Pympler is not installed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">if</span> <span class="n">serialize</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">pickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span><span class="w"> </span><span class="nn">pympler.asizeof</span><span class="w"> </span><span class="kn">import</span> <span class="n">asizeof</span>
-            <span class="c1"># PIPE-1698: a workaround for NumPy-related issues with the recent Pympler/asizeof versions</span>
-            <span class="c1"># see https://github.com/pympler/pympler/issues/155</span>
-            <span class="n">_</span> <span class="o">=</span> <span class="n">asizeof</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">())</span>
-        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Import error: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-                <span class="s2">&quot;Pympler/asizeof is not installed, which is required to run get_obj_size(obj, serialize=False).&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">pympler.asizeof</span><span class="w"> </span><span class="kn">import</span> <span class="n">asizeof</span>
         <span class="k">return</span> <span class="n">asizeof</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Pympler import failed: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">err</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span>
+            <span class="s1">&#39;Pympler is required for in-memory size calculation. Please install it with: pip install pympler&#39;</span>
+        <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">err</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">glob_ordered</span><span class="p">(</span><span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a sorted list of paths matching a pathname pattern.&quot;&quot;&quot;</span>
-
     <span class="n">path_list</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="s1">&#39;mtime&#39;</span><span class="p">:</span>
@@ -798,135 +823,88 @@
 
 
 <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">request_omp_threading</span><span class="p">(</span><span class="n">num_threads</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A context manager to override the session-wise OMP threading setting on CASA MPI client.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">open_with_lock</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">TextIO</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Open a file with an exclusive lock.</span>
 
-<span class="sd">    This function is intended to improve certain CASAtask/tool call performance on the MPI client by</span>
-<span class="sd">    temporarily turning on OpenMP threading while the MPI servers are idle. This feature will only</span>
-<span class="sd">    take effect under restricted circumstances to avoid competing with the MPI server processes from</span>
-<span class="sd">    the tier0 or tier1 parallelization.</span>
-
-<span class="sd">    This function can be used as both a decorator and context manager. For example:</span>
-
-<span class="sd">        @request_omp_threading(4)</span>
-<span class="sd">        def do_something():</span>
-<span class="sd">            ...</span>
-<span class="sd">        or,</span>
-<span class="sd">        with request_omp_threading(4):</span>
-<span class="sd">            immoments(..)</span>
-
-<span class="sd">    Note: </span>
-<span class="sd">    * Please use it with caution and examine the computing resource allocation circumstance</span>
-<span class="sd">    carefully at the execution point.</span>
-<span class="sd">    * The casalog.ompGet/SetNumThreads() API doesn&#39;t work as expected on macOS as of CASA ver6.6.1 although</span>
-<span class="sd">    runtime env var (i.e. OMP_NUM_THREADS) is respected. </span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">session_num_threads</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">casalog</span><span class="o">.</span><span class="n">ompGetNumThreads</span><span class="p">()</span>
-    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;session_num_threads = </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">session_num_threads</span><span class="p">))</span>
-    <span class="n">is_mpi_ready</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">is_mpi_ready</span><span class="p">()</span>  <span class="c1"># return True if MPI is ready and we are on the MPI client.</span>
-
-    <span class="n">num_threads_limits</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="c1"># this is generally inherited from cgroup, but might be sub-optimal (too large) for high core-count</span>
-    <span class="c1"># workstations when cgroup limit is not applied.</span>
-    <span class="n">casa_num_cpus</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">casalog</span><span class="o">.</span><span class="n">getNumCPUs</span><span class="p">()</span>
-    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;casalog.getNumCPUs() = </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">casa_num_cpus</span><span class="p">))</span>
-    <span class="n">num_threads_limits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">casa_num_cpus</span><span class="p">)</span>
-
-    <span class="c1"># check against MPI.UNIVERSE_SIZE, which is another way to limit the number of threads.</span>
-    <span class="c1"># see https://www.mpi-forum.org/docs/mpi-4.0/mpi40-report.pdf (Sec. 11.10.1, Universe Size)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">mpi4py</span><span class="w"> </span><span class="kn">import</span> <span class="n">MPI</span>
-        <span class="k">if</span> <span class="n">MPI</span><span class="o">.</span><span class="n">UNIVERSE_SIZE</span> <span class="o">!=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">KEYVAL_INVALID</span><span class="p">:</span>
-            <span class="n">universe_size</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="o">.</span><span class="n">Get_attr</span><span class="p">(</span><span class="n">MPI</span><span class="o">.</span><span class="n">UNIVERSE_SIZE</span><span class="p">)</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;MPI.UNIVERSE_SIZE = </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">universe_size</span><span class="p">))</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">universe_size</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">universe_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">num_threads_limits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">universe_size</span><span class="p">)</span>
-            <span class="n">world_size</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="o">.</span><span class="n">Get_size</span><span class="p">()</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;MPI.COMM_WORLD.Get_size() = </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">world_size</span><span class="p">))</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">world_size</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">world_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">num_threads_limits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">world_size</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-        <span class="k">pass</span>
-
-    <span class="n">max_num_threads</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">num_threads_limits</span><span class="p">)</span>
-
-    <span class="n">context_num_threads</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="n">is_mpi_ready</span> <span class="ow">and</span> <span class="n">session_num_threads</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">max_num_threads</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">num_threads</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">num_threads</span> <span class="o">&lt;=</span> <span class="n">max_num_threads</span><span class="p">:</span>
-                <span class="n">max_num_threads</span> <span class="o">=</span> <span class="n">num_threads</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s1">&#39;The requested num_threads (</span><span class="si">{</span><span class="n">num_threads</span><span class="si">}</span><span class="s1">) is larger than the optimal number of logical CPUs (</span><span class="si">{</span><span class="n">max_num_threads</span><span class="si">}</span><span class="s1">) assigned for this CASA session. &#39;</span><span class="p">)</span>
-
-        <span class="n">context_num_threads</span> <span class="o">=</span> <span class="n">max_num_threads</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">context_num_threads</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">casa_tools</span><span class="o">.</span><span class="n">casalog</span><span class="o">.</span><span class="n">ompSetNumThreads</span><span class="p">(</span><span class="n">context_num_threads</span><span class="p">)</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;adjust openmp threads to </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">context_num_threads</span><span class="p">))</span>
-        <span class="k">yield</span>
-    <span class="k">finally</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">context_num_threads</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">casa_tools</span><span class="o">.</span><span class="n">casalog</span><span class="o">.</span><span class="n">ompSetNumThreads</span><span class="p">(</span><span class="n">session_num_threads</span><span class="p">)</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;restore openmp threads to </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">session_num_threads</span><span class="p">))</span>
-
-
-<span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">open_with_lock</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Open file with a lock.</span>
-
-<span class="sd">    The file open context manager function will try to lock the file upon opening </span>
-<span class="sd">    so other processes using the same &quot;opener&quot; will wait for the file to unlock. </span>
-<span class="sd">    The applied lock will be released when leaving the context.</span>
-
-<span class="sd">    Notes: </span>
+<span class="sd">    This context manager attempts to acquire an exclusive lock on the file upon opening.</span>
+<span class="sd">    Other processes using `open_with_lock` will wait until the lock is automatically released</span>
+<span class="sd">    when exiting the context.</span>
 <span class="sd">    </span>
-<span class="sd">    all file open calls with `open_with_lock` will block other `open_with_lock` usages </span>
-<span class="sd">    (even from different processes/lustre-clients) from read/write until the lock is released.</span>
-<span class="sd">    However, this locking/blocking mechanism will not prevent the file access (potentially </span>
-<span class="sd">    causing IO error) from other file openers (e.g. the default open() function).</span>
-
-<span class="sd">    Because the Python/fcntl API depends on the underlying OS/storage implementation: </span>
-<span class="sd">        https://docs.python.org/3/library/fcntl.html</span>
-<span class="sd">    Not all OS/fsys is fully supported. For Lustre, it seems to depend on fsys mount `-o flock` </span>
-<span class="sd">    options, which is indeed used for cv/naasc/aoc lustre systems:</span>
-<span class="sd">        $ mount -l | grep lustre</span>
-<span class="sd">            192.168.1.30@o2ib:/aoclst03 on /.lustre/aoc type lustre (rw,flock,user_xattr,lazystatfs)</span>
-<span class="sd">    For NFS, please see additional notes in PIPE-2051.</span>
-
-<span class="sd">    For a practical test, try the code snippet below from different clients/processes to see </span>
-<span class="sd">    if the fnctl blocking mechanism can prevent non-exclusive access to a file.</span>
-<span class="sd">        import fcntl</span>
-<span class="sd">        fd=open(filename,&#39;w&#39;)</span>
-<span class="sd">        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)</span>
-
 <span class="sd">    Args:</span>
-<span class="sd">        filename (str): the file name</span>
-<span class="sd">        mode (str, optional): open mode. Defaults to &#39;r&#39;.</span>
+<span class="sd">        filename: Path to the file to open and lock.</span>
+<span class="sd">        mode: File open mode (e.g., &#39;rt&#39;, &#39;wt&#39;, &#39;a&#39;, &#39;rb&#39;).</span>
+<span class="sd">        *args: Additional positional arguments to the built-in `open()` function.</span>
+<span class="sd">        **kwargs: Additional keyword arguments to the built-in `open()` function.</span>
 
+<span class="sd">    Yields:</span>
+<span class="sd">        The opened file object with an exclusive lock acquired (if supported by the filesystem).</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        All file open calls with `open_with_lock` will block other `open_with_lock` usages</span>
+<span class="sd">        (even from different processes/Lustre clients) from read/write until the lock is</span>
+<span class="sd">        released. However, this locking/blocking mechanism does not prevent file access</span>
+<span class="sd">        (which could potentially cause IO errors) from other file openers (e.g., the</span>
+<span class="sd">        built-in `open()` function).</span>
+
+<span class="sd">        **Filesystem Support:**</span>
+<span class="sd">        The Python `fcntl` API&#39;s behavior depends on the underlying OS/storage</span>
+<span class="sd">        implementation: https://docs.python.org/3/library/fcntl.html. Not all</span>
+<span class="sd">        OS/file systems fully support file locking.        </span>
+<span class="sd">        - **Lustre**: Requires mount option `-o flock`. Check with: `mount -l | grep lustre`</span>
+<span class="sd">            e.g. : `192.168.1.30@o2ib:/aoclst03 on /.lustre/aoc type lustre (rw,flock,user_xattr,lazystatfs)`</span>
+<span class="sd">        - **NFS**: Support varies by configuration (see PIPE-2051 for details)</span>
+<span class="sd">        - **Local filesystems**: Generally well-supported on Unix-like systems        </span>
+
+<span class="sd">        **Testing Lock Behavior:**</span>
+<span class="sd">        To verify exclusive locking works on your system, run this from multiple processes:</span>
+
+<span class="sd">        ```python</span>
+<span class="sd">        import fcntl</span>
+<span class="sd">        with open(filename, &#39;w&#39;) as fd:</span>
+<span class="sd">            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)  # Should block/fail on second process</span>
+<span class="sd">        ```</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">needs_truncate</span> <span class="o">=</span> <span class="s1">&#39;w&#39;</span> <span class="ow">in</span> <span class="n">mode</span>
+    <span class="n">is_binary</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span> <span class="ow">in</span> <span class="n">mode</span>
+    <span class="n">base_mode</span> <span class="o">=</span> <span class="s1">&#39;r+b&#39;</span> <span class="k">if</span> <span class="n">is_binary</span> <span class="k">else</span> <span class="s1">&#39;r+&#39;</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">fd</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">base_mode</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+        <span class="n">base_mode</span> <span class="o">=</span> <span class="s1">&#39;w+b&#39;</span> <span class="k">if</span> <span class="n">is_binary</span> <span class="k">else</span> <span class="s1">&#39;w+&#39;</span>
+        <span class="n">fd</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">base_mode</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;acquiring lock on </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Attempting to acquire lock on </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="n">lock_acquired</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">try</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Acquire an exclusive lock on the file</span>
             <span class="n">fcntl</span><span class="o">.</span><span class="n">flock</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">fcntl</span><span class="o">.</span><span class="n">LOCK_EX</span><span class="p">)</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;acquired lock on </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;failed to acquire file lock due to the filesystem limitation,&#39;</span>
-                        <span class="s1">&#39;which might cause racing conditions if multiple processes access </span><span class="si">%s</span><span class="s1"> simultaneously.&#39;</span><span class="p">,</span>
-                        <span class="n">filename</span><span class="p">)</span>
+            <span class="n">lock_acquired</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Successfully acquired lock on </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Failed to acquire file lock for </span><span class="si">%s</span><span class="s1"> due to filesystem limitation, &#39;</span>
+                        <span class="s1">&#39;which might cause racing conditions if multiple processes access &#39;</span>
+                        <span class="s1">&#39;the file simultaneously: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">ex</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">lock_acquired</span> <span class="ow">and</span> <span class="n">needs_truncate</span><span class="p">:</span>
+            <span class="n">fd</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">fd</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Truncated file after acquiring lock: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
 
         <span class="k">yield</span> <span class="n">fd</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">fcntl</span><span class="o">.</span><span class="n">flock</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">fcntl</span><span class="o">.</span><span class="n">LOCK_UN</span><span class="p">)</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;released lock on </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;failed to acquire file lock due to the filesystem limitation,&#39;</span>
-                        <span class="s1">&#39;which might cause racing conditions if multiple processes access </span><span class="si">%s</span><span class="s1"> simultaneously.&#39;</span><span class="p">,</span>
-                        <span class="n">filename</span><span class="p">)</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">lock_acquired</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">fcntl</span><span class="o">.</span><span class="n">flock</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">fcntl</span><span class="o">.</span><span class="n">LOCK_UN</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Successfully released lock on </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Failed to release file lock for </span><span class="si">%s</span><span class="s1"> due to filesystem limitation, &#39;</span>
+                            <span class="s1">&#39;which might cause racing conditions if multiple processes access &#39;</span>
+                            <span class="s1">&#39;the file simultaneously: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">ex</span><span class="p">)</span>
+        <span class="n">fd</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
 
 <span class="k">def</span><span class="w"> </span><span class="nf">ensure_products_dir_exists</span><span class="p">(</span><span class="n">products_dir</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
@@ -1011,6 +989,228 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">s</span>
 
+<span class="n">ConditionType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">function_io_dumper</span><span class="p">(</span><span class="n">to_pickle</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">to_json</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">json_max_depth</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                       <span class="n">condition</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ConditionType</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dump arguments and return-objects of a function implement the decolator into pickle files and/or JSON(-like) file.</span>
+<span class="sd">    </span>
+<span class="sd">    This function is a helper method for development. It should not be used in production codes.</span>
+<span class="sd">    </span>
+<span class="sd">    Usage:</span>
+<span class="sd">    @function_io_dumper()</span>
+<span class="sd">    def foobar(self, bar):</span>
+<span class="sd">        ...</span>
+<span class="sd">        return ret</span>
+<span class="sd">    </span>
+<span class="sd">    When foobar() is executed, the decolator makes a directory &#39;foobar.[timestamp]&#39;, then it dumps</span>
+<span class="sd">    all objects of arguments and return values of foobar() as pickle files and|or JSON files.</span>
+<span class="sd">    We can get the same behavior of foobar() with the pickles as when they were dumped:</span>
+<span class="sd">    </span>
+<span class="sd">    with open(&#39;bar.pickle&#39;, &#39;rb&#39;) as f:</span>
+<span class="sd">        bar = pickle.load(f)</span>
+<span class="sd">    foobar(bar)</span>
+<span class="sd">    </span>
+<span class="sd">    or, understand input/result of the function by JSON-like output. To avoid recursive or tremendous output,</span>
+<span class="sd">    it sets max depth of recursive (default to 5).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        to_pickle (bool, optional): Dump pickle or not. Defaults to True.</span>
+<span class="sd">        to_json (bool, optional): Dump JSON-like file or not. Defaults to False.</span>
+<span class="sd">        json_max_depth (int, optional): Set depth of dumping JSON tree. Defaults to 5.</span>
+<span class="sd">        condition (ConditionType): Set callable function user defined, or conditions of</span>
+<span class="sd">            argument dumping. Defaults to None.</span>
+<span class="sd">            ex1) Callable condition</span>
+<span class="sd">                condition = my_condition</span>
+<span class="sd">                And, a function my_condition() must be defined as:</span>
+<span class="sd">                    def my_condition(kwargs) -&gt; bool:</span>
+<span class="sd">                        # Serialize only if the keyword argument &#39;spw&#39; is 10 or True.</span>
+<span class="sd">                        return kwargs.get(&quot;spw&quot;) in (10, True)</span>
+<span class="sd">            ex2) Dict condition</span>
+<span class="sd">                condition = {&#39;self&#39;, {&#39;spw&#39;:10}}</span>
+<span class="sd">        timestamp (bool, optional): Add timestamp to the names of output directories. If not and the same function was</span>
+<span class="sd">            executed multiple times, the output directory will be overwritten. Defaults to True.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            
+            <span class="c1"># create timestamp</span>
+            <span class="n">epoch_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">epoch_time</span><span class="p">)</span>
+            <span class="n">ns</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">epoch_time</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">epoch_time</span><span class="p">))</span> <span class="o">*</span> <span class="mi">1_000_000_000</span><span class="p">)</span>
+            <span class="n">_timestamp</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;%Y%m%d-%H%M%S.</span><span class="si">{</span><span class="n">ns</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            
+            <span class="c1"># make signatures of args</span>
+            <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+            <span class="n">bound_args</span> <span class="o">=</span> <span class="n">sig</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">bound_args</span><span class="o">.</span><span class="n">apply_defaults</span><span class="p">()</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">condition</span><span class="p">):</span>
+                    <span class="n">exec_dumpargs</span> <span class="o">=</span> <span class="n">condition</span><span class="p">(</span><span class="n">bound_args</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">exec_dumpargs</span> <span class="o">=</span> <span class="n">_eval_condition</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">bound_args</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error evaluating condition callable: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="n">exec_dumpargs</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="n">extention</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">if</span> <span class="n">timestamp</span><span class="p">:</span>
+                <span class="n">extention</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;.</span><span class="si">{</span><span class="n">_timestamp</span><span class="si">}</span><span class="s1">&#39;</span>
+                
+            <span class="n">output_folder_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}{</span><span class="n">extention</span><span class="si">}</span><span class="s2">&quot;</span>
+
+            <span class="n">json_dict</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">to_json</span><span class="p">:</span>
+                <span class="n">json_dict</span> <span class="o">=</span> <span class="n">object_to_dict</span><span class="p">(</span><span class="n">bound_args</span><span class="o">.</span><span class="n">arguments</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">json_max_depth</span><span class="p">)</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_folder_name</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Function &#39;</span><span class="si">{</span><span class="n">_get_full_method_path</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39; called at </span><span class="si">{</span><span class="n">_timestamp</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">arg_name</span><span class="p">,</span> <span class="n">arg_value</span> <span class="ow">in</span> <span class="n">bound_args</span><span class="o">.</span><span class="n">arguments</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">_dump</span><span class="p">(</span><span class="n">arg_value</span><span class="p">,</span> <span class="n">output_folder_name</span><span class="p">,</span> <span class="n">arg_name</span><span class="p">,</span> <span class="n">dump_pickle</span><span class="o">=</span><span class="n">to_pickle</span><span class="p">,</span> <span class="n">dump_json</span><span class="o">=</span><span class="n">to_json</span><span class="p">,</span> <span class="n">json_dict</span><span class="o">=</span><span class="n">json_dict</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="n">pickle</span><span class="o">.</span><span class="n">PicklingError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">exec_dumpargs</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Contained unpickleable object: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">exec_dumpargs</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Exception occurred: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">exec_dumpargs</span> <span class="ow">and</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">output_folder_name</span><span class="si">}</span><span class="s1">.result&#39;</span>
+                    <span class="k">if</span> <span class="n">to_json</span><span class="p">:</span>
+                        <span class="n">json_dict</span> <span class="o">=</span> <span class="n">object_to_dict</span><span class="p">({</span><span class="n">_name</span><span class="p">:</span><span class="n">result</span><span class="p">},</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">json_max_depth</span><span class="p">)</span>
+                    <span class="n">_dump</span><span class="p">({</span><span class="n">_name</span><span class="p">:</span><span class="n">result</span><span class="p">},</span> <span class="n">output_folder_name</span><span class="p">,</span> <span class="n">_name</span><span class="p">,</span> <span class="n">dump_pickle</span><span class="o">=</span><span class="n">to_pickle</span><span class="p">,</span> <span class="n">dump_json</span><span class="o">=</span><span class="n">to_json</span><span class="p">,</span> <span class="n">json_dict</span><span class="o">=</span><span class="n">json_dict</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">pickle</span><span class="o">.</span><span class="n">PicklingError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Contained unpickleable object: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Exception occurred: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">wrapper</span>
+    <span class="k">return</span> <span class="n">decorator</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_dump</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dump_pickle</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dump_json</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">json_dict</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">dump_pickle</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="o">+</span><span class="s1">&#39;.pickle&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dump_json</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="o">+</span><span class="s1">&#39;.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_dict</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_full_method_path</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="n">module_name</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__module__</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s1">&#39;__qualname__&#39;</span><span class="p">):</span>
+        <span class="n">qualname</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">qualname</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">module_name</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">qualname</span><span class="si">}</span><span class="s1">&#39;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_eval_condition</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="c1"># {&#39;self&#39;, {&#39;spw&#39;:10}}, need unittest</span>
+    <span class="k">if</span> <span class="n">condition</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;condition: </span><span class="si">{</span><span class="n">condition</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">condition</span><span class="p">:</span>
+        <span class="n">arg</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">arg</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">propname</span><span class="p">,</span> <span class="n">propval</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">arg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">propname</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                    <span class="n">obj</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">getattr</span><span class="p">(</span><span class="n">propname</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">obj</span> <span class="o">==</span> <span class="n">propval</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">object_to_dict</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">current_depth</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">current_depth</span> <span class="o">&gt;</span> <span class="n">max_depth</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;__dict__&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">object_to_dict</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">,</span> <span class="n">current_depth</span><span class="o">=</span><span class="n">current_depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s1">&#39;__dict__&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">object_to_dict</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">,</span> <span class="n">current_depth</span><span class="o">=</span><span class="n">current_depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;__dict__&#39;</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;__dict__&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">):</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">object_to_dict</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">,</span> <span class="n">current_depth</span><span class="o">=</span><span class="n">current_depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">obj</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">decorate_io_dumper</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">functions</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="p">[],</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply function_io_dumper dynamically.</span>
+
+<span class="sd">    Usage:</span>
+<span class="sd">    ...</span>
+<span class="sd">    import pipeline.infrastructure.utils.utils as ut</span>
+<span class="sd">    </span>
+<span class="sd">    ut.decorate_io_dumper(SDInspection, [&#39;execute&#39;])</span>
+<span class="sd">    </span>
+<span class="sd">    ...</span>
+<span class="sd">    hsd_importdata()  # -&gt; dump args of SDInspection.execute()</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cls (object): the class has functions to be decorated.</span>
+<span class="sd">        functions (List[str], optional): Function names to decodate. If not specified or</span>
+<span class="sd">            set empty list, then all functions of the class are decorated. Defaults to [].</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">functions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">_functions</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="n">inspect</span><span class="o">.</span><span class="n">isfunction</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_functions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">_f</span> <span class="ow">in</span> <span class="n">functions</span><span class="p">:</span>
+            <span class="n">_c</span> <span class="o">=</span> <span class="n">_str_to_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_f</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_c</span><span class="p">:</span>
+                <span class="n">_functions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_c</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_func</span> <span class="ow">in</span> <span class="n">_functions</span><span class="p">:</span>
+        <span class="n">_name</span> <span class="o">=</span> <span class="n">_func</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="n">decorated_func</span> <span class="o">=</span> <span class="n">function_io_dumper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)(</span><span class="n">_func</span><span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_name</span><span class="p">,</span> <span class="n">decorated_func</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_str_to_func</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_name</span><span class="p">):</span>
+        <span class="n">_c</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">_c</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">_c</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
 
 <div class="viewcode-block" id="list_to_str">
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.domain.datatable.list_to_str.html#pipeline.domain.datatable.list_to_str">[docs]</a>
@@ -1067,6 +1267,66 @@
     <span class="n">parsed</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="nb">all</span><span class="p">([</span><span class="n">parsed</span><span class="o">.</span><span class="n">scheme</span><span class="p">,</span> <span class="n">parsed</span><span class="o">.</span><span class="n">netloc</span><span class="p">])</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_row_count</span><span class="p">(</span><span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">taql</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the number of rows in the specified table that match the given TaQL query.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        table_name: Path to the CASA table.</span>
+<span class="sd">        taql: The TaQL query string used to filter the table rows.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The number of rows matching the query, or 0 if an error occurs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">nrows</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
+            <span class="n">subtb</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">taql</span><span class="p">)</span>
+            <span class="n">nrows</span> <span class="o">=</span> <span class="n">subtb</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span>
+            <span class="n">subtb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+        <span class="n">nrows</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">nrows</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_valid_url</span><span class="p">(</span><span class="n">env_var</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Fetches one or more URLs from an environment variable. If a comma-delimited string is provided,</span>
+<span class="sd">    it is split and each URL is validated. Falls back to the default if any URL is invalid or not set.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        env_var: The name of the environment variable.</span>
+<span class="sd">        default: A single default URL or a list of default URLs.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A valid URL string or a list of valid URL strings.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">envvar_value</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">env_var</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">envvar_value</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable </span><span class="si">%s</span><span class="s1"> not defined. Switching to default </span><span class="si">%s</span><span class="s1">.&#39;</span><span class="p">,</span> <span class="n">env_var</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">default</span>
+
+    <span class="n">urls</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">envvar_value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">urls</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Environment variable </span><span class="si">%s</span><span class="s1"> is empty after parsing. Switching to default </span><span class="si">%s</span><span class="s1">.&#39;</span><span class="p">,</span> <span class="n">env_var</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">default</span>
+
+    <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">validate_url</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Environment variable </span><span class="si">%s</span><span class="s1"> URL was set to </span><span class="si">%s</span><span class="s1"> but is misconfigured.&#39;</span><span class="p">,</span> <span class="n">env_var</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Switching to default </span><span class="si">%s</span><span class="s1">.&#39;</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">default</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable </span><span class="si">%s</span><span class="s1"> set to URL </span><span class="si">%s</span><span class="s1">.&#39;</span><span class="p">,</span> <span class="n">env_var</span><span class="p">,</span> <span class="n">urls</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">urls</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable </span><span class="si">%s</span><span class="s1"> set to list of URLs </span><span class="si">%s</span><span class="s1">.&#39;</span><span class="p">,</span> <span class="n">env_var</span><span class="p">,</span> <span class="n">urls</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">urls</span>
 </pre></div>
 
            </div>
@@ -1076,7 +1336,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.fluxmeasurement.Decimal &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
@@ -167,8 +168,8 @@
 <dt class="sig sig-object py" id="pipeline.domain.fluxmeasurement.Decimal">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Decimal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.domain.fluxmeasurement.Decimal" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Construct a new Decimal object. ‘value’ can be an integer, string, tuple,
-or another Decimal object. If no value is given, return Decimal(‘0’). The
+<p>Construct a new Decimal object. 'value' can be an integer, string, tuple,
+or another Decimal object. If no value is given, return Decimal('0'). The
 context does not affect the conversion and is only passed to determine if
 the InvalidOperation trap is active.</p>
 <p class="rubric">Methods</p>
@@ -390,10 +391,10 @@ argument unchanged.</p>
 <dt class="sig sig-object py" id="pipeline.domain.fluxmeasurement.Decimal.compare">
 <span class="sig-name descname"><span class="pre">compare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.domain.fluxmeasurement.Decimal.compare" title="Link to this definition"></a></dt>
 <dd><p>Compare self to other.  Return a decimal value:</p>
-<p>a or b is a NaN ==&gt; Decimal(‘NaN’)
-a &lt; b           ==&gt; Decimal(‘-1’)
-a == b          ==&gt; Decimal(‘0’)
-a &gt; b           ==&gt; Decimal(‘1’)</p>
+<p>a or b is a NaN ==&gt; Decimal('NaN')
+a &lt; b           ==&gt; Decimal('-1')
+a == b          ==&gt; Decimal('0')
+a &gt; b           ==&gt; Decimal('1')</p>
 </dd></dl>
 
 <dl class="py method">
@@ -415,9 +416,9 @@ in this ordering:</p>
 </pre></div>
 </div>
 <p>Quiet and signaling NaNs are also included in the total ordering. The result
-of this function is Decimal(‘0’) if both operands have the same representation,
-Decimal(‘-1’) if the first operand is lower in the total order than the second,
-and Decimal(‘1’) if the first operand is higher in the total order than the
+of this function is Decimal('0') if both operands have the same representation,
+Decimal('-1') if the first operand is lower in the total order than the second,
+and Decimal('1') if the first operand is higher in the total order than the
 second operand. See the specification for details of the total order.</p>
 <p>This operation is unaffected by context and is quiet: no flags are changed
 and no rounding is performed. As an exception, the C version may raise
@@ -493,7 +494,7 @@ intermediate product self*other.</p>
 <span class="sig-name descname"><span class="pre">from_float</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.domain.fluxmeasurement.Decimal.from_float" title="Link to this definition"></a></dt>
 <dd><p>Class method that converts a float to a decimal number, exactly.
 Since 0.1 is not exactly representable in binary floating point,
-Decimal.from_float(0.1) is not the same as Decimal(‘0.1’).</p>
+Decimal.from_float(0.1) is not the same as Decimal('0.1').</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Decimal</span><span class="o">.</span><span class="n">from_float</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
 <span class="go">Decimal(&#39;0.1000000000000000055511151231257827021181583404541015625&#39;)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">Decimal</span><span class="o">.</span><span class="n">from_float</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">))</span>
@@ -595,15 +596,15 @@ ROUND_HALF_EVEN mode and the result is correctly rounded.</p>
 <dt class="sig sig-object py" id="pipeline.domain.fluxmeasurement.Decimal.logb">
 <span class="sig-name descname"><span class="pre">logb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.domain.fluxmeasurement.Decimal.logb" title="Link to this definition"></a></dt>
 <dd><p>For a non-zero number, return the adjusted exponent of the operand as a
-Decimal instance.  If the operand is a zero, then Decimal(‘-Infinity’) is
+Decimal instance.  If the operand is a zero, then Decimal('-Infinity') is
 returned and the DivisionByZero condition is raised. If the operand is
-an infinity then Decimal(‘Infinity’) is returned.</p>
+an infinity then Decimal('Infinity') is returned.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.fluxmeasurement.Decimal.logical_and">
 <span class="sig-name descname"><span class="pre">logical_and</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.domain.fluxmeasurement.Decimal.logical_and" title="Link to this definition"></a></dt>
-<dd><p>Return the digit-wise ‘and’ of the two (logical) operands.</p>
+<dd><p>Return the digit-wise 'and' of the two (logical) operands.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -615,13 +616,13 @@ an infinity then Decimal(‘Infinity’) is returned.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.fluxmeasurement.Decimal.logical_or">
 <span class="sig-name descname"><span class="pre">logical_or</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.domain.fluxmeasurement.Decimal.logical_or" title="Link to this definition"></a></dt>
-<dd><p>Return the digit-wise ‘or’ of the two (logical) operands.</p>
+<dd><p>Return the digit-wise 'or' of the two (logical) operands.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.fluxmeasurement.Decimal.logical_xor">
 <span class="sig-name descname"><span class="pre">logical_xor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.domain.fluxmeasurement.Decimal.logical_xor" title="Link to this definition"></a></dt>
-<dd><p>Return the digit-wise ‘exclusive or’ of the two (logical) operands.</p>
+<dd><p>Return the digit-wise 'exclusive or' of the two (logical) operands.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -681,10 +682,10 @@ to be the same as the sign of the second operand.</p>
 <dt class="sig sig-object py" id="pipeline.domain.fluxmeasurement.Decimal.normalize">
 <span class="sig-name descname"><span class="pre">normalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.domain.fluxmeasurement.Decimal.normalize" title="Link to this definition"></a></dt>
 <dd><p>Normalize the number by stripping the rightmost trailing zeros and
-converting any result equal to Decimal(‘0’) to Decimal(‘0e0’).  Used
+converting any result equal to Decimal('0') to Decimal('0e0').  Used
 for producing canonical values for members of an equivalence class.
-For example, Decimal(‘32.100’) and Decimal(‘0.321000e+2’) both normalize
-to the equivalent value Decimal(‘32.1’).</p>
+For example, Decimal('32.100') and Decimal('0.321000e+2') both normalize
+to the equivalent value Decimal('32.1').</p>
 </dd></dl>
 
 <dl class="py method">
@@ -694,16 +695,16 @@ to the equivalent value Decimal(‘32.1’).</p>
 is one of the following ten strings:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>‘-Infinity’, indicating that the operand is negative infinity.</p></li>
-<li><p>‘-Normal’, indicating that the operand is a negative normal number.</p></li>
-<li><p>‘-Subnormal’, indicating that the operand is negative and subnormal.</p></li>
-<li><p>‘-Zero’, indicating that the operand is a negative zero.</p></li>
-<li><p>‘+Zero’, indicating that the operand is a positive zero.</p></li>
-<li><p>‘+Subnormal’, indicating that the operand is positive and subnormal.</p></li>
-<li><p>‘+Normal’, indicating that the operand is a positive normal number.</p></li>
-<li><p>‘+Infinity’, indicating that the operand is positive infinity.</p></li>
-<li><p>‘NaN’, indicating that the operand is a quiet NaN (Not a Number).</p></li>
-<li><p>‘sNaN’, indicating that the operand is a signaling NaN.</p></li>
+<li><p>'-Infinity', indicating that the operand is negative infinity.</p></li>
+<li><p>'-Normal', indicating that the operand is a negative normal number.</p></li>
+<li><p>'-Subnormal', indicating that the operand is negative and subnormal.</p></li>
+<li><p>'-Zero', indicating that the operand is a negative zero.</p></li>
+<li><p>'+Zero', indicating that the operand is a positive zero.</p></li>
+<li><p>'+Subnormal', indicating that the operand is positive and subnormal.</p></li>
+<li><p>'+Normal', indicating that the operand is a positive normal number.</p></li>
+<li><p>'+Infinity', indicating that the operand is positive infinity.</p></li>
+<li><p>'NaN', indicating that the operand is a quiet NaN (Not a Number).</p></li>
+<li><p>'sNaN', indicating that the operand is a signaling NaN.</p></li>
 </ul>
 </div></blockquote>
 </dd></dl>
@@ -726,7 +727,7 @@ result is subnormal and inexact.</p>
 <p>If the exponent of the second operand is larger than that of the first, then
 rounding may be necessary. In this case, the rounding mode is determined by the
 rounding argument if given, else by the given context argument; if neither
-argument is given, the rounding mode of the current thread’s context is used.</p>
+argument is given, the rounding mode of the current thread's context is used.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -801,7 +802,7 @@ correctly rounded using the ROUND_HALF_EVEN rounding mode.</p>
 <span class="sig-name descname"><span class="pre">to_eng_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.domain.fluxmeasurement.Decimal.to_eng_string" title="Link to this definition"></a></dt>
 <dd><p>Convert to an engineering-type string.  Engineering notation has an exponent
 which is a multiple of 3, so there are up to 3 digits left of the decimal
-place. For example, Decimal(‘123E+1’) is converted to Decimal(‘1.23E+3’).</p>
+place. For example, Decimal('123E+1') is converted to Decimal('1.23E+3').</p>
 <p>The value of context.capitals determines whether the exponent sign is lower
 or upper case. Otherwise, the context does not affect the operation.</p>
 </dd></dl>
@@ -846,7 +847,7 @@ of the current default context is used.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

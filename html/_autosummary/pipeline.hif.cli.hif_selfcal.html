@@ -7,10 +7,10 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.cli.hif_selfcal &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -57,7 +57,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../releases.html">Past Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
@@ -120,74 +121,73 @@
 <h1>pipeline.hif.cli.hif_selfcal<a class="headerlink" href="#pipeline-hif-cli-hif-selfcal" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hif.cli.hif_selfcal">
-<span class="sig-name descname"><span class="pre">hif_selfcal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refantignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restore_resources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_solints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amplitude_selfcal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaincal_minsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minsnr_to_proceed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_beam_thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_cal_mode_default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_thresh_scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dividing_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_all_spws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inf_EB_gaincal_combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Results</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_selfcal.html#hif_selfcal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.cli.hif_selfcal" title="Link to this definition"></a></dt>
-<dd><p>Determine and apply self-calibration with the science target data</p>
-<p>Determine and apply self-calibration with the science target data</p>
-<dl class="field-list">
+<span class="sig-name descname"><span class="pre">hif_selfcal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_imsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_cell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restore_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refantignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restore_resources</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_solints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amplitude_selfcal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gaincal_minsnr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minsnr_to_proceed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_beam_thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_cal_mode_default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_thresh_scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dividing_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_all_spws</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inf_EB_gaincal_combine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usermask</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">usermodel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_wproject</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Results</span></span></span><a class="reference internal" href="../_modules/pipeline/hif/cli/hif_selfcal.html#hif_selfcal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.cli.hif_selfcal" title="Link to this definition"></a></dt>
+<dd><p>Determine and apply self-calibration with the science target data.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
-<li><p><strong>vis</strong> – The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.</p>
-<p>default = “”: use all MeasurementSets in the context</p>
-</li>
-<li><p><strong>field</strong> – Select fields to image. Use field name(s) NOT id(s). Mosaics are assumed to have common source / field names.  If intent is
-specified only fields with data matching the intent will be
-selected. The fields will be selected from MeasurementSets in
-“vis”.</p>
-<p>default= “” Fields matching intent, one image per target source.</p>
-</li>
-<li><p><strong>spw</strong> – Select spectral windows to image. “”: Images will be computed for all science spectral windows.</p></li>
-<li><p><strong>contfile</strong> – Name of file to specify line-free frequency ranges for selfcal continuum imaging.</p>
-<p>default=”cont.dat”</p>
-</li>
-<li><p><strong>apply</strong> – Apply final selfcal solutions back to the input MeasurementSets. default = True</p></li>
-<li><p><strong>recal</strong> – Always re-do self-calibration even solutions/caltables are found in the Pipeline context or json restore file.</p>
-<p>default = False</p>
-</li>
-<li><p><strong>refantignore</strong> – string list to be ignored as reference antennas. example:  refantignore=’ea02,ea03’</p></li>
-<li><p><strong>restore_resources</strong> – Path to the restore resources from a standard run of hif_selfcal. hif_selfcal will automatically do an exhaustive search to lookup/extract/verify
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vis</strong> -- The list of input MeasurementSets. Defaults to the list of MeasurementSets defined in the pipeline context.</p></li>
+<li><p><strong>field</strong> -- Select field(s) for self-calibration. Use field name(s) NOT id(s). Mosaics are assumed to have common source/field names.</p></li>
+<li><p><strong>spw</strong> -- Select spectral windows for self-calibration.</p></li>
+<li><p><strong>contfile</strong> -- Name of file to specify line-free frequency ranges for selfcal continuum imaging. Defaults to <code class="docutils literal notranslate"><span class="pre">'cont.dat'</span></code>.</p></li>
+<li><p><strong>hm_imsize</strong> -- self-calibration imaging dimension in pixels, or PB level for single fields.</p></li>
+<li><p><strong>hm_cell</strong> -- self-calibration imaging cell size.</p></li>
+<li><p><strong>apply</strong> -- Apply final selfcal solutions back to the input MeasurementSets. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>recal</strong> -- <p>Always re-do self-calibration even solutions/caltables are found in the Pipeline context or json restore file.
+Defaults to <cite>False</cite>.</p>
+<p>Note that the selfcal solutions might not be applied if self-calibrated data labeled by the pipeline Datatypes already
+exists. See <code class="docutils literal notranslate"><span class="pre">overwrite</span></code> below.</p>
+</p></li>
+<li><p><strong>restore_only</strong> -- Only attempt to apply pre-existing selfcal calibration tables and would not run
+the self-calibration sequence if their records (.selfcal.json, gaintables) are not present.
+Defaults to <cite>False</cite>. <code class="docutils literal notranslate"><span class="pre">restore_only</span></code> will take precedence over <code class="docutils literal notranslate"><span class="pre">recal</span></code>.</p></li>
+<li><p><strong>overwrite</strong> -- Allow overwriting pre-existing self-calibrated data of applicable field/spw labeled by DataType.
+Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>refantignore</strong> -- <p>Antennas to be ignored as reference antennas. Defaults to <code class="docutils literal notranslate"><span class="pre">''</span></code>. Examples:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">refantignore='ea02,ea03'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">refantignore={'ms1.ms':'ea02,ea03','ms2.ms':</span> <span class="pre">'ea03'}</span></code>, specified at the per-ms level.</p></li>
+</ul>
+</p></li>
+<li><p><strong>restore_resources</strong> -- Path to the restore resources from a standard run of hif_selfcal. hif_selfcal will automatically
+do an exhaustive search to lookup/extract/verify
 the selfcal restore resources, i.e., selfcal.json and all selfcal-caltable referred
-in selfcal.json, starting from working/, to products/ and rawdata/.
+in selfcal.json, starting from <em>working/</em>, to <em>products/</em> and <em>rawdata/</em>.
 If restore_resources is specified, this file path will be evaluated first
 before the pre-defined exhaustive search list.
-The value can be the file path of <a href="#id1"><span class="problematic" id="id2">*</span></a>auxproducts.tgz file or <a href="#id3"><span class="problematic" id="id4">*</span></a>selfcal.json file.</p></li>
-<li><p><strong>n_solints</strong> – number of solution intervals to attempt for self-calibration. default: 4</p></li>
-<li><p><strong>amplitude_selfcal</strong> – Attempt amplitude self-calibration following phase-only self-calibration; if median time between scans of a given target is &lt; 150s,
-solution intervals of 300s and inf will be attempted, otherwise just
-inf will be attempted.</p>
-<p>default = False</p>
-</li>
-<li><p><strong>gaincal_minsnr</strong> – Minimum S/N for a solution to not be flagged by gaincal. default = 2.0</p></li>
-<li><p><strong>minsnr_to_proceed</strong> – Minimum estimated S/N on a per antenna basis to attempt self-calibration of a source.</p>
-<p>default = 3.0</p>
-</li>
-<li><p><strong>delta_beam_thresh</strong> – Allowed fractional change in beam size for selfcalibration to accept results of a solution interval.</p>
-<p>default = 0.05</p>
-</li>
-<li><p><strong>apply_cal_mode_default</strong> – Apply mode to use for applycal task during self-calibration; same options as applycal.</p>
-<p>default = ‘calflag’</p>
-</li>
-<li><p><strong>rel_thresh_scaling</strong> – Scaling type to determine how clean thresholds per solution interval should be determined going from the starting
-clean threshold to 3.0 * RMS for the final solution interval.</p>
-<p>default=’log10’</p>
-<p>options: ‘linear’, ‘log10’, or ‘loge’ (natural log)</p>
-</li>
-<li><p><strong>dividing_factor</strong> – Scaling factor to determine clean threshold for first self-calibration solution interval.
-Equivalent to (Peak S/N / dividing_factor) <a href="#id5"><span class="problematic" id="id6">*</span></a>RMS = First clean threshold;
-however, if (Peak S/N / dividing_factor) <a href="#id7"><span class="problematic" id="id8">*</span></a>RMS is &lt; 5.0; a value of 5.0
-is used for the first clean threshold.</p>
-<p>default = 40 for &lt; 8 GHz; 15 for &gt; 8 GHz</p>
-</li>
-<li><p><strong>check_all_spws</strong> – If True, the S/N of mfs images created on a per-spectral-window basis will be compared at the initial stages final self-calibration.</p>
-<p>default=False</p>
-</li>
-<li><p><strong>inf_EB_gaincal_combine</strong> – change gain solution combination parameters for the inf_EB solution interval. if True, the gaincal combine parameter will be set to ‘scan,spw’; if False,
-the gaincal combine parameter will be set to ‘scan’.</p>
-<p>default=False</p>
-</li>
-<li><p><strong>parallel</strong> – Use MPI cluster where possible.</p>
-<p>default=’automatic’</p>
-<p>options: ‘automatic’, ‘true’, ‘false’, True, False</p>
-</li>
+The value can be the file path of <em>*auxproducts.tgz</em> file or <em>*selfcal.json</em> file.</p></li>
+<li><p><strong>n_solints</strong> -- number of solution intervals to attempt for self-calibration. Defaults to <code class="docutils literal notranslate"><span class="pre">4</span></code>.</p></li>
+<li><p><strong>amplitude_selfcal</strong> -- Attempt amplitude self-calibration following phase-only self-calibration; if median time
+between scans of a given target is &lt; 150s, solution intervals of <code class="docutils literal notranslate"><span class="pre">300s</span></code> and <code class="docutils literal notranslate"><span class="pre">inf</span></code> will be attempted,
+otherwise just <code class="docutils literal notranslate"><span class="pre">inf</span></code> will be attempted. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>gaincal_minsnr</strong> -- Minimum S/N for a solution to not be flagged by gaincal. Defaults to <code class="docutils literal notranslate"><span class="pre">2.0</span></code>.</p></li>
+<li><p><strong>minsnr_to_proceed</strong> -- Minimum estimated S/N on a per antenna basis to attempt self-calibration of a source.
+Defaults to <code class="docutils literal notranslate"><span class="pre">3.0</span></code>.</p></li>
+<li><p><strong>delta_beam_thresh</strong> -- Allowed fractional change in beam size for selfcalibration to accept results of a solution interval.
+Defaults to <code class="docutils literal notranslate"><span class="pre">0.05</span></code>.</p></li>
+<li><p><strong>apply_cal_mode_default</strong> -- Apply mode to use for applycal task during self-calibration; same options as applycal.
+Defaults to <code class="docutils literal notranslate"><span class="pre">'calflag'</span></code>.</p></li>
+<li><p><strong>rel_thresh_scaling</strong> -- Scaling type to determine how clean thresholds per solution interval should be determined going
+from the starting clean threshold to 3.0 * RMS for the final solution interval. Defaults to <code class="docutils literal notranslate"><span class="pre">'log10'</span></code>.
+Available options: <code class="docutils literal notranslate"><span class="pre">'linear'</span></code>, <code class="docutils literal notranslate"><span class="pre">'log10'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'loge'</span></code> (natural log)</p></li>
+<li><p><strong>dividing_factor</strong> -- Scaling factor to determine clean threshold for first self-calibration solution interval.
+Equivalent to (Peak S/N / dividing_factor) * RMS as the first clean threshold;
+however, if  <cite>(Peak S/N / dividing_factor) &lt; 5.0</cite>;
+a value of 5.0 is used for the first clean threshold.
+Defaults to <code class="docutils literal notranslate"><span class="pre">40</span></code> for &lt; 8 GHz or <code class="docutils literal notranslate"><span class="pre">15</span></code> for &gt; 8 GHz.</p></li>
+<li><p><strong>check_all_spws</strong> -- If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the S/N of mfs images created on a per-spectral-window basis will be compared at the
+initial stages final self-calibration. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>inf_EB_gaincal_combine</strong> -- change gain solution combination parameters for the inf_EB solution interval. if <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+the gaincal combine parameter will be set to <code class="docutils literal notranslate"><span class="pre">'scan,spw'</span></code>; if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the gaincal combine parameter will
+be set to <code class="docutils literal notranslate"><span class="pre">'scan'</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>usermask</strong> -- User mask to be used for self-calibration imaging. (not implemented)</p></li>
+<li><p><strong>usermodel</strong> -- User model to be used for self-calibration imaging. (not implemented)</p></li>
+<li><p><strong>allow_wproject</strong> -- Allow the wproject heuristics for self-calibration imaging. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>parallel</strong> -- <p>Process multiple MeasurementSets in parallel using the casampi parallelization framework, and use CASA/tclean
+parallel imaging, when possible.</p>
+<p>Options: <code class="docutils literal notranslate"><span class="pre">'automatic'</span></code>, <code class="docutils literal notranslate"><span class="pre">'true'</span></code>, <code class="docutils literal notranslate"><span class="pre">'false'</span></code>, <code class="docutils literal notranslate"><span class="pre">True</span></code>, <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code> (equivalent to <code class="docutils literal notranslate"><span class="pre">`'automatic'</span></code>)</p>
+</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -228,7 +228,7 @@ the gaincal combine parameter will be set to ‘scan’.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
