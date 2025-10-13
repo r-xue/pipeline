@@ -228,7 +228,7 @@ class GenerateRecipeCommand(distutils.cmd.Command):
 
     def run(self):
         # run recipe_converter.py with subprocess module
-        command_string = 'python3 ./recipe_converter.py -a'
+        command_string = f'{sys.executable} ./recipe_converter.py -a'
         command = shlex.split(command_string)
         build_path = os.path.dirname(os.path.realpath(__file__))
         recipe_dir = os.path.join(build_path, 'pipeline', 'recipes')
