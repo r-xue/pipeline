@@ -1,0 +1,38 @@
+=============================
+Contributors and Affiliations
+=============================
+
+*(from commit history since 2013)*
+
+- Ajay Vibhute (NRAO, 2024-2025)
+- Akira Yoshino (NAOJ, 2017-current)
+- Brian Kent (NRAO, 2013-2023)
+- Darrell Schiebel (NRAO, 2016)
+- Dirk Muders (MPIfR, 2013-current)
+- Eugene Vasiliev (UKATC, 2023)
+- Federico Montesino Pouzols (ESO, 2019-current)
+- George Kosugi (NAOJ, 2014-2018)
+- Hajime Ezawa (NAOJ, 2019-current)
+- Harold Francke Henriquez (ALMA, 2024-current)
+- Ihor Ihnatiev (NAOJ, 2024-current)
+- Ilsang Yoon (NRAO, 2025-current)
+- John Lightfoot (UKATC, 2013-2015)
+- Jose Sabater (UKATC, 2020-2022)
+- Joseph Masters (NRAO, 2016-2023)
+- Kana Sugimoto (NAOJ, 2013-current)
+- Kazuhiko Shimada (NAOJ, 2021-2025)
+- Kristin Berry (NRAO, 2021-current)
+- Lindsey Davis (MRAO, 2013-2018)
+- Luke Maud (ESO, 2023-current)
+- László Szűcs (NRAO, 2020-2021)
+- Remy Indebetouw (NRAO, 2013-current)
+- Rui Xue (NRAO, 2020-current)
+- Shawn Booth (NRAO, 2024-current)
+- Shinnosuke Kawakami (NAOJ, 2013-2014)
+- Stewart Williams (UKATC, 2013-2015)
+- Takeshi Nakazato (NAOJ, 2013-current)
+- Todd Hunter (NRAO, 2013-current)
+- Vincent Geers (UKATC, 2015-2025)
+- Ville Suoranta (NRAO, 2017)
+- Wes Young (NRAO, 2013)
+- Yohei Hayashi (NAOJ, 2019-2021)
