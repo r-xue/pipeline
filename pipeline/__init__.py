@@ -11,6 +11,7 @@ import threading
 import webbrowser
 from typing import Any, Optional
 
+import matplotlib
 from astropy.utils.iers import conf as iers_conf
 
 # import `pipeline.config` early to allow modifications of
@@ -339,6 +340,11 @@ if config.config['pipeconfig'].get('xvfb', False) or not infrastructure.daskhelp
         if os.getenv("XVFB_RUN") != "1":
             # Avoid starting another Xvfb instance if already running under xvfb-run
             start_xvfb()
+
+# Use the `agg` backend for any process.
+# Tkinter (which Matplotlib often uses by default) are not thread-safe.
+matplotlib.use('agg')
+LOG.debug('Matplotlib backend set to %s', matplotlib.get_backend())
 
 if config.config['pipeconfig']['dask']['autostart'] and infrastructure.daskhelpers.is_daskclient_allowed():
     # Automatically start a Dask cluster if allowed.
