@@ -246,7 +246,7 @@ class SerialTsysFlagContamination(StandardTaskTemplate):
         result.qascores_from_task.extend(preflight_qascores)
         if preflight_qascores:
             result.task_incomplete_reason = f"Preconditions for line contamination heuristic not met. See QA scores for details."
-            result.metric_order = "manual"  # required for renderer
+            result.metric_order = ["manual"]  # required for renderer
             return result
 
         # step 2: run extern heuristic
@@ -266,7 +266,7 @@ class SerialTsysFlagContamination(StandardTaskTemplate):
                 )
                 result.qascores_from_task.append(s)
                 result.task_incomplete_reason = reason
-                result.metric_order = "manual"  # required for renderer
+                result.metric_order = ["manual"]  # required for renderer
 
                 LOG.exception(reason, exc_info=e)
                 return result
