@@ -537,7 +537,7 @@ class ImportData(basetask.StandardTaskTemplate):
                                      createmms=createmms)
         try:
             self._executor.execute(task)
-            utils.clear_time_cache(vis)
+            utils.clear_time_cache()
         except Exception as ee:
             LOG.warning(f"Caught importasdm exception: {ee}")
 

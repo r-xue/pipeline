@@ -1291,30 +1291,38 @@ def get_valid_url(env_var: str, default: str | list[str]) -> str | list[str]:
     return urls
 
 
-def clear_time_cache(ms_path: str):
+def clear_time_cache():
     """Clear the time cache in the CASA measures tool.
 
     See details in PIPE-2891/PIPEREQ-402/CAS-13831.
     A workaround solution provided by T. Nakazato (NAOJ), 2025-10-16.
     """
-    # get timestamp 1 day before the observation
-    # use the MS name from importasdm output.
-    qa = casa_tools.quanta
-    with casa_tools.MSMDReader(ms_path) as msmd:
-        time_range = msmd.timerangeforobs(0)
+    # Define constants for the dummy conversion.
+    DUMMY_EPOCH_MJD = 0.0
+    DUMMY_AZIMUTH_DEG = 0.0
+    DUMMY_ELEVATION_DEG = 90.0
+    OBSERVATORY = 'ALMA'
 
-    with contextlib.closing(casa_tools.measures) as me:
-        time_ref = time_range['begin']['refer']
-        start_time = time_range['begin']['m0']
-        one_day_before = me.epoch(rf=time_ref, v0=qa.sub(start_time, qa.quantity(1, 'd')))
+    with contextlib.closing(casa_tools.measures) as measures_tool:
+        quanta_tool = casa_tools.quanta
 
-        # use observatory position for ALMA, the actual position is not important
-        # as we are only interested in clearing the time cache.
-        pos = me.observatory('ALMA')
+        # Set a time frame well before any real observation.
+        epoch = measures_tool.epoch(rf='UTC', v0=quanta_tool.quantity(DUMMY_EPOCH_MJD, 'd'))
+        measures_tool.doframe(epoch)
 
-        # perform dummy direction frame conversion
-        azel = me.direction(rf='AZELGEO', v0=qa.quantity(0, 'deg'), v1=qa.quantity(90, 'deg'))
-        me.doframe(one_day_before)
-        me.doframe(pos)
-        _ = me.measure(rf='ICRS', v=azel)
-        LOG.debug('Cleared time cache for %s', os.path.basename(ms_path))
+        # Set an observatory position frame.
+        position = measures_tool.observatory(OBSERVATORY)
+        measures_tool.doframe(position)
+
+        # Perform the dummy direction conversion that triggers the cache clear.
+        # The resulting warning about IERS data is expected and safely ignored.
+        dummy_direction = measures_tool.direction(
+            rf='AZELGEO',
+            v0=quanta_tool.quantity(DUMMY_AZIMUTH_DEG, 'deg'),
+            v1=quanta_tool.quantity(DUMMY_ELEVATION_DEG, 'deg'),
+        )
+
+        with logging.log_filtermsg('outside the range of the IERS (Earth axis data) table'):
+            _ = measures_tool.measure(rf='ICRS', v=dummy_direction)
+
+    LOG.debug('Successfully cleared the CASA measures tool time cache.')
