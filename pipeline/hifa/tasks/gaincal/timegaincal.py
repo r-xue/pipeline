@@ -349,7 +349,11 @@ class SerialTimeGaincal(gtypegaincal.GTypeGaincal):
         # Determine non-phase calibrator fields, to be added to gaincal solve
         # for plotting purposes.
         np_intents = ','.join(set(inputs.intent.split(',')) - {p_intent})
-        np_fields = ','.join([f.name for f in inputs.ms.get_fields(intent=np_intents)])
+        np_fields = ','.join([f.name for f in inputs.ms.get_fields(intent=np_intents) if 'PHASE' not in f.intents])
+        # PIPE-2571: If there are no non-phase fields, then no need to proceed.
+        if not np_fields:
+            LOG.debug('Non non-phase fields for intents=%s selection on %s', np_intents, inputs.ms)
+            return calapp_list
 
         # Determine which SpWs to solve for, which SpWs the solutions should
         # apply to, and whether to override refantmode. By default, use all
@@ -499,8 +503,16 @@ class SerialTimeGaincal(gtypegaincal.GTypeGaincal):
             if apply_to_spw:
                 calapp_overrides['spw'] = apply_to_spw
             intents_for_calapp = utils.filter_intents_for_ms(inputs.ms, 'CHECK,TARGET')
-            new_calapps.append(callibrary.copy_calapplication(
-                result.final[0], intent=intents_for_calapp, field=apply_to_field, gainfield=field, **calapp_overrides))
+            if intents_for_calapp:
+                new_calapps.append(
+                    callibrary.copy_calapplication(
+                        result.final[0],
+                        intent=intents_for_calapp,
+                        field=apply_to_field,
+                        gainfield=field,
+                        **calapp_overrides,
+                    )
+                )
 
         return new_calapps
 
@@ -919,11 +931,15 @@ class SerialTimeGaincal(gtypegaincal.GTypeGaincal):
 
         # Create CalApplication for the TARGET/CHECK sources, where present in
         # the MS (PIPE-2268).
-        calapp_overrides = {'intent': utils.filter_intents_for_ms(inputs.ms, "CHECK,TARGET"),
-                            'gainfield': ''}
-        if not calapp_overrides['intent']:
+        calapp_overrides = {'intent': utils.filter_intents_for_ms(inputs.ms, 'CHECK,TARGET'), 'gainfield': ''}
+        fields_targets = inputs.ms.get_fields(intent=calapp_overrides['intent'])
+        fields_not_targets = inputs.ms.get_fields(
+            intent='BANDPASS,PHASE,AMPLITUDE,POLARIZATION,DIFFGAINREF,DIFFGAINSRC'
+        )
+        fields_checktarget_only = set(fields_targets) - set(fields_not_targets)
+        if not calapp_overrides['intent'] or not fields_checktarget_only:
             LOG.debug(
-                'No CHECK or TARGET intent found in %s and we will skip the creation of CalApp for them.',
+                'No CHECK-only or TARGET-only intent scans found in %s and we will skip the creation of CalApp for intents="CHECK,TARGET".',
                 inputs.ms.name,
             )
             return [cal_calapp]
