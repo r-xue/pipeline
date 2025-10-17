@@ -2179,6 +2179,7 @@ def compute_az_el_to_field(field, epoch, observatory):
     myel = myazel['m1']['value']
     myaz = (myaz * 180 / np.pi) % 360
     myel *= 180 / np.pi
+    me.done()
 
     return [myaz, myel]
 

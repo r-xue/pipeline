@@ -162,4 +162,6 @@ def direction_convert(direction:Direction, mepoch:Epoch, mposition:Position, out
     me.doframe(mepoch)
     me.doframe(mposition)
     out_direction = me.measure(direction, outframe)
+    me.done()
+
     return out_direction['m0'], out_direction['m1']

@@ -25,8 +25,7 @@ LOG = infrastructure.logging.get_logger(__name__)
 
 
 class MeasurementSet(object):
-    """
-    A class to store logical representation of a MeasurementSet (MS).
+    """A class to store logical representation of a MeasurementSet (MS).
 
     The MeasurementSet class represents the metadata and relationships held in a
     measurement set on disk, acting as an in-memory representation so that
@@ -1634,6 +1633,7 @@ class MeasurementSet(object):
         myel = myazel['m1']['value']
         myaz = (myaz * 180 / np.pi) % 360
         myel *= 180 / np.pi
+        me.done()
 
         return [myaz, myel]
 

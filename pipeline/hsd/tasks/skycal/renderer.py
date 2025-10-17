@@ -303,5 +303,6 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
         coord = '{ref} {ra} {dec}'.format(ref=outref,
                                           ra=qa.formxxx(converted['m0'], format=xformat),
                                           dec=qa.formxxx(converted['m1'], format='dms'))
+        me.done()
 
         return coord

@@ -139,7 +139,6 @@ def plot_suntrack(vis='', figfile='', elvstime=True):
 
 
 def get_az_el_from_body(body, observatory='ALMA', mjdsec=0.0):
-
     me = casa_tools.measures
     qa = casa_tools.quanta
 
@@ -148,5 +147,6 @@ def get_az_el_from_body(body, observatory='ALMA', mjdsec=0.0):
     azel = me.measure(me.direction(body), 'AZELGEO')
     az = qa.convert(azel['m0'], 'deg')['value']
     el = qa.convert(azel['m1'], 'deg')['value']
+    me.done()
 
     return (az, el)

@@ -48,6 +48,7 @@ __all__ = [
     'absolute_path',
     'approx_equal',
     'are_equal',
+    'clear_time_cache',
     'deduplicate',
     'dict_merge',
     'ensure_products_dir_exists',
@@ -1288,3 +1289,32 @@ def get_valid_url(env_var: str, default: str | list[str]) -> str | list[str]:
 
     LOG.info('Environment variable %s set to list of URLs %s.', env_var, urls)
     return urls
+
+
+def clear_time_cache(ms_path: str):
+    """Clear the time cache in the CASA measures tool.
+
+    See details in PIPE-2891/PIPEREQ-402/CAS-13831.
+    A workaround solution provided by T. Nakazato (NAOJ), 2025-10-16.
+    """
+    # get timestamp 1 day before the observation
+    # use the MS name from importasdm output.
+    qa = casa_tools.quanta
+    with casa_tools.MSMDReader(ms_path) as msmd:
+        time_range = msmd.timerangeforobs(0)
+
+    with contextlib.closing(casa_tools.measures) as me:
+        time_ref = time_range['begin']['refer']
+        start_time = time_range['begin']['m0']
+        one_day_before = me.epoch(rf=time_ref, v0=qa.sub(start_time, qa.quantity(1, 'd')))
+
+        # use observatory position for ALMA, the actual position is not important
+        # as we are only interested in clearing the time cache.
+        pos = me.observatory('ALMA')
+
+        # perform dummy direction frame conversion
+        azel = me.direction(rf='AZELGEO', v0=qa.quantity(0, 'deg'), v1=qa.quantity(90, 'deg'))
+        me.doframe(one_day_before)
+        me.doframe(pos)
+        _ = me.measure(rf='ICRS', v=azel)
+        LOG.debug('Cleared time cache for %s', os.path.basename(ms_path))
