@@ -12,21 +12,23 @@ import operator
 import os
 import pydoc
 import re
+import shelve
 import shutil
 import sys
+from contextlib import closing
 from typing import TYPE_CHECKING, Any
 
 import mako
 import numpy as np
 import pkg_resources
-from contextlib import closing
 
 import pipeline
 import pipeline.infrastructure.pipelineqa as pqa
 from pipeline import environment, infrastructure
 from pipeline.domain import measures
-from pipeline.infrastructure import basetask, casa_tasks, casa_tools, eventbus, \
-    logging, mpihelpers, task_registry, utils
+from pipeline.infrastructure import (basetask, casa_tasks, casa_tools,
+                                     eventbus, logging, mpihelpers,
+                                     task_registry, utils)
 from pipeline.infrastructure.displays import pointing, summary
 from pipeline.infrastructure.renderer import qaadapter, templates, weblog
 
@@ -1776,9 +1778,12 @@ class T2_4MDetailsRenderer(object):
                 LOG.trace('Writing %s output to %s', renderer.__class__.__name__,
                           path)
 
+                fileobj.write(renderer.render(context, result))
 
+                event = eventbus.WebLogStageRenderingCompleteEvent(
+                    context_name=context.name, stage_number=result.stage_number
+                    )
                 eventbus.send_message(event)
-
             except:
                 LOG.warning('Template generation failed for %s', cls.__name__)
                 LOG.debug(mako.exceptions.text_error_template().render())
