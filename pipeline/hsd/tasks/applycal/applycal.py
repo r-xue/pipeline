@@ -1,21 +1,28 @@
-import os
-from typing import TYPE_CHECKING, List, Optional, Union
+from __future__ import annotations
 
+import os
+from typing import TYPE_CHECKING
 import numpy
 
+import pipeline.extern.sd_applycal_qa.sd_applycal_qa as sd_applycal_qa
+import pipeline.extern.sd_applycal_qa.sd_qa_reports as sd_qa_reports
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain import DataType
 from pipeline.h.tasks.applycal.applycal import SerialApplycal, ApplycalInputs, ApplycalResults
+from pipeline.hsd.tasks.applycal.display import ApplyCalSingleDishPlotmsSpwComposite, ApplyCalSingleDishPlotmsAntSpwComposite
+import pipeline.hsd.tasks.applycal.display as display
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 if TYPE_CHECKING:
     from pipeline.domain import MeasurementSet
-    from pipeline.infrastructure import Context
     from pipeline.infrastructure import CalApplication
+    from pipeline.infrastructure.launcher import Context
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -30,38 +37,81 @@ class SDApplycalInputs(ApplycalInputs):
     flagdetailedsum = vdp.VisDependentProperty(default=True)
     intent = vdp.VisDependentProperty(default='TARGET')
 
+    # docstring and type hints: supplements hsd_applycal
     def __init__(self,
-                 context: 'Context',
-                 output_dir: Optional[str] = None,
-                 vis: Optional[Union[str, List[str]]] = None,
-                 field: Optional[Union[str, List[str]]] = None,
-                 spw: Optional[Union[str, List[str]]] = None,
-                 antenna: Optional[Union[str, List[str]]] = None,
-                 intent: Optional[Union[str, List[str]]] = None,
-                 parang: Optional[bool] = None,
-                 applymode: Optional[str] = None,
-                 flagbackup: Optional[bool] = None,
-                 flagsum: Optional[bool] = None,
-                 flagdetailedsum: Optional[bool] = None,
-                 parallel: Optional[Union[bool, str]] = None):
+                 context: Context,
+                 output_dir: str | None = None,
+                 vis: str | list[str] | None = None,
+                 field: str | list[str] | None = None,
+                 spw: str | list[str] | None = None,
+                 antenna: str | list[str] | None = None,
+                 intent: str | list[str] | None = None,
+                 parang: bool | None = None,
+                 applymode: str | None = None,
+                 flagbackup: bool | None = None,
+                 flagsum: bool | None = None,
+                 flagdetailedsum: bool | None = None,
+                 parallel: bool | str | None = None):
         """Inputs for SDApplycal task.
 
         Args:
             context: Pipeline context.
+
             output_dir: Output directory.
-            vis: Name of MS or list of MS names.
-            field: Field selection.
-            spw: Spectral window (spw) selection.
-            antenna: Antenna selection.
-            intent: Observing intent selection.
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets in the pipeline context.
+
+                Example: ['X227.ms']
+
+            field: A string containing the list of field names or field ids to which the calibration will be applied.
+                Defaults to all fields in the pipeline context.
+
+                Example: '3C279', '3C279, M82'
+
+            spw: The list of spectral windows and channels to which the calibration will be applied.
+                Defaults to all science windows in the pipeline context.
+
+                Example: '17', '11, 15'
+
+            antenna: The selection of antennas to which the calibration will be applied.
+                Defaults to all antennas. Not currently supported.
+
+            intent: A string containing the list of intents against which the selected fields will be matched.
+                Defaults to all supported intents in the pipeline context.
+
+                Example: `'*TARGET*'`
+
             parang: Apply parallactic angle correction. Not used.
-            applymode: Calibration mode. Defaults to 'calflagstrict'.
-            flagbackup: Automatically back up flag state before run. Defaults to True.
-            flagsum: Run flagdata task for flagging summary. Defaults to True.
-            flagdetailedsum: Generate detailed flagging summary. Defaults to False.
+
+            applymode: Calibration apply mode.
+
+                - 'calflag': calibrate data and apply flags from solutions.
+                - 'calflagstrict': same as above except flag spws for which calibration is
+                  unavailable in one or more tables (instead of allowing them to pass
+                  uncalibrated and unflagged). This is the default applymode.
+                - 'trial': report on flags from solutions, dataset entirely unchanged.
+                - 'flagonly': apply flags from solutions only, data not calibrated.
+                - 'flagonlystrict': same as above except flag spws for which calibration is
+                  unavailable in one or more tables.
+                - 'calonly': calibrate data only, flags from solutions NOT applied.
+
+            flagbackup: Backup the flags before the apply.
+
+                Default: None (equivalent to True)
+
+            flagsum: Run flagdata task for flagging summary.
+
+                Default: None (equivalent to True)
+
+            flagdetailedsum: Generate detailed flagging summary.
+
+                Default: None (equivalent to False)
+
             parallel: Execute using CASA HPC functionality, if available.
-                      Default is None, which intends to turn on parallel
-                      processing if possible.
+                Default is None, which is equivalent to 'automatic' that intends to
+                turn on parallel processing if possible.
+
+                Options: 'automatic', 'true', 'false', True, False
         """
         super().__init__(
             context, output_dir=output_dir, vis=vis,
@@ -78,8 +128,8 @@ class SDApplycalResults(ApplycalResults):
     Please see parent task's docstring for detail.
     """
     def __init__(self,
-                 applied: Optional[List['CalApplication']] = None,
-                 data_type: Optional[DataType] = None):
+                 applied: list[CalApplication] | None = None,
+                 data_type: DataType | None = None):
         """Construct SDApplycalResults instance.
         Please see parent task's docstring for detail.
 
@@ -88,6 +138,8 @@ class SDApplycalResults(ApplycalResults):
             data_type: data type enum.
         """
         super().__init__(applied, data_type=data_type)
+        self.xy_deviation_score = []
+        self.xy_deviation_plots = []
 
 
 class SerialSDApplycal(SerialApplycal):
@@ -133,7 +185,7 @@ class SerialSDApplycal(SerialApplycal):
         task_args['intent'] = 'OBSERVE_TARGET#ON_SOURCE'
         return task_args
 
-    def _tweak_flagkwargs(self, template: List[str]) -> List[str]:
+    def _tweak_flagkwargs(self, template: list[str]) -> list[str]:
         """Override flagging commands.
 
         According to the requirement in CAS-8813, flag fraction should be
@@ -154,6 +206,7 @@ class SerialSDApplycal(SerialApplycal):
 
         # Update Tsys in datatable
         context = self.inputs.context
+
         # this task uses _handle_multiple_vis framework
         msobj = self.inputs.ms
         origin_basename = os.path.basename(msobj.origin_ms)
@@ -182,11 +235,111 @@ class SerialSDApplycal(SerialApplycal):
 
         # set unit according to applied calibration
         set_unit(msobj, results.applied)
-
         return sdresults
 
+    def analyse(self, results: SDApplycalResults) -> SDApplycalResults:
+        """Analyse the results of the task.
 
-def set_unit(ms: 'MeasurementSet', calapp: List['CalApplication']):
+        This method assesses the quality of the calibration applied in
+        this stage. The analysis focuses on the deviation of calibrated
+        data between XX and YY polarizations, and also the generation of
+        calibrated amplitude vs time plots.
+
+        Returns:
+            SDApplycalResults: The results of the task.
+        """
+        results = super().analyse(results)
+        context = self.inputs.context
+        msobj = self.inputs.ms
+
+        # perform XX-YY deviation QA
+        ms_name = self.inputs.ms.name
+        if self.inputs.ms.antenna_array.name == 'ALMA':
+            applycal_qa_dir = './sd_applycal_output'
+            os.makedirs(applycal_qa_dir, exist_ok=True)
+
+            stage_dir = os.path.join(
+                self.inputs.context.report_dir,
+                f'stage{self.inputs.context.task_counter}'
+            )
+            if basetask.DISABLE_WEBLOG:
+                # Since weblog is disabled, all the plots will be saved
+                # in applycal_qa_dir
+                weblog_output_dir = applycal_qa_dir
+            else:
+                os.makedirs(stage_dir, exist_ok=True)
+                weblog_output_dir = stage_dir
+
+            qa_result = sd_applycal_qa.get_ms_applycal_qascores(
+                msNames=[ms_name],
+                plot_output_path=applycal_qa_dir,
+                weblog_output_path=weblog_output_dir,
+            )
+            qascore_list, plots_fnames, qascore_per_scan_list = qa_result
+            sd_qa_reports.makeSummaryTable(
+                qascore_list,
+                '',
+                plfolder=applycal_qa_dir,
+                output_file=os.path.join(applycal_qa_dir, f'qascore_summary_{self.inputs.ms.basename}.csv')
+            )
+            sd_qa_reports.makeQAmsgTable(
+                qascore_list,
+                plfolder=applycal_qa_dir,
+                output_file=os.path.join(applycal_qa_dir, f'qascores_details_{self.inputs.ms.basename}.csv')
+            )
+            valid_plots_fnames = [x for x in plots_fnames if x != "N/A"]
+            results.xy_deviation_score.extend(qascore_list)
+            results.xy_deviation_plots.extend(valid_plots_fnames)
+
+        # Generating calibrated amplitude vs time plots
+        results.amp_vs_time_summary_plots = None
+        results.amp_vs_time_detail_plots = None
+        if not basetask.DISABLE_WEBLOG:
+            # mkdir stage_dir if it doesn't exist
+            stage_dir = os.path.join(context.report_dir, 'stage%s' % context.task_counter)
+            os.makedirs(stage_dir, exist_ok=True)
+
+            fields = [x.name for x in msobj.get_fields(intent='TARGET')]
+            if len(fields) > 0:
+                # For summary plots
+                amp_vs_time_summary_plots = self.sd_plots_for_result(
+                    context,
+                    results,
+                    display.ApplyCalSingleDishPlotmsSpwComposite
+                )
+
+                # For detail plots
+                amp_vs_time_detail_plots = self.sd_plots_for_result(
+                    context,
+                    results,
+                    display.ApplyCalSingleDishPlotmsAntSpwComposite
+                )
+                results.amp_vs_time_summary_plots = amp_vs_time_summary_plots
+                results.amp_vs_time_detail_plots = amp_vs_time_detail_plots
+
+        return results
+
+    def sd_plots_for_result(self, context: Context, results: SDApplycalResults, plotter_cls: ApplyCalSingleDishPlotmsSpwComposite | ApplyCalSingleDishPlotmsAntSpwComposite, **kwargs) -> list[logger.Plot]:
+        """Generate amplitude vs. time plots from results instance.
+
+        Args:
+            context: Pipeline context.
+            results: Results instance.
+            plotter_cls: Plotter class to generate plot objects of amplitude vs. time.
+
+        Returns:
+            plots: List of plot objects of amplitude vs. time.
+        """
+        xaxis = 'time'
+        yaxis = 'real'
+        msobj = context.observing_run.get_ms(self.inputs.vis)
+        plotter = plotter_cls(context, results, msobj, xaxis, yaxis, **kwargs)
+        plots = plotter.plot()
+
+        return plots
+
+
+def set_unit(ms: MeasurementSet, calapp: list[CalApplication]):
     """Set unit to MS data column according to applied calibrations.
 
     Args:

@@ -14,9 +14,11 @@ import functools
 import shutil
 import sys
 
-import almatasks
-import casaplotms
 import casatasks
+import casaplotms
+
+
+
 
 from . import logging
 from .jobrequest import JobRequest
@@ -95,6 +97,10 @@ def fluxscale(*v, **k) -> JobRequest:
 @register_task
 def gencal(*v, **k) -> JobRequest:
     return JobRequest(casatasks.gencal, *v, **k)
+
+
+def getantposalma(*v, **k) -> JobRequest:
+    return JobRequest(casatasks.getantposalma, *v, **k)
 
 
 @register_task
@@ -239,12 +245,17 @@ def uvcontsub(*v, **k) -> JobRequest:
 
 @register_task
 def wvrgcal(*v, **k) -> JobRequest:
-    return JobRequest(almatasks.wvrgcal, *v, **k)
+    return JobRequest(casatasks.wvrgcal, *v, **k)
 
 
 @register_task
 def visstat(*v, **k) -> JobRequest:
     return JobRequest(casatasks.visstat, *v, **k)
+
+
+@register_task
+def rerefant(*v, **k) -> JobRequest:
+    return JobRequest(casatasks.rerefant, *v, **k)
 
 
 @register_task
@@ -265,11 +276,6 @@ def sdbaseline(*v, **k) -> JobRequest:
 @register_task
 def sdcal(*v, **k) -> JobRequest:
     return JobRequest(casatasks.sdcal, *v, **k)
-
-
-@register_task
-def sdimaging(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.sdimaging, *v, **k)
 
 
 @register_task
@@ -338,7 +344,7 @@ class CasaTasks:
             # Executions will be logged in casacalls-.txt
             @functools.wraps(fn)
             def func(*args, **kwargs):
-                return fn(*args, **kwargs).execute(dry_run=False)
+                return fn(*args, **kwargs).execute()
             return func
         else:
             # Executions will be logged in both casacalls-.txt and casa-command.txt

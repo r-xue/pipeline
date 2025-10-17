@@ -11,9 +11,7 @@ LOG = logging.get_logger(__name__)
 
 
 class RawflagchansQAHandler(pqa.QAPlugin):    
-    """
-    QA handler for an uncontained RawflagchansResult.
-    """
+    """QA handler for an uncontained RawflagchansResult."""
     result_cls = resultobjects.RawflagchansResults
     child_cls = None
 
@@ -43,10 +41,8 @@ class RawflagchansQAHandler(pqa.QAPlugin):
 
 
 class RawflagchansListQAHandler(pqa.QAPlugin):
-    """
-    QA handler for a list containing RawflagchansResults.
-    """
-    result_cls = collections.Iterable
+    """QA handler for a list containing RawflagchansResults."""
+    result_cls = collections.abc.Iterable
     child_cls = resultobjects.RawflagchansResults
 
     def handle(self, context, result):

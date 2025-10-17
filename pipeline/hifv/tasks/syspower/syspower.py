@@ -10,6 +10,7 @@ import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
@@ -81,7 +82,7 @@ def savitzky_golay(y, window_size, order, deriv=0, rate=1):
 
     half_window = (window_size - 1) // 2
     # precompute coefficients
-    b = np.mat([[k**i for i in range(order + 1)] for k in range(-half_window, half_window+1)])
+    b = np.asmatrix([[k**i for i in range(order + 1)] for k in range(-half_window, half_window+1)])
     m = np.linalg.pinv(b).A[deriv] * rate**deriv * factorial(deriv)
     # pad the signal at the extremes with
     # values taken from the signal itself
@@ -144,8 +145,34 @@ class SyspowerInputs(vdp.StandardInputs):
         return [0.7, 1.2]
 
 
+    # docstring and type hints: supplements hifv_syspower
     def __init__(self, context, vis=None, clip_sp_template=None, antexclude=None,
                  apply=None, do_not_apply=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: List of input visibility data.
+
+            clip_sp_template: Acceptable range for Pdiff data; data are clipped outside this range and flagged.
+
+            antexclude: dictionary in the format of:
+
+                {'L': {'ea02': {'usemedian': True}, 'ea03': {'usemedian': False}},
+                'X': {'ea02': {'usemedian': True}, 'ea03': {'usemedian': False}},
+                'S': {'ea12': {'usemedian': False}, 'ea22': {'usemedian': False}}}
+
+                If antexclude is specified with 'usemedian': False, the template values are replaced with 1.0.
+                If 'usemedian': True, the template values are replaced with the median of the good antennas.
+
+            apply: Apply task results to RQ table.
+
+            do_not_apply: csv string of band names to not apply.
+
+                Example: 'L,X,S'
+
+        """
         self.context = context
         self.vis = vis
         self.clip_sp_template = clip_sp_template
@@ -173,13 +200,21 @@ class Syspower(basetask.StandardTaskTemplate):
             antexclude_dict = ast.literal_eval(self.inputs.antexclude)
         elif isinstance(self.inputs.antexclude, dict):
             antexclude_dict = self.inputs.antexclude
+        priorcals_results = None
+        for result in self.inputs.context.results:
+            objresult = result.read()
+            if objresult.taskname == "hifv_priorcals":
+                priorcals_results = objresult[0]
 
-        # Assumes hifv_priorcals was executed as the previous stage
-        try:
-            rq_table = self.inputs.context.results[-1].read()[0].rq_result[0].final[0].gaintable
-        except Exception as ex:
-            rq_table = self.inputs.context.results[-1].read()[0].rq_result.final[0].gaintable
-            LOG.debug(ex)
+        if priorcals_results is not None:
+            try:
+                rq_table = priorcals_results.rq_result[0].final[0].gaintable
+            except Exception as ex:
+                rq_table = priorcals_results.rq_result.final[0].gaintable
+                LOG.debug(ex)
+        else:
+            rq_table = ""
+            LOG.warning("Unable to find hifv_priorcals results")
 
         band_baseband_spw = collections.defaultdict(dict)
 
@@ -320,7 +355,7 @@ class Syspower(basetask.StandardTaskTemplate):
                 with open(flag_file_name, 'r') as flag_file:
                     for line in flag_file:
                         try:
-                            r = re.search(r"antenna='ea(\d*)&&\*' timerange='(.*)' reason", line)
+                            r = re.search(r"antenna='ea(\d*)&&\*' timerange='(.*)\' (?:spw='(.*)\')? (?:correlation='(.*)\')? reason", line)
                         except Exception as e:
                             r = False
                         if r:
@@ -333,10 +368,10 @@ class Syspower(basetask.StandardTaskTemplate):
                             dat_online_flags[antenna_names.index(this_ant), indices_to_flag] = True
 
             # remove requantizer changes from p_diff
-            pdrq = p_diff / (rq ** 2)
-            pdrq = np.ma.masked_invalid(pdrq)
+            pdrq = np.ma.masked_invalid(p_diff/(np.ma.masked_equal(rq, 0)**2))
 
             # read tables into arrays
+            # dat_filtered dimensions: (n_ant, n_spw, n_pol, n_hits)
             spw_problems = []
             for i, this_ant in enumerate(antenna_ids):
                 LOG.info('reading antenna {0}'.format(this_ant))
@@ -395,6 +430,7 @@ class Syspower(basetask.StandardTaskTemplate):
                         LOG.info('  processing band {0}, baseband {1},  polarization {2}'.format(band, bband, pol))
 
                         # create initial template
+                        # sp_data dimmensions: (n_spw, n_hits)
                         sp_data = dat_filtered[i, common_indices, pol, :]
                         sp_data = np.ma.array(sp_data)
                         sp_data.mask = np.ma.getmaskarray(sp_data)
@@ -408,16 +444,16 @@ class Syspower(basetask.StandardTaskTemplate):
                                                                        k=5, threshold=8, do_shift=True)
                         LOG.info('    total flagged data: {0:.2f}% in second pass'.format(flag_percent))
 
-                        sp_template = np.ma.median(sp_data, axis=0)
+                        if sp_data.shape[0] > 1:
+                            # flag residuals and recalculate template
+                            sp_template = np.ma.median(sp_data, axis=0)
+                            sp_data, flag_percent = self.flag_with_medfilt(sp_data, sp_template, flag_median=True,
+                                                                           k=11, threshold=7, do_shift=False)
+                            LOG.info('    total flagged data: {0:.2f}% in third pass'.format(flag_percent))
 
-                        # flag residuals and recalculate template
-                        sp_data, flag_percent = self.flag_with_medfilt(sp_data, sp_template, flag_median=True,
-                                                                       k=11, threshold=7, do_shift=False)
-                        LOG.info('    total flagged data: {0:.2f}% in third pass'.format(flag_percent))
-
-                        sp_data, flag_percent = self.flag_with_medfilt(sp_data, sp_template, flag_rms=True,
-                                                                       k=5, threshold=7, do_shift=False)
-                        LOG.info('    total flagged data: {0:.2f}% in fourth pass'.format(flag_percent))
+                            sp_data, flag_percent = self.flag_with_medfilt(sp_data, sp_template, flag_rms=True,
+                                                                           k=5, threshold=7, do_shift=False)
+                            LOG.info('    total flagged data: {0:.2f}% in fourth pass'.format(flag_percent))
 
                         sp_median_data = np.ma.median(sp_data, axis=0)
                         sp_median_mask = deepcopy(sp_median_data.mask)
@@ -431,13 +467,12 @@ class Syspower(basetask.StandardTaskTemplate):
                         sp_template.mask = sp_median_mask
                         LOG.info('    restored {0:.2f}% template flags after interpolation'.format(
                                  100.0 * np.sum(sp_median_mask) / sp_median_mask.size))
-
                         # repeat after square root
                         if isinstance(sp_data.mask, bool):
                             sp_data.mask = np.ma.getmaskarray(sp_data)
                         sp_data.mask[sp_data < 0] = True
-                        sp_data = sp_data ** .5
-                        sp_template = sp_template ** .5
+                        sp_data = np.ma.masked_array(sp_data ** 0.5, mask=sp_data.mask)
+                        sp_template = np.ma.masked_array(sp_template ** 0.5, mask=sp_template.mask)
                         sp_data.mask[sp_data != sp_data] = True
                         sp_data, flag_percent = self.flag_with_medfilt(sp_data, sp_template, flag_rms=True,
                                                                        flag_median=True,

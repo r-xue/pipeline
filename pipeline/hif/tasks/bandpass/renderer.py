@@ -10,6 +10,7 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure.utils import caltable_tools
 from pipeline.h.tasks.common.displays import bandpass as bandpass
 
 LOG = logging.get_logger(__name__)
@@ -18,7 +19,7 @@ BandpassApplication = collections.namedtuple('BandpassApplication',
                                              'ms bandtype solint intent spw gaintable')
 
 PhaseupApplication = collections.namedtuple('PhaseupApplication', 
-                                            'ms calmode solint minblperant minsnr flagged phaseupbw') 
+                                            'ms calmode solint combine minblperant minsnr phaseupbw')
 
 
 class T2_4MDetailsBandpassRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -26,16 +27,13 @@ class T2_4MDetailsBandpassRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     T2_4MDetailsBandpassRenderer generates the detailed T2_4M-level plots and
     output specific to the bandpass calibration task.
     """
-    def __init__(self, uri='bandpass.mako', 
+    def __init__(self, uri='bandpass.mako',
                  description='Bandpass calibration',
                  always_rerender=False):
-        super(T2_4MDetailsBandpassRenderer, self).__init__(uri=uri,
-                                                           description=description,
-                                                           always_rerender=always_rerender)
-
-    """
-    Get the Mako context appropriate to the results created by a Bandpass
-    task.
+        super().__init__(uri=uri,
+                         description=description,
+                         always_rerender=always_rerender)
+    """Get the Mako context appropriate to the results created by a Bandpass task.
     
     This routine triggers the creation of the plots specific to the bandpass
     task, creating thumbnail pages as necessary. The returned dictionary  
@@ -67,7 +65,6 @@ class T2_4MDetailsBandpassRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         phase_details = {}
         phase_vs_time_subpages = {}
 
-        no_cal_results = [r for r in results if r.applies_adopted]
         with_cal_results = [r for r in results if not r.applies_adopted and r.final]
 
         # we want table entries for all results, but plots only for those with a caltable
@@ -147,16 +144,18 @@ class T2_4MDetailsBandpassRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # add the PlotGroups to the Mako context. The Mako template will parse
         # these objects in order to create links to the thumbnail pages we
         # just created
-        ctx.update({'bandpass_table_rows': bandpass_table_rows,
-                    'adopted_table': adopted_table_rows,
-                    'phaseup_applications': phaseup_applications,
-                    'amp_mode': amp_mode,
-                    'amp_refant': amp_refant,
-                    'phase_mode': phase_mode,
-                    'phase_refant': phase_refant,
-                    'amp_subpages': amp_vs_time_subpages,
-                    'phase_subpages': phase_vs_time_subpages,
-                    'dirname': stage_dir})
+        ctx.update({
+            "bandpass_table_rows": bandpass_table_rows,
+            "adopted_table": adopted_table_rows,
+            "phaseup_applications": phaseup_applications,
+            "amp_mode": amp_mode,
+            "amp_refant": amp_refant,
+            "phase_mode": phase_mode,
+            "phase_refant": phase_refant,
+            "amp_subpages": amp_vs_time_subpages,
+            "phase_subpages": phase_vs_time_subpages,
+            "dirname": stage_dir,
+        })
 
         return ctx
 
@@ -192,17 +191,17 @@ class T2_4MDetailsBandpassRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                            for dt in utils.get_intervals(context, calapp)]
                 solint = 'Per integration (%s)' % utils.commafy(in_secs, quotes=False, conjunction='or')
 
+            combine = utils.get_origin_input_arg(calapp, 'combine') == 'spw'
+
             assert(len(calapp.origin) == 1)
             origin = calapp.origin[0]
             calmode = origin.inputs.get('calmode', 'N/A')
             calmode = calmode_map.get(calmode, calmode)
             minblperant = origin.inputs.get('minblperant', 'N/A')
             minsnr = origin.inputs.get('minsnr', 'N/A')
-            flagged = 'TODO'
             phaseupbw = result.inputs.get('phaseupbw', 'N/A')
 
-            a = PhaseupApplication(ms.basename, calmode, solint, minblperant,
-                                   minsnr, flagged, phaseupbw)
+            a = PhaseupApplication(ms.basename, calmode, solint, combine, minblperant, minsnr, phaseupbw)
             applications.append(a)
 
         return applications
@@ -250,7 +249,7 @@ class BaseBandpassPlotRenderer(basetemplates.JsonPlotRenderer):
     def __init__(self, uri, context, results, plots, title, outfile,
                  score_types):
         # wrap singular lists so the code works the same for scalars and vectors
-        if not isinstance(results, collections.Iterable):
+        if not isinstance(results, collections.abc.Iterable):
             results = [results]
 
         self._ms = {}
@@ -260,13 +259,12 @@ class BaseBandpassPlotRenderer(basetemplates.JsonPlotRenderer):
             vis = os.path.basename(r.inputs['vis'])
             self._ms[vis] = context.observing_run.get_ms(vis)
             caltable = r.final[0].gaintable
-            self._num_pols[vis] = utils.get_num_caltable_polarizations(caltable)
+            self._num_pols[vis] = caltable_tools.get_num_caltable_polarizations(caltable)
             self._qa_data[vis] = r.qa.rawdata
 
         self._score_types = score_types
-
-        super(BaseBandpassPlotRenderer, self).__init__(
-                uri, context, results, plots, title, outfile)
+        super().__init__(
+            uri, context, results, plots, title, outfile)
 
     def update_json_dict(self, json_dict, plot):
         spw = int(plot.parameters['spw'])
@@ -290,15 +288,15 @@ class BaseBandpassPlotRenderer(basetemplates.JsonPlotRenderer):
             qa_id = int(antenna.id) * num_pols + pol_id
             qa_str = str(qa_id)
 
-            for score_type in self._score_types:            
+            for score_type in self._score_types:
                 if 'QASCORES' in qa_data:
                     try:
                         score = qa_data['QASCORES'][score_type][str(spw)][qa_str]
                     except KeyError:
-                        LOG.error('Could not get %s score for %s (%s) spw %s '
-                                  'pol %s (id=%s)', score_type, antenna.name,
-                                  antenna.id, spw, corr_axis, qa_str)
-                        score = None 
+                        LOG.warning('Could not get %s score for %s (%s) spw %s '
+                                    'pol %s (id=%s)', score_type, antenna.name,
+                                    antenna.id, spw, corr_axis, qa_str)
+                        score = None
                 else:
                     score = 1.0
 
@@ -306,10 +304,6 @@ class BaseBandpassPlotRenderer(basetemplates.JsonPlotRenderer):
 
         json_dict.update(scores_dict)
         plot.scores = scores_dict
-
-    # def update_mako_context(self, mako_context):
-    #     super(BaseBandpassPlotRenderer, self).update_mako_context(mako_context)
-    #     mako_context['vis'] = self._vis
 
 
 class BandpassAmpVsFreqPlotRenderer(BaseBandpassPlotRenderer):
@@ -322,9 +316,9 @@ class BandpassAmpVsFreqPlotRenderer(BaseBandpassPlotRenderer):
                                  'AMPLITUDE_SCORE_FN',
                                  'AMPLITUDE_SCORE_SNR'])
 
-        super(BandpassAmpVsFreqPlotRenderer, self).__init__(
-                'bandpass-amp_vs_freq_plots.mako', context, 
-                results, plots, title, outfile, score_types)
+        super().__init__(
+            'bandpass-amp_vs_freq_plots.mako', context,
+            results, plots, title, outfile, score_types)
 
 
 class BandpassPhaseVsFreqPlotRenderer(BaseBandpassPlotRenderer):
@@ -337,9 +331,9 @@ class BandpassPhaseVsFreqPlotRenderer(BaseBandpassPlotRenderer):
                                  'PHASE_SCORE_FN',
                                  'PHASE_SCORE_RMS'])
 
-        super(BandpassPhaseVsFreqPlotRenderer, self).__init__(
-                'bandpass-phase_vs_freq_plots.mako', context, 
-                results, plots, title, outfile, score_types)
+        super().__init__(
+            'bandpass-phase_vs_freq_plots.mako', context,
+            results, plots, title, outfile, score_types)
 
 
 AdoptedTR = collections.namedtuple('AdoptedTR', 'vis gaintable')

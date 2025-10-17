@@ -13,6 +13,7 @@ from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.utils import relative_path
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import caltable as caltable_heuristic
+from pipeline.hsd.tasks.common import observatory_policy
 from . import jyperkreader
 
 if TYPE_CHECKING:
@@ -77,6 +78,7 @@ class SDK2JyCalInputs(vdp.StandardInputs):
                 'caltype': self.caltype,
                 'endpoint': self.endpoint}
 
+    # docstring and type hints: supplements hsd_k2jycal
     def __init__(
         self,
         context: 'Context',
@@ -91,16 +93,78 @@ class SDK2JyCalInputs(vdp.StandardInputs):
 
         Args:
             context: Pipeline context
-            output_dir: Output directory. Defaults to None.
-            infiles: Name of MS or list of names. Defaults to None.
-            caltable: Name of caltable or list of names. Defaults to None.
-                      Name is automatically created from infiles if None is given.
-            reffile: Name of the file that stores Jy/K factors. Defaults to None.
-                     Name is 'jyperk.csv' if None is given.
-            dbservice: Access to Jy/K DB if True. Defaults to None.
-                       None is interpreted as True.
-            endpoint: Name of the DB endpoint. Defaults to None.
-                      Endpoint is 'asdm' if None is given.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            infiles: List of input MeasurementSets.
+
+                Example: vis='ngc5921.ms'
+
+            caltable: Name of output gain calibration tables.
+                Name is automatically created from infiles if None is given.
+
+                Example: caltable='ngc5921.gcal'
+
+            reffile: Path to a file containing Jy/K factors for science data,
+                which must be provided by associating calibrator reduction or the observatory
+                measurements. Jy/K factor must take into account all efficiencies, i.e.,
+                it must be a direct conversion factor from Ta* to Jy. The file must be
+                in either MS-based or session-based format. The MS-based format must
+                be in an CSV format with five fields: MS name, antenna name, spectral
+                window id, polarization string, and Jy/K conversion factor. Example for
+                the file is as follows::
+
+                    MS,Antenna,Spwid,Polarization,Factor
+                    uid___A002_X316307_X6f.ms,CM03,5,XX,10.0
+                    uid___A002_X316307_X6f.ms,CM03,5,YY,12.0
+                    uid___A002_X316307_X6f.ms,PM04,5,XX,2.0
+                    uid___A002_X316307_X6f.ms,PM04,5,YY,5.0
+
+                The first line in the above example is a header which may or may not
+                exist. Example for the session-based format is as follows::
+
+                    #OUSID=XXXXXX
+                    #OBJECT=Uranus
+                    #FLUXJY=yy,zz,aa
+                    #FLUXFREQ=YY,ZZ,AA
+                    #sessionID,ObservationStartDate(UTC),ObservationEndDate(UTC),
+                    Antenna,BandCenter(MHz),BandWidth(MHz),POL,Factor
+                    1,2011-11-11 01:00:00,2011-11-11 01:30:00,CM02,86243.0,500.0,I,10.0
+                    1,2011-11-11 01:00:00,2011-11-11 01:30:00,CM02,86243.0,1000.0,I,30.0
+                    1,2011-11-11 01:00:00,2011-11-11 01:30:00,CM03,86243.0,500.0,I,50.0
+                    1,2011-11-11 01:00:00,2011-11-11 01:30:00,CM03,86243.0,1000.0,I,70.0
+                    1,2011-11-11 01:00:00,2011-11-11 01:30:00,ANONYMOUS,86243.0,500.0,I,30.0
+                    1,2011-11-11 01:00:00,2011-11-11 01:30:00,ANONYMOUS,86243.0,1000.0,I,50.0
+                    2,2011-11-13 01:45:00,2011-11-13 02:15:00,PM04,86243.0,500.0,I,90.0
+                    2,2011-11-13 01:45:00,2011-11-13 02:15:00,PM04,86243.0,1000.0,I,110.0
+                    2,2011-11-13 01:45:00,2011-11-13 02:15:00,ANONYMOUS,86243.0,500.0,I,90.0
+                    2,2011-11-13 01:45:00,2011-11-13 02:15:00,ANONYMOUS,86243.0,1000.0,I,110.0
+
+                Lines starting with '#' are meta data and header.
+                The header must exist. The factor to apply is identified by matching the
+                session ID, antenna name, frequency and polarization of data in each line of
+                the file. Note the observation date is supplementary information and not used
+                for the matching so far. The lines whose antenna name is 'ANONYMOUS' are used
+                when there is no measurement for specific antenna in the session. In the above
+                example, if science observation of session 1 contains the antenna PM04, Jy/K
+                factor for ANONYMOUS antenna will be applied since there is no measurement for
+                PM04 in session 1.
+                If no file name is specified or specified file doesn't exist, all Jy/K factors
+                are set to 1.0.
+
+                Example: reffile='', reffile='working/jyperk.csv'
+
+            dbservice: Whether or not accessing Jy/K DB to retrieve conversion factors.
+
+                Default: None (equivalent to True)
+
+            endpoint: Which endpoints to use for query.
+
+                Options: 'asdm', 'model-fit', 'interpolation'
+
+                Default: None (equivalent to 'asdm')
+
         """
         super(SDK2JyCalInputs, self).__init__()
 
@@ -199,12 +263,11 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
 
     Inputs = SDK2JyCalInputs
 
-    def execute( self, dry_run: bool = True, **parameters) -> SDK2JyCalResults:
+    def execute( self, **parameters) -> SDK2JyCalResults:
         """
         remove existing QUERIED_FACTOR_FILE before the first run
 
         Args:
-            dry_run: True if dry_run
             parameters: parameters
         Returns
             SDK2JyCalResults
@@ -217,7 +280,7 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
                     LOG.info( "Existing {}_orig will be overwritten".format(filename) )
                 os.rename( filename, "{}_orig".format(filename) )
 
-        results = super().execute( dry_run=dry_run, **parameters )
+        results = super().execute( **parameters )
         return results
 
     def prepare(self) -> SDK2JyCalResults:
@@ -252,6 +315,18 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         if factors_used is None:
             LOG.error("MS and caltable are inconsistent")
             return SDK2JyCalResults(os.path.basename(vis))
+
+        # check whether the factors are within the valid range
+        calibration_policy = observatory_policy.get_calibration_policy( inputs.context )
+        ms = inputs.context.observing_run.get_ms( vis )
+        for spw, factors_spw in factors_used.items():
+            for ant_name, factors_ant in factors_spw.items():
+                for pol_name, factor in factors_ant.items():
+                    valid_range = calibration_policy.get_jyperk_valid_range( ms, spw, ant_name, pol_name )
+                    if factor < valid_range[0] or factor > valid_range[1]:
+                        LOG.warning(
+                            "Invalid Jy/K factor %f for %s, %s, spw%s, pol %s. (should be within %f and %f).",
+                            factor, vis, ant_name, spw, pol_name, valid_range[0], valid_range[1] )
 
         # write jyperk data to file if fetched from DB
         if caltable_status is True:
@@ -452,12 +527,10 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
                         LOG.warning("No Jy/K factor is given for Spw={}, Ant={}, Pol={} of {}".format(spwid, ant_name, pol, vis))
 
         # double-check that the caltable was actually generated and prepare 'final'.
-        on_disk = [ca for ca in result.pool
-                   if ca.exists() or self._executor._dry_run]
+        on_disk = [ca for ca in result.pool if ca.exists()]
         result.final[:] = on_disk
 
-        missing = [ca for ca in result.pool
-                   if ca not in on_disk and not self._executor._dry_run]
+        missing = [ca for ca in result.pool if ca not in on_disk]
         result.error.clear()
         result.error.update(missing)
 

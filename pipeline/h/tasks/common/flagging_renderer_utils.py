@@ -108,6 +108,10 @@ def flags_by_science_spws(ms: MeasurementSet, summaries: List[dict]) -> Dict[str
 
         for spw in science_spws:
             spw_id = str(spw.id)
+            # workaround for KeyError exception when summary
+            # dictionary doesn't contain the spw
+            if spw_id not in summary['spw']:
+                continue
             flagcount += int(summary['spw'][spw_id]['flagged'])
             totalcount += int(summary['spw'][spw_id]['total'])
 
@@ -189,7 +193,8 @@ def intents_to_summarise(context: Context, all_flag_summary_intents: Optional[Se
     # List order is preserved in the table.
     if all_flag_summary_intents is None:
         all_flag_summary_intents = [
-            'AMPLITUDE', 'BANDPASS', 'CHECK', 'DIFFGAIN', 'PHASE', 'POLANGLE', 'POLARIZATION', 'POLLEAKAGE', 'TARGET']
+            'AMPLITUDE', 'BANDPASS', 'CHECK', 'DIFFGAINREF', 'DIFFGAINSRC', 'PHASE', 'POLANGLE', 'POLARIZATION',
+            'POLLEAKAGE', 'TARGET']
     intents_to_summarise = [i for i in all_flag_summary_intents
                             if i in context_intents.intersection(set(all_flag_summary_intents))]
     return intents_to_summarise

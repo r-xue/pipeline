@@ -9,9 +9,11 @@ import string
 from typing import Any, Dict, List, Tuple, Union
 
 import numpy
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
+import pipeline.hsd.tasks.common.flagcmd_util as flagcmd_util
 from pipeline.domain.datatable import DataTableColumnMaskList as ColMaskList
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import OnlineFlagIndex
@@ -38,18 +40,6 @@ def get_value_in_deg(quantity: Dict[str, Any]) -> numpy.ndarray:
     return qa.getvalue(qa.convert(quantity, 'deg'))
 
 
-def mjdsec2str(t: float) -> str:
-    """Convert datetime to string.
-
-    Args:
-        t: MJD second to convert
-    Returns:
-        str: formatted datetime
-    """
-    qa = casa_tools.quanta
-    return '{year}/{month}/{monthday}/{hour}:{min}:{s:.7f}'.format(**qa.splitdate(qa.quantity(t, 's')))
-
-
 def get_state_id(ms: MeasurementSet, spw: str, intent: str) -> numpy.ndarray:
     """Get state ID from MeasurementSet.
 
@@ -74,26 +64,6 @@ def get_state_id(ms: MeasurementSet, spw: str, intent: str) -> numpy.ndarray:
             # Need to reset explicitly after CASA 5.3. See CAS-11088 for detail.
             msreader.selectinit(reset=True)
     return numpy.fromiter(state_ids, dtype=numpy.int32)
-
-
-def merge_timerange(timerange_list: List[List]) -> List[List]:
-    """Merge time ranges.
-
-    Args:
-        timerange_list: list of timerange
-    Returns:
-        List: merged time ranges
-    """
-    timegap_list = numpy.asarray([l1[0] - l0[1] for l0, l1 in zip(timerange_list, timerange_list[1:])])
-    LOG.info(f'timegap_list is {timegap_list}')
-
-    # regard timegap <= 0.1msec as continuous
-    gap_index = [-1] + numpy.where(timegap_list > 1e-4)[0].tolist() + [len(timegap_list)]
-
-    timerange_merged = [[timerange_list[i + 1][0], timerange_list[j][1]] for i, j in zip(gap_index, gap_index[1:])]
-    LOG.info(f'timerange_merged is {timerange_merged}')
-
-    return timerange_merged
 
 
 def initialize_template(flagtemplate: str):
@@ -340,8 +310,13 @@ class MetaDataReader(object):
         """
         self.invalid_pointing_data[antenna_id].append(row)
 
-    def generate_flagcmd(self):
-        """Generate flag commands based on pointings of observation and save them in the flag template file."""
+    def generate_flagcmd(self, rasterscan_heuristics_result: RasterScanHeuristicsResult):
+        """
+        Generate flag commands based on pointings of observation and save them in the flag template file.
+
+        Args:
+            rasterscan_heuristics_result (RasterScanHeuristicsResult): Result object of RasterScanHeuristics
+        """
         # PIPE-646
         # per-antenna row list for the data without pointing data
         # key: antenna id
@@ -356,7 +331,7 @@ class MetaDataReader(object):
         # key: (spw id, antenna id) tuple
         # value: list of rows to be flagged
         try:
-            flagdict2 = self.generate_flagdict_for_uniform_rms()
+            flagdict2 = self.generate_flagdict_for_uniform_rms(rasterscan_heuristics_result)
         except Exception:
             flagdict2 = {}
 
@@ -386,7 +361,7 @@ class MetaDataReader(object):
         """Return row IDs of DataTable with invalid pointing information and a list of message.
 
         Returns:
-            Tuple: contains dictionary of invalid pointing data and a list of message 
+            Tuple: contains dictionary of invalid pointing data and a list of message
         """
 
         msglist = []
@@ -395,14 +370,17 @@ class MetaDataReader(object):
             msglist.append(msg)
         return self.invalid_pointing_data, msglist
 
-    def generate_flagdict_for_uniform_rms(self) -> Dict[Tuple[int, int], numpy.ndarray]:
+    def generate_flagdict_for_uniform_rms(self, rasterscan_heuristics_result: RasterScanHeuristicsResult) -> Dict[Tuple[int, int], numpy.ndarray]:
         """Return row IDs of DataTable to flag.
+
+        Args:
+            rasterscan_heuristics_result (RasterScanHeuristicsResult): Result object of RasterScanHeuristics
 
         Returns:
             Dict: contains list of row IDs of datatable
         """
         # keys for dictionary are (spw_id, antenna_id) tuples
-        flagdict = rasterutil.flag_raster_map(self.datatable)
+        flagdict = rasterutil.flag_raster_map(self.datatable, self.ms, rasterscan_heuristics_result)
 
         return flagdict
 
@@ -422,43 +400,31 @@ class MetaDataReader(object):
             else:
                 spw_id = '*'
                 antenna_id = key
-            time_list, sort_index = numpy.unique(
-                [datatable.getcell('TIME', row) for row in rowlist],
-                return_index=True)
 
-            # day -> sec
-            time_list *= 86400.0
+            timerangestr_list = flagcmd_util.datatable_rowid_to_timerange(
+                datatable, rowlist
+            )
 
-            interval_list = [datatable.getcell('EXPOSURE', row) for row in numpy.asarray(rowlist)[sort_index]]
+            LOG.info(
+                "antenna %s spw %s: timerange_list is %s",
+                antenna_id, spw_id, timerangestr_list
+            )
 
-            LOG.info(f'antenna {antenna_id} spw {spw_id}: time_list is {time_list}')
-
-            if len(time_list) == 0:
+            if len(timerangestr_list) == 0:
                 continue
 
-            timerange_list = [[t - i / 2, t + i / 2] for t, i in zip(time_list, interval_list)]
-            LOG.info(f'antenna {antenna_id} spw {spw_id}: timerange_list is {timerange_list}')
-
-            timerange_merged = merge_timerange(timerange_list)
-
-            for t in timerange_merged:
-                # timerange is [start, end] list of MJD [sec]
-                timerange_str = '~'.join(map(mjdsec2str, t))
+            for timerange_str in timerangestr_list:
                 cmdlist.append((str(spw_id), str(antenna_id), timerange_str))
 
         cmd_merged = merge_flagcmd(cmdlist)
         write_flagcmd(flagtemplate, cmd_merged, reason)
 
-    def execute(self, dry_run: bool = True) -> Dict[str, Dict[str, Union[str, Dict]]]:
+    def execute(self) -> Dict[str, Dict[str, Union[str, Dict]]]:
         """Read MeasurementSet and fill DataTable.
 
-        Args:
-            dry_run: flag of dry run
         Returns:
             Dict: dictionary of ephemeris sources
         """
-        if dry_run:
-            return
 
         # name of the MS
         name = self.name
@@ -579,8 +545,8 @@ class MetaDataReader(object):
                     ephem_tables.update({field_id: ''})
                     LOG.info("FIELD_ID={} ({}) as NORMAL SOURCE".format(field_id, source_name))
 
-        with TableSelector(name, 'ANTENNA1 == ANTENNA2 && FEED1 == FEED2 && DATA_DESC_ID IN %s && STATE_ID IN %s' % (list(ddids),
-                                                                                                                     list(target_state_ids))) as tb:
+        with TableSelector(name, 'ANTENNA1 == ANTENNA2 && FEED1 == FEED2 && DATA_DESC_ID IN %s && STATE_ID IN %s' % (utils.list_to_str(ddids),
+                                                                                                                     utils.list_to_str(target_state_ids))) as tb:
             # find the first onsrc for each ephemeris source and pack org_directions
             org_directions = {}
             nrow = tb.nrows()
@@ -623,8 +589,8 @@ class MetaDataReader(object):
                 else:
                     org_direction = None
 
-        with TableSelector(name, 'ANTENNA1 == ANTENNA2 && FEED1 == FEED2 && DATA_DESC_ID IN %s && STATE_ID IN %s' % (list(ddids),
-                                                                                                                     list(state_ids))) as tb:
+        with TableSelector(name, 'ANTENNA1 == ANTENNA2 && FEED1 == FEED2 && DATA_DESC_ID IN %s && STATE_ID IN %s' % (utils.list_to_str(ddids),
+                                                                                                                     utils.list_to_str(state_ids))) as tb:
             nrow = tb.nrows()
             rows = tb.rownumbers()
             Texpt = tb.getcol('INTERVAL')

@@ -26,6 +26,7 @@ import platform
 import re
 import string
 import subprocess
+from pathlib import Path
 
 from pipeline.infrastructure import logging
 
@@ -260,18 +261,24 @@ class Selector(object):
             self.css_class, self.prefix, self.description, self.value)
 
 
-class Plot(object):
-    def __init__(self, filename, x_axis='Unknown', y_axis='Unknown', 
-                 field=None, parameters=None, qa_score=None, command=None):
+class Plot:
+    def __init__(self, filename, x_axis='Unknown', y_axis='Unknown',
+                 field=None, parameters=None, qa_score=None, command=None, captionmessage='',
+                 thumbnail_check=True):
         """
         Plot(filename, x_axis, y_axis, field, parameters)
 
-        filename - the filename of the plot
-        x_axis - what the X axis of this plot measures
-        y_axis - what the Y axis of this plot measures
-        field - the name of the source or field which this data corresponds to
-        parameters - a dictionary of parameters, eg. { 'ant' : 1, 'spw' : 2 }. These
-            parameters should be known to the logging.Parameters class.
+        Args:
+            filename: the filename of the plot.
+            x_axis: what the X axis of this plot measures.
+            y_axis: what the Y axis of this plot measures.
+            field: the name of the source or field which this data corresponds to.
+            parameters: a dictionary of parameters, eg. { 'ant' : 1, 'spw' : 2 }.
+                These parameters should be known to the logging.Parameters class.
+            qa_score: additional property of the plot.
+            command: plotting command.
+            captionmessage: additional text in caption (its appearance is
+                determined by the mako template in which this plot appears).
         """
         if parameters is None:
             parameters = {}
@@ -286,6 +293,8 @@ class Plot(object):
             self.parameters['field'] = field
         self.qa_score = qa_score
         self.command = command
+        self.captionmessage = captionmessage
+        self.thumbnail_check = thumbnail_check
 
     @property
     def css_class(self):
@@ -331,57 +340,70 @@ class Plot(object):
         thumb_dir = os.path.join(os.path.dirname(self.abspath), 'thumbs')
         thumb_file = os.path.join(thumb_dir, os.path.basename(self.abspath))
 
-        if os.path.exists(thumb_file):
+        if os.path.exists(thumb_file) or not self.thumbnail_check:
             return thumb_file
 
         return self._create_thumbnail()
 
-    def _create_thumbnail(self):
-        """
-        Create a scaled-down copy of the plot, returning the filename to be
-        used as a thumbnail.
+    def _create_thumbnail(self) -> str:
+        """Creates a thumbnail for this plot instance.
 
-        :rtype: string
+        This method is a convenience wrapper that calls the static
+        `Plot.create_thumbnail` utility with this instance's path.
+
+        Returns:
+            The path to the created thumbnail file.
         """
+        # Delegate the actual thumbnail creation to the static method.
+        return Plot.create_thumbnail(self.abspath)
+
+    @staticmethod
+    def create_thumbnail(image_path: str | Path) -> str:
+        """Creates a scaled-down thumbnail from a given image file.
+
+        Args:
+            image_path: The absolute path to the original image file.
+
+        Returns:
+            The path to the created thumbnail. If creation fails or is
+            disabled, returns the path to the original image.
+        """
+        # Return the original path if the thumbnail command is not configured.
         if THUMBNAIL_CMD is None:
-            return self.abspath
+            return str(image_path)
 
-        thumb_dir = os.path.join(os.path.dirname(self.abspath), 'thumbs')
-        thumb_file = os.path.join(thumb_dir, os.path.basename(self.abspath))
+        # Define paths using the modern pathlib API for clarity and robustness.
+        source_path = Path(image_path)
+        thumb_dir = source_path.parent / 'thumbs'
+        thumb_path = thumb_dir / source_path.name
 
-        if not os.path.exists(thumb_dir):
-            os.mkdir(thumb_dir) 
+        # Create the thumbnail directory; no error if it already exists.
+        thumb_dir.mkdir(exist_ok=True)
 
-        if not os.path.exists(self.abspath):
-            LOG.warning('Cannot create thumbnail. Original image not found: '
-                        '%s', self.abspath)
-            return self.basename
+        if not source_path.exists():
+            LOG.warning('Cannot create thumbnail %s; original image not found: %s', thumb_path, source_path)
+            return source_path.name
 
-        # Set the command to perform. The module defines whether to use sips
-        # or ImageMagick; all that remains is to append, in order, the output
-        # and input files
-        LOG.trace('Creating thumbnail with %s(%s, %s)',
-                  THUMBNAIL_CMD, self.abspath, thumb_file)
-        cmd = THUMBNAIL_CMD(self.abspath, thumb_file)
+        LOG.trace('Creating thumbnail for %s', source_path)
+        cmd = THUMBNAIL_CMD(str(source_path), str(thumb_path))
 
-        env_no_ld_library_path = os.environ.copy()
-        env_no_ld_library_path.pop('LD_LIBRARY_PATH', None)
+        # Create a copy of the environment without LD_LIBRARY_PATH to avoid conflicts.
+        env = os.environ.copy()
+        env.pop('LD_LIBRARY_PATH', None)
 
         try:
-            with open(os.devnull, 'w') as dev_null:
-                ret = subprocess.call(cmd, stdout=dev_null, stderr=dev_null, env=env_no_ld_library_path)
-            if ret == 0:
-                # return code is 0: thumbnail file successfully created
-                return thumb_file
+            # Use the modern subprocess.run with DEVNULL for cleaner output handling.
+            result = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=env, check=False)
+            if result.returncode == 0:
+                # Return code 0 indicates success.
+                return str(thumb_path)
             else:
-                LOG.warning('Error creating thumbnail for %s' %
-                            os.path.basename(self.abspath))
-                return self.abspath
+                LOG.warning('Error creating thumbnail for %s (return code: %d)', source_path.name, result.returncode)
+                return str(source_path)
         except OSError as e:
-            # command not available. Return the full-sized image filename
-            LOG.warning('Error creating thumbnail for %s: %s' %
-                        (os.path.basename(self.abspath), e))
-            return self.abspath
+            # Command could not be found or executed.
+            LOG.warning('Error executing thumbnail command for %s: %s', source_path.name, e)
+            return str(source_path)
 
     def __repr__(self):
-        return '<Plot(\'%s\')>' % self.abspath 
+        return "<Plot('%s')>" % self.abspath

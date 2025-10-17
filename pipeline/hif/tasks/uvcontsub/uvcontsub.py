@@ -1,21 +1,19 @@
 import os
 import shutil
+import tarfile
 from collections import namedtuple
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
-import pipeline.infrastructure.tablereader as tablereader
-import pipeline.infrastructure.vdp as vdp
-import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure.utils import nested_dict
-from pipeline.infrastructure import casa_tasks
-from pipeline.domain import DataType
-from pipeline.infrastructure import task_registry
 import pipeline.infrastructure.sessionutils as sessionutils
-
+import pipeline.infrastructure.tablereader as tablereader
+import pipeline.infrastructure.utils as utils
+import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.hif.tasks.makeimlist import makeimlist
-
+from pipeline.infrastructure import casa_tasks, task_registry
+from pipeline.infrastructure.utils import nested_dict
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -26,11 +24,50 @@ class UVcontSubInputs(vdp.StandardInputs):
 
     fitorder = vdp.VisDependentProperty(default={})
     intent = vdp.VisDependentProperty(default='TARGET')
-
+    field = vdp.VisDependentProperty(default='')
+    spw = vdp.VisDependentProperty(default='')
     parallel = sessionutils.parallel_inputs_impl(default=False)
 
+    # docstring and type hints: supplements hif_uvcontsub
     def __init__(self, context, output_dir=None, vis=None, field=None,
                  spw=None, intent=None, fitorder=None, parallel=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the <hifa,hifv>_importdata task.
+                '': use all MeasurementSets in the context
+
+                Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+
+            field: The list of field names or field ids for which UV continuum fits are computed. Defaults to all fields.
+
+                Examples: '3C279', '3C279,M82'
+
+            spw: The list of spectral windows and channels for which uv continuum fits are computed.
+                '', Defaults to all science spectral windows.
+
+                Example: '11,13,15,17'
+
+            intent: A string containing a comma delimited list of intents against which the selected fields are matched.
+
+                '': Defaults to all data with TARGET intent.
+
+            fitorder: Polynomial order for the continuum fits per source and spw. Defaults to {} which means fit order 1 for all sources and
+                spws. If an explicit dictionary is given then all unspecified
+                selections still default to 1.
+
+                Example: {'3C279': {'15': 1, '17': 2}, 'M82': {'13': 2}}
+
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
+
+        """
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
@@ -52,6 +89,13 @@ class SerialUVcontSub(basetask.StandardTaskTemplate):
         # of the imaging heuristics methods to convert
         # frequency ranges to TOPO.
         MinimalTcleanHeuristicsInputsGenerator = namedtuple('MinimalTcleanHeuristicsInputs', 'vis field intent phasecenter spw spwsel_lsrk specmode')
+
+        
+        if self._skip_uvcontsub():
+            # Check if this stage should be skipped (never triggered for ALMA)
+            result = UVcontSubResults()
+            result.skip_stage = True
+            return result
 
         # Check for size mitigation errors.
         if 'status' in inputs.context.size_mitigation_parameters:
@@ -95,6 +139,9 @@ class SerialUVcontSub(basetask.StandardTaskTemplate):
             fitorder = inputs.fitorder
         else:
             fitorder = nested_dict()
+
+        # Optionally recover cont.dat
+        self._precheck_contdat()
 
         known_synthesized_beams = inputs.context.synthesized_beams
 
@@ -167,9 +214,16 @@ class SerialUVcontSub(basetask.StandardTaskTemplate):
             fitspec[field_ids][real_spw]['fitorder'] = 1
 
             # Check for any user specified fit order.
+            user_fitorder = False
             if minimal_tclean_inputs.field in fitorder:
                 if minimal_tclean_inputs.spw in fitorder[minimal_tclean_inputs.field]:
                     fitspec[field_ids][real_spw]['fitorder'] = fitorder[minimal_tclean_inputs.field][minimal_tclean_inputs.spw]
+                    user_fitorder = True
+
+            # If there was no user defined fit order, check for hif_findcont flags.
+            if not user_fitorder:
+                if imaging_target['spwsel_low_bandwidth'] or imaging_target['spwsel_low_spread']:
+                    fitspec[field_ids][real_spw]['fitorder'] = 0
 
             # Collect fit order for weblog
             topo_freq_fitorder_dict[minimal_tclean_inputs.field][real_spw]['fitorder'] = fitspec[field_ids][real_spw]['fitorder']
@@ -213,7 +267,7 @@ class SerialUVcontSub(basetask.StandardTaskTemplate):
 
     def analyse(self, result):
 
-        if not result.mitigation_error:
+        if not result.mitigation_error and not result.skip_stage:
             # Check for existence of the output vis.
             if not os.path.exists(result.outputvis):
                 LOG.debug('Error creating science targets line MS %s' % (os.path.basename(result.outputvis)))
@@ -232,6 +286,19 @@ class SerialUVcontSub(basetask.StandardTaskTemplate):
 
         return result
 
+    def _skip_uvcontsub(self) -> bool:
+        """Check if we should skip the continuum finding heuristics.
+
+        Note: this is only relevant for VLA to check if we should proceed with VLA cube imaging sequence
+        """
+        uvcontsub_datatypes = [
+            DataType.SELFCAL_CONTLINE_SCIENCE,
+            DataType.REGCAL_CONTLINE_SCIENCE,
+        ]
+        ms_list = self.inputs.context.observing_run.get_measurement_sets_of_type(uvcontsub_datatypes, msonly=True)
+        telescope = self.inputs.context.project_summary.telescope
+        return 'VLA' in telescope.upper() and not ms_list
+
     @staticmethod
     def _copy_xml_files(vis, outputvis):
         for xml_filename in ['SpectralWindow.xml', 'DataDescription.xml']:
@@ -241,6 +308,43 @@ class SerialUVcontSub(basetask.StandardTaskTemplate):
                 LOG.info('Copying %s from original MS to science targets line MS', xml_filename)
                 LOG.trace('Copying %s: %s to %s', xml_filename, vis_source, outputvis_target_line)
                 shutil.copyfile(vis_source, outputvis_target_line)
+
+    @staticmethod
+    def _precheck_contdat():
+        """Attempt to recover `cont.dat` if missing.
+
+        This method checks if `cont.dat` is present in the current directory.
+        If not, it searches for a compressed auxiliary product (`*.auxproducts.tgz`) 
+        or a direct `cont.dat` file in the `../products/` directory. If a valid 
+        tar archive is found containing `cont.dat`, the method extracts it.
+        """
+        contdatfile = 'cont.dat'
+        if os.path.exists(contdatfile):
+            LOG.debug("File %s already exists. No recovery needed.", contdatfile)
+            return
+
+        search_patterns = ["../products/*.auxproducts.tgz", "../products/"+contdatfile]
+        for pattern in search_patterns:
+            for file_path in utils.glob_ordered(pattern):
+                if file_path.endswith(".auxproducts.tgz") and tarfile.is_tarfile(file_path):
+                    try:
+                        with tarfile.open(file_path, "r:gz") as tar:
+                            members = [m for m in tar.getmembers() if m.name == contdatfile]
+                            if members:
+                                LOG.info("Extracting %s from %s", contdatfile, file_path)
+                                tar.extractall(members=members)
+                                LOG.info("Extraction complete.")
+                                return
+                    except tarfile.TarError as e:
+                        LOG.error("Failed to extract %s from %s: %s", contdatfile, file_path, str(e))
+                        return
+
+                elif file_path.endswith("cont.dat"):
+                    LOG.info("Found %s at %s. Copying to current directory.", contdatfile, file_path)
+                    shutil.copyfile(file_path, contdatfile)
+                    return
+
+        LOG.debug("No valid archive or 'cont.dat' file found in '../products/'. Recovery failed.")
 
 
 @task_registry.set_equivalent_casa_task('hif_uvcontsub')
@@ -258,9 +362,10 @@ class UVcontSubResults(basetask.Results):
     def __init__(self):
         super().__init__()
         self.mitigation_error = False
+        self.skip_stage = False
         self.vis = None
         self.outputvis = None
-        self.field_intent_spw_list = None
+        self.field_intent_spw_list = []
         self.topo_freq_fitorder_dict = None
         self.line_mses = []
         self.casa_uvcontsub_result = None
@@ -268,6 +373,11 @@ class UVcontSubResults(basetask.Results):
         self.error_msg = ''
 
     def merge_with_context(self, context):
+        # Check to see if this stage was delibrately skipped
+        if self.skip_stage:
+            LOG.info("Skipping hif_uvcontsub due to VLA spectral lines MS not existing.")
+            return
+
         # Check for an output vis
         if not self.line_mses:
             LOG.error('No hif_uvcontsub results to merge')

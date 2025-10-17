@@ -1,9 +1,11 @@
 """The skycal task module to calibrate sky background."""
+from __future__ import annotations
+
 import collections
 import copy
 import os
 
-import numpy
+import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -15,12 +17,16 @@ from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
+from pipeline.domain.datatable import OnlineFlagIndex
 from ..common import SingleDishResults
-from typing import TYPE_CHECKING, Dict, List, Optional, Union
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pipeline.infrastructure.launcher import Context
 
 LOG = infrastructure.get_logger(__name__)
+
+# Threshold of the elevation difference of QA score
+ELEVATION_DIFFERENCE_THRESHOLD = 3.0  # deg
 
 
 class SDSkyCalInputs(vdp.StandardInputs):
@@ -43,7 +49,7 @@ class SDSkyCalInputs(vdp.StandardInputs):
         return self.vis
 
     @infiles.convert
-    def infiles(self, value: Union[str, List[str]]) -> Union[str, List[str]]:
+    def infiles(self, value: str | list[str]) -> str | list[str]:
         """Convert value into expected type.
 
         Currently, no conversion is performed.
@@ -57,42 +63,106 @@ class SDSkyCalInputs(vdp.StandardInputs):
         self.vis = value
         return value
 
+    # docstring and type hints: supplements hsd_skycal
     def __init__(
             self,
-            context: 'Context',
-            calmode: Optional[str] = None,
-            fraction: Optional[float] = None,
-            noff: Optional[int] = None,
-            width: Optional[float] = None,
-            elongated: Optional[bool] = None,
-            output_dir: Optional[str] = None,
-            infiles: Optional[str] = None,
-            outfile: Optional[str] = None,
-            field: Optional[str] = None,
-            spw: Optional[str] = None,
-            scan: Optional[str] = None,
-            parallel: Optional[Union[bool, str]] = None
+            context: Context,
+            calmode: str | None = None,
+            fraction: float | None = None,
+            noff: int | None = None,
+            width: float | None = None,
+            elongated: bool | None = None,
+            output_dir: str | None = None,
+            infiles: str | None = None,
+            outfile: str | None = None,
+            field: str | None = None,
+            spw: str | None = None,
+            scan: str | None = None,
+            parallel: bool | str | None = None
             ):
         """Initialize SDK2JyCalInputs instance.
 
         Args:
             context: Pipeline context.
+
             calmode: Calibration mode.
-            fraction: Value of fraction of OFF scan data against total data number.
-            noff: Number of OFF scan data.
-            width: Value of pixel width, e.g., a median spatial separation between
-            neighboring two data in time.
-            elongated: Whether observed area is elongated in one direction (True)
-            or not (False).
+                Available options are 'auto' (default), 'ps', 'otf', and
+                'otfraster'. When 'auto' is set, the task will use preset
+                calibration mode that is determined by inspecting data.
+                'ps' mode is simple position switching using explicit reference
+                scans. Other two modes, 'otf' and 'otfraster', will generate
+                reference data from scans at the edge of the map. Those modes
+                are intended for OTF observation and the former is defined for
+                generic scanning pattern such as Lissajous, while the latter is
+                specific use for raster scan.
+
+                Options: 'auto', 'ps', 'otf', 'otfraster'
+
+                Default: None (equivalent to 'auto')
+
+            fraction: Sub-parameter for calmode. Edge marking parameter for
+                'otf' and 'otfraster' mode. It specifies a number of OFF scans
+                as a fraction of total number of data points.
+
+                Options: String style like '20%', or float value less than 1.0.
+                    For 'otfraster' mode, you can also specify 'auto'.
+
+                Default: None (equivalent to '10%')
+
+            noff: Sub-parameter for calmode. Edge marking parameter for
+                'otfraster' mode. It is used to specify a number of OFF scans
+                near edge directly instead to specify it by fractional
+                number by 'fraction'. If it is set, the value will come
+                before setting by 'fraction'.
+
+                Options: any positive integer value
+
+                Default: None (equivalent to '')
+
+            width: Sub-parameter for calmode. Edge marking parameter for
+                'otf' mode. It specifies pixel width with respect to
+                a median spatial separation between neighboring two data
+                in time. Default will be fine in most cases.
+
+                Options: any float value
+
+                Default: None (equivalent to 0.5)
+
+            elongated: Sub-parameter for calmode. Edge marking parameter
+                for 'otf' mode. Please set True only if observed area is
+                elongated in one direction.
+
+                Default: None (equivalent to False)
+
             output_dir: Name of output directory.
-            infiles: Name of MS or list of names.
+
+            infiles: List of data files. These must be a name of
+                MeasurementSets that are registered to context
+                via hsd_importdata or hsd_restoredata task.
+
+                Example: vis=['X227.ms', 'X228.ms']
+
             outfile: Name of the output file.
-            field: Field selection.
-            spw: Spectral window (spw) selection.
-            scan: Scan selection.
+
+            field: Data selection by field name.
+
+            spw: Data selection by spw.
+
+                Example: '3,4' (generate caltable for spw 3 and 4), ['0','2'] (spw 0 for first data, 2 for second)
+
+                Default: None (process all science spws)
+
+            scan: Data selection by scan number. (default all scans)
+
+                Example: '22,23' (use scan 22 and 23 for calibration), ['22','24'] (scan 22 for first data, 24 for second)
+
+                Default: None (process all scans)
+
             parallel: Execute using CASA HPC functionality, if available.
-                      Default is None, which intends to turn on parallel
-                      processing if possible.
+
+                Options: 'automatic', 'true', 'false', True, False
+
+                Default: None (equivalent to 'automatic')
         """
         super(SDSkyCalInputs, self).__init__()
 
@@ -115,7 +185,7 @@ class SDSkyCalInputs(vdp.StandardInputs):
 
         self.parallel = parallel
 
-    def to_casa_args(self) -> Dict:
+    def to_casa_args(self) -> dict:
         """Convert Inputs instance to the list of keyword arguments for sdcal.
 
         Returns:
@@ -141,9 +211,9 @@ class SDSkyCalResults(SingleDishResults):
 
     def __init__(
             self,
-            task: Optional[str] = None,
-            success: Optional[bool] = None,
-            outcome: Optional[str] = None
+            task: str | None = None,
+            success: bool | None = None,
+            outcome: str | None = None
             ) -> None:
         """Initialize SDSkyCalResults instance.
 
@@ -156,7 +226,7 @@ class SDSkyCalResults(SingleDishResults):
         super(SDSkyCalResults, self).__init__(task, success, outcome)
         self.final = self.outcome
 
-    def merge_with_context(self, context: 'Context') -> None:
+    def merge_with_context(self, context: Context) -> None:
         """Merge result instance into context.
 
         The CalApplication instance updated by the skycal task is added to
@@ -186,7 +256,6 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
     """Generate sky calibration table."""
 
     Inputs = SDSkyCalInputs
-    ElevationDifferenceThreshold = 3.0  # deg
 
     def prepare(self) -> SDSkyCalResults:
         """Prepare arguments for CASA job and execute it.
@@ -312,40 +381,6 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         Returns:
             Updated SDSkyCalResults instance.
         """
-        # compute elevation difference between ON and OFF and
-        # warn if it exceeds elevation threshold
-        threshold = self.ElevationDifferenceThreshold
-        context = self.inputs.context
-        resultdict = compute_elevation_difference(context, result)
-        ms = self.inputs.ms
-
-        spectralspecs = ms.get_spectral_specs()
-        spectralspecs_spwids = {}
-        for ss in spectralspecs:
-            spw_ss = ms.get_spectral_windows(science_windows_only=True, spectralspecs = [ss])
-            list_spwids = [x.id for x in spw_ss]
-            if len(list_spwids) == 0:
-                continue
-            else:
-                spectralspecs_spwids[ss] = list_spwids
-
-        for list_spwids in spectralspecs_spwids.values():
-            spwid0 = list_spwids[0]
-            for field_id, eldfield in resultdict.items():
-                for antenna_id, eldant in eldfield.items():
-                    assert spwid0 in eldant
-                    eldiff0 = eldant[spwid0].eldiff0
-                    eldiff1 = eldant[spwid0].eldiff1
-                    eldiff = numpy.append(eldiff0, eldiff1)
-                    if len(eldiff) > 0:
-                        eldmax = numpy.max(numpy.abs(eldiff))
-                        if eldmax >= threshold:
-                            field_name = ms.fields[field_id].name
-                            antenna_name = ms.antennas[antenna_id].name
-                            LOG.warning('Elevation difference between ON and OFF for {} field {} antenna {} spw {} was {}deg'
-                                        ' exceeding the threshold of {}deg'
-                                        ''.format(ms.basename, field_name, antenna_name, list_spwids, eldmax, threshold))
-
         return result
 
 
@@ -358,7 +393,68 @@ class SDSkyCal(sessionutils.ParallelTemplate):
     Task = SerialSDSkyCal
 
 
-def compute_elevation_difference(context: 'Context', results: SDSkyCalResults) -> Dict:
+def get_elevation(
+        datatable_name: str,
+        spw_id: int | str,
+        antenna_id: int | str,
+        field_id: int | str,
+        on_source: bool
+) -> dict[str, np.ndarray]:
+    """Get elevation and associated time and flag from datatable.
+
+    Args:
+        datatable_name: Name of the datatable.
+        spw_id: Spectral window ID.
+        antenna_id: Antenna ID.
+        field_id: Field ID.
+        on_source: If True, get elevation for on-source data,
+            otherwise for off-source data.
+
+    Returns:
+        Dictionary with time and elevation.
+        - time: Array of time in seconds.
+        - el: Array of elevation in radians.
+        - online_flag: Array of online flags
+            (False for valid, True for invalid data).
+    """
+    ro_datatable_name = os.path.join(datatable_name, 'RO')
+    rw_datatable_name = os.path.join(datatable_name, 'RW')
+    with casa_tools.TableReader(ro_datatable_name) as tb:
+        taql = f'IF=={spw_id}&&ANTENNA=={antenna_id}&&FIELD_ID=={field_id}'
+        if on_source:
+            taql += '&&SRCTYPE==0'
+        else:
+            taql += '&&SRCTYPE!=0'
+        selected = tb.query(taql)
+        if selected.nrows() == 0:
+            selected.close()
+            return {
+                'time': np.array([], dtype=float),
+                'el': np.array([], dtype=float),
+                'online_flag': np.array([], dtype=bool)
+            }
+        npol = selected.getcell('NPOL', 0)
+        time = selected.getcol('TIME')
+        el = selected.getcol('EL')
+        rows = selected.rownumbers()
+        selected.close()
+
+    with casa_tools.TableReader(rw_datatable_name) as tb:
+        it = (
+            np.all(tb.getcellslice(
+                'FLAG_PERMANENT',
+                i,
+                blc=[0, OnlineFlagIndex],
+                trc=[npol - 1, OnlineFlagIndex],
+                incr=[1, 1]
+            ) != 1) for i in rows
+        )
+        online_flag = np.fromiter(it, dtype=bool)
+
+    return {'time': time, 'el': el, 'online_flag': online_flag}
+
+
+def compute_elevation_difference(context: Context, results: SDSkyCalResults) -> dict:
     """Compute elevation difference.
 
     Args:
@@ -371,8 +467,10 @@ def compute_elevation_difference(context: 'Context', results: SDSkyCalResults) -
             contain the result from one MS (given that SDSkyCal is per-MS task).
     """
     ElevationDifference = collections.namedtuple('ElevationDifference',
-                                                 ['timeon', 'elon', 'timecal', 'elcal',
-                                                  'time0', 'eldiff0', 'time1', 'eldiff1'])
+                                                 ['timeon', 'elon', 'flagon',
+                                                  'timecal', 'elcal',
+                                                  'time0', 'eldiff0',
+                                                  'time1', 'eldiff1'])
 
     if not isinstance(results, SDSkyCalResults):
         raise TypeError('Results type should be SDSkyCalResults')
@@ -393,22 +491,9 @@ def compute_elevation_difference(context: 'Context', results: SDSkyCalResults) -
             assert len(fields) > 0
             field_id_on = fields[0].id
 
-        #if ms.basename not in resultdict:
-        #    resultdict[ms.basename] = {}
-
         antenna_ids = [ant.id for ant in ms.antennas]
 
-        # representative spw
         science_spw = ms.get_spectral_windows(science_windows_only=True)
-#         # choose representative spw based on representative frequency if it is available
-#         if hasattr(ms, 'representative_target') and ms.representative_target[1] is not None:
-#             qa = casa_tools.quanta
-#             rep_freq = ms.representative_target[1]
-#             centre_freqs = [qa.quantity(spw.centre_frequency.str_to_precision(16)) for spw in science_spw]
-#             freq_diffs = [abs(qa.sub(cf, rep_freq).convert('Hz')['value']) for cf in centre_freqs]
-#             spw_id = science_spw[numpy.argmin(freq_diffs)].id
-#         else:
-#             spw_id = science_spw[0].id
 
         calfroms = calapp.calfrom
 
@@ -442,46 +527,57 @@ def compute_elevation_difference(context: 'Context', results: SDSkyCalResults) -
                         selected.close()
 
                     # access DataTable to get elevation
-                    ro_datatable_name = os.path.join(context.observing_run.ms_datatable_name,
-                                                     os.path.basename(ms.origin_ms), 'RO')
-                    with casa_tools.TableReader(ro_datatable_name) as tb:
-                        selected = tb.query('IF=={}&&ANTENNA=={}&&FIELD_ID=={}&&SRCTYPE==0'
-                                            ''.format(spw_id, antenna_id, field_id_on))
-                        timeon = selected.getcol('TIME')
-                        elon = selected.getcol('EL')
-                        selected.close()
-                        selected = tb.query('IF=={}&&ANTENNA=={}&&FIELD_ID=={}&&SRCTYPE!=0'
-                                            ''.format(spw_id, antenna_id, field_id_off))
-                        timeoff = selected.getcol('TIME')
-                        eloff = selected.getcol('EL')
-                        selected.close()
-
-                    elcal = eloff[[numpy.argmin(numpy.abs(timeoff - t)) for t in timecal]]
-
-                    del timeoff, eloff
+                    datatable_name = os.path.join(
+                        context.observing_run.ms_datatable_name,
+                        os.path.basename(ms.origin_ms)
+                    )
+                    data_on = get_elevation(
+                        datatable_name,
+                        spw_id, antenna_id, field_id_on, on_source=True
+                    )
+                    timeon = data_on['time']
+                    elon = data_on['el']
+                    flagon = data_on['online_flag']
+                    data_off = get_elevation(
+                        datatable_name,
+                        spw_id, antenna_id, field_id_off, on_source=False
+                    )
+                    timeoff = data_off['time']
+                    eloff = data_off['el']
+                    flagoff = data_off['online_flag']
+                    eloff_valid = eloff[np.logical_not(flagoff)]
+                    timeoff_valid = timeoff[np.logical_not(flagoff)]
+                    elcal = eloff_valid[
+                        [np.argmin(np.abs(timeoff_valid - t)) for t in timecal]
+                    ]
 
                     eldiff0 = []
                     eldiff1 = []
                     time0 = []
                     time1 = []
-                    for t, el in zip(timeon, elon):
+                    for t, el, flg in zip(timeon, elon, flagon):
+                        # do not process flagged data
+                        if flg:
+                            continue
+
                         dt = timecal - t
-                        idx0 = numpy.where(dt < 0)[0]
+                        idx0 = np.where(dt < 0)[0]
                         if len(idx0) > 0:
-                            i = numpy.argmax(timecal[idx0])
+                            i = np.argmax(timecal[idx0])
                             time0.append(t)
                             eldiff0.append(el - elcal[idx0[i]])
-                        idx1 = numpy.where(dt >= 0)[0]
+                        idx1 = np.where(dt >= 0)[0]
                         if len(idx1) > 0:
-                            i = numpy.argmin(timecal[idx1])
+                            i = np.argmin(timecal[idx1])
                             time1.append(t)
                             eldiff1.append(el - elcal[idx1[i]])
-                    eldiff0 = numpy.asarray(eldiff0)
-                    eldiff1 = numpy.asarray(eldiff1)
-                    time0 = numpy.asarray(time0)
-                    time1 = numpy.asarray(time1)
+                    eldiff0 = np.asarray(eldiff0)
+                    eldiff1 = np.asarray(eldiff1)
+                    time0 = np.asarray(time0)
+                    time1 = np.asarray(time1)
 
                     result = ElevationDifference(timeon=timeon, elon=elon,
+                                                 flagon=flagon,
                                                  timecal=timecal, elcal=elcal,
                                                  time0=time0, eldiff0=eldiff0,
                                                  time1=time1, eldiff1=eldiff1)

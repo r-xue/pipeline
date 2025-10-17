@@ -3,37 +3,25 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hifv.tasks.hanning.hanning.HanningInputs.__init__
 @utils.cli_wrapper
-def hifv_hanning(vis=None, dryrun=None, acceptresults=None):
+def hifv_hanning(vis=None, maser_detection=None, spws_to_smooth=None):
 
-    """
-    hifv_hanning ---- Hanning smoothing on a dataset
+    """Hanning smoothing on a dataset.
 
-    The hifv_hanning task will hanning smooth a VLA dataset
+    The hifv_hanning task will hanning smooth a VLA dataset.
 
-    
-    
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    
-    --------- parameter descriptions ---------------------------------------------
+    Returns:
+        The results object for the pipeline task is returned.
 
-    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
-                  specified in the h_init or hifv_importdata task.
-    dryrun        Run the commands (True) or generate the commands to be run but
-                  do not execute (False).  This is a pipeline task execution mode.
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).  This is a pipeline task execution mode.
+    Examples:
+        1. Run the task to execute hanning smoothing on a VLA CASA pipeline loaded MeasurementSet:
 
-    --------- examples -----------------------------------------------------------
-    
-    
-    1. Run the task to execute hanning smoothing on a VLA CASA pipeline loaded MeasurementSet.
-    
-    >>> hifv_hanning()
+        >>> hifv_hanning()
 
+        2. Run the task with maser detection off and to only smooth spws 2 through 5.
+
+        >>> hifv_hanning(maser_detection=False, spws_to_smooth='2~5')
 
     """
 

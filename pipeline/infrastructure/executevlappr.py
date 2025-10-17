@@ -10,20 +10,21 @@ Raises:
 import os
 import sys
 import traceback
+from typing import TYPE_CHECKING, Tuple, Union
 
-from . import argmapper
 from . import casa_tools
 from . import exceptions
-from . import Pipeline
 from . import project
-from . import task_registry
 from . import utils
-from . import vdp
-from .executeppr import _getCommands, _getIntents, _getPerformanceParameters, _getPprObject
+from .. import cli
+from .executeppr import _getCommands, _getIntents, _getPerformanceParameters, _getProcessingIntents, _getPprObject, save_existing_context
+
+if TYPE_CHECKING:
+    from pipeline.extern.XmlObjectifier import XmlObject
 
 
-def executeppr(pprXmlFile: str, importonly: bool = True, dry_run: bool = False, loglevel: str = 'info',
-               plotlevel: str = 'summary', interactive: bool = True):
+def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
+               plotlevel: str = 'summary', interactive: bool = True) -> None:
     """
     Runs Pipeline Processing Request (PPR).
 
@@ -41,6 +42,9 @@ def executeppr(pprXmlFile: str, importonly: bool = True, dry_run: bool = False, 
             'summary'
         interactive: If True, print pipeline log to STDOUT.
     """
+    # save existing context to disk
+    save_existing_context()
+
     # Useful mode parameters
     echo_to_screen = interactive
     workingDir = None
@@ -50,13 +54,22 @@ def executeppr(pprXmlFile: str, importonly: bool = True, dry_run: bool = False, 
         casa_tools.post_to_log("Analyzing pipeline processing request ...", echo_to_screen=echo_to_screen)
         info, structure, relativePath, intentsDict, asdmList, procedureName, commandsList = \
             _getFirstRequest(pprXmlFile)
+        processing_intents = _getProcessingIntents(intentsDict, procedureName)
 
         # Set the directories
-        workingDir = os.path.join(os.path.expandvars("$SCIPIPE_ROOTDIR"), relativePath, "working")
-        rawDir = os.path.join(os.path.expandvars("$SCIPIPE_ROOTDIR"), relativePath, "rawdata")
+        if 'SCIPIPE_ROOTDIR' in os.environ:
+            workingDir = os.path.join(os.path.expandvars('$SCIPIPE_ROOTDIR'), relativePath, 'working')
+            rawDir = os.path.join(os.path.expandvars('$SCIPIPE_ROOTDIR'), relativePath, 'rawdata')
+        else:
+            # PIPE-2093: if $SCIPIPE_ROOTDIR doesn't exist, we likely run in a local dev/test environment.
+            # Then we will override the typical production workingDir/rawDIR values that are traditionally
+            # constructed from $SCIPIPE_ROOTDIR and the PPR <RelativePath> field. Note that we assume that
+            # any executeppr call here happens inside the "working/" directory.
+            workingDir = os.path.abspath(os.path.join('..', 'working'))
+            rawDir = os.path.abspath(os.path.join('..', 'rawdata'))
 
         # Get the pipeline context
-        context = Pipeline(loglevel=loglevel, plotlevel=plotlevel).context
+        context = cli.h_init(loglevel=loglevel, plotlevel=plotlevel, processing_intents=processing_intents)
 
     except Exception:
         casa_tools.post_to_log("Beginning pipeline run ...", echo_to_screen=echo_to_screen)
@@ -137,23 +150,26 @@ def executeppr(pprXmlFile: str, importonly: bool = True, dry_run: bool = False, 
     casa_tools.post_to_log("Procedure name: " + procedureName + "\n", echo_to_screen=echo_to_screen)
 
     # Names of import tasks that need special treatment:
-    import_tasks = ('ImportData', 'ALMAImportData', 'VLAImportData')
-    restore_tasks = ('RestoreData', 'VLARestoreData')
-
+    import_tasks = ('h_importdata', 'hifa_importdata', 'hifv_importdata')
+    restore_tasks = ('h_restoredata', 'hifv_restoredata')
+    breakpoint_task = 'breakpoint'
     # Loop over the commands
     for command in commandsList:
 
         # Get task name and arguments lists.
-        casa_task = command[0]
+        pipeline_task_name = command[0]
         task_args = command[1]
-        casa_tools.set_log_origin(fromwhere=casa_task)
+        casa_tools.set_log_origin(fromwhere=pipeline_task_name)
+
+        # PIPE-2388: Skipping breakpoint command
+        if pipeline_task_name == breakpoint_task:
+            casa_tools.post_to_log("Found {}, not performing any action.".format(pipeline_task_name), echo_to_screen=echo_to_screen)
+            continue
 
         # Execute the command
-        casa_tools.post_to_log("Executing command ..." + casa_task, echo_to_screen=echo_to_screen)
+        casa_tools.post_to_log("Executing command ..." + pipeline_task_name, echo_to_screen=echo_to_screen)
         try:
-            pipeline_task_class = task_registry.get_pipeline_class_for_task(casa_task)
-            pipeline_task_name = pipeline_task_class.__name__
-            casa_tools.post_to_log("    Using python class ..." + pipeline_task_name, echo_to_screen=echo_to_screen)
+            pipeline_task = cli.get_pipeline_task_with_name(pipeline_task_name)
 
             # List parameters
             for keyword, value in task_args.items():
@@ -166,33 +182,23 @@ def executeppr(pprXmlFile: str, importonly: bool = True, dry_run: bool = False, 
 
             # If spectral mode is set to True, skip the Hanning task.
             spectral_mode = intentsDict.get('SPECTRAL_MODE', False)
-            if spectral_mode and pipeline_task_name == 'Hanning':
+            if spectral_mode and pipeline_task_name == 'hifv_hanning':
                 casa_tools.post_to_log("SPECTRAL_MODE=True.  Hanning smoothing will not be executed.")
                 continue
 
-            remapped_args = argmapper.convert_args(pipeline_task_class, task_args, convert_nulls=False)
-            inputs = vdp.InputsContainer(pipeline_task_class, context, **remapped_args)
-            task = pipeline_task_class(inputs)
-            results = task.execute(dry_run=dry_run)
+            results = pipeline_task(**task_args)
             casa_tools.post_to_log('Results ' + str(results), echo_to_screen=echo_to_screen)
-
-            try:
-                results.accept(context)
-            except Exception:
-                casa_tools.post_to_log("Error: Failed to update context for " + pipeline_task_name,
-                                       echo_to_screen=echo_to_screen)
-                raise
 
             if importonly and pipeline_task_name in import_tasks:
                 casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
-                                       echo_to_screen=echo_to_screen)
+                                        echo_to_screen=echo_to_screen)
                 break
 
         except Exception:
             # Log message if an exception occurred that was not handled by
             # standardtask template (not turned into failed task result).
             casa_tools.post_to_log("Unhandled error in executevlappr while running pipeline task {}"
-                                   "".format(pipeline_task_name), echo_to_screen=echo_to_screen)
+                                    "".format(pipeline_task_name), echo_to_screen=echo_to_screen)
             errstr = traceback.format_exc()
             casa_tools.post_to_log(errstr, echo_to_screen=echo_to_screen)
             errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
@@ -203,7 +209,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, dry_run: bool = False, 
         tracebacks = utils.get_tracebacks(results)
         if len(tracebacks) > 0:
             # Save the context
-            context.save()
+            cli.h_save()
 
             casa_tools.set_log_origin(fromwhere='')
 
@@ -212,7 +218,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, dry_run: bool = False, 
             raise exceptions.PipelineException(previous_tracebacks_as_string)
 
     # Save the context
-    context.save()
+    cli.h_save()
 
     casa_tools.post_to_log("Terminating procedure execution ...", echo_to_screen=echo_to_screen)
 
@@ -224,7 +230,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, dry_run: bool = False, 
 # Return the intents list, the ASDM list, and the processing commands
 # for the first processing request. There should in general be only
 # one but the schema permits more. Generalize later if necessary.
-def _getFirstRequest(pprXmlFile):
+def _getFirstRequest(pprXmlFile: 'XmlObject') -> Union[Tuple[list, str, dict, list, list], Tuple[list, list, str, dict, list, str, list]]:
     # Initialize
     info = []
     relativePath = ""
@@ -282,7 +288,7 @@ def _getFirstRequest(pprXmlFile):
 
 # Given the pipeline processing request object print some project summary
 # information. Returns a list of tuples to preserve order (key, (prompt, value))
-def _getProjectSummary(pprObject):
+def _getProjectSummary(pprObject: 'XmlObject') -> list:
     ppr_summary = pprObject.SciPipeRequest.ProjectSummary
     summaryList = []
     summaryList.append(('proposal_code', ('Proposal code: ', ppr_summary.ProposalCode.getValue())))
@@ -297,7 +303,7 @@ def _getProjectSummary(pprObject):
 # Given the pipeline processing request object return the number of processing
 # requests. For EVLA this should always be 1 but check. Assume a single scheduling block
 # per processing request.
-def _getNumRequests(pprObject):
+def _getNumRequests(pprObject: 'XmlObject') -> int:
     ppr_prequests = pprObject.SciPipeRequest.ProcessingRequests
 
     numRequests = 0
@@ -329,7 +335,7 @@ def _getNumRequests(pprObject):
 
 # Given the pipeline processing request object return the number of scheduling
 # block sets. For the EVLA there can be only one.
-def _getNumSchedBlockSets(pprObject, requestId, numRequests):
+def _getNumSchedBlockSets(pprObject: 'XmlObject', requestId: int, numRequests: int) -> int:
     if numRequests == 1:
         ppr_dset = pprObject.SciPipeRequest.ProcessingRequests.ProcessingRequest.DataSet
     else:
@@ -347,7 +353,7 @@ def _getNumSchedBlockSets(pprObject, requestId, numRequests):
 # Given the pipeline processing request object return a list of ASDMs
 # where each element in the list is a tuple consisting of the path
 # to the ASDM, the name of the ASDM, and the UID of the ASDM.
-def _getAsdmList(pprObject, numSbSets, numRequests):
+def _getAsdmList(pprObject: 'XmlObject', numSbSets: int, numRequests: int) -> Tuple[str, int, list]:
     if numRequests == 1:
         ppr_dset = pprObject.SciPipeRequest.ProcessingRequests.ProcessingRequest.DataSet
         if numSbSets == 1:

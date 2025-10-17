@@ -1,25 +1,20 @@
 from typing import List
 
 import numpy as np
-from astropy.coordinates import SkyCoord, EarthLocation, AltAz
+from astropy.coordinates import AltAz, EarthLocation, SkyCoord
 from astropy.time import Time
-from astropy.utils.iers import conf as iers_conf
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain.measurementset import MeasurementSet
+from pipeline.extern.adopted import getMedianPWV
 from pipeline.h.tasks.common import atmutil
 from pipeline.h.tasks.common.arrayflaggerbase import channel_ranges
 from pipeline.h.tasks.flagging import flagdeterbase
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 from pipeline.infrastructure.utils import utils
-from pipeline.infrastructure import casa_tools
-from pipeline.extern.adopted import getMedianPWV
-
-# Avoid downloading the updated IERS tables from the internet because an
-#  approximate value is enough in this case
-iers_conf.auto_max_age = None
 
 __all__ = [
     'FlagDeterALMA',
@@ -58,11 +53,105 @@ class FlagDeterALMAInputs(flagdeterbase.FlagDeterBaseInputs):
     qa0 = vdp.VisDependentProperty(default=True)
     qa2 = vdp.VisDependentProperty(default=True)
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
+    # docstring and type hints: supplements hifa_flagdata
     def __init__(self, context, vis=None, output_dir=None, flagbackup=None, autocorr=None, shadow=None, tolerance=None,
                  scan=None, scannumber=None, intents=None, edgespw=None, fracspw=None, fracspwfps=None, online=None,
                  partialpol=None, lowtrans=None, mintransnonrepspws=None, mintransrepspw=None,
-                 fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None, qa0=None, qa2=None):
-        super(FlagDeterALMAInputs, self).__init__(
+                 fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None, qa0=None, qa2=None,
+                 parallel=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: The list of input MeasurementSets. Defaults to the list of
+                MeasurementSets defined in the pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            flagbackup: Back up any pre-existing flags.
+
+            autocorr: Flag autocorrelation data.
+
+            shadow: Flag shadowed antennas.
+
+            tolerance: Amount of antenna shadowing tolerated, in meters. A positive number
+                allows antennas to overlap in projection. A negative number forces antennas
+                apart in projection. Zero implies a distance of radius_1+radius_2 between
+                antenna centers.
+
+            scan: Flag a list of specified scans.
+
+            scannumber: A string containing a comma delimited list of scans to be
+                flagged.
+
+                Example: scannumber='3,5,6'
+
+            intents: A string containing a comma delimited list of intents against
+                which the scans to be flagged are matched.
+
+                Example: intents='`*BANDPASS*`'
+
+            edgespw: Flag the edge spectral window channels.
+
+            fracspw: Fraction of channels to flag at both edges of TDM spectral windows.
+
+            fracspwfps: Fraction of channels to flag at both edges of ACA TDM
+                spectral windows that were created with the earlier (original)
+                implementation of the frequency profile synthesis (FPS) algorithm.
+
+            online: Apply the online flags.
+
+            partialpol: Identify integrations in multi-polarisation data where part
+                of the polarization products are already flagged, and flag the other
+                polarization products in those integrations.
+
+            lowtrans: Flag spectral windows for which a significant fraction of
+                the channels have atmospheric transmission below the
+                threshold (``mintransrepspw``, ``mintransnonrepspws``).
+
+            mintransnonrepspws: This atmospheric transmissivity threshold is used to flag
+                a non-representative science spectral window when more than 60% of
+                its channels have a transmissivity below this level.
+
+            mintransrepspw: This atmospheric transmissivity threshold is used to flag the
+                representative science spectral window when more than 60% of its channels
+                have a transmissivity below this level.
+
+            fileonline: File containing the online flags. These are computed by the
+                h_init or hifa_importdata data tasks. If the online flags files
+                are undefined a name of the form 'msname.flagonline.txt' is assumed.
+
+            template: Apply flagging templates
+
+            filetemplate: The name of a text file that contains the flagging template
+                for RFI, birdies, telluric lines, etc. If the template flags files
+                is undefined a name of the form 'msname.flagtemplate.txt' is assumed.
+
+            hm_tbuff: The heuristic for computing the default time interval padding
+                parameter. The options are 'halfint' and 'manual'. In 'halfint' mode tbuff
+                is set to half the maximum of the median integration time of the science
+                and calibrator target observations. The value of 0.048 seconds is
+                subtracted from the lower time limit to accommodate the behavior of the
+                ALMA Control system.
+
+            tbuff: The time in seconds used to pad flagging command time
+                intervals if ``hm_tbuff`` = 'manual'. The default in
+                manual mode is no flagging.
+
+            qa0: QA0 flags.
+
+            qa2: QA2 flags.
+
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
+
+        """
+        super().__init__(
             context, vis=vis, output_dir=output_dir, flagbackup=flagbackup, autocorr=autocorr, shadow=shadow,
             tolerance=tolerance, scan=scan, scannumber=scannumber, intents=intents, edgespw=edgespw, fracspw=fracspw,
             fracspwfps=fracspwfps, online=online, fileonline=fileonline, template=template,
@@ -72,13 +161,10 @@ class FlagDeterALMAInputs(flagdeterbase.FlagDeterBaseInputs):
         # solution parameters
         self.qa0 = qa0
         self.qa2 = qa2
+        self.parallel = parallel
 
 
-@task_registry.set_equivalent_casa_task('hifa_flagdata')
-@task_registry.set_casa_commands_comment(
-    'Flags generated by the online telescope software, by the QA0 process, and manually set by the pipeline user.'
-)
-class FlagDeterALMA(flagdeterbase.FlagDeterBase):
+class SerialFlagDeterALMA(flagdeterbase.FlagDeterBase):
     Inputs = FlagDeterALMAInputs
 
     # PIPE-425: define allowed bandwidths of ACA spectral windows for which to
@@ -110,16 +196,31 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
     _max_frac_low_trans = 0.6
 
     def prepare(self):
+        # PIPE-1759: this list collects the spws with missing basebands subsequently used to create a QA score
+        self.missing_baseband_spws = []
+
         # Wrap results from parent in hifa_flagdata specific result to enable
         # separate QA scoring.
         results = super().prepare()
-        return FlagDeterALMAResults(results.summaries, results.flagcmds())
+        results = FlagDeterALMAResults(results.summaries, results.flagcmds())
+
+        # PIPE-1759: store the list of spws with missing basebands for a subsequent QA score
+        results.missing_baseband_spws = self.missing_baseband_spws
+
+        # PIPE-933
+        # save deterministic flag state
+        task = casa_tasks.flagmanager(vis=self.inputs.vis, mode='save', versionname="after_deterministic_flagging",
+                                      comment="save deterministic flag state")
+        self._executor.execute(task)
+
+        return results
 
     def get_fracspw(self, spw):
         # From T. Hunter on PIPE-425: in early ALMA Cycles, the ACA
         # correlator's frequency profile synthesis (fps) algorithm produced TDM
         # spws that had 64 channels in full-polarisation, 124 channels in dual
         # pol, and 248 channels in single-pol.
+        # TODO: find out whether it should be 62 (as in code) or 64 (as per above comment)
         #
         # By comparison, the baseline correlator (BLC) standard values are 128
         # channels for dual pol, and 256 channels for single pol, and in more
@@ -137,7 +238,7 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
         # Override the default verifier:
         #  - first run the default verifier
         #  - then run extra test to skip flagging of TDM windows
-        super(FlagDeterALMA, self).verify_spw(spw)
+        super().verify_spw(spw)
 
         # Test whether the spw is TDM or FDM. If it is FDM, then raise a
         # ValueError. From T. Hunter on PIPE-425:
@@ -181,7 +282,7 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
 
     def _get_edgespw_cmds(self):
         # Run default edge channel flagging first.
-        to_flag = super(FlagDeterALMA, self)._get_edgespw_cmds()
+        to_flag = super()._get_edgespw_cmds()
 
         # Loop over the spectral windows, generate a flagging command for each
         # spw in the ms. Calling get_spectral_windows() with no arguments
@@ -212,7 +313,8 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
                 # TODO: in CASA 6.1, the correlator type should start to be
                 # propagated from ASDM to MS. Once available, this test could
                 # be future-proofed (w.r.t. possible new correlators) by
-                # explicitly checking whether the spw is an ACA spw.
+                # explicitly checking whether the spw is an ACA spw
+                # (e.g., self.inputs.ms.correlator_name == 'ALMA_ACA')
                 spw_bw_in_mhz = spw.bandwidth.to_units(otherUnits=measures.FrequencyUnits.MEGAHERTZ)
                 if spw_bw_in_mhz in self._aca_edge_flag_thresholds.keys():
                     to_flag.extend(self._get_aca_edgespw_cmds(spw, self._aca_edge_flag_thresholds[spw_bw_in_mhz]))
@@ -276,23 +378,38 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
                   ' that are too close to the baseband edge.'.format(spw.id))
 
         # For the given spectral window, identify the corresponding SQLD
-        # spectral window with TARGET intent, which is representative of the
-        # baseband.
-        bb_spw = [s for s in self.inputs.ms.get_spectral_windows(science_windows_only=False)
-                  if s.baseband == spw.baseband and s.type == 'SQLD' and 'TARGET' in s.intents]
+        # spectral window(s) with TARGET intent taken in same baseband.
+        bb_spws = [s for s in self.inputs.ms.get_spectral_windows(science_windows_only=False)
+                   if s.baseband == spw.baseband and s.type == 'SQLD' and 'TARGET' in s.intents]
 
-        # If no baseband spw could be identified, log warning and return
-        # with no new flagging commands.
-        if not bb_spw:
-            LOG.warning("{} - Unable to determine baseband range for spw {}, skipping ACA FDM edge flagging."
-                        "".format(self.inputs.ms.basename, spw.id))
+        # If no baseband spw could be identified, add the spw to the list of
+        # missing basebands and return with no new flagging commands.
+        if not bb_spws:
+            self.missing_baseband_spws.append(spw.id)
             return []
+        # If exactly 1 matching baseband spw was found, use that.
+        elif len(bb_spws) == 1:
+            bb_spw = bb_spws[0]
+        # If multiple matches were found within the same baseband, then
+        # attempt to further match against the same spectral tuning
+        # (SpectralSpec, PIPE-1991).
+        else:
+            bb_spws_same_ss = [s for s in bb_spws if s.spectralspec == spw.spectralspec]
+            # If exactly 1 match was found with same SpectralSpec, use that.
+            if len(bb_spws_same_ss) == 1:
+                bb_spw = bb_spws_same_ss[0]
+            # Otherwise, log a warning that no unambiguous match could be found,
+            # and proceed to use first match from original filter.
+            else:
+                bb_spw = bb_spws[0]
+                LOG.warning(f"{self.inputs.ms.basename}: unable to find unambiguous match of baseband SpW for science"
+                            f" SpW {spw.id}, selected first match (SpW {bb_spw.id}).")
 
         # Compute frequency ranges for which any channel that falls within the
         # range should be flagged; these ranges are set by the baseband edges
         # and the provided threshold.
-        bb_edges = [measures.FrequencyRange(bb_spw[0].min_frequency, bb_spw[0].min_frequency + threshold),
-                    measures.FrequencyRange(bb_spw[0].max_frequency - threshold, bb_spw[0].max_frequency)]
+        bb_edges = [measures.FrequencyRange(bb_spw.min_frequency, bb_spw.min_frequency + threshold),
+                    measures.FrequencyRange(bb_spw.max_frequency - threshold, bb_spw.max_frequency)]
 
         # Compute list of channels to flag as those channels that have an
         # overlap with either edge range of the baseband.
@@ -312,6 +429,17 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
             to_flag = ['{}:{}'.format(spw.id, chan_to_flag)]
 
         return to_flag
+
+
+@task_registry.set_equivalent_casa_task('hifa_flagdata')
+@task_registry.set_casa_commands_comment(
+    'Flags generated by the online telescope software, by the QA0 process, and manually set by the pipeline user.'
+)
+class FlagDeterALMA(sessionutils.ParallelTemplate):
+    """FlagDeterALMA class for parallelization."""
+
+    Inputs = FlagDeterALMAInputs
+    Task = SerialFlagDeterALMA
 
 
 def load_partialpols_alma(ms):

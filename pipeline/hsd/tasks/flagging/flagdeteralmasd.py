@@ -1,8 +1,14 @@
+from __future__ import annotations
+
 import collections
+import itertools
 import os
 import re
 import shutil
+import string
 from typing import TYPE_CHECKING, Generator, List, Optional, Union
+
+import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -12,8 +18,11 @@ import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.domain import DataTable
 from pipeline.h.tasks.flagging import flagdeterbase
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.displays import pointing
+from pipeline.hsd.heuristics.pointing_outlier import PointingOutlierHeuristics
+from pipeline.hsd.tasks.common.flagcmd_util import datatable_rowid_to_timerange
 
 if TYPE_CHECKING:
     from pipeline.domain import SpectralWindow
@@ -21,6 +30,11 @@ if TYPE_CHECKING:
 
 LOG = infrastructure.get_logger(__name__)
 
+PointingOutlierStats = collections.namedtuple(
+    "PointingOutlierStats",
+    ["cx", "cy", "median_distance", "factor",
+     "outliers", "timerange", "separations"]
+)
 
 class FlagDeterALMASingleDishInputs(flagdeterbase.FlagDeterBaseInputs):
     """
@@ -78,6 +92,7 @@ class FlagDeterALMASingleDishInputs(flagdeterbase.FlagDeterBaseInputs):
     qa0 = vdp.VisDependentProperty(default=True)
     qa2 = vdp.VisDependentProperty(default=True)
 
+    # docstring and type hints: supplements hsd_flagdata
     def __init__(self,
                  context: 'Context',
                  vis: Optional[List[str]] = None,
@@ -107,56 +122,103 @@ class FlagDeterALMASingleDishInputs(flagdeterbase.FlagDeterBaseInputs):
 
         Args:
             context: Pipeline context.
-            vis: The list of input MeasurementSets. Defaults to the
-                 list of MeasurementSets defined in the pipeline context.
+
+            vis: The list of input MeasurementSets. Defaults to the list of
+                MeasurementSets defined in the pipeline context.
+
             output_dir: Output directory.
-            flagbackup: Back up any pre-existing flags before applying
-                        new ones. Defaults to True.
-            autocorr: Flag autocorrelation data. Defaults to False.
-            shadow: Flag shadowed antennas. Defaults to True.
-            scan: Flag a list of scans specified by scannumber.
-                  Defaults to True.
-            scannumber: A string containing a comma delimited list of scans to be
-                        flagged. Defaults to '' (no scans are flagged).
-            intents: A string containing a comma delimited list of intents against
-                     which the scans to be flagged are matched. Defaults to
-                     intents that are not relevant to pipeline processing.
-            edgespw: Flag the edge spectral window channels. Defaults to True.
-            fracspw: Fraction of the baseline correlator TDM edge channels
-                     to be flagged. Defaults to '1.875GHz'.
-            fracspwfps: Fraction of the ACS correlator TDM edge channels
-                        to be flagged. Defaults to 0.048387.
-            online: Apply the online flags. Defaults to True.
+
+            flagbackup: Back up any pre-existing flags before applying new ones.
+
+                Default: None (equivalent to True)
+
+            autocorr: Flag autocorrelation data.
+
+                Default: None (equivalent to False)
+
+            shadow: Flag shadowed antennas.
+
+                Default: None (equivalent to True)
+
+            scan: Flag a list of scans and intents specified by scannumber and intents.
+
+                Default: None (equivalent to True)
+
+            scannumber: A string containing a comma delimited list of scans to be flagged.
+
+                Default: None (equivalent to '')
+
+            intents: A string containing a comma delimited list of intents
+                against which the scans to be flagged are matched.
+                Defaults to intents that are not relevant to pipeline processing.
+
+                Example: `'*BANDPASS*'`
+
+            edgespw: Flag the edge spectral window channels.
+
+                Default: None (equivalent to True)
+
+            fracspw: Fraction of the baseline correlator TDM edge channels to be flagged.
+
+                Default: None (equivalent to 0.03125)
+
+            fracspwfps: Fraction of the ACA correlator TDM edge channels to be flagged.
+
+                Default: None (equivalent to 0.048387)
+
+            online: Apply the online flags.
+
+                Default: None (equivalent to True)
+
             fileonline: File containing the online flags. These are computed
-                        by the h_init or hif_importdata data tasks. If the
-                        online flags files are undefined a name of the form
-                        'msname.flagonline.txt' is assumed.
-            template: Apply a flagging template. Defaults to True.
+                by the h_init or hsd_importdata data tasks. If the online flags files
+                are undefined a name of the form 'msname.flagonline.txt' is assumed.
+
+            template: Apply a flagging template.
+
+                Default: None (equivalent to True)
+
             filetemplate: The name of a text file that contains the flagging
-                          template for RFI, birdies, telluric lines, etc.
-                          If the template flags files is undefined a name of
-                          the form 'msname.flagtemplate.txt' is assumed.
+                template for RFI, birdies, telluric lines, etc.  If the
+                template flags files is undefined a name of the form
+                'msname.flagtemplate.txt' is assumed.
+
             pointing: Apply a flagging template for pointing flag.
-                      Defaults to True.
+
+                Default: None (equivalent to True)
+
             filepointing: The name of a text file that contains the flagging
-                          template for pointing flag. If the template flags
-                          files is undefined a name of the form
-                          'msname.flagpointing.txt' is assumed.
+                template for pointing flag. If the template flags files is
+                undefined a name of the form 'msname.flagpointing.txt' is assumed.
+
             incompleteraster: Apply commands to flag incomplete raster sequence.
-                              If this is False, relevant commands in filepointing
-                              are simply commented out. Defualts to True.
+                If this is False, relevant commands in filepointing are
+                simply commented out.
+
+                Default: None (equivalent to True)
+
             hm_tbuff: The heuristic for computing the default time interval
-                      padding parameter. The options are 'halfint' and 'manual'.
-                      In 'halfint' mode tbuff is set to half the maximum of the
-                      median integration time of the science and calibrator target
-                      observations.
-            tbuff: The time in seconds used to pad flagging command time intervals
-                   if hm_tbuff='manual'. Defaults to 0.0.
-            qa0: Apply QA0 flags. Defaults to True.
-            qa2: Apply QA2 flags. Defaults to True.
+                padding parameter. The options are 'halfint' and 'manual'.
+                In 'halfint' mode tbuff is set to half the maximum of the
+                median integration time of the science and calibrator target
+                observations.
+
+                Default: None (equivalent to 'halfint')
+
+            tbuff: The time in seconds used to pad flagging command time
+                intervals if hm_tbuff='manual'.
+
+                Default: None (equivalent to 0.0)
+
+            qa0: QA0 flags
+
+            qa2: QA2 flags
+
             parallel: Execute using CASA HPC functionality, if available.
-                      Default is None, which intends to turn on parallel
-                      processing if possible.
+
+                Options: 'automatic', 'true', 'false', True, False
+
+                Default: None (equivalent to 'automatic')
         """
         super().__init__(
             context, vis=vis, output_dir=output_dir, flagbackup=flagbackup, autocorr=autocorr, shadow=shadow, scan=scan,
@@ -186,6 +248,21 @@ class FlagDeterALMASingleDishInputs(flagdeterbase.FlagDeterBaseInputs):
 
 
 class FlagDeterALMASingleDishResults(flagdeterbase.FlagDeterBaseResults):
+
+    def __init__(
+            self,
+            summaries: list[dict],
+            flagcmds: list[str],
+            pointing_outlier_stats: dict[tuple[int, int], PointingOutlierStats]):
+        """Initialize results object for hsd_flagdata.
+
+        Args:
+            summaries: List of flagging summaries.
+            flagcmds: List of flagging commands
+            pointing_outlier_stats: Statistics of pointing outliers.
+        """
+        super().__init__(summaries, flagcmds)
+        self.pointing_outlier_stats = pointing_outlier_stats
 
     def merge_with_context(self, context):
         # call parent's method
@@ -272,19 +349,189 @@ class SerialFlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         else:
             return 1.875e9  # 1.875GHz
 
-    def prepare(self):
+    def prepare(self) -> FlagDeterALMASingleDishResults:
+        """Generates results object."""
+        if self.inputs.pointing:
+            # save flag status before flagging
+            self._execute_flagmanager(mode='save')
+
+        try:
+            # pre-apply deterministic flagging
+            results = self._apply_deterministic_flagging()
+
+            # run pointing outlier heuristic for each target field
+            outlier_stats = self._detect_pointing_outliers()
+
+            # check if pointing outliers are detected or not
+            if len(outlier_stats) > 0:
+                for (field_id, antenna_id), stats in outlier_stats.items():
+                    field = self.inputs.ms.get_fields(field_id=field_id)[0]
+                    antenna = self.inputs.ms.get_antenna(str(antenna_id))[0]
+                    LOG.warning(
+                        '[pointing_outlier_flagged] '
+                        'Pointing outliers are detected in "%s", '
+                        'Field "%s", Antenna "%s": time range "%s", '
+                        'max separation %.2f arcsec',
+                        self.inputs.vis, field.name, antenna.name,
+                        ', '.join(stats.timerange), np.max(stats.separations)
+                    )
+
+                if self.inputs.pointing:
+                    # if outlier exists, update pointing flag file
+                    self._append_outlier_flagcmd_to_flagpoinging_file(
+                        outlier_stats
+                    )
+
+                    # restore flag status
+                    self._execute_flagmanager(mode='restore')
+
+                    # apply deterministic flagging and update datatable again
+                    results = self._apply_deterministic_flagging()
+
+        finally:
+            if self.inputs.pointing:
+                # delete flag state for internal use
+                self._execute_flagmanager(mode='delete')
+
+        return FlagDeterALMASingleDishResults(
+            results.summaries,
+            results.flagcmds(),
+            pointing_outlier_stats=outlier_stats
+        )
+
+    def _apply_deterministic_flagging(self) -> flagdeterbase.FlagDeterBaseResults:
+        """Apply deterministic flagging.
+
+        It also updates the datatable.
+
+        Returns:
+            Results object of the base class.
+        """
         results = super().prepare()
 
         # update datatable
-        # this task uses _handle_multiple_vis framework
-        msobj = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        origin_basename = os.path.basename(msobj.origin_ms)
-        table_name = os.path.join(self.inputs.context.observing_run.ms_datatable_name, origin_basename)
+        self._update_datatable()
+
+        return results
+
+    def _execute_flagmanager(self, mode: str):
+        """Run flagmanager to save/restore/delete flag status.
+
+        Args:
+            mode: Execution mode. Should be either
+                'save', 'restore', or 'delete'.
+        """
+        flagversion_name = 'SDPL_hsd_flagdata_internal_before_flagging'
+        args_save = {
+            'vis': self.inputs.vis,
+            'mode': mode,
+            'versionname': flagversion_name
+        }
+        job = casa_tasks.flagmanager(**args_save)
+        self._executor.execute(job)
+
+    def _update_datatable(self):
+        """Update flag information in the datatable.
+
+        This is necessary to make datatable consistent with the MS.
+        """
+        origin_basename = os.path.basename(self.inputs.ms.origin_ms)
+        table_name = os.path.join(
+            self.inputs.context.observing_run.ms_datatable_name,
+            origin_basename
+        )
         datatable = DataTable(name=table_name, readonly=False)
-        datatable._update_flag(msobj.name)
+        datatable._update_flag(self.inputs.ms.origin_ms)
         datatable.exportdata(minimal=False)
 
-        return FlagDeterALMASingleDishResults(results.summaries, results.flagcmds())
+    def _detect_pointing_outliers(self) -> dict[tuple[int, int], PointingOutlierStats]:
+        outlier_stats = {}
+        origin_basename = os.path.basename(self.inputs.ms.origin_ms)
+        table_name = os.path.join(
+            self.inputs.context.observing_run.ms_datatable_name,
+            origin_basename
+        )
+        msname = self.inputs.ms.basename
+        datatable = DataTable(name=table_name, readonly=True)
+        antennas = self.inputs.ms.get_antenna()
+        target_fields = self.inputs.ms.get_fields(intent="TARGET")
+        ra_all = datatable.getcol("SHIFT_RA")
+        dec_all = datatable.getcol("SHIFT_DEC")
+        srctype_all = datatable.getcol("SRCTYPE")
+        field_id_all = datatable.getcol("FIELD_ID")
+        antenna_id_all = datatable.getcol("ANTENNA")
+        flag_all = np.any(datatable.getcol("FLAG_PERMANENT")[:, 3] == 1, axis=0)
+        valid_on_source = np.logical_and(srctype_all == 0, flag_all == 1)
+
+        heuristic = PointingOutlierHeuristics()
+
+        for field, antenna in itertools.product(target_fields, antennas):
+            # data selection
+            field_antenna_flag = np.logical_and(
+                field_id_all == field.id,
+                antenna_id_all == antenna.id
+            )
+            selection = np.logical_and(valid_on_source, field_antenna_flag)
+            rows = np.where(selection)[0]
+            ra = ra_all[selection]
+            dec = dec_all[selection]
+
+            # run heuristic
+            heuristic_result = heuristic(field.frame, ra, dec)
+
+            outlier_mask = np.where(np.logical_not(heuristic_result.mask))[0]
+            if len(outlier_mask) > 0:
+                outliers = rows[outlier_mask]
+                LOG.info(
+                    'MS "%s" field "%s" antenna "%s": %d pointing outliers detected',
+                    msname, field.name, antenna.name, len(outliers)
+                )
+                LOG.debug("Outliers: %s", outliers)
+                separations = heuristic_result.dist[outlier_mask]
+                timerange_list = datatable_rowid_to_timerange(
+                    datatable, rows[outlier_mask]
+                )
+                outliers_for_field = PointingOutlierStats(
+                        heuristic_result.cx, heuristic_result.cy,
+                        heuristic_result.med_dist, heuristic_result.factor,
+                        outliers, timerange_list, separations
+                    )
+                outlier_stats[(field.id, antenna.id)] = outliers_for_field
+            else:
+                LOG.debug(
+                    'MS "%s" field "%s" antenna "%s": no outliers detected',
+                    msname, field.name, antenna.name
+                )
+
+        return outlier_stats
+
+    def _append_outlier_flagcmd_to_flagpoinging_file(
+            self,
+            outlier_stats: dict[tuple[int, int], PointingOutlierStats]):
+        reason = "pointing_outlier"
+        cmd_template = string.Template(
+            "mode='manual' field='$field_id' antenna='$antenna_id&&&' timerange='$timerange'"
+            f" reason='SDPL:{reason}'\n"
+        )
+
+        # generate flag commands
+        flagcmds = []
+        for (field_id, antenna_id), stats in outlier_stats.items():
+            timerange_list = stats.timerange
+            for timerange in timerange_list:
+                flagcmds.append(
+                    cmd_template.safe_substitute(
+                        field_id=field_id,
+                        antenna_id=antenna_id,
+                        timerange=timerange
+                    )
+                )
+
+        # append flag commands only when flagpointing file exists
+        if os.path.exists(self.inputs.filepointing):
+            with open(self.inputs.filepointing, 'a') as f:
+                for cmd in flagcmds:
+                    f.write(cmd)
 
     def _yield_edge_spw_cmds(self) -> Generator[str, None, None]:
         """Yield flag commands to flag edge channels.
@@ -370,7 +617,7 @@ class SerialFlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
 
         if isinstance(inputs.fracspw, float) or isinstance(inputs.fracspw, str):
             to_flag = super()._get_edgespw_cmds()
-        elif isinstance(inputs.fracspw, collections.Iterable):
+        elif isinstance(inputs.fracspw, collections.abc.Iterable):
             # inputs.fracspw is iterable indicating that the user want to flag
             # edge channels with different fractions/number of channels for
             # left and right edges
@@ -380,7 +627,7 @@ class SerialFlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
 
         return to_flag
 
-    def get_fracspw(self, spw: 'SpectralWindow') -> float:
+    def get_fracspw(self, spw: SpectralWindow) -> float:
         """Get fraction of total number of spw channels that are to be flagged on each side of the spw.
 
         Args:
@@ -404,7 +651,7 @@ class SerialFlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
             LOG.debug('fraction is %s' % fracspw)
             return max(0.0, fracspw)
 
-    def verify_spw(self, spw: 'SpectralWindow'):
+    def verify_spw(self, spw: SpectralWindow):
         """Test if given spw needs to be processed by edgespw flagging.
 
         Args:

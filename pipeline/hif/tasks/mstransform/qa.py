@@ -13,7 +13,7 @@ LOG = logging.get_logger(__name__)
 class MstransformQAHandler(pqa.QAPlugin):
     result_cls = mstransform.MstransformResults
     child_cls = None
-    generating_task = mstransform.Mstransform
+    generating_task = mstransform.SerialMstransform
 
     def handle(self, context, result):
 
@@ -34,9 +34,9 @@ class MstransformListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing MstransformResults.
     """
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = mstransform.MstransformResults
-    generating_task = mstransform.Mstransform
+    generating_task = mstransform.SerialMstransform
 
     def handle(self, context, result):
         # collate the QAScores from each child result, pulling them into our

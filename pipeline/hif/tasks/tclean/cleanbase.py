@@ -29,6 +29,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     deconvolver = vdp.VisDependentProperty(default='')
     cycleniter = vdp.VisDependentProperty(default=-999)
     cyclefactor = vdp.VisDependentProperty(default=-999.0)
+    nmajor = vdp.VisDependentProperty(default=None)
     cfcache = vdp.VisDependentProperty(default='')
     field = vdp.VisDependentProperty(default='')
     gridder = vdp.VisDependentProperty(default='')
@@ -50,6 +51,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     hm_sidelobethreshold = vdp.VisDependentProperty(default=-999.0)
     mosweight = vdp.VisDependentProperty(default=None)
     nchan = vdp.VisDependentProperty(default=-1)
+    nbin = vdp.VisDependentProperty(default=-1)
     niter = vdp.VisDependentProperty(default=5000)
     hm_nsigma = vdp.VisDependentProperty(default=0.0)
     hm_perchanweightdensity = vdp.VisDependentProperty(default=None)
@@ -61,6 +63,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     pblimit = vdp.VisDependentProperty(default=0.2)
     is_per_eb = vdp.VisDependentProperty(default=False)
     phasecenter = vdp.VisDependentProperty(default='')
+    psf_phasecenter = vdp.VisDependentProperty(default='')
     restoringbeam = vdp.VisDependentProperty(default='common')
     robust = vdp.VisDependentProperty(default=-999.0)
     savemodel = vdp.VisDependentProperty(default='none')
@@ -68,6 +71,8 @@ class CleanBaseInputs(vdp.StandardInputs):
     scales = vdp.VisDependentProperty(default=None)
     sensitivity = vdp.VisDependentProperty(default=None)
     spwsel_all_cont = vdp.VisDependentProperty(default=None)
+    spwsel_low_bandwidth = vdp.VisDependentProperty(default=None)
+    spwsel_low_spread = vdp.VisDependentProperty(default=None)
     start = vdp.VisDependentProperty(default='')
     stokes = vdp.VisDependentProperty(default='I')
     threshold = vdp.VisDependentProperty(default=None)
@@ -112,17 +117,17 @@ class CleanBaseInputs(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def spw(self):
         first_ms = self.context.observing_run.measurement_sets[0]
-        return ','.join([spw.id for spw in first_ms.get_spectral_windows()])
+        return ','.join([str(spw.id) for spw in first_ms.get_spectral_windows()])
 
     @vdp.VisDependentProperty
     def spwsel(self):
         return []
 
     def __init__(self, context, output_dir=None, vis=None, imagename=None, datacolumn=None, datatype=None, datatype_info=None, intent=None, field=None,
-                 spw=None, spwsel=None, spwsel_all_cont=None, uvrange=None, orig_specmode=None, specmode=None, gridder=None, deconvolver=None,
-                 uvtaper=None, nterms=None, cycleniter=None, cyclefactor=None, hm_minpsffraction=None,
+                 spw=None, spwsel=None, spwsel_all_cont=None, spwsel_low_bandwidth=None, spwsel_low_spread=None, uvrange=None, orig_specmode=None,
+                 specmode=None, gridder=None, deconvolver=None, uvtaper=None, nterms=None, cycleniter=None, cyclefactor=None, nmajor=None, hm_minpsffraction=None,
                  hm_maxpsffraction=None, scales=None, outframe=None, imsize=None,
-                 cell=None, phasecenter=None, nchan=None, start=None, width=None, stokes=None, weighting=None,
+                 cell=None, phasecenter=None, psf_phasecenter=None, nchan=None, nbin=None, start=None, width=None, stokes=None, weighting=None,
                  robust=None, restoringbeam=None, iter=None, mask=None, savemodel=None, startmodel=None, hm_masking=None,
                  hm_sidelobethreshold=None, hm_noisethreshold=None, hm_lownoisethreshold=None, wprojplanes=None,
                  hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None, hm_dogrowprune=None,
@@ -144,6 +149,8 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.spw = spw
         self.spwsel = spwsel
         self.spwsel_all_cont = spwsel_all_cont
+        self.spwsel_low_bandwidth = spwsel_low_bandwidth
+        self.spwsel_low_spread = spwsel_low_spread
         self.uvrange = uvrange
         self.savemodel = savemodel
         self.startmodel = startmodel
@@ -155,6 +162,7 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.nterms = nterms
         self.cycleniter = cycleniter
         self.cyclefactor = cyclefactor
+        self.nmajor = nmajor
         self.hm_minpsffraction = hm_minpsffraction
         self.hm_maxpsffraction = hm_maxpsffraction
         self.scales = scales
@@ -162,7 +170,9 @@ class CleanBaseInputs(vdp.StandardInputs):
         self.imsize = imsize
         self.cell = cell
         self.phasecenter = phasecenter
+        self.psf_phasecenter = psf_phasecenter
         self.nchan = nchan
+        self.nbin = nbin
         self.start = start
         self.width = width
         self.stokes = stokes
@@ -274,18 +284,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         context = self.inputs.context
         inputs = self.inputs
 
-        # Derive names of clean products for this iteration
-        old_model_name = result.model
-        model_name = '%s.%s.iter%s.model' % (inputs.imagename, inputs.stokes, iter)
-        if old_model_name is not None:
-            if os.path.exists(old_model_name):
-                if result.multiterm:
-                    rename_image(old_name=old_model_name, new_name=model_name,
-                                 extensions=['.tt%d' % nterm for nterm in range(result.multiterm)])
-                else:
-                    rename_image(old_name=old_model_name, new_name=model_name)
-
-        if inputs.niter == 0 and not (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
+        if inputs.niter == 0 and not (inputs.specmode == 'cube' and inputs.spwsel_all_cont) and not (inputs.intent == 'TARGET' and inputs.stokes == 'IQUV' and inputs.mask in (None, '')):
             image_name = ''
         else:
             image_name = '%s.%s.iter%s.image' % (
@@ -304,11 +303,31 @@ class CleanBase(basetask.StandardTaskTemplate):
         pbcor_image_name = '%s.%s.iter%s.image.pbcor' % (
             inputs.imagename, inputs.stokes, iter)
 
-        parallel = all([mpihelpers.parse_mpi_input_parameter(inputs.parallel),
-                        'TARGET' in inputs.intent])
+        if inputs.intent == 'TARGET' and inputs.specmode in ('mfs', 'cont') and inputs.stokes == 'IQUV':
+            # There seems to be a tclean parallelization bug with usemask='user'
+            # and an explict mask for specmode='cont' mode (PIPE-2464, CAS-14618)
+            parallel = False
+            if mpihelpers.is_mpi_ready():
+                LOG.info('Temporarily turning off Tier-0 parallelization for Stokes IQUV target continuum imaging (PIPE-2464).')
+        else:
+            # For ephemeris objects, tclean/parallel was explicit set to False between 2018/07/10 and
+            # 2021-02/16 due to a tclean bug (see CAS-11631 and PIPE-981)
+            parallel = all([mpihelpers.parse_mpi_input_parameter(inputs.parallel), 'TARGET' in inputs.intent])
+
+        # PIPE-1878: calculate iteration/specmode-dependent threshold scaling factor (only used for VLA-PI) to correct the
+        # potential tclean noise estimation bias.
+        rms_multiplier = inputs.heuristics.get_nfrms_multiplier(iter, inputs.intent, inputs.specmode, image_name)
 
         # Need to translate the virtual spw IDs to real ones
         real_spwsel = context.observing_run.get_real_spwsel(inputs.spwsel, inputs.vis)
+
+        # Allowed user-specified "specmode" values for makeimlist/editimlist inputs are:
+        #   'mfs', 'cont', 'cube', and 'repBW'
+        # These are later mapped to the core modes: 'mfs', 'cont', or 'cube' for Tclean/CleanBase inputs.
+        # At this stage, we normalize the specmode to either 'mfs' or 'cube'.
+        # PIPE-2423: more specific modes (e.g., 'mvc', 'cubesource') may be assigned later in less common cases,
+        # based on additional context or heuristics.
+        tclean_specmode = inputs.specmode if inputs.specmode != 'cont' else 'mfs'
 
         # Common tclean parameters
         tclean_job_parameters = {
@@ -319,7 +338,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             'field':         inputs.field,
             'spw':           real_spwsel,
             'intent':        utils.to_CASA_intent(inputs.ms[0], inputs.intent),
-            'specmode':      inputs.specmode if inputs.specmode != 'cont' else 'mfs',
+            'specmode':      tclean_specmode,
             'gridder':       inputs.gridder,
             'pblimit':       inputs.pblimit,
             'niter':         inputs.niter,
@@ -351,33 +370,73 @@ class CleanBase(basetask.StandardTaskTemplate):
         # used in heuristics methods upstream.
         if inputs.heuristics.is_eph_obj(inputs.field):
             tclean_job_parameters['phasecenter'] = 'TRACKFIELD'
-            # 2018-08-13: Spectral tracking has been implemented via a new
-            # specmode option (CAS-11766).
+            tclean_job_parameters['psfphasecenter'] = None
+            # 2018-08-13: Spectral tracking has been implemented via specmode='cubesource' (see CAS-11766)
             if inputs.specmode == 'cube':
                 tclean_job_parameters['specmode'] = 'cubesource'
-            # 2018-04-19: 'REST' does not yet work (see CAS-8965, CAS-9997)
-            #tclean_job_parameters['outframe'] = 'REST'
+            # We use outframe = '' to indicate that the cube frequencies are reported in the source frame,
+            # even though the cube's frame is still labeled as "REST".
+            #
+            # For more details, see CAS-8965 and CAS-9997, and the 'cubesource' description under the
+            # 'specmode' parameter in the tclean task documentation:
+            #   https://casadocs.readthedocs.io/en/latest/api/tt/casatasks.imaging.tclean.html#specmode
             tclean_job_parameters['outframe'] = ''
-            # 2018-07-10: Parallel imaging of ephemeris objects does not
-            # yet work (see CAS-11631)
-            # 2021-02-16: PIPE-981 asks for allowing parallelized tclean
-            # runs for ephemeris sources.
-            #tclean_job_parameters['parallel'] = False
+
         else:
             tclean_job_parameters['phasecenter'] = inputs.phasecenter
+            if inputs.gridder in ('mosaic', 'awproject') and inputs.psf_phasecenter != inputs.phasecenter:
+                tclean_job_parameters['psfphasecenter'] = inputs.psf_phasecenter
+                result.used_psfphasecenter = True
+            else:
+                tclean_job_parameters['psfphasecenter'] = None
             tclean_job_parameters['outframe'] = inputs.outframe
+
+        # PIPE-2423: set specmode='mvc' for VLASS imaging when using 'awp2' or 'awproject' gridders.
+        # For mtmfs imaging, 'mvc' enables improved wideband primary beam correction.
+        # See casadocs for details:
+        #   https://casadocs.readthedocs.io/en/stable/examples/community/Example_Wideband_PrimaryBeamCorrection.html
+        if tclean_job_parameters['gridder'] in ('awp2', 'awphpg') and tclean_job_parameters['deconvolver'] == 'mtmfs':
+            tclean_job_parameters['specmode'] = 'mvc'
+
+        # PIPE-2423: fallback to 'awp2' gridder when savemodel='modelcolumn' is requested with 'awphpg'.
+        # The model prediction write capability required for 'modelcolumn' is not supported by 'awphpg'.
+        # See CAS-14146 / CAS-13581 and this JIRA comment for details:
+        # https://open-jira.nrao.edu/browse/CAS-13581?focusedId=214944&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-214944
+        if tclean_job_parameters['gridder'] == 'awphpg' and tclean_job_parameters['savemodel'] == 'modelcolumn':
+            tclean_job_parameters['gridder'] = 'awp2'
+
+        # PIPE-2834: allow user override of wprojplanes, only used for VLASS
+        if inputs.wprojplanes not in (None, -999):
+            tclean_job_parameters['wprojplanes'] = inputs.wprojplanes
+        else:
+            tclean_job_parameters['wprojplanes'] = inputs.heuristics.wprojplanes(
+                gridder=inputs.gridder, spwspec=inputs.spw)
 
         if scanidlist not in [[], None]:
             tclean_job_parameters['scan'] = scanidlist
+
+        # special frequency interpolation setting for cube mode and nbin=2 (PIPE-2115)
+        if inputs.specmode == 'cube' and inputs.nbin == 2:
+            tclean_job_parameters['interpolation'] = 'nearest'
 
         # Set up masking parameters
         if inputs.hm_masking == 'auto':
             tclean_job_parameters['usemask'] = 'auto-multithresh'
 
             # get heuristics parameters
-            (sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac, growiterations,
-             dogrowprune, minpercentchange,
-             fastnoise) = inputs.heuristics.get_autobox_params(iter, inputs.intent, inputs.specmode, inputs.robust)
+            (
+                sidelobethreshold,
+                noisethreshold,
+                lownoisethreshold,
+                negativethreshold,
+                minbeamfrac,
+                growiterations,
+                dogrowprune,
+                minpercentchange,
+                fastnoise,
+            ) = inputs.heuristics.get_autobox_params(
+                iter, inputs.intent, inputs.specmode, inputs.robust, rms_multiplier=rms_multiplier
+            )
 
             # Override individually with manual settings
             if inputs.hm_sidelobethreshold != -999.0:
@@ -430,6 +489,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                 tclean_job_parameters['fastnoise'] = inputs.hm_fastnoise
             else:
                 tclean_job_parameters['fastnoise'] = True
+
             if inputs.hm_masking != 'none' and inputs.mask == 'pb':
                 # In manual cleaning mode decide for cleaning with pbmask according
                 # to heuristic class method (see PIPE-977)
@@ -444,7 +504,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_job_parameters['nterms'] = result.multiterm
 
         # Select whether to restore image
-        if inputs.niter == 0 and not (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
+        if inputs.niter == 0 and not (inputs.specmode == 'cube' and inputs.spwsel_all_cont) and not (inputs.intent == 'TARGET' and inputs.stokes == 'IQUV' and inputs.mask in (None, '')):
             tclean_job_parameters['restoration'] = False
             tclean_job_parameters['pbcor'] = False
         else:
@@ -485,6 +545,13 @@ class CleanBase(basetask.StandardTaskTemplate):
             if cycleniter is not None:
                 tclean_job_parameters['cycleniter'] = cycleniter
 
+        if inputs.nmajor not in (None, -999):
+            tclean_job_parameters['nmajor'] = inputs.nmajor
+        else:
+            nmajor = inputs.heuristics.nmajor(iter)
+            if nmajor is not None:
+                tclean_job_parameters['nmajor'] = nmajor
+
         if inputs.scales:
             tclean_job_parameters['scales'] = inputs.scales
         else:
@@ -495,7 +562,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         if inputs.uvrange:
             tclean_job_parameters['uvrange'] = inputs.uvrange
         else:
-            uvrange, _ = inputs.heuristics.uvrange(field=inputs.field, spwspec=inputs.spw)
+            uvrange, _ = inputs.heuristics.uvrange(field=inputs.field, spwspec=inputs.spw, specmode=inputs.specmode)
             if uvrange:
                 tclean_job_parameters['uvrange'] = uvrange
 
@@ -516,7 +583,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         if inputs.restfreq:
             tclean_job_parameters['restfreq'] = inputs.restfreq
         else:
-            restfreq = inputs.heuristics.restfreq()
+            restfreq = inputs.heuristics.restfreq(specmode=inputs.specmode, nchan=inputs.nchan, start=inputs.start, width=inputs.width)
             if restfreq:
                 tclean_job_parameters['restfreq'] = restfreq
 
@@ -541,8 +608,9 @@ class CleanBase(basetask.StandardTaskTemplate):
             if mosweight is not None:
                 tclean_job_parameters['mosweight'] = mosweight
 
-        tclean_job_parameters['nsigma'] = inputs.heuristics.nsigma(iter, inputs.hm_nsigma, inputs.hm_masking)
-        tclean_job_parameters['wprojplanes'] = inputs.heuristics.wprojplanes(gridder=inputs.gridder, spwspec=inputs.spw)
+        tclean_job_parameters['nsigma'] = inputs.heuristics.nsigma(
+            iter, inputs.hm_nsigma, inputs.hm_masking, rms_multiplier=rms_multiplier)
+
         tclean_job_parameters['rotatepastep'] = inputs.heuristics.rotatepastep()
         tclean_job_parameters['smallscalebias'] = inputs.heuristics.smallscalebias()
         tclean_job_parameters['usepointing'] = inputs.heuristics.usepointing()
@@ -641,7 +709,11 @@ class CleanBase(basetask.StandardTaskTemplate):
         # Using virtual spw setups for all interferometry pipelines
         virtspw = True
 
-        if iter > 0 or (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
+        # Derive the names of clean products for this iteration.
+        # Note: result.model does not include the `.ttx` suffix from mtmfs cases.
+        model_name = f"{inputs.imagename}.{inputs.stokes}.iter{iter}.model"
+
+        if iter > 0 or (inputs.specmode == 'cube' and inputs.spwsel_all_cont) or (inputs.intent == 'TARGET' and inputs.stokes == 'IQUV' and inputs.mask in (None, '')):
             im_names['model'] = model_name
             im_names['image'] = image_name
             im_names['pbcorimage'] = pbcor_image_name
@@ -654,6 +726,8 @@ class CleanBase(basetask.StandardTaskTemplate):
             im_names['cleanmask'] = inputs.mask
         elif os.path.exists(mask_name):
             im_names['cleanmask'] = mask_name
+
+        result.im_names.update(im_names)
 
         for im_type, im_name in im_names.items():
             # Set misc info on imaging products
@@ -708,8 +782,9 @@ class CleanBase(basetask.StandardTaskTemplate):
     def _copy_restoringbeam_from_psf(self, imagename):
         """Copy the per-plane beam set from .psf image to .image/.residual.
 
-        Note: this is a short-term workaround for CAS-13401, in which CASA/tclean(stokes='IQUV') doesn't save
+        Note: this is a workaround for CAS-13401, in which CASA/tclean(stokes='IQUV') doesn't save
               the per-plane restoring beam information into the residual and restored images.
+              For CASA ver>=6.6.0 (after the CAS-13401 implementation), this block should act as a no-op.
         """
         bm_src = '.psf'
         bm_src_ext_try = ['', '.tt0']
@@ -734,26 +809,19 @@ class CleanBase(basetask.StandardTaskTemplate):
                 for bm_ext0 in bm_dst_ext:
                     if os.path.exists(imagename+bm_dst0+bm_ext0):
                         with casa_tools.ImageReader(imagename+bm_dst0+bm_ext0) as bm_dst_im:
-                            LOG.info(f'Copy the per-plane beam set to {imagename+bm_dst0+bm_ext0}')
-                            dst_shape = bm_dst_im.shape()
-                            if (dst_shape == src_shape).all():
+                            if (bm_dst_im.shape() == src_shape).all() and not bm_dst_im.restoringbeam():
+                                # PIPE-2061: we only copy the beam info if the target and source images have the same shape
+                                # and the target image doesn't have a beam.
+                                LOG.info(f'Copy the per-plane beam set to {imagename+bm_dst0+bm_ext0}')
                                 for idx_c in range(src_shape[3]):
                                     for idx_p in range(src_shape[2]):
                                         LOG.debug(f'working on idx_chan={idx_c}, idx_pol={idx_p}')
                                         bm = bm_src_im.restoringbeam(channel=idx_c, polarization=idx_p)
                                         bm_dst_im.setrestoringbeam(beam=bm, channel=idx_c, polarization=idx_p)
                             else:
-                                LOG.warning(
-                                    'The restoring beam information source and destination images have different shapes. We will not copy the per-plane beam set.')
-
-def rename_image(old_name, new_name, extensions=['']):
-    """
-    Rename an image
-    """
-    if old_name is not None:
-        for extension in extensions:
-            with casa_tools.ImageReader('%s%s' % (old_name, extension)) as image:
-                image.rename(name=new_name, overwrite=True)
+                                LOG.info(
+                                    'The restoring beam copying source and target images have different shapes or the target '
+                                    'image already has a beam. We will skip copying the restoring beam')
 
 
 class CleanBaseError(object):

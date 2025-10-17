@@ -3,18 +3,30 @@ import collections
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
+
 from . import resultobjects
 
 LOG = logging.get_logger(__name__)
 
 
-class FindContQAHandler(pqa.QAPlugin):    
+class FindContQAHandler(pqa.QAPlugin):
     result_cls = resultobjects.FindContResult
     child_cls = None
 
     def handle(self, context, result):
 
         scores = []
+
+        if result.skip_stage:
+            scores.append(
+                pqa.QAScore(
+                    None,
+                    longmsg='Skip the continuum finding stage due to absence of required datatype: CONTLINE_SCIENCE',
+                    shortmsg='Stage skipped',
+                )
+            )
+            result.qa.pool.extend(scores)
+            return
 
         score1 = self._found_ranges(result)
         scores.append(score1)
@@ -59,7 +71,7 @@ class FindContQAHandler(pqa.QAPlugin):
 
 
 class FindContListQAHandler(pqa.QAPlugin):
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = resultobjects.FindContResult
 
     def handle(self, context, result):

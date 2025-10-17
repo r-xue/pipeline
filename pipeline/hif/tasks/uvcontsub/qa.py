@@ -1,13 +1,13 @@
 import collections
-import os
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
-import pipeline.qa.scorecalculator as qacalc
+
 from . import uvcontsub
 
 LOG = logging.get_logger(__name__)
+
 
 class UVcontSubQAHandler(pqa.QAPlugin):
     result_cls = uvcontsub.UVcontSubResults
@@ -15,12 +15,24 @@ class UVcontSubQAHandler(pqa.QAPlugin):
     generating_task = uvcontsub.SerialUVcontSub
 
     def handle(self, context, result):
-
         scores = []
 
         if result.mitigation_error:
-            scores.append(pqa.QAScore(0.0, longmsg='Size mitigation error. No continuum information available.',
-                                      shortmsg='Size mitigation error'))
+            scores.append(
+                pqa.QAScore(
+                    0.0,
+                    longmsg='Size mitigation error. No continuum information available.',
+                    shortmsg='Size mitigation error',
+                )
+            )
+        elif result.skip_stage:
+            scores.append(
+                pqa.QAScore(
+                    None,
+                    longmsg='Skipped continuum subtraction due to absence of required datatype: CONTLINE_SCIENCE',
+                    shortmsg='Stage skipped',
+                )
+            )
         else:
             scores.append(pqa.QAScore(1.0, longmsg='Continuum subtraction applied.', shortmsg=''))
 
@@ -31,9 +43,9 @@ class UVcontSubListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing UVcontSubResults.
     """
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = uvcontsub.UVcontSubResults
-    generating_task = uvcontsub.UVcontSub
+    generating_task = uvcontsub.SerialUVcontSub
 
     def handle(self, context, result):
         # collate the QAScores from each child result, pulling them into our

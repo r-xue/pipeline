@@ -12,7 +12,7 @@ from pipeline.infrastructure.renderer import rendererutils
 
 % for ms in summary_plots:
     <h4>Plots:  <a class="replace"
-           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, testdelay_subpages[ms])}">Test delay plots </a>|
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, delay_subpages[ms])}">Test delay plots </a>|
         <a class="replace"
            href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, ampgain_subpages[ms])}">Gain Amplitude </a>|
         <a class="replace"
@@ -45,7 +45,28 @@ from pipeline.infrastructure.renderer import rendererutils
            Initial calibrated bandpass
         </%def>
 </%self:plot_group>
+<%self:plot_group plot_dict="${summary_plots_per_spw}"
+                  url_fn="${lambda ms: 'noop'}">
 
+        <%def name="title()">
+            testBPdcals per spectral line spw summary plot
+        </%def>
+
+        <%def name="preamble()">
+        </%def>
+
+        <%def name="mouseover(plot)">Per-spw summary window </%def>
+
+        <%def name="fancybox_caption(plot)">
+            Initial calibrated bandpass,
+            Spw: ${plot.parameters['spw']}<br>
+        </%def>
+
+        <%def name="caption_title(plot)">
+            Initial calibrated bandpass,
+            Spw: ${plot.parameters['spw']}<br>
+        </%def>
+</%self:plot_group>
 
 <h3>Flag bad deformatters</h3>
 

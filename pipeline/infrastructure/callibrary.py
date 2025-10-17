@@ -1,3 +1,6 @@
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import collections
 import copy
 import datetime
@@ -7,13 +10,15 @@ import operator
 import os
 import uuid
 import weakref
-from typing import Callable, List, Set, Tuple
+from typing import Callable, Generator, Iterable, TYPE_CHECKING
 
 import cachetools
 import intervaltree
 from casatasks.private.callibrary import applycaltocallib
 
 from . import casa_tools, launcher, logging, utils
+if TYPE_CHECKING:
+    from pipeline.domain import Field, MeasurementSet, SpectralWindow
 
 LOG = logging.get_logger(__name__)
 
@@ -29,28 +34,29 @@ CYCLE_0_END_DATE = datetime.datetime(2013, 1, 21)
 class CalApplication(object):
     """
     CalApplication maps calibration tables and their application arguments to
-    a target data selection, encapsulated as |CalFrom| and |CalTo| objects 
+    a target data selection, encapsulated as CalFrom and CalTo objects
     respectively.
 
-    .. py:attribute:: calto
-
-        the |CalTo| representing the data selection to which the calibration
-        should apply.
-
-    .. py:attribute:: calfrom
-
-        the |CalFrom| representing the calibration and application parameters
-
-    .. py:attribute:: origin
-
-        the |CalAppOrigin| marking how this calibration was created
-
-.. |CalTo| replace:: :class:`CalTo`
-.. |CalFrom| replace:: :class:`CalFrom`
-.. |CalAppOrigin| replace:: :class:`CalAppOrigin`
+    Attributes:
+        calto: The CalTo representing the data selection to which the
+            calibration should apply.
+        calfrom: The CalFrom representing the calibration and application
+            parameters.
+        origin: The CalAppOrigin marking how this calibration was created.
     """
+    def __init__(self, calto: CalTo | list[CalTo], calfrom: CalFrom | list[CalFrom],
+                 origin: CalAppOrigin | list[CalAppOrigin] | None = None) -> None:
+        """
+        Initialize a CalApplication object.
 
-    def __init__(self, calto, calfrom, origin=None):
+        Args:
+            calto: CalTo object, or list thereof, representing the data
+                selection(s) to which the calibration should apply.
+            calfrom: CalFrom object, or list thereof, representing the
+                calibration and application parameters.
+            origin: CalOrigin object, or list thereof, marking how this
+                calibration was created.
+        """
         self.calto = calto
 
         if not isinstance(calfrom, list):
@@ -62,11 +68,15 @@ class CalApplication(object):
         self.origin = origin
 
     @staticmethod
-    def from_export(s):
+    def from_export(s: str) -> CalApplication:
         """
         Unmarshal a CalApplication from a string.
 
-        :rtype: the unmarshalled :class:`CalApplication` object
+        Args:
+            s: String representation of a CalApplication as a CASA applycal call.
+
+        Returns:
+            CalApplication object generated from given string.
         """
         d = eval(s.replace('applycal(', 'dict('))
         calto = CalTo(vis=d['vis'], field=d['field'], spw=d['spw'],
@@ -123,11 +133,12 @@ class CalApplication(object):
 
         return CalApplication(calto, calfroms)
 
-    def as_applycal(self):
+    def as_applycal(self) -> str:
         """
         Get a representation of this object as a CASA applycal call.
 
-        :rtype: string
+        Returns:
+            String representation of CalApplication as a CASA applycal call.
         """
         args = {
             'vis': self.vis,
@@ -153,30 +164,35 @@ class CalApplication(object):
                 ''.format(**args))
 
     @property
-    def antenna(self):
+    def antenna(self) -> str:
         """
         The antennas to which the calibrations apply.
 
-        :rtype: string
+        Returns:
+            String representing the (comma-separated) antennas to which the
+            calibrations apply.
         """
         return self.calto.antenna
 
     @property
-    def calwt(self):
+    def calwt(self) -> bool | list[bool]:
         """
-        The calwt parameters to be used when applying these calibrations.
+        The calwt parameter to be used when applying these calibrations.
 
-        :rtype: a scalar string if representing 1 calibration, otherwise a
-                list of strings
+        Returns:
+            Boolean representing what to use for calwt for this calibration.
+            If there are multiple CalFrom objects to apply, this returns a list
+            of booleans, one per CalFrom.
         """
         l = [cf.calwt for cf in self.calfrom]
         return l[0] if len(l) == 1 else l
 
-    def exists(self):
+    def exists(self) -> bool:
         """
         Test whether all calibration tables referred to by this application exist.
 
-        :rtype: boolean
+        Returns:
+            True if all calibration tables exist in the file system.
         """
         for cf in self.calfrom:
             if not os.path.exists(cf.gaintable):
@@ -184,90 +200,105 @@ class CalApplication(object):
         return True
 
     @property
-    def field(self):
+    def field(self) -> str:
         """
-        The fields to which the calibrations apply.
+        The field(s) to which the calibrations apply.
 
-        :rtype: string
+        Returns:
+            String representing the field(s) (comma-separated) to apply the
+            calibrations to.
         """
         return self.calto.field
 
     @property
-    def gainfield(self):
+    def gainfield(self) -> str | list[str]:
         """
         The gainfield parameters to be used when applying these calibrations.
 
-        :rtype: a scalar string if representing 1 calibration, otherwise a
-                list of strings
+        Returns:
+            Value for the gainfield parameter to be used when applying these
+            calibrations; returns a scalar string if representing 1 calibration,
+            otherwise a list of strings.
         """
         l = [cf.gainfield for cf in self.calfrom]
         return l[0] if len(l) == 1 else l
 
     @property
-    def gaintable(self):
+    def gaintable(self) -> str | list[str]:
         """
         The gaintable parameters to be used when applying these calibrations.
 
-        :rtype: a scalar string if representing 1 calibration, otherwise a
-                list of strings
+        Returns:
+            Value for the gaintable parameter to be used when applying these
+            calibrations; returns a scalar string if representing 1 calibration,
+            otherwise a list of strings.
         """
         l = [cf.gaintable for cf in self.calfrom]
         return l[0] if len(l) == 1 else l
 
     @property
-    def intent(self):
+    def intent(self) -> str:
         """
-        The observing intents to which the calibrations apply.
+        The observing intent(s) to which the calibrations apply.
 
-        :rtype: string
+        Returns:
+            String representing the intent(s) (comma-separated) to apply the
+            calibrations to.
         """
         return self.calto.intent
 
     @property
-    def interp(self):
+    def interp(self) -> str | list[str]:
         """
         The interp parameters to be used when applying these calibrations.
 
-        :rtype: a scalar string if representing 1 calibration, otherwise a
-                list of strings
+        Returns:
+            Value for the interp parameter to be used when applying these
+            calibrations; returns a scalar string if representing 1 calibration,
+            otherwise a list of strings.
         """
         l = [cf.interp for cf in self.calfrom]
         return l[0] if len(l) == 1 else l
 
     @property
-    def spw(self):
+    def spw(self) -> str:
         """
-        The spectral windows to which the calibrations apply.
+        Spectral window(s) to which the calibrations apply.
 
-        :rtype: string
+        Returns:
+            String representing the spectral window id(s) (comma-separated) to
+            apply the calibrations to.
         """
         return self.calto.spw
 
     @property
-    def spwmap(self):
+    def spwmap(self) -> str | list[str]:
         """
         The spwmap parameters to be used when applying these calibrations.
 
-        :rtype: a scalar string if representing 1 calibration, otherwise a
-                list of strings
+        Returns:
+            Value for the spwmap parameter to be used when applying these
+            calibrations; returns a scalar string if representing 1 calibration,
+            otherwise a list of strings.
         """
         # convert tuples back into lists for the CASA argument
         l = [list(cf.spwmap) for cf in self.calfrom]
         return l[0] if len(l) == 1 else l
 
     @property
-    def vis(self):
+    def vis(self) -> str:
         """
-        The name of the measurement set to which the calibrations apply.
+        Name of the measurement set to which the calibrations apply.
 
-        :rtype: string
+        Returns:
+            The name of the measurement set to which the calibrations apply.
         """
         return self.calto.vis
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.as_applycal()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'CalApplication(%s, %s)' % (self.calto, self.calfrom)
 
 
@@ -276,22 +307,44 @@ class CalTo(object):
     CalTo represents a target data selection to which a calibration can be
     applied.
     """
-
     __slots__ = ('_antenna', '_intent', '_field', '_spw', '_vis')
 
-    def __getstate__(self):
+    def __getstate__(self) -> tuple[str, str, str, str, str]:
+        """Define what to pickle as a class instance."""
         return self._antenna, self._intent, self._field, self._spw, self._vis
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple[str, str, str, str, str]) -> None:
+        """Define how to unpickle a class instance."""
         self._antenna, self._intent, self._field, self._spw, self._vis = state
 
     @staticmethod
-    def from_caltoargs(cta: CalToArgs) -> "CalTo":
-        def join(s: Set[str]) -> str:
-            return ','.join((str(o) for o in s))
-        return CalTo(vis=join(cta.vis), field=join(cta.field), spw=join(cta.spw), antenna=join(cta.antenna), intent=join(cta.intent))
+    def from_caltoargs(cta: CalToArgs) -> CalTo:
+        """
+        Returns a CalTo object for given arguments ``cta``.
 
-    def __init__(self, vis=None, field='', spw='', antenna='', intent=''):
+        Args:
+            cta: CalToArgs object representing the arguments for the new CalTo object.
+
+        Returns:
+            CalTo object initialized with given arguments ``cta``.
+        """
+        def join(s: set[str]) -> str:
+            return ','.join((str(o) for o in s))
+        return CalTo(vis=join(cta.vis), field=join(cta.field), spw=join(cta.spw), antenna=join(cta.antenna),
+                     intent=join(cta.intent))
+
+    def __init__(self, vis: str | None = None, field: str = '', spw: str = '', antenna: str = '', intent: str = '')\
+            -> None:
+        """
+        Initialize a CalTo object.
+
+        Args:
+            vis: Name of the measurement set to which the calibrations apply.
+            field: The field(s) to which the calibrations apply.
+            spw: The spectral window(s) to which the calibrations apply.
+            antenna: The antennas to which the calibrations apply.
+            intent: The observing intent(s) to which the calibrations apply.
+        """
         self.vis = vis
         self.field = field
         self.spw = spw
@@ -299,54 +352,98 @@ class CalTo(object):
         self.intent = intent
 
     @property
-    def antenna(self):
+    def antenna(self) -> str:
+        """Return the antennas to which the calibrations apply."""
         return self._antenna
 
     @antenna.setter
-    def antenna(self, value):
+    def antenna(self, value: int | str | None) -> None:
+        """
+        Set the antennas to which the calibrations apply to given value.
+
+        Args:
+            value: Antenna ID (integer) or a string of comma-separated antenna
+                IDs to which the calibrations apply. If None, this is set to an
+                empty string. Contiguous ID ranges are represented as a CASA
+                range, e.g. 1~5.
+        """
         if value is None:
             value = ''
         self._antenna = utils.find_ranges(str(value))
 
     @property
     def field(self):
+        """Return the field(s) to which the calibrations apply."""
         return self._field
 
     @field.setter
-    def field(self, value):
+    def field(self, value: str | None) -> None:
+        """
+        Set the field(s) to which the calibrations apply to given value.
+
+        Args:
+            value: String of comma-separated fields to which the calibrations
+                apply. If None, this is set to an empty string.
+        """
         if value is None:
             value = ''
         self._field = str(value)
 
     @property
-    def intent(self):
+    def intent(self) -> str:
+        """Return the observing intent(s) to which the calibrations apply."""
         return self._intent
 
     @intent.setter
-    def intent(self, value):
+    def intent(self, value: str | None) -> None:
+        """
+        Set the observing intent(s) to which the calibrations apply to given
+        value.
+
+        Args:
+            value: String of comma-separated intents to which the calibrations
+                apply. If None, this is set to an empty string.
+        """
         if value is None:
             value = ''
         self._intent = str(value)
 
     @property
-    def spw(self):
+    def spw(self) -> str:
+        """Return the spectral window(s) to which the calibrations apply."""
         return self._spw
 
     @spw.setter
-    def spw(self, value):
+    def spw(self, value: int | str | None) -> None:
+        """
+        Set the spectral window(s) to which the calibrations apply.
+
+        Args:
+            value: Spectral window ID (integer) or a string of comma-separated
+            spectral window IDs to which the calibrations apply. If None, this
+            is set to an empty string. Contiguous ID ranges are represented as a
+            CASA range, e.g. 1~5.
+        """
         if value is None:
             value = ''
         self._spw = utils.find_ranges(str(value))
 
     @property
-    def vis(self):
+    def vis(self) -> str:
+        """Return the name of the measurement set to which the calibrations apply."""
         return self._vis
 
     @vis.setter
-    def vis(self, value=None):
+    def vis(self, value: str | None = None) -> None:
+        """
+        Set the name of the measurement set to which the calibrations apply.
+
+        Args:
+            value: Name of the measurement set to which the calibrations apply.
+        """
         self._vis = str(value)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return ('CalTo(vis=\'%s\', field=\'%s\', spw=\'%s\', antenna=\'%s\','
                 'intent=\'%s\')' % (self.vis, self.field, self.spw, self.antenna,
                                     self.intent))
@@ -357,21 +454,13 @@ class CalFrom(object):
     CalFrom represents a calibration table and the CASA arguments that should
     be used when applying that calibration table.
 
-    .. py:attribute:: CALTYPES
-
-        an enumeration of calibration table types identified by this code.
-
-    .. py:attribute:: CALTYPE_TO_VISCAL
-
-        mapping of calibration type to caltable identifier as store in the table
-        header
-
-    .. py:attribute:: VISCAL
-
-        mapping of calibration table header information to a description of
-        that table type
+    Attributes:
+        CALTYPES: an enumeration of calibration table types identified by this code.
+        CALTYPE_TO_VISCAL: mapping of calibration type to caltable identifier as
+            store in the table header.
+        VISCAL: mapping of calibration table header information to a description
+            of that table type.
     """
-
     CALTYPES = {
         'unknown': 0,
         'gaincal': 1,
@@ -439,11 +528,19 @@ class CalFrom(object):
     _CalFromPool = weakref.WeakValueDictionary()
 
     @staticmethod
-    def _calc_hash(gaintable, gainfield, interp, spwmap, calwt):
+    def _calc_hash(gaintable: str, gainfield: str, interp: str, spwmap: tuple, calwt: bool) -> int:
         """
         Generate a hash code unique to the given arguments.
 
-        :rtype: integer
+        Args:
+            gaintable: Filename of calibration table.
+            gainfield: Field(s) to select from calibration table to use.
+            interp: Value to use for interp when applying these calibrations.
+            spwmap: Value to use for spwmap when applying these calibrations.
+            calwt: Value to use for calwt when applying these calibrations.
+
+        Returns:
+            Integer representing hash code for given arguments.
         """
         result = 17
         result = 37 * result + hash(gaintable)
@@ -453,8 +550,42 @@ class CalFrom(object):
         result = 37 * result + hash(calwt)
         return result
 
-    def __new__(cls, gaintable=None, gainfield='', interp='linear,linear',
-                spwmap=None, caltype='unknown', calwt=True):
+    def __new__(cls, gaintable: str | None = None, gainfield: str = '', interp: str = 'linear,linear',
+                spwmap: list | tuple | None = None, caltype: str = 'unknown', calwt: bool = True) -> CalFrom:
+        """
+        Return a new instance of the CalFrom class.
+
+        This override is to implement the Flyweight Pattern for the CalFrom
+        class, to save memory given that hundreds of the same CalFrom objects
+        could be created and stored in the context.
+
+        Upon creating a new instance of CalFrom, the combination of input
+        arguments are first hashed. If this is the first occurence of this hash,
+        then the corresponding CalFrom object is created and a reference to this
+        object is stored in the module-level _CalFromPool, as well as returned.
+        If the hash of the input arguments already exists in the _CalFromPool,
+        then a reference to the corresponding (previously created) CalFrom is
+        returned instead.
+
+        In this implementation, the entire state of the CalFrom object is
+        immutable, and any required modification to a CalFrom should be achieved
+        through creating a new CalFrom.
+
+        Args:
+            gaintable: Filename of calibration table.
+            gainfield: Field(s) to select from calibration table to use.
+            interp: Value to use for interp when applying these calibrations.
+            spwmap: Value to use for spwmap when applying these calibrations.
+            caltype: String declaring type of calibration table, e.g. 'tsys'.
+            calwt: Value to use for calwt when applying these calibrations.
+
+        Returns:
+            A new instance of the CalFrom class.
+
+        Raises:
+            ValueError if gaintable is None, gainfield is not a string,
+            interp is not a string, or spwmap is not a list, tuple, or None.
+        """
         if spwmap is None:
             spwmap = []
 
@@ -510,11 +641,13 @@ class CalFrom(object):
     __slots__ = ('__caltype', '__calwt', '__gainfield', '__gaintable',
                  '__interp', '__spwmap', '__weakref__')
 
-    def __getstate__(self):
+    def __getstate__(self) -> tuple[str, bool, str, str, str, tuple]:
+        """Define what to pickle as a class instance."""
         return (self.__caltype, self.__calwt, self.__gainfield,
                 self.__gaintable, self.__interp, self.__spwmap)
 
-    def __setstate__(self, state):
+    def __setstate__(self, state: tuple[str, bool, str, str, str, tuple]):
+        """Define how to unpickle a class instance."""
         # a misguided attempt to clear stale CalFroms when loading from a
         # pickle. I don't think this should be done here.
         #         # prevent exception with pickle format #1 by calling hash on properties
@@ -527,31 +660,48 @@ class CalFrom(object):
         (self.__caltype, self.__calwt, self.__gainfield, self.__gaintable,
          self.__interp, self.__spwmap) = state
 
-    def __getnewargs__(self):
+    def __getnewargs__(self) -> tuple[str, str, str, tuple, str, bool]:
+        """Define the tuple of input arguments to pass to __new__ during unpickling."""
         return (self.gaintable, self.gainfield, self.interp, self.spwmap,
                 self.caltype, self.calwt)
 
-    def __init__(self, *args, **kw):
+    def __init__(self, *args, **kw) -> None:
+        """Initialize a CalFrom instance."""
         pass
 
     @property
-    def caltype(self):
+    def caltype(self) -> str:
+        """Return the type of calibration table."""
         return self.__caltype
 
     @property
-    def calwt(self):
+    def calwt(self) -> bool:
+        """Return the value to use for calwt when applying these calibrations."""
         return self.__calwt
 
     @property
-    def gainfield(self):
+    def gainfield(self) -> str:
+        """Return which field(s) in the calibration table to apply."""
         return self.__gainfield
 
     @property
-    def gaintable(self):
+    def gaintable(self) -> str:
+        """Return the filename of the calibration table."""
         return self.__gaintable
 
     @staticmethod
-    def get_caltype_for_viscal(viscal):
+    def get_caltype_for_viscal(viscal: str) -> str:
+        """Return the calibration table type for given VISCAL identifier.
+
+        VISCAL identifiers are the caltable identifier as stored in the table
+        header.
+
+        Args:
+            viscal: VISCAL table identifier to convert to calibration table type.
+
+        Returns:
+            Type of calibration table.
+        """
         s = viscal.upper()
         for caltype, viscals in CalFrom.CALTYPE_TO_VISCAL.items():
             if s in viscals:
@@ -559,25 +709,20 @@ class CalFrom(object):
         return 'unknown'
 
     @property
-    def interp(self):
+    def interp(self) -> str:
+        """Value to use for interp when applying these calibrations."""
         return self.__interp
 
     @property
-    def spwmap(self):
+    def spwmap(self) -> tuple:
+        """Value to use for spwmap when applying these calibrations."""
         return self.__spwmap
 
-    #     def __eq__(self, other):
-    #         return (self.gaintable == other.gaintable and
-    #                 self.gainfield == other.gainfield and
-    #                 self.interp    == other.interp    and
-    #                 self.spwmap    == other.spwmap    and
-    #                 self.calwt     == other.calwt)
-
-    def __hash__(self):
+    def __hash__(self) -> int:
         return CalFrom._calc_hash(self.gaintable, self.gainfield, self.interp,
                                   self.spwmap, self.calwt)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return ('CalFrom(\'%s\', gainfield=\'%s\', interp=\'%s\', spwmap=%s, '
                 'caltype=\'%s\', calwt=%s)' %
                 (self.gaintable, self.gainfield, self.interp, self.spwmap,
@@ -585,16 +730,23 @@ class CalFrom(object):
 
 
 class CalToIdAdapter(object):
-    def __init__(self, context, calto):
+    """
+    CalToIdAdapter is an adapter class for CalTo that return some of its
+    attributes as lists of IDs/names, instead of as the CASA-style string argument.
+    """
+    def __init__(self, context: launcher.Context, calto: CalTo) -> None:
+        """Initialize a CalToIdAdapter instance."""
         self._context = context
         self._calto = calto
 
     @property
-    def antenna(self):
+    def antenna(self) -> list[int]:
+        """Return IDs of antennas to which the calibrations apply as a list of integers."""
         return [a.id for a in self.ms.get_antenna(self._calto.antenna)]
 
     @property
-    def field(self):
+    def field(self) -> list[int] | list[str]:
+        """Return fields to which the calibrations apply as a list of names or integer IDs."""
         fields = [f for f in self.ms.get_fields(task_arg=self._calto.field)]
         # if the field names are unique, we can return field names. Otherwise,
         # we fall back to field IDs.
@@ -607,11 +759,13 @@ class CalToIdAdapter(object):
             return [f.id for f in fields]
 
     @property
-    def intent(self):
-        # return the intents present in the CalTo
+    def intent(self) -> str:
+        """Return the intents to which the calibrations apply."""
         return self._calto.intent
 
-    def get_field_intents(self, field_id, spw_id):
+    def get_field_intents(self, field_id: int | str, spw_id: int | str) -> set[str]:
+        """Return set of intents that are common to CalTo, given field(s), and
+        given spectral window(s)."""
         field = self._get_field(field_id)
         field_intents = field.intents
 
@@ -625,15 +779,18 @@ class CalToIdAdapter(object):
         return user_intents & field_intents & spw_intents
 
     @property
-    def ms(self):
+    def ms(self) -> MeasurementSet:
+        """Return the MeasurementSet object (from context) that the CalTo applies to."""
         return self._context.observing_run.get_ms(self._calto.vis)
 
     @property
-    def spw(self):
+    def spw(self) -> list[int | str]:
+        """Return spectral windows IDs to which the calibrations apply."""
         return [spw.id for spw in self.ms.get_spectral_windows(
             self._calto.spw, science_windows_only=False)]
 
-    def _get_field(self, field_id):
+    def _get_field(self, field_id: int | str) -> Field:
+        """Return the Field object (from context/MS) for given field ID/name."""
         fields = self.ms.get_fields(task_arg=field_id)
         if len(fields) != 1:
             msg = 'Illegal field ID \'%s\' for vis \'%s\'' % (field_id,
@@ -642,7 +799,8 @@ class CalToIdAdapter(object):
             raise ValueError(msg)
         return fields[0]
 
-    def _get_spw(self, spw_id):
+    def _get_spw(self, spw_id: int | str) -> SpectralWindow:
+        """Return the SpectralWindow object (from context/MS) for given ID."""
         spws = self.ms.get_spectral_windows(spw_id,
                                             science_windows_only=False)
         if len(spws) != 1:
@@ -652,392 +810,35 @@ class CalToIdAdapter(object):
             raise ValueError(msg)
         return spws[0]
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return ('CalToIdAdapter(ms=\'%s\', field=\'%s\', intent=\'%s\', '
                 'spw=%s, antenna=%s)' % (self.ms.name, self.field,
                                          self.intent, self.spw, self.antenna))
-
-
-# CalState extends defaultdict. For defaultdicts to be pickleable, their
-# default factories must be defined at the module level.
-def _antenna_dim(): return []
-
-
-def _intent_dim(): return collections.defaultdict(_antenna_dim)
-
-
-def _field_dim(): return collections.defaultdict(_intent_dim)
-
-
-def _spw_dim(): return collections.defaultdict(_field_dim)
-
-
-def _ms_dim(): return collections.defaultdict(_spw_dim)
-
-
-class DictCalState(collections.defaultdict):
-    """
-    DictCalState is a data structure used to map calibrations for all data
-    registered with the pipeline.
-
-    It is implemented as a multi-dimensional array indexed by data selection
-    parameters (ms, spw, field, intent, antenna), with the end value being a
-    list of CalFroms, representing the calibrations to be applied to that data
-    selection.
-    """
-
-    def __init__(self, default_factory=_ms_dim):
-        super(DictCalState, self).__init__(default_factory)
-        self._removed = set()
-
-    def __reduce__(self):  # optional, for pickle support
-        super_state = super(DictCalState, self).__reduce__()
-        return self.__class__, super_state[1], self._removed, super_state[3], super_state[4]
-
-    def __setstate__(self, state):
-        self._removed = state
-
-    def global_remove(self, calfrom):
-        """
-        Mark a CalFrom as being removed from the calibration state. Rather than
-        iterating through the registered calibrations, this adds the CalFrom to
-        a set of object to be ignored. When the calibrations are subsequently
-        inspected, CalFroms marked as removed will be bypassed.
-
-        :param calfrom: the CalFrom to remove
-        :return:
-        """
-        self._removed.add(calfrom)
-
-    def global_reactivate(self, calfroms):
-        """
-        Reactivate a CalFrom that was marked as ignored through a call to
-        global_remove.
-
-        This will reactivate the CalFrom entry, making it appear at whatever
-        index in the CalApplications that it was originally registered, e.g.
-        if a CalFrom was 'deleted' via a call to global_remove and 3 more
-        CalFroms were added to the CalState, when the CalFrom is reactivated
-        it will appear in the original position - that is, before the 3
-        subsequent CalFroms, rather than appearing at the end of the list.
-
-        :param calfroms: the CalFroms to reactivate
-        :type calfroms: a set of CalFrom objects
-        :return: None
-        """
-        LOG.trace('Globally reactivating %s CalFroms: %s',
-                  len(calfroms), calfroms)
-        self._removed -= calfroms
-
-    def get_caltable(self, caltypes=None):
-        """
-        Get the names of all caltables registered with this CalState.
-
-        If an optional caltypes argument is given, only caltables of the
-        requested type will be returned.
-
-        :param caltypes: Caltypes should be one or/a list of table
-        types known in CalFrom.CALTYPES.
-
-        :rtype: set of strings
-        """
-        if caltypes is None:
-            caltypes = list(CalFrom.CALTYPES.keys())
-
-        if isinstance(caltypes, str):
-            caltypes = (caltypes,)
-
-        for c in caltypes:
-            assert c in CalFrom.CALTYPES
-
-        calfroms = (itertools.chain(*list(self.merged().values())))
-        return {cf.gaintable for cf in calfroms if cf.caltype in caltypes}
-
-    @staticmethod
-    def dictify(dd):
-        """
-        Get a standard dictionary of the items in the tree.
-        """
-        return dict([(k, (DictCalState.dictify(v) if isinstance(v, dict) else v))
-                     for (k, v) in dd.items()])
-
-    def merged(self, hide_empty=False):
-        hashes = {}
-        flattened = self._flattened(hide_empty=hide_empty)
-        for (calto_tup, calfrom) in flattened:
-            # create a tuple, as lists are not hashable
-            calfrom_hash = tuple([hash(cf) for cf in calfrom])
-            if calfrom_hash not in hashes:
-                LOG.trace('Creating new CalFrom hash for %s', calfrom)
-                calto_args = CalToArgs(*[[x, ] for x in calto_tup])
-                hashes[calfrom_hash] = (calto_args, calfrom)
-            else:
-                calto_args = hashes[calfrom_hash][0]
-
-                for old_key, new_key in zip(calto_args, calto_tup):
-                    if new_key not in old_key:
-                        old_key.append(new_key)
-
-        for calto_tup, _ in hashes.values():
-            for l in calto_tup:
-                l.sort()
-
-        result = {}
-        for calto_args, calfrom in hashes.values():
-            for vis in calto_args.vis:
-                calto = CalTo(vis=vis,
-                              spw=self._commafy(calto_args.spw),
-                              field=self._commafy(calto_args.field),
-                              intent=self._commafy(calto_args.intent),
-                              antenna=self._commafy(calto_args.antenna))
-                result[calto] = calfrom
-
-        return result
-
-    def _commafy(self, l=[]):
-        return ','.join([str(i) for i in l])
-
-    def _flattened(self, hide_empty=True):
-        active = ((ct_tuple, [cf for cf in cf_list if cf not in self._removed])
-                  for (ct_tuple, cf_list) in utils.flatten_dict(self))
-
-        if hide_empty:
-            return ((ct_tuple, cf_list) for ct_tuple, cf_list in active if len(cf_list) != 0)
-
-        return active
-
-    def as_applycal(self):
-        calapps = [CalApplication(k, v)
-                   for k, v in self.merged(hide_empty=True).items()]
-        return '\n'.join([str(c) for c in calapps])
-
-    def __str__(self):
-        return self.as_applycal()
-
-    def __repr__(self):
-        return self.as_applycal()
-
-
-#        return 'CalState(%s)' % repr(CalState.dictify(self.merged))
-
-
-class DictCalLibrary(object):
-    """
-    CalLibrary is the root object for the pipeline calibration state.
-    """
-
-    def __init__(self, context):
-        self._context = context
-        self._active = DictCalState()
-        self._applied = DictCalState()
-
-    def clear(self):
-        self._active = DictCalState()
-        self._applied = DictCalState()
-
-    def _add(self, calto, calfroms, calstate):
-        if not isinstance(calfroms, list):
-            calfroms = [calfroms]
-
-        calto = CalToIdAdapter(self._context, calto)
-        ms_name = calto.ms.name
-
-        for spw_id in calto.spw:
-            for field_id in calto.field:
-                for intent in calto.get_field_intents(field_id, spw_id):
-                    for antenna_id in calto.antenna:
-                        for cf in calfroms:
-                            # now that we use immutable CalFroms, we don't
-                            # need to deepcopy the object we are appending
-                            calstate[ms_name][spw_id][field_id][intent][antenna_id].append(cf)
-
-        LOG.trace('Calstate after _add:\n%s', calstate.as_applycal())
-
-    def _calc_filename(self, filename=None):
-        if filename in ('', None):
-            filename = os.path.join(self._context.output_dir,
-                                    self._context.name + '.calstate')
-        return filename
-
-    def _export(self, calstate, filename=None):
-        filename = self._calc_filename(filename)
-
-        calapps = [CalApplication(k, v) for k, v in calstate.merged().items()]
-
-        with open(filename, 'w') as export_file:
-            for ca in calapps:
-                export_file.write(ca.as_applycal())
-                export_file.write('\n')
-
-    def _remove(self, calstate, calfrom, calto=None):
-        # If this is a global removal, as signified by the lack of a CalTo to
-        # give any target data selection, we can simply mark the CalFrom as
-        # removed
-        if calto is None:
-            calstate.global_remove(calfrom)
-
-        # But if this is a partial removal, go through the dictionary
-        # dimensions and remove it from the data selection specified by the
-        # CalTo
-        else:
-            if not isinstance(calfrom, list):
-                calfrom = [calfrom]
-
-            calto = CalToIdAdapter(self._context, calto)
-            ms_name = calto.ms.name
-
-            for spw_id in calto.spw:
-                for field_id in calto.field:
-                    for intent in calto.get_field_intents(field_id, spw_id):
-                        for antenna_id in calto.antenna:
-                            current = calstate[ms_name][spw_id][field_id][intent][antenna_id]
-                            for c in calfrom:
-                                try:
-                                    current.remove(c)
-                                except ValueError:
-                                    LOG.debug('%s not found in calstate', c)
-
-        if LOG.isEnabledFor(logging.TRACE):
-            LOG.trace('Calstate after _remove:\n%s', calstate.as_applycal())
-
-    def add(self, calto, calfroms):
-        # If we are adding a previously removed CalFrom back into a
-        # CalState, we assume that the user really want the previous
-        # CalFrom not to be ignored in future runs rather than adding
-        # a second entry for this CalFrom into the CalState.
-        if not isinstance(calfroms, collections.Iterable):
-            calfroms = [calfroms]
-
-        calfroms_to_reactivate = self._active._removed.intersection(set(calfroms))
-        self._active.global_reactivate(calfroms_to_reactivate)
-
-        calfroms_to_add = [cf for cf in calfroms if cf not in calfroms_to_reactivate]
-        if calfroms_to_add:
-            self._add(calto, calfroms_to_add, self._active)
-
-    @property
-    def active(self):
-        """
-        CalState holding CalApplications to be (pre-)applied to the MS.
-        """
-        return self._active
-
-    @property
-    def applied(self):
-        """
-        CalState holding CalApplications that have been applied to the MS via
-        the pipeline applycal task.
-        """
-        return self._applied
-
-    def export(self, filename=None):
-        """
-        Export the pre-apply calibration state to disk.
-
-        The pre-apply calibrations held in the 'active' CalState will be
-        written to disk as a set of equivalent applycal calls.
-        """
-        filename = self._calc_filename(filename)
-        LOG.info('Exporting current calibration state to %s', filename)
-        self._export(self._active, filename)
-
-    def export_applied(self, filename=None):
-        """
-        Export the applied calibration state to disk.
-
-        The calibrations held in the 'applied' CalState will be written to
-        disk as a set of equivalent applycal calls.
-        """
-        filename = self._calc_filename(filename)
-        LOG.info('Exporting applied calibration state to %s', filename)
-        self._export(self._applied, filename)
-
-    def get_calstate(self, calto, hide_null=True, ignore=None):
-        """
-        Get the calibration state for a target data selection.
-        """
-        if ignore is None:
-            ignore = []
-
-        # wrap the text-only CalTo in a CalToIdAdapter, which will parse the
-        # CalTo properties and give us the appropriate subtable IDs to iterate
-        # over
-        id_resolver = CalToIdAdapter(self._context, calto)
-        ms_name = id_resolver.ms.name
-
-        result = DictCalState()
-        for spw_id in id_resolver.spw:
-            for field_id in id_resolver.field:
-                for intent in id_resolver.get_field_intents(field_id, spw_id):
-                    for antenna_id in id_resolver.antenna:
-                        calfroms = self._active[ms_name][spw_id][field_id][intent][antenna_id]
-
-                        # Make the hash function ignore the ignored properties
-                        # by setting their value to the default (and equal)
-                        # value.
-                        calfrom_copies = [self._copy_calfrom(cf, ignore)
-                                          for cf in calfroms
-                                          if cf not in self._active._removed]
-
-                        result[ms_name][spw_id][field_id][intent][antenna_id] = calfrom_copies
-
-        return result
-
-    def _copy_calfrom(self, to_copy, ignore=None):
-        if ignore is None:
-            ignore = []
-
-        calfrom_properties = ['caltype', 'calwt', 'gainfield', 'gaintable',
-                              'interp', 'spwmap']
-
-        copied = {k: getattr(to_copy, k) for k in calfrom_properties
-                  if k not in ignore}
-
-        return CalFrom(**copied)
-
-    def import_state(self, filename=None, append=False):
-        filename = self._calc_filename(filename)
-
-        LOG.info('Importing calibration state from %s' % filename)
-        calapps = []
-        with open(filename, 'r') as import_file:
-            for line in [l for l in import_file if l.startswith('applycal(')]:
-                calapp = CalApplication.from_export(line)
-                calapps.append(calapp)
-
-        if not append:
-            self._active = DictCalState()
-
-        for calapp in calapps:
-            LOG.debug('Adding %s' % calapp)
-            self.add(calapp.calto, calapp.calfrom)
-
-        LOG.info('Calibration state after import:\n'
-                 '%s' % self.active.as_applycal())
-
-    def mark_as_applied(self, calto, calfrom):
-        self._remove(self._active, calfrom, calto)
-        self._add(calto, calfrom, self._applied)
-
-        LOG.debug('New calibration state:\n'
-                  '%s' % self.active.as_applycal())
-        LOG.debug('Applied calibration state:\n'
-                  '%s' % self.applied.as_applycal())
-
-
-# CalLibrary based on interval trees -----------------------------------------
 
 
 def unit(x):
     return x
 
 
-def contiguous_sequences(l):
+def contiguous_sequences(l: Iterable) -> Generator[list[int], None, None]:
     """
-    Group a sequence of numbers into contiguous groups
+    Generate contiguous sequences of numbers from a list.
 
-    :param l: a sequence
-    :return: list of Intervals
+    This function takes a list of integers (or values that can be converted to
+    integers), sorts them, and yields contiguous sequences of these integers.
+
+    A contiguous sequence is defined as a sequence of numbers where each number
+    is exactly one greater than the previous number.
+
+    Args:
+        l: A list of integers or values that can be converted to integers.
+
+    Yields:
+        List containing sequence of continguous integers.
+
+    Example:
+    >>> list(contiguous_sequences([3, 1, 4, 2, 6, 5, 8]))
+    [[1, 2, 3, 4, 5, 6], [8]]
     """
     s = sorted([int(d) for d in l])
 
@@ -1093,15 +894,15 @@ class CalToIntervalAdapter(object):
                           if intent in intent_to_id)
             self.intent = [sequence_to_range(seq) for seq in contiguous_sequences(intent_ids)]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return ('CalToIntervalAdapter(ms={!r}, field={!r}, intent={!r}, spw={!r}, antenna={!r})'.format(
             os.path.basename(self._calto.vis), self.field, self.intent, self.spw, self.antenna))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'CalToIntervalAdapter({!s}, {!s})'.format(self._context, self._calto)
 
 
-def create_data_reducer(join):
+def create_data_reducer(join: Callable) -> Callable:
     """
     Return a function that creates a new TimestampedData object containing the
     result of executing the given operation on two TimestampedData objects.
@@ -1113,11 +914,15 @@ def create_data_reducer(join):
     The resulting TimestampedData object has a creation time equal to that of
     the oldest input object.
 
-    :param join: the function to call on the two input objects
-    :return:
-    """
+    Args:
+        join: The function to call on the two input objects.
 
-    def m(td1, td2, join=join):
+    Returns:
+        Function that creates a TimestampedData object containing result of
+        executing given join operation on two TimestampedData objects, with
+        creation time equal to that of the oldest input object.
+    """
+    def m(td1: TimestampedData, td2: TimestampedData, join: Callable = join) -> TimestampedData:
         oldest = min(td1, td2)
         newest = max(td1, td2)
         return TimestampedData(oldest.time, join(oldest, newest))
@@ -1172,12 +977,15 @@ def safe_join(vals, separator=','):
     return separator.join((str(o) for o in vals))
 
 
-def merge_contiguous_intervals(tree):
+def merge_contiguous_intervals(tree: intervaltree.IntervalTree) -> intervaltree.IntervalTree:
     """
     Merge contiguous Intervals with the same value into one Interval.
 
-    :param tree: an IntervalTree
-    :return: new IntervalTree with merged Intervals
+    Args:
+        tree: An IntervalTree.
+
+    Returns:
+        A new IntervalTree with merged Intervals.
     """
     merged_tree = intervaltree.IntervalTree()
 
@@ -1234,30 +1042,33 @@ def defrag_interval_tree(tree):
 
 # this chain of functions defines how to add overlapping Intervals when adding
 # IntervalTrees
-intent_add = create_data_reducer(join=merge_lists(join_fn=operator.add))
-field_add = create_data_reducer(join=merge_intervaltrees(intent_add))
-spw_add = create_data_reducer(join=merge_intervaltrees(field_add))
-ant_add = create_data_reducer(join=merge_intervaltrees(spw_add))
+intent_add: Callable = create_data_reducer(join=merge_lists(join_fn=operator.add))
+field_add: Callable = create_data_reducer(join=merge_intervaltrees(intent_add))
+spw_add: Callable = create_data_reducer(join=merge_intervaltrees(field_add))
+ant_add: Callable = create_data_reducer(join=merge_intervaltrees(spw_add))
 
 # this chain of functions defines how to subtract overlapping Intervals when
 # subtracting IntervalTrees
-intent_sub = create_data_reducer(join=merge_lists(join_fn=lambda x, y: [item for item in x if item not in y]))
-field_sub = create_data_reducer(join=merge_intervaltrees(intent_sub))
-spw_sub = create_data_reducer(join=merge_intervaltrees(field_sub))
-ant_sub = create_data_reducer(join=merge_intervaltrees(spw_sub))
+intent_sub: Callable = create_data_reducer(join=merge_lists(join_fn=lambda x, y: [item for item in x if item not in y]))
+field_sub: Callable = create_data_reducer(join=merge_intervaltrees(intent_sub))
+spw_sub: Callable = create_data_reducer(join=merge_intervaltrees(field_sub))
+ant_sub: Callable = create_data_reducer(join=merge_intervaltrees(spw_sub))
 
 
-def interval_to_set(interval):
+def interval_to_set(interval: intervaltree.Interval) -> set[int]:
     """
-    Get the all the indexes covered by an Interval.
+    Get all the indices covered by an Interval.
 
-    :param interval:
-    :return:
+    Args:
+        interval: Interval to retrieve indices for.
+
+    Returns:
+        Set of indices covered by given Interval.
     """
     return set(range(interval.begin, interval.end))
 
 
-def get_id_to_intent_fn(id_to_intent):
+def get_id_to_intent_fn(id_to_intent: dict[str, dict[int, str]]) -> Callable:
     """
     Return a function that can convert intent IDs to a string intent.
 
@@ -1266,10 +1077,12 @@ def get_id_to_intent_fn(id_to_intent):
 
     {'a.ms': {0: 'PHASE', 1: 'BANDPASS'}
 
-    :param id_to_intent: dict of vis : intent ID : string intent
-    :return: set of intents
-    """
+    Args:
+        id_to_intent: Dictionary mapping vis to a dictionary of intent ID: string intent.
 
+    Returns:
+        Function that converts given intent IDs for given MS to set of intents.
+    """
     def f(vis, intent_ids):
         assert vis in id_to_intent
 
@@ -1389,19 +1202,22 @@ def expand_intervaltree(tree, convert_fns, calto_fn):
             for x in expand_interval(interval, convert_fns, calto_fn))
 
 
-def expand_calstate_to_calapps(calstate: "IntervalCalState") -> List[Tuple[CalTo, List[CalFrom]]]:
+def expand_calstate_to_calapps(calstate: IntervalCalState) -> list[tuple[CalTo, list[CalFrom]]]:
     """
     Convert an IntervalCalState into a list of (CalTo, [CalFrom..]) tuples.
 
-    :param calstate: the IntervalCalState to convert
-    :return: a list of 2-tuples, first element a Calto, second element a list
-    of CalFroms
+    Args:
+        calstate: The IntervalCalState to convert.
+
+    Returns:
+        A list of 2-tuples, first element a Calto, second element a list
+        of CalFroms.
     """
     # get functions to map from integer IDs to field and intent for this MS
     id_to_field_fn = get_id_to_field_fn(calstate.id_to_field)
     id_to_intent_fn = get_id_to_intent_fn(calstate.id_to_intent)
 
-    calapps: List[Tuple[CalTo, List[CalFrom]]] = []
+    calapps: list[tuple[CalTo, list[CalFrom]]] = []
 
     for vis in calstate:
         # Set the vis argument for the CalToArgs constructor through partial
@@ -1537,15 +1353,16 @@ def consolidate_calibrations(all_my_calapps):
     return result
 
 
-def data_selection_contains(proposed, calto_args):
+def data_selection_contains(proposed: CalToArgs, calto_args: CalToArgs) -> bool:
     """
     Return True if one data selection is contained within another.
 
-    :param proposed: data selection 1
-    :type proposed: CalToArgs
-    :param calto_args: data selection 2
-    :type calto_args: CalToArgs
-    :return: True if data selection 2 is contained within data selection 1
+    Args:
+        proposed: Data selection 1 as CalToArgs tuple.
+        calto_args: Data selection 2 as CalToArgs tuple.
+
+    Returns:
+        True if data selection 2 is contained within data selection 1.
     """
     return all([not proposed.vis.isdisjoint(calto_args.vis),
                 not proposed.antenna.isdisjoint(calto_args.antenna),
@@ -1554,17 +1371,20 @@ def data_selection_contains(proposed, calto_args):
                 not proposed.intent.isdisjoint(calto_args.intent)])
 
 
-def expand_calstate(calstate):
+def expand_calstate(calstate: IntervalCalState) -> list[tuple[CalToArgs, list[CalFrom]]]:
     """
     Convert an IntervalCalState into the equivalent consolidated list of
-    (CalTo, [CalFrom..]) 2-tuples.
+    (CalToArgs, [CalFrom..]) 2-tuples.
 
-    This function is is the top-level entry point for converting a calibration
+    This function is the top-level entry point for converting a calibration
     state to 2-tuples. It consolidates data selections and converts numeric
     data selection IDs to friendly equivalents through downstream processing,
 
-    :param calstate: the IntervalCalState to convert
-    :return: a list of (CalTo, [CalFrom..]) tuples
+    Args:
+        calstate: The IntervalCalState to convert.
+
+    Returns:
+        A list of (CalToArgs, [CalFrom..]) tuples.
     """
     # step 1: convert to [(CalTo, [CalFrom..]), ..]
     unmerged = expand_calstate_to_calapps(calstate)
@@ -1648,7 +1468,7 @@ def create_interval_tree_nd(intervals, value_fn):
     return root
 
 
-def create_interval_tree_for_ms(ms):
+def create_interval_tree_for_ms(ms: MeasurementSet) -> intervaltree.IntervalTree:
     """
     Create a new IntervalTree fitted to the dimensions of a measurement set.
 
@@ -1656,8 +1476,11 @@ def create_interval_tree_for_ms(ms):
     spw, field and intent dimensions fitted to envelop of the input measurement
     set.
 
-    :param ms:
-    :return: an IntervalTree
+    Args:
+        ms: MeasurementSet to create new IntervalTree for.
+
+    Returns:
+        An IntervalTree fitted to the dimensions of given measurement set.
     """
     id_getter = operator.attrgetter('id')
     tree_intervals = [
@@ -1739,12 +1562,15 @@ def trim_nd(tree, selection):
     return root
 
 
-def get_intent_id_map(ms):
+def get_intent_id_map(ms: MeasurementSet) -> dict[int, str]:
     """
     Get the mapping of intent ID to string intent for a measurement set.
 
-    :param ms: the measurement set to analyse
-    :return: a dict of intent ID: intent
+    Args:
+        ms: The measurement set to analyse.
+
+    Returns:
+        A dict of intent ID: intent.
     """
     # intents are sorted to ensure consistent ordering
     return dict(enumerate(sorted(ms.intents)))
@@ -1752,7 +1578,7 @@ def get_intent_id_map(ms):
 
 class IntervalCalState(object):
     """
-    CalState is a data structure used to map calibrations for all data
+    IntervalCalState is a data structure used to map calibrations for all data
     registered with the pipeline.
 
     It is implemented as a multi-dimensional array indexed by data selection
@@ -1762,6 +1588,7 @@ class IntervalCalState(object):
     """
 
     def __init__(self):
+        """Initialize an IntervalCalState object."""
         self.data = {}
         self.id_to_intent = {}
         self.id_to_field = {}
@@ -1791,7 +1618,22 @@ class IntervalCalState(object):
         return calstate
 
     @staticmethod
-    def create_from_context(context):
+    def create_from_context(context: launcher.Context) -> IntervalCalState:
+        """
+        Return a new IntervalCalState based on given Pipeline context.
+
+        This method initialises a new IntervalCalState instance and then updates
+        its key attributes by generating "ID to intent" and "ID to field"
+        mapping dictionaries, generating interval trees with correct dimensions,
+        and computing the shape, for all measurement sets that are registered in
+        the given context.
+
+        Args:
+            context: The Pipeline context.
+
+        Returns:
+            IntervalCalState based on given Pipeline context.
+        """
         if LOG.isEnabledFor(logging.TRACE):
             LOG.trace('Creating new CalLibrary from context')
 
@@ -1870,7 +1712,7 @@ class IntervalCalState(object):
 
         return calstate
 
-    def get_caltable(self, caltypes=None) -> Set[str]:
+    def get_caltable(self, caltypes=None) -> set[str]:
         """
         Get the names of all caltables registered with this CalState.
 
@@ -1916,23 +1758,28 @@ class IntervalCalState(object):
                              spwmap=calapp.spwmap, calwt=calapp.calwt)
             append = True
 
-    def as_applycal(self):
+    def as_applycal(self) -> str:
+        """Return the CalState as a string representation of the corresponding applycal commands."""
         calapps = (CalApplication(calto, calfroms)
                    for calto, calfroms in self.merged(hide_empty=True).items())
 
         return '\n'.join([str(c) for c in calapps])
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.as_applycal()
 
-    def _combine(self, other, combine_fn):
+    def _combine(self, other: IntervalCalState, combine_fn: Callable) -> IntervalCalState:
         """
         Get the union of this object combined with another IntervalCalState,
         applying a function to any Intervals that overlap.
 
-        :param other: the other IntervalCalState
-        :param combine_fn: the combining function to apply
-        :return: IntervalCalState
+        Args:
+            other: The other IntervalCalState.
+            combine_fn: The combining function to apply to overlapping intervals.
+
+        Returns:
+            New IntervalCalState object representing union of this
+            IntervalCalState and given ``other`` IntervalCalState.
         """
         calstate = IntervalCalState()
 
@@ -1973,7 +1820,11 @@ class IntervalCalState(object):
 
         return unmarked
 
-    def __add__(self, other):
+    def __add__(self, other: IntervalCalState) -> IntervalCalState:
+        """Defines how to add this IntervalCalState to given ``other`` IntervalCalState."""
+        # Create new IntervalCalState by combining this IntervalCalState with
+        # given "other" IntervalCalState, while applying the "antenna addition"
+        # function chain to overlapping intervals.
         calstate = self._combine(other, ant_add)
 
         # also adopt IntervalTrees only present in the other object
@@ -2016,7 +1867,7 @@ class IntervalCalState(object):
         return iter(self.data)
 
 
-def fix_cycle0_data_selection(context, calstate):
+def fix_cycle0_data_selection(context: launcher.Context, calstate: IntervalCalState) -> IntervalCalState:
     # shortcut to minimise processing for data from Cycle 1 onwards.
     if any(utils.get_epoch_as_datetime(ms.start_time) <= CYCLE_0_END_DATE
            for ms in context.observing_run.measurement_sets):
@@ -2057,25 +1908,49 @@ def fix_cycle0_data_selection(context, calstate):
 
 class IntervalCalLibrary(object):
     """
-    CalLibrary is the root object for the pipeline calibration state.
-    """
+    IntervalCalLibrary is the root object for the pipeline calibration state.
 
-    def __init__(self, context):
+    This implementation of the CalLibrary is based on the interval tree data
+    structure.
+    """
+    def __init__(self, context: launcher.Context) -> None:
+        """Initialize an IntervalCalLibrary instance."""
         self._context = context
         self._active = IntervalCalState.create_from_context(context)
         self._applied = IntervalCalState.create_from_context(context)
 
-    def clear(self):
+    def clear(self) -> None:
+        """Clear all active and applied calibrations."""
         self._active.clear()
         self._applied.clear()
 
-    def _calc_filename(self, filename=None):
+    def _calc_filename(self, filename: str | None = None) -> str:
+        """
+        Return output filename for this IntervalCalLibrary.
+
+        If given filename is not None or an empty string, then given filename is
+        returned. Otherwise, a new filename is defined based on the context
+        name.
+
+        Args:
+            filename: Proposed output filename (optional).
+
+        Returns:
+            Output filename to use.
+        """
         if filename in ('', None):
             filename = os.path.join(self._context.output_dir,
                                     self._context.name + '.calstate')
         return filename
 
-    def _export(self, calstate, filename=None):
+    def _export(self, calstate: IntervalCalState, filename: str | None = None) -> None:
+        """
+        Export input calibration state to a file.
+
+        Args:
+            calstate: Calibration state to export to a file.
+            filename: Name for saved calibration state file.
+        """
         filename = self._calc_filename(filename)
 
         calapps = [CalApplication(k, v) for k, v in calstate.merged().items()]
@@ -2093,49 +1968,59 @@ class IntervalCalLibrary(object):
             LOG.trace('Calstate after _add:\n%s', self._active.as_applycal())
 
     @property
-    def active(self):
+    def active(self) -> IntervalCalState:
         """
         CalState holding CalApplications to be (pre-)applied to the MS.
         """
         return self._active
 
     @property
-    def applied(self):
+    def applied(self) -> IntervalCalState:
         """
         CalState holding CalApplications that have been applied to the MS via
         the pipeline applycal task.
         """
         return self._applied
 
-    def export(self, filename=None):
+    def export(self, filename: str | None = None) -> None:
         """
         Export the pre-apply calibration state to disk.
 
         The pre-apply calibrations held in the 'active' CalState will be
         written to disk as a set of equivalent applycal calls.
+
+        Args:
+            filename: Name for saved calibration state file.
         """
         filename = self._calc_filename(filename)
         LOG.info('Exporting current calibration state to %s', filename)
         self._export(self._active, filename)
 
-    def export_applied(self, filename=None):
+    def export_applied(self, filename: str | None = None) -> None:
         """
         Export the applied calibration state to disk.
 
         The calibrations held in the 'applied' CalState will be written to
         disk as a set of equivalent applycal calls.
+
+        Args:
+            filename: Name for saved calibration state file.
         """
         filename = self._calc_filename(filename)
         LOG.info('Exporting applied calibration state to %s', filename)
         self._export(self._applied, filename)
 
-    def get_calstate(self, calto, ignore=None):
+    def get_calstate(self, calto, ignore: list | None = None) -> IntervalCalState:
         """
         Get the active calibration state for a target data selection.
 
-        :param calto: the data selection
-        :param ignore:
-        :return:
+        Args:
+            calto: The data selection to retrieve active calibration state for.
+            ignore: CalFrom properties to ignore.
+
+        Returns:
+            New IntervalCalState object representing active calibration state
+            for a target data selection.
         """
         if ignore is None:
             ignore = []
@@ -2198,7 +2083,7 @@ class IntervalCalLibrary(object):
             LOG.debug('New calibration state:\n%s', self.active.as_applycal())
             LOG.debug('Applied calibration state:\n%s', self.applied.as_applycal())
 
-    def unregister_calibrations(self, predicate_fn: Callable[[CalToArgs, CalFrom], bool]):
+    def unregister_calibrations(self, predicate_fn: Callable[[CalToArgs, CalFrom], bool]) -> None:
         """
         Delete active calibrations that match the input predicate function.
 
@@ -2243,10 +2128,22 @@ class IntervalCalLibrary(object):
         self._active -= to_remove
 
 
-# CalState = DictCalState
-# CalLibrary = DictCalLibrary
+# Set the pipeline calibration state and library to the Interval Tree based
+# implementation.
 CalState = IntervalCalState
 CalLibrary = IntervalCalLibrary
+
+# Note: the current Interval Tree based implementation of the callibrary
+# was introduced in March 2016 (commit 71b6e5bd67d240e2e27fe1a973715cf3aec4b0ab)
+# and has been in use since the Cycle 4 Pipeline release, October 2016,
+# (CASA 4.7.0 + Pipeline-Cycle4-R2-B, r38377).
+#
+# The original Pipeline callibrary was a dictionary-based implementation of the
+# calibration state (DictCalState) and corresponding library (DictCalLibrary),
+# that supported the same interface as the interval-tree based implementation.
+# The dictionary-based implementation has been unused since the Cycle 4 Pipeline
+# release in 2016, and was removed in December 2024 (as part of infrastructure
+# work done in PIPE-2160) in commit: 81b674d10b9aa4b6ed9df8550af18ec86e2f26ce
 
 
 class TimestampedData(collections.namedtuple('TimestampedDataBase', ['time', 'data', 'marker'])):
@@ -2301,29 +2198,25 @@ class TimestampedData(collections.namedtuple('TimestampedDataBase', ['time', 'da
 
     def __repr__(self):
         """
-        Executable string representation of this Interval.
-        :return: string representation
-        :rtype: str
-        """
+        Return executable string representation of this Interval."""
         if self.marker is None:
             return 'TSD({0}, {1})'.format(self.time, repr(self.data))
         return 'TSD({0}, {1}, {2})'.format(self.time, repr(self.data), self.marker)
 
-    def __str__(self):
-        """
-        String representation of this Interval.
-        :return: string representation
-        :rtype: str
-        """
+    def __str__(self) -> str:
+        """Return string representation of this Interval."""
         return 'TSD({0})'.format(repr(self.data))
 
-    def __eq__(self, other):
+    def __eq__(self, other: TimestampedData) -> bool:
         """
         Whether the begins equal, the ends equal, and the data fields
         equal. Compare range_matches().
-        :param other: Interval
-        :return: True or False
-        :rtype: bool
+
+        Args:
+            other: TimestampedData to test equality for.
+
+        Returns:
+            True or False.
         """
         if not isinstance(other, TimestampedData):
             return False
@@ -2332,7 +2225,8 @@ class TimestampedData(collections.namedtuple('TimestampedDataBase', ['time', 'da
                self.marker == other.marker
 
 
-def trim_to_valid_data_selection(calstate, vis=None):
+def trim_to_valid_data_selection(calstate: IntervalCalState, vis: str | None = None) \
+        -> dict[str, intervaltree.IntervalTree]:
     """
     Trim an IntervalCalState to the shape of valid (present) data selections.
 
@@ -2342,9 +2236,12 @@ def trim_to_valid_data_selection(calstate, vis=None):
     See CAS-9415: CalLibrary needs a way to filter out calibration
     applications for missing data selections
 
-    :param calstate: the calstate to shape
-    :param vis: name of the calstate to shape. If not defined, shape all.
-    :return: a new, shaped IntervalCalState
+    Args:
+        calstate: The calstate to shape.
+        vis: Name of the calstate to shape. If not defined, shape all.
+
+    Returns:
+        A dictionary mapping name of MS to its trimmed IntervalTree.
     """
     if vis is None:
         vislist = list(calstate.data.keys())
@@ -2369,7 +2266,7 @@ def trim_to_valid_data_selection(calstate, vis=None):
     return results
 
 
-def _merge_intervals(unmerged):
+def _merge_intervals(unmerged: dict) -> tuple:
     """
     Merge adjacent Intervals (represented by the keys within the input dict)
     that have identical values and output an IntervalTree-friendly tuple of
@@ -2383,8 +2280,11 @@ def _merge_intervals(unmerged):
 
         ((((1, 2), (3, 5)), 'A'), (((2, 3),), 'B'))
 
-    :param unmerged: a dict mapping IDs to values
-    :return: tuple of constructor arguments ready for create_interval_tree_nd
+    Args:
+        unmerged: A dict mapping IDs to values.
+
+    Returns:
+        Tuple of constructor arguments ready for create_interval_tree_nd.
     """
     reversed = collections.defaultdict(set)
     for k, v in unmerged.items():
@@ -2393,12 +2293,12 @@ def _merge_intervals(unmerged):
                         for k, v in reversed.items()))
 
 
-def _print_dimensions(calstate):
+def _print_dimensions(calstate: IntervalCalState) -> None:
     """
     Debugging function used to print the dimensions of an IntervalCalState.
 
-    :param calstate: the calstate to inspect
-    :return:
+    Args:
+        calstate: The calstate to inspect.
     """
     for vis, antenna_tree in calstate.data.items():
         for antenna_interval in antenna_tree.items():
@@ -2409,9 +2309,7 @@ def _print_dimensions(calstate):
                     field_ranges = (field_interval.begin, field_interval.end)
                     for intent_interval in field_interval.data.data:
                         intent_ranges = (intent_interval.begin, intent_interval.end)
-
-                        tree_intervals = (
-                        os.path.basename(vis), antenna_ranges, spw_ranges, field_ranges, intent_ranges)
+                        tree_intervals = (os.path.basename(vis), antenna_ranges, spw_ranges, field_ranges, intent_ranges)
                         print('{!r}'.format(tree_intervals))
 
 
@@ -2442,9 +2340,12 @@ def set_calstate_marker(calstate, marker):
     IntervalTree union operation, and subsequently operated on in a
     merge_equals step.
 
-    :param calstate: the calstate to modify
-    :param marker: the object to annotate calstates with
-    :return: annotated calstate 
+    Args:
+        calstate: The calstate to modify.
+        marker: The object to annotate calstates with.
+
+    Returns:
+        New IntervalCalState representing the annotated calibration state.
     """
     calstate_copy = copy.deepcopy(calstate)
 
@@ -2470,7 +2371,7 @@ def set_calstate_marker(calstate, marker):
     return calstate_copy
 
 
-def _copy_calfrom(calfrom, **overrides):
+def _copy_calfrom(calfrom: CalFrom, **overrides) -> CalFrom:
     """
     Copy a CalFrom, overwriting any CalFrom properties with the specified
     override values.
@@ -2479,9 +2380,12 @@ def _copy_calfrom(calfrom, **overrides):
 
     modified = _copy_calfrom(calfrom, calwt=True)
 
-    :param calapp: CalFrom to copy
-    :param overrides: kw/val pairs of CalFrom properties to override
-    :return: CalFrom instance
+    Args:
+        calapp: CalFrom to copy.
+        overrides: Keyword/value pairs of CalFrom properties to override.
+
+    Returns:
+        CalFrom instance with keywords overridden as per given arguments.
     """
     new_kwargs = dict(gaintable=calfrom.gaintable, gainfield=calfrom.gainfield, interp=calfrom.interp,
                       spwmap=list(calfrom.spwmap), caltype=calfrom.caltype, calwt=calfrom.calwt)
@@ -2489,7 +2393,7 @@ def _copy_calfrom(calfrom, **overrides):
     return CalFrom(**new_kwargs)
 
 
-def _copy_calto(calto, **overrides):
+def _copy_calto(calto: CalTo, **overrides) -> CalTo:
     """
     Copy a CalTo, overwriting any CalFrom properties with the specified
     override values.
@@ -2498,16 +2402,19 @@ def _copy_calto(calto, **overrides):
 
     modified = _copy_calto(calto, spw=9)
 
-    :param calapp: CalTo to copy
-    :param overrides: kw/val pairs of CalTo properties to override
-    :return: CalTo instance
+    Args:
+        calapp: CalTo to copy.
+        overrides: Keyword/value pairs of CalTo properties to override
+
+    Returns:
+        CalTo instance with keywords overridden as per given arguments.
     """
     new_kwargs = dict(vis=calto.vis, field=calto.field, spw=calto.spw, antenna=calto.antenna, intent=calto.intent)
     new_kwargs.update(overrides)
     return CalTo(**new_kwargs)
 
 
-def copy_calapplication(calapp, origin=None, **overrides):
+def copy_calapplication(calapp: CalApplication, origin: CalAppOrigin | None = None, **overrides) -> CalApplication:
     """
     Copy a CalApplication, overwriting any CalTo or CalFrom values with the
     given override values.
@@ -2517,10 +2424,14 @@ def copy_calapplication(calapp, origin=None, **overrides):
 
     modified = copy_calapplication(calapp, calwt=True, spw=9)
 
-    :param calapp: CalApplication to copy
-    :param origin: origin to set, or None to copy the origin from calapp
-    :param overrides: kw/val pairs of calto/calfrom attributes to override
-    :return: CalApplication instance
+    Args:
+        calapp: The CalApplication to copy.
+        origin: Origin to set, or None to copy the origin from calapp.
+        overrides: Keyword/value pairs of CalTo/CalFrom attributes to override.
+
+    Returns:
+        New CalApplication instance with origin and keywords overridden as per
+        given arguments.
     """
     if origin is None:
         origin = calapp.origin
@@ -2536,89 +2447,8 @@ def copy_calapplication(calapp, origin=None, **overrides):
     return CalApplication(calto, calfrom, origin=origin)
 
 
-# def consolidate_calibrations(calapps):
-#     """
-#     Consolidate a list of (CalTo, [CalFrom..]) 2-tuples into a smaller set of
-#     equivalent applications by consolidating their data selection arguments.
-#
-#     This function works by merging the data selections of CalTo objects that
-#     have the same calibration application, as determined by the values and
-#     data selection present in the CalFroms.
-#
-#     :param calapps: an iterable of (CalTo, [CalFrom..]) 2-tuples
-#     :return: a list of (CalTo, [CalFrom..]) tuples
-#     """
-#
-#     # dict mapping an object hash to the object itself:
-#     #     hash([CalFrom, ...]): [CalFrom, ...]
-#     hash_to_calfroms = {}
-#     # dict mapping from object hash to corresponding list of CalToArgs
-#     hash_to_calto_args = collections.defaultdict(list)
-#
-#     # create our maps of hashes, which we need to test for overlapping data
-#     # selections
-#     for calto_args, calfroms in calapps:
-#         # create a tuple, as lists are not hashable
-#         calfrom_hash = tuple([hash(cf) for cf in calfroms])
-#         hash_to_calto_args[calfrom_hash].append(calto_args)
-#
-#         if calfrom_hash not in hash_to_calfroms:
-#             hash_to_calfroms[calfrom_hash] = calfroms
-#
-#     LOG.info('Consolidating calibrations')
-#     # dict that maps holds accepted data selections and their CalFroms
-#     accepted = {}
-#     for calfrom_hash, calto_args in hash_to_calto_args.items():
-#         # assemble the other data selections (the other CalToArgs) which we
-#         # will use to search for conflicting data selections
-#         other_data_selections = []
-#         for v in [v for k, v in hash_to_calto_args.items() if k != calfrom_hash]:
-#             other_data_selections.extend(v)
-#
-#         for to_merge in calto_args:
-#             if calfrom_hash not in accepted:
-#                 # first time round for this calibration application, therefore it can always be added
-#                 # as there will be nothing to merge
-#                 accepted[calfrom_hash] = [(copy.deepcopy(to_merge), hash_to_calfroms[calfrom_hash])]
-#                 continue
-#
-#             for idx, (existing_calto, calfroms) in enumerate(accepted[calfrom_hash]):
-#                 proposed_calto = CalToArgs(*copy.deepcopy(existing_calto))
-#
-#                 for proposed_values, to_merge_values in zip(proposed_calto, to_merge):
-#                     proposed_values.update(to_merge_values)
-#
-#                 # if the merged data selection does not conflict with any of
-#                 # the explicitly registered data selections that require a
-#                 # different calibration application, then it is safe to add
-#                 # the merged data selection and discard the unmerged data
-#                 # selection
-#                 if not any((data_selection_contains(proposed_calto, other) for other in other_data_selections)):
-#                     LOG.trace('No conflicting data selection detected')
-#                     LOG.trace('Accepting merged data selection: {!s}'.format(proposed_calto))
-#                     LOG.trace('Discarding unmerged data selection: {!s}'.format(to_merge))
-#                     accepted[calfrom_hash][idx] = (proposed_calto, hash_to_calfroms[calfrom_hash])
-#                     break
-#
-#             else:
-#                 # we get here if all of the proposed merged data selections
-#                 # conflict with the data selection in hand. In this case, it
-#                 # should be added as it stands, completely unaltered.
-#                 LOG.trace('Merged data selection conflicts with other registrations')
-#                 LOG.trace('Abandoning proposed data selection: {!s}'.format(proposed_calto))
-#                 LOG.trace('Appending new unmerged data selection: {!s}'.format(to_merge))
-#                 unmergeable = (to_merge, hash_to_calfroms[calfrom_hash])
-#                 accepted[calfrom_hash].append(unmergeable)
-#
-#     # dict values are lists, which we need to flatten into a single list
-#     result = []
-#     for l in accepted.itervalues():
-#         result.extend(l)
-#     return result
-
-
 @cachetools.cached(cachetools.LRUCache(50), key=operator.attrgetter('name'))
-def get_calstate_shape(ms):
+def get_calstate_shape(ms: MeasurementSet):
     """
     Get an IntervalTree shaped to the dimensions of the given measurement set.
 
@@ -2634,8 +2464,11 @@ def get_calstate_shape(ms):
     Note: this assumes that shape of an MS never changes, which should be
     true; the number of spws, fields, ants, etc. never changes.
 
-    :param ms: the MeasurementSet to analyse
-    :return: IntervalTree shaped to match valid data dimensions
+    Args:
+        ms: The MeasurementSet to analyse.
+
+    Returns:
+        IntervalTree shaped to match valid data dimensions.
     """
     LOG.debug('Calculating callibrary shape for {}'.format(ms.basename))
 
@@ -2692,9 +2525,8 @@ def get_calstate_shape(ms):
     return antenna_shape
 
 
-def get_matching_calstate(context: launcher.Context,
-                           calstate: IntervalCalState,
-                           predicate_fn: Callable[[CalToArgs, CalFrom], bool]) -> IntervalCalState:
+def get_matching_calstate(context: launcher.Context, calstate: IntervalCalState,
+                          predicate_fn: Callable[[CalToArgs, CalFrom], bool]) -> IntervalCalState:
     """
     Return an IntervalCalState contain calibrations in the input 
     IntervalCalState that match the predicate function.
@@ -2704,10 +2536,15 @@ def get_matching_calstate(context: launcher.Context,
     instance, matching registered bandpass caltables so they can be removed
     from the active CalState.
 
-    :param context: pipeline context (required to create IntervalCalState)
-    :param calstate: calibration state to inspect
-    :predicate_fn: matching function that returns True when the selection is
-        to be added to the output IntervalCalState
+    Args:
+        context: Pipeline context (required to create IntervalCalState).
+        calstate: Calibration state to inspect.
+        predicate_fn: Matching function that returns True when the selection
+            is to be added to the output IntervalCalState.
+
+    Returns:
+        IntervalCalState containing the calibrations from the input
+        IntervalCalState that match the given predicate function.
     """
     expanded = expand_calstate_to_calapps(calstate)
 

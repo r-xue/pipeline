@@ -3,35 +3,19 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hifv.tasks.flagging.targetflag.TargetflagInputs.__init__
 @utils.cli_wrapper
-def hifv_targetflag(vis=None, dryrun=None, acceptresults=None, intents=None):
+def hifv_targetflag(vis=None, intents=None):
 
-    """
-    hifv_targetflag ---- Targetflag
-    
-    Targetflag
-    
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
+    """Targetflag
 
-    --------- parameter descriptions ---------------------------------------------
+    Returns:
+        The results object for the pipeline task is returned.
 
-    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
-                  specified in the h_init or hifv_importdata task.
-    dryrun        Run the commands (True) or generate the commands to be run but
-                  do not execute (False).  This is a pipeline task execution mode.
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).  This is a pipeline task execution mode.
-    intents       List of intents of scans to be flagged
+    Examples:
+        1. Run rflag on both the science targets and calibrators:
 
-    --------- examples -----------------------------------------------------------
-    
-    
-    1. Run rflag on both the science targets and calibrators:
-    
-    >>> hifv_targetflag()
-
+        >>> hifv_targetflag()
 
     """
 

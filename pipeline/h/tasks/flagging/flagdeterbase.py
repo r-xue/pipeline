@@ -12,7 +12,7 @@ vis = [ '<MS name>' ]
 context = pipeline.Pipeline().context
 inputs = pipeline.tasks.ImportData.Inputs(context, vis=vis)
 task = pipeline.tasks.ImportData(inputs)
-results = task.execute(dry_run=False)
+results = task.execute()
 results.accept(context)
 
 # Execute the flagging task
@@ -20,7 +20,7 @@ inputs = pipeline.tasks.flagging.FlagDeterBase.Inputs(context,\
       autocorr=True, shadow=True, scan=True, scannumber='4,5,8',\
       intents='*AMPLI*', edgespw=True, fracspw=0.1)
 task = pipeline.tasks.flagging.FlagDeterBase(inputs)
-result = task.execute(dry_run=True)
+result = task.execute()
 
 In other words, create a context, create the inputs (which sets the public
 variables to the correct values and creates the temporary flag command file),
@@ -203,7 +203,7 @@ class FlagDeterBaseInputs(vdp.StandardInputs):
             if any([a.diameter == 7.0 for a in self.ms.antennas]):
                 return [0.048, 0.0]
 
-            median_ints = [self.ms.get_median_science_integration_time(intent=intent)
+            median_ints = [self.ms.get_integration_time_stats(science_windows_only=True, stat_type="median")
                            for intent in ('AMPLITUDE', 'BANDPASS', 'PHASE', 'TARGET', 'CHECK')
                            if intent in self.ms.intents]
             if not median_ints:
@@ -212,9 +212,9 @@ class FlagDeterBaseInputs(vdp.StandardInputs):
 
         elif self.hm_tbuff == '1.5int':
             if hasattr(self.context, 'evla'):
-                t = self.ms.get_vla_max_integration_time()
+                t = self.ms.get_integration_time_stats(stat_type="max")
             else:
-                t = self.ms.get_median_integration_time()
+                t = self.ms.get_integration_time_stats(stat_type="median")
             return [1.5 * t]
         else:
             return unprocessed

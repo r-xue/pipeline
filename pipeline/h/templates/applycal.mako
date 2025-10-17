@@ -24,6 +24,8 @@ total_keys = {
     'POLANGLE'     : 'Polarization angle',
     'POLLEAKAGE'   : 'Polarization leakage',
 	'CHECK'		   : 'Check',
+    'DIFFGAINREF'  : 'Diffgain reference',
+    'DIFFGAINSRC'  : 'Diffgain on-source',
 }
 
 def template_agent_header1(agent):
@@ -151,6 +153,9 @@ def format_spwmap(spwmap, scispws):
 %if amp_vs_time_plots:
   <li><a href="#calampvstime">Calibrated amplitude vs time</a></li>
 %endif
+%if sd_amp_vs_time_plots:
+  <li><a href="#sdcalampvstime">Science target: calibrated amplitude vs time</a></li>
+%endif
 %if phase_vs_time_plots:
   <li><a href="#calphasevstime">Calibrated phase vs time</a></li>
 %endif
@@ -169,6 +174,9 @@ def format_spwmap(spwmap, scispws):
 %if uv_plots:
   <li><a href="#uvcoverage">UV coverage</a></li>
 %endif
+%if xy_deviation_plots:
+  <li><a href="#xydeviation">Science target: amplitude difference (XX-YY) vs frequency</a></li>
+%endif
   </ul>
 </ul>
 
@@ -177,6 +185,9 @@ def format_spwmap(spwmap, scispws):
     <i>Intents</i> column. If a field name is ambiguous and does not uniquely identify a field, e.g., when a field is
     observed with multiple intents, then the unambiguous field ID is listed instead of the field name. The order of
     entries in the <i>Fields</i> and <i>Intents</i> columns has no significance.</p>
+% if parang:
+    <p>Applycal was invoked with parang=True.</p>
+% endif
 <table class="table table-bordered table-striped table-condensed"
 	   summary="Applied Calibrations">
 	<caption>Applied Calibrations</caption>
@@ -294,7 +305,8 @@ def format_spwmap(spwmap, scispws):
 	</tbody>
 </table>
 
-% if amp_vs_freq_plots or phase_vs_freq_plots or amp_vs_time_plots or amp_vs_uv_plots or phase_vs_time_plots or science_amp_vs_freq_plots or uv_plots:
+% if amp_vs_freq_plots or phase_vs_freq_plots or amp_vs_time_plots or sd_amp_vs_time_plots or amp_vs_uv_plots or phase_vs_time_plots or science_amp_vs_freq_plots or uv_plots or xy_deviation_plots:
+
 <h2 id="plots" class="jumptarget">Plots</h2>
 
 <%self:plot_group plot_dict="${amp_vs_freq_plots}"
@@ -466,6 +478,39 @@ def format_spwmap(spwmap, scispws):
 </%self:plot_group>
 
 
+<%self:plot_group plot_dict="${sd_amp_vs_time_plots}"
+				  url_fn="${lambda x: amp_vs_time_subpages[x]}"
+				  data_vis="${True}"
+				  data_spw="${True}"
+				  title_id="sdcalampvstime"
+                  sort_row_by="spw">
+
+	<%def name="title()">
+		Science target: calibrated amplitude vs time
+	</%def>
+
+	<%def name="preamble()">
+		Calibrated amplitude vs time plots for all fields, antennas and
+		correlations. Data are coloured by field.
+	</%def>
+
+	<%def name="mouseover(plot)">Click to show amplitude vs time for spectral window ${plot.parameters['spw']}</%def>
+
+	<%def name="fancybox_caption(plot)">
+		Spectral window: ${plot.parameters['spw']}<br>
+		Antenna: all<br>
+		Fields: all
+	</%def>
+
+	<%def name="caption_title(plot)">
+		Spectral Window: ${plot.parameters['spw']}<br>
+		Antenna: all<br>
+		Fields: all
+        </%def>
+
+</%self:plot_group>
+
+
 <%self:plot_group plot_dict="${phase_vs_time_plots}"
 				  url_fn="${lambda x: phase_vs_time_subpages[x]}"
 				  data_vis="${True}"
@@ -608,7 +653,7 @@ def format_spwmap(spwmap, scispws):
 
 	<%def name="ms_preamble(ms)">
 	% if uv_max[ms].value > 0.0:
-        <p>Calibrated amplitude vs frequency plots for the each measurement
+        <p>Calibrated amplitude vs frequency plots for each measurement
             set's representative source. For mosaics, the representative field is
             identified as the field with the highest median channel-averaged amplitude,
             calculated over all science spectral windows. The atmospheric transmission
@@ -664,11 +709,10 @@ def format_spwmap(spwmap, scispws):
 	</%def>
 
 	<%def name="preamble()">
-        <p>Calibrated amplitude vs frequency plots for the each measurement
+        <p>Calibrated amplitude vs frequency plots for each measurement
             set's representative source. For mosaics, the representative field is
             identified as the field with the highest median channel-averaged amplitude,
-            calculated over all science spectral windows. The atmospheric transmission
-            for each spectral window is overlayed on each plot in pink.</p>
+            calculated over all science spectral windows.</p>
 		<p>Data are plotted for all antennas and correlations, with different
 		spectral windows shown in different colours.</p>
 	</%def>
@@ -730,6 +774,46 @@ def format_spwmap(spwmap, scispws):
 		UV coverage plot for ${plot.parameters['intent']} field ${html.escape(plot.parameters['field_name'], True)}
         (#${plot.parameters['field']}), spw ${plot.parameters['spw']}
 	</%def>
+</%self:plot_group>
+
+<%self:plot_group plot_dict="${xy_deviation_plots}"
+				  url_fn="${lambda x: xy_deviation_plot_subpages[x]}"
+				  data_spw="${True}"
+				  data_field="${True}"
+                  data_vis="${True}"
+				  title_id="xydeviation"
+                  break_rows_by="field"
+                  sort_row_by="baseband,spw">
+
+	<%def name="title()">
+		Science target: amplitude difference (XX-YY) vs frequency
+	</%def>
+
+	<%def name="ms_preamble(ms)">
+        <p>Diagnosis of amplitude difference between the two polarizations
+           for each measurement set. Heuristic plots can be found below.</p>
+	</%def>
+
+	<%def name="mouseover(plot)">Click to show amplitude difference vs frequency for spw ${plot.parameters['spw']}</%def>
+
+	<%def name="fancybox_caption(plot)">
+		Spw: ${plot.parameters['spw']}<br>
+		Fields: ${html.escape(plot.parameters['field'], True)}
+	</%def>
+
+	<%def name="caption_title(plot)">
+		Spw ${plot.parameters['spw']}
+	</%def>
+
+	<%def name="caption_subtitle(plot)">
+		${rx_for_plot(plot)}
+	</%def>
+
+    <%def name="caption_text(plot, intent)">
+        Source: ${plot.parameters['source'].name} (#${plot.parameters['source'].id})<br>
+        Field: ${plot.parameters['field']}
+    </%def>
+
 </%self:plot_group>
 
 <p>${outliers_path_link}

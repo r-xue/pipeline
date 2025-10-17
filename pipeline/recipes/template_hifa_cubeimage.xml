@@ -5,7 +5,12 @@
     <!-- import MS: if importonly=True, no calibration shall be performed -->
     <ProcessingCommand>
         <Command xmlns="">hifa_importdata</Command>
-        <ParameterSet/>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">datacolumns</Keyword>
+                <Value xmlns="">{'data':'raw','corrected':'regcal_contline_all'}</Value>
+            </Parameter>
+        </ParameterSet>
     </ProcessingCommand>
     <!-- end of import MS-->
     {{/importonly}}
@@ -31,7 +36,7 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
-        <Command xmlns="">hifas_imageprecheck</Command>
+        <Command xmlns="">hifa_imageprecheck</Command>
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">desired_angular_resolution</Keyword>
@@ -84,17 +89,15 @@
     <ProcessingCommand>
         <Command xmlns="">hif_uvcontsub</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">field</Keyword>
+                <Value xmlns="">{{{field_list}}}</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <!-- end of the continuum subtraction section -->
     {{/cube_image}}
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
 
     {{#cont_image}}
     <!-- create aggregate continuum image if cont_image=true -->
@@ -158,9 +161,13 @@
                 <Value xmlns="">{{width}}</Value>
             </Parameter>
             <Parameter>
+                <Keyword xmlns="">nbin</Keyword>
+                <Value xmlns="">-1</Value>
+            </Parameter>              
+            <Parameter>
                 <Keyword xmlns="">nchan</Keyword>
                 <Value xmlns="">{{nchan}}</Value>
-            </Parameter>
+            </Parameter>          
         </ParameterSet>
     </ProcessingCommand>
 
@@ -188,6 +195,10 @@
                 <Keyword xmlns="">field</Keyword>
                 <Value xmlns="">{{{field_list}}}</Value>
             </Parameter>
+            <Parameter>
+                <Keyword xmlns="">recal</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -260,6 +271,10 @@
                 <Keyword xmlns="">width</Keyword>
                 <Value xmlns="">{{width}}</Value>
             </Parameter>
+            <Parameter>
+                <Keyword xmlns="">nbin</Keyword>
+                <Value xmlns="">-1</Value>
+            </Parameter>              
             <Parameter>
                 <Keyword xmlns="">nchan</Keyword>
                 <Value xmlns="">{{nchan}}</Value>

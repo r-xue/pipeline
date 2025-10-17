@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 LOG = logging.get_logger(__name__)
 
-ImageRMSTR = collections.namedtuple('ImageRMSTR', 'name range width theoretical_rms observed_rms')
+ImageRMSTR = collections.namedtuple('ImageRMSTR', 'name frame range width theoretical_rms observed_rms')
 
 
 class SingleDishMomentMapPlotRenderer(basetemplates.JsonPlotRenderer):
@@ -68,17 +68,18 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                 spw_type = 'TP' if imagemode.upper() == 'AMPCAL' else ref_ms.spectral_windows[ref_spw].type
                 task_cls = display.SDImageDisplayFactory(spw_type)
                 inputs = task_cls.Inputs(context, result=r)
+                freq_frame = inputs.image.frequency_frame
                 task = task_cls(inputs)
                 plots.append(task.plot())
                 # RMS of combined image
                 if r.sensitivity_info is not None:
                     rms_info = r.sensitivity_info
                     sensitivity = rms_info.sensitivity
-                    theoretical_rms = r.theoretical_rms['sensitivity']
+                    theoretical_rms = r.theoretical_rms['theoretical_sensitivity']
                     bw = cqa.tos(cqa.convert(sensitivity['bandwidth'], 'kHz'))
                     trms = cqa.tos(theoretical_rms) if theoretical_rms['value'] >= 0 else 'n/a'
-                    irms = cqa.tos(sensitivity['sensitivity']) if cqa.getvalue(sensitivity['sensitivity']) >= 0 else 'n/a'
-                    tr = ImageRMSTR(image_item.imagename, rms_info.frequency_range, bw, trms, irms)
+                    irms = cqa.tos(sensitivity['observed_sensitivity']) if cqa.getvalue(sensitivity['observed_sensitivity']) >= 0 else 'n/a'
+                    tr = ImageRMSTR(image_item.imagename, freq_frame, rms_info.frequency_range, bw, trms, irms)
                     if image_item.sourcename == ref_ms.representative_target[0]:
                         image_rms.append(tr)
                     else:
@@ -99,6 +100,8 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                                    'plot_title': 'Moment Map'},
                      'integratedmap': {'type': 'sd_integrated_map',
                                        'plot_title': 'Integrated Intensity Map'},
+                     'missedlines': {'type': 'sd_missedlines_plot',
+                                     'plot_title': 'Diagnostic plots for possible missed line channels'},
                      'contaminationmap': {'type': 'sd_contamination_map',
                                           'plot_title': 'Contamination Plots'}}
 
@@ -124,8 +127,8 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
             else:
                 summary = self._summary_plots(plot_list)
 
-            # contamination plots
-            if key == 'contaminationmap':
+            # contamination plots and missed-lines plots
+            if key == 'contaminationmap' or key == 'missedlines':
                 ctx.update({f'{key}_subpage': None,
                             f'{key}_plots': summary})
                 continue
@@ -298,4 +301,3 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
         except StopIteration:
             field_key = None
         return field_key
-

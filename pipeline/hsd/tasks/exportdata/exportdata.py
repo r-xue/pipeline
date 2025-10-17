@@ -15,8 +15,7 @@ products_dir = "./products"
 inputs = pipeline.tasks.singledish.SDExportData.Inputs(context, output_dir,
                                                        products_dir)
 task = pipeline.tasks.singledish.SDExportData (inputs)
-results = task.execute (dry_run = True)
-results = task.execute (dry_run = False)
+results = task.execute ()
 """
 
 import collections
@@ -25,7 +24,8 @@ import os
 import shutil
 import string
 import tarfile
-from typing import Dict, Generator, List, Optional, Tuple, Union
+import traceback
+from typing import Dict, Generator, List, Optional
 
 import pipeline.h.tasks.exportdata.exportdata as exportdata
 import pipeline.infrastructure as infrastructure
@@ -36,6 +36,7 @@ import pipeline.infrastructure.project as project
 from pipeline.infrastructure import task_registry
 from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
 from pipeline.hsd.tasks.restoredata.restoredata import SDRestoreDataResults
+from pipeline.hsd.tasks.common.utils import is_nro
 from . import almasdaqua
 
 # the logger for this module
@@ -72,8 +73,6 @@ class SDExportData(exportdata.ExportData):
         Prepare and execute an export data job appropriate to the task inputs.
 
         This is almost equivalent to ALMAExportData.prepare().
-        Only difference is to use self._make_lists() instead of
-        ExportData._make_lists()
 
         Returns:
             ExportDataResults object
@@ -83,9 +82,9 @@ class SDExportData(exportdata.ExportData):
         oussid = self.inputs.context.get_oussid()
 
         # Make the imaging list of names of MeasurementSet and the sessions lists.
-        session_list, session_names, session_vislists, vislist = \
+        _, session_names, session_vislists, vislist = \
             self._make_lists(self.inputs.context, self.inputs.session,
-                             self.inputs.vis, imaging_only_mses=True)
+                             self.inputs.vis, imaging_only_mses=None)
 
         LOG.info('vislist={}'.format(vislist))
 
@@ -106,12 +105,23 @@ class SDExportData(exportdata.ExportData):
             auxcaltables = None
             auxcalapplys = None
 
+        # Create and export the pipeline stats file for ALMA single dish data
+        pipeline_stats_file = None
+        if not is_nro(self.inputs.context):
+            try:
+                pipeline_stats_file = self._export_stats_file(context=self.inputs.context, oussid=oussid)
+            except Exception as e:
+                LOG.info("Unable to output pipeline statistics file: {}".format(e))
+                LOG.debug(traceback.format_exc())
+                pass
+
         # Export the auxiliary file products into a single tar file
         #    These are optional for reprocessing but informative to the user
         #    The calibrator source fluxes file
         #    The antenna positions file
         #    The continuum regions file
         #    The target flagging file
+        #    The pipeline statistics file (if it exists)
         recipe_name = self.get_recipename(self.inputs.context)
         if not recipe_name:
             prefix = oussid
@@ -120,7 +130,8 @@ class SDExportData(exportdata.ExportData):
         auxfproducts = \
             self._do_auxiliary_products(self.inputs.context, oussid,
                                         self.inputs.output_dir,
-                                        self.inputs.products_dir)
+                                        self.inputs.products_dir,
+                                        pipeline_stats_file)
 
         # Export the AQUA report
         pipe_aqua_reportfile = self._export_aqua_report(context=self.inputs.context,
@@ -133,42 +144,11 @@ class SDExportData(exportdata.ExportData):
         if auxfproducts is not None or pipe_aqua_reportfile is not None:
             manifest_file = os.path.join(self.inputs.context.products_dir,
                                          results.manifest)
+            recipe_name = self.inputs.context.project_structure.recipe_name
             self._add_to_manifest(manifest_file, auxfproducts, auxcaltables,
-                                  auxcalapplys, pipe_aqua_reportfile, oussid)
+                                  auxcalapplys, pipe_aqua_reportfile, oussid, recipe_name)
 
         return results
-
-    def _make_lists(self, context: Context, session: List[str],
-                    vis: Union[List[str], str], imaging_only_mses: bool=False) \
-            -> Tuple[List[str], List[str], List[List[str]], List[str]]:
-        """Create the list of names of MeasurementSet and ones of session.
-
-        Args:
-            context : Pipeline context
-            session : session names
-            vis : a name of MeasurementSet or list of it
-            imaging_only_mses : a flag of imaging-only measurement sets.
-                                In single dish pipeline, all mses are non-
-                                imaging ones but they need to be returned
-                                even when imaging is False so no filtering
-                                is done. NOT IN USE.
-        Returns:
-            a tuple of session list, session name list,
-            list of MeasurementSet names lists associated with each session,
-            list of MeasurementSet names
-        """
-        LOG.info('Single dish specific _make_lists')
-        # Force inputs.vis to be a list.
-        vislist = vis
-        if isinstance(vislist, str):
-            vislist = [vislist, ]
-
-        # Get the session list and the visibility files associated with
-        # each session.
-        session_list, session_names, session_vislists = \
-            self._get_sessions(context, session, vislist)
-
-        return session_list, session_names, session_vislists, vislist
 
     def _do_aux_session_products(self, context: Context, oussid: str,
                                  session_names: List[str],
@@ -261,8 +241,6 @@ class SDExportData(exportdata.ExportData):
         LOG.info('Saving final caltables for %s in %s', session, tarfilename)
 
         # Create the tar file
-        if self._executor._dry_run:
-            return tarfilename
 
 #             caltables = set()
 
@@ -343,9 +321,6 @@ class SDExportData(exportdata.ExportData):
         # applyfile_name = os.path.basename(vis) + '.auxcalapply.txt'
         LOG.info('Storing calibration apply list for %s in  %s',
                  os.path.basename(vis), applyfile_name)
-
-        if self._executor._dry_run:
-            return applyfile_name
 
         try:
             # Log the list in human readable form. Better way to do this ?
@@ -431,7 +406,8 @@ class SDExportData(exportdata.ExportData):
                         yield reffile
 
     def _do_auxiliary_products(self, context: Context, oussid: str,
-                               output_dir: str, products_dir: str) -> str:
+                               output_dir: str, products_dir: str,
+                               pipeline_stats_file: str) -> str:
         """Save a K2JY reference file and flag files into tarball.
 
         Args:
@@ -439,6 +415,7 @@ class SDExportData(exportdata.ExportData):
             oussid : OUS Status UID
             output_dir : path of output directory
             products_dir : path of products directory
+            pipeline_stats_file: pipeline stats file
 
         Returns:
             tarball file name
@@ -498,6 +475,12 @@ class SDExportData(exportdata.ExportData):
                     LOG.info('Auxiliary data product '
                              '{} does not exist'.format(os.path.basename(flags_file)))
 
+            # PIPE-2380: Save the pipeline statistics file
+            if pipeline_stats_file and os.path.exists(pipeline_stats_file):
+                tar.add(pipeline_stats_file, arcname=pipeline_stats_file)
+                LOG.info('Saving pipeline statistics file %s in %s', pipeline_stats_file, tarfilename)
+            else:
+                LOG.info("Pipeline statistics file does not exist.")
             tar.close()
 
         return tarfilename
@@ -637,7 +620,6 @@ finally:
 
         LOG.info('Copying casa restore script '
                  '%s to %s' % (script_file, out_script_file))
-        if not self._executor._dry_run:
-            shutil.copy(script_file, out_script_file)
+        shutil.copy(script_file, out_script_file)
 
         return os.path.basename(out_script_file)

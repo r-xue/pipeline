@@ -7,6 +7,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 
 from pipeline.h.tasks.common.displays import sky as sky
+from pipeline.hif.tasks.makeimlist.cleantarget import CleanTargetInfo
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -31,7 +32,7 @@ class TcleanResult(basetask.Results):
                  sourcename=None, field_ids=None, intent=None, spw=None,
                  orig_specmode=None, specmode=None, stokes=None, multiterm=None, plotdir=None,
                  imaging_mode=None, is_per_eb=None, is_eph_obj=None):
-        super(TcleanResult, self).__init__()
+        super().__init__()
         self.vis = vis
         self.datacolumn = datacolumn
         self.datatype = datatype
@@ -66,7 +67,9 @@ class TcleanResult(basetask.Results):
         self._image_rms = 0.0
         self._image_rms_iquv = [0.0, 0.0, 0.0, 0.0]
         self._image_rms_min = 0.0
+        self._image_rms_min_iquv = [0.0, 0.0, 0.0, 0.0]
         self._image_rms_max = 0.0
+        self._image_rms_max_iquv = [0.0, 0.0, 0.0, 0.0]
         self._image_robust_rms_and_spectra = None
         # Temporarily needed until CAS-8576 is fixed
         self._residual_max = 0.0
@@ -96,6 +99,10 @@ class TcleanResult(basetask.Results):
         self.bl_ratio = None
         # Polarization calibrator fit result
         self.polcal_fit = None
+        # Flag to indicate usage of psfphasecenter parameter
+        self.used_psfphasecenter = False
+        self.imaging_metadata = {}
+        self.im_names = {}
 
     def merge_with_context(self, context):
         # Calculated beams for later stages
@@ -113,6 +120,12 @@ class TcleanResult(basetask.Results):
                 del context.per_spw_cont_sensitivities_all_chan['recalc']
             else:
                 utils.update_sens_dict(context.per_spw_cont_sensitivities_all_chan, self.per_spw_cont_sensitivities_all_chan)
+
+        # Clean masks and thresholds for later stages
+        if self.stokes == 'I' and (self.cleanmask not in (None, '')):
+            cleanTargetKey = CleanTargetInfo(datatype=self.datatype, field=self.sourcename, intent=self.intent, virtspw=self.spw, stokes=self.stokes, specmode=self.specmode)
+            context.clean_masks[cleanTargetKey] = self.cleanmask
+            context.clean_thresholds[cleanTargetKey] = self.threshold
 
         # Remove heuristics objects to avoid accumulating large amounts of unnecessary memory
         try:
@@ -140,7 +153,7 @@ class TcleanResult(basetask.Results):
         self._flux = image
 
     @property
-    def cleanmask(self, iter, image):
+    def cleanmask(self):
         iters = sorted(self.iterations.keys())
         if len(iters) > 0:
             return self.iterations[iters[-1]].get('cleanmask', None)
@@ -151,8 +164,12 @@ class TcleanResult(basetask.Results):
         self.iterations[iter]['cleanmask'] = image
 
     @property
-    def imaging_params(self, iteration):
-        return self.iterations[iteration].get('imaging_params', None)
+    def imaging_params(self):
+        iters = sorted(self.iterations.keys())
+        if len(iters) > 0:
+            return self.iterations[iters[-1]].get('imaging_params', None)
+        else:
+            return None
 
     def set_imaging_params(self, iteration, imaging_parameters):
         self.iterations[iteration]['imaging_params'] = imaging_parameters
@@ -590,11 +607,25 @@ class TcleanResult(basetask.Results):
         self._image_rms_min = image_rms_min
 
     @property
+    def image_rms_min_iquv(self):
+        return self._image_rms_min_iquv
+
+    def set_image_rms_min_iquv(self, image_rms_min_iquv):
+        self._image_rms_min_iquv = image_rms_min_iquv
+
+    @property
     def image_rms_max(self):
         return self._image_rms_max
 
     def set_image_rms_max(self, image_rms_max):
         self._image_rms_max = image_rms_max
+
+    @property
+    def image_rms_max_iquv(self):
+        return self._image_rms_max_iquv
+
+    def set_image_rms_max_iquv(self, image_rms_max_iquv):
+        self._image_rms_max_iquv = image_rms_max_iquv
 
     @property
     def image_robust_rms_and_spectra(self):
@@ -603,6 +634,7 @@ class TcleanResult(basetask.Results):
     def set_image_robust_rms_and_spectra(self, image_robust_rms_and_spectra):
         self._image_robust_rms_and_spectra = image_robust_rms_and_spectra
 
+    # TODO: Store command per iteration like for many other properties?
     @property
     def tclean_command(self):
         return self._tclean_command
@@ -623,8 +655,7 @@ class TcleanResult(basetask.Results):
 
     def set_tclean_stopreason(self, tclean_stopcode):
         # tclean exit conditions:
-        #   https://open-bitbucket.nrao.edu/projects/CASA/repos/casa6/browse/casatasks/src/modules/imagerhelpers/imager_base.py 
-        #   Search 'stopreasons'
+        #   https://casadocs.readthedocs.io/en/latest/notebooks/synthesis_imaging.html#Returned-Dictionary
         # See also CAS-6692 for additional information
         stopreasons = ['global stopping criterion not reached',  # CAS-13532
                        'iteration limit',
@@ -634,8 +665,9 @@ class TcleanResult(basetask.Results):
                        'peak residual increased by more than 3 times from the previous major cycle',
                        'peak residual increased by more than 3 times from the minimum reached',
                        'zero mask',
-                       'any combination of n-sigma and other valid exit criterion']
-        assert 0 <= tclean_stopcode <= len(stopreasons)-1,\
+                       'any combination of n-sigma and other valid exit criterion',
+                       'the major cycle limit (nmajor) reached']
+        assert 0 <= tclean_stopcode <= len(stopreasons)-1, \
             "tclean stop code {} does not index into stop reasons list".format(tclean_stopcode)
         self._tclean_stopreason = stopreasons[tclean_stopcode]
 

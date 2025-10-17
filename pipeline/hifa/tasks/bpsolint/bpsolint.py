@@ -63,9 +63,84 @@ class BpSolintInputs(vdp.StandardInputs):
     hm_nantennas = vdp.VisDependentProperty(default='unflagged')
     maxfracflagged = vdp.VisDependentProperty(default=0.90)
 
+    # docstring and type hints: supplements hifa_bpsolint
     def __init__(self, context, output_dir=None, vis=None, field=None,
                  intent=None, spw=None, phaseupsnr=None, minphaseupints=None,
                  evenbpints=None, bpsnr=None, minbpsnr=None, minbpnchan=None, hm_nantennas=None, maxfracflagged=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: The list of input MeasurementSets. Defaults to the list of
+                MeasurementSets specified in the pipeline context.
+
+                Example: vis=['M82A.ms', 'M82B.ms']
+
+            field: The list of field names of sources to be used for
+                signal-to-noise estimation. Defaults to all fields with the
+                standard intent.
+
+                Example: field='3C279'
+
+            intent: A string containing a comma delimited list of intents against
+                which the selected fields are matched. Defaults to
+                'BANDPASS'.
+
+                Example: intent='PHASE'
+
+            spw: The list of spectral windows and channels for which gain
+                solutions are computed. Defaults to all the science spectral
+                windows for which there are both 'intent' and TARGET intents.
+
+                Example: spw='13,15'
+
+            phaseupsnr: The required phase-up gain time interval solution
+                signal-to-noise.
+
+                Example: phaseupsnr=10.0
+
+            minphaseupints: The minimum number of time intervals in the phase-up gain
+                solution.
+
+                Example: minphaseupints=4
+
+            evenbpints: Use a bandpass frequency solint that is an integer divisor of
+                the spw bandwidth, to prevent the occurrence of one narrower
+                fractional frequency interval.
+
+            bpsnr: The required bandpass frequency interval solution
+                signal-to-noise.
+
+                Example: bpsnr=30.0
+
+            minbpsnr: The minimum required bandpass frequency interval solution
+                signal-to-noise when strong atmospheric lines exist in Tsys
+                spectra.
+
+                Example: minbpsnr=10.0
+
+            minbpnchan: The minimum number of frequency intervals in the bandpass
+                solution.
+
+                Example: minbpnchan=16
+
+            hm_nantennas: The heuristics for determines the number of antennas to use
+                in the signal-to-noise estimate. The options are 'all' and
+                'unflagged'. The 'unflagged' options is not currently
+                supported.
+
+                Example: hm_nantennas='unflagged'
+
+            maxfracflagged: The maximum fraction of an antenna that can be flagged before
+                it is excluded from the signal-to-noise estimate.
+
+                Example: maxfracflagged=0.80
+
+        """
 
         super(BpSolintInputs, self).__init__()
 
@@ -152,10 +227,6 @@ class BpSolint(basetask.StandardTaskTemplate):
     # Get final results from the spw dictionary
     @staticmethod
     def _get_results(vis, spwidlist, solint_dict):
-
-        # Initialize result structure.
-        result = BpSolintResults(vis=vis, spwids=spwidlist)
-
         # Initialize the lists
         phsolints = []
         phintsolints = []
@@ -207,6 +278,9 @@ class BpSolint(basetask.StandardTaskTemplate):
                 bpchansnrs.append(solint_dict[spwid]['snr_per_channel'])
                 bandwidths.append('%fHz' % solint_dict[spwid]['bandwidth'])
 
+            # Initialize result structure.
+        result = BpSolintResults(vis=vis, spwids=spwidlist)
+
         # Populate the result.
         result.phsolints = phsolints
         result.phintsolints = phintsolints
@@ -221,6 +295,7 @@ class BpSolint(basetask.StandardTaskTemplate):
         result.bpchansensitivities = bpsensitivities
         result.bpchansnrs = bpchansnrs
         result.bandwidths = bandwidths
+        result.low_channel_solutions = solint_dict['low_channel_solutions']
 
         return result
 
@@ -232,10 +307,15 @@ class BpSolint(basetask.StandardTaskTemplate):
 
         Inputs: solution interval dictionary returned by snr.estimate_bpsolint
         """
-        max_solint = 0
-        for spw_solint in solint_dict.values():
-            max_solint = max(spw_solint['nchan_bpsolint'], max_solint)
-        return max_solint
+        # the original code assumed a dict of int spw IDs to data, but the
+        # introduction of low_channel_solutions in PIPE-1760 breaks that
+        # assumption so we identify that case and skip it.
+        return max(
+            (spw_solint['nchan_bpsolint']
+             for key, spw_solint in solint_dict.items()
+             if key != 'low_channel_solutions'),
+            default=0,
+        )
 
     def _get_tsys_caltable(self, vis):
         caltables = self.inputs.context.callibrary.active.get_caltable(
@@ -250,19 +330,49 @@ class BpSolint(basetask.StandardTaskTemplate):
                 result = name
                 break
 
-        return result        
+        return result
 
 
 class BpSolintResults(basetask.Results):
-    def __init__(self, vis=None, spwids=[],
-                 phsolints=[], phintsolints=[], nphsolutions=[],
-                 phsensitivities=[], phintsnrs=[], exptimes = [],
-                 bpsolints=[], bpchansolints=[], nbpsolutions=[],
-                 bpsensitivities=[], bpchansnrs=[], bandwidths = []):
+    def __init__(self, vis=None, spwids=None,
+                 phsolints=None, phintsolints=None, nphsolutions=None,
+                 phsensitivities=None, phintsnrs=None, exptimes=None,
+                 bpsolints=None, bpchansolints=None, nbpsolutions=None,
+                 bpsensitivities=None, bpchansnrs=None, bandwidths=None,
+                 low_channel_solutions=None):
         """
         Initialise the results object.
         """
         super(BpSolintResults, self).__init__()
+
+        if spwids is None:
+            spwids = []
+        if phsolints is None:
+            phsolints = []
+        if phintsolints is None:
+            phintsolints = []
+        if nphsolutions is None:
+            nphsolutions = []
+        if phsensitivities is None:
+            phsensitivities = []
+        if phintsnrs is None:
+            phintsnrs = []
+        if exptimes is None:
+            exptimes = []
+        if bpsolints is None:
+            bpsolints = []
+        if bpchansolints is None:
+            bpchansolints = []
+        if nbpsolutions is None:
+            nbpsolutions = []
+        if bpsensitivities is None:
+            bpsensitivities = []
+        if bpchansnrs is None:
+            bpchansnrs = []
+        if bandwidths is None:
+            bandwidths = []
+        if low_channel_solutions is None:
+            low_channel_solutions = []
 
         self.vis = vis
 
@@ -284,6 +394,9 @@ class BpSolintResults(basetask.Results):
         self.bpchansensitivities = bpsensitivities
         self.bpchansnrs = bpchansnrs
         self.bandwidths = bandwidths
+
+        # PIPE-1760: processed as a QA score in hifa_bandpass
+        self.low_channel_solutions = low_channel_solutions
 
     def __repr__(self):
         if self.vis is None or not self.spwids:
@@ -379,7 +492,7 @@ def check_strong_atm_lines(ms, fieldlist, intent, spwidlist, solint_dict, tsysna
         LOG.debug('*** Scaled MAD of diff_tsys = %f' % scaled_mad)
 
         # Check amplitude and width of diff_tsys (presumably atm lines).
-        # If both exceeds thresholds -> strong line 
+        # If both exceeds thresholds -> strong line
         LOG.info('Examining line intensities and widths ' + \
                  '(thresholds: intensity = %f, width = %d channels)' % \
                  (nSigma * scaled_mad, minAdjacantChannels))

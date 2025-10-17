@@ -4,12 +4,12 @@ import shutil
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-
 from pipeline.domain import DataType
-from pipeline.hifv.heuristics import set_add_model_column_parameters
-from pipeline.hifv.heuristics import RflagDevHeuristic, mssel_valid
+from pipeline.hifv.heuristics import (RflagDevHeuristic, mssel_valid,
+                                      set_add_model_column_parameters)
+from pipeline.infrastructure import (casa_tasks, casa_tools, task_registry,
+                                     utils)
 from pipeline.infrastructure.contfilehandler import contfile_to_spwsel
-from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
 from .displaycheckflag import checkflagSummaryChart
 
@@ -26,7 +26,52 @@ class CheckflagInputs(vdp.StandardInputs):
     checkflagmode = vdp.VisDependentProperty(default='')
     overwrite_modelcol = vdp.VisDependentProperty(default=False)
 
+    # docstring and type hints: supplements hifv_checkflag
     def __init__(self, context, vis=None, checkflagmode=None, overwrite_modelcol=None, growflags=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
+
+            checkflagmode:
+                - Standard VLA modes with improved RFI flagging heuristics: 'bpd-vla', 'allcals-vla', 'target-vla'
+                - blank string default use of rflag on bandpass and delay calibrators
+                - use string 'semi' after hifv_semiFinalBPdcals() for executing rflag on calibrators
+                - use string 'bpd', for the bandpass and delay calibrators:
+                  execute rflag on all calibrated cross-hand corrected data;
+                  extend flags to all correlations
+                  execute rflag on all calibrated parallel-hand residual data;
+                  extend flags to all correlations
+                  execute tfcrop on all calibrated cross-hand corrected data,
+                  per visibility; extend flags to all correlations
+                  execute tfcrop on all calibrated parallel-hand corrected data,
+                  per visibility; extend flags to all correlations
+                - use string 'allcals', for all the other calibrators, with delays and BPcal applied:
+                  similar procedure as 'bpd' mode, but uses corrected data throughout
+                - use string 'target', for the target data:
+                  similar procedure as 'allcals' mode, but with a higher SNR cutoff
+                  for rflag to avoid flagging data due to source structure, and
+                  with an additional series of tfcrop executions to make up for
+                  the higher SNR cutoff in rflag
+                - VLASS specific modes include 'bpd-vlass', 'allcals-vlass', and 'target-vlass'
+                  which calculate thresholds to use per spw/field/scan (action='calculate', then,
+                  per baseband/field/scan, replace all spw thresholds above the median with the median,
+                  before re-running rflag with the new thresholds.  This has the effect of
+                  lowering the thresholds for spws with RFI to be closer to the RFI-free
+                  thresholds, and catches more of the RFI.
+                - Mode 'vlass-imaging' is similar to 'target-vlass', except that it executes on the split off target
+                  data, intent='*TARGET', datacolumn='data' and uses a timedevscale of 4.0.
+
+            overwrite_modelcol: Always write the model column, even if it already exists.
+
+            growflags: Grow flags in time at the end of the following checkflagmodes:
+
+                - default=True, for 'bpd-vla', 'allcals-vla', 'bpd', and 'allcals.'
+                - default=False, for '' and 'semi'
+
+        """
         super(CheckflagInputs, self).__init__()
         self.context = context
         self.vis = vis
@@ -76,7 +121,7 @@ class Checkflag(basetask.StandardTaskTemplate):
         LOG.info("Checkflag task: {}".format(repr(self.inputs.checkflagmode)))
 
         ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        self.tint = ms.get_vla_max_integration_time()
+        self.tint = ms.get_integration_time_stats(stat_type="max")
 
         # a list of strings representing polarizations from science spws
         sci_spwlist = ms.get_spectral_windows(science_windows_only=True)
@@ -105,8 +150,8 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         fieldselect, scanselect, intentselect, columnselect = self._select_data()
 
-        # abort if fieldselect is an empty string.
-        if not fieldselect:
+        # PIPE-1335: abort if both fieldselect and scanselect are empty strings.
+        if not (fieldselect or scanselect):
             LOG.warning("No scans with selected intent(s) from checkflagmode={!r}. RFI flagging not executed.".format(
                 self.inputs.checkflagmode))
             return CheckflagResults(summaries=summaries)
@@ -165,11 +210,12 @@ class Checkflag(basetask.StandardTaskTemplate):
         if use_contdat:
             # cont.dat is present for target-vla, do the field-by-field flagging
             for field in fielddict:
-                self.do_rfi_flag(fieldselect=field, scanselect=scanselect,
+                fieldselect_cont = utils.fieldname_for_casa(field)
+                self.do_rfi_flag(fieldselect=fieldselect_cont, scanselect=scanselect,
                                  intentselect=intentselect, spwselect=fielddict[field])
                 # PIPE-1342: do a second pass of rflag in the 'target-vla' mode (equivalent to running hifv_targetvla)
                 if self.inputs.checkflagmode == 'target-vla':
-                    self.do_vla_targetflag(fieldselect=field, scanselect=scanselect,
+                    self.do_vla_targetflag(fieldselect=fieldselect_cont, scanselect=scanselect,
                                            intentselect=intentselect, spwselect=fielddict[field])
         else:
             # all other situations
@@ -367,7 +413,6 @@ class Checkflag(basetask.StandardTaskTemplate):
         calcftdev = self.inputs.checkflagmode not in ('semi', '', 'target', 'bpd', 'allcals')
 
         if rflag_standard is not None:
-
             for datacolumn, correlation, scale, extendflags in rflag_standard:
                 if '_' in correlation:
                     polselect = correlation.split('_')[1]
@@ -376,40 +421,110 @@ class Checkflag(basetask.StandardTaskTemplate):
                     if not mssel_valid(self.inputs.vis, field=fieldselect, spw=spwselect, correlation=polselect,
                                        scan=scanselect, intent=intentselect):
                         continue
-                if datacolumn == 'residual':
-                    # PIPE-1256: determine if we can use the 'RESIDUAL' column in the 'bpd-vlass/vla' mode.
-                    #   The usage of 'RESIDUAL' is only valid if the model of bpd source(s) is properly filled *AND*
-                    #   the first-order gain/passband calibration has been applied in 'CORRECTED'.
-                    #   Here we check each field from the data selection and see if they all meet the above requirements.
-                    #   We only examine the parallel hand amplitude: 
-                    #       - setjy() has only I models for 3C48/3C138/3C286/3C147.
-                    #       - setjy(fluxdensity=-1) will fill the cross-hand with zero values.
-                    LOG.info("Determining if we can use the RESIDUAL column for rflag:")
-                    if self._is_model_setjy():
-                        LOG.info("  MODEL_DATA is present and none of the model(s) from selected data is a 1Jy point source.")
-                    else:
-                        datacolumn = 'corrected'
-                        correlation = correlation.replace('REAL_', 'ABS_')
-                        LOG.info("  MODEL_DATA s not found or the model(s) from selected data contains 1Jy point source(s).")
-                    LOG.info("  Use the {} column and correlation = {!r} for rflag".format(datacolumn.upper(), correlation))
-                method_args = {'mode': 'rflag',
-                               'field': fieldselect,
-                               'correlation': correlation,
-                               'scan': scanselect,
-                               'intent': intentselect,
-                               'spw': spwselect,
-                               'ntime': 'scan',
-                               'timedevscale': scale,
-                               'freqdevscale': scale,
-                               'datacolumn': datacolumn,
-                               'flagbackup': flagbackup,
-                               'savepars': False,
-                               'calcftdev': calcftdev,
-                               'useheuristic': True,
-                               'ignore_sefd': ignore_sefd,
-                               'extendflags': extendflags}
+                if self.inputs.checkflagmode == "allcals-vla":
+                    ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+                    fields = ms.get_fields(fieldselect)
 
-                self._do_rflag(**method_args)
+                    for field in fields:
+                        field_scanselect = scanselect
+                        field_spwselect = spwselect
+                        field_intentselect = intentselect
+
+                        if field_scanselect:
+                            scanlist = field_scanselect.split(",")
+                            scans = ms.get_scans(field=field.id)
+                            sub_scanlist = []
+                            for scan in scans:
+                                if str(scan.id) in scanlist:
+                                    sub_scanlist.append(str(scan.id))
+                            field_scanselect = ",".join(sub_scanlist)
+
+                        if field_spwselect:
+                            spwlist = field_spwselect.split(",")
+                            spws = field.valid_spws
+                            sub_spwlist = []
+                            for spw in spws:
+                                if str(spw.id) in spwlist:
+                                    sub_spwlist.append(str(spw.id))
+                            field_spwselect = ",".join(sub_spwlist)
+
+                        if field_intentselect:
+                            intentlist = field_intentselect.split(",")
+                            intents = field.intents
+                            sub_intentlist = []
+                            for intent in intents:
+                                if intent in intentlist:
+                                    sub_intentlist.append(intent)
+                            field_intentselect = ",".join(sub_intentlist)
+                        # PIPE-1729: checking if flux calibrator is bandpass calibrator or not
+                        if "BANDPASS" not in field.intents:
+                            # PIPE-1729: checking if model is 1jy point source or not,
+                            # if model is not a 1 Jy point source, setting datacolumn to 'residual'
+                            # otherwise setting it to 'corrected'
+                            if self._is_model_setjy(fieldselect=str(field.id), scanselect=field_scanselect,
+                                                    intentselect=field_intentselect, spwselect=field_spwselect):
+                                LOG.info(f" Model is not 1Jy point source, using data column residual for field {field.id}")
+                                datacolumn = "residual"
+                            else:
+                                LOG.info(f" MODEL_DATA not found or model is 1Jy point source, using data column corrected for field {field.id}")
+                                datacolumn = "corrected"
+                        else:
+                            LOG.info(f"Flux calibrator is a bandpass calibrator, using data column corrected for field {field.id}")
+                            datacolumn = "corrected"
+
+                        method_args = {'mode': 'rflag',
+                                       'field': str(field.id),
+                                       'correlation': correlation,
+                                       'scan': field_scanselect,
+                                       'intent': field_intentselect,
+                                       'spw': field_spwselect,
+                                       'ntime': 'scan',
+                                       'timedevscale': scale,
+                                       'freqdevscale': scale,
+                                       'datacolumn': datacolumn,
+                                       'flagbackup': flagbackup,
+                                       'savepars': False,
+                                       'calcftdev': calcftdev,
+                                       'useheuristic': True,
+                                       'ignore_sefd': ignore_sefd,
+                                       'extendflags': extendflags}
+                        self._do_rflag(**method_args)
+                else:
+                    if datacolumn == 'residual':
+                        # PIPE-1256: determine if we can use the 'RESIDUAL' column in the 'bpd-vlass/vla' mode.
+                        #   The usage of 'RESIDUAL' is only valid if the model of bpd source(s) is properly filled *AND*
+                        #   the first-order gain/passband calibration has been applied in 'CORRECTED'.
+                        #   Here we check each field from the data selection and see if they all meet the above requirements.
+                        #   We only examine the parallel hand amplitude:
+                        #       - setjy() has only I models for 3C48/3C138/3C286/3C147.
+                        #       - setjy(fluxdensity=-1) will fill the cross-hand with zero values.
+                        LOG.info("Determining if we can use the RESIDUAL column for rflag:")
+                        if self._is_model_setjy():
+                            LOG.info("  MODEL_DATA is present and none of the model(s) from selected data is a 1Jy point source.")
+                        else:
+                            datacolumn = 'corrected'
+                            correlation = correlation.replace('REAL_', 'ABS_')
+                            LOG.info("  MODEL_DATA s not found or the model(s) from selected data contains 1Jy point source(s).")
+                        LOG.info("  Use the {} column and correlation = {!r} for rflag".format(datacolumn.upper(), correlation))
+
+                    method_args = {'mode': 'rflag',
+                                   'field': fieldselect,
+                                   'correlation': correlation,
+                                   'scan': scanselect,
+                                   'intent': intentselect,
+                                   'spw': spwselect,
+                                   'ntime': 'scan',
+                                   'timedevscale': scale,
+                                   'freqdevscale': scale,
+                                   'datacolumn': datacolumn,
+                                   'flagbackup': flagbackup,
+                                   'savepars': False,
+                                   'calcftdev': calcftdev,
+                                   'useheuristic': True,
+                                   'ignore_sefd': ignore_sefd,
+                                   'extendflags': extendflags}
+
+                    self._do_rflag(**method_args)
 
         if tfcrop_standard is not None:
 
@@ -447,7 +562,7 @@ class Checkflag(basetask.StandardTaskTemplate):
 
     def do_vla_targetflag(self, fieldselect='', scanselect='', intentselect='', spwselect=''):
         """"Perform a simple second 'rflag' pass.
-        
+
         This method is equivalent to hifv_targetflag(intents='*TARGET*'), which is phasing out.
         See PIPE-1342.
         """
@@ -476,28 +591,68 @@ class Checkflag(basetask.StandardTaskTemplate):
         return self._executor.execute(job)
 
     def _select_data(self):
-        """Select data according to the specified checkflagmode.
+        """Selects data according to the specified checkflagmode.
+
+        This method constructs selection strings for fields, scans, and intents based on the
+        `checkflagmode` input. It also determines the appropriate data column to use
+        ('corrected' or 'data').
 
         Returns:
-            tuple: (field_select_string, scan_select_string, intent_select_string) 
+            tuple: A tuple containing:
+                - field_select_string (str): Comma-separated list of field IDs.
+                - scan_select_string (str): Comma-separated list of scan IDs.
+                - intent_select_string (str): String representing the intent selection.
+                - column_select_string (str): String representing the data column selection.
         """
+
+        # start with default
         fieldselect = scanselect = intentselect = ''
         columnselect = 'corrected'
+
         ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        msinfo = self.inputs.context.evla['msinfo'].get(ms.name, None)
+        sci_spw_list = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
 
-        # select bpd calibrators
+        # Select Bandpass/Delay (BPD) calibrators
         if self.inputs.checkflagmode in ('bpd-vla', 'bpd-vlass', '', 'bpd'):
-            fieldselect = self.inputs.context.evla['msinfo'][ms.name].checkflagfields
-            scanselect = self.inputs.context.evla['msinfo'][ms.name].testgainscans
+            fieldselect = msinfo.checkflagfields
+            # PIPE-1335: down-select scans using both msinfo.checkflagfields and msinfo.testgainscans.
+            # msinfo.testgainscans alone may include scans of fields not in msinfo.checkflagfields
+            # (e.g., second calibrators with bandpass or delay intents). See the 21A-311 case from PIPE-1335.
+            if msinfo.testgainscans:
+                testpbd_scans = {
+                    s.id for s in ms.get_scans(
+                        scan_id=list(map(int, msinfo.testgainscans.split(','))),
+                        field=msinfo.checkflagfields, spw=sci_spw_list)}
+            else:
+                testpbd_scans = set()
+            scanselect = ','.join(map(str, sorted(testpbd_scans)))
 
-        # select all calibrators but not bpd cals
+        # Select all calibrators excluding BPD calibrators
         if self.inputs.checkflagmode in ('allcals-vla', 'allcals-vlass', 'allcals'):
-            fieldselect = self.inputs.context.evla['msinfo'][ms.name].calibrator_field_select_string.split(',')
-            scanselect = self.inputs.context.evla['msinfo'][ms.name].calibrator_scan_select_string.split(',')
-            checkflagfields = self.inputs.context.evla['msinfo'][ms.name].checkflagfields.split(',')
-            testgainscans = self.inputs.context.evla['msinfo'][ms.name].testgainscans.split(',')
-            fieldselect = ','.join([fieldid for fieldid in fieldselect if fieldid not in checkflagfields])
-            scanselect = ','.join([scan for scan in scanselect if scan not in testgainscans])
+            if msinfo.testgainscans:
+                testpbd_scans = {
+                    s.id for s in ms.get_scans(
+                        scan_id=list(map(int, msinfo.testgainscans.split(','))),
+                        field=msinfo.checkflagfields, spw=sci_spw_list)}
+            else:
+                testpbd_scans = set()
+            allcals_scans = {
+                s.id for s in ms.get_scans(
+                    scan_id=list(map(int, msinfo.calibrator_scan_select_string.split(','))),
+                    field=msinfo.calibrator_field_select_string, spw=sci_spw_list)}
+            scanselect = ','.join(map(str, sorted(allcals_scans-testpbd_scans)))
+
+            # PIPE-1335: only construct the field selection string if the scan selection string is not empty.
+            # Note that an exclusion based on msinfo.checkflagfield might accidentaly reject fields observed
+            # in different intents across scans. See the 21B-136 case from PIPE-1335.
+            if scanselect:
+                fields_in_scans = {
+                    f.id for scan in ms.get_scans(
+                        scan_id=list(allcals_scans - testpbd_scans),
+                        field=msinfo.calibrator_field_select_string, spw=sci_spw_list)
+                    for f in scan.fields}
+                fieldselect = ','.join(map(str, sorted(fields_in_scans)))
 
         # select targets
         if self.inputs.checkflagmode in ('target-vla', 'target-vlass', 'vlass-imaging', 'target'):
@@ -507,8 +662,8 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         # select all calibrators
         if self.inputs.checkflagmode == 'semi':
-            fieldselect = self.inputs.context.evla['msinfo'][ms.name].calibrator_field_select_string
-            scanselect = self.inputs.context.evla['msinfo'][ms.name].calibrator_scan_select_string
+            fieldselect = msinfo.calibrator_field_select_string
+            scanselect = msinfo.calibrator_scan_select_string
 
         if self.inputs.checkflagmode == 'vlass-imaging':
             # use the 'data' column by default as 'vlass-imaging' is working on target-only MS.
@@ -528,7 +683,7 @@ class Checkflag(basetask.StandardTaskTemplate):
         Set up threshold multiplier values for calibrators and targets separately.
         Xpol are used for cross-hands, Ppol are used for parallel hands. As
         noted above, I'm still refining these values; I suppose they could be
-        input parameters for the task, if needed.  
+        input parameters for the task, if needed.
 
         rflag_standard: list of tuple, with each tuple (a, b, c, d) describing the specifications of one self._do_rflag call:
 
@@ -536,7 +691,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                             b) correlation selection
                             c) ftdev threshold multiplier
                             d) extendflag setting
-                                Boolean (True/False): 
+                                Boolean (True/False):
                                     use the default basic extendflagging scheme; see the 'extendflags' subprameter of flagdata(mode='rflag'.
                                 A dictionary (e.g. {'growtime':100,'growfreq':100,'')
                                     do extendflag using seperate flagdata(mode='extend',..) call following flagdata(model='rflag',extendflags=False,..)
@@ -547,7 +702,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                             b) correlation selection
                             c) tfcrop threshold multiplier
                             d) extendflag setting
-                                Boolean (True/False): 
+                                Boolean (True/False):
                                     use the default basic extendflagging scheme; see the 'extendflags' subprameter of flagdata(mode='rflag'.
                                 A dictionary (e.g. {'growtime':100,'growfreq':100,'')
                                     do extendflag using seperate flagdata(mode='extend',..) call following flagdata(model='rflag',extendflags=False,..
@@ -588,7 +743,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                                  'growfreq': 100,
                                  'growaround': True,
                                  'flagneartime': True,
-                                 'flagnearfreq': True}                                 
+                                 'flagnearfreq': True}
 
         if self.inputs.checkflagmode == 'allcals-vla':
             # PIPE-987: follow the VLASS flagging scheme described in CAS-11598.
@@ -622,7 +777,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                                  'growfreq': 100,
                                  'growaround': True,
                                  'flagneartime': True,
-                                 'flagnearfreq': True}                                 
+                                 'flagnearfreq': True}
 
         if self.inputs.checkflagmode == 'target-vla':
             # PIPE-685: follow the VLASS flagging scheme described in CAS-11598
@@ -755,7 +910,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                                      correlation=self.corrstring,
                                      timeaverage=True, timebin='1e8', timespan=timespan,
                                      keepflags=False, reindex=False)
-        job.execute(dry_run=False)
+        job.execute()
 
         with casa_tools.MSReader(vis_averaged_name) as msfile:
             vis_ampstats = msfile.statistics(column='data', complex_value='amp', useweights=False, useflags=True,
@@ -776,14 +931,31 @@ class Checkflag(basetask.StandardTaskTemplate):
 
         return summary_plots
 
-    def _is_model_setjy(self):
+    def _is_model_setjy(self, fieldselect: str | None = None,
+                        scanselect: str | None = None, intentselect: str | None = None,
+                        spwselect: str | None = None) -> bool:
         """Check the model column status of selected fields.
 
-        return True, if the below requirements are met:
-            - the model column is present.
-            - none of selected field(s) contain a model of 1Jy point source at the phasecenter (in the parallel hands)
+        Parameters:
+            fieldselect: Comma-separated list of field IDs or names to check.
+            scanselect: Comma-separated list of scan ids to include.
+            intentselect: Comma-separated list of intents to filter the data.
+            spwselect: Comma-separated list of spw ids to include.
+
+        Returns:
+            True if the model column is present and no 1 Jy point source at the
+            phase center is found in the selected fields; False otherwise.
         """
-        fieldselect, scanselect, intentselect, columnselect = self._select_data()
+        field_list, scan_list, intent_list, columnselect = self._select_data()
+        if fieldselect is None:
+            fieldselect = field_list
+        if scanselect is None:
+            scanselect = scan_list
+        if intentselect is None:
+            intentselect = intent_list
+        if spwselect is None:
+            spwselect = self.sci_spws
+
         is_model_setjy = True
 
         # set False if the MODEL column is not present.
@@ -795,7 +967,7 @@ class Checkflag(basetask.StandardTaskTemplate):
             with casa_tools.MSReader(self.inputs.vis) as msfile:
                 # we expect fieldselect is not an empty string here...
                 for field in fieldselect.split(','):
-                    staql = {'field': field, 'spw': self.sci_spws, 'scan': scanselect,
+                    staql = {'field': field, 'spw': spwselect, 'scan': scanselect,
                              'scanintent': intentselect, 'polarization': '', 'uvdist': ''}
                     if msfile.msselect(staql, onlyparse=False):
                         vis_ampstats = msfile.statistics(field=field, scan=scanselect, intent=intentselect,
@@ -809,7 +981,7 @@ class Checkflag(basetask.StandardTaskTemplate):
                         if vis_ampstats['min'] == 1 and vis_ampstats['max'] == 1:
                             is_model_setjy = False
                             break
-                        msfile.reset()
+                    msfile.reset()
 
         return is_model_setjy
 

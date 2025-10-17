@@ -91,11 +91,7 @@ img {
 import numpy as np
 
 def fm_band(band):
-    return band.replace('_',' ')
-
-def fm_target(target):
-    target_str=target['field'].replace('_',' ')
-    return target_str
+    return '('+band.strip().replace('EVLA_', '').replace('_', ' ').capitalize()+')'
 
 def fm_sc_success(success):
     if success:
@@ -127,19 +123,21 @@ def fm_reason(slib):
 <table class="table table-bordered">
   <thead>
         <tr>
-            <th>Field</th>
+            <th>Source</th>
             <th>Band</th>
-            <th>spw</th>
-            <th>phasecenter</th>
-            <th>cell</th>
-            <th>imsize</th>
-            <th>Solints to Attempt</th>
+            <th>SpW</th>
+            <th>Phasecenter</th>
+            <th>Cell</th>
+            <th>Imsize</th>
+            <th>Solints to attempt</th>
             <th>Success</th>
-            <th>Contline<br>applied</th>
+            <th>Cont.<br>applied</th>
             <th>Line<br>applied</th>
         <tr>
   </thead>
-  <caption>Self-calibration Target(s) Summary</caption>
+  <caption>
+    Self-Calibration Targets Summary: All attempted solution intervals (solints) are shown in <b>bold</b>. If a solint is highlighted in <b><a style="color:blue">blue</a></b>, it represents a final applicable solint.
+  </caption>
   <tbody>
   % for tr in targets_summary_table:
     <tr>
@@ -169,13 +167,14 @@ def fm_reason(slib):
     key=(target['field_name'],target['sc_band'])
     show_spw_summary= slib['SC_success'] and spw_tabs[key] is not None
     show_sol_summary= solint_tabs[key] is not None
-    valid_chars = "%s%s" % (string.ascii_letters, string.digits)
+    show_per_field_summary= target.get('sc_mosaic_url_path', None)
+    valid_chars = f'_.-{string.ascii_letters}{string.digits}'
     id_name=filenamer.sanitize(target['field_name']+'_'+target['sc_band'],valid_chars)
     %>
 
     <a class="anchor" id="${id_name}"></a>
     <h4>
-      ${fm_target(target)}&nbsp;${fm_band(target['sc_band'])}&nbsp;
+      ${target['field_name']}&nbsp;${fm_band(target['sc_band'])}&nbsp;
       <a href="#targetlist"><sup>back to top</sup></a>&nbsp;&nbsp;
       <a class="btn btn-sm btn-light" data-toggle="collapse" 
           href="#${id_name}_summary" 
@@ -195,7 +194,10 @@ def fm_reason(slib):
           role="button" aria-expanded="false" aria-controls="${id_name}_perspw">
           Per-Spw Details
       </a>
-      % endif      
+      % endif
+      % if show_per_field_summary:
+      <a class="btn btn-sm btn-light replace" href="${show_per_field_summary}">Per-field Summary</a>
+      % endif              
     </h4>
     
     <div class="table-responsive collapse multi-collapse in" id="${id_name}_summary">
@@ -218,7 +220,12 @@ def fm_reason(slib):
     <div class="table-responsive collapse multi-collapse in" id="${id_name}_persol">
     <table class="table table-bordered">
       <!-- <caption style="caption-side:top">Per solint stats</caption> -->
-      <caption>Per solint stats</caption>
+      <%
+      caption='Per solint stats'
+      if 'mosaic' == target['sc_lib']['obstype'] :
+        caption+=': Gaintables for mosaics include solutions for all self-calibratable sub-fields of that mosaic. As such, flagged gain-calibration solutions of a given field can lead to significant, and undesirable, additional flagging in adjacent fields, even if said adjacent field had a successful gain-calibration solution of its own. To mitigate this, all flagged solutions are dropped from the gaintable. Additionally any field with >25% flagging in total is removed from the gaintable and will not have this gaintable applied to avoid excessive interpolation. "Excluded" indicates the antenna is not present in this gaintable due to all of its solutions being dropped. In the event that this gaintable is applied, i.e. there is at least one field with solutions remaining in the gaintable, any excluded antennas are treated as if they are 100% flagged.'
+      %>
+      <caption>${caption}</caption>
       <thead>
           <tr>
               <th>Solint</th>

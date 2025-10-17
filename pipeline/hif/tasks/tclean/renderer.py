@@ -3,12 +3,12 @@ Created on 7 Jan 2015
 
 @author: sjw
 """
-import traceback
 import collections
+import fnmatch
 import itertools
 import os
 import string
-from random import randint
+import traceback
 
 import numpy as np
 
@@ -17,12 +17,14 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.renderer.rendererutils as rendererutils
 import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import casa_tasks, casa_tools
+from pipeline.infrastructure.utils.weblog import plots_to_html
+
 from . import display
 
 LOG = logging.get_logger(__name__)
 
+_VALID_CHARS = f'_.-{string.ascii_letters}{string.digits}'
 
 ImageRow = collections.namedtuple('ImageInfo', (
     'vis field fieldname intent spw spwnames pol stokes_label frequency_label frequency beam beam_pa sensitivity '
@@ -43,7 +45,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='tclean.mako',
                  description='Produce a cleaned image',
                  always_rerender=False):
-        super(T2_4MDetailsTcleanRenderer, self).__init__(uri=uri,
+        super().__init__(uri=uri,
                 description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, ctx, context, results):
@@ -78,7 +80,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             if 'image' not in r.iterations[maxiter]:
                 continue   # PIPE-1790: skip the rest if an image was not produced due to some error
 
-            vis = ','.join([os.path.basename(v).strip('.ms') for v in r.vis])
+            vis = ','.join(utils.remove_trailing_string(os.path.basename(v), '.ms') for v in r.vis)
             datatype = r.datatype
             datatype_info = r.datatype_info
 
@@ -202,7 +204,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     centre_ghz = qaTool.convert('%s %s' % (center_frequency, summary['axisunits'][frequency_axis]), 'GHz')
                     if nchan > 1:
                         job = casa_tasks.imhead(image_path, mode='get', hdkey='restfreq')
-                        restfreq = job.execute(dry_run=False)
+                        restfreq = job.execute()
                         rest_ghz = qaTool.convert(restfreq, 'GHz')
                         row_frequency = '%s / %s (LSRK)' % (casa_tools.quanta.tos(centre_ghz, 4),
                                                             casa_tools.quanta.tos(rest_ghz, 4))
@@ -240,11 +242,11 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 #
                 # theoretical sensitivity
                 #
-                if 'VLA' in r.imaging_mode:
-                    row_sensitivity = '-'
-                else:
+                if r.sensitivity is not None and r.sensitivity > 0.0:
                     sp_str, sp_scale = utils.get_si_prefix(r.sensitivity, lztol=1)
                     row_sensitivity = '{:.2g} {}'.format(r.sensitivity/sp_scale, sp_str+brightness_unit)
+                else:
+                    row_sensitivity = '-'
 
                 #
                 # Model image statistics for VLASS, PIPE-991
@@ -303,7 +305,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     row_model_neg_flux = None
                     row_model_flux_inner_deg = None
 
-                row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict = get_cycle_stats_vlass(
+                row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict = get_cycle_stats(
                     context, makeimages_result, r)
 
                 #
@@ -402,8 +404,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 else:
                     if stokes_parameters != ['I']:
                         r_image_rms = r.image_rms_iquv[stokes_indices[pol]]
-                        r_image_rms_max = r.image_rms_iquv[stokes_indices[pol]]
-                        r_image_rms_min = r.image_rms_iquv[stokes_indices[pol]]
+                        r_image_rms_max = r.image_rms_max_iquv[stokes_indices[pol]]
+                        r_image_rms_min = r.image_rms_min_iquv[stokes_indices[pol]]
                     else:
                         r_image_rms = r.image_rms
                         r_image_rms_max = r.image_rms_max
@@ -501,7 +503,10 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 #
                 if r.qa.representative is not None:
                     badge_class = rendererutils.get_badge_class(r.qa.representative)
-                    row_score = '<span class="badge %s">%0.2f</span>' % (badge_class, r.qa.representative.score)
+                    if r.qa.representative.score is None:
+                        row_score = '<span class="badge {:s}">N/A</span>'.format(badge_class)
+                    else:
+                        row_score = '<span class="badge %s">%0.2f</span>' % (badge_class, r.qa.representative.score)
                 else:
                     row_score = '-'
 
@@ -680,95 +685,173 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 )
                 image_rows.append(row)
 
-        plotter = display.CleanSummary(context, makeimages_result, image_stats)
-        plots = plotter.plot()
+        # PIPE-2191/PIPE-2022: create and attach a warning-level logging handler with a content filter only capturing
+        # png-missing warning messages.
+        extra_logrecords_handler = logging.CapturingHandler(logging.WARNING)
+        extra_logrecords_handler.addFilter(missing_png_filter)
+        logging.add_handler(extra_logrecords_handler)
 
-        plots_dict = make_plot_dict(plots)
+        try:
+            plotter = display.CleanSummary(context, makeimages_result, image_stats)
+            plots = plotter.plot()
 
-        # construct the renderers so we know what the back/forward links will be
-        temp_urls = (None, None, None)
-        qa_renderers = [TCleanPlotsRenderer(context, results, row.result, plots_dict, row.image_file.split('.')[0], row.field, str(row.spw), row.pol, row.datatype, temp_urls, row.cube_all_cont)
-                        for row in image_rows]
-        qa_links = triadwise([renderer.path for renderer in qa_renderers])
+            plots_dict = make_plot_dict(plots)
 
-        # PIPE-991: render tclean major cycle table, but only if tab_dict is specified (currently VLASS-SE-CONT)
-        tab_renderer = [TCleanTablesRenderer(context, results, row.result,
-                                             row.tab_dict, row.image_file.split('.')[0], row.field, str(row.spw),
-                                             row.pol, temp_urls) if row.tab_dict else None for row in image_rows]
-        tab_links = triadwise([renderer.path if renderer else None for renderer in tab_renderer])
+            # construct the renderers so we know what the back/forward links will be
+            temp_urls = (None, None, None)
+            qa_renderers = [
+                TCleanPlotsRenderer(
+                    context,
+                    results,
+                    row.result,
+                    plots_dict,
+                    row.image_file,
+                    row.field,
+                    str(row.spw),
+                    row.pol,
+                    row.datatype,
+                    temp_urls,
+                    row.cube_all_cont,
+                )
+                for row in image_rows
+            ]
+            qa_links = triadwise([renderer.path for renderer in qa_renderers])
 
-        final_rows = []
-        for row, renderer, qa_urls, tab_url in zip(image_rows, qa_renderers, qa_links, tab_links):
-            prefix = row.image_file.split('.')[0]
-            try:
-                final_iter = sorted(plots_dict[prefix][row.datatype][row.field][str(row.spw)][row.pol].keys())[-1]
-                # cube and repBW mode use mom8
-                plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), row.pol, final_iter, 'image', 'mom8')
-                if plot is None:
-                    # mfs and cont mode use mean
-                    plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), row.pol, final_iter, 'image', 'mean')
+            # PIPE-991: render tclean major cycle table, but only if tab_dict is specified (currently VLASS-SE-CONT)
+            tab_renderer = [
+                TCleanTablesRenderer(
+                    context,
+                    results,
+                    row.result,
+                    row.tab_dict,
+                    row.image_file,
+                    row.field,
+                    str(row.spw),
+                    row.pol,
+                    temp_urls,
+                )
+                if row.tab_dict
+                else None
+                for row in image_rows
+            ]
+            tab_links = triadwise([renderer.path if renderer else None for renderer in tab_renderer])
 
-                renderer = TCleanPlotsRenderer(context, results, row.result,
-                                               plots_dict, prefix, row.field, str(row.spw), row.pol,
-                                               row.datatype, qa_urls, row.cube_all_cont)
-                with renderer.get_file() as fileobj:
-                    fileobj.write(renderer.render())
+            final_rows = []
+            for row, renderer, qa_urls, tab_url in zip(image_rows, qa_renderers, qa_links, tab_links):
 
-                values = row._asdict()
-                values['plot'] = plot
-                values['qa_url'] = renderer.path
+                # PIPE-2668: "prefix" is the top-level key in `plots_dict`, derived from plot wrapper objects
+                # created in display.CleanSummary. Historically, it's the first component of image basename
+                # separated by '.'.
+                prefix = row.image_file.split('.')[0]
+                try:
+                    final_iter = sorted(plots_dict[prefix][row.datatype][row.field][str(row.spw)][row.pol].keys())[-1]
+                    # cube and repBW mode use mom8
+                    plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), row.pol, final_iter, 'image', 'mom8')
+                    if plot is None:
+                        # mfs and cont mode use mean
+                        plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), row.pol, final_iter, 'image', 'mean')
 
-                # PIPE-991: render tclean major cycle table, but only if tab_dict exists (currently VLASS-SE-CONT)
-                if any(tab_url):
-                    tab_renderer = TCleanTablesRenderer(context, results, row.result,
-                                                        row.tab_dict, prefix, row.field, str(row.spw), row.pol,
-                                                        tab_url)
-                    with tab_renderer.get_file() as fileobj:
-                        fileobj.write(tab_renderer.render())
-                    values['tab_url'] = tab_renderer.path
+                    renderer = TCleanPlotsRenderer(
+                        context,
+                        results,
+                        row.result,
+                        plots_dict,
+                        row.image_file,
+                        row.field,
+                        str(row.spw),
+                        row.pol,
+                        row.datatype,
+                        qa_urls,
+                        row.cube_all_cont,
+                    )
+                    with renderer.get_file() as fileobj:
+                        fileobj.write(renderer.render())
 
-                if stokes_parameters != ['I']:
-                    # Save POLI/POLA paths which is known only after plot() has been called
-                    values['poli_abspath'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean').abspath
-                    values['poli_thumbnail'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean').thumbnail
-                    values['pola_abspath'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Pangle', final_iter, 'image', 'mean').abspath
-                    values['pola_thumbnail'] = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Pangle', final_iter, 'image', 'mean').thumbnail
+                    values = row._asdict()
+                    values['plot'] = plot
+                    values['qa_url'] = renderer.path
 
-                new_row = ImageRow(**values)
-                final_rows.append(new_row)
-            except IOError as e:
-                LOG.error(e)
-            except Exception as e:
-                # Probably some detail page rendering exception.
-                LOG.error(e)
-                final_rows.append(row)
+                    # PIPE-991: render tclean major cycle table, but only if tab_dict exists (currently VLASS-SE-CONT)
+                    if any(tab_url):
+                        tab_renderer = TCleanTablesRenderer(
+                            context,
+                            results,
+                            row.result,
+                            row.tab_dict,
+                            row.image_file,
+                            row.field,
+                            str(row.spw),
+                            row.pol,
+                            tab_url,
+                        )
+                        with tab_renderer.get_file() as fileobj:
+                            fileobj.write(tab_renderer.render())
+                        values['tab_url'] = tab_renderer.path
 
-        # PIPE-1595: sort targets by field/spw/pol for VLA, so multiple bands of the same objects will
-        # stay in the same weblog table row. Note that this additional VLA-only sorting might introduce
-        # a difference between the target sequences of hif_makeimages and hif_makeimlist (see PIPE-1302).
-        if final_rows and 'VLA' in final_rows[0].result.imaging_mode:
-            final_rows.sort(key=lambda row: (row.vis, row.datatype, row.field, utils.natural_sort_key(row.spw), row.pol))
+                    if row.intent == 'POLARIZATION' and stokes_parameters != ['I']:
+                        # Save POLI/POLA paths which is known only after plot() has been called
+                        values['poli_abspath'] = get_plot(
+                            plots_dict, prefix, row.datatype, row.field, str(row.spw),
+                            'Plinear', final_iter, 'image', 'mean').abspath
+                        values['poli_thumbnail'] = get_plot(
+                            plots_dict, prefix, row.datatype, row.field, str(row.spw),
+                            'Plinear', final_iter, 'image', 'mean').thumbnail
+                        values['pola_abspath'] = get_plot(
+                            plots_dict, prefix, row.datatype, row.field, str(row.spw),
+                            'Pangle', final_iter, 'image', 'mean').abspath
+                        values['pola_thumbnail'] = get_plot(
+                            plots_dict, prefix, row.datatype, row.field, str(row.spw),
+                            'Pangle', final_iter, 'image', 'mean').thumbnail
 
-        chk_fit_rows = []
-        for row in final_rows:
-            if row.frequency is not None:
-                chk_fit_rows.append((row.vis, row.fieldname, row.spw, row.aggregate_bw_num, row.chk_pos_offset, row.chk_frac_beam_offset, row.chk_fitflux, row.img_snr, row.chk_fitpeak_fitflux_ratio, row.chk_gfluxscale, row.chk_gfluxscale_snr, row.chk_fitflux_gfluxscale_ratio))
-        chk_fit_rows = utils.merge_td_columns(chk_fit_rows, num_to_merge=2)
+                    new_row = ImageRow(**values)
+                    final_rows.append(new_row)
+                except IOError as e:
+                    LOG.error(e)
+                    traceback_msg = traceback.format_exc()
+                    LOG.debug(traceback_msg)
+                except Exception as e:
+                    # Probably some detail page rendering exception.
+                    LOG.error(e)
+                    traceback_msg = traceback.format_exc()
+                    LOG.debug(traceback_msg)
+                    final_rows.append(row)
 
-        pol_fit_rows = []
-        pol_fit_plots = []
-        for row in final_rows:
-            if row.pol == 'I':
-                # Save only once for weblog because the fit is the same for all Stokes parameters
-                pol_fit_rows.append((row.pol_session, row.vis, row.fieldname, row.spw, row.pol_ratio, row.pol_angle))
-                pol_fit_plots.append(PolImagePaths(poli_abspath=row.poli_abspath,
-                                                   poli_thumbnail=row.poli_thumbnail,
-                                                   pola_abspath=row.pola_abspath,
-                                                   pola_thumbnail=row.pola_thumbnail))
-        pol_fit_rows = utils.merge_td_columns(pol_fit_rows, num_to_merge=4)
+            # PIPE-1595: sort targets by field/spw/pol for VLA, so multiple bands of the same objects will
+            # stay in the same weblog table row. Note that this additional VLA-only sorting might introduce
+            # a difference between the target sequences of hif_makeimages and hif_makeimlist (see PIPE-1302).
+            if final_rows and 'VLA' in final_rows[0].result.imaging_mode:
+                final_rows.sort(key=lambda row: (row.vis, row.datatype, row.field, utils.natural_sort_key(row.spw), row.pol))
 
-        # PIPE-1723: display a message in the weblog depending on the observatory
-        imaging_mode = clean_results[0].imaging_mode  if len(clean_results)>0  else  None
+            chk_fit_rows = []
+            for row in final_rows:
+                if row.frequency is not None:
+                    chk_fit_rows.append((row.vis, row.fieldname, row.spw, row.aggregate_bw_num, row.chk_pos_offset, row.chk_frac_beam_offset, row.chk_fitflux,
+                                        row.img_snr, row.chk_fitpeak_fitflux_ratio, row.chk_gfluxscale, row.chk_gfluxscale_snr, row.chk_fitflux_gfluxscale_ratio))
+            chk_fit_rows = utils.merge_td_columns(chk_fit_rows, num_to_merge=2)
+
+            pol_fit_rows = []
+            pol_fit_plots = []
+            for row in final_rows:
+                if row.pol == 'I':
+                    # Save only once for weblog because the fit is the same for all Stokes parameters
+                    pol_fit_rows.append((row.pol_session, row.vis, row.fieldname, row.spw, row.pol_ratio, row.pol_angle))
+                    pol_fit_plots.append(PolImagePaths(poli_abspath=row.poli_abspath,
+                                                       poli_thumbnail=row.poli_thumbnail,
+                                                       pola_abspath=row.pola_abspath,
+                                                       pola_thumbnail=row.pola_thumbnail))
+            pol_fit_rows = utils.merge_td_columns(pol_fit_rows, num_to_merge=4)
+
+            # PIPE-1723: display a message in the weblog depending on the observatory
+            imaging_mode = clean_results[0].imaging_mode if len(clean_results) > 0 else None
+
+        except Exception as ex:
+            LOG.error(ex)
+            traceback_msg = traceback.format_exc()
+            LOG.debug(traceback_msg)
+        finally:
+            # PIPE-2191/PIPE-2022: remove the local logging handler and attach the LogRecord list to extra_logrecords.
+            logging.remove_handler(extra_logrecords_handler)
+            extra_logrecords = extra_logrecords_handler.buffer
 
         ctx.update({
             'imaging_mode': imaging_mode,
@@ -779,64 +862,39 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             'have_polcal_fit': have_polcal_fit,
             'chk_fit_info': chk_fit_rows,
             'pol_fit_info': pol_fit_rows,
-            'pol_fit_plots': pol_fit_plots
+            'pol_fit_plots': pol_fit_plots,
+            'extra_logrecords': extra_logrecords
         })
 
 
 class TCleanPlotsRenderer(basetemplates.CommonRenderer):
-    def __init__(self, context, makeimages_results, result, plots_dict, prefix, field, spw, pol, datatype, urls, cube_all_cont):
-        super(TCleanPlotsRenderer, self).__init__('tcleanplots.mako', context, makeimages_results)
-
-        # Set HTML page name
-        # VLA needs a slightly different name for some cases
-        # For that we need to check imaging_mode and specmode but we have to
-        # protect against iteration errors for empty results.
-        if not result.empty():
-            if 'VLA' in result.imaging_mode and 'VLASS' not in result.imaging_mode and result.specmode == 'cont':
-                # ms = context.observing_run.get_ms(result[0].results[0].vis[0])
-                # band = ms.get_vla_spw2band()
-                # band_spws = {}
-                # for k, v in band.items():
-                #     band_spws.setdefault(v, []).append(k)
-                # for k, v in band_spws.items():
-                #     for spw in spw.split(','):
-                #         if int(spw) in v:
-                #             band = k
-                #             break
-                # TODO: Not sure if a random number will work in all cases.
-                #       While working on PIPE-129 it happened that this code
-                #       was run 4 times for 2 targets. Better make sure the
-                #       name is well defined (see new setup for per EB images below).
-                outfile = '%s-field%s-pol%s-datatype%s-cleanplots-%d.html' % (prefix, field, pol, datatype, randint(1, 1e12))
-            else:
-                # The name needs to be unique also for the per EB imaging. Thus prepend the image name
-                # which contains the OUS or EB ID.
-                outfile = '%s-field%s-spw%s-pol%s-datatype%s-cleanplots.html' % (prefix, field, spw, pol, datatype)
-        # TODO: Check if this is useful since the result is empty.
-        else:
-            outfile = '%s-field%s-spw%s-pol%s-datatype%s-cleanplots.html' % (prefix, field, spw, pol, datatype)
+    def __init__(self, context, makeimages_results, result, plots_dict, image_basename, field, spw, pol, datatype, urls, cube_all_cont):
+        super().__init__('tcleanplots.mako', context, makeimages_results)
+        # PIPE-2668/PIPE-2743: expect image basename to be unique and URI stays under 255-char filesystem limit
+        outfile = f'{image_basename}.{pol}-cleanplots.html'
 
         # HTML encoded filenames, so can't have plus sign
-        valid_chars = "_.-%s%s" % (string.ascii_letters, string.digits)
-        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, valid_chars))
+        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, _VALID_CHARS))
 
         if result.specmode in ('mfs', 'cont'):
             colorders = [[('pbcorimage', None), ('residual', None), ('cleanmask', None)]]
+            if 'VLA' in result.imaging_mode:
+                # PIPE-1462/PIPE-2569: Use non-pbcor images for VLA continuum imaging on the tclean details page.
+                # Prior to the fix in CAS-13814, tclean with deconvolver='mtmfs' and pbcor=True did not produce
+                # primary-beam-corrected images for VLA — it would instead silently pass with only a warning.
+                # After CAS-13814, tclean does generate pb-corrected images (though scientifically less accurate
+                # vs. specmode='mvc') but with a different warning.
+                # PIPE-2710: We're using the flatnoise image for VLA continuum plots in the hif_makeimage weblog. This is a
+                # deliberate choice for consistency and clarity, as these images are often better at revealing sources beyond
+                # the primary beam (PB) mask limit.
+                colorders = [[('image', None), ('residual', None), ('cleanmask', None)]]
         else:
             colorders = [[('pbcorimage', 'mom8'), ('residual', 'mom8'), ('mom8_fc', None), ('spectra', None)],
                          [('pbcorimage', 'mom0'), ('residual', 'mom0'), ('mom0_fc', None), ('cleanmask', None)]]
 
-        if 'VLA' in result.imaging_mode:
-            # PIPE-1462: use non-pbcor images for VLA in the tclean details page.
-            # Because 'mtmfs' CASA/tclean doesn't generate pbcor images for VLA and silently passes with a warning when pbcor=True,
-            # pbcor images are not produced from hif.tasks.tclean (see PIPE-1201/CAS-11636)
-            # Here, we set a fallback with non-pbcor images.
-            for i, colorder in enumerate(colorders):
-                colorders[i] = [('image', moment) if im_type == 'pbcorimage' else (im_type, moment) for im_type, moment in colorder]
-
         self.extra_data = {
             'plots_dict': plots_dict,
-            'prefix': prefix.split('.')[0],
+            'prefix': image_basename.split('.')[0],
             'datatype': datatype,
             'field': field,
             'spw': spw,
@@ -854,19 +912,18 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
 
 
 class TCleanTablesRenderer(basetemplates.CommonRenderer):
-    def __init__(self, context, makeimages_results, result, table_dict, prefix, field, spw, pol, urls):
-        super(TCleanTablesRenderer, self).__init__('tcleantables.mako', context, makeimages_results)
-
-        # Set HTML page name
-        outfile = '%s-field%s-spw%s-pol%s-cleantables.html' % (prefix, field, spw, pol)
+    def __init__(self, context, makeimages_results, result, table_dict, image_basename, field, spw, pol, urls):
+        super().__init__('tcleantables.mako', context, makeimages_results)
+        # PIPE-2668/PIPE-2743: expect image basename to be unique and URI stays under 255-char filesystem limit
+        # use `-cleantables.html` to stay different from tcleanplots URLs.
+        outfile = f'{image_basename}-cleantables.html'
 
         # HTML encoded filenames, so can't have plus sign
-        valid_chars = "_.-%s%s" % (string.ascii_letters, string.digits)
-        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, valid_chars))
+        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, _VALID_CHARS))
 
         self.extra_data = {
             'table_dict': table_dict,
-            'prefix': prefix.split('.')[0],
+            'prefix': image_basename.split('.')[0],
             'field': field,
             'spw': spw,
             'pol': pol,
@@ -881,7 +938,12 @@ class TCleanTablesRenderer(basetemplates.CommonRenderer):
 
 def get_plot(plots, prefix, datatype, field, spw, stokes, i, colname, moment):
     try:
-        return plots[prefix][datatype][field][spw][stokes][i][colname][moment]
+        plot = plots[prefix][datatype][field][spw][stokes][i][colname][moment]
+        if not os.path.exists(plot.abspath):
+            # PIPE-2022: Generate a warning if the PNG file is missing. The
+            # message is caught by a local logging handler for the weblog.
+            LOG.warning(f'Plot {plot.abspath} is missing on disk')
+        return plot
     except KeyError:
         return None
 
@@ -952,7 +1014,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
 
     def update_mako_context(self, ctx, context, results):
 
-        # because hif.tclean is a multi-vis task (is_multi_vis_task = True) which operates over multiple MSs,
+        # because hif_tclean is a multi-vis task (is_multi_vis_task = True) which operates over multiple MSs,
         # we will only get one CleanListResult in the ResultsList returned by the task.
         makeimages_result = results[0]
         if not makeimages_result:
@@ -980,7 +1042,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
             maxiter = max(r.iterations.keys())
             field = fieldname = intent = None
 
-            vis = ','.join([os.path.basename(v).strip('.ms') for v in r.vis])
+            vis = ','.join(utils.remove_trailing_string(os.path.basename(v), '.ms') for v in r.vis)
             datatype = r.datatype
             datatype_info = r.datatype_info
             image_path = r.iterations[maxiter]['image'].replace('.image', f'.image{extension}')
@@ -1096,7 +1158,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                         center_frequency, summary['axisunits'][frequency_axis]), 'GHz')
                     if nchan > 1:
                         job = casa_tasks.imhead(image_path, mode='get', hdkey='restfreq')
-                        restfreq = job.execute(dry_run=False)
+                        restfreq = job.execute()
                         rest_ghz = qaTool.convert(restfreq, 'GHz')
                         row_frequency = '%s / %s (LSRK)' % (casa_tools.quanta.tos(centre_ghz, 4),
                                                             casa_tools.quanta.tos(rest_ghz, 4))
@@ -1209,7 +1271,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                     row_model_neg_flux = None
                     row_model_flux_inner_deg = None
 
-                row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict = get_cycle_stats_vlass(
+                row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict = get_cycle_stats(
                     context, makeimages_result, r)
 
                 #
@@ -1286,8 +1348,8 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                 else:
                     if stokes_parameters != ['I']:
                         r_image_rms = r.image_rms_iquv[stokes_indices[pol]]
-                        r_image_rms_max = r.image_rms_iquv[stokes_indices[pol]]
-                        r_image_rms_min = r.image_rms_iquv[stokes_indices[pol]]
+                        r_image_rms_max = r.image_rms_max_iquv[stokes_indices[pol]]
+                        r_image_rms_min = r.image_rms_min_iquv[stokes_indices[pol]]
                     else:
                         r_image_rms = r.image_rms
                         r_image_rms_max = r.image_rms_max
@@ -1597,117 +1659,180 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                 )
                 image_rows.append(row)
 
-        plotter = display.CleanSummary(context, makeimages_result, image_stats)
-        plots = plotter.plot()
+        # PIPE-2191/PIPE-2022: create and attach a warning-level logging handler with a content filter only capturing
+        # png-missing warning messages.
+        extra_logrecords_handler = logging.CapturingHandler(logging.WARNING)
+        extra_logrecords_handler.addFilter(missing_png_filter)
+        logging.add_handler(extra_logrecords_handler)
 
-        plots_dict = make_plot_dict(plots)
+        try:
+            plotter = display.CleanSummary(context, makeimages_result, image_stats)
+            plots = plotter.plot()
 
-        # construct the renderers so we know what the back/forward links will be
-        # sort the rows so the links will be in the same order as the rows
-        image_rows.sort(key=lambda row: (row.image_file.split(
-            '.')[0], row.datatype, row.field, utils.natural_sort_key(row.spw), row.pol))
-        temp_urls = (None, None, None)
-        qa_renderers = [TCleanPlotsRenderer(context, results, row.result, plots_dict, row.image_file.split(
-            '.')[0], row.field, str(row.spw), row.pol, row.datatype, temp_urls, row.cube_all_cont) for row in image_rows]
-        qa_links = triadwise([renderer.path for renderer in qa_renderers])
+            plots_dict = make_plot_dict(plots)
 
-        # PIPE-991: render tclean major cycle table, but only if tab_dict is specified (currently VLASS-SE-CONT)
-        tab_renderer = [TCleanTablesRenderer(context, results, row.result,
-                                             row.tab_dict, row.image_file.split('.')[0], row.field, str(row.spw),
-                                             row.pol, temp_urls) if row.tab_dict else None for row in image_rows]
-        tab_links = triadwise([renderer.path if renderer else None for renderer in tab_renderer])
+            # construct the renderers so we know what the back/forward links will be
+            # sort the rows so the links will be in the same order as the rows
+            image_rows.sort(key=lambda row: (row.image_file.split(
+                '.')[0], row.datatype, row.field, utils.natural_sort_key(row.spw), row.pol))
+            temp_urls = (None, None, None)
+            qa_renderers = [
+                TCleanPlotsRenderer(
+                    context,
+                    results,
+                    row.result,
+                    plots_dict,
+                    row.image_file,
+                    row.field,
+                    str(row.spw),
+                    row.pol,
+                    row.datatype,
+                    temp_urls,
+                    row.cube_all_cont,
+                )
+                for row in image_rows
+            ]
+            qa_links = triadwise([renderer.path for renderer in qa_renderers])
 
-        final_rows = []
+            # PIPE-991: render tclean major cycle table, but only if tab_dict is specified (currently VLASS-SE-CONT)
+            tab_renderer = [
+                TCleanTablesRenderer(
+                    context,
+                    results,
+                    row.result,
+                    row.tab_dict,
+                    row.image_file,
+                    row.field,
+                    str(row.spw),
+                    row.pol,
+                    temp_urls,
+                )
+                if row.tab_dict
+                else None
+                for row in image_rows
+            ]
+            tab_links = triadwise([renderer.path if renderer else None for renderer in tab_renderer])
 
-        for row, renderer, qa_urls, tab_url in zip(image_rows, qa_renderers, qa_links, tab_links):
-            prefix = row.image_file.split('.')[0]
+            final_rows = []
 
-            try:
-                final_iter = sorted(plots_dict[prefix][row.datatype][row.field][str(row.spw)][str(row.pol)].keys())[-1]
+            for row, renderer, qa_urls, tab_url in zip(image_rows, qa_renderers, qa_links, tab_links):
+                prefix = row.image_file.split('.')[0]
 
-                # cube and repBW mode use mom8
-                plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), row.pol, final_iter, 'image', 'mom8')
-                if plot is None:
-                    # mfs and cont mode use mean
-                    plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), row.pol, final_iter, 'image', 'mean')
+                try:
+                    final_iter = sorted(plots_dict[prefix][row.datatype][row.field][str(row.spw)][str(row.pol)].keys())[-1]
 
-                renderer = TCleanPlotsRenderer(context, results, row.result,
-                                               plots_dict, prefix, row.field, str(row.spw), row.pol,
-                                               row.datatype, qa_urls, row.cube_all_cont)
-                with renderer.get_file() as fileobj:
-                    fileobj.write(renderer.render())
+                    # cube and repBW mode use mom8
+                    plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), row.pol, final_iter, 'image', 'mom8')
+                    if plot is None:
+                        # mfs and cont mode use mean
+                        plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), row.pol, final_iter, 'image', 'mean')
 
-                values = row._asdict()
-                values['plot'] = plot
-                values['qa_url'] = renderer.path
+                    renderer = TCleanPlotsRenderer(
+                        context,
+                        results,
+                        row.result,
+                        plots_dict,
+                        row.image_file,
+                        row.field,
+                        str(row.spw),
+                        row.pol,
+                        row.datatype,
+                        qa_urls,
+                        row.cube_all_cont,
+                    )
+                    with renderer.get_file() as fileobj:
+                        fileobj.write(renderer.render())
 
-                # PIPE-991: render tclean major cycle table, but only if tab_dict exists (currently VLASS-SE-CONT)
-                if any(tab_url):
-                    tab_renderer = TCleanTablesRenderer(context, results, row.result,
-                                                        row.tab_dict, prefix, row.field, str(row.spw), row.pol,
-                                                        tab_url)
-                    with tab_renderer.get_file() as fileobj:
-                        fileobj.write(tab_renderer.render())
-                    values['tab_url'] = tab_renderer.path
+                    values = row._asdict()
+                    values['plot'] = plot
+                    values['qa_url'] = renderer.path
 
-                # Save POLI/POLA paths which is known only after plot() has been called
-                pol_plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean')
-                if pol_plot is not None:
-                    values['poli_abspath'] = pol_plot.abspath
-                    values['poli_thumbnail'] = pol_plot.thumbnail
-                pol_plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Pangle', final_iter, 'image', 'mean')
-                if pol_plot is not None:
-                    values['pola_abspath'] = pol_plot.abspath
-                    values['pola_thumbnail'] = pol_plot.thumbnail
+                    # PIPE-991: render tclean major cycle table, but only if tab_dict exists (currently VLASS-SE-CONT)
+                    if any(tab_url):
+                        tab_renderer = TCleanTablesRenderer(context, results, row.result, row.tab_dict,
+                                                            row.image_file, row.field, str(row.spw), row.pol, tab_url)
+                        with tab_renderer.get_file() as fileobj:
+                            fileobj.write(tab_renderer.render())
+                        values['tab_url'] = tab_renderer.path
 
-                new_row = ImageRow(**values)
-                final_rows.append(new_row)
-            except IOError as e:
-                LOG.error(e)
-                LOG.error(traceback.format_exc())
-            except Exception as e:
-                # Probably some detail page rendering exception.
-                LOG.error(e)
-                LOG.error(traceback.format_exc())
-                final_rows.append(row)
+                    # Save POLI/POLA paths which is known only after plot() has been called
+                    pol_plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Plinear', final_iter, 'image', 'mean')
+                    if pol_plot is not None:
+                        values['poli_abspath'] = pol_plot.abspath
+                        values['poli_thumbnail'] = pol_plot.thumbnail
+                    pol_plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Pangle', final_iter, 'image', 'mean')
+                    if pol_plot is not None:
+                        values['pola_abspath'] = pol_plot.abspath
+                        values['pola_thumbnail'] = pol_plot.thumbnail
 
-        # primary sort images by vis, datatype, field, secondary sort on spw, then by pol
-        final_rows.sort(key=lambda row: (row.vis, row.datatype, row.field, utils.natural_sort_key(row.spw), row.pol))
+                    new_row = ImageRow(**values)
+                    final_rows.append(new_row)
+                except IOError as e:
+                    LOG.error(e)
+                    traceback_msg = traceback.format_exc()
+                    LOG.debug(traceback_msg)
+                except Exception as e:
+                    # Probably some detail page rendering exception.
+                    LOG.error(e)
+                    traceback_msg = traceback.format_exc()
+                    LOG.debug(traceback_msg)
+                    final_rows.append(row)
 
-        chk_fit_rows = []
-        for row in final_rows:
-            if row.frequency is not None:
-                chk_fit_rows.append((row.vis, row.fieldname, row.spw, row.aggregate_bw_num, row.chk_pos_offset, row.chk_frac_beam_offset, row.chk_fitflux,
-                                    row.img_snr, row.chk_fitpeak_fitflux_ratio, row.chk_gfluxscale, row.chk_gfluxscale_snr, row.chk_fitflux_gfluxscale_ratio))
-        chk_fit_rows = utils.merge_td_columns(chk_fit_rows, num_to_merge=2)
+            # primary sort images by vis, datatype, field, secondary sort on spw, then by pol
+            final_rows.sort(key=lambda row: (row.vis, row.datatype, row.field, utils.natural_sort_key(row.spw), row.pol))
 
-        pol_fit_rows = []
-        pol_fit_plots = []
-        for row in final_rows:
-            if row.pol == 'I':
-                # Save only once for weblog because the fit is the same for all Stokes parameters
-                pol_fit_rows.append((row.pol_session, row.vis, row.fieldname, row.spw, row.pol_ratio, row.pol_angle))
-                pol_fit_plots.append(PolImagePaths(poli_abspath=row.poli_abspath,
-                                                   poli_thumbnail=row.poli_thumbnail,
-                                                   pola_abspath=row.pola_abspath,
-                                                   pola_thumbnail=row.pola_thumbnail))
-        pol_fit_rows = utils.merge_td_columns(pol_fit_rows, num_to_merge=4)
+            chk_fit_rows = []
+            for row in final_rows:
+                if row.frequency is not None:
+                    chk_fit_rows.append((row.vis, row.fieldname, row.spw, row.aggregate_bw_num, row.chk_pos_offset, row.chk_frac_beam_offset, row.chk_fitflux,
+                                        row.img_snr, row.chk_fitpeak_fitflux_ratio, row.chk_gfluxscale, row.chk_gfluxscale_snr, row.chk_fitflux_gfluxscale_ratio))
+            chk_fit_rows = utils.merge_td_columns(chk_fit_rows, num_to_merge=2)
+
+            pol_fit_rows = []
+            pol_fit_plots = []
+            for row in final_rows:
+                if row.pol == 'I':
+                    # Save only once for weblog because the fit is the same for all Stokes parameters
+                    pol_fit_rows.append((row.pol_session, row.vis, row.fieldname, row.spw, row.pol_ratio, row.pol_angle))
+                    pol_fit_plots.append(PolImagePaths(poli_abspath=row.poli_abspath,
+                                                       poli_thumbnail=row.poli_thumbnail,
+                                                       pola_abspath=row.pola_abspath,
+                                                       pola_thumbnail=row.pola_thumbnail))
+            pol_fit_rows = utils.merge_td_columns(pol_fit_rows, num_to_merge=4)
+
+            vlass_cubesummary_plots = display.VlassCubeSummary(context, makeimages_result).plot()
+
+            if vlass_cubesummary_plots:
+                vlass_cubesummary_plots_html = plots_to_html(vlass_cubesummary_plots, report_dir=context.report_dir)[0]
+            else:
+                vlass_cubesummary_plots_html = None
+
+            plane_keep = makeimages_result.metadata['vlass_cube_metadata']['plane_keep']
+            spwgroup_list = makeimages_result.metadata['vlass_cube_metadata']['spwgroup_list']
+            plane_keep_dict = {spwgroup: plane_keep[idx] for idx, spwgroup in enumerate(spwgroup_list)}
+
+        except Exception as ex:
+            LOG.error(ex)
+            traceback_msg = traceback.format_exc()
+            LOG.debug(traceback_msg)
+        finally:
+            # PIPE-2191/PIPE-2022: remove the local logging handler and attach the LogRecord list to extra_logrecords.
+            logging.remove_handler(extra_logrecords_handler)
+            extra_logrecords = extra_logrecords_handler.buffer
 
         ctx.update({
             'plots': plots,
             'plots_dict': plots_dict,
             'image_info': final_rows,
             'dirname': weblog_dir,
-            'chk_fit_info': chk_fit_rows,
-            'have_polcal_fit': have_polcal_fit,
-            'pol_fit_info': pol_fit_rows,
-            'pol_fit_plots': pol_fit_plots
+            'vlass_cubesummary_plots_html': vlass_cubesummary_plots_html,
+            'plane_keep_dict': plane_keep_dict,
+            'extra_logrecords': extra_logrecords
         })
 
 
-def get_cycle_stats_vlass(context, makeimages_result, r):
-    """Get the major cycle statistics for VLASS."""
-
+def get_cycle_stats(context, makeimages_result, r):
+    """Get the major cycle statistics."""
     row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict = None, None, None, None
 
     if 'VLASS-SE-CUBE' in r.imaging_mode or 'VLASS-SE-CONT' in r.imaging_mode:
@@ -1756,5 +1881,33 @@ def get_cycle_stats_vlass(context, makeimages_result, r):
                         'iteration': [k for k in row_nmajordone_per_iter],
                         'cleanmask': [item['cleanmask'] for iter, item in row_nmajordone_per_iter.items()],
                         'nmajordone': [item['nmajordone'] for iter, item in row_nmajordone_per_iter.items()]}}
+    else:
+        # Just nmajor for other modes
+        row_nmajordone_per_iter = {}
+        for iteration, iterdata in r.iterations.items():
+            iter_dict = {'nmajordone': iterdata['nmajordone'] if 'nmajordone' in iterdata else 0}
+            row_nmajordone_per_iter[iteration] = iter_dict
+
+        # sum the major cycle done over all 'iter's of Tclean
+        row_nmajordone_total = np.sum([item['nmajordone'] for key, item in row_nmajordone_per_iter.items()])
 
     return row_nmajordone_per_iter, row_nmajordone_total, majorcycle_stat_plot, tab_dict
+
+
+def missing_png_filter(record):
+    """Filter log records for messages indicating missing PNG files on disk.
+
+    This function is designed to be used as a filter for logging handlers. It checks
+    if the log message matches a pattern indicating that a PNG file is missing on disk.
+
+    Args:
+        record (logging.LogRecord): The log record to be filtered.
+
+    Returns:
+        bool: True if the log message indicates a missing PNG file, False otherwise.
+
+    Example:
+        handler = logging.Handler()
+        handler.addFilter(missing_png_filter)
+    """
+    return fnmatch.fnmatch(record.getMessage(), '*is missing on disk*')

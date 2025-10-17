@@ -1,4 +1,5 @@
 import collections
+import os
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.callibrary as callibrary
@@ -7,6 +8,7 @@ from pipeline.h.tasks import applycal as happlycal
 from pipeline.hif.tasks import applycal
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import utils
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -15,12 +17,64 @@ class ApplycalsInputs(applycal.IFApplycalInputs):
     """
     ApplycalInputs defines the inputs for the Applycal pipeline task.
     """
+    # docstring and type hints: supplements hifv_applycals
     def __init__(self, context, output_dir=None, vis=None,
                  # data selection arguments
                  field=None, spw=None, antenna=None, intent=None,
                  # preapply calibrations
                  parang=None, applymode=None, calwt=None,
                  flagbackup=None, flagsum=None, flagdetailedsum=None, gainmap=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
+
+            field: A string containing the list of field names or field ids to which the calibration will be applied. Defaults to all fields in the pipeline
+                context.
+
+                Example: '3C279', '3C279, M82'
+
+            spw: The list of spectral windows and channels to which the calibration will be applied. Defaults to all science windows in the pipeline.
+
+                Example: '17', '11, 15'
+
+            antenna: The selection of antennas to which the calibration will be applied. Defaults to all antennas. Not currently supported.
+
+            intent: A string containing the list of intents against which the selected fields will be matched. Defaults to all supported intents
+                in the pipeline context.
+
+                Example: `'*TARGET*'`
+
+            parang:
+
+            applymode: Calibration apply mode.
+
+                - 'calflag': calibrate data and apply flags from solutions
+                - 'calflagstrict': same as above except flag spws for which calibration is
+                  unavailable in one or more tables (instead of allowing them to pass
+                  uncalibrated and unflagged)
+                - 'trial': report on flags from solutions, dataset entirely unchanged
+                - 'flagonly': apply flags from solutions only, data not calibrated
+                - 'flagonlystrict': same as above except flag spws for which calibration is
+                  unavailable in one or more tables
+                - 'calonly': calibrate data only, flags from solutions NOT applied
+
+            calwt:
+
+            flagbackup: Backup the flags before the apply.
+
+            flagsum: Compute before and after flagging summary statistics.
+
+            flagdetailedsum: Compute detailed flagging statistics.
+
+            gainmap: Mode to map gainfields to scans.
+
+        """
         super(ApplycalsInputs, self).__init__(context, output_dir=output_dir, vis=vis, field=field, spw=spw,
                                               antenna=antenna, intent=intent, parang=parang,
                                               applymode=applymode, flagbackup=flagbackup, flagsum=flagsum,
@@ -123,27 +177,55 @@ class Applycals(applycal.SerialIFApplycal):
                 # Note this is a temporary workaround ###
                 args['antenna'] = self.antenna_to_apply
                 # Note this is a temporary workaround ###
-                args['gaintable'] = calapp.gaintable
-                args['gainfield'] = calapp.gainfield
-                args['spwmap'] = calapp.spwmap
-                args['interp'] = calapp.interp
-                args['calwt'] = calapp.calwt
-                args['applymode'] = inputs.applymode
+                # PIPE-1729: including only the gain tables that are present.
+                taql = ''
 
+                gaintables = []
+                gainfields = []
+                spwmaps = []
+                interps = []
+                calwts = []
+
+                for gaintable, gfield, spwmap, interp, calwt in zip(calapp.gaintable, calapp.gainfield, calapp.spwmap, calapp.interp, calapp.calwt):
+                    if gfield:
+                        ms = inputs.context.observing_run.get_measurement_sets()[0]
+                        gainfield_obj = ms.get_fields(gfield)
+                        if gainfield_obj:
+                            taql = (f"FIELD_ID == {gainfield_obj[0].id}")
+                        else:
+                            taql = ''
+                            LOG.warning(f"Unable to get ID for gainfield {gfield}")
+                    else:
+                        taql = ''
+
+                    if os.path.exists(gaintable) and utils.get_row_count(gaintable, taql) != 0:
+                        gaintables.append(gaintable)
+                        gainfields.append(gfield)
+                        spwmaps.append(spwmap)
+                        interps.append(interp)
+                        calwts.append(calwt)
+
+                args['gaintable'] = gaintables
+                args['gainfield'] = gainfields
+                args['spwmap'] = spwmaps
+                args['interp'] = interps
+                args['calwt'] = calwts
+                args['applymode'] = inputs.applymode
+                # Ensure all gaintables are present
                 if inputs.gainmap:
                     # Determine what tables gainfield should used with if mode='gainmap'
                     for i, table in enumerate(args['gaintable']):
                         if 'finalampgaincal' in table or 'finalphasegaincal' in table:
-                            args['interp'][i] = 'linear'
-                            args['gainfield'][i] = gainfield
-
-                    # args['interp'] = ['', '', '', '', 'linear,linearflag', '', 'linear', 'linear']
-                    # args['gainfield'] = ['','','','','','', gainfield, gainfield]
+                            taql = (f"FIELD_ID == {gainfield}")
+                            if utils.get_row_count(table, taql):
+                                args['interp'][i] = 'linear'
+                                args['gainfield'][i] = gainfield
+                            else:
+                                LOG.warning(f"No data found for {gfield} in {table}, using gainfield = ''")
                     args['scan'] = ','.join(scanlist)
                     LOG.info("Using gainfield {!s} and scan={!s}".format(gainfield, ','.join(scanlist)))
 
                 args.pop('gainmap', None)
-
                 jobs.append(casa_tasks.applycal(**args))
 
         if inputs.gainmap:
@@ -167,14 +249,40 @@ class Applycals(applycal.SerialIFApplycal):
 
                 # set the on-the-fly calibration state for the data selection.
                 calapp = callibrary.CalApplication(calto, calfroms)
+                # PIPE-1729: including only the gain tables that are present.
+                taql = ''
+                gaintables = []
+                gainfields = []
+                spwmaps = []
+                interps = []
+                calwts = []
+
+                for gaintable, gfield, spwmap, interp, calwt in zip(calapp.gaintable, calapp.gainfield, calapp.spwmap, calapp.interp, calapp.calwt):
+                    if gfield:
+                        ms = inputs.context.observing_run.get_measurement_sets()[0]
+                        gainfield_obj = ms.get_fields(gfield)
+                        if gainfield_obj:
+                            taql = (f"FIELD_ID == {gainfield_obj[0].id}")
+                        else:
+                            taql = ''
+                            LOG.warning(f"Unable to get ID for gainfield {gfield}")
+                    else:
+                        taql = ''
+                    if os.path.exists(gaintable) and utils.get_row_count(gaintable, taql) != 0:
+                        gaintables.append(gaintable)
+                        gainfields.append(gfield)
+                        spwmaps.append(spwmap)
+                        interps.append(interp)
+                        calwts.append(calwt)
+
                 # Note this is a temporary workaround ###
                 args['antenna'] = self.antenna_to_apply
                 # Note this is a temporary workaround ###
-                args['gaintable'] = calapp.gaintable
-                args['gainfield'] = calapp.gainfield
-                args['spwmap'] = calapp.spwmap
-                args['interp'] = calapp.interp
-                args['calwt'] = calapp.calwt
+                args['gaintable'] = gaintables
+                args['gainfield'] = gainfields
+                args['spwmap'] = spwmaps
+                args['interp'] = interps
+                args['calwt'] = calwts
                 args['applymode'] = inputs.applymode
 
                 args.pop('gainmap', None)

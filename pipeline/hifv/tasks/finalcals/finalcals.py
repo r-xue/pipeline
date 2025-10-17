@@ -1,7 +1,7 @@
+import collections
 import os
 import shutil
-import collections
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union, Any, Dict
+from typing import Any
 
 import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.infrastructure as infrastructure
@@ -9,14 +9,12 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.hifv.heuristics import getCalFlaggedSoln
-from pipeline.infrastructure.tablereader import find_EVLA_band
+from pipeline.hifv.heuristics import do_bandpass, getCalFlaggedSoln
 from pipeline.hifv.heuristics import standard as standard
-from pipeline.hifv.heuristics import weakbp, do_bandpass, uvrange
+from pipeline.hifv.heuristics import uvrange, weakbp
+from pipeline.hifv.heuristics.lib_EVLApipeutils import vla_minbaselineforcal
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -29,14 +27,26 @@ class FinalcalsInputs(vdp.StandardInputs):
     """
     weakbp = vdp.VisDependentProperty(default=False)
     refantignore = vdp.VisDependentProperty(default='')
+    refant = vdp.VisDependentProperty(default='')
 
-    def __init__(self, context, vis=None, weakbp=None, refantignore=None):
-        """
+    # docstring and type hints: supplements hifv_finalcals
+    def __init__(self, context, vis=None, weakbp=None, refantignore=None, refant=None):
+        """Initialize Inputs.
+
         Args:
             context (:obj:): Pipeline context
-            vis(str, optional): String name of the measurement set
-            weakbp(Boolean):  weak bandpass heuristics on/off - currently not used - see PIPE-104
-            refantignore(str):  csv string of reference antennas to ignore - 'ea24,ea15,ea08'
+
+            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
+
+            weakbp(Boolean): Activate weak bandpass heuristics.
+                weak bandpass heuristics on/off - currently not used - see PIPE-104.
+
+            refantignore(str): String list of antennas to ignore.
+                csv string of reference antennas to ignore - 'ea24,ea15,ea08'.
+
+            refant(List): A csv string of reference antenna(s). When used, disables ``refantignore``.
+
+                Example: refant = 'ea01, ea02'
 
         """
         super(FinalcalsInputs, self).__init__()
@@ -44,6 +54,7 @@ class FinalcalsInputs(vdp.StandardInputs):
         self.vis = vis
         self._weakbp = weakbp
         self.refantignore = refantignore
+        self.refant = refant
 
 
 class FinalcalsResults(basetask.Results):
@@ -97,10 +108,13 @@ class FinalcalsResults(basetask.Results):
         self.flaggedSolnApplycaldelay = flaggedSolnApplycaldelay
 
     def merge_with_context(self, context):
+
         if not self.final:
             LOG.error('No results to merge')
             return
-
+        m = context.observing_run.get_ms(self.vis)
+        context.evla['msinfo'][m.name].phaseshortgaincaltable = self.phaseshortgaincaltable
+        context.evla['msinfo'][m.name].finalampgaincaltable = self.finalampgaincaltable
         for calapp in self.final:
             LOG.debug('Adding calibration to callibrary:\n'
                       '%s\n%s' % (calapp.calto, calapp.calfrom))
@@ -172,10 +186,9 @@ class Finalcals(basetask.StandardTaskTemplate):
         """
 
         self.parang = True
-        try:
-            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
-        except Exception as e:
-            self.setjy_results = self.inputs.context.results[0].read().setjy_results
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-2164: getting setjy result stored in context
+        self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
 
         try:
             stage_number = self.inputs.context.results[-1].read()[0].stage_number + 1
@@ -190,17 +203,20 @@ class Finalcals(basetask.StandardTaskTemplate):
         tablebase = tableprefix + str(stage_number) + '_3.' + 'finalBPinitialgain'
         table_suffix = ['.tbl', '3.tbl', '10.tbl']
 
-        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-
         self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
 
-        refantignore = self.inputs.refantignore + ','.join(self.ignorerefant)
+        # PIPE-1637: adding ',' in the manual and auto refantignore parameter
+        refantignore = self.inputs.refantignore + ','.join(['', *self.ignorerefant])
         refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
-        refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
-                                                geometry=True, flagging=True, intent='',
-                                                spw='', refantignore=refantignore)
+        # PIPE-595: if refant list is not provided, compute refants else use provided refant list.
+        if len(self.inputs.refant) == 0:
+            refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
+                                                    geometry=True, flagging=True, intent='',
+                                                    spw='', refantignore=refantignore)
 
-        RefAntOutput = refantobj.calculate()
+            RefAntOutput = refantobj.calculate()
+        else:
+            RefAntOutput = self.inputs.refant.split(",")
 
         refAnt = ','.join(RefAntOutput)
 
@@ -292,19 +308,24 @@ class Finalcals(basetask.StandardTaskTemplate):
         finalphasegaincaltable = tableprefix + str(stage_number) + '_8.' + 'finalphasegaincal.tbl'
 
         for band, spwlist in band2spw.items():
-            new_gain_solint1 = self.inputs.context.evla['msinfo'][m.name].new_gain_solint1[band]
-            phaseshortgaincal_results = self._do_calibratorgaincal(calMs, phaseshortgaincaltable,
-                                                                   new_gain_solint1, 3.0, 'p', [''], refAnt,
-                                                                   refantmode=refantmode, spw=','.join(spwlist))
+            try:
+                new_gain_solint1 = self.inputs.context.evla['msinfo'][m.name].new_gain_solint1[band]
+                self._do_calibratorgaincal(calMs, phaseshortgaincaltable,
+                                           new_gain_solint1, 3.0, 'p', [''], refAnt,
+                                           refantmode=refantmode, spw=','.join(spwlist))
 
-            gain_solint2 = self.inputs.context.evla['msinfo'][m.name].gain_solint2[band]
-            finalampgaincal_results = self._do_calibratorgaincal(calMs, finalampgaincaltable, gain_solint2, 5.0,
-                                                                 'ap', [phaseshortgaincaltable], refAnt,
-                                                                 refantmode=refantmode, spw=','.join(spwlist))
+                gain_solint2 = self.inputs.context.evla['msinfo'][m.name].gain_solint2[band]
+                self._do_calibratorgaincal(calMs, finalampgaincaltable, gain_solint2, 5.0,
+                                           'ap', [phaseshortgaincaltable], refAnt,
+                                           refantmode=refantmode, spw=','.join(spwlist))
 
-            finalphasegaincal_results = self._do_calibratorgaincal(calMs, finalphasegaincaltable, gain_solint2,
-                                                                   3.0, 'p', [finalampgaincaltable], refAnt,
-                                                                   refantmode=refantmode, spw=','.join(spwlist))
+                self._do_calibratorgaincal(calMs, finalphasegaincaltable, gain_solint2,
+                                           3.0, 'p', [finalampgaincaltable], refAnt,
+                                           refantmode=refantmode, spw=','.join(spwlist))
+            except KeyError as ex:
+                LOG.warning("No data found for {!s} band".format(ex))
+            except Exception as ex:
+                LOG.warning(str(ex))
 
         tablesToAdd = [(ktypecaltable, '', ''), (bpcaltable, 'linear,linearflag', ''),
                        (avgpgain, '', ''), (finalampgaincaltable, '', ''),
@@ -313,6 +334,8 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         callist = []
         for addcaltable, interp, gainfield in tablesToAdd:
+            if not os.path.exists(addcaltable):
+                continue
             LOG.info("Finalcals stage:  Adding " + addcaltable + " to callibrary.")
             calto = callibrary.CalTo(self.inputs.vis)
             calfrom = callibrary.CalFrom(gaintable=addcaltable, interp=interp, calwt=False,
@@ -321,12 +344,15 @@ class Finalcals(basetask.StandardTaskTemplate):
             callist.append(calapp)
             self.pool.append(calapp)
             self.final.append(calapp)
+        flaggedSolnApplycaldelay = None
+        flaggedSolnApplycalbandpass = None
+        if os.path.exists(bpdgain_touse):
+            flaggedSolnApplycalbandpass = getCalFlaggedSoln(bpdgain_touse)
+        if os.path.exists(ktypecaltable):
+            flaggedSolnApplycaldelay = getCalFlaggedSoln(ktypecaltable)
 
-        flaggedSolnApplycalbandpass = getCalFlaggedSoln(bpdgain_touse)
-        flaggedSolnApplycaldelay = getCalFlaggedSoln(ktypecaltable)
-
-        return bpdgain_touse, gtypecaltable, ktypecaltable, bpcaltable, phaseshortgaincaltable,\
-               finalampgaincaltable, finalphasegaincaltable, flaggedSolnApplycalbandpass, flaggedSolnApplycaldelay
+        return bpdgain_touse, gtypecaltable, ktypecaltable, bpcaltable, phaseshortgaincaltable, \
+            finalampgaincaltable, finalphasegaincaltable, flaggedSolnApplycalbandpass, flaggedSolnApplycaldelay
 
     def analyse(self, results):
         """Determine the best parameters by analysing the given jobs before returning any final jobs to execute.
@@ -342,29 +368,40 @@ class Finalcals(basetask.StandardTaskTemplate):
         """
         return results
 
-    def _do_gtype_delaycal(self, caltable: str =None, refAnt: str = None, spwlist: List[str] = []) -> bool:
-        """Perform a G-Type delay calibration with CASA task gaincal
+    def _do_gtype_delaycal(
+        self, caltable: str | None = None, refAnt: str | None = None, spwlist: list[str] | None = None
+    ) -> bool:
+        """Perform G-Type delay calibration using CASA task gaincal.
+
+        This function executes a G-Type delay calibration, which is used to determine and correct
+        for instrumental delays in radio interferometry data. The calibration can either create
+        a new calibration table or append to an existing one.
 
         Args:
-            caltable(str): Name of the caltable to be created
-            refAnt(str): Antenna values to use as reference antennas - 'ea01,ea24,...'
-            spwlist(List): List of string values for spws pertaining to the particular band - ['0', '1', '2', ...]
+            caltable: Name of the calibration table to create or append to. If None, a default
+                name will be generated.
+            refAnt: Reference antenna specification in format 'ea01,ea24,...'. If None, CASA
+                will automatically select reference antennas.
+            spwlist: Spectral window identifiers for the target band, e.g., ['0', '1', '2'].
+                If None, all available spectral windows will be used.
 
         Returns:
-            Boolean
-
+            True if calibration completed successfully, False otherwise.
         """
+        if spwlist is None:
+            spwlist = []
+
+        # Determine whether to append to existing table or create new one
         append = False
-        isdir = os.path.isdir(caltable)
-        if isdir:
+        if caltable and os.path.isdir(caltable):
             append = True
-            LOG.info("Appending to existing table: {!s}".format(caltable))
+            LOG.info('Appending to existing calibration table: %s', caltable)
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         delay_field_select_string = self.inputs.context.evla['msinfo'][m.name].delay_field_select_string
         tst_delay_spw = m.get_vla_tst_bpass_spw(spwlist=spwlist)
         delay_scan_select_string = self.inputs.context.evla['msinfo'][m.name].delay_scan_select_string
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         delaycal_task_args = {'vis': self.inputs.vis,
                               'caltable': caltable,
@@ -431,11 +468,18 @@ class Finalcals(basetask.StandardTaskTemplate):
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         delay_field_select_string = self.inputs.context.evla['msinfo'][m.name].delay_field_select_string
         delay_scan_select_string = self.inputs.context.evla['msinfo'][m.name].delay_scan_select_string
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         GainTables = sorted(self.inputs.context.callibrary.active.get_caltable())
         GainTables.append(addcaltable)
 
+        GainTables_present = []
+        for gt in GainTables:
+            if os.path.exists(gt):
+                GainTables_present.append(gt)
+            else:
+                LOG.warning(f"{gt} not found, removing it from list of gain tables")
+        GainTables = GainTables_present
         delaycal_task_args = {'vis': self.inputs.vis,
                               'caltable': caltable,
                               'field': '',
@@ -476,36 +520,49 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         return True
 
-    def _do_gtype_bpdgains(self, caltable: str, addcaltable: str = None, solint: str = 'int',
-                           refAnt: str = None, spwlist: List[str] = []) -> bool:
-        """Perform a G-Type cal with CASA task gaincal on the bp'd gaintable
+    def _do_gtype_bpdgains(
+        self,
+        caltable: str,
+        addcaltable: str | None = None,
+        solint: str = 'int',
+        refAnt: str | None = None,
+        spwlist: list[str] | None = None,
+    ) -> bool:
+        """Perform G-Type calibration with CASA task gaincal on the bandpass-corrected gain table.
 
         Args:
-            caltable(str): Name of the caltable to be created
-            addcaltable(str):  String name of table to temporarily be added to the gaincal gaintable parameter
-            solint(str):  String value for solint keyword of CASA task gaincal
-            refAnt(str): Antenna values to use as reference antennas - 'ea01,ea24,...'
-            spwlist(List): List of string values for spws pertaining to the particular band - ['0', '1', '2', ...]
+            caltable: Name of the calibration table to be created.
+            addcaltable: Name of table to temporarily add to the gaincal gaintable parameter.
+            solint: Solution interval value for CASA task gaincal.
+            refAnt: Reference antenna values in format 'ea01,ea24,...'.
+            spwlist: List of spectral window IDs for the specific band, e.g., ['0', '1', '2'].
 
         Returns:
-            Boolean
-
+            Success status of the calibration operation.
         """
-
+        if spwlist is None:
+            spwlist = []
         append = False
         isdir = os.path.isdir(caltable)
         if isdir:
             append = True
-            LOG.info("Appending to existing table: {!s}".format(caltable))
+            LOG.info('Appending to existing table: %s', caltable)
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         tst_bpass_spw = m.get_vla_tst_bpass_spw(spwlist=spwlist)
         bandpass_scan_select_string = self.inputs.context.evla['msinfo'][m.name].bandpass_scan_select_string
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         GainTables = sorted(self.inputs.context.callibrary.active.get_caltable())
         GainTables.append(addcaltable)
 
+        GainTables_present = []
+        for gt in GainTables:
+            if os.path.exists(gt):
+                GainTables_present.append(gt)
+            else:
+                LOG.warning(f"{gt} not found, removing it from list of gain tables")
+        GainTables = GainTables_present
         bpdgains_task_args = {'vis': self.inputs.vis,
                               'caltable': caltable,
                               'field': '',
@@ -577,11 +634,19 @@ class Finalcals(basetask.StandardTaskTemplate):
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         bandpass_field_select_string = self.inputs.context.evla['msinfo'][m.name].bandpass_field_select_string
         bandpass_scan_select_string = self.inputs.context.evla['msinfo'][m.name].bandpass_scan_select_string
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         AllCalTables = sorted(self.inputs.context.callibrary.active.get_caltable())
         AllCalTables.append(ktypecaltable)
         AllCalTables.append(bpcaltable)
+
+        GainTables_present = []
+        for gt in AllCalTables:
+            if os.path.exists(gt):
+                GainTables_present.append(gt)
+            else:
+                LOG.warning(f"{gt} not found, removing it from list of gain tables")
+        AllCalTables = GainTables_present
 
         avgphasegaincal_task_args = {'vis': self.inputs.vis,
                                      'caltable': caltable,
@@ -680,6 +745,13 @@ class Finalcals(basetask.StandardTaskTemplate):
         AllCalTables.append(bpcaltable)
         AllCalTables.append(avgphasegaincaltable)
 
+        GainTables_present = []
+        for gt in AllCalTables:
+            if os.path.exists(gt):
+                GainTables_present.append(gt)
+            else:
+                LOG.warning(f"{gt} not found, removing it from list of gain tables")
+        AllCalTables = GainTables_present
         ntables = len(AllCalTables)
 
         applycal_task_args = {'vis': self.inputs.vis,
@@ -774,12 +846,7 @@ class Finalcals(basetask.StandardTaskTemplate):
 
                     for spw in spws:
                         reference_frequency = center_frequencies[spw.id]
-                        try:
-                            EVLA_band = spw2band[spw.id]
-                        except:
-                            LOG.info('Unable to get band from spw id - using reference frequency instead')
-                            EVLA_band = find_EVLA_band(reference_frequency)
-
+                        EVLA_band = spw2band[spw.id]
                         LOG.info("Center freq for spw " + str(spw.id) + " = " + str(
                             reference_frequency) + ", observing band = " + EVLA_band)
 
@@ -822,7 +889,13 @@ class Finalcals(basetask.StandardTaskTemplate):
             Job to execute
 
         """
-
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        fluxcalfieldlist = str.split(self.inputs.context.evla['msinfo'][m.name].flux_field_select_string)
+        # PIPE-1729, setting fluxdensity to 1 for calibrators failed in hifv_fluxboot.
+        fluxdensity, setjy_standard = [-1, standard.Standard()(field)] if os.path.isdir(
+            'fluxgaincalFcal_{!s}.g'.format(field)) or field in fluxcalfieldlist else [1, 'manual']
+        if fluxdensity == 1:
+            LOG.warning(f'Running setjy for field {field} with 1.0 Jy fluxdensity.')
         try:
             task_args = {'vis': calMs,
                          'field': field,
@@ -831,8 +904,8 @@ class Finalcals(basetask.StandardTaskTemplate):
                          'model': model_image,
                          'listmodels': False,
                          'scalebychan': True,
-                         'fluxdensity': -1,
-                         'standard': standard.Standard()(field),
+                         'fluxdensity': fluxdensity,
+                         'standard': setjy_standard,
                          'usescratch': True}
 
             job = casa_tasks.setjy(**task_args)
@@ -842,19 +915,17 @@ class Finalcals(basetask.StandardTaskTemplate):
             LOG.info(str(e))
             return None
 
-    def _do_powerfitsetjy(self, calMs: str, fluxscale_result: Dict):
-        """Execute setjy with results from fluxscale
+    def _do_powerfitsetjy(self, calMs: str, fluxscale_result: dict[str, Any]) -> bool:
+        """Execute setjy with results from fluxscale.
 
         Args:
-            calMs(str): input name of calibrator MS
-            fluxscale_result(Dict): output result from CASA task fluxscale
+            calMs: Input name of calibrator MS
+            fluxscale_result: Output result from CASA task fluxscale
 
         Returns:
-            Boolean
-
+            Success status of the operation
         """
-
-        LOG.info("Setting power-law fit in the model column")
+        LOG.info('Setting power-law fit in the model column')
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
 
@@ -899,32 +970,40 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         return True
 
-    def _do_calibratorgaincal(self, calMs: str, caltable: str, solint: str, minsnr: float, calmode: str,
-                              gaintablelist: List[str], refAnt: str,
-                              refantmode: str = 'flex', spw: str = '') -> bool:
-        """Execute the CASA task gaincal with the calibrator MS using a provided list of gaintables
+    def _do_calibratorgaincal(
+        self,
+        calMs: str,
+        caltable: str,
+        solint: str,
+        minsnr: float,
+        calmode: str,
+        gaintablelist: list[str],
+        refAnt: str,
+        refantmode: str = 'flex',
+        spw: str = '',
+    ) -> bool:
+        """Execute the CASA task gaincal with the calibrator MS using a provided list of gaintables.
 
         Args:
-            calMs(str): input name of calibrator MS
-            caltable(str):  output caltable
-            solint(str):  gaincal solution interval
-            minsnr(float):  Min SNR
-            calmode(str):   Specified mode
-            gaintablelist(List):  String list of tables, if any
-            refAnt(str): csv string of reference antennas
-            refantmode(str):  Default of flex
-            spw(str):  spw string
+            calMs: Input name of calibrator MS
+            caltable: Output caltable
+            solint: Gaincal solution interval
+            minsnr: Minimum SNR threshold
+            calmode: Specified calibration mode
+            gaintablelist: List of gaintable names to apply
+            refAnt: CSV string of reference antennas
+            refantmode: Reference antenna mode, defaults to 'flex'
+            spw: Spectral window selection string
 
         Returns:
-            Boolean
+            True if calibration succeeds, False otherwise
 
         """
-
         append = False
         isdir = os.path.isdir(caltable)
         if isdir:
             append = True
-            LOG.info("Appending to existing table: {!s} ".format(caltable))
+            LOG.info('Appending to existing table: %s', caltable)
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
@@ -932,7 +1011,7 @@ class Finalcals(basetask.StandardTaskTemplate):
         scanlist = [int(scan) for scan in calibrator_scan_select_string.split(',')]
         scanids_perband = ','.join([str(scan.id) for scan in m.get_scans(scan_id=scanlist, spw=spw)])
 
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         task_args = {'vis': calMs,
                      'caltable': caltable,
@@ -968,20 +1047,19 @@ class Finalcals(basetask.StandardTaskTemplate):
             fieldobj, = scanobj.fields
             if str(fieldobj.id) not in fieldidlist:
                 fieldidlist.append(str(fieldobj.id))
-
         for fieldidstring in fieldidlist:
-            fieldid = int(fieldidstring)
-            uvrangestring = uvrange(self.setjy_results, fieldid)
-            task_args['field'] = fieldidstring
-            task_args['uvrange'] = uvrangestring
-            task_args['selectdata'] = True
-            if os.path.exists(caltable):
-                task_args['append'] = True
+            taql = (f"FIELD_ID == {fieldidstring}")
+            if utils.get_row_count(calMs, taql) != 0:
+                fieldid = int(fieldidstring)
+                uvrangestring = uvrange(self.setjy_results, fieldid)
+                task_args['field'] = fieldidstring
+                task_args['uvrange'] = uvrangestring
+                task_args['selectdata'] = True
+                if os.path.exists(caltable):
+                    task_args['append'] = True
 
-            job = casa_tasks.gaincal(**task_args)
+                job = casa_tasks.gaincal(**task_args)
 
-            self._executor.execute(job)
+                self._executor.execute(job)
 
         return True
-
-

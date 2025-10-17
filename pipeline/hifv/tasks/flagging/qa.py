@@ -39,7 +39,7 @@ class TargetflagListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing TargetflagResults.
     """
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = targetflag.TargetflagResults
     generating_task = targetflag.Targetflag
 
@@ -58,16 +58,15 @@ class FlagdataQAHandler(pqa.QAPlugin):
     def handle(self, context, result):
         vis = result.inputs['vis']
         ms = context.observing_run.get_ms(vis)
-
-        score = qacalc.score_vla_agents(ms, result.summaries)
-        result.qa.pool[:] = [score]
+        scores = qacalc.score_vla_agents(ms, result.summaries)
+        result.qa.pool[:] = scores
 
 
 class FlagdataListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing TargetflagResults.
     """
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = targetflag.TargetflagResults
     generating_task = targetflag.Targetflag
 
@@ -105,7 +104,7 @@ class CheckflagListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing CheckflagResults.
     """
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = checkflag.CheckflagResults
     generating_task = checkflag.Checkflag
 

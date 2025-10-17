@@ -22,7 +22,7 @@ class SDImagingQAHandler(pqa.QAPlugin):
         """
         This handles single SDImagingResultItem.
         """
-        # result.outcome should have 'image' 
+        # result.outcome should have 'image'
         if 'image' not in result.outcome:
             return
 
@@ -33,6 +33,21 @@ class SDImagingQAHandler(pqa.QAPlugin):
 
         score_masked = qacalc.score_sdimage_masked_pixels(context, result)
         result.qa.pool.append(score_masked)
+
+        score_sd_line_emission_off_range_at_peak = qacalc.score_sd_line_emission_off_range_at_peak(context, result)
+        result.qa.pool.append(score_sd_line_emission_off_range_at_peak)
+
+        score_sd_line_emission_off_range_extended = qacalc.score_sd_line_emission_off_range_extended(context, result)
+        result.qa.pool.append(score_sd_line_emission_off_range_extended)
+
+        score_contamination = qacalc.score_sdimage_contamination(context, result)
+        result.qa.pool.append(score_contamination)
+
+        score_resterscan_raster_gap = qacalc.score_rasterscan_correctness_imaging_raster_gap(result)
+        result.qa.pool.extend(score_resterscan_raster_gap)
+
+        score_resterscan_incomplete = qacalc.score_rasterscan_correctness_imaging_raster_analysis_incomplete(result)
+        result.qa.pool.extend(score_resterscan_incomplete)
 
 
 class SDImagingListQAHandler(pqa.QAPlugin):
@@ -47,7 +62,7 @@ class SDImagingListQAHandler(pqa.QAPlugin):
     def handle(self, context, result):
         # collate the QAScores from each child result, pulling them into our
         # own QAscore list
-        collated = utils.flatten([r.qa.pool for r in result]) 
+        collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated
 
 

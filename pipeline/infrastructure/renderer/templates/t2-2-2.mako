@@ -25,13 +25,7 @@ from pipeline.infrastructure import utils
 			            <th scope="col" rowspan="2">Real ID</th>
 			            <th scope="col" rowspan="2">Virtual ID</th>
 			            <th scope="col" rowspan="2">Name</th>
-			            <%
-						spwtypelabel='<th scope="col" rowspan="2">Type</th>'
-						if 'VLA' in pcontext.project_summary.telescope:
-					                spwtypelabel=''
-						endif
-						%>
-						${spwtypelabel}
+						<th scope="col" rowspan="2">Type</th> <!-- note: Type is used for different things for VLA vs ALMA -->
 			            <th scope="col" colspan="3">Frequency ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
 			            <th scope="col" rowspan="2">Bandwidth ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
 			            <th scope="col" rowspan="2">Transitions</th>
@@ -75,12 +69,15 @@ from pipeline.infrastructure import utils
 					<tr>
 					  <td>${spw.id}</td>
 					  <td>${pcontext.observing_run.real2virtual_spw_id(int(spw.id), ms)}</td>
-					  <td>${pcontext.observing_run.virtual_science_spw_shortnames.get(pcontext.observing_run.virtual_science_spw_ids.get(pcontext.observing_run.real2virtual_spw_id(int(spw.id), ms), 'N/A'), 'N/A')}</td>
+					  <td>${utils.split_spw(spw.name)}</td>
 			            <%
 						spwtypeentry='<td>'+str(spw.type)+'</td>'
 						if 'VLA' in pcontext.project_summary.telescope:
-					                spwtypeentry=''
-						endif
+							if spw.specline_window:
+								window_type = "Line"
+							else: 
+								window_type = "Continuum"
+							spwtypeentry='<td>'+window_type+'</td>'
 						%>
 						${spwtypeentry}
 					  <td>${str(spw.min_frequency)}</td>
@@ -155,7 +152,8 @@ from pipeline.infrastructure import utils
 				<caption>All Spectral Windows in ${ms.basename}</caption>
 			    <thead>
 			        <tr>
-			            <th scope="col" rowspan="2">ID</th>
+			            <th scope="col" rowspan="2">Real ID</th>
+						<th scope="col" rowspan="2">Name</th>
 			            <%
 						spwtypelabel='<th scope="col" rowspan="2">Type</th>'
 						if 'VLA' in pcontext.project_summary.telescope:
@@ -206,6 +204,7 @@ from pipeline.infrastructure import utils
 					% for spw in ms.get_spectral_windows(science_windows_only=False):
 					<tr>
 						<td>${spw.id}</td>
+						<td>${utils.split_spw(spw.name)}</td>
 			            <%
 						spwtypeentry='<td>'+str(spw.type)+'</td>'
 						if 'VLA' in pcontext.project_summary.telescope:

@@ -6,10 +6,17 @@ of the web log.
 """
 import collections
 import copy
+import dataclasses
 import itertools
+import math
 import operator
 import os
-from typing import Dict, Iterable, List, Reversible
+import re
+from pathlib import Path
+from typing import Iterable, Reversible, Optional, overload
+
+import numpy as np
+import numpy.typing as npt
 
 import pipeline.h.tasks.applycal.applycal as h_applycal
 import pipeline.hif.tasks.applycal.ifapplycal as hif_applycal
@@ -17,9 +24,22 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 from pipeline.domain.measurementset import MeasurementSet
-from . import ampphase_vs_freq_qa
+from pipeline.infrastructure.pipelineqa import WebLogLocation, QAScore
+from . import ampphase_vs_freq_qa, qa_utils
+from .ampphase_vs_freq_qa import Outlier, score_all_scans
 
 LOG = logging.get_logger(__name__)
+
+
+# TODO: there should be ONE place that we get this info from!
+# This is replicated in field.py and measurementset.py, and now here too as
+# the info in those modules is not accessible. :(
+INTENTS = ['BANDPASS', 'AMPLITUDE', 'PHASE', 'CHECK', 'POLARIZATION',
+           'DIFFGAINREF', 'DIFFGAINSRC', 'POLANGLE', 'POLLEAKAGE']
+
+
+# Size of the memory chunk when loading the MS (in GB)
+MEMORY_CHUNK_SIZE = 2.0
 
 
 # Maps outlier reasons to a text snippet that can be used in a QAScore message
@@ -38,24 +58,40 @@ REASONS_TO_TEXT = {
     'gt90deg_offset_phase_vs_freq': ('Phase vs frequency', 'outliers', '; phase offset > 90deg detected'),
 }
 
-# PIPE356Switches is a struct used to hold various options for outlier
-# detection and reporting
-PIPE356Switches = collections.namedtuple(
-    'PIPE356Switches', 'calculate_metrics export_outliers export_messages include_scores outlier_score flag_all'
-)
 
-# PIPE356_MODES defines some preset modes for outlier detection and reporting
-PIPE356_MODES = {
-    'TEST_REAL_OUTLIERS': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True,
-                                          include_scores=True, outlier_score=0.5, flag_all=False),
-    'TEST_FAKE_OUTLIERS': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True,
-                                          include_scores=True, outlier_score=0.5, flag_all=True),
-    'ON': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=False, include_scores=True,
-                          outlier_score=0.9, flag_all=False),
-    'DEBUG': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True, include_scores=False,
-                             outlier_score=0.5, flag_all=False),
-    'OFF': PIPE356Switches(calculate_metrics=False, export_outliers=False, export_messages=False, include_scores=False,
-                           outlier_score=0.5, flag_all=False)
+@dataclasses.dataclass
+class QAPreset:
+    """
+    QAPreset is used to hold various options for controlling outlier detection
+    and reporting behaviour. The default values are set to the standard
+    behaviour for a production pipeline run.
+
+    Originally this was called PIPE356Switches, and the environment variable
+    used to select a preset is still called PIPE356_QA_MODE.
+    """
+    # default values define default QA=ON behaviour
+    calculate_metrics: bool = True
+    export_outliers: bool = True
+    export_messages: bool = False
+    include_scores: bool = True
+    outlier_score: float = 0.5
+    flag_all: bool = False
+    export_mswrappers: bool = False
+
+
+# QA_PRESET defines some preset modes for outlier detection and reporting
+QA_PRESETS: dict[str, QAPreset] = {
+    # default. Runs real QA but omit diagnostic output
+    'ON': QAPreset(),
+    # runs QA metrics but does not include the scores in the QA report
+    'DEBUG': QAPreset(include_scores=False, export_messages=True, export_mswrappers=True),
+    # runs and includes real QA but outputs more messages and pickled objects to assist with testing
+    'TEST_REAL_OUTLIERS': QAPreset(export_messages=True, export_mswrappers=True),
+    # As above but makes every score be above the QA threshold. Useful for testing score summaries.
+    'TEST_FAKE_OUTLIERS': QAPreset(export_messages=True, export_mswrappers=False, flag_all=True),
+    # QA off. Turns everything off: QA calculation, diagnostic output, score inclusion, etc., etc.
+    'OFF': QAPreset(calculate_metrics=False, export_outliers=False, export_messages=False, include_scores=False,
+                    flag_all=False, export_mswrappers=False),
 }
 
 
@@ -69,7 +105,7 @@ DataSelection = collections.namedtuple('DataSelection', 'vis intent scan spw ant
 # mapping data selections to the QA scores that cover that data selection. The
 # DataSelection keys are simple tuples, with index relating to a data
 # selection parameter (e.g., vis=[0], intent=[1], scan=[2], etc.).
-DataSelectionToScores = Dict[DataSelection, List[pqa.QAScore]]
+DataSelectionToScores = dict[DataSelection, list[pqa.QAScore]]
 
 
 class ALMAApplycalListQAHandler(pqa.QAPlugin):
@@ -82,9 +118,9 @@ class ALMAApplycalListQAHandler(pqa.QAPlugin):
     general score pool. The latter would be done by default, hence we
     overwrite the handle() implementation.
     """
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = h_applycal.ApplycalResults
-    generating_task = hif_applycal.IFApplycal
+    generating_task = hif_applycal.SerialIFApplycal
 
     def handle(self, context, result):
         super().handle(context, result)
@@ -119,94 +155,331 @@ class ALMAApplycalQAHandler(pqa.QAPlugin):
             return
 
         pipe356_mode = os.environ.get('PIPE356_QA_MODE', 'ON').upper()
-        mode_switches = PIPE356_MODES[pipe356_mode]
+        qa_preset = QA_PRESETS[pipe356_mode]
 
         # dict to hold all QA scores, keyed by intended web log destination
-        qa_scores: Dict[pqa.WebLogLocation, List[pqa.QAScore]] = {}
+        qa_scores: dict[pqa.WebLogLocation, list[pqa.QAScore]] = {}
 
         # calculate the outliers and convert to scores
-        if mode_switches.calculate_metrics:
+        if qa_preset.calculate_metrics:
             # calculate the raw QA scores
-            raw_qa_scores = get_qa_scores(
-                ms, mode_switches.export_outliers, mode_switches.outlier_score, mode_switches.flag_all
+            qa_scores = get_qa_scores(
+                ms=ms,
+                export_outliers=qa_preset.export_outliers,
+                outlier_score=qa_preset.outlier_score,
+                flag_all=qa_preset.flag_all,
+                export_mswrappers=qa_preset.export_mswrappers,
             )
-            # group and summarise as required by PIPE-477
-            qa_scores = summarise_scores(raw_qa_scores, ms)
 
         # dump weblog messages to a separate file if requested
-        if qa_scores and mode_switches.export_messages:
+        if qa_scores and qa_preset.export_messages:
             targets_to_log = [pqa.WebLogLocation.ACCORDION, pqa.WebLogLocation.BANNER]
             with open('PIPE356_messages.txt', 'a') as export_file:
                 for weblog_target in targets_to_log:
                     for qa_score in qa_scores[weblog_target]:
                         export_file.write('{}\n'.format(qa_score.longmsg))
 
-        if qa_scores and mode_switches.include_scores:
+        if qa_scores and qa_preset.include_scores:
             for score_list in qa_scores.values():
                 result.qa.pool.extend(score_list)
 
-        # pick the minimum score of all (flagging and outliers) as
-        # representative, i.e. task score
-        result.qa.representative = min(result.qa.pool, key=operator.attrgetter('score'))
+        # pick the minimum score of all non-hidden scores as representative
+        visible_scores = [s for s in result.qa.pool if s.weblog_location != pqa.WebLogLocation.HIDDEN]
+        result.qa.representative = min(visible_scores, key=operator.attrgetter('score'))
 
 
-
-def get_qa_scores(ms: MeasurementSet, export_outliers: bool, outlier_score: float, flag_all: bool):
+class QAScoreEvalFunc:
     """
-    Calculate amp/phase vs freq outliers for an EB and convert to QA scores.
+    QAScoreEvalFunc is a function that given the dataset parameters and a list of outlier
+    objects, generates an object that can be evaluated to obtain a QA score evaluation
+    for any subset of the dataset.
+    """
+
+    # Dictionary of minimum QA scores values accepted for each intent
+    INTENT_MINSCORE = {
+        "AMPLITUDE": 0.34,
+        # This is NOT a pipeline intent but was in the prototype - it could probably be removed
+        "AMP_SYM_OFFSET": 0.8,
+        "BANDPASS": 0.34,
+        "CHECK": 0.85,
+        "DIFFGAINREF": 0.34,
+        "DIFFGAINSRC": 0.34,
+        "PHASE": 0.34,
+        "POLARIZATION": 0.34,
+        "POLANGLE": 0.34,
+        "POLLEAKAGE": 0.34,
+    }
+    # sanity check: QAScoreEvalFun MUST have a score for every requestable intent,
+    # otherwise a KeyError will occur when data with that intent is encountered
+    assert set(INTENT_MINSCORE.keys()) >= set(INTENTS), 'INTENT_MINSCORE is missing intents'
+
+    # Dictionaries necessary for the QAScoreEvalFunc class
+    # scores_thresholds holds the list of metrics to actually use for calculating the score, each pointing
+    # to the threholds used for them, so that the metric/threhold ratio can be calculated
+    SCORE_THRESHOLDS = {
+        'amp_vs_freq.slope': ampphase_vs_freq_qa.AMPLITUDE_SLOPE_THRESHOLD,
+        'amp_vs_freq.intercept': ampphase_vs_freq_qa.AMPLITUDE_INTERCEPT_THRESHOLD,
+        'phase_vs_freq.slope': ampphase_vs_freq_qa.PHASE_SLOPE_THRESHOLD,
+        'phase_vs_freq.intercept': ampphase_vs_freq_qa.PHASE_INTERCEPT_THRESHOLD
+    }
+
+    # Define constants for QA score evaluation
+    M4FACTORS = {
+        'amp_vs_freq.intercept': 100.0,
+        'amp_vs_freq.slope': 100.0 * 2.0,
+        'phase_vs_freq.intercept': 100.0 / 180.0,
+        'phase_vs_freq.slope': 100.0 * 2.0 / 180.0
+    }
+    QAEVALF_MIN = 0.33
+    QAEVALF_MAX = 1.0
+    QAEVALF_SCALE = 1.55
+
+    def __init__(self, ms: MeasurementSet, intents: list[str], outliers: list[Outlier]):
+        # Save basic data and MeasurementSet domain object
+        self.ms = ms
+
+        # Create the relevant vector array for QA scores evaluation, and save them
+        self.outliers = outliers
+        self.noutliers = len(outliers)
+        self.metricnames = np.array([list(o.reason)[0].replace('gt90deg_offset_','') for o in outliers])
+        self.gt90degoffset = np.array([('gt90deg_offset' in list(o.reason)[0]) for o in outliers])
+        self.metricscores = np.array([np.abs(o.num_sigma) for o in outliers])
+        self.delta_phys = np.array([np.abs(o.delta_physical) for o in outliers])
+        self.is_amp_sym_off = np.array([o.amp_freq_sym_off for o in outliers])
+        self.metricthresholds = np.array([self.SCORE_THRESHOLDS[m] if m in self.SCORE_THRESHOLDS.keys() else 9999.0 for m in self.metricnames])
+        self.mtratio = self.metricscores/self.metricthresholds
+        self.scan = np.array([list(o.scan)[0] for o in outliers])
+        self.spw = np.array([list(o.spw)[0] for o in outliers])
+        self.intent = np.array([list(o.intent)[0] for o in outliers])
+        self.ant = np.array([list(o.ant)[0] for o in outliers])
+        self.pol = np.array([list(o.pol)[0] for o in outliers])
+        # prototype operated on intents in ms, including all intents for scans with multiple intents
+        self.allintents = frozenset(intents).intersection(ms.intents)
+        self.long_msg = 'EVALUATE_TO_GET_LONGMSG'
+        self.short_msg = 'EVALUATE_TO_GET_SHORTMSG'
+        # Initialize metrics/data dictionary
+        self.qascoremetrics = {}
+
+        for intent in self.allintents:
+            self.qascoremetrics[intent] = {}
+            for spw in ms.get_spectral_windows(intent=','.join(intents)):
+                self.qascoremetrics[intent][spw.id] = {}
+                for metric in self.SCORE_THRESHOLDS:
+                    self.qascoremetrics[intent][spw.id][metric] = {}
+
+    @overload
+    def __call__(self, qascore: pqa.QAScore) -> float:
+        ...
+
+    @overload
+    def __call__(self, qascore: list[pqa.QAScore]) -> npt.NDArray:
+        ...
+
+    def __call__(self, qascore: pqa.QAScore | list[pqa.QAScore]) -> float | npt.NDArray:
+        # If given a list of QA scores, evaluate them all and return an array of the results
+        if type(qascore) == list:
+            output = [self.__call__(q) for q in qascore]
+            return np.array(output)
+
+        mlist = self.SCORE_THRESHOLDS.keys()
+        # Get data selection from QA score
+        selscan = np.array(list(qascore.applies_to.scan))
+        selspw = np.array(list(qascore.applies_to.spw))
+        selintent = np.array(list(qascore.applies_to.intent))
+        selant = np.array(list(qascore.applies_to.ant))
+        # QA scores retain the full metric ID, whereas the ID in this
+        # function's score dicts are stripped of the gt90deg_offset prefix.
+        # Ideally we'd refactor the metric ID so that gt90deg_offset is a
+        # subcomponent of the ID (e.g., phase_vs_freq.intercept.gt90deg_offset
+        # or similar), but that's too risky a change at this stage so we just
+        # strip the gt90deg_offset prefix.
+        selmetric = qascore.origin.metric_name.replace('gt90deg_offset_','')
+
+        # Case of no data selected as outlier for this metric,
+        # fill values with default values for non-outlier QA scores
+        if len(selscan) == 0 and len(selspw) == 0 and len(selintent) == 0 and len(selant) == 0:
+            d = dict(significance=0.0, is_amp_sym_off=False, outliers=False)
+            for s_dict in [v for v in self.qascoremetrics.values() if isinstance(v, dict)]:
+                for m_dict in [v for v in s_dict.values() if isinstance(v, dict)]:
+                    for m in m_dict.values():
+                        m.update(d)
+                s_dict['subscore'] = 1.0
+            self.qascoremetrics['finalscore'] = 1.0
+            self.long_msg = qascore.longmsg
+            self.short_msg = qascore.shortmsg
+            return self.qascoremetrics['finalscore']
+
+        testspw = lambda x: x in selspw
+        testscan = lambda x: x in selscan
+        testintent = lambda x: x in selintent
+        testant = lambda x: x in selant
+        basesel = np.array(list(map(testspw, self.spw))) & np.array(list(map(testscan, self.scan))) & np.array(list(map(testintent, self.intent))) & np.array(list(map(testant, self.ant)))
+
+        for i in selintent:
+            for s in selspw:
+                for m in mlist:
+                    # For this metric, select the pool of outliers from the "applies_to" attribute
+                    sel = (basesel & (self.metricnames == m) & (self.mtratio > 1.0))
+                    nsel = np.sum(sel)
+                    if nsel > 0:
+                        idxmax = np.argsort(self.metricscores[sel])[-1]
+                        # Get ratio Metric/Threshold for maximum value -> significance
+                        self.qascoremetrics[i][s][m]['significance'] = self.mtratio[sel][idxmax]
+                        # Generate message for this max outlier
+                        thismaxoutlieridx = np.arange(self.noutliers)[sel][idxmax]
+                        thismaxoutlier = self.outliers[thismaxoutlieridx]
+                        thisqamsg = QAMessage(self.ms, thismaxoutlier, reason=list(thismaxoutlier.reason)[0])
+                        self.qascoremetrics[i][s][m]['long_msg'] = thisqamsg.full_message
+                        self.qascoremetrics[i][s][m]['short_msg'] = thisqamsg.short_message
+                        # copy the boolean is_amp_sym_offset from this QA scores
+                        self.qascoremetrics[i][s][m]['is_amp_sym_off'] = self.is_amp_sym_off[sel][idxmax]
+                        self.qascoremetrics[i][s][m]['outliers'] = True
+                    else:
+                        metric_axes, outlier_description, extra_description = REASONS_TO_TEXT[m]
+                        # Correct capitalisation as we'll prefix the metric with 'No '
+                        metric_axes = metric_axes.lower()
+                        self.qascoremetrics[i][s][m]['short_msg'] = 'No {} outliers'.format(metric_axes)
+                        self.qascoremetrics[i][s][m]['long_msg'] = 'No {} {} detected for {}'.format(metric_axes, outlier_description, self.ms.basename)
+                        self.qascoremetrics[i][s][m]['significance'] = 0.0
+                        self.qascoremetrics[i][s][m]['is_amp_sym_off'] = False
+                        self.qascoremetrics[i][s][m]['outliers'] = False
+
+            longmsgsubscores = np.array([self.qascoremetrics[i][s][selmetric]['long_msg'] for s in selspw])
+            shortmsgsubscores = np.array([self.qascoremetrics[i][s][selmetric]['short_msg'] for s in selspw])
+            sig_subscores = np.array([self.qascoremetrics[i][s][selmetric]['significance'] for s in selspw])
+            is_amp_sym_off_subscores = np.array([self.qascoremetrics[i][s][selmetric]['is_amp_sym_off'] for s in selspw])
+            anyoutliers = any([self.qascoremetrics[i][s][selmetric]['outliers'] for s in selspw])
+            # combine metric factors into one for each
+            # Currently just using the maximum of each.
+            idxmax = np.argsort(sig_subscores)[-1]
+            # copy message from the outlier with maximum metric value
+            self.qascoremetrics[i]['long_msg'] = longmsgsubscores[idxmax]
+            self.qascoremetrics[i]['short_msg'] = shortmsgsubscores[idxmax]
+            significance = np.max(sig_subscores)
+            # Determine whether for this QA scores we set this boolean is_amp_symmetric_offset
+            # In order to be symmetric for all the data considered in the QA score,
+            # it needs to be symmetric for any outlier in the pool.
+            is_amp_sym_off_all = all(is_amp_sym_off_subscores)
+            if anyoutliers:
+                # Decide the minimum QA score for this subscore
+                # Unless it is a non-polarization intent with symmetric amplitude outliers,
+                # should be determined by the intent_minscore dictionary from the intent
+                if (selmetric == 'amp_vs_freq.intercept') and (i != 'POLARIZATION') and is_amp_sym_off_all:
+                    thisminscore = self.INTENT_MINSCORE['AMP_SYM_OFFSET']
+                else:
+                    thisminscore = self.INTENT_MINSCORE[i]
+                auxqascore = self.QAEVALF_MIN + 0.5*(self.QAEVALF_MAX-self.QAEVALF_MIN)*(1 + math.erf(-np.log10(significance/self.QAEVALF_SCALE)))
+                self.qascoremetrics[i]['subscore'] = max(thisminscore, auxqascore)
+            else:
+                self.qascoremetrics[i]['subscore'] = 1.0
+
+        # Obtain final QA score value for this QA score object
+        finalset = [self.qascoremetrics[i]['subscore'] for i in selintent]
+        if len(finalset) > 0:
+            self.qascoremetrics['finalscore'] = min(finalset)
+        else:
+            self.qascoremetrics['finalscore'] = 1.0
+        # Generate summary line
+        if len(selintent) == 1:
+            self.long_msg = self.qascoremetrics[selintent[0]]['long_msg']
+            self.short_msg = self.qascoremetrics[selintent[0]]['short_msg']
+        elif len(selintent) == 0:
+            self.long_msg = ''
+            self.short_msg = ''
+        else:
+            LOG.info('Multiple intents for this QAscore: %s', qascore)
+            self.long_msg = ''
+            self.short_msg = ''
+
+        return self.qascoremetrics['finalscore']
+
+
+def get_qa_scores(
+        ms: MeasurementSet,
+        export_outliers: bool,
+        outlier_score: float,
+        flag_all: bool,
+        export_mswrappers: bool,
+        output_path: Optional[Path] = Path(''),
+        memory_gb: Optional[float] = MEMORY_CHUNK_SIZE,
+) -> dict[WebLogLocation, list[pqa.QAScore]]:
+    """
+    Calculate amp/phase vs freq and time outliers for an EB and convert to QA scores.
 
     This is the key entry point for applycal QA metric calculation. It
     delegates to the detailed metric implementation in ampphase_vs_freq_qa.py
-    to detect outliers, converting the outlier descriptions to normalised QA
+    and ampphase_vs_time_qa.py to detect outliers,
+    converting the outlier descriptions to normalised QA
     scores.
     """
-    intents = ['AMPLITUDE', 'BANDPASS', 'PHASE', 'CHECK', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE']
-
+    # all outlier scores objects will be saved here
     all_scores = []
 
-    # if requested, write outlier file header
+    # if there are any average visibilities saved, they are in buffer_folder
+    buffer_path = output_path / 'databuffer'
+    if export_mswrappers and not os.path.exists(buffer_path):
+        os.makedirs(buffer_path, exist_ok=True)
+
+    # Define intents that need to be processed avoiding intents with repeated scans
+    intents2proc = qa_utils.get_intents_to_process(ms, INTENTS)
+    outliers = []
+    for intent in intents2proc:
+        LOG.debug('Processing intent %s', intent)
+        outliers_for_intent = score_all_scans(
+            ms, intent,
+            flag_all=flag_all,
+            memory_gb=memory_gb,
+            buffer_path=buffer_path,
+            export_mswrappers=export_mswrappers
+        )
+        outliers.extend(outliers_for_intent)
+
     if export_outliers:
         debug_path = 'applycalQA_outliers.txt'
         with open(debug_path, 'a') as debug_file:
             debug_file.write(f'AMPLITUDE_SLOPE_THRESHOLD: {ampphase_vs_freq_qa.AMPLITUDE_SLOPE_THRESHOLD}\n')
+            debug_file.write(f'AMPLITUDE_SLOPE_PHYSICAL_THRESHOLD: {ampphase_vs_freq_qa.AMPLITUDE_SLOPE_PHYSICAL_THRESHOLD}\n')
             debug_file.write(f'AMPLITUDE_INTERCEPT_THRESHOLD: {ampphase_vs_freq_qa.AMPLITUDE_INTERCEPT_THRESHOLD}\n')
+            debug_file.write(f'AMPLITUDE_INTERCEPT_PHYSICAL_THRESHOLD: {ampphase_vs_freq_qa.AMPLITUDE_INTERCEPT_PHYSICAL_THRESHOLD}\n')
             debug_file.write(f'PHASE_SLOPE_THRESHOLD: {ampphase_vs_freq_qa.PHASE_SLOPE_THRESHOLD}\n')
+            debug_file.write(f'PHASE_SLOPE_PHYSICAL_THRESHOLD: {ampphase_vs_freq_qa.PHASE_SLOPE_PHYSICAL_THRESHOLD}\n')
             debug_file.write(f'PHASE_INTERCEPT_THRESHOLD: {ampphase_vs_freq_qa.PHASE_INTERCEPT_THRESHOLD}\n')
+            debug_file.write(f'PHASE_INTERCEPT_PHYSICAL_THRESHOLD: {ampphase_vs_freq_qa.PHASE_INTERCEPT_PHYSICAL_THRESHOLD}\n')
 
-    for intent in intents:
-        # delegate to dedicated module for outlier detection
-        outliers = ampphase_vs_freq_qa.score_all_scans(ms, intent, flag_all=flag_all)
+            for i,o in enumerate(outliers):
+                # Filter doubles from sources with multiple intents
+                duplicate_entry = any(
+                    o.vis == outliers[j].vis and
+                    o.scan == outliers[j].scan and
+                    o.spw == outliers[j].spw and
+                    o.ant == outliers[j].ant and
+                    o.pol == outliers[j].pol and
+                    o.reason == outliers[j].reason and
+                    o.num_sigma == outliers[j].num_sigma and
+                    o.delta_physical == outliers[j].delta_physical and
+                    o.amp_freq_sym_off == outliers[j].amp_freq_sym_off
+                    for j in range(i)
+                )
+                if duplicate_entry:
+                    continue
 
-        # if requested, export outlier descriptions to a file
-        if export_outliers:
-            with open(debug_path, 'a') as debug_file:
-                for i,o in enumerate(outliers):
-                    # Filter doubles from sources with multiple intents
-                    duplicate_entry = False
-                    for j in range(i-1):
-                        if o.vis == outliers[j].vis and \
-                           o.scan == outliers[j].scan and \
-                           o.spw == outliers[j].spw and \
-                           o.ant == outliers[j].ant and \
-                           o.pol == outliers[j].pol and \
-                           o.reason == outliers[j].reason and \
-                           o.num_sigma == outliers[j].num_sigma:
-                            duplicate_entry = True
-                            break
-                    if not duplicate_entry:
-                        if o.scan == {-1, }:
-                            msg = (f'{o.vis} {o.intent} scan={{all}} spw={o.spw} ant={o.ant} '
-                                   f'pol={o.pol} reason={o.reason} sigma_deviation={o.num_sigma}')
-                        else:
-                            msg = (f'{o.vis} {o.intent} scan={o.scan} spw={o.spw} ant={o.ant} '
-                                   f'pol={o.pol} reason={o.reason} sigma_deviation={o.num_sigma}')
-                        debug_file.write('{}\n'.format(msg))
+                str_components = [
+                    outlier_attr_to_str(o, attr, ms)
+                    for attr in
+                    ('vis', 'scan', 'spw', 'ant', 'pol', 'reason', 'num_sigma', 'delta_physical', 'amp_freq_sym_off')
+                ]
+                msg = ' '.join(c for c in str_components if c != '')
+                debug_file.write(f'{msg}\n')
 
-        # convert outliers to QA scores
-        scores_for_intent = outliers_to_qa_scores(ms, outliers, outlier_score)
-        all_scores.extend(scores_for_intent)
+    # convert outliers to QA scores
+    scores_for_intent = outliers_to_qa_scores(ms, outliers, outlier_score)
+    all_scores.extend(scores_for_intent)
 
-    return all_scores
+    # Get summary QA scores
+    qaevalf = QAScoreEvalFunc(ms, INTENTS, outliers)
+    final_scores = summarise_scores(all_scores, ms, qaevalf)
+
+    return final_scores
 
 
 class QAMessage:
@@ -217,11 +490,11 @@ class QAMessage:
     that are of interest. full_message holds the text to be used when the
     message is the first to be printed. short_message holds the text to be
     used when this message is to be appended to the text of other QAMessages.
-    Naturally, this assumes the the calling code only concatenates messages
+    Naturally, this assumes the calling code only concatenates messages
     that originate from the same reason.
     """
 
-    def __init__(self, ms, outlier, reason):
+    def __init__(self, ms: MeasurementSet, outlier: Outlier, reason: str):
         metric_axes, outlier_description, extra_description = REASONS_TO_TEXT[reason]
 
         # convert pol=0,1 to pol=XX,YY
@@ -256,16 +529,28 @@ class QAMessage:
         ant_msg = f' {",".join(ant_names)}' if ant_names else ''
         corr_msg = f' {corr_msg}' if corr_msg else ''
 
+        # TODO bifurcate this method for Outliers and TargetDataSelections
+        # TargetDataSelections and Outliers have very similar interfaces but
+        # are not quite identical, leading to code like below that needs to
+        # check variable types.
+        if isinstance(outlier, Outlier):
+            num_sigma_msg = '{0:.3f}'.format(outlier.num_sigma)
+            delta_physical_msg = '{0:.3f}'.format(outlier.delta_physical)
+            amp_freq_sym_off_msg = 'Y' if outlier.amp_freq_sym_off else 'N'
+            significance_msg = f'; n_sig={num_sigma_msg}; d_phys={delta_physical_msg}; ampsymoff={amp_freq_sym_off_msg}'
+        else:
+            significance_msg = ''
+
         short_msg = f'{metric_axes} {outlier_description}'
-        full_msg = f'{short_msg} for {vis}{intent_msg}{spw_msg}{ant_msg}{corr_msg}{scan_msg}{extra_description}'
+        full_msg = f'{short_msg} for {vis}{intent_msg}{spw_msg}{ant_msg}{corr_msg}{scan_msg}{significance_msg}{extra_description}'
 
         self.short_message = short_msg
         self.full_message = full_msg
 
 
 def outliers_to_qa_scores(ms: MeasurementSet,
-                          outliers: List[ampphase_vs_freq_qa.Outlier],
-                          outlier_score: float) -> List[pqa.QAScore]:
+                          outliers: list[ampphase_vs_freq_qa.Outlier],
+                          outlier_score: float) -> list[pqa.QAScore]:
     """
     Convert a list of consolidated Outliers into a list of equivalent
     QAScores.
@@ -291,7 +576,8 @@ def outliers_to_qa_scores(ms: MeasurementSet,
                                                     ant=outlier.ant,
                                                     pol=outlier.pol,
                                                     num_sigma=outlier.num_sigma,
-                                                    phase_offset_gt90deg=outlier.phase_offset_gt90deg,
+                                                    delta_physical=outlier.delta_physical,
+                                                    amp_freq_sym_off=outlier.amp_freq_sym_off,
                                                     reason=','.join(sorted(outlier.reason))))
     reasons = {outlier.reason for outlier in hashable}
 
@@ -352,7 +638,11 @@ def in_casa_format(data_selections: DataSelectionToScores) -> DataSelectionToSco
     return formatted
 
 
-def summarise_scores(all_scores: List[pqa.QAScore], ms: MeasurementSet) -> Dict[pqa.WebLogLocation, List[pqa.QAScore]]:
+def summarise_scores(
+        all_scores: list[pqa.QAScore],
+        ms: MeasurementSet,
+        qaevalf: QAScoreEvalFunc,
+) -> dict[pqa.WebLogLocation, list[pqa.QAScore]]:
     """
     Process a list of QAscores, replacing the detailed and highly specific
     input scores with compressed representations intended for display in the
@@ -361,7 +651,7 @@ def summarise_scores(all_scores: List[pqa.QAScore], ms: MeasurementSet) -> Dict[
     """
     # list to hold the final QA scores: non-combined hidden scores, plus the
     # summarised (and less specific) accordion scores and banner scores
-    final_scores: Dict[pqa.WebLogLocation, List[pqa.QAScore]] = {}
+    scores_by_location: dict[pqa.WebLogLocation, list[pqa.QAScore]] = {}
 
     # we don't want the non-combined scores reported in the web log. They're
     # useful for the QA report written to disk, but for the web log the
@@ -370,7 +660,7 @@ def summarise_scores(all_scores: List[pqa.QAScore], ms: MeasurementSet) -> Dict[
     hidden_scores = copy.deepcopy(all_scores)
     for score in hidden_scores:
         score.weblog_location = pqa.WebLogLocation.HIDDEN
-    final_scores[pqa.WebLogLocation.HIDDEN] = hidden_scores
+    scores_by_location[pqa.WebLogLocation.HIDDEN] = hidden_scores
 
     # JH update to spec for PIPE-477:
     #
@@ -381,23 +671,37 @@ def summarise_scores(all_scores: List[pqa.QAScore], ms: MeasurementSet) -> Dict[
     # that level of detail can be suppressed to keep the number of accordion
     # messages down. I have changed the example in the description accordingly.
 
-    accordion_scores = []
+    # Rescoring must happen BEFORE score aggregation, as the scoring algorithm
+    # makes a distinction between metrics of different origins. This also needs
+    # to happen *before* the banner scores are compiled, as further dimension
+    # erasure leads to complaints from the QA evaluation function for score in
+    # processed_scores:
+    for score in all_scores:
+        adjusted_score = qaevalf(score)
+        score.score = adjusted_score
+        # Note that we adopt the score but not the QAScoreEvalFunc long/short
+        # messages, as those messages refer to a single vis/spw/ant/intent
+        # selection. Instead, we prefer to keep the original aggregated
+        # message that applies to the union data selection.
+
+    processed_scores = []
     # Collect scores. The phase scores (normal and > 90 deg offset) should
     # get just one single 1.0 score in case of no outliers.
-    for hierarchy_roots in [['amp_vs_freq'], ['phase_vs_freq', 'gt90deg_offset_phase_vs_freq']]:
+    for metric_root, metric_regex in [
+        ('amp_vs_freq', '^amp_vs_freq'),
+        ('phase_vs_freq', '^(phase_vs_freq|gt90deg_offset_phase_vs_freq)')
+    ]:
         # erase just the polarisation dimension for accordion messages,
         # leaving the messages specific enough to identify the plot that
         # caused the problem
         discard = ['pol']
-        num_scores = 0
-        for hierarchy_root in hierarchy_roots:
-            msgs = combine_scores(all_scores, hierarchy_root, discard, ms, pqa.WebLogLocation.ACCORDION)
-            num_scores += len(msgs)
-            accordion_scores.extend(msgs)
+        msgs = combine_scores(all_scores, metric_root, metric_regex, discard, ms, pqa.WebLogLocation.ACCORDION)
+        num_scores = len(msgs)
+        processed_scores.extend(msgs)
 
         # add a single 1.0 accordion score for metrics that generated no outlier
         if num_scores == 0:
-            metric_axes, outlier_description, _ = REASONS_TO_TEXT[hierarchy_roots[0]]
+            metric_axes, outlier_description, _ = REASONS_TO_TEXT[metric_root]
             # Correct capitalisation as we'll prefix the metric with 'No '
             metric_axes = metric_axes.lower()
             short_msg = 'No {} outliers'.format(metric_axes)
@@ -405,24 +709,40 @@ def summarise_scores(all_scores: List[pqa.QAScore], ms: MeasurementSet) -> Dict[
             score = pqa.QAScore(1.0,
                                 longmsg=long_msg,
                                 shortmsg=short_msg,
-                                hierarchy=hierarchy_roots[0],
+                                hierarchy=metric_root,
                                 weblog_location=pqa.WebLogLocation.ACCORDION,
                                 applies_to=pqa.TargetDataSelection(vis={ms.basename}))
-            score.origin = pqa.QAOrigin(metric_name=hierarchy_roots[0],
+            score.origin = pqa.QAOrigin(metric_name=metric_root,
                                         metric_score=0,
                                         metric_units='number of outliers')
-            accordion_scores.append(score)
+            processed_scores.append(score)
 
-    final_scores[pqa.WebLogLocation.ACCORDION] = accordion_scores
+    # scores destined for the weblog accordion
+    accordion_scores: list[QAScore] = []
 
-    banner_scores = []
-    for hierarchy_root in ['amp_vs_freq', 'phase_vs_freq', 'gt90deg_offset_phase_vs_freq']:
-        # erase several dimensions for banner messages. These messages outline
-        # just the vis, spw, and intent. For specific info, people should look
-        # at the accordion messages.
-        msgs = combine_scores(all_scores, hierarchy_root, ['pol', 'ant', 'scan'], ms, pqa.WebLogLocation.BANNER)
-        banner_scores.extend(msgs)
-    final_scores[pqa.WebLogLocation.BANNER] = banner_scores
+    # PIPE-1770 spec:
+    #   For INTENT=CHECK, suppress or leave out the QA messages that identify
+    #   outliers by antenna & scan (i.e., so it is only reports outlier
+    #   type/spw for each ms).
+    check_scores = [s for s in processed_scores if 'CHECK' in s.applies_to.intent]
+    for metric_root, metric_regex in [
+        ('amp_vs_freq', '^amp_vs_freq'),
+        ('phase_vs_freq', '^(phase_vs_freq|gt90deg_offset_phase_vs_freq)')
+    ]:
+        msgs = combine_scores(check_scores, metric_root, metric_regex, ['ant', 'scan'], ms, pqa.WebLogLocation.ACCORDION)
+        accordion_scores.extend(msgs)
+
+    # PIPE-1770 spec:
+    #   For other intents, suppress the fully aggregated QA message (since it
+    #   is a duplication now that we have combined the QA messages that used
+    #   to be shown at the top and bottom of the page
+    #
+    # Suppress fully-aggregated scores means do not run them through
+    # combine_scores, i.e., just add them to the final results as-is.
+    non_check_scores = [s for s in processed_scores if 'CHECK' not in s.applies_to.intent]
+    accordion_scores.extend(non_check_scores)
+
+    scores_by_location[pqa.WebLogLocation.ACCORDION] = accordion_scores
 
     # JH request from 8/4/20:
     #
@@ -430,21 +750,22 @@ def summarise_scores(all_scores: List[pqa.QAScore], ms: MeasurementSet) -> Dict[
     # by {ms; intent; spw} so that they appear in "figure order" (currently
     # they seem to be ordered by {ms; intent; scan}
     #
-    for destination, unsorted_scores in final_scores.items():
+    for destination, unsorted_scores in scores_by_location.items():
         sorted_scores = sorted(unsorted_scores, key=lambda score: (sorted(score.applies_to.vis),
                                                                    sorted(score.applies_to.intent),
                                                                    sorted(score.applies_to.spw),
                                                                    sorted(score.applies_to.scan)))
-        final_scores[destination] = sorted_scores
+        scores_by_location[destination] = sorted_scores
 
-    return final_scores
+    return scores_by_location
 
 
-def combine_scores(all_scores: List[pqa.QAScore],
-                   hierarchy_base: str,
-                   discard: List[str],
+def combine_scores(all_scores: list[pqa.QAScore],
+                   hierarchy_root: str,
+                   hierarchy_regex: str,
+                   discard: list[str],
                    ms: MeasurementSet,
-                   location: pqa.WebLogLocation) -> List[pqa.QAScore]:
+                   location: pqa.WebLogLocation) -> list[pqa.QAScore]:
     """
     Combine and summarise a list of QA scores.
 
@@ -461,7 +782,7 @@ def combine_scores(all_scores: List[pqa.QAScore],
     # too.
 
     # create a filter function to leave the scores we want to process
-    filter_fn = lambda qa_score: qa_score.hierarchy.startswith(f'{hierarchy_base}.')
+    filter_fn = lambda qa_score: bool(re.match(hierarchy_regex, qa_score.hierarchy))
 
     # get all QA scores generated by a '<metric> vs X' algorithm
     scores_for_metric = [o for o in all_scores if filter_fn(o)]
@@ -494,10 +815,10 @@ def combine_scores(all_scores: List[pqa.QAScore],
         # shares enough of the Outlier interface (vis, spw, scan, intent,
         # etc.) that we can pass QAMessage directly without converting to
         # an Outlier
-        msgs = QAMessage(ms, qa_score.applies_to, reason=hierarchy_base)
+        msgs = QAMessage(ms, qa_score.applies_to, reason=hierarchy_root)
         qa_score.shortmsg = msgs.short_message
         qa_score.longmsg = msgs.full_message
-        qa_score.hierarchy = hierarchy_base
+        qa_score.hierarchy = hierarchy_root
         qa_score.weblog_location = location
 
     return qa_scores
@@ -577,7 +898,12 @@ def map_data_selection_to_scores(scores: Iterable[pqa.QAScore]) -> DataSelection
 
     :param scores: scores to decompose
     """
-    return {to_data_selection(score.applies_to): [score] for score in scores}
+    # scores for different metrics may have the same data selection, so it's
+    # important to append to a list rather than instantiate as [score]
+    result = collections.defaultdict(list)
+    for score in scores:
+        result[to_data_selection(score.applies_to)].append(score)
+    return dict(result)
 
 
 def compress_data_selections(to_merge: DataSelectionToScores,
@@ -597,7 +923,7 @@ def compress_data_selections(to_merge: DataSelectionToScores,
     # particular field by creating a new tuple that omits that field and
     # sorting/grouping on the reduced tuple. This function is used to create
     # the reduced tuple that 'ignores' the specified field(s)
-    def get_keyfunc(cols_to_ignore: List[str]):
+    def get_keyfunc(cols_to_ignore: list[str]):
         def keyfunc(ds: DataSelection):
             return tuple(getattr(ds, field) for field in ds._fields if field not in cols_to_ignore)
         return keyfunc
@@ -618,7 +944,7 @@ def compress_data_selections(to_merge: DataSelectionToScores,
             # the ignored field. These selections in g can be merged.
             group = list(g)
             # convert from ((1, ), (2, ), (5, )) to (1, 2, 5)
-            merged_vals = tuple(itertools.chain(*(getattr(g, attr) for g in group)))
+            merged_vals = tuple(set(itertools.chain(*(getattr(g, attr) for g in group))))
 
             # we now need to reconstruct the full data selection tuple from the
             # reduced tuple in k plus the values we've just merged. We do this
@@ -641,3 +967,47 @@ def compress_data_selections(to_merge: DataSelectionToScores,
         keys_to_merge = list(to_merge.keys())
 
     return to_merge
+
+
+def outlier_attr_to_str(o: Outlier, attr: str, ms: MeasurementSet) -> str:
+    """
+    Convert an outlier attribute to a string representation.
+
+    This function takes an Outlier object and an attribute name, and returns a
+    string representation of the attribute's value. It handles different
+    attribute types, including iterables and non-iterables, and formats them
+    appropriately.
+
+    @param o: The Outlier object.
+    @param attr: The name of the attribute to convert.
+    @param ms: MeasurementSet object used to convert antenna IDs to names
+
+    @return :A string representation of the attribute's value.
+    """
+    raw_val = getattr(o, attr)
+    try:
+        str_val = ','.join(map(str, sorted(raw_val)))
+    except TypeError:
+        # not an iterable
+        str_val = str(raw_val)
+
+    match attr:
+        case 'ant':
+            # use antenna names to match the weblog
+            str_val = ','.join(sorted(a.name for a in ms.get_antenna(str_val)))
+        case 'num_sigma':
+            str_val = f'{float(str_val):.1f}'
+        case 'delta_physical':
+            str_val = f'{float(str_val):.3f}'
+        case 'scan':
+            str_val = 'all' if str_val == '-1' else str_val
+        case 'amp_freq_sym_off':
+            # 'It would be desirable to suppress printing amp_freq_sym_off
+            # when it makes no sense (any phase_vs_freq reason, or
+            # amp_vs_freq.slope.'
+            if 'amp_vs_freq.slope' in o.reason \
+                    or all(reason.startswith('phase_vs_freq') for reason in o.reason) \
+                    or all(reason.startswith('gt90deg_offset_phase_vs_freq') for reason in o.reason):
+                return ''
+
+    return f'{attr}={str_val}'

@@ -1,16 +1,19 @@
+import collections
 import decimal
-from typing import List, Tuple
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
-from pipeline.domain.spectralwindow import SpectralWindow
+from pipeline.domain import SpectralWindow
 from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
+IntentField = collections.namedtuple('IntentField', 'intent field')
+SpwMapping = collections.namedtuple('SpwMapping', 'combine spwmap snr_info snr_threshold_used solint gaintype calc_snr_info')
 
-def combine_spwmap(scispws: List[SpectralWindow]) -> List:
+
+def combine_spwmap(scispws: list[SpectralWindow]) -> list:
     """
     Returns a spectral window map where each science spectral window is mapped
     to the lowest science spectral window ID that matches its Spectral Spec.
@@ -47,135 +50,78 @@ def combine_spwmap(scispws: List[SpectralWindow]) -> List:
         return combinespwmap
 
 
-def snr_n2wspwmap(scispws: List[SpectralWindow], snrs: List, goodsnrs: List) -> Tuple[bool, List, List]:
+def snr_n2wspwmap(scispws: list[SpectralWindow], snrs: list, snrlimit: float) -> tuple[bool, list]:
     """
     Compute a spectral window map based on signal-to-noise information.
+
+    This will group input spectral windows into Spectral Specs, then loop over
+    Spectral Specs, and identify within each Spectral Spec the SpW with the best
+    SNR above the input minimum SNR limit. Finally, a spectral window maps is
+    created, where each SpW is mapped to:
+     - itself if its SNR is good enough, or
+     - a good-SNR SpW within the same Spectral Spec, or
+     - itself if there is no good-SNR SpW within the same Spectral Spec.
+
+    If all spectral specs have at least one good SpW to re-map to, then all SpWs
+    will have a good mapping and therefore the returned goodmap = True.
+    Otherwise, goodmap is returned as False.
 
     Args:
         scispws: List of spectral window objects for science spectral windows.
         snrs: List of snr values for scispws
-        goodsnrs: Determines whether the SNR is good (True), bad (False), or
-            undefined (None). At least one value per receiver band should be good.
+        snrlimit: Minimum SNR a SpW needs to exceed to be considered good enough
+            for SpWs to be mapped to.
 
     Returns:
-        3 element tuple with:
-          * boolean declaring if a good mapping was found for all SpWs.
-          * list of spectral window IDs, representing the spectral window map.
-          * list of booleans (or None) declaring if matched SpW had good SNR.
+        Two-tuple containing:
+        * Boolean declaring if a good mapping was found for all SpWs.
+        * List of spectral window IDs representing the spectral window map.
     """
-    # Find the spw with largest good SNR for each receiver band
-    snrdict = {}
-    for scispw, snr, goodsnr in zip(scispws, snrs, goodsnrs):
-        if goodsnr is not True:
+    # Create dictionary of spectral specs and their corresponding science
+    # spectral window ids.
+    spspec_to_spwid_map = utils.get_spectralspec_to_spwid_map(scispws)
+   
+    # For each spectral spec, find the SpW with highest SNR above the threshold.
+    snrdict = {spspec: {'snr': 0.0, 'spwid': None} for spspec in spspec_to_spwid_map.keys()}
+    for scispw, snr in zip(scispws, snrs):
+        if snr < snrlimit:
             continue
-        if scispw.band in snrdict:
-            if snr > snrdict[scispw.band]:
-                snrdict[scispw.band] = snr
-        else:
-            snrdict[scispw.band] = snr
-    LOG.debug('Maximum SNR per receiver band dictionary %s' % snrdict)
+        if snr > snrdict[scispw.spectralspec]['snr']:
+            snrdict[scispw.spectralspec] = {'snr': snr, 'spwid': scispw.id}
+    LOG.debug('Maximum SNR per spectral spec dictionary %s' % snrdict)
 
-    # Find a matching spw for each science spw
-    matchedspws = []
-    matchedgoodsnrs = []
-    for scispw, snr, goodsnr in zip(scispws, snrs, goodsnrs):
+    # Initialize output SpW map, sized to fit all science SpWs.
+    phasespwmap = list(range(max(spw.id for spw in scispws) + 1))
 
-        LOG.debug('Looking for match to spw id %s' % scispw.id)
-
-        # Good SNR so match spw to itself regardless of any other criteria
-        if goodsnr is True:
-            matchedspws.append(scispw)
-            matchedgoodsnrs.append(goodsnr)
-            LOG.debug('Good SNR so matched spw id %s to itself' % scispw.id)
-            continue
-
-        if scispw.band not in snrdict:
-            matchedspws.append(scispw)
-            matchedgoodsnrs.append(None)
-            LOG.debug('No good SNR spw in receiver band so match spw id %s to itself' % scispw.id)
-            continue
-
-        # Loop through the other science windows looking for a match
-        bestspw = None
-        bestsnr = None
-        bestgoodsnr = None
-        for matchspw, matchsnr, matchgoodsnr in zip(scispws, snrs, goodsnrs):
-
-            # Skip self
-            if matchspw.id == scispw.id:
-                LOG.debug('Skipping match of spw %s to itself' % matchspw.id)
-                continue
-
-            # Don't match across receiver bands
-            if matchspw.band != scispw.band:
-                LOG.debug('Skipping bad receiver band match to spw id %s' % matchspw.id)
-                continue
-
-            # Don't match across SpectralSpec if a non-empty SpectralSpec is available (PIPE-316).
-            if scispw.spectralspec and scispw.spectralspec != matchspw.spectralspec:
-                LOG.debug('Skipping bad spectral spec match to spw id %s' % matchspw.id)
-                continue
-
-            # Skip bad SNR matches if at least one good SNR window in the receiver band exists
-            if matchspw.band in snrdict and matchgoodsnr is not True:
-                LOG.debug('Skipping match with poor SNR spw id %s' % matchspw.id)
-                continue
-
-            # First candidate match
-            if bestspw is None:
-                bestspw = matchspw
-                bestsnr = matchsnr
-                bestgoodsnr = matchgoodsnr
-                LOG.debug('First possible match is to spw id %s' % matchspw.id)
-            elif matchsnr > bestsnr:
-                bestspw = matchspw
-                bestsnr = matchsnr
-                bestgoodsnr = matchgoodsnr
-                LOG.debug('Found higher SNR match spw id %s' % matchspw.id)
-            else:
-                LOG.debug('SNR lower than previous match skipping spw id %s' % matchspw.id)
-
-        # Append the matched spw to the list
-        if bestspw is None:
-            matchedspws.append(scispw)
-            matchedgoodsnrs.append(goodsnr)
-        else:
-            matchedspws.append(bestspw)
-            matchedgoodsnrs.append(bestgoodsnr)
-
-    # Find the maximum science spw id
-    max_spwid = 0
-    for scispw in scispws:
-        if scispw.id > max_spwid:
-            max_spwid = scispw.id
-
-    # Initialize the spwmap. All spw ids up to the maximum
-    # science spw id must be defined.
-    phasespwmap = []
-    snrmap = []
-    for i in range(max_spwid + 1):
-        phasespwmap.append(i)
-        snrmap.append(None)
-
-    # Make a reference copy for comparison
-    refphasespwmap = list(phasespwmap)
-
-    # Set the science window spw map using the matching spw ids
+    # Within each spectral spec, find a matching spw for each science spw.
+    # Track whether a good mapping is found for all SpWs.
     goodmap = True
-    for scispw, matchspw, matchedgoodsnr in zip(scispws, matchedspws, matchedgoodsnrs):
-        phasespwmap[scispw.id] = matchspw.id
-        snrmap[scispw.id] = matchedgoodsnr
-        if matchedgoodsnr is not True:
-            goodmap = False
+    for spspec, spwids in spspec_to_spwid_map.items():
+        for scispw, snr in zip(scispws, snrs):
+            if scispw.id in spwids:
+                LOG.debug('Looking for match to spw id %s' % scispw.id)
+                # If the highest SNR within this spectral spec is at or below
+                # the limit, then there is no good SpW to re-map to, so instead
+                # match SpW to itself.
+                if snrdict[spspec]['snr'] <= snrlimit:
+                    phasespwmap[scispw.id] = scispw.id
+                    LOG.debug('No good SNR spw in spectral spec so match spw id %s to itself' % scispw.id)
+                    goodmap = False
+                    continue 
 
-    # Return the new map
-    if goodmap is True and phasespwmap == refphasespwmap:
-        return True, [], []
-    else:
-        return goodmap, phasespwmap, snrmap
+                # Good SNR so match spw to itself regardless of any other criteria
+                if snr > snrlimit:
+                    phasespwmap[scispw.id] = scispw.id
+                    LOG.debug('Good SNR so matched spw id %s to itself' % scispw.id)
+                # Otherwise, match SpW to highest SNR SpW within spectral spec.
+                else:
+                    phasespwmap[scispw.id] = snrdict[spspec]['spwid']
+                    LOG.debug('Matched spw id %s to highest SNR spw %s' % (scispw.id, snrdict[spspec]['spwid']))
+
+    return goodmap, phasespwmap
 
 
-def simple_n2wspwmap(scispws: List[SpectralWindow], maxnarrowbw: str, maxbwfrac: float, samebb: bool) -> List:
+def simple_n2wspwmap(scispws: list[SpectralWindow], maxnarrowbw: str, maxbwfrac: float, samebb: bool) -> list:
     """
     Compute a simple phase up wide to narrow spectral window map.
 
@@ -294,3 +240,47 @@ def simple_n2wspwmap(scispws: List[SpectralWindow], maxnarrowbw: str, maxbwfrac:
         return []
     else:
         return phasespwmap
+
+
+def update_spwmap_for_band_to_band(spwmap: list[int], dg_refspws: list[SpectralWindow],
+                                   dg_srcspws: list[SpectralWindow], combine: bool = False) -> list[int]:
+    """
+    This method updates the input SpW mapping to remap diffgain on-source SpWs to
+    associated diffgain reference SpWs within the same baseband, and returns the
+    updated SpW mapping.
+
+    Args:
+        spwmap: SpW mapping to update
+        dg_refspws: diffgain reference SpWs
+        dg_srcspws: diffgain on-source SpWs
+        combine: boolean declaring whether the SpW mapping uses SpW combination.
+
+    Returns:
+        List representing the updated SpW mapping.
+    """
+    # Ensure that the length of the input SpW map is sufficient to include all
+    # diffgain SpWs; if necessary, add the missing SpWs, where each missing SpW
+    # is mapped to itself.
+    max_spw_id = max(spw.id for spw in dg_refspws + dg_srcspws)
+    if len(spwmap) < max_spw_id + 1:
+        spwmap.extend(list(range(len(spwmap), max_spw_id + 1)))
+
+    # Modify the SpW mapping to ensure that diffgain on-source SpWs are remapped
+    # to an appropriate diffgain reference SpW.
+    if combine:
+        # PIPE-2499: in case of SpW combination, map all diffgain on-source SpWs
+        # to the diffgain reference SpW with the lowest ID.
+        min_dg_refspw_id = min(spw.id for spw in dg_refspws)
+        for dg_srcspw in dg_srcspws:
+            spwmap[dg_srcspw.id] = min_dg_refspw_id
+    else:
+        # Otherwise, assuming narrow-to-wide SpW mapping, map each diffgain
+        # on-source SpW to a diffgain reference SpW with the same baseband.
+        # PIPE-2059: this mapping can in principle be to any diffgain reference
+        # SpW that matches the baseband, but here it will preferentially match
+        # to the diffgain reference SpW with the highest ID.
+        for dg_srcspw in dg_srcspws:
+            max_dg_refspw_id = max(spw.id for spw in dg_refspws if
+                                   spw.baseband == dg_srcspw.baseband)
+            spwmap[dg_srcspw.id] = spwmap[max_dg_refspw_id]
+    return spwmap

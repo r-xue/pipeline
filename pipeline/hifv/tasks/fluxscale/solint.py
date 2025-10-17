@@ -1,7 +1,5 @@
 import collections
 import os
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union, Any, Dict
-
 import numpy as np
 from scipy import stats
 
@@ -10,9 +8,12 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import getCalFlaggedSoln, uvrange
+from pipeline.hifv.heuristics.lib_EVLApipeutils import vla_minbaselineforcal
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import utils
+
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -33,14 +34,27 @@ class SolintInputs(vdp.StandardInputs):
     """
     limit_short_solint = vdp.VisDependentProperty(default='')
     refantignore = vdp.VisDependentProperty(default='')
+    refant = vdp.VisDependentProperty(default='')
 
-    def __init__(self, context, vis=None, limit_short_solint=None, refantignore=None):
-        """
+    # docstring and type hints: supplements hifv_solint
+    def __init__(self, context, vis=None, limit_short_solint=None, refantignore=None, refant=None):
+        """Initialize Inputs.
+
         Args:
             context (:obj:): Pipeline context
-            vis(str, optional): String name of the measurement set
-            limit_short_solint(str):  Limit to the short solution interval
-            refantignore(str):  csv string of reference antennas to ignore - 'ea24,ea15,ea08'
+
+            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
+
+            limit_short_solint(str): Keyword argument in units of seconds to limit the short solution interval. Can be a string or float numerical value in units of seconds of '0.45' or 0.45.
+                Can be set to a string value of 'int'.
+
+            refantignore(str): String list of antennas to ignore.
+
+                Example:  refantignore='ea02, ea03'
+
+            refant(str): A csv string of reference antenna(s). When used, disables ``refantignore``.
+
+                Example: refant = 'ea01, ea02'
 
         """
         super(SolintInputs, self).__init__()
@@ -50,6 +64,7 @@ class SolintInputs(vdp.StandardInputs):
         self.refantignore = refantignore
         self.gain_solint1 = 'int'
         self.gain_solint2 = 'int'
+        self.refant = refant
 
 
 class SolintResults(basetask.Results):
@@ -58,25 +73,34 @@ class SolintResults(basetask.Results):
     The class inherits from basetask.Results.
 
     """
-    def __init__(self, final=None, pool=None, preceding=None, longsolint=None, gain_solint2=None,
-                 shortsol2=None, short_solint=None, new_gain_solint1=None, vis=None,
-                 bpdgain_touse=None):
-        """
+
+    def __init__(self,
+                 final: list | None = None,
+                 pool: list | None = None,
+                 preceding: list | None = None,
+                 longsolint: dict | None = None,
+                 gain_solint2: dict | None = None,
+                 shortsol2: dict | None = None,
+                 short_solint: dict | None = None,
+                 new_gain_solint1: dict | None = None,
+                 vis: str | None = None,
+                 bpdgain_touse: dict | None = None,
+                 integration_time: dict | None = None):
+        """Initializes the object with various calibration and visibility parameters.
+
         Args:
-
-            vis(str, optional): String name of the measurement set
-            final(List, optional): Calibration list applied - not used
-            pool(List, optional): Calibration list assesed - not used
-            preceding(List, optional): DEPRECATED results from worker tasks executed by this task
-            longsolint(float): numerical value of the long solution interval
-            gain_solint2(str):  str representation of longsolint with 's' seconds units
-            shortsol2(float): values based on the vla max integration time
-            short_solint(float): short solution interval numerical value
-            new_gain_solint1(str): str representation of short_solint with 's' seconds units.
-            bpdgain_touse(Dict):  Dictionary of tables per band
-
+            final: Calibration list applied (not used).
+            pool: Calibration list assessed (not used).
+            preceding: DEPRECATED results from worker tasks executed by this task.
+            longsolint: Numerical value of the long solution interval.
+            gain_solint2: String representation of longsolint with 's' seconds units.
+            shortsol2: Values based on the VLA maximum integration time.
+            short_solint: Short solution interval numerical value.
+            new_gain_solint1: String representation of short_solint with 's' seconds units.
+            vis: String name of the measurement set.
+            bpdgain_touse: Dictionary of tables per band.
+            integration_time: Dictionary of maximum integration times per band.
         """
-
         if final is None:
             final = []
         if pool is None:
@@ -84,7 +108,7 @@ class SolintResults(basetask.Results):
         if preceding is None:
             preceding = []
 
-        super(SolintResults, self).__init__()
+        super().__init__()
 
         self.vis = vis
         self.pool = pool[:]
@@ -98,8 +122,9 @@ class SolintResults(basetask.Results):
         self.short_solint = short_solint
         self.new_gain_solint1 = new_gain_solint1
         self.bpdgain_touse = bpdgain_touse
+        self.integration_time = integration_time
 
-    def merge_with_context(self, context):    
+    def merge_with_context(self, context):
         m = context.observing_run.get_ms(self.vis)
         context.evla['msinfo'][m.name].gain_solint2 = self.gain_solint2
         context.evla['msinfo'][m.name].longsolint = self.longsolint
@@ -144,24 +169,29 @@ class Solint(basetask.StandardTaskTemplate):
         short_solint = {}
         new_gain_solint1 = {}
         bpdgain_touse = {}
-
+        integration_time = {}
+        vis = self.inputs.vis
         calMs = 'calibrators.ms'
-        split_result = self._do_split(calMs)
+        self._do_split(calMs)
 
         for band, spwlist in band2spw.items():
-            longsolint_band, gain_solint2_band, shortsol2_band, short_solint_band, \
-            new_gain_solint1_band, vis, bpdgain_touse_band = self._do_solint(band, spwlist, calMs)
+            try:
+                longsolint_band, gain_solint2_band, shortsol2_band, short_solint_band, \
+                new_gain_solint1_band, vis, bpdgain_touse_band, integration_time_band = self._do_solint(band, spwlist, calMs)
 
-            longsolint[band] = longsolint_band
-            gain_solint2[band] = gain_solint2_band
-            shortsol2[band] = shortsol2_band
-            short_solint[band] = short_solint_band
-            new_gain_solint1[band] = new_gain_solint1_band
-            bpdgain_touse[band] = bpdgain_touse_band
+                longsolint[band] = longsolint_band
+                gain_solint2[band] = gain_solint2_band
+                shortsol2[band] = shortsol2_band
+                short_solint[band] = short_solint_band
+                new_gain_solint1[band] = new_gain_solint1_band
+                bpdgain_touse[band] = bpdgain_touse_band
+                integration_time[band] = integration_time_band
+            except Exception as ex:
+                    LOG.warning(str(ex))
 
         return SolintResults(longsolint=longsolint, gain_solint2=gain_solint2, shortsol2=shortsol2,
                              short_solint=short_solint, new_gain_solint1=new_gain_solint1, vis=vis,
-                             bpdgain_touse=bpdgain_touse)
+                             bpdgain_touse=bpdgain_touse, integration_time=integration_time)
 
     def analyse(self, results):
         """Determine the best parameters by analysing the given jobs before returning any final jobs to execute.
@@ -198,12 +228,10 @@ class Solint(basetask.StandardTaskTemplate):
 
         # Solint section
 
-        (longsolint, gain_solint2) = self._do_determine_solint(calMs, ','.join(spwlist))
-
-        try:
-            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
-        except Exception as e:
-            self.setjy_results = self.inputs.context.results[0].read().setjy_results
+        (longsolint, gain_solint2) = self._do_determine_solint(calMs, ','.join(spwlist), band)
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-2164: getting setjy result stored in context
+        self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
 
         try:
             stage_number = self.inputs.context.results[-1].read()[0].stage_number + 1
@@ -218,7 +246,8 @@ class Solint(basetask.StandardTaskTemplate):
                         '10_{!s}.tbl'.format(band), 'scan_{!s}.tbl'.format(band), 'limit_{!s}.tbl'.format(band)]
         soltimes = [1.0, 3.0, 10.0]
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        soltimes = [m.get_vla_max_integration_time() * x for x in soltimes]
+        integration_time = m.get_integration_time_stats(stat_type="max", band=band)
+        soltimes = [integration_time * x for x in soltimes]
 
         solints = ['int', str(soltimes[1]) + 's', str(soltimes[2]) + 's']
         soltime = soltimes[0]
@@ -229,20 +258,26 @@ class Solint(basetask.StandardTaskTemplate):
         refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
 
         self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
-        refantignore = self.inputs.refantignore + ','.join(self.ignorerefant)
+        # PIPE-1637: adding ',' in the manual and auto refantignore parameter
+        refantignore = self.inputs.refantignore + ','.join(['', *self.ignorerefant])
+        # PIPE-595: if refant list is not provided, compute refants else use provided refant list.
+        if len(self.inputs.refant) == 0:
+            refantobj = findrefant.RefAntHeuristics(vis=calMs, field=refantfield,
+                                                    geometry=True, flagging=True, intent='',
+                                                    spw='', refantignore=refantignore)
 
-        refantobj = findrefant.RefAntHeuristics(vis=calMs, field=refantfield,
-                                                geometry=True, flagging=True, intent='',
-                                                spw='', refantignore=refantignore)
-
-        RefAntOutput = refantobj.calculate()
+            RefAntOutput = refantobj.calculate()
+        else:
+            RefAntOutput = self.inputs.refant.split(",")
 
         refAnt = ','.join(RefAntOutput)
 
         bpdgain_touse = tablebase + table_suffix[0]
+
         testgains_result = self._do_gtype_testgains(calMs, bpdgain_touse, solint=solint,
                                                     context=self.inputs.context, combtime=combtime,
                                                     refAnt=refAnt, spw=','.join(spwlist))
+
 
         flaggedSolnResult1 = getCalFlaggedSoln(bpdgain_touse)
         LOG.info("For solint = " + solint + " fraction of flagged solutions = " +
@@ -328,52 +363,72 @@ class Solint(basetask.StandardTaskTemplate):
                                     LOG.warning("Warning, large fraction of flagged solutions.  " +
                                                 "There might be something wrong with your data")
 
-        LOG.info("ShortSol1: " + str(shortsol1))
-        LOG.info("ShortSol2: " + str(shortsol2))
+        LOG.info("ShortSol1: %s", shortsol1)
+        LOG.info("ShortSol2: %s", shortsol2)
 
         short_solint = max(shortsol1, shortsol2)
-        LOG.info("Short_solint determined from heuristics: " + str(short_solint))
-        new_gain_solint1 = str(short_solint) + 's'
+        LOG.info('Short_solint determined from heuristics: %s', short_solint)
+        integration_time = m.get_integration_time_stats(stat_type="max", band=band)
+        if short_solint == integration_time:
+            new_gain_solint1 = 'int'
+        else:
+            new_gain_solint1 = str(short_solint) + 's'
 
-        if self.inputs.limit_short_solint:
-            LOG.warning("Short Solint limited by user keyword input to " + str(self.inputs.limit_short_solint))
+        if self.inputs.limit_short_solint != '':
+            LOG.warning('Short Solint limited by the task input to %r', self.inputs.limit_short_solint)
             limit_short_solint = self.inputs.limit_short_solint
-
-            short_solint_str = "{:.12f}".format(short_solint)
+            if limit_short_solint not in ("int", "inf"):
+                try:
+                    limit_short_solint = float(limit_short_solint)
+                except ValueError:
+                    LOG.warning("limit_short_solint must be 'int', 'inf', or a numeric value. Defaulting to 'int'.")
+                    limit_short_solint = 'int'
 
             if limit_short_solint == 'int':
-                limit_short_solint = '0'
                 combtime = 'scan'
-                short_solint = float(limit_short_solint)
-                new_gain_solint1 = str(short_solint) + 's'
+                # PIPE-2686: short_solint is being compared with longslit for QA scoring downstream;
+                # try to use float when possible.
+                short_solint = integration_time
+                new_gain_solint1 = 'int'
             elif limit_short_solint == 'inf':
                 combtime = ''
-                short_solint = limit_short_solint
-                new_gain_solint1 = short_solint
-                LOG.warning("   Note that since 'inf' was specified then combine='' for gaincal.")
-            # This comparison needed to change for Python 3
-            elif str(limit_short_solint) <= short_solint_str:
-                short_solint = float(limit_short_solint)
-                new_gain_solint1 = str(short_solint) + 's'
+                short_solint = 'inf'
+                new_gain_solint1 = longsolint
+                LOG.warning("limit_short_solint is 'inf', so combine is set to '' and solint to long solint (%.2fs) in gaincal.", longsolint)
+            elif limit_short_solint < integration_time:
                 combtime = 'scan'
-        # PIPE-460.  Use solint='int' when the minimum solution interval corresponds to one integration
-        # PIPE-696.  Need to compare short solint with int time and limit the precision.
-        if short_solint == float("{:.6f}".format(m.get_vla_max_integration_time())):
-            new_gain_solint1 = 'int'
-            LOG.info(
-                'The short solution interval used is: {!s} ({!s}).'.format(new_gain_solint1, str(short_solint) + 's'))
+                short_solint = integration_time
+                new_gain_solint1 = 'int'
+                LOG.warning("limit_short_solint is shorter than a single integration time (%.2fs). Setting solint='int'.", integration_time)
+            elif limit_short_solint > longsolint:
+                combtime = 'scan'
+                short_solint = longsolint
+                new_gain_solint1 = longsolint
+                LOG.warning("limit_short_solint larger than long solint (%.2fs), setting short solint equal to long solint.", longsolint)
+            else:
+                short_solint = limit_short_solint
+                if short_solint == integration_time:
+                    new_gain_solint1 = 'int'
+                else:
+                    new_gain_solint1 = short_solint
+                combtime = 'scan'
 
-            testgains_result = self._do_gtype_testgains(calMs, tablebase + table_suffix[4], solint=new_gain_solint1,
-                                                        context=self.inputs.context, combtime=combtime,
-                                                        refAnt=refAnt, spw=','.join(spwlist))
+            # PIPE-460.  Use solint='int' when the minimum solution interval corresponds to one integration
+            # PIPE-696.  Need to compare short solint with int time and limit the precision.
+            if short_solint == float(f"{integration_time:.6f}"):
+                new_gain_solint1 = "int"
+                LOG.info(
+                    'The short solution interval used is: %r %.2fs.', new_gain_solint1, short_solint)
+            self._do_gtype_testgains(calMs, tablebase + table_suffix[4], solint=new_gain_solint1,
+                                     context=self.inputs.context, combtime=combtime,
+                                     refAnt=refAnt, spw=','.join(spwlist))
             bpdgain_touse = tablebase + table_suffix[4]
 
         LOG.info("Using short solint = " + str(new_gain_solint1))
+        if short_solint not in ('int', 'inf') and abs(longsolint - short_solint) <= soltime:
+            LOG.warning('Short solint = long solint +/- integration time of {}s'.format(integration_time))
 
-        if abs(longsolint - short_solint) <= soltime:
-            LOG.warning('Short solint = long solint +/- integration time of {}s'.format(soltime))
-
-        return longsolint, gain_solint2, shortsol2, short_solint, new_gain_solint1, self.inputs.vis, bpdgain_touse
+        return longsolint, gain_solint2, shortsol2, short_solint, new_gain_solint1, self.inputs.vis, bpdgain_touse,integration_time
 
     def _do_split(self, calMs: str):
         """Execute CASA task split on the calibrator scan select string
@@ -413,13 +468,13 @@ class Solint(basetask.StandardTaskTemplate):
 
         return self._executor.execute(job)
 
-    def _do_determine_solint(self, calMs: str, spw: str = ''):
+    def _do_determine_solint(self, calMs: str, spw: str = '',  band: str | None = None):
         """Code to determine solution interval
 
         Args:
             calMs(str):  split off calibrators MS
             spw(str):  spw selection  '2,3,4', etc.
-
+            band(str): string band, 'L'  'U'  'X' etc.
         Returns:
             longsolint
             gain_solint2
@@ -431,7 +486,7 @@ class Solint(basetask.StandardTaskTemplate):
         old_field = ''
 
         with casa_tools.MSReader(calMs) as ms:
-            scan_summary = ms.getscansummary()    
+            scan_summary = ms.getscansummary()
 
             m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
 
@@ -474,7 +529,7 @@ class Solint(basetask.StandardTaskTemplate):
                         old_field = new_field
 
                     except KeyError:
-                        LOG.warning("WARNING: scan "+str(ii)+" is completely flagged and missing from " + calMs)
+                        LOG.warning("Scan "+str(ii)+" is completely flagged and missing from " + calMs)
 
         orig_durations = np.array(durations)
 
@@ -487,23 +542,34 @@ class Solint(basetask.StandardTaskTemplate):
         if not durations.tolist():
             LOG.info("No statistical outliers in list of determined durations.")
             durations = orig_durations
-
         nsearch = 5
-        integration_time = m.get_vla_max_integration_time()
+        integration_time = m.get_integration_time_stats(stat_type="max", band=band)
         integration_time = np.around(integration_time, decimals=2)
         search_results = np.zeros(nsearch)
-        longest_scan = np.round(np.max(orig_durations))
-        zscore_solint = np.max(durations)
-        solint_integer_integrations = solint_rounded_to_integer_integrations(zscore_solint * 1.01, integration_time)
-        if solint_integer_integrations:
+        if len(orig_durations) != 0:
+            longest_scan = np.round(np.max(orig_durations))
+        else:
+            longest_scan = None
+        if len(durations) != 0:
+            zscore_solint = np.max(durations)
+            solint_integer_integrations = solint_rounded_to_integer_integrations(zscore_solint * 1.01, integration_time)
+        else:
+            zscore_solint = None
+            solint_integer_integrations = None
+        if solint_integer_integrations and longest_scan is not None:
             for i in range(nsearch):
                 # print('testing solint', solint_integer_integrations + i * integration_time)
                 search_results[i] = longest_scan / (solint_integer_integrations + i * integration_time) - int(longest_scan / (solint_integer_integrations + i * integration_time))
             longsolint = solint_integer_integrations + np.argmax(search_results) * integration_time
         else:
-            longsolint = (np.max(durations)) * 1.01
-            LOG.warning("Using alternate long solint calculation.")
-
+            if durations:
+                longsolint = (np.max(durations)) * 1.01
+                LOG.warning("Using alternate long solint calculation.")
+            else:
+                longsolint = integration_time
+                LOG.warning("No determined durations found; setting 'longsolint' to integration time.")
+        # PIPE-2686: convert np.float64 to native float
+        longsolint = float(longsolint)
         gain_solint2 = str(longsolint) + 's'
 
         return longsolint, gain_solint2
@@ -533,7 +599,7 @@ class Solint(basetask.StandardTaskTemplate):
         scanlist = [int(scan) for scan in calibrator_scan_select_string.split(',')]
         scanids_perband = ','.join([str(scan.id) for scan in m.get_scans(scan_id=scanlist, spw=spw)])
 
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         task_args = {'vis': calMs,
                      'caltable': caltable,
@@ -571,15 +637,18 @@ class Solint(basetask.StandardTaskTemplate):
                 fieldidlist.append(str(fieldobj.id))
 
         for fieldidstring in fieldidlist:
-            fieldid = int(fieldidstring)
-            uvrangestring = uvrange(self.setjy_results, fieldid)
-            task_args['field'] = fieldidstring
-            task_args['uvrange'] = uvrangestring
-            if os.path.exists(caltable):
-                task_args['append'] = True
+            # PIPE-1729: passing fieldidstring instead of field id to avoid
+            # warning while concatenating string and int
+            taql = (f"FIELD_ID == {fieldidstring}")
+            if utils.get_row_count(calMs, taql) != 0:
+                uvrangestring = uvrange(self.setjy_results, fieldidstring)
+                task_args['field'] = fieldidstring
+                task_args['uvrange'] = uvrangestring
+                if os.path.exists(caltable):
+                    task_args['append'] = True
 
-            job = casa_tasks.gaincal(**task_args)
+                job = casa_tasks.gaincal(**task_args)
 
-            self._executor.execute(job)
+                self._executor.execute(job)
 
         return True

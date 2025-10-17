@@ -12,7 +12,7 @@ vis = [ '<MS name>' ]
 context = pipeline.Pipeline().context
 inputs = pipeline.tasks.ImportData.Inputs(context, vis=vis)
 task = pipeline.tasks.ImportData(inputs)
-results = task.execute(dry_run=False)
+results = task.execute()
 results.accept(context)
 
 # Run some other pipeline tasks, e.g flagging, calibration,
@@ -25,39 +25,38 @@ results.accept(context)
 inputs = pipeline.tasks.exportdata.Exportdata.Inputs(context,
       vis, output_dir, sessions, pprfile, products_dir)
 task = pipeline.tasks.exportdata.ExportData(inputs)
-  results = task.execute(dry_run = True)
+  results = task.execute()
 """
+from __future__ import annotations
+
 import collections
 import copy
+import json
 import fnmatch
+import glob
 import io
 import os
 import shutil
 import sys
 import tarfile
 import uuid
+from typing import TYPE_CHECKING
 
 import astropy.io.fits as apfits
 
-from pipeline.infrastructure.launcher import Context
-from pipeline.h.tasks.exportdata.aqua import AquaXmlGenerator
-from pipeline.h.tasks.exportdata.aqua import export_to_disk as export_aqua_to_disk
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.callibrary as callibrary
-import pipeline.infrastructure.imagelibrary as imagelibrary
-import pipeline.infrastructure.vdp as vdp
-from pipeline import environment
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import task_registry
-from pipeline.infrastructure import utils
-from pipeline.infrastructure.filenamer import fitsname, PipelineProductNameBuilder
 from pipeline.domain import DataType
-from ..common import manifest
+from pipeline.h.tasks.common import manifest
+from pipeline.h.tasks.exportdata.aqua import export_to_disk as export_aqua_to_disk
+from pipeline import environment, infrastructure
+from pipeline.infrastructure import basetask, callibrary, casa_tasks, casa_tools, imagelibrary, task_registry, utils, vdp
+from pipeline.infrastructure.filenamer import fitsname, PipelineProductNameBuilder
+
+if TYPE_CHECKING:
+    from pipeline.h.tasks.exportdata.aqua import AquaXmlGenerator
+    from pipeline.infrastructure.launcher import Context
 
 # the logger for this module
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 StdFileProducts = collections.namedtuple('StdFileProducts', 'ppr_file weblog_file casa_commands_file casa_pipescript casa_restore_script')
 
@@ -115,6 +114,7 @@ class ExportDataInputs(vdp.StandardInputs):
 
     processing_data_type = [DataType.RAW, DataType.REGCAL_CONTLINE_ALL,
                             DataType.REGCAL_CONTLINE_SCIENCE, DataType.SELFCAL_CONTLINE_SCIENCE,
+                            DataType.REGCAL_CONT_SCIENCE, DataType.SELFCAL_CONT_SCIENCE,
                             DataType.REGCAL_LINE_SCIENCE, DataType.SELFCAL_LINE_SCIENCE]
 
     calimages = vdp.VisDependentProperty(default=[])
@@ -124,6 +124,7 @@ class ExportDataInputs(vdp.StandardInputs):
     session = vdp.VisDependentProperty(default=[])
     targetimages = vdp.VisDependentProperty(default=[])
     imaging_products_only = vdp.VisDependentProperty(default=False)
+    tarms = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty
     def products_dir(self):
@@ -136,37 +137,88 @@ class ExportDataInputs(vdp.StandardInputs):
     def exportcalprods(self):
         return not (self.imaging_products_only or self.exportmses)
 
-    def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None,
-                 pprfile=None, calintents=None, calimages=None, targetimages=None,
-                 products_dir=None, imaging_products_only=None):
+    # docstring and type hints: supplements h_exportdata, hsd_exportdata, hsdn_exportdata
+    def __init__(
+            self,
+            context: Context,
+            output_dir: str = None,
+            session: list[str] = None,
+            vis: list[str] = None,
+            exportmses: bool = None,
+            tarms: bool = None,
+            pprfile: list[str] = None,
+            calintents: str = None,
+            calimages: list[str] = None,
+            targetimages: list[str] = None,
+            products_dir: str = None,
+            imaging_products_only: bool = None,
+            ):
         """
         Initialise the Inputs, initialising any property values to those given
         here.
 
-        :param context: the pipeline Context state object
-        :type context: :class:`~pipeline.infrastructure.launcher.Context`
-        :param output_dir: the working directory for pipeline data
-        :type output_dir: string
-        :param session: the  sessions for which data are to be exported
-        :type session: a string or list of strings
-        :param vis: the measurement set(s) for which products are to be exported
-        :type vis: a string or list of strings
-        :param pprfile: the pipeline processing request
-        :type pprfile: a string
-        :param calimages: the list of calibrator images to be saved
-        :type calimages: a list
-        :param targetimages: the list of target images to be saved
-        :type targetimages: a list
-        :param products_dir: the data products directory for pipeline data
-        :type products_dir: string
+        Args:
+            context: the pipeline Context state object
+
+            output_dir: the working directory for pipeline data
+
+            session: List of sessions one per visibility/autocorrelation file.
+                Defaults to a single virtual session containing all the
+                visibility files in vis.
+
+                Example: session=['session1', 'session2']
+
+            vis: List of visibility/autocorrelation data files for which
+                flagging and calibration information will be exported.
+                Defaults to the list maintained in the pipeline context.
+
+                Example: vis=['X227.ms', 'X228.ms']
+
+            exportmses: Export MeasurementSets defined in vis instead of flags,
+                caltables, and calibration instructions.
+
+                Example: exportmses = True
+
+                Default: None (equivalent to False)
+
+            tarms: Tar final MeasurementSets
+
+            pprfile: Name of the pipeline processing request to be exported.
+                Defaults to a file matching the template 'PPR_*.xml'.
+
+                Example: pprfile=['PPR_GRB021004.xml']
+
+            calintents: List of calibrator image types to be exported.
+                Defaults to all standard calibrator intents 'BANDPASS', 'PHASE', 'FLUX'
+
+                Example: calintents='PHASE'
+
+            calimages: List of calibrator images to be exported.
+                Defaults to all calibrator images recorded in the pipeline context.
+
+                Example: calimages=['3C454.3.bandpass', '3C279.phase']
+
+            targetimages: List of science target images to be exported.
+                Defaults to all science target images recorded in the pipeline context.
+
+                Example: targetimages=['NGC3256.band3', 'NGC3256.band6'],
+                targetimages=['r_aqr.CM02.spw5.line0.XXYY.sd.im', 'r_aqr.CM02.spw5.XXYY.sd.cont.im']
+
+            products_dir: Name of the data products subdirectory.
+                Defaults to './'.
+
+                Example: products_dir='../products'
+
+            imaging_products_only: Export the science target image products only.
         """
-        super(ExportDataInputs, self).__init__()
+        super().__init__()
         self.context = context
         self.vis = vis
         self.output_dir = output_dir
 
         self.session = session
         self.exportmses = exportmses
+        self.tarms = tarms
         self.pprfile = pprfile
         self.calintents = calintents
         self.calimages = calimages
@@ -181,7 +233,7 @@ class ExportDataResults(basetask.Results):
         """
         Initialise the results object with the given list of JobRequests.
         """
-        super(ExportDataResults, self).__init__()
+        super().__init__()
 
         if sessiondict is None:
             sessiondict = collections.OrderedDict()
@@ -293,9 +345,13 @@ class ExportData(basetask.StandardTaskTemplate):
         #    apply instructions
         msvisdict = collections.OrderedDict()
         calvisdict = collections.OrderedDict()
+
+        _, exportmses_session_names, exportmses_session_vislists, exportmses_vislist = self._make_lists(
+            inputs.context, inputs.session, None, imaging_only_mses=None)
+
         if not inputs.imaging_products_only:
             if inputs.exportmses:
-                msvisdict = self._do_ms_products(inputs.context, vislist, inputs.products_dir)
+                msvisdict = self._do_ms_products(inputs.context, exportmses_vislist, inputs.products_dir)
             if inputs.exportcalprods:
                 calvisdict = self._do_standard_ms_products(inputs.context, vislist, inputs.products_dir)
         result.msvisdict = msvisdict
@@ -310,9 +366,9 @@ class ExportData(basetask.StandardTaskTemplate):
                                                                  inputs.products_dir)
             elif inputs.exportmses:
                 # still needs sessiondict
-                for i in range(len(session_names)):
-                    sessiondict[session_names[i]] = \
-                    ([os.path.basename(visfile) for visfile in session_vislists[i]], )
+                for i in range(len(exportmses_session_names)):
+                    sessiondict[exportmses_session_names[i]] = \
+                        ([os.path.basename(visfile) for visfile in exportmses_session_vislists[i]], )
         result.sessiondict = sessiondict
 
         # Export calibrator images to FITS
@@ -326,7 +382,6 @@ class ExportData(basetask.StandardTaskTemplate):
         result.targetimages=(targetimages_list, targetimages_fitslist)
 
         # Export the pipeline manifest file
-        #
         pipemanifest = self._make_pipe_manifest(inputs.context, oussid, stdfproducts, sessiondict, msvisdict,
                                                 inputs.exportmses, calvisdict, inputs.exportcalprods,
                                                 [os.path.basename(image) for image in calimages_fitslist], calimages_fitskeywords,
@@ -366,32 +421,59 @@ class ExportData(basetask.StandardTaskTemplate):
         return recipe_name
 
     def _has_imaging_data(self, context, vis):
-        """
-        Check if the given vis contains any imaging data.
-        """
-
-        imaging_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE]
+        """Check if the given vis contains any imaging data."""
+        imaging_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.SELFCAL_CONT_SCIENCE,
+                             DataType.REGCAL_CONT_SCIENCE, DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE]
         ms_object = context.observing_run.get_ms(name=vis)
         return any(ms_object.get_data_column(datatype) for datatype in imaging_datatypes)
 
-    def _make_lists(self, context, session, vis, imaging_only_mses=False):
+    def _make_lists(
+            self,
+            context: Context,
+            session: list[str],
+            vis: list[str] | str | None = None,
+            imaging_only_mses: bool | None = False,
+            ) -> tuple[list[str], list[str], list[list[str]], list[str]]:
         """
-        Create the vis and sessions lists
-        """
+        Create the vis and sessions lists.
 
-        # Force inputs.vis to be a list.
+        This method processes input parameters to generate lists of sessions, session names,
+        visibility files, and measurement sets based on the provided context and flags.
+
+        Args:
+            context (Context): The Pipeline context object.
+            session (List[str]): Session names
+            vis (Optional[Union[List[str], str]]): A single visibility file name, a list of such names,
+                or None. If None, the method uses all measurement sets registered in the context.
+            imaging_only_mses (Optional[bool] = False): A flag to determine how to filter measurement
+                sets based on imaging data:
+                True: Includes only measurement sets with imaging data.
+                False: Includes only those without imaging data.
+                None: Disables filtering, including all measurement sets.
+
+        Returns:
+            session_list: A list of session identifiers.
+            session_names: A list of names corresponding to each session in session_list.
+            session_vislists: For each session, a list of visibility files associated
+                with that session.
+            vislist: The final filtered list of visibility files.
+        """
+        # process the 'vis' parameter and ensure vislist is a list
         vislist = vis
+        if vislist is None:
+            vislist = [ms.name for ms in context.observing_run.measurement_sets]
         if isinstance(vislist, str):
             vislist = [vislist]
-        if imaging_only_mses:
-            vislist = [vis for vis in vislist if self._has_imaging_data(context, vis)]
-        else:
-            vislist = [vis for vis in vislist if not self._has_imaging_data(context, vis)]
 
-        # Get the session list and the visibility files associated with
-        # each session.
-        session_list, session_names, session_vislists= self._get_sessions( \
-            context, session, vislist)
+        # filter based on imaging_only_mses condition
+        if isinstance(imaging_only_mses, bool):
+            if imaging_only_mses:
+                vislist = [vis for vis in vislist if self._has_imaging_data(context, vis)]
+            else:
+                vislist = [vis for vis in vislist if not self._has_imaging_data(context, vis)]
+
+        # Get the session list and the visibility files associated with each session.
+        session_list, session_names, session_vislists = self._get_sessions(context, session, vislist)
 
         return session_list, session_names, session_vislists, vislist
 
@@ -468,7 +550,7 @@ class ExportData(basetask.StandardTaskTemplate):
         # and tar them up.
         flag_version_list = []
         for visfile in vislist:
-            flag_version_file = self._export_final_flagversion(visfile, flag_version_name, products_dir)
+            flag_version_file = self._export_final_flagversion(context, visfile, flag_version_name, products_dir)
             flag_version_list.append(flag_version_file)
 
         # Loop over the measurements sets in the working directory, and
@@ -514,11 +596,18 @@ class ExportData(basetask.StandardTaskTemplate):
 
         return sessiondict
 
-    def _do_if_auxiliary_products(self, oussid, output_dir, products_dir, vislist, imaging_products_only):
+    def _do_if_auxiliary_products(
+            self,
+            oussid: str,
+            output_dir: str,
+            products_dir: str,
+            vislist: list[str],
+            imaging_products_only: bool,
+            pipeline_stats_file: str = None,
+            ) -> str | None:
         """
         Generate the auxiliary products
         """
-
         if imaging_products_only:
             contfile_name = 'cont.dat'
             fluxfile_name = 'Undefined'
@@ -529,12 +618,16 @@ class ExportData(basetask.StandardTaskTemplate):
             contfile_name = 'cont.dat'
         empty = True
 
+        # PIPE-51: Look for per-MS antennapos.json files
+        antpos_files = glob.glob(os.path.join(output_dir, "*.antennapos.json"))
+
         # Get the flux, antenna position, and continuum subtraction
         # files and test to see if at least one of them exists
         flux_file = os.path.join(output_dir, fluxfile_name)
         antpos_file = os.path.join(output_dir, antposfile_name)
         cont_file = os.path.join(output_dir, contfile_name)
-        if os.path.exists(flux_file) or os.path.exists(antpos_file) or os.path.exists(cont_file):
+        if any([os.path.exists(flux_file), os.path.exists(antpos_file),
+                os.path.exists(cont_file), antpos_files]):
             empty = False
 
         # Export the general and target source template flagging files
@@ -572,6 +665,10 @@ class ExportData(basetask.StandardTaskTemplate):
         if selfcal_resources_list:
             empty = False
 
+        # PIPE-2094: check for the pipeline stats file
+        if pipeline_stats_file and os.path.exists(pipeline_stats_file):
+            empty = False
+
         if empty:
             return None
 
@@ -589,12 +686,17 @@ class ExportData(basetask.StandardTaskTemplate):
             else:
                 LOG.info('Auxiliary data product flux.csv does not exist')
 
-            # Save antenna positions file
-            if os.path.exists(antpos_file):
-                tar.add(antpos_file, arcname=os.path.basename(antpos_file))
-                LOG.info('Saving auxiliary data product %s in %s', os.path.basename(antpos_file), tarfilename)
+            # Save antenna positions file; check for both per-MS files and default file types
+            if antpos_files:
+                for f in antpos_files:
+                    tar.add(f, arcname=os.path.basename(f))
+                    LOG.info('Saving auxiliary data product %s in %s', os.path.basename(f), tarfilename)
             else:
-                LOG.info('Auxiliary data product antennapos.csv does not exist')
+                if os.path.exists(antpos_file):
+                    tar.add(antpos_file, arcname=os.path.basename(antpos_file))
+                    LOG.info('Saving auxiliary data product %s in %s', os.path.basename(antpos_file), tarfilename)
+                else:
+                    LOG.info('Auxiliary data product antennapos file(s) does not exist')
 
             # Save continuum regions file
             if os.path.exists(cont_file):
@@ -625,6 +727,12 @@ class ExportData(basetask.StandardTaskTemplate):
                     tar.add(selfcal_resource, arcname=selfcal_resource)
                     LOG.info('Saving auxiliary data product %s in %s', selfcal_resource, tarfilename)
 
+            # PIPE-2094: Save pipeline statistics file
+            if pipeline_stats_file and os.path.exists(pipeline_stats_file):
+                tar.add(pipeline_stats_file, arcname=pipeline_stats_file)
+                LOG.info('Saving pipeline statistics file %s in %s', pipeline_stats_file, tarfilename)
+            else:
+                LOG.info("Pipeline statistics file does not exist.")
             tar.close()
 
         return tarfilename
@@ -662,13 +770,13 @@ class ExportData(basetask.StandardTaskTemplate):
         pipemanifest.add_environment_info(ouss)
 
         if stdfproducts.ppr_file:
-            pipemanifest.add_pprfile(ouss, os.path.basename(stdfproducts.ppr_file), oussid)
+            pipemanifest.add_pprfile(ouss, os.path.basename(stdfproducts.ppr_file), oussid, level='member', package=context.project_structure.recipe_name)
 
         # Add the flagging and calibration products
         for session_name in sessiondict:
             session = pipemanifest.set_session(ouss, session_name)
             if exportcalprods:
-                pipemanifest.add_caltables(session, sessiondict[session_name][1], session_name)
+                pipemanifest.add_caltables(session, sessiondict[session_name][1], session_name, level='member', package=context.project_structure.recipe_name)
             for vis_name in sessiondict[session_name][0]:
                 immatchlist = [imname for imname in per_ms_calimages if imname.startswith(vis_name)]
                 (ms_file, flags_file, calapply_file) = (None, None, None)
@@ -680,17 +788,17 @@ class ExportData(basetask.StandardTaskTemplate):
                                              'calibrator')
 
         # Add a tar file of the web log
-        pipemanifest.add_weblog(ouss, os.path.basename(stdfproducts.weblog_file), oussid)
+        pipemanifest.add_weblog(ouss, os.path.basename(stdfproducts.weblog_file), oussid, level='member', package=context.project_structure.recipe_name)
 
         # Add the processing log independently of the web log
-        pipemanifest.add_casa_cmdlog(ouss, os.path.basename(stdfproducts.casa_commands_file), oussid)
+        pipemanifest.add_casa_cmdlog(ouss, os.path.basename(stdfproducts.casa_commands_file), oussid, level='member', package=context.project_structure.recipe_name)
 
         # Add the processing script independently of the web log
-        pipemanifest.add_pipescript(ouss, os.path.basename(stdfproducts.casa_pipescript), oussid)
+        pipemanifest.add_pipescript(ouss, os.path.basename(stdfproducts.casa_pipescript), oussid, level='member', package=context.project_structure.recipe_name)
 
         # Add the restore script independently of the web log
         if stdfproducts.casa_restore_script != 'Undefined':
-            pipemanifest.add_restorescript(ouss, os.path.basename(stdfproducts.casa_restore_script), oussid)
+            pipemanifest.add_restorescript(ouss, os.path.basename(stdfproducts.casa_restore_script), oussid, level='member', package=context.project_structure.recipe_name)
 
         # Add the calibrator images
         pipemanifest.add_images(ouss, per_ous_calimages, 'calibrator', per_ous_calimages_keywords)
@@ -739,29 +847,51 @@ class ExportData(basetask.StandardTaskTemplate):
                 outfile = file
             pprmatchesout.append(outfile)
             LOG.info('Copying pipeline processing file %s to %s', os.path.basename(file), os.path.basename(outfile))
-            if not self._executor._dry_run:
-                shutil.copy(file, outfile)
+            shutil.copy(file, outfile)
 
         return pprmatchesout
 
-    def _export_final_ms(self, context, vis, products_dir):
+    def _export_final_ms(self, context: object, vis: str, products_dir: str) -> str | None:
+        """Export a CASA measurement set (MS) to the products directory.
+
+        If `self.inputs.tarms` is True, the MS will be saved as a compressed tarball (`.tgz`) in the products directory.
+        Otherwise, the MS will be copied directly to the products directory as a directory structure.
+
+        Args:
+            context: The current pipeline context object (not used directly in this method).
+            vis: The path to the measurement set to be exported.
+            products_dir: The directory where the final MS will be stored.
+
+        Returns:
+            The name of the exported file (compressed tarball or directory), or `None` if an error occurs.
         """
-        Save the ms to a compressed tarfile in products.
-        """
-        # Define the name of the output tarfile
+        # Define the name of the output tarfile or directory
         visname = os.path.basename(vis)
-        tarfilename = visname + '.tgz'
-        LOG.info('Storing final ms %s in %s', visname, tarfilename)
 
-        # Create the tar file
-        if self._executor._dry_run:
-            return tarfilename
+        if self.inputs.tarms:
+            # Export as tarball
+            tarfilename = visname + '.tgz'
+            LOG.info('Storing final MS %s in %s', visname, tarfilename)
 
-        tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
-        tar.add(visname)
-        tar.close()
-
-        return tarfilename
+            # Create the tar file
+            tar_path = os.path.join(products_dir, tarfilename)
+            try:
+                with tarfile.open(tar_path, "w:gz") as tar:
+                    tar.add(visname)
+                return tarfilename
+            except Exception as e:
+                LOG.error('Failed to create tarball %s: %s', tar_path, str(e))
+                return None
+        else:
+            # Copy MS directory directly
+            target_path = os.path.join(products_dir, visname)
+            LOG.info('Copying final MS %s to %s', visname, target_path)
+            try:
+                shutil.copytree(visname, target_path)
+                return visname
+            except Exception as e:
+                LOG.error('Failed to copy MS %s: %s', target_path, str(e))
+                return None
 
     def _save_final_flagversion(self, vis, flag_version_name):
         """
@@ -769,11 +899,10 @@ class ExportData(basetask.StandardTaskTemplate):
         """
 
         LOG.info('Saving final flags for %s in flag version %s', os.path.basename(vis), flag_version_name)
-        if not self._executor._dry_run:
-            task = casa_tasks.flagmanager(vis=vis, mode='save', versionname=flag_version_name)
-            self._executor.execute(task)
+        task = casa_tasks.flagmanager(vis=vis, mode='save', versionname=flag_version_name, comment="Final pipeline flags")
+        self._executor.execute(task)
 
-    def _export_final_flagversion(self, vis, flag_version_name, products_dir):
+    def _export_final_flagversion(self, context, vis, flag_version_name, products_dir):
         """
         Save the final flags version to a compressed tarfile in products.
         """
@@ -782,24 +911,43 @@ class ExportData(basetask.StandardTaskTemplate):
         tarfilename = visname + '.flagversions.tgz'
         LOG.info('Storing final flags for %s in %s', visname, tarfilename)
 
-        # Define the directory to be saved, and where to store in tar archive.
-        flagsname = os.path.join(vis + '.flagversions', 'flags.' + flag_version_name)
-        flagsarcname = os.path.join(visname + '.flagversions', 'flags.' + flag_version_name)
-        LOG.info('Saving flag version %s', flag_version_name)
-
         # Define the versions list file to be saved
         flag_version_list = os.path.join(visname + '.flagversions', 'FLAG_VERSION_LIST')
-        ti = tarfile.TarInfo(flag_version_list)
-        line = "{} : Final pipeline flags\n".format(flag_version_name).encode(sys.stdout.encoding)
-        ti.size = len(line)
+        tar_info = tarfile.TarInfo(flag_version_list)
         LOG.info('Saving flag version list')
 
-        # Create the tar file
-        if not self._executor._dry_run:
-            tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
+        # retrieve all flagversions saved
+        task = casa_tasks.flagmanager(vis=visname, mode='list')
+        flag_dict = self._executor.execute(task)
+        # remove MS key entry if it exists; MS key does not conform with other entries
+        # more information about flagmanager return dictionary here:
+        # https://casadocs.readthedocs.io/en/stable/api/tt/casatasks.flagging.flagmanager.html#mode
+        flag_dict.pop('MS', None)
+        flag_dict = {x['name']:x['comment'] for x in flag_dict.values()}
+
+        # Define the versions list file to be saved
+        # Define the directory to be saved, and where to store in tar archive.
+        if not isinstance(flag_version_name, list):
+            flag_version_name = [flag_version_name]
+        # PIPE-933: Add flag version 'after_deterministic_flagging' to tarfile
+        if "after_deterministic_flagging" in flag_dict and "after_deterministic_flagging" not in flag_version_name:
+            flag_version_name.append("after_deterministic_flagging")
+
+        # Create the tar file and populate it
+        tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
+
+        line = ""
+        for f in flag_version_name:
+            LOG.info('Saving flag version %s', f)
+            flagsname = os.path.join(vis + '.flagversions', 'flags.' + f)
+            flagsarcname = os.path.join(visname + '.flagversions', 'flags.' + f)
+            line += "{} : {}\n".format(f, flag_dict[f])
             tar.add(flagsname, arcname=flagsarcname)
-            tar.addfile(ti, io.BytesIO(line))
-            tar.close()
+
+        line = line.encode(sys.stdout.encoding)
+        tar_info.size = len(line)
+        tar.addfile(tar_info, io.BytesIO(line))
+        tar.close()
 
         return tarfilename
 
@@ -810,9 +958,6 @@ class ExportData(basetask.StandardTaskTemplate):
         """
         applyfile_name = self.NameBuilder.calapply_list(vis=vis, aux_product=imaging)
         LOG.info('Storing calibration apply list for %s in  %s', os.path.basename(vis), applyfile_name)
-
-        if self._executor._dry_run:
-            return applyfile_name
 
         try:
             calto = callibrary.CalTo(vis=vis)
@@ -906,9 +1051,6 @@ class ExportData(basetask.StandardTaskTemplate):
         LOG.info('Saving final caltables for %s in %s', session, tarfilename)
 
         # Create the tar file
-        if self._executor._dry_run:
-            return tarfilename
-
         caltables = set()
 
         for visfile in vislist:
@@ -936,7 +1078,7 @@ class ExportData(basetask.StandardTaskTemplate):
         """
         Save the processing web log to a tarfile
         """
-        return utils.export_weblog_as_tar(context, products_dir, self.NameBuilder, self._executor._dry_run)
+        return utils.export_weblog_as_tar(context, products_dir, self.NameBuilder)
 
     def _export_casa_commands_log(self, context, casalog_name, products_dir, oussid):
         """
@@ -951,8 +1093,7 @@ class ExportData(basetask.StandardTaskTemplate):
                                                         output_dir=products_dir)
 
         LOG.info('Copying casa commands log %s to %s', casalog_file, out_casalog_file)
-        if not self._executor._dry_run:
-            shutil.copy(casalog_file, out_casalog_file)
+        shutil.copy(casalog_file, out_casalog_file)
 
         return os.path.basename(out_casalog_file)
 
@@ -995,8 +1136,7 @@ finally:
             casa_restore_file.write(template)
 
         LOG.info('Copying casa restore script %s to %s', script_file, out_script_file)
-        if not self._executor._dry_run:
-            shutil.copy(script_file, out_script_file)
+        shutil.copy(script_file, out_script_file)
 
         return os.path.basename(out_script_file)
 
@@ -1013,8 +1153,7 @@ finally:
                                                            output_dir=products_dir)
 
         LOG.info('Copying casa script file %s to %s', casascript_file, out_casascript_file)
-        if not self._executor._dry_run:
-            shutil.copy(casascript_file, out_casascript_file)
+        shutil.copy(casascript_file, out_casascript_file)
 
         return os.path.basename(out_casascript_file)
 
@@ -1026,8 +1165,10 @@ finally:
                                                       ousstatus_entity_id=oussid,
                                                       output_dir=products_dir)
         LOG.info('Creating manifest file %s', out_manifest_file)
-        if not self._executor._dry_run:
-            pipemanifest.write(out_manifest_file)
+        # We can add the manifest element only now after the manifest name is known
+        ouss = pipemanifest.get_ous()
+        pipemanifest.add_manifest(ouss, os.path.basename(out_manifest_file), ous_name=oussid, level='member', package=self.inputs.context.project_structure.recipe_name)
+        pipemanifest.write(out_manifest_file)
 
         return out_manifest_file
 
@@ -1046,100 +1187,144 @@ finally:
                     intents = ['PHASE', 'BANDPASS', 'CHECK', 'AMPLITUDE', 'POLARIZATION']
                 else:
                     intents = calintents.split(',')
-                cleanlist = context.calimlist.get_imlist()
+                original_cleanlist = context.calimlist.get_imlist()
             else:
                 LOG.info('Exporting target source images')
                 intents = ['TARGET']
-                cleanlist = context.sciimlist.get_imlist()
+                original_cleanlist = context.sciimlist.get_imlist()
 
-            for image_number, image in enumerate(cleanlist):
-                # We need to store the image
-                cleanlist[image_number]['fitsfiles'] = []
-                cleanlist[image_number]['auxfitsfiles'] = []
-                version = image.get('version', 1)
-                # Image name probably includes path
-                if image['sourcetype'] in intents:
-                    if image['multiterm']:
-                        for nt in range(image['multiterm']):
-                            imagename = image['imagename'].replace('.image', '.image.tt%d' % (nt))
-                            images_list.append((imagename, version))
-                            cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
-                        if (image['imagename'].find('.pbcor') != -1):
-                            imagename = image['imagename'].replace('.image.pbcor', '.alpha')
-                            images_list.append((imagename, version))
-                            cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
-                            imagename = '%s.error' % (image['imagename'].replace('.image.pbcor', '.alpha'))
-                            images_list.append((imagename, version))
-                            cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
-                        else:
-                            imagename = image['imagename'].replace('.image', '.alpha')
-                            images_list.append((imagename, version))
-                            cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
-                            imagename = '%s.error' % (image['imagename'].replace('.image', '.alpha'))
-                            images_list.append((imagename, version))
-                            cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
-                    elif (image['imagename'].find('image.sd') != -1): # single dish
-                        imagename = image['imagename']
-                        images_list.append((imagename, version))
-                        cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
-                        imagename = image['imagename'].replace('image.sd', 'image.sd.weight')
-                        images_list.append((imagename, version))
-                        cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
-                    else:
-                        imagename = image['imagename']
-                        images_list.append((imagename, version))
-                        cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
+            # Walk through image list in reverse order to keep only the latest products
+            # based on the key tuple (field, intent, spw, specmode, stokes, version).
+            # If the key already exists, skip any previous products. In addition, skip
+            # any target Stokes I products if the corresponding Stokes IQUV product also
+            # exists (PIPE-2465).
+            cleanlist_dict = {}
+            product_keys = {}
+            deleted_keys = []
+            for image in reversed(original_cleanlist):
+                # SD saves the spwlist as list of ints while IF uses a comma separated string.
+                # Since lists are not hashable, we need to convert them.
+                if type(image['spwlist']) is not str:
+                    spwlist_key = ','.join(str(spwid) for spwid in image['spwlist'])
+                else:
+                    spwlist_key = image['spwlist']
+                product_key = (image['sourcename'], image['sourcetype'], spwlist_key, image['specmode'], image['stokes'], image['datatype'], image['version'])
 
-                    # Add PBs for interferometry
-                    if (image['imagename'].find('.image') != -1) and (image['imagename'].find('.image.sd') == -1):
-                        if (image['imagename'].find('.pbcor') != -1):
-                            if (image['multiterm']):
-                                imagename = image['imagename'].replace('.image.pbcor', '.pb.tt0')
-                                images_list.append((imagename, version))
-                                cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+                # Store only Stokes IQUV if both I and IQUV exist
+                if image['sourcetype'] == 'TARGET' and image['stokes'] == 'IQUV':
+                    # Make corresponding Stokes I key
+                    product_key_stokes_i = (image['sourcename'], image['sourcetype'], spwlist_key, image['specmode'], 'I', image['datatype'], image['version'])
+
+                    # Keep key to catch arbitrary sequences of I and IQUV
+                    # images of the same data selection.
+                    deleted_keys.append(product_key_stokes_i)
+
+                    # Remove any previously added Stokes I image
+                    if product_key_stokes_i in cleanlist_dict:
+                        del cleanlist_dict[product_key_stokes_i]
+
+                if product_key not in cleanlist_dict and product_key not in deleted_keys:
+                    # We need to store the image
+                    image['fitsfiles'] = []
+                    image['auxfitsfiles'] = []
+                    image['imagename_version'] = []
+                    version = image.get('version', 1)
+                    # Image name probably includes path
+                    if image['sourcetype'] in intents:
+                        if image['multiterm']:
+                            for nt in range(image['multiterm']):
+                                imagename = image['imagename'].replace('.image', '.image.tt%d' % (nt))
+                                image['imagename_version'].append((imagename, version))
+                                image['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                            if (image['imagename'].find('.pbcor') != -1):
+                                imagename = image['imagename'].replace('.image.pbcor', '.alpha')
+                                image['imagename_version'].append((imagename, version))
+                                image['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                                imagename = '%s.error' % (image['imagename'].replace('.image.pbcor', '.alpha'))
+                                image['imagename_version'].append((imagename, version))
+                                image['fitsfiles'].append(fitsname(products_dir, imagename, version))
                             else:
-                                imagename = image['imagename'].replace('.image.pbcor', '.pb')
-                                images_list.append((imagename, version))
-                                cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+                                imagename = image['imagename'].replace('.image', '.alpha')
+                                image['imagename_version'].append((imagename, version))
+                                image['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                                imagename = '%s.error' % (image['imagename'].replace('.image', '.alpha'))
+                                image['imagename_version'].append((imagename, version))
+                                image['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                        elif (image['imagename'].find('image.sd') != -1): # single dish
+                            imagename = image['imagename']
+                            image['imagename_version'].append((imagename, version))
+                            image['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                            imagename = image['imagename'].replace('image.sd', 'image.sd.weight')
+                            image['imagename_version'].append((imagename, version))
+                            image['fitsfiles'].append(fitsname(products_dir, imagename, version))
                         else:
-                            if (image['multiterm']):
-                                imagename = image['imagename'].replace('.image', '.pb.tt0')
-                                images_list.append((imagename, version))
-                                cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+                            imagename = image['imagename']
+                            image['imagename_version'].append((imagename, version))
+                            image['fitsfiles'].append(fitsname(products_dir, imagename, version))
+
+                        # Add PBs for interferometry
+                        if (image['imagename'].find('.image') != -1) and (image['imagename'].find('.image.sd') == -1):
+                            if (image['imagename'].find('.pbcor') != -1):
+                                if (image['multiterm']):
+                                    imagename = image['imagename'].replace('.image.pbcor', '.pb.tt0')
+                                    image['imagename_version'].append((imagename, version))
+                                    image['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+                                else:
+                                    imagename = image['imagename'].replace('.image.pbcor', '.pb')
+                                    image['imagename_version'].append((imagename, version))
+                                    image['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
                             else:
-                                imagename = image['imagename'].replace('.image', '.pb')
-                                images_list.append((imagename, version))
-                                cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+                                if (image['multiterm']):
+                                    imagename = image['imagename'].replace('.image', '.pb.tt0')
+                                    image['imagename_version'].append((imagename, version))
+                                    image['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+                                else:
+                                    imagename = image['imagename'].replace('.image', '.pb')
+                                    image['imagename_version'].append((imagename, version))
+                                    image['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
 
-                    # Add auto-boxing masks for interferometry
-                    if (image['imagename'].find('.image') != -1) and (image['imagename'].find('.image.sd') == -1):
-                        if (image['imagename'].find('.pbcor') != -1):
-                            imagename = image['imagename'].replace('.image.pbcor', '.mask')
-                            imagename2 = image['imagename'].replace('.image.pbcor', '.cleanmask')
-                            if os.path.exists(imagename) and not os.path.exists(imagename2):
-                                images_list.append((imagename, version))
-                                cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
-                        else:
-                            imagename = image['imagename'].replace('.image', '.mask')
-                            imagename2 = image['imagename'].replace('.image', '.cleanmask')
-                            if os.path.exists(imagename) and not os.path.exists(imagename2):
-                                images_list.append((imagename, version))
-                                cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+                        # Add auto-boxing masks for interferometry
+                        if (image['imagename'].find('.image') != -1) and (image['imagename'].find('.image.sd') == -1):
+                            if (image['imagename'].find('.pbcor') != -1):
+                                imagename = image['imagename'].replace('.image.pbcor', '.mask')
+                                imagename2 = image['imagename'].replace('.image.pbcor', '.cleanmask')
+                                # Special case of IQUV target imaging (PIPE-2464) can use a '.cleanmask' from a previous
+                                # Stokes I imaging stage in which case '.mask' and '.cleanmask' both exist.
+                                if (os.path.exists(imagename) and not os.path.exists(imagename2)) or \
+                                   (os.path.exists(imagename) and os.path.exists(imagename2) and 'IQUV' in imagename and 'IQUV' in imagename2):
+                                    image['imagename_version'].append((imagename, version))
+                                    image['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+                            else:
+                                imagename = image['imagename'].replace('.image', '.mask')
+                                imagename2 = image['imagename'].replace('.image', '.cleanmask')
+                                # PIPE-2464 case like above
+                                if (os.path.exists(imagename) and not os.path.exists(imagename2)) or \
+                                   (os.path.exists(imagename) and os.path.exists(imagename2) and 'IQUV' in imagename and 'IQUV' in imagename2):
+                                    image['imagename_version'].append((imagename, version))
+                                    image['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
 
-                    # Add POLI/POLA images for polarization calibrators
-                    if image['sourcetype'] == 'POLARIZATION':
-                        if image['imagename'].find('.pbcor') != -1:
-                            for polcal_imtype in ('POLI', 'POLA'):
-                                imagename = image['imagename'].replace('.pbcor', '').replace('IQUV', polcal_imtype)
-                                if os.path.exists(imagename):
-                                    images_list.append((imagename, version))
-                                    cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
-                        else:
-                            for polcal_imtype in ('POLI', 'POLA'):
-                                imagename = image['imagename'].replace('IQUV', polcal_imtype)
-                                if os.path.exists(imagename):
-                                    images_list.append((imagename, version))
-                                    cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                        # Add POLI/POLA images for polarization calibrators
+                        if image['sourcetype'] == 'POLARIZATION':
+                            if image['imagename'].find('.pbcor') != -1:
+                                for polcal_imtype in ('POLI', 'POLA'):
+                                    imagename = image['imagename'].replace('.pbcor', '').replace('IQUV', polcal_imtype)
+                                    if os.path.exists(imagename):
+                                        image['imagename_version'].append((imagename, version))
+                                        image['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                            else:
+                                for polcal_imtype in ('POLI', 'POLA'):
+                                    imagename = image['imagename'].replace('IQUV', polcal_imtype)
+                                    if os.path.exists(imagename):
+                                        image['imagename_version'].append((imagename, version))
+                                        image['fitsfiles'].append(fitsname(products_dir, imagename, version))
+
+                        cleanlist_dict[product_key] = image
+
+            cleanlist = []
+            # Store remaining images in original order
+            for k in reversed(cleanlist_dict):
+                cleanlist.append(cleanlist_dict[k])
+                images_list.extend(cleanlist_dict[k]['imagename_version'])
         else:
             # Assume only the root image name was given.
             cleanlib = imagelibrary.ImageLibrary()
@@ -1191,79 +1376,86 @@ finally:
                         info['virtspw'] = '{},...,{}'.format(spw_sorted[0], spw_sorted[-1])
                         img.setmiscinfo(info)
 
-            if not self._executor._dry_run:
-                task = casa_tasks.exportfits(imagename=image, fitsimage=fitsfile, velocity=False, optical=False,
-                                             bitpix=-32, minpix=0, maxpix=-1, overwrite=True, dropstokes=False,
-                                             stokeslast=True)
-                self._executor.execute(task)
-                fits_list.append(fitsfile)
-                # Fetch header keywords for manifest
-                try:
-                    ff = apfits.open(fitsfile)
-                    fits_keywords = dict()
-                    # Loop through FITS keywords.
-                    for key in ['object', 'obsra', 'obsdec', 'intent', 'specmode',
-                                'spw', 'virtspw', 'spwisvrt',
-                                'naxis1', 'ctype1', 'cunit1', 'crpix1', 'crval1', 'cdelt1',
-                                'naxis2', 'ctype2', 'cunit2', 'crpix2', 'crval2', 'cdelt2',
-                                'naxis3', 'ctype3', 'cunit3', 'crpix3', 'crval3', 'cdelt3',
-                                'naxis4', 'ctype4', 'cunit4', 'crpix4', 'crval4', 'cdelt4',
-                                'bmaj', 'bmin', 'bpa', 'robust', 'weight',
-                                'effbw', 'level', 'ctrfrq', 'obspatt', 'arrays', 'modifier']:
+            task = casa_tasks.exportfits(imagename=image, fitsimage=fitsfile, velocity=False, optical=False,
+                                         bitpix=-32, minpix=0, maxpix=-1, overwrite=True, dropstokes=False,
+                                         stokeslast=True)
+            self._executor.execute(task)
+            fits_list.append(fitsfile)
+            # Fetch header keywords for manifest
+            try:
+                ff = apfits.open(fitsfile)
+                fits_keywords = dict()
+                # Loop through FITS keywords.
+                for key in ['object', 'obsra', 'obsdec', 'intent', 'specmode',
+                            'spw', 'virtspw', 'spwisvrt',
+                            'naxis1', 'ctype1', 'cunit1', 'crpix1', 'crval1', 'cdelt1',
+                            'naxis2', 'ctype2', 'cunit2', 'crpix2', 'crval2', 'cdelt2',
+                            'naxis3', 'ctype3', 'cunit3', 'crpix3', 'crval3', 'cdelt3',
+                            'naxis4', 'ctype4', 'cunit4', 'crpix4', 'crval4', 'cdelt4',
+                            'bmaj', 'bmin', 'bpa', 'robust', 'weight',
+                            'effbw', 'level', 'ctrfrq', 'obspatt', 'arrays', 'modifier', 'session']:
+                    fits_keywords[key] = str(ff[0].header.get(key, 'N/A'))
+
+                if 'nspwnam' in ff[0].header:
+                    nspwnam = ff[0].header['nspwnam']
+                    fits_keywords['nspwnam'] = str(nspwnam)
+                    for i in range(1, nspwnam+1):
+                        key = 'spwnam{:02d}'.format(i)
                         fits_keywords[key] = str(ff[0].header.get(key, 'N/A'))
 
-                    if 'nspwnam' in ff[0].header:
-                        nspwnam = ff[0].header['nspwnam']
-                        fits_keywords['nspwnam'] = str(nspwnam)
-                        for i in range(1, nspwnam+1):
-                            key = 'spwnam{:02d}'.format(i)
-                            fits_keywords[key] = str(ff[0].header.get(key, 'N/A'))
+                if 'nsessio' in ff[0].header:
+                    nsession = ff[0].header['nsessio']
+                    session = ''
+                    for i in range(1, nsession+1):
+                        key = 'sessio{:02d}'.format(i)
+                        session += str(ff[0].header.get(key, 'N/A'))
+                    fits_keywords['session'] = session
 
-                    # Some names and/or values need to be mapped
-                    fits_keywords['imagemin'] = str(ff[0].header.get('datamin', 'N/A'))
-                    fits_keywords['imagemax'] = str(ff[0].header.get('datamax', 'N/A'))
-                    fits_keywords['rms'] = str(ff[0].header.get('datarms', 'N/A'))
-                    fits_keywords['producttype'] = str(ff[0].header.get('specmode', 'N/A'))
-                    fits_keywords['pl_datatype'] = str(ff[0].header.get('datatype', 'N/A'))
-                    fits_keywords['pol'] = str(ff[0].header.get('stokes', 'N/A'))
-                    imagetype = str(ff[0].header['type'])
-                    if imagetype == 'flux':
-                        fits_keywords['datatype'] = 'pb'
-                    elif imagetype == 'pbcorimage':
-                        fits_keywords['datatype'] = 'pbcor'
-                    elif imagetype == 'cleanmask':
-                        fits_keywords['datatype'] = 'mask'
-                    elif imagetype == 'singledish':
-                        fits_keywords['datatype'] = 'sd'
-                    else:
-                        fits_keywords['datatype'] = 'N/A'
+                # Some names and/or values need to be mapped
+                fits_keywords['imagemin'] = str(ff[0].header.get('datamin', 'N/A'))
+                fits_keywords['imagemax'] = str(ff[0].header.get('datamax', 'N/A'))
+                fits_keywords['rms'] = str(ff[0].header.get('datarms', 'N/A'))
+                fits_keywords['producttype'] = str(ff[0].header.get('specmode', 'N/A'))
+                fits_keywords['pl_datatype'] = str(ff[0].header.get('datatype', 'N/A'))
+                fits_keywords['pol'] = str(ff[0].header.get('stokes', 'N/A'))
+                imagetype = str(ff[0].header['type'])
+                if imagetype == 'flux':
+                    fits_keywords['datatype'] = 'pb'
+                elif imagetype == 'pbcorimage':
+                    fits_keywords['datatype'] = 'pbcor'
+                elif imagetype == 'cleanmask':
+                    fits_keywords['datatype'] = 'mask'
+                elif imagetype == 'singledish':
+                    fits_keywords['datatype'] = 'sd'
+                else:
+                    fits_keywords['datatype'] = 'N/A'
 
-                    fits_keywords['format'] = 'fits'
-                    fits_keywords['ous'] = ous_name
+                fits_keywords['format'] = 'fits'
+                fits_keywords['ous'] = ous_name
 
-                    ff.close()
-                except Exception as e:
-                    LOG.info('Fetching FITS keywords for {} failed: {}'.format(fitsfile, e))
-                    fits_keywords = dict()
-                fits_keywords_list.append(fits_keywords)
+                ff.close()
+            except Exception as e:
+                LOG.info('Fetching FITS keywords for {} failed: {}'.format(fitsfile, e))
+                fits_keywords = dict()
+            fits_keywords_list.append(fits_keywords)
 
         new_cleanlist = copy.deepcopy(cleanlist)
 
         return new_cleanlist, fits_list, fits_keywords_list
 
     @staticmethod
-    def _add_to_manifest(manifest_file, aux_fproducts, aux_caltablesdict, aux_calapplysdict, aqua_report, ous_name):
+    def _add_to_manifest(manifest_file, aux_fproducts, aux_caltablesdict, aux_calapplysdict, aqua_report, ous_name, package="N/A"):
 
         pipemanifest = manifest.PipelineManifest('')
         pipemanifest.import_xml(manifest_file)
         ouss = pipemanifest.get_ous()
 
         if aqua_report:
-            pipemanifest.add_aqua_report(ouss, os.path.basename(aqua_report), ous_name)
+            pipemanifest.add_aqua_report(ouss, os.path.basename(aqua_report), ous_name, level='member', package=package)
 
         if aux_fproducts:
             # Add auxiliary data products file
-            pipemanifest.add_aux_products_file(ouss, os.path.basename(aux_fproducts), ous_name)
+            pipemanifest.add_aux_products_file(ouss, os.path.basename(aux_fproducts), ous_name, level='member', package=package)
 
         # Add the auxiliary caltables
         if aux_caltablesdict:
@@ -1363,3 +1555,27 @@ finally:
             shutil.move(temp_weblog_tarball, products_weblog_tarball)
 
         return os.path.basename(out_aqua_file)
+
+    def _export_stats_file(self, context, oussid='') -> str:
+        """Generate and output the stats file.
+
+        Args:
+          context: the pipieline context
+          oussid: the ous id
+
+        Returns:
+          The filename of the outputfile.
+        """
+        from pipeline.infrastructure import stats_extractor
+
+        statsfile_name = "pipeline_stats_{}.json".format(oussid)
+        stats_file = os.path.join(context.output_dir, statsfile_name)
+        LOG.info('Generating pipeline statistics file')
+
+        stats_dict = stats_extractor.generate_stats(context)
+
+        # Write the stats file to disk
+        with open(stats_file, 'w', encoding='utf-8') as f:
+            json.dump(stats_dict, f, ensure_ascii=False, indent=4, sort_keys=True)
+
+        return stats_file

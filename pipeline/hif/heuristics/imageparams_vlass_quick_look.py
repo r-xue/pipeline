@@ -1,5 +1,5 @@
 import re
-from typing import Union, Tuple
+from typing import Union, Tuple, Optional
 
 import numpy
 
@@ -13,9 +13,9 @@ LOG = infrastructure.get_logger(__name__)
 class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile,
-                                       linesfile, imaging_params)
+                                       linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-QL'
 
     # niter
@@ -34,7 +34,7 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         """Tclean deconvolver parameter heuristics."""
         return 'mtmfs'
 
-    def robust(self) -> float:
+    def robust(self, specmode=None) -> float:
         """Tclean robust parameter heuristics."""
         return 1.0
 
@@ -47,27 +47,35 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         return ['1.0arcsec']
 
     def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None,
-               vislist=None, spwspec=None, intent: str = '', joint_intents: str = '') -> Union[list, int]:
+               vislist=None, spwspec=None, intent: str = '', joint_intents: str = '', specmode=None) -> Union[list, int]:
         """Tclean imsize parameter heuristics."""
         return [7290, 7290]
 
-    def reffreq(self) -> str:
+    def reffreq(self, deconvolver: Optional[str]=None, specmode: Optional[str]=None, spwsel: Optional[dict]=None) -> Optional[str]:
         """Tclean reffreq parameter heuristics."""
         return '3.0GHz'
 
-    def cyclefactor(self, iteration: int) -> float:
+    def cyclefactor(self, iteration: int, field=None, intent=None, specmode=None, iter0_dirty_dynamic_range=None) -> float:
         """Tclean cyclefactor parameter heuristics."""
         if iteration == 0:
             return 1.
         else:
             return 2.
 
-    def cycleniter(self, iteration: int ) -> int:
+    def cycleniter(self, iteration: int) -> int:
         """Tclean cycleniter parameter heuristics."""
         if iteration == 0:
             return -1
         else:
             return 500
+
+    def nmajor(self, iteration: int) -> Union[None, int]:
+        """Tclean nmajor parameter heuristics."""
+        if iteration == 0:
+            return None
+        else:
+            # PIPE-1745: default value of nmajor=220 for all editimlist stages of the VLASS QL/SE imaging workflow
+            return 220
 
     def scales(self, iteration: Union[int, None] = None) -> list:
         """Tclean scales parameter heuristics."""
@@ -77,7 +85,7 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         """Tclean uvtaper parameter heuristics."""
         return []
 
-    def uvrange(self, field=None, spwspec=None) -> tuple:
+    def uvrange(self, field=None, spwspec=None, specmode=None) -> tuple:
         """Tclean uvrange parameter heuristics."""
         return None, None
 
@@ -112,7 +120,7 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         return False
 
     def get_sensitivity(self, ms_do, field, intent, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper):
-        return 0.0, None, None
+        return 0.0, None, None, None
 
     def savemodel(self, iteration: int) -> str:
         """Tclean savemodel parameter heuristics."""
@@ -427,10 +435,11 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
             LOG.info('Rejected {} distance matches for regex'.format(nreject))
 
     def threshold(self, iteration, threshold, hm_masking):
-
         return threshold
 
-    def nsigma(self, iteration: int, hm_nsigma: float, hm_masking: str) -> Union[float, None]:
+    def nsigma(
+        self, iteration: int, hm_nsigma: float, hm_masking: str, rms_multiplier: Optional[Union[int, float]] = None
+    ) -> Union[float, None]:
         """Tclean nsigma parameter heuristics."""
         if hm_nsigma:
             return hm_nsigma
@@ -452,9 +461,15 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         """Tclean rotatepastep parameter heuristics."""
         return 360.
 
-    def get_autobox_params(self, iteration, intent, specmode, robust):
-
-        '''Default auto-boxing parameters.'''
+    def get_autobox_params(
+        self,
+        iteration: int,
+        intent: str,
+        specmode: str,
+        robust: float,
+        rms_multiplier: Optional[Union[int, float]] = None,
+    ) -> tuple:
+        """Default auto-boxing parameters."""
 
         sidelobethreshold = None
         noisethreshold = None
@@ -466,5 +481,14 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         minpercentchange = None
         fastnoise = None
 
-        return (sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac,
-                growiterations, dogrowprune, minpercentchange, fastnoise)
+        return (
+            sidelobethreshold,
+            noisethreshold,
+            lownoisethreshold,
+            negativethreshold,
+            minbeamfrac,
+            growiterations,
+            dogrowprune,
+            minpercentchange,
+            fastnoise,
+        )

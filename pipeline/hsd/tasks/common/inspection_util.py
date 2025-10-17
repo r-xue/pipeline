@@ -7,6 +7,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.tablereader as tablereader
 from pipeline.domain import MeasurementSet, ObservingRun
 from pipeline.domain.singledish import MSReductionGroupDesc
+from pipeline.domain.spectralwindow import match_spw_basename
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils import relative_path
 
@@ -122,10 +123,6 @@ def merge_reduction_group(observing_run: ObservingRun,
             dictionary are group IDs and values are reduction group
             descriptions.
     """
-    if not hasattr(observing_run, 'ms_reduction_group'):
-        LOG.info('Adding ms_reduction_group to observing_run')
-        observing_run.ms_reduction_group = {}
-
     # merge reduction group
     for myid, mydesc in reduction_group.items():
         matched_id = -1
@@ -219,8 +216,8 @@ def __find_match_by_name(spw_name: str, field_name: str,
         group_spw_name = names[0]
         group_field_name = names[1]
         if group_spw_name == '':
-            raise RuntimeError("Got empty group spectral window name")
-        elif spw_name == group_spw_name and field_name == group_field_name:
+            raise RuntimeError('Got empty group spectral window name')
+        elif match_spw_basename(spw_name, group_spw_name) and field_name == group_field_name:
             match = group_key
             break
     return match

@@ -3,34 +3,19 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hifv.tasks.pbcor.pbcor.PbcorInputs.__init__
 @utils.cli_wrapper
-def hifv_pbcor(vis=None, dryrun=None, acceptresults=None):
+def hifv_pbcor(vis=None):
 
-    """
-    hifv_pbcor ---- Apply primary beam correction to VLA and VLASS images
+    """Apply primary beam correction to VLA and VLASS images.
 
-    Apply primary beam correction to VLA and VLASS images
+    Returns:
+        The results object for the pipeline task is returned.
 
-    
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
-    
-    --------- parameter descriptions ---------------------------------------------
+    Examples:
+        1. Basic pbcor task:
 
-    vis           List of input visibility data
-    dryrun        Run the commands (True) or generate the commands to be run but
-                  do not execute (False).  This is a pipeline task execution mode.
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).  This is a pipeline task execution mode.
-
-    --------- examples -----------------------------------------------------------
-    
-    
-    1. Basic pbcor task
-    
-    >>> hifv_pbcor()
-
+        >>> hifv_pbcor()
 
     """
 

@@ -9,10 +9,13 @@ import numpy as np
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.h.tasks.common.displays import sky as sky
+from pipeline.hif.heuristics.cleanbox import image_statistics_per_stokes
 from pipeline.infrastructure import casa_tools
-from .plot_spectra import plot_spectra
-from .plot_beams import plot_beams
 from pipeline.infrastructure.utils import get_stokes
+
+from .plot_beams import plot_beams
+from .plot_beams_vlasscube import plot_beams_vlasscube
+from .plot_spectra import plot_spectra
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -63,10 +66,11 @@ class CleanSummary(object):
                                                             collapseFunction='mean'))
 
             for i, iteration in [(k, r.iterations[k]) for k in sorted(r.iterations)]:
+
                 # process image for this iteration
                 if 'image' in iteration:
-                    collapse_function = 'mom8' if (('cube' in iteration.get('image', '')) or ('repBW' in iteration.get('image', ''))) else 'mean'
 
+                    collapse_function = 'mom8' if self._is_cube_repbw(iteration) else 'mean'
                     image_path = iteration['image'].replace('.image', '.image%s' % (extension))
 
                     # PB corrected
@@ -89,7 +93,7 @@ class CleanSummary(object):
                         if image_path not in self.image_stats:
                             LOG.trace('No cached image statistics found for {!s}'.format(image_path))
                             with casa_tools.ImageReader(image_path) as image:
-                                stats = image.statistics(robust=False)
+                                stats = image_statistics_per_stokes(image, stokescontrol='f', robust=False)
                                 image_rms = stats.get('rms')[0]
                                 image_max = stats.get('max')[0]
                                 self.image_stats[image_path] = ImageStats(rms=image_rms, max=image_max)
@@ -108,30 +112,26 @@ class CleanSummary(object):
                                                    collapseFunction=collapse_function, **extra_args))
 
                 # residual for this iteration
-                if r.imaging_mode == 'ALMA':
-                    # ALMA requested a change to mom8 and mom0 displays (PIPE-652)
+                # PIPE-652: display mom8 and mom8 for residual cubes
+                residual_collapseFunction = ['mom8', 'mom0'] if self._is_cube_repbw(iteration, imagetype='residual') else ['mean']
+                for collapseFunction in residual_collapseFunction:
                     plot_wrappers.extend(
                         sky.SkyDisplay().plot_per_stokes(self.context, iteration['residual'] + extension, reportdir=stage_dir,
-                                                   intent=r.intent, stokes_list=stokes_list, collapseFunction='mom8'))
-                    plot_wrappers.extend(
-                        sky.SkyDisplay().plot_per_stokes(self.context, iteration['residual'] + extension, reportdir=stage_dir,
-                                                   intent=r.intent, stokes_list=stokes_list, collapseFunction='mom0'))
-                else:
-                    plot_wrappers.extend(
-                        sky.SkyDisplay().plot_per_stokes(self.context, iteration['residual'] + extension, reportdir=stage_dir,
-                                                   intent=r.intent, stokes_list=stokes_list))
+                                                         intent=r.intent, stokes_list=stokes_list, collapseFunction=collapseFunction))
 
                 # model for this iteration (currently only last but allow for others in future)
                 if 'model' in iteration and os.path.exists(iteration['model'] + extension):
-                    plot_wrappers.extend(
-                        sky.SkyDisplay().plot_per_stokes(self.context, iteration['model'] + extension, reportdir=stage_dir,
-                                                         intent=r.intent, stokes_list=stokes_list, **{'cmap': copy.copy(matplotlib.cm.seismic)}))
+                    plot_wrappers.extend(sky.SkyDisplay().plot_per_stokes(
+                        self.context, iteration['model'] + extension, reportdir=stage_dir, intent=r.intent,
+                        stokes_list=stokes_list, **{'cmap': copy.copy(matplotlib.cm.seismic)}))
 
                 # MOM0_FC for this iteration (currently only last but allow for others in future).
                 if 'mom0_fc' in iteration and os.path.exists(iteration['mom0_fc'] + extension):
                     plot_wrappers.extend(
+                        # PIPE-2464 introduced TARGET IQUV imaging. The MOM0_FC image can only be
+                        # be made for stokes='I', so using an explicit setting here.
                         sky.SkyDisplay().plot_per_stokes(self.context, iteration['mom0_fc'] + extension, reportdir=stage_dir,
-                                                         intent=r.intent, stokes_list=stokes_list))
+                                                         intent=r.intent, stokes_list=['I']))
 
                 # MOM8_FC for this iteration (currently only last but allow for others in future).
                 if 'mom8_fc' in iteration and os.path.exists(iteration['mom8_fc'] + extension):
@@ -152,19 +152,23 @@ class CleanSummary(object):
                         extra_args = {}
 
                     plot_wrappers.extend(
+                        # PIPE-2464 introduced TARGET IQUV imaging. The MOM8_FC image can only be
+                        # be made for stokes='I', so using an explicit setting here.
                         sky.SkyDisplay().plot_per_stokes(self.context, iteration['mom8_fc'] + extension, reportdir=stage_dir,
-                                                         intent=r.intent, stokes_list=stokes_list, **extra_args))
+                                                         intent=r.intent, stokes_list=['I'], **extra_args))
 
                 # cleanmask - not for iter 0
                 if i > 0:
-                    collapse_function = 'mom8' if (('cube' in iteration.get('cleanmask', '')) or ('repBW' in iteration.get('cleanmask', ''))) else 'mean'
+                    collapse_function = 'mom8' if self._is_cube_repbw(iteration, imagetype='cleanmask') else 'mean'
+                    # Plot only Stokes I since the QUV planes are not present in re-used mask from
+                    # the previous Stokes I imaging step (PIPE-2464).
                     plot_wrappers.extend(
                         sky.SkyDisplay().plot_per_stokes(self.context, iteration.get('cleanmask', ''), reportdir=stage_dir,
-                                                         intent=r.intent, stokes_list=stokes_list, collapseFunction=collapse_function,
+                                                         intent=r.intent, stokes_list=['I'], collapseFunction=collapse_function,
                                                          **{'cmap': copy.copy(matplotlib.cm.YlOrRd)}))
 
                 # cube spectra and PSF per channel plot for this iteration
-                if ('cube' in iteration.get('image', '')) or ('repBW' in iteration.get('image', '')):
+                if self._is_cube_repbw(iteration):
                     imagename = r.image_robust_rms_and_spectra['nonpbcor_imagename']
                     with casa_tools.ImageReader(imagename) as image:
                         miscinfo = image.miscinfo()
@@ -176,7 +180,7 @@ class CleanSummary(object):
                     parameters['stokes'] = stokes_list[0]
                     parameters['moment'] = 'N/A'
                     try:
-                        parameters['prefix'] = miscinfo['filnam01']
+                        parameters['prefix'] = os.path.basename(imagename).split('.')[0]
                     except:
                         parameters['prefix'] = None
 
@@ -207,16 +211,19 @@ class CleanSummary(object):
             # polarization intensity and angle
             if r.intent == 'POLARIZATION' and set(stokes_list) == {'I', 'Q', 'U', 'V'} and r.imaging_mode == 'ALMA':
                 plot_wrappers.extend(sky.SkyDisplay().plot_per_stokes(self.context,
-                                                                      r.image.replace('.pbcor', '').replace('IQUV', 'POLI'),
+                                                                      r.image.replace('.pbcor', '').replace('.image', f'.image{extension}').replace('IQUV', 'POLI'),
                                                                       reportdir=stage_dir, intent=r.intent,
                                                                       collapseFunction='mean'))
                 plot_wrappers.extend(sky.SkyDisplay().plot_per_stokes(self.context,
-                                                                      r.image.replace('.pbcor', '').replace('IQUV', 'POLA'),
+                                                                      r.image.replace('.pbcor', '').replace('.image', f'.image{extension}').replace('IQUV', 'POLA'),
                                                                       reportdir=stage_dir, intent=r.intent,
                                                                       collapseFunction='mean'))
 
         return [p for p in plot_wrappers if p is not None]
 
+    def _is_cube_repbw(self, iteration, imagetype='image'):
+        is_cube_or_repbw = any(keyword in iteration.get(imagetype, '') for keyword in ['cube', 'repBW'])
+        return is_cube_or_repbw
 
 class TcleanMajorCycleSummaryFigure(object):
     """Tclean major cycle summery statistics plot with two panels, contains:
@@ -276,6 +283,7 @@ class TcleanMajorCycleSummaryFigure(object):
                 # scatter plot
                 pol_colors = ['gray', 'blue', 'green', 'red']
                 pol_markers = ['+', '<', '>', 'o']
+                pol_edgecolors = [None, 'black', 'black', 'black']
                 pol_alphas = [1, 0.3, 0.3, 0.3]
                 pol_id_arr = item['planeid_array']
                 for pol_id in np.unique(pol_id_arr):
@@ -283,11 +291,11 @@ class TcleanMajorCycleSummaryFigure(object):
                     pid = int(pol_id)
                     ax0_pol_idx = np.where((pol_id_arr == pol_id) & (ax0_y != 0))
                     if ax0_pol_idx[0].size > 0:
-                        ax0.scatter(x[ax0_pol_idx], np.abs(ax0_y[ax0_pol_idx]), label=self.pol_labels[pid], edgecolors='black',
+                        ax0.scatter(x[ax0_pol_idx], np.abs(ax0_y[ax0_pol_idx]), label=self.pol_labels[pid], edgecolors=pol_edgecolors[pid],
                                     alpha=pol_alphas[pid], color=pol_colors[pid], marker=pol_markers[pid])
                     ax1_pol_idx = np.where((pol_id_arr == pol_id) & (ax1_y != 0))
                     if ax1_pol_idx[0].size > 0:
-                        ax1.scatter(x[ax1_pol_idx], np.abs(ax1_y[ax1_pol_idx]), label=self.pol_labels[pid], edgecolors='black',
+                        ax1.scatter(x[ax1_pol_idx], np.abs(ax1_y[ax1_pol_idx]), label=self.pol_labels[pid], edgecolors=pol_edgecolors[pid],
                                     alpha=pol_alphas[pid], color=pol_colors[pid], marker=pol_markers[pid])
 
                 # Vertical line and annotation at major cycle end
@@ -323,3 +331,35 @@ class TcleanMajorCycleSummaryFigure(object):
         return logger.Plot(self.figfile,
                            x_axis=self.xlabel,
                            y_axis='/'.join(self.ylabel))
+
+
+class VlassCubeSummary:
+    def __init__(self, context, result):
+        self.context = context
+        self.result = result  # a MakeImagesResult object
+
+    def plot(self):
+        """Generate plots for the vlass cube summary."""
+        plot_wrappers = []
+
+        stage_dir = os.path.join(self.context.report_dir,
+                                 'stage%d' % self.result.stage_number)
+        if not os.path.exists(stage_dir):
+            os.mkdir(stage_dir)
+
+        figfile = os.path.join(stage_dir, 'vlass_cube_summary.png')
+        try:
+
+            plot_beams_vlasscube(self.result.metadata['vlass_cube_metadata'], figfile)
+            plot = logger.Plot(figfile,
+                               x_axis='Spw Group',
+                               y_axis='Beam/Flagpct',
+                               parameters={})
+
+            plot_wrappers.append(plot)
+
+        except Exception as ex:
+            LOG.warning('Could not create plot %s', figfile)
+            LOG.warning(ex)
+
+        return plot_wrappers

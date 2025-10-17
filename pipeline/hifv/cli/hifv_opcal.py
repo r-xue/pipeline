@@ -4,32 +4,20 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifv_opcal(vis=None, caltable=None, dryrun=None, acceptresults=None):
+def hifv_opcal(vis=None, caltable=None):
 
-    """
-    hifv_opcal ---- Runs gencal in opac mode
-    
-    Runs gencal in opac mode
+    """Runs gencal in opac mode.
 
-    Output:
-    
-    results -- The results object for the pipeline task is returned.
+    Args:
+        vis: List of input visibility data.
 
-    --------- parameter descriptions ---------------------------------------------
+    Returns:
+        The results object for the pipeline task is returned.
 
-    vis           List of input visibility data
-    dryrun        Run the commands (True) or generate the commands to be run but
-                  do not execute (False).  This is a pipeline task execution mode.
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).  This is a pipeline task execution mode.
+    Examples:
+        1. Load an ASDM list in the ../rawdata subdirectory into the context:
 
-    --------- examples -----------------------------------------------------------
-    
-    
-    1. Load an ASDM list in the ../rawdata subdirectory into the context.
-    
-    >>> hifv_opcal()
-
+        >>> hifv_opcal()
 
     """
 

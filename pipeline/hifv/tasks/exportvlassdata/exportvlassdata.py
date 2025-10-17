@@ -9,7 +9,7 @@ import traceback
 
 import numpy as np
 
-import xml.etree.cElementTree as eltree
+import xml.etree.ElementTree as eltree
 import astropy.io.fits as apfits
 
 import pipeline as pipeline
@@ -61,8 +61,36 @@ class ExportvlassdataInputs(exportdata.ExportDataInputs):
     gainmap = vdp.VisDependentProperty(default=False)
     processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
+    # docstring and type hints: supplements hifv_exportvlassdata
     def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None, pprfile=None, calintents=None,
                  calimages=None, targetimages=None, products_dir=None, gainmap=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            session:
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
+
+            exportmses:
+
+            pprfile:
+
+            calintents:
+
+            calimages:
+
+            targetimages:
+
+            products_dir:
+
+            gainmap:
+
+        """
         super(ExportvlassdataInputs, self).__init__(context, output_dir=output_dir, session=session, vis=vis,
                                                     exportmses=exportmses, pprfile=pprfile, calintents=calintents,
                                                     calimages=calimages, targetimages=targetimages,
@@ -141,13 +169,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             result.parameterlist = []
 
         imlist = self.inputs.context.subimlist.get_imlist()
-
-        # PIPE-592: find out imaging mode (stored in context by hif_editimlist)
-        if hasattr(self.inputs.context, 'imaging_mode'):
-            img_mode = self.inputs.context.imaging_mode
-        else:
-            LOG.warning("imaging_mode property does not exist in context, alpha images will not be written.")
-            img_mode = None
+        img_mode = self.inputs.context.imaging_mode
 
         images_list = []
         for imageitem in imlist:
@@ -234,8 +256,12 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             LOG.info('Wrote {ff}'.format(ff=fitsfile))
             fits_list.append(fitsfile)
 
-            # Apply position corrections to VLASS QL, MOSAIC and AWP=1 product images (PIPE-587, PIPE-641, PIPE-1134)
-            if img_mode in ('VLASS-QL', 'VLASS-SE-CONT-MOSAIC', 'VLASS-SE-CONT-AWP-P001', 'VLASS-SE-CUBE'):
+            # PIPE-587/PIPE-641/PIPE-1134/PIPE-2423: apply position corrections for modes that don't use
+            # aw-projection with nplane=32.
+            if img_mode.startswith('VLASS-') and img_mode not in ('VLASS-SE-CONT-AWPHPG', 'VLASS-SE-CONT-AWPHPG-P032',
+                                                                  'VLASS-SE-CONT-AWP2', 'VLASS-SE-CONT-AWP2-P032',
+                                                                  'VLASS-SE-CONT', 'VLASS-SE-CONT-AWP',
+                                                                  'VLASS-SE-CONT-AWP-P032'):
                 # Mean antenna geographic coordinates
                 observatory = casa_tools.measures.observatory(self.inputs.context.project_summary.telescope)
                 # Mean observing date
@@ -436,13 +462,8 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                     parameterlist_set.add(parameter_filename)
                     _ = self._export_parameterlist(context, parameter_filename, products_dir, oussid)
 
-        if hasattr(self.inputs.context, 'imaging_mode'):
-            img_mode = self.inputs.context.imaging_mode
-        else:
-            LOG.warning("imaging_mode property does not exist in context, SE Cont imaging products will not be exported")
-            img_mode = None
-
         # SE Cont imaging mode export for VLASS
+        img_mode = self.inputs.context.imaging_mode
         if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
             # Identify self cal table
             selfcal_result = None
@@ -555,8 +576,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 outfile = file
             pprmatchesout.append(outfile)
             LOG.info('Copying pipeline processing file %s to %s' % (os.path.basename(file), os.path.basename(outfile)))
-            if not self._executor._dry_run:
-                shutil.copy(file, outfile)
+            shutil.copy(file, outfile)
 
         return pprmatchesout
 
@@ -633,10 +653,9 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         LOG.info('Saving final weblog in %s' % tarfilename)
 
         # Create the tar file
-        if not self._executor._dry_run:
-            tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
-            tar.add(os.path.join(os.path.basename(os.path.dirname(context.report_dir)), 'html'))
-            tar.close()
+        tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
+        tar.add(os.path.join(os.path.basename(os.path.dirname(context.report_dir)), 'html'))
+        tar.close()
 
         # Restore the original current working directory
         os.chdir(cwd)
@@ -660,27 +679,26 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         # Create the tar file
 
-        if not self._executor._dry_run:
-            tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
+        tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
 
-            for mask in self.masks:
-                tar.add(mask, mask)
-                LOG.info('....Adding {!s}'.format(mask))
+        for mask in self.masks:
+            tar.add(mask, mask)
+            LOG.info('....Adding {!s}'.format(mask))
 
-            for initial_model in self.initial_models:
-                tar.add(initial_model, initial_model)
-                LOG.info('....Adding {!s}'.format(initial_model))
+        for initial_model in self.initial_models:
+            tar.add(initial_model, initial_model)
+            LOG.info('....Adding {!s}'.format(initial_model))
 
-            for final_model in self.final_models:
-                tar.add(final_model, final_model)
-                LOG.info('....Adding {!s}'.format(final_model))
+        for final_model in self.final_models:
+            tar.add(final_model, final_model)
+            LOG.info('....Adding {!s}'.format(final_model))
 
-            tar.add(self.selfcaltable, self.selfcaltable)
-            LOG.info('....Adding {!s}'.format(self.selfcaltable))
+        tar.add(self.selfcaltable, self.selfcaltable)
+        LOG.info('....Adding {!s}'.format(self.selfcaltable))
 
-            tar.add(self.flagversion, self.flagversion)
-            LOG.info('....Adding {!s}'.format(self.flagversion))
-            tar.close()
+        tar.add(self.flagversion, self.flagversion)
+        LOG.info('....Adding {!s}'.format(self.flagversion))
+        tar.close()
 
         # Restore the original current working directory
         os.chdir(cwd)
@@ -693,8 +711,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         out_parameterlist_file = os.path.join(products_dir, os.path.basename(parameterlist_name))
 
         LOG.info('Copying parameter list file %s to %s' % (parameterlist_name, out_parameterlist_file))
-        if not self._executor._dry_run:
-            shutil.copy(parameterlist_name, out_parameterlist_file)
+        shutil.copy(parameterlist_name, out_parameterlist_file)
 
         return os.path.basename(out_parameterlist_file)
 
@@ -708,8 +725,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         out_table_file = os.path.join(products_dir, table_file)
 
         LOG.info('Copying product from %s to %s' % (table_file, out_table_file))
-        if not self._executor._dry_run:
-            shutil.copytree(table_file, out_table_file)
+        shutil.copytree(table_file, out_table_file)
 
         return os.path.basename(out_table_file)
 
@@ -735,8 +751,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         #     out_casalog_file = os.path.join(products_dir, oussid + '.' + casalog_name)
 
         LOG.info('Copying casa commands log %s to %s' % (casalog_file, out_casalog_file))
-        if not self._executor._dry_run:
-            shutil.copy(casalog_file, out_casalog_file)
+        shutil.copy(casalog_file, out_casalog_file)
 
         return os.path.basename(out_casalog_file)
 
@@ -763,8 +778,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         #     out_casascript_file = os.path.join(products_dir, oussid + '.' + casascript_name)
 
         LOG.info('Copying casa script file %s to %s' % (casascript_file, out_casascript_file))
-        if not self._executor._dry_run:
-            shutil.copy(casascript_file, out_casascript_file)
+        shutil.copy(casascript_file, out_casascript_file)
 
         return os.path.basename(out_casascript_file)
 
@@ -775,8 +789,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         out_manifest_file = os.path.join(products_dir, manifest_name)
         LOG.info('Creating manifest file %s' % out_manifest_file)
-        if not self._executor._dry_run:
-            pipemanifest.write(out_manifest_file)
+        pipemanifest.write(out_manifest_file)
 
         return out_manifest_file
 
@@ -872,8 +885,8 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         beam_target['positionangle'] = beam_target.pop('pa')
         myia.close()
 
-        # PIPE-1434: increase the target beam from ia.commonbeam() by a small margin to avoid potential 
-        # failures of ia.convolve2d() when the convolution kernel is too small on the minor axis near the 
+        # PIPE-1434: increase the target beam from ia.commonbeam() by a small margin to avoid potential
+        # failures of ia.convolve2d() when the convolution kernel is too small on the minor axis near the
         # numerical precision limit.
         beam_target['major']['value'] *= 1.00001
         beam_target['minor']['value'] *= 1.00001

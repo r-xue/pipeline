@@ -6,6 +6,7 @@ import tempfile
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure.utils import caltable_tools
 import pipeline.qa.bpcal as bpcal
 from . import common
 
@@ -27,7 +28,7 @@ class BandpassQAPool(pqa.QAScorePool):
         super(BandpassQAPool, self).__init__()
         # rawdata will hold the dictionary output by the CA QA task
         self.rawdata = rawdata
-        self._num_pols = utils.get_num_caltable_polarizations(caltable)
+        self._num_pols = caltable_tools.get_num_caltable_polarizations(caltable)
 
     def update_scores(self, ms):
         """
@@ -38,11 +39,15 @@ class BandpassQAPool(pqa.QAScorePool):
 
     def _get_qascore(self, ms, score_type):
         (min_score, spw_str, qa_id) = self._get_min(score_type)
-        identifier = self._get_identifier_from_qa_id(ms, spw_str, qa_id)
-        longmsg = 'Lowest score for %s is %0.2f (%s %s)' % (self.score_types[score_type],
-                                                            min_score,
-                                                            ms.basename,
-                                                            identifier)
+        if min_score < 1.0:
+            data_selection = self._get_identifier_from_qa_id(ms, spw_str, qa_id)
+            identifier = f'{ms.basename} {data_selection}'
+        else:
+            # if the score is 1.0, then there is no fine-grained data selection to display
+            identifier = f'{ms.basename}'
+        longmsg = 'Lowest score for %s is %0.2f (%s)' % (self.score_types[score_type],
+                                                         min_score,
+                                                         identifier)
         shortmsg = self.short_msg[score_type]
 
         origin = pqa.QAOrigin(metric_name='BandpassQAPool',
@@ -133,7 +138,7 @@ class BandpassListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing BandpassResults.
     """
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = common.BandpassResults
 
     def handle(self, context, result):

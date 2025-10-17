@@ -1,7 +1,7 @@
 """Parameter classes of Imaging."""
 
 import re
-from typing import TYPE_CHECKING, Any, Dict, List, NewType, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, NewType, Optional, Union, Final
 
 import numpy
 
@@ -125,8 +125,8 @@ class Parameters:
 class CommonParameters(Parameters):
     """Common parameters class of prepare()."""
 
-    _immutable_parameters = ['reduction_group', 'restfreq_list', 'ms_names', 'args_spw', 'imagemode',
-                             'is_nro', 'results', 'edge', 'dt_dict']
+    _immutable_parameters = ['reduction_group', 'restfreq_list', 'ms_names', 'session_names', 'args_spw',
+                             'imagemode', 'is_nro', 'results', 'edge', 'dt_dict']
 
     def is_not_nro(self) -> numpy.bool_:
         """Return True if is_nro is False.
@@ -140,7 +140,7 @@ class CommonParameters(Parameters):
 def initialize_common_parameters(args_spw: Dict[str, str], dt_dict: Dict[str, 'DataTableImpl'],
                                  edge: List[int], imagemode: str, in_field: str,
                                  infiles: List[str], is_nro: numpy.bool_, ms_list: List['MeasurementSet'],
-                                 ms_names: List[str], reduction_group: Dict[int, 'MSReductionGroupDesc'],
+                                 ms_names: List[str], session_names: List[str], reduction_group: Dict[int, 'MSReductionGroupDesc'],
                                  restfreq_list: Union[str, List[str]], results: 'SDImagingResults'
                                  ) -> CommonParameters:
     """Initialize an instance of CommonParameters and return it.
@@ -155,6 +155,7 @@ def initialize_common_parameters(args_spw: Dict[str, str], dt_dict: Dict[str, 'D
         is_nro (numpy.bool_): Flag of NRO data
         ms_list (List[MeasurementSet]): List of ms to process
         ms_names (List[str]): List of name of ms in ms_list
+        session_names (List[str]): List of session name of ms in ms_list
         reduction_group (Dict[int, MSReductionGroupDesc]): Reduction group object
         restfreq_list (Union[str, List[str]]): List of rest frequency
         results (SDImagingResults): Instance of SDImagingResults
@@ -172,6 +173,7 @@ def initialize_common_parameters(args_spw: Dict[str, str], dt_dict: Dict[str, 'D
     _tmp.is_nro = is_nro
     _tmp.ms_list = ms_list
     _tmp.ms_names = ms_names
+    _tmp.session_names = session_names
     _tmp.reduction_group = reduction_group
     _tmp.restfreq_list = restfreq_list
     _tmp.results = results
@@ -215,7 +217,7 @@ class ReductionGroupParameters(Parameters):
         self.member_list = None            # List[int]: List of reduction group ID
         self.members = None                # List[List[MeasurementSet, int, List[str]]]: Image group of reduction group
         self.msobjs = None                 # List[MeasurementSet]: List of MeasurementSet
-        self.name = None                   # str: Name of MeasurementSet
+        self.name = None                   # str: Name of reduction group
         self.nx = None                     # Union[int, numpy.int64]: X of image shape
         self.ny = None                     # Union[int, numpy.int64]: Y of image shape
         self.org_direction = None          # Direction: a direction of origin for ephemeris object
@@ -326,8 +328,8 @@ class TheoreticalImageRmsParameters(Parameters):
         self.cqa = casa_tools.quanta       # LoggingQuanta: LoggingQuanta object
         self.failed_rms = self.cqa.quantity(-1, _pp.brightnessunit)    # Dict[str, float]: Failed RMS value
         self.sq_rms = 0.0                  # float: Square of RMS
-        self.N = 0.0                       # float: Number of data for statistics
-        self.time_unit = 's'               # str: Time unit
+        self.weight_sum = 0.0              # float: Weighted sum of time on source.
+        self.time_unit: Final[str] = 's'                   # str: Time unit (constant)
         self.ang_unit = self.cqa.getunit(_pp.qcell[0])     # str: Ang unit
         self.cx_val = self.cqa.getvalue(_pp.qcell[0])[0]   # float: cx
         self.cy_val = self.cqa.getvalue(self.cqa.convert(_pp.qcell[1], self.ang_unit))[0]  # float: cy

@@ -1,33 +1,30 @@
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import datetime
 import math
 import operator
 import os
-from typing import TYPE_CHECKING, Tuple
+import shutil
+from typing import TYPE_CHECKING, Generator
 
-import matplotlib.dates as dates
-import matplotlib.figure as figure
+import matplotlib
 import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
 import numpy as np
+from matplotlib import dates, figure, ticker
 
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.renderer.logger as logger
-import pipeline.infrastructure.utils as utils
-import pipeline.infrastructure.vdp as vdp
-from pipeline.domain.measures import FrequencyUnits, DistanceUnits
+from pipeline import infrastructure
+from pipeline.domain import measures
 from pipeline.h.tasks.common import atmutil
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.displays.plotstyle import casa5style_plot
-from . import plotmosaic
-from . import plotpwv
-from . import plotweather
-from . import plotsuntrack
+from pipeline.infrastructure import casa_tasks, casa_tools, utils, vdp
+from pipeline.infrastructure.displays import plotpointings, plotpwv, plotstyle, plotsuntrack, plotweather
+from pipeline.infrastructure.renderer import logger
 
 if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet, Source
     from pipeline.infrastructure.launcher import Context
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 DISABLE_PLOTMS = False
 
 ticker.TickHelper.MAXTICKS = 10000
@@ -251,7 +248,8 @@ class ParameterVsTimeChart(object):
         ('POINTING', 'yellow'),
         ('SIDEBAND', 'orange'),
         ('WVR', 'lime'),
-        ('DIFFGAIN', 'maroon'),
+        ('DIFFGAINREF', 'maroon'),
+        ('DIFFGAINSRC', 'deeppink'),
         ('POLARIZATION', 'navy'),
         ('POLANGLE', 'mediumslateblue'),
         ('POLLEAKAGE', 'plum'),
@@ -329,7 +327,7 @@ class FieldVsTimeChart(ParameterVsTimeChart):
     def __init__(self, inputs):
         self.inputs = inputs
 
-    @casa5style_plot
+    @plotstyle.casa5style_plot
     def plot(self):
         ms = self.inputs.ms
 
@@ -573,37 +571,168 @@ class PWVChart(object):
                            parameters={'vis': self.ms.basename})
 
 
-class MosaicChart(object):
-    def __init__(self, context, ms, source):
+class PointingsChart(object):
+    """Base class for generating a pointings chart.
+
+    This class provides a framework for creating and managing pointings plots for a
+    given measurement set and source.
+
+    Attributes:
+        context: The context of the processing session.
+        ms: The measurement set to be analyzed.
+        source: The source for which the pointings plot is generated.
+        figfile: The file path where the plot will be saved.
+    """
+
+    def __init__(self, context: Context, ms: MeasurementSet, source: Source):
+        """
+        Initializes the PointingsChart with the given context, measurement set, and source.
+
+        Args:
+            context: The processing session context.
+            ms: The measurement set to analyze.
+            source: The source for which the pointings is created.
+        """
         self.context = context
         self.ms = ms
         self.source = source
-        self.figfile = self._get_figfile()
+        self.figfile: str = self._get_figfile()
 
-    def plot(self):
+    def plot(self) -> logger.Plot | None:
+        """
+        Abstract method to generate the pointings plot.
+
+        Raises:
+            NotImplementedError: If the subclass does not implement this method.
+        """
+        raise NotImplementedError
+
+    def _get_figfile(self) -> str:
+        """
+        Abstract method to determine the file path for the plot.
+
+        Returns:
+            str: The file path for storing the generated plot.
+
+        Raises:
+            NotImplementedError: If the subclass does not implement this method.
+        """
+        raise NotImplementedError
+
+    def _get_plot_object(self) -> logger.Plot:
+        """
+        Creates a Plot object with metadata.
+
+        Returns:
+            A plot object containing metadata about the generated pointings.
+        """
+        return logger.Plot(
+            self.figfile,
+            x_axis='RA Offset',
+            y_axis='Dec Offset',
+            parameters={'vis': self.ms.basename}
+            )
+
+
+class MosaicPointingsChart(PointingsChart):
+    """Generates a mosaic plot of pointings for a given source in a measurement set."""
+
+    def __init__(self, context: Context, ms: MeasurementSet, source: Source):
+        """
+        Initializes the MosaicPointingsChart with the given parameters.
+
+        Args:
+            context: The processing session context.
+            ms: The measurement set to analyze.
+            source: The source for which the mosaic pointings plot is created.
+        """
+        super().__init__(context, ms, source)
+
+    def plot(self) -> logger.Plot | None:
+        """
+        Generates and saves the mosaic pointings plot.
+
+        Returns:
+            The plot object if successful, otherwise None.
+        """
         if os.path.exists(self.figfile):
+            LOG.debug("%s already exists.", self.figfile)
             return self._get_plot_object()
 
         try:
-            plotmosaic.plot_mosaic(self.ms, self.source, self.figfile)
+            plotpointings.plot_mosaic_source(self.ms, self.source, self.figfile)
         except Exception as e:
-            LOG.warn('Could not create mosaic plot: {}'.format(e))
+            LOG.warning('Could not create mosaic pointings plot: %s', e)
             return None
 
         return self._get_plot_object()
 
-    def _get_figfile(self):
-        session_part = self.ms.session
-        ms_part = self.ms.basename
-        return os.path.join(self.context.report_dir,
-                            'session%s' % session_part,
-                            ms_part, 'mosaic_source%s.png' % self.source.id)
+    def _get_figfile(self) -> str:
+        """
+        Determines the file path for the mosaic pointings plot.
 
-    def _get_plot_object(self):
-        return logger.Plot(self.figfile,
-                           x_axis='RA Offset',
-                           y_axis='Dec Offset',
-                           parameters={'vis': self.ms.basename})
+        Returns:
+            The file path for storing the mosaic pointings plot.
+        """
+        return os.path.join(
+            self.context.report_dir,
+            f"session{self.ms.session}",
+            self.ms.basename,
+            f"source{self.source.id}_mosaic_pointings.png"
+        )
+
+
+class TsysScansChart(PointingsChart):
+    """Generates a plot of system temperature (Tsys) scan(s) for a given source."""
+
+    def __init__(
+            self,
+            context: Context,
+            ms: MeasurementSet,
+            source: Source,
+            ):
+        """
+        Initializes the TsysScansChart with the given parameters.
+
+        Args:
+            context: The processing session context.
+            ms: The measurement set to analyze.
+            source: The source for which the Tsys scan(s) plot is created.
+        """
+        super().__init__(context, ms, source)
+
+    def plot(self) -> logger.Plot | None:
+        """
+        Generates and saves the Tsys scan(s) plot.
+
+        Returns:
+            The plot object if successful, otherwise None.
+        """
+        if os.path.exists(self.figfile):
+            LOG.debug("%s already exists.", self.figfile)
+            return self._get_plot_object()
+
+        try:
+            plotpointings.plot_tsys_scans(self.ms, self.source, self.figfile)
+        except Exception as e:
+            LOG.warning('Could not create Tsys scan(s) plot: %s', e)
+            return None
+
+        return self._get_plot_object()
+
+    def _get_figfile(self) -> str:
+        """
+        Determines the file path for the Tsys scan(s) plot.
+
+        Returns:
+            The file path for storing the Tsys scan(s) plot.
+        """
+        return os.path.join(
+            self.context.report_dir,
+            f"session{self.ms.session}",
+            self.ms.basename,
+            f"source{self.source.id}_tsys_scans.png"
+        )
 
 
 class PlotAntsChart(object):
@@ -878,8 +1007,8 @@ class UVChart(object):
 
             # get max UV via unprojected baseline
             spw = ms.get_spectral_window(self.spw_id)
-            wavelength_m = 299792458 / float(spw.max_frequency.to_units(FrequencyUnits.HERTZ))
-            bl_max = float(ms.antenna_array.max_baseline.length.to_units(DistanceUnits.METRE))
+            wavelength_m = 299792458 / float(spw.max_frequency.to_units(measures.FrequencyUnits.HERTZ))
+            bl_max = float(ms.antenna_array.baseline_max.length.to_units(measures.DistanceUnits.METRE))
             self.uv_max = math.ceil(1.05 * bl_max / wavelength_m)
 
     def plot(self):
@@ -940,7 +1069,7 @@ class UVChart(object):
                                        'spw': self.spw_id},
                            command=str(task))
 
-    def _get_spwid_and_field(self) -> Tuple[str, str, str, str]:
+    def _get_spwid_and_field(self) -> tuple[str, str, str, str]:
         # Attempt to get representative source and spwid.
         repr_src, repr_spw = self._get_representative_source_and_spwid()
 
@@ -965,7 +1094,7 @@ class UVChart(object):
         # If no representative source was identified, then get the preferred source and science spw
         return self._get_preferred_science_spw_and_field()
 
-    def _get_representative_source_and_spwid(self) -> Tuple[str, int]:
+    def _get_representative_source_and_spwid(self) -> tuple[str, int]:
         # Is the representative source in the context or not
         if not self.context.project_performance_parameters.representative_source:
             source_name = None
@@ -1011,7 +1140,7 @@ class UVChart(object):
         spw = str(final_spw.id)
         return spw
 
-    def _get_preferred_science_spw_and_field(self) -> Tuple[str, str, str, str]:
+    def _get_preferred_science_spw_and_field(self) -> tuple[str, str, str, str]:
         # take first TARGET sources, otherwise first AMPLITUDE sources, etc.
         for intent in self.preferred_intent_order:
             sources_with_intent = [s for s in self.ms.sources if intent in s.intents]
@@ -1028,7 +1157,7 @@ class UVChart(object):
 
         return spw, field, field_name, intent
 
-    def _get_field_for_source(self, src_name: str) -> Tuple[str, str, str]:
+    def _get_field_for_source(self, src_name: str) -> tuple[str, str, str]:
         sources_with_name = [s for s in self.ms.sources if s.name == src_name]
         if not sources_with_name:
             LOG.error("Source {} not found in MS.".format(src_name))
@@ -1077,7 +1206,7 @@ class SpwIdVsFreqChartInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def output(self) -> str:
-        """Set file path of output PNG file.
+        """Return file path of output PNG file.
 
         Returns:
             output: File path of output PNG file
@@ -1089,7 +1218,7 @@ class SpwIdVsFreqChartInputs(vdp.StandardInputs):
                               ms_part, 'spwid_vs_freq.png')
         return output
 
-    def __init__(self, context: 'Context', vis: str) -> None:
+    def __init__(self, context: Context, vis: str) -> None:
         """Construct SpwIdVsFreqChartInputs instance.
 
         Args:
@@ -1107,7 +1236,7 @@ class SpwIdVsFreqChart(object):
 
     Inputs = SpwIdVsFreqChartInputs
 
-    def __init__(self, inputs: SpwIdVsFreqChartInputs, context: 'Context') -> None:
+    def __init__(self, inputs: SpwIdVsFreqChartInputs, context: Context) -> None:
         """Construct SpwIdVsFreqChart instance.
 
         Args:
@@ -1116,119 +1245,135 @@ class SpwIdVsFreqChart(object):
         """
         self.inputs = inputs
         self.context = context
-        self.figfile = self._get_figfile()
 
-    def plot(self) -> logger.Plot:
-        """Create the plot.
+    def _extract_spwdata_vla(self) -> Generator[list[int], None, None]:
+        """Extract list of SPW IDs of VLA from measurement set.
 
-        Returns:
-            Plot object
+        Yields:
+            List of SPW IDs for a baseband, for science_windows_only=True.
         """
-        filename = self.inputs.output
-        if os.path.exists(filename):
-            return self._get_plot_object()
+        ms = self.inputs.ms
+        banddict = ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
+        for band in banddict:
+            for baseband in banddict[band]:
+                spw_list = [list(spwitem.keys())[0] for spwitem in banddict[band][baseband]]
+                yield spw_list
 
-        fig = figure.Figure(figsize=(9.6, 7.2))
-        ax_spw = fig.add_axes([0.1, 0.1, 0.8, 0.8])
+    def _extract_spwdata_alma_nro(self) -> Generator[list[int], None, None]:
+        """Extract list of SPW IDs of ALMA or NRO from measurement set.
 
-        # Make a plot of frequency vs. spwid
+        Yields:
+            List of SPW IDs for a tuning, for scan_intent='TARGET'.
+        """
         ms = self.inputs.ms
         request_spws = ms.get_spectral_windows()
         targeted_scans = ms.get_scans(scan_intent='TARGET')
         scan_spws = {spw for scan in targeted_scans for spw in scan.spws if spw in request_spws}
-        list_bw = [float(spw.bandwidth.value)/1.0e9 for spw in request_spws]  # GHz
-        list_fmin = [float(spw.min_frequency.value)/1.0e9 for spw in request_spws]  # GHz
-        list_fmax = [float(spw.max_frequency.value)/1.0e9 for spw in request_spws]  # GHz
-        list_all_spwids = []
-        list_indices = []
-        list_all_indices = []
-        if self.context.project_summary.telescope in ('VLA', 'EVLA'):  # For VLA
-            banddict = ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=False, warning=False)
-            list_spwids_baseband = []
-            for band in banddict:
-                for baseband in banddict[band]:
-                    spw = []
-                    minfreqs = []
-                    maxfreqs = []
-                    list_spwids = []
-                    for spwitem in banddict[band][baseband]:
-                        spw.append(next(iter(spwitem)))
-                    list_spwids_baseband.append(spw)
-            list_all_spwids = [spwid for list_spwids in list_spwids_baseband for spwid in list_spwids]
-            list_all_indices = list(range(len(list_all_spwids)))
-            ax_spw.barh(list_all_indices, list_bw, height=0.4, left=list_fmin)
-        else:  # For ALMA and NRO
-            for list_spwids in utils.get_spectralspec_to_spwid_map(scan_spws).values():
-                shift = len(list_all_spwids)
-                list_indices = [list_spwids.index(spwid)+shift for spwid in list_spwids]
-                start = len(list_all_spwids)
-                end = start + len(list_spwids)
-                list_all_spwids.extend(list_spwids)
-                list_all_indices.extend(list_indices)
-                fmins = list_fmin[start:end]
-                bws = list_bw[start:end]
-                ax_spw.barh(list_indices, bws, height=0.4, left=fmins)
+        for spwid_list in utils.get_spectralspec_to_spwid_map(scan_spws).values():
+            yield spwid_list
 
-        ax_spw.set_title('Spectral Window ID vs. Frequency', loc='center')
-        ax_spw.set_xlabel("Frequency (GHz)", fontsize=14)
-        ax_spw.invert_yaxis()
-        ax_spw.grid(axis='x')
-        ax_spw.tick_params(labelsize=13)
-        ax_spw.set_ylim(float(len(list_all_indices)), -1.0)
-        ax_spw.set_yticks([])
-        yspace = 0.3
+    def plot(self) -> logger.Plot | None:
+        """Create the plot.
 
-        # Annotate
-        if self.context.project_summary.telescope in ('VLA', 'EVLA') and \
-            len(list_all_spwids) >= 16:  # For VLA with many spws
-            list_all_spwids = []
-            for list_spwids in list_spwids_baseband:
-                shift = len(list_all_spwids)
-                list_indices = [list_spwids.index(spwid)+shift for spwid in list_spwids]
-                start = len(list_all_spwids)
-                end = start + len(list_spwids)
-                list_all_spwids.extend(list_spwids)
-                fmins = list_fmin[start:end]
-                bws = list_bw[start:end]
-                step = max(len(list_spwids) - 1, 1)
-                for f, w, spwid, index in zip(fmins[::step], bws[::step], list_spwids[::step], list_indices[::step]):
-                    ax_spw.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
-        else:  # For ALMA, NRO and VLA with moderate spws
-            for f, w, spwid, index in zip(list_fmin, list_bw, list_all_spwids, list_all_indices):
-                ax_spw.annotate('%s' % spwid, (f+w/2, index-yspace), fontsize=14)
-
-        # Make a plot of frequency vs. atm transmission
-        # For VLA data it is out of scope in PIPE-1415 and will be implemented in PIPE-1873. 
-        if self.context.project_summary.telescope not in ('VLA', 'EVLA'):  # For ALMA and NRO
-            atm_color = 'm'
-            ax_atm = ax_spw.twinx()
-            ax_atm.set_ylabel('ATM Transmission', color=atm_color, labelpad=2, fontsize=14)
-            ax_atm.set_ylim(0, 1.05)
-            ax_atm.tick_params(direction='out', colors=atm_color, labelsize=13)
-            ax_atm.yaxis.set_major_formatter(ticker.FuncFormatter(lambda t, pos: '{}%'.format(int(t * 100))))
-            ax_atm.yaxis.tick_right()
-            antid = 0
-            if hasattr(ms, 'reference_antenna') and isinstance(ms.reference_antenna, str):
-                antid = ms.get_antenna(search_term=ms.reference_antenna.split(',')[0])[0].id
-
-            for spwid in list_all_spwids:
-                atm_freq, atm_transmission = atmutil.get_transmission(vis=ms.name, antenna_id=antid, spw_id=spwid)
-                ax_atm.plot(atm_freq, atm_transmission, color=atm_color, marker='.', markersize=4, linestyle='-')
-
-        fig.savefig(filename)
-        return self._get_plot_object()
-
-    def _get_figfile(self) -> str:
-        """Get filepath of output PNG file.
+        If the plot file already exists, Plot object is generated from
+        the existing file. If input MS is the one generated by the
+        pipeline (e.g., in mstransform or baseline stages), this method
+        will copy the plot file from the origin MS if it exists.
 
         Returns:
-            Filepath of output PNG file
+            Plot object
+            Note that it returns None if no TARGET scans found in MS
         """
-        session_part = self.inputs.ms.session
-        ms_part = self.inputs.ms.basename
-        return os.path.join(self.context.report_dir,
-                            'session%s' % session_part,
-                            ms_part, 'spwid_vs_freq.png')
+        filename = self.inputs.output
+        ms = self.inputs.ms
+        origin_filename = filename.replace(ms.basename, ms.origin_ms)
+        if os.path.exists(filename):
+            return self._get_plot_object()
+        elif os.path.exists(origin_filename):
+            LOG.info("Copying frequency coverage plot for origin_ms.")
+            shutil.copyfile(origin_filename, filename)
+            return self._get_plot_object()
+        request_spws = ms.get_spectral_windows()
+        targeted_scans = ms.get_scans(scan_intent='TARGET')
+        if len(targeted_scans) == 0:
+            LOG.warning(f'No TARGET scans found in MS {ms.name}. Skip generating SPW ID vs. Frequency coverage plot.')  # PIPE-2284
+            return None
+        antid = 0
+        if hasattr(ms, 'reference_antenna') and isinstance(ms.reference_antenna, str):
+            antid = ms.get_antenna(search_term=ms.reference_antenna.split(',')[0])[0].id
+        # prepare axes
+        fig = figure.Figure(figsize=(9.6, 7.2))
+        ax_spw = fig.add_axes([0.1, 0.1, 0.8, 0.8])
+        bar_height = 0.4
+        max_spws_to_annotate_VLA = 16  # request for VLA, PIPE-1415.
+        max_spws_to_annotate_ALMA_NRO = np.inf  # annotate all spws for ALMA/NRO
+        colorcycle = matplotlib.rcParams['axes.prop_cycle']()
+        atm_color = [0.17, 0.17, 0.17]  # very dark gray
+        ax_atm = ax_spw.twinx()
+
+        # plot spws
+        if self.context.project_summary.telescope in ('VLA', 'EVLA'):  # For VLA
+            spw_list_generator = self._extract_spwdata_vla()
+            scan_spws = request_spws
+            max_spws_to_annotate = max_spws_to_annotate_VLA
+        else:  # for ALMA or NRO
+            spw_list_generator = self._extract_spwdata_alma_nro()
+            scan_spws = {spw for scan in targeted_scans for spw in scan.spws if spw in request_spws}
+            max_spws_to_annotate = max_spws_to_annotate_ALMA_NRO
+        xmin, xmax = np.inf, -np.inf
+        totalnum_spws = len(scan_spws)
+        idx = 0
+        rmin = np.inf
+        for spwid_list in spw_list_generator:
+            color = next(colorcycle)['color']
+            for spwid in spwid_list:
+
+                # 1. draw bars
+                spwdata = [spw for spw in scan_spws if spw.id == spwid][0]
+                bw = float(spwdata.bandwidth.to_units(measures.FrequencyUnits.GIGAHERTZ))
+                fmin = float(spwdata.min_frequency.to_units(measures.FrequencyUnits.GIGAHERTZ))
+                xmin, xmax = min(xmin, fmin), max(xmax, fmin+bw)
+                ax_spw.barh(idx, bw, height=bar_height, left=fmin, color=color)
+
+                # 2. annotate each bars
+                if totalnum_spws <= max_spws_to_annotate or spwid in [spwid_list[0], spwid_list[-1]]:
+                    ax_spw.annotate(str(spwid), (fmin + bw/2, idx - bar_height/2), fontsize=14, ha='center', va='bottom')
+                idx += 1
+                rmin = min(rmin, abs(atmutil.get_spw_spec(vis=ms.name, spw_id=spwid)[2]))
+
+        # 3. Frequency vs. ATM transmission
+        center_freq = (xmin + xmax) / 2.0
+        # Determining the resolution value so that generates fine ATM transmission curve: it is set
+        # to smaller than 500 kHz but is set to larger than that corresponding to 48001 data points.
+        default_resolution = 5e-4  # To have 5 data points within the ozone feature of 2 MHz FWHM:
+                                   # 2 MHz/(5-1) = 500 kHz.
+        max_nchan = 48001  # 24 GHz/500 kHz, where 24 GHz covers both sidebands of a 4-12 GHz IF
+                           # for a single LO tuning.
+        fspan = xmax - xmin
+        resolution = min(default_resolution, rmin)
+        nchan = min(max_nchan, round(fspan / resolution) + 1)
+        resolution = fspan / (nchan - 1)
+        LOG.info("'Spectral Window ID vs. Frequency' plots the atmospheric transmission with %d data points at %.3f kHz intervals." % (nchan, resolution*1e6))
+        atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, antenna_id=antid, doplot=False)
+
+        ax_atm.plot(atm_freq, atm_transmission, color=atm_color, alpha=0.6, linestyle='-', linewidth=2.0)
+
+        # set axes limits, title, label, grid, tick, and save the plot to file
+        ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
+        ax_spw.invert_yaxis()
+        ax_spw.set_ylim(totalnum_spws + totalnum_spws/20.0, -1.0 - totalnum_spws/20.0)  # The spw indices are from 0 to totalnum_spws. y-axis is inverted. totalnum_spws/20.0 is a mergin. -1.0 is upper edge.
+        ax_spw.set_title('Spectral Window ID vs. Frequency', loc='center')
+        ax_spw.set_xlabel("Frequency (GHz)", fontsize=14)
+        ax_spw.grid(axis='x')
+        ax_spw.tick_params(labelsize=13)
+        ax_spw.set_yticks([])
+        ax_atm.set_ylabel('ATM Transmission', color=atm_color, labelpad=2, fontsize=14)
+        ax_atm.set_ylim(0, 1.05)
+        ax_atm.tick_params(direction='out', colors=atm_color, labelsize=13)
+        ax_atm.yaxis.set_major_formatter(ticker.FuncFormatter(lambda t, pos: '{}%'.format(int(t * 100))))
+        ax_atm.yaxis.tick_right()
+        fig.savefig(filename)
+        return self._get_plot_object()
 
     def _get_plot_object(self) -> logger.Plot:
         """Get plot object.

@@ -3,21 +3,19 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hifa.tasks.exportdata.almaexportdata.ALMAExportDataInputs.__init__
 @utils.cli_wrapper
-def hifa_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, pprfile=None, calintents=None,
-                    calimages=None, targetimages=None, products_dir=None, dryrun=None, acceptresults=None):
-    """
-    hifa_exportdata ---- Prepare interferometry data for export
+def hifa_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, tarms=None,
+                    pprfile=None, calintents=None,
+                    calimages=None, targetimages=None, products_dir=None):
+    """Prepare interferometry data for export.
 
-    
-    Prepare interferometry data for export.
-    
     The hifa_exportdata task for ALMA CASA pipeline exports the data defined
     in the pipeline context and exports it to the data products directory,
     converting and or packing it as necessary.
-    
+
     The current version of the task exports the following products
-    
+
     - an XML file containing the pipeline processing request
     - a tar file per ASDM / MS containing the final flags version
     - a text file per ASDM / MS containing the final calibration apply list
@@ -29,74 +27,22 @@ def hifa_exportdata(vis=None, session=None, imaging_products_only=None, exportms
     - an XML "manifest" file listing the products
     - an XML "aquareport" file listing the QA scores and sub-scores,
       image sensitivities, and other numerical information
-    
-    Output:
 
-        results -- The results object for the pipeline task is returned.
+    Returns:
+        The results object for the pipeline task is returned.
 
-    --------- parameter descriptions ---------------------------------------------
+    Examples:
+        1. Export the pipeline results for a single session to the data products
+        directory:
 
-    vis
-                          List of visibility data files for which flagging and calibration
-                          information will be exported. Defaults to the list maintained in the
-                          pipeline context.
+        >>> !mkdir ../products
+        >>> hif_exportdata(products_dir='../products')
 
-                          Example: vis=['X227.ms', 'X228.ms']
-    session
-                          List of sessions one per visibility file. Currently defaults
-                          to a single virtual session containing all the visibility files in vis.
-                          In the future, this will default to the set of observing sessions defined
-                          in the context.
+        2. Export the pipeline results to the data products directory specify that
+        only the gain calibrator images be saved:
 
-                          Example: session=['session1', 'session2']
-    imaging_products_only
-                          Export science target imaging products only
-    exportmses
-                          Export the final MeasurementSets instead of the final flags,
-                          calibration tables, and calibration instructions.
-    pprfile
-                          Name of the pipeline processing request to be exported. Defaults
-                          to a file matching the template 'PPR_*.xml'.
-
-                          Example: pprfile=['PPR_GRB021004.xml']
-    calintents
-                          List of calibrator image types to be exported. Defaults to
-                          all standard calibrator intents, 'BANDPASS', 'PHASE', 'FLUX'.
-
-                          Example: 'PHASE'
-    calimages
-                          List of calibrator images to be exported. Defaults to all
-                          calibrator images recorded in the pipeline context.
-
-                          Example: calimages=['3C454.3.bandpass', '3C279.phase']
-    targetimages
-                          List of science target images to be exported. Defaults to all
-                          science target images recorded in the pipeline context.
-
-                          Example: targetimages=['NGC3256.band3', 'NGC3256.band6']
-    products_dir
-                          Name of the data products subdirectory. Defaults to './'.
-
-                          Example: products_dir='../products'
-    dryrun
-                          Run the task (False) or display task command (True).
-    acceptresults
-                          Add the results of the task to the pipeline context (True) or
-                          reject them (False).
-
-    --------- examples -----------------------------------------------------------
-
-    1. Export the pipeline results for a single session to the data products
-    directory:
-    
-    >>> !mkdir ../products
-    >>> hif_exportdata(products_dir='../products')
-    
-    2. Export the pipeline results to the data products directory specify that
-    only the gain calibrator images be saved:
-    
-    >>> !mkdir ../products
-    >>> hif_exportdata(products_dir='../products', calintents='*PHASE*')
+        >>> !mkdir ../products
+        >>> hif_exportdata(products_dir='../products', calintents='*PHASE*')
 
     """
     ##########################################################################

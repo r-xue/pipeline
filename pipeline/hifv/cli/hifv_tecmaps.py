@@ -3,31 +3,19 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hifv.tasks.tecmaps.tecmaps.TecMapsInputs.__init__
 @utils.cli_wrapper
-def hifv_tecmaps(vis=None, dryrun=None, acceptresults=None):
+def hifv_tecmaps(vis=None):
 
-    """
-    hifv_tecmaps ---- Base tecmaps task
+    """Base tecmaps task
 
-    Output:
-    results -- The results object for the pipeline task is returned.
+    Returns:
+        The results object for the pipeline task is returned.
 
-    --------- parameter descriptions ---------------------------------------------
+    Examples:
+        1. Basic tecmaps task:
 
-    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
-                  specified in the h_init or hifv_importdata task.
-    dryrun        Run the commands (True) or generate the commands to be run but
-                  do not execute (False).  This is a pipeline task execution mode.
-    acceptresults Add the results of the task to the pipeline context (True) or
-                  reject them (False).  This is a pipeline task execution mode.
-
-    --------- examples -----------------------------------------------------------
-    
-    
-    1. Basic tecmaps task
-    
-    >>> hifv_tecmaps()
-
+        >>> hifv_tecmaps()
 
     """
 

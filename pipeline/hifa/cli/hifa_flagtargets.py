@@ -3,47 +3,23 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hifa.tasks.flagging.flagtargetsalma.FlagTargetsALMAInputs.__init__
 @utils.cli_wrapper
-def hifa_flagtargets(vis=None, template=None, filetemplate=None, flagbackup=None, dryrun=None, acceptresults=None):
-    """
-    hifa_flagtargets ---- Do science target flagging
+def hifa_flagtargets(vis=None, template=None, filetemplate=None, flagbackup=None, parallel=None):
+    """Do science target flagging.
 
-    
     The hifa_flagtargets task performs basic flagging operations on a list of
     science target MeasurementSets, including:
 
     - applying a flagging template
 
-    Output:
+    Returns:
+        The results object for the pipeline task is returned.
 
-        results -- The results object for the pipeline task is returned.
+    Examples:
+        1. Do basic flagging on a science target MeasurementSet:
 
-    --------- parameter descriptions ---------------------------------------------
-
-    vis
-                  The list of input MeasurementSets. Defaults to the list
-                  of MeasurementSets defined in the pipeline context.
-    template
-                  Apply flagging templates; defaults to True.
-    filetemplate
-                  The name of a text file that contains the flagging
-                  template for issues with the science target data etc. 
-                  If the template flags files is undefined a name of the 
-                  form 'msname_flagtargetstemplate.txt' is assumed.
-    flagbackup
-                  Back up any pre-existing flags; defaults to False.
-    dryrun
-                  Run the commands (False) or generate the commands to be
-                  run but do not execute (True).
-    acceptresults
-                  Add the results of the task to the pipeline context (True)
-                  or reject them (False).
-
-    --------- examples -----------------------------------------------------------
-
-    1. Do basic flagging on a science target MeasurementSet:
-    
-    >>> hifa_flagtargets()
+        >>> hifa_flagtargets()
 
     """
     ##########################################################################

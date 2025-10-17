@@ -5,6 +5,8 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.imagelibrary as imagelibrary
 import pipeline.infrastructure.utils as utils
 
+from pipeline.hif.tasks.makeimlist.cleantarget import CleanTargetInfo
+
 
 class MakeImagesResult(basetask.Results):
     def __init__(self):
@@ -32,17 +34,21 @@ class MakeImagesResult(basetask.Results):
         self.clean_list_info = info
 
     def merge_with_context(self, context):
-        # add the cleaned targets to the context
+        """Add the cleaned targets to the context."""
+
         for result in self.results:
             try:
                 img_params = {kk: vv['imaging_params'] for (kk, vv) in result.iterations.items()}
                 imageitem = imagelibrary.ImageItem(
-                  imagename=result.image, sourcename=result.sourcename,
-                  spwlist=result.spw, specmode=result.specmode,
-                  sourcetype=result.intent,
-                  multiterm=result.multiterm,
-                  imaging_params=img_params,  # imaging parameters for each iteration
-                  imageplot=result.imageplot)
+                    imagename=result.image, sourcename=result.sourcename,
+                    spwlist=result.spw, specmode=result.specmode,
+                    sourcetype=result.intent,
+                    stokes=result.stokes,
+                    datatype=result.datatype,
+                    multiterm=result.multiterm,
+                    metadata=result.imaging_metadata,
+                    imaging_params=img_params,  # imaging parameters for each iteration
+                    imageplot=result.imageplot)
                 if 'TARGET' in result.intent:
                     context.sciimlist.add_item(imageitem, self.overwrite)
                 else:
@@ -50,21 +56,7 @@ class MakeImagesResult(basetask.Results):
             except:
                 pass
 
-#        for item in context.sciimlist.get_imlist():
-#            print 'science'
-#            print item
-#            print item['imagename']
-#            print item['sourcename'], item['spwlist'], item['sourcetype']
-#            print item['imageplot']
-
-#        for item in context.calimlist.get_imlist():
-#            print 'calib'
-#            print item
-#            print item['imagename']
-#            print item['sourcename'], item['spwlist'], item['sourcetype']
-#            print item['imageplot']
-
-        # Calculated sensitivities for later stages
+        # Save quantities in the context for later stages
         skip_recalc = False
         for result in self.results:
             # Calculated beams for later stages
@@ -84,6 +76,12 @@ class MakeImagesResult(basetask.Results):
                     skip_recalc = True
                 else:
                     utils.update_sens_dict(context.per_spw_cont_sensitivities_all_chan, result.per_spw_cont_sensitivities_all_chan)
+
+            # Clean masks and thresholds for later stages
+            if result.stokes == 'I' and (result.cleanmask not in (None, '')):
+                cleanTargetKey = CleanTargetInfo(datatype=result.datatype, field=result.sourcename, intent=result.intent, virtspw=result.spw, stokes=result.stokes, specmode=result.specmode)
+                context.clean_masks[cleanTargetKey] = result.cleanmask
+                context.clean_thresholds[cleanTargetKey] = result.threshold
 
         # empty the pending list and message
         context.clean_list_pending = []

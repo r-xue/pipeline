@@ -28,6 +28,27 @@ def _char_replacer(s, valid_chars):
     return s
 
 
+# Allow _target.ms, _targets.ms or .ms endings: needed to import
+# Measurement Sets (see PIPE-579, PIPE-1082, PIPE-1112, PIPE-1544)
+def sanitize_for_ms(vis_name: str) -> str:
+    """Remove suffix from MS name.
+
+    Sanitized name is generated from input MS name by removing
+    suffix. This method recognizes ".ms", "_target.ms", and
+    "_targets.ms" as suffix.
+
+    Args:
+        vis_name: Name of MS
+
+    Returns:
+        Sanitized name
+    """
+    for msend in ('_target.ms', '_targets.ms', '.ms'):
+        if vis_name.endswith(msend):
+            return sanitize_for_ms(vis_name[:-len(msend)])
+    return vis_name
+
+
 def sanitize(text, valid_chars=None):
     if valid_chars is None:
         valid_chars = _valid_chars
@@ -90,7 +111,7 @@ class FileNameComponentBuilder(object):
         self._stage = None
 
     def build(self):
-        # The file names will be assembled using the order of the attributes 
+        # The file names will be assembled using the order of the attributes
         # given here
         attributes = (os.path.basename(self._asdm),
                       self._task,
@@ -259,21 +280,15 @@ def sort_spws(unsorted):
 
 class NamingTemplate(object):
     """Base class used for all naming templates."""
-    dry_run = True
     task = None
 
     def __init__(self):
         self._associations = FileNameComponentBuilder()
 
-    def get_filename(self, delete=False):
+    def get_filename(self):
         """Assembles and returns the final filename."""
         filename_components = self._associations.build()
         filename = '.'.join([filename_components])
-
-        if delete and not NamingTemplate.dry_run:
-            # .. and remove any old table with this name
-            shutil.rmtree(filename, ignore_errors=True)
-
         return filename
 
     def output_dir(self, output_dir):
@@ -368,7 +383,7 @@ class CalibrationTable(NamingTemplate):
     Defines the calibration table naming scheme.
 
     File names have the syntax:
-    <ASDM UID>.<spgrp>.<pol>.<fit>.<type>.<format>, 
+    <ASDM UID>.<spgrp>.<pol>.<fit>.<type>.<format>,
     eg. uid___X02_X3d737_X1.spwgrp1.X.channel.bcal.tbl.
     """
     _extensions = ['bcal', 'dcal', 'fcal', 'gcal', 'gacal', 'gpcal', 'pcal']

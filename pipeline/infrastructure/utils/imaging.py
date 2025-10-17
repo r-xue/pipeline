@@ -62,7 +62,7 @@ def chan_selection_to_frequencies(img: str, selection: str, unit: str = 'GHz') -
         List of pairs of frequency values (float) in the desired units
     """
 
-    if selection in ('NONE', 'ALL'):
+    if selection in ('NONE', 'ALL', 'ALLCONT'):
         return [selection]
 
     frequencies = []
@@ -110,7 +110,7 @@ def freq_selection_to_channels(img: str, selection: str) -> Union[List[int], Lis
         List of pairs of channel values (int)
     """
 
-    if selection in ('NONE', 'ALL'):
+    if selection in ('NONE', 'ALL', 'ALLCONT'):
         return [selection]
 
     channels = []
@@ -410,9 +410,9 @@ def velocity_to_frequency(velocity: Union[Dict, str], restfreq: Union[Dict, str]
     """
 
     cqa = casa_tools.quanta
-    light_speed = float(cqa.getvalue(cqa.convert(cqa.constants('c'), 'km/s')))
-    velocity = float(cqa.getvalue(cqa.convert(cqa.quantity(velocity), 'km/s')))
-    val = float(cqa.getvalue(restfreq)) * (1 - velocity / light_speed)
+    light_speed = float(cqa.getvalue(cqa.convert(cqa.constants('c'), 'km/s'))[0])
+    velocity = float(cqa.getvalue(cqa.convert(cqa.quantity(velocity), 'km/s'))[0])
+    val = float(cqa.getvalue(restfreq)[0]) * (1 - velocity / light_speed)
     unit = cqa.getunit(restfreq)
     frequency = cqa.tos(cqa.quantity(val, unit))
     return frequency
@@ -433,9 +433,9 @@ def frequency_to_velocity(frequency: Union[Dict, str], restfreq: Union[Dict, str
     """
 
     cqa = casa_tools.quanta
-    light_speed = float(cqa.getvalue(cqa.convert(cqa.constants('c'), 'km/s')))
-    restfreq = float(cqa.getvalue(cqa.convert(restfreq, 'MHz')))
-    freq = float(cqa.getvalue(cqa.convert(frequency, 'MHz')))
+    light_speed = float(cqa.getvalue(cqa.convert(cqa.constants('c'), 'km/s'))[0])
+    restfreq = float(cqa.getvalue(cqa.convert(restfreq, 'MHz'))[0])
+    freq = float(cqa.getvalue(cqa.convert(frequency, 'MHz'))[0])
     val = light_speed * ((restfreq - freq) / restfreq)
     velocity = cqa.tos(cqa.quantity(val, 'km/s'))
     return velocity
@@ -443,9 +443,9 @@ def frequency_to_velocity(frequency: Union[Dict, str], restfreq: Union[Dict, str
 
 def predict_kernel(beam, target_beam, pstol=1e-6, patol=1e-3):
     """Predict the required convolution kernel to each a target restoring beam.
-    
-    pstol: the tolerance in arcsec for original vs. target bmaj/bmin identical or kernel "point source" like. 
-    patol: the tolerance in degree for original vs. target bpa identical 
+
+    pstol: the tolerance in arcsec for original vs. target bmaj/bmin identical or kernel "point source" like.
+    patol: the tolerance in degree for original vs. target bpa identical
 
     return_code:
         0:  sucess, the target beam can be reached with a valid convolution kernel
@@ -487,24 +487,21 @@ def predict_kernel(beam, target_beam, pstol=1e-6, patol=1e-3):
         target_bm = [cqa.tos(target_beam['major']), cqa.tos(target_beam['minor']), cqa.tos(target_beam[t_bpa_key])]
         origin_bm = [cqa.tos(beam['major']), cqa.tos(beam['minor']), cqa.tos(beam[bpa_key])]
 
-        # filter out the potential runtime error message when ia.beamforconvolvedsize() fails
-        clog.filterMsg('Unable to reach target resolution of major')
+        # filter out the potential runtime error message when ia.beamforconvolvedsize() fails.
+        with logging.log_filtermsg('Unable to reach target resolution of major'):
+            try:
+                rt_kernel = cia.beamforconvolvedsize(source=origin_bm, convolved=target_bm)
+                if cqa.convert(rt_kernel['major'], 'arcsec')['value'] < pstol:
+                    LOG.info('The kernel from ia.deconvolvefrombeam() is considered as a point-source under the tolerance ' +
+                            f'pstol = {pstol} arcsec.')
+                    rt_code = 1
+                else:
+                    LOG.info(f'The convolution kernel prediced by ia.deconvolvefrombeam is {rt_kernel} and larger than the tolerence ' +
+                            f'pstol = {pstol} arcsec')
+                    rt_code = 0
+            except RuntimeError as e:
+                LOG.info("Unable to reach the target beam shape because the original beam is probably already too large.")
+                rt_code = 2
 
-        try:
-            rt_kernel = cia.beamforconvolvedsize(source=origin_bm, convolved=target_bm)
-            if cqa.convert(rt_kernel['major'], 'arcsec')['value'] < pstol:
-                LOG.info('The kernel from ia.deconvolvefrombeam() is considered as a point-source under the tolerance ' +
-                         f'pstol = {pstol} arcsec.')
-                rt_code = 1
-            else:
-                LOG.info(f'The convolution kernel prediced by ia.deconvolvefrombeam is {rt_kernel} and larger than the tolerence ' +
-                         f'pstol = {pstol} arcsec')
-                rt_code = 0
-        except RuntimeError as e:
-            LOG.info("Unable to reach the target beam shape because the original beam is probably already too large.")
-            rt_code = 2
-
-        # clean up the filtered messages
-        clog.clearFilterMsgList()
 
     return rt_kernel, rt_code

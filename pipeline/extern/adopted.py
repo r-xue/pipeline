@@ -146,6 +146,70 @@ def getMedianPWV(vis='.', myTimes=[0, 999999999999], asdm='', verbose=False):
     return pwvmean, pwvstd
 
 
+# This function was adopted from analysisUtils.py to support PIPE-2103
+# It has been modified to work with the pipeline and to support the
+# PIPE-2103 usecase.
+def CalcAtmosphere(freqs, pwv,
+                   P=563, H=20, T=273, airmass=1.0,
+                   atmType=1, siteAltitude_m=5059,
+                   maxAltitude=48.0,   # i.e., top of atmosphere
+                   h0=1.0,    # water vapor scale height in km
+                   dP=5.0,    # model step to use in mbar
+                   dPm=1.1,   # pressure step factor (unitless)
+                   ):
+    """
+    Uses the at tool in CASA to compute atmospheric model.
+    freqs: frequencies (in GHz) corresponding to chans
+    atmType: 1, 2, or 3, default=1=tropical, 2=midLatSummer, 3=midLatWinter
+    dP: pressure step, has units of pressure (mb)
+    dPm: pressure step factor (unitless) called PstepFact in TelCal
+    maxAltitude: of the atmosphere, in km
+    returns 5 arrays:
+       freq, chans, transmission (0..1), TebbSky, tau
+    """
+    myat = casa_tools.atmosphere
+    myqa = casa_tools.quanta
+    numchan = len(freqs)
+    reffreq = 0.5 * (freqs[numchan//2-1]+freqs[numchan//2])  # frequency of the CENTER of the spw
+    chansep = (freqs[-1]-freqs[0])/(numchan-1)
+    resolution = chansep # this assumption appears to be built-in to the at tool, but not true for most ALMA data
+    nbands = 1
+
+    # from AtmosphereScan.cpp
+    maxAltitude = myqa.quantity(maxAltitude, 'km')
+    h0 = myqa.quantity(h0, 'km')
+    dP = myqa.quantity(dP, 'mbar')
+    fCenter = myqa.quantity(reffreq, 'GHz')
+    fResolution = myqa.quantity(resolution, 'GHz')
+    fWidth = myqa.quantity(numchan * chansep, 'GHz')
+
+    myat.initAtmProfile(humidity=H, temperature=myqa.quantity(T, "K"),
+                        altitude=myqa.quantity(siteAltitude_m, "m"),
+                        pressure=myqa.quantity(P, 'mbar'), atmType=atmType,
+                        dP=dP, maxAltitude=maxAltitude, h0=h0, dPm=dPm)
+
+    myat.initSpectralWindow(nbands, fCenter, fWidth, fResolution)
+    myat.setUserWH2O(myqa.quantity(pwv, 'mm'))
+    # This does not affect the opacity, but it does effect TebbSky, so do it manually.
+    myat.setAirMass(airmass)
+    dry = np.array(myat.getDryOpacitySpec(0)[1])
+    wet = np.array(myat.getWetOpacitySpec(0)[1]['value'])
+    TebbSky = myat.getTebbSkySpec(spwid=0)[1]['value']
+
+    transmission = np.exp(-airmass*(wet+dry))
+
+    numchan = len(transmission)
+    chans = range(len(transmission))
+    startFreq = myqa.convert(myat.getChanFreq(0), 'GHz')['value']
+    endFreq = myqa.convert(myat.getChanFreq(numchan-1), 'GHz')['value']
+
+    myat.close()
+    myqa.done()
+    freq = np.linspace(startFreq, endFreq, numchan)
+
+    return freq, chans, transmission, TebbSky, airmass*(wet+dry)
+
+
 def readPWVFromASDM_CALATMOSPHERE(vis):
     """
     Reads the PWV via the water column of the ASDM_CALATMOSPHERE table.

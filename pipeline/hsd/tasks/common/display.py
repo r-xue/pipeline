@@ -2,11 +2,11 @@
 import abc
 import collections
 import copy
-import datetime
 import enum
 import itertools
 import math
 import os
+import scipy
 from typing import Generator, List, NoReturn, Optional, Tuple, Union
 
 from casatools import coordsys as casa_coordsys  # Used for annotation purpose.
@@ -24,6 +24,7 @@ from pipeline.infrastructure import casa_tools
 from pipeline.domain.singledish import MSReductionGroupDesc
 from pipeline.infrastructure.renderer.logger import Plot
 from pipeline.infrastructure.utils import absolute_path
+from .utils import mjd_to_datetime
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -38,22 +39,6 @@ sd_polmap = {0: 'XX', 1: 'YY', 2: 'XY', 3: 'YX'}
 
 NoData = -32767.0
 NoDataThreshold = NoData + 10000.0
-
-def mjd_to_datetime(val: float) -> datetime.datetime:
-    """Convert MJD to datetime instance.
-
-    Args:
-        val: MJD value in day.
-
-    Returns:
-        datetime.datetime: datetime instance
-    """
-    qa = casa_tools.quanta
-    mjd = qa.splitdate(qa.quantity(val, 'd'))
-    date_time = datetime.datetime(mjd['year'], mjd['month'],
-                                  mjd['monthday'], mjd['hour'],
-                                  mjd['min'], mjd['sec'])
-    return date_time
 
 
 def mjd_to_plotval(mjd_list: Union[List[float], np.ndarray]) -> np.ndarray:
@@ -253,7 +238,7 @@ class SpectralImage(object):
             self.dec_max = top[direction_keys[1]]
             self._brightnessunit = ia.brightnessunit()
             beam = ia.restoringbeam()
-        self._beamsize_in_deg = qa.convert(qa.sqrt(qa.mul(beam['major'], beam['minor'])), 'deg')['value']
+        self._beamsize_in_deg = qa.convert(qa.sqrt(qa.mul(beam['major'], beam['minor'])), 'deg')['value'] if beam else None
 
     def _load_coordsys(self, coordsys: casa_coordsys) -> None:
         """Load axes information of coordinate system.
@@ -576,12 +561,22 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
         return self.result.outcome['image'].sourcename
 
     @property
+    def missedlines_plot(self) -> str:
+        """Return file name of the missedlines plot."""
+        return self.imagename.rstrip('/') + '.missedlines.png'
+
+    @property
     def contamination_plot(self) -> str:
         """Return file name of the contamination plot."""
         return self.imagename.rstrip('/') + '.contamination.png'
 
-    def valid_lines(self, is_freq_chan_reversed_image: bool=False) -> List[List[int]]:
-        """Return list of chnnel ranges of valid spectral lines."""
+    def valid_lines(self) -> List[List[Union[float, int, bool]]]:
+        """
+        Return list of channel ranges of valid spectral lines.
+
+        Returns:
+            the list of valid spectral lines
+        """
         group_desc = self.reduction_group
         ant_index = self.antennaid_list
         spwid_list = self.spwid_list
@@ -604,10 +599,6 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
                 for ll in copy.deepcopy(g.channelmap_range):
                     if ll not in line_list and ll[2] is True:
                         line_list.append(ll)
-        if is_freq_chan_reversed_image:
-            _right_edge = float(self.image.nchan - 1)
-            for ll in line_list:
-                ll[0] = _right_edge - ll[0]
         return line_list
 
     def create_channel_mask(self, channel_selection: ChannelSelection) -> str:
@@ -788,6 +779,7 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
         self.npol = self.image.npol
         self.brightnessunit = self.image.brightnessunit
         self.direction_reference = self.image.direction_reference
+        self.frequency_frame = self.image.frequency_frame
         (refpix, refval, increment) = self.image.spectral_axis(unit='GHz')
         self.frequency = np.array([refval + increment * (i - refpix) for i in range(self.nchan)])
         self.velocity = self.image.to_velocity(self.frequency, freq_unit='GHz')
@@ -979,7 +971,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
     """
 
     def __init__(self, fig: figure.Figure, nh: int, nv: int, brightnessunit: str,
-                 ticksize: int, clearpanel: bool = True) -> None:
+                 freq_frame: str, ticksize: int, clearpanel: bool = True) -> None:
         """Construct SparseMapAxesManager instance.
 
         Args:
@@ -987,6 +979,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             nh: Number of panels along vertical axis.
             nv: Number of panels along horizontal axis.
             brightnessunit: Brightness unit.
+            freq_frame: Frequency reference frame.
             ticksize: Size of tick label.
             clearpanel: Clear existing Axes. Defaults to True.
         """
@@ -996,6 +989,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
         self.nv = nv
         self.ticksize = ticksize
         self.brightnessunit = brightnessunit
+        self.freq_frame = freq_frame
 
         self._axes_integsp = None
         self._axes_spmap = None
@@ -1032,7 +1026,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             axes.cla()
             axes.xaxis.get_major_formatter().set_useOffset(False)
             axes.yaxis.get_major_formatter().set_useOffset(False)
-            axes.set_xlabel('Frequency(GHz)', size=(self.ticksize + 1))
+            axes.set_xlabel(f'Frequency (GHz) {self.freq_frame}', size=(self.ticksize + 1))
             axes.set_ylabel('Intensity({})'.format(self.brightnessunit), size=(self.ticksize + 1))
             xlabels = axes.get_xticklabels()
             for label in xlabels:
@@ -1212,7 +1206,7 @@ class SDSparseMapPlotter(object):
     """Plotter for sparse spectral map."""
 
     def __init__(self, fig: figure.Figure, nh: int, nv: int, step: int, brightnessunit: str,
-                 clearpanel: bool = True) -> None:
+                 freq_frame: str, clearpanel: bool = True) -> None:
         """Construct SDSparseMapPlotter instance.
 
         Args:
@@ -1220,6 +1214,7 @@ class SDSparseMapPlotter(object):
             nh: Number of panels along vertical axis.
             nv: Number of panels along horizontal axis.
             brightnessunit: Brightness unit.
+            freq_frame: Frequency reference frame.
             clearpanel: Clear existing Axes. Defaults to True.
         """
         self.step = step
@@ -1229,7 +1224,11 @@ class SDSparseMapPlotter(object):
             ticksize = 10 - int(max(nh, nv)) // 2
         ticksize = max(ticksize, 3)
         fig.set_dpi(DPIDetail)
-        self.axes = SparseMapAxesManager(fig, nh, nv, brightnessunit, ticksize, clearpanel)
+        self.axes = SparseMapAxesManager(
+            fig, nh, nv,
+            brightnessunit, freq_frame,
+            ticksize, clearpanel
+        )
         self.lines_averaged = None
         self.lines_map = None
         self.reference_level = None
@@ -1239,6 +1238,7 @@ class SDSparseMapPlotter(object):
         self.atm_transmission = None
         self.atm_frequency = None
         self.channel_axis = False
+        self.freq_frame = None
 
     @property
     def nh(self) -> int:
@@ -1466,6 +1466,11 @@ class SDSparseMapPlotter(object):
 
         global_xmin = min(frequency[0], frequency[-1])
         global_xmax = max(frequency[0], frequency[-1])
+        # NOTE: we assume channels are equally binned
+        channel_width = abs(frequency[1] - frequency[0])
+        spw_width = channel_width * len(frequency)
+        global_xmin -= spw_width * 0.01
+        global_xmax += spw_width * 0.01
         LOG.debug('global_xmin=%s, global_xmax=%s', global_xmin, global_xmax)
 
         # Auto scaling
@@ -1534,28 +1539,28 @@ class SDSparseMapPlotter(object):
                 os.path.basename(figfile)
             )
             return False
-        fedge_span = None
+        fedge_span = np.array([0, 0, 0, 0], dtype=float)
         if self.edge is not None:
             (ch1, ch2) = self.edge
-            LOG.info('ch1, ch2: [%s, %s]' % (ch1,ch2))
-            fedge0 = ch_to_freq(0, frequency)
-            fedge1 = ch_to_freq(ch1-1, frequency)
-            fedge2 = ch_to_freq(len(frequency)-ch2-1, frequency)
-            fedge3 = ch_to_freq(len(frequency)-1, frequency)
-            axes.axvspan(fedge0, fedge1, color='lightgray')
-            axes.axvspan(fedge2, fedge3, color='lightgray')
-            fedge_span = (fedge0, fedge1, fedge2, fedge3)
+            LOG.info('ch1, ch2: [%s, %s]' % (ch1, ch2))
+            if ch1 > 0:
+                fedge_span[0:2] = ch_to_freq([-0.5, ch1 - 1 + 0.5], frequency)
+                axes.axvspan(fedge_span[0], fedge_span[1], color='lightgray')
+            if ch2 > 0:
+                fedge_span[2:] = ch_to_freq(
+                    [len(frequency) - 1 - (ch2 - 1) - 0.5, len(frequency) - 1 + 0.5],
+                    frequency
+                )
+                axes.axvspan(fedge_span[2], fedge_span[3], color='lightgray')
         if self.lines_averaged is not None:
             for chmin, chmax in self.lines_averaged:
-                fmin = ch_to_freq(chmin, frequency)
-                fmax = ch_to_freq(chmax, frequency)
+                fmin, fmax = ch_to_freq([chmin - 0.5, chmax + 0.5], frequency)
                 LOG.debug('plotting line range for mean spectrum: [%s, %s]', chmin, chmax)
                 axes.axvspan(fmin, fmax, color='cyan')
         if self.deviation_mask is not None:
             LOG.debug('plotting deviation mask %s', self.deviation_mask)
             for chmin, chmax in self.deviation_mask:
-                fmin = ch_to_freq(chmin, frequency)
-                fmax = ch_to_freq(chmax, frequency)
+                fmin, fmax = ch_to_freq([chmin - 0.5, chmax + 0.5], frequency)
                 axes.axvspan(fmin, fmax, ymin=0.95, ymax=1, color='red')
 
         if overlay_atm_transmission:
@@ -1611,11 +1616,10 @@ class SDSparseMapPlotter(object):
                     axes.plot(frequency, map_data[x][y], color='b', linestyle='-', linewidth=0.2)
                     if self.lines_map is not None and self.lines_map[x][y] is not None:
                         for chmin, chmax in self.lines_map[x][y]:
-                            fmin = ch_to_freq(chmin, frequency)
-                            fmax = ch_to_freq(chmax, frequency)
+                            fmin, fmax = ch_to_freq([chmin - 0.5, chmax + 0.5], frequency)
                             LOG.debug('plotting line range for %s, %s: [%s, %s]', x, y, chmin, chmax)
                             axes.axvspan(fmin, fmax, color='cyan')
-                    if fedge_span is not None:
+                    if any(fedge_span > 0):
                         axes.axvspan(fedge_span[0], fedge_span[1], color='lightgray')
                         axes.axvspan(fedge_span[2], fedge_span[3], color='lightgray')
 
@@ -1650,26 +1654,19 @@ class SDSparseMapPlotter(object):
         del fig
 
 
-def ch_to_freq(ch: float, frequency: List[float]) -> float:
+def ch_to_freq(ch: Union[float, List[float]], frequency: List[float]) -> Union[float, List[float]]:
     """Convert channel into frequency.
 
     Args:
-        ch (float): Channel value.
-        frequency (List[float]): Frequency labels.
+        ch: Channel value, or list of channel values.
+        frequency: Frequency labels.
 
     Returns:
-        float: Frequency value corresponding to ch.
+        float: Frequency value(s) corresponding to ch.
     """
-    ich = int(ch)
-    offset_min = ch - float(ich)
-    if ich < 0:
-        freq = frequency[0]
-    elif ich >= len(frequency):
-        freq = frequency[-1]
-    elif offset_min == 0 or ich == len(frequency) - 1:
-        freq = frequency[ich]
-    else:
-        jch = ich + 1
-        df = frequency[jch] - frequency[ich]
-        freq = frequency[ich] + offset_min * df
-    return freq
+    interpolator = scipy.interpolate.interp1d(
+        np.arange(len(frequency)),
+        frequency,
+        kind='linear',
+        fill_value='extrapolate')
+    return interpolator(ch)

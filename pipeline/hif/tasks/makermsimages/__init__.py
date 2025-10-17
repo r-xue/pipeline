@@ -7,7 +7,7 @@ from . import renderer
 
 def _get_imaging_mode(context, result):
     """Check the last selected imaging mode and pick the custom renderer for VLASS-SE-CUBE."""
-    if hasattr(context, 'imaging_mode') and context.imaging_mode == 'VLASS-SE-CUBE':
+    if context.imaging_mode == 'VLASS-SE-CUBE':
         return 'VLASS-CUBE'
     else:
         return None

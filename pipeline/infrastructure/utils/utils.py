@@ -2,6 +2,9 @@
 The utils module contains general-purpose uncategorised utility functions and
 classes.
 """
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import ast
 import bisect
 import collections
@@ -10,7 +13,9 @@ import copy
 import errno
 import fcntl
 import glob
+import inspect
 import itertools
+import json
 import operator
 import os
 import pickle
@@ -18,23 +23,67 @@ import re
 import shutil
 import string
 import tarfile
-from typing import Collection, Dict, List, Optional, Sequence, Tuple, Union
+import time
+from collections.abc import Iterable
+from datetime import datetime
+from functools import wraps
+from numbers import Number
+from typing import (Any, Callable, Collection, Dict, List, Optional, Sequence,
+                    Tuple, TYPE_CHECKING, Union, Iterator, TextIO)
+from urllib.parse import urlparse
 
 import casaplotms
 import numpy as np
+import numpy.typing as npt
 
 from .. import casa_tools, logging, mpihelpers
-from .conversion import dequote, range_to_list
+from .conversion import commafy, dequote, range_to_list
+
+if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet
 
 LOG = logging.get_logger(__name__)
 
-__all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations',
-           'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_spectralspec_to_spwid_map',
-           'imstat_items', 'get_stokes', 'get_taskhistory_fromimage', 'glob_ordered', 'deduplicate',
-           'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count',
-           'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details', 'get_obj_size', 'get_products_dir',
-           'export_weblog_as_tar', 'ensure_products_dir_exists', 'ignore_pointing', 'request_omp_threading',
-           'open_with_lock', 'nested_dict']
+__all__ = [
+    'absolute_path',
+    'approx_equal',
+    'are_equal',
+    'deduplicate',
+    'dict_merge',
+    'ensure_products_dir_exists',
+    'export_weblog_as_tar',
+    'fieldname_clean',
+    'fieldname_for_casa',
+    'filter_intents_for_ms',
+    'find_ranges',
+    'flagged_intervals',
+    'get_casa_quantity',
+    'get_casa_session_details',
+    'get_field_identifiers',
+    'get_obj_size',
+    'get_products_dir',
+    'get_receiver_type_for_spws',
+    'get_row_count',
+    'get_si_prefix',
+    'get_spectralspec_to_spwid_map',
+    'get_stokes',
+    'get_task_result_count',
+    'get_taskhistory_fromimage',
+    'get_valid_url',
+    'glob_ordered',
+    'ignore_pointing',
+    'imstat_items',
+    'list_to_str',
+    'nested_dict',
+    'open_with_lock',
+    'place_repr_source_first',
+    'relative_path',
+    'remove_trailing_string',
+    'request_omp_threading',
+    'shutdown_plotms',
+    'string_to_val',
+    'validate_url'
+]
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -130,33 +179,6 @@ def approx_equal(x: float, y: float, tol: float = 1e-15) -> bool:
     return (lo + 0.5 * tol) >= (hi - 0.5 * tol)
 
 
-def get_num_caltable_polarizations(caltable: str) -> int:
-    """Obtain number of polarisations from calibration table.
-
-    Seemingly the number of QA ID does not map directly to the number of
-    polarisations for the spw in the MS, but the number of polarisations for
-    the spw as held in the caltable.
-    """
-    with casa_tools.TableReader(caltable) as tb:
-        col_shapes = set(tb.getcolshapestring('CPARAM'))
-
-    # get the number of pols stored in the caltable, checking that this
-    # is consistent across all rows
-    fmt = re.compile(r'\[(?P<num_pols>\d+), (?P<num_rows>\d+)\]')
-    col_pols = set()
-    for shape in col_shapes:
-        m = fmt.match(shape)
-        if m:
-            col_pols.add(int(m.group('num_pols')))
-        else:
-            raise ValueError('Could not find shape of polarisation from %s' % shape)
-
-    if len(col_pols) != 1:
-        raise ValueError('Got %s polarisations from %s' % (len(col_pols), col_shapes))
-
-    return int(col_pols.pop())
-
-
 def flagged_intervals(vec: Union[List, np.ndarray]) -> List:
     """Idendity isnads of ones in input array or list.
 
@@ -214,6 +236,20 @@ def fieldname_clean(field: str) -> str:
     """
     allowed = string.ascii_letters + string.digits + '+-'
     return ''.join([c if c in allowed else '_' for c in field])
+
+
+def filter_intents_for_ms(ms: MeasurementSet, intents: str) -> str:
+    """
+    Filter string of comma-separated intents to keep only those that are present
+    in the given MS.
+    """
+    intents = set(intents.split(','))
+    removed_intents = intents - ms.intents
+    if removed_intents:
+        LOG.debug(f"The following intents are not present in the MS {ms.basename} and will be skipped:"
+                  f" {commafy(removed_intents)}")
+    intents.intersection_update(ms.intents)
+    return ','.join(sorted(intents))
 
 
 def get_field_accessor(ms, field):
@@ -573,6 +609,7 @@ def get_obj_size(obj, serialize=True):
     else:
         try:
             from pympler.asizeof import asizeof
+
             # PIPE-1698: a workaround for NumPy-related issues with the recent Pympler/asizeof versions
             # see https://github.com/pympler/pympler/issues/155
             _ = asizeof(np.str_())
@@ -642,7 +679,7 @@ def ignore_pointing(vis):
         ls -lih test_small.ms/POINTING
 
     """
-    if isinstance(vis, list):
+    if isinstance(vis, (list, set)):
         vis_list = vis
     else:
         vis_list = [vis]
@@ -750,49 +787,87 @@ def request_omp_threading(num_threads=None):
 
 
 @contextlib.contextmanager
-def open_with_lock(filename, mode='r'):
-    """Open file with a lock.
+def open_with_lock(filename: str, mode: str = 'r', *args: Any, **kwargs: Any) -> Iterator[TextIO]:
+    """Open a file with an exclusive lock.
 
-    The file open context manager function will try to lock the file upon opening 
-    so other processes using the same "opener" will wait for the file to unlock. 
-    The applied lock will be released when leaving the context.
-
-    Notes: 
+    This context manager attempts to acquire an exclusive lock on the file upon opening.
+    Other processes using `open_with_lock` will wait until the lock is automatically released
+    when exiting the context.
     
-    all file open calls with `open_with_lock` will block other `open_with_lock` usages 
-    (even from different processes/lustre-clients) from read/write until the lock is released.
-    However, this locking/blocking mechanism will not prevent the file access (potentially 
-    causing IO error) from other file openers (e.g. the default open() function).
-
-    Because the Python/fcntl API depends on the underlying OS/storage implementation: 
-        https://docs.python.org/3/library/fcntl.html
-    Not all OS/fsys is fully supported. For Lustre, it seems to depend on fsys mount `-o flock` 
-    options, which is indeed used for cv/naasc/aoc lustre systems:
-        $ mount -l | grep lustre
-            192.168.1.30@o2ib:/aoclst03 on /.lustre/aoc type lustre (rw,flock,user_xattr,lazystatfs)
-
-    For a practical test, try the code snippet below from different clients/processes to see 
-    if the fnctl blocking mechanism can prevent non-exclusive access to a file.
-        import fcntl
-        fd=open(filename,'w')
-        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-
     Args:
-        filename (str): the file name
-        mode (str, optional): open mode. Defaults to 'r'.
+        filename: Path to the file to open and lock.
+        mode: File open mode (e.g., 'rt', 'wt', 'a', 'rb').
+        *args: Additional positional arguments to the built-in `open()` function.
+        **kwargs: Additional keyword arguments to the built-in `open()` function.
 
+    Yields:
+        The opened file object with an exclusive lock acquired (if supported by the filesystem).
+
+    Notes:
+        All file open calls with `open_with_lock` will block other `open_with_lock` usages
+        (even from different processes/Lustre clients) from read/write until the lock is
+        released. However, this locking/blocking mechanism does not prevent file access
+        (which could potentially cause IO errors) from other file openers (e.g., the
+        built-in `open()` function).
+
+        **Filesystem Support:**
+        The Python `fcntl` API's behavior depends on the underlying OS/storage
+        implementation: https://docs.python.org/3/library/fcntl.html. Not all
+        OS/file systems fully support file locking.        
+        - **Lustre**: Requires mount option `-o flock`. Check with: `mount -l | grep lustre`
+            e.g. : `192.168.1.30@o2ib:/aoclst03 on /.lustre/aoc type lustre (rw,flock,user_xattr,lazystatfs)`
+        - **NFS**: Support varies by configuration (see PIPE-2051 for details)
+        - **Local filesystems**: Generally well-supported on Unix-like systems        
+
+        **Testing Lock Behavior:**
+        To verify exclusive locking works on your system, run this from multiple processes:
+
+        ```python
+        import fcntl
+        with open(filename, 'w') as fd:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)  # Should block/fail on second process
+        ```
     """
+    needs_truncate = 'w' in mode
+    is_binary = 'b' in mode
+    base_mode = 'r+b' if is_binary else 'r+'
 
-    with open(filename, mode) as fd:
+    try:
+        fd = open(filename, base_mode, *args, **kwargs)
+    except FileNotFoundError:
+        base_mode = 'w+b' if is_binary else 'w+'
+        fd = open(filename, base_mode, *args, **kwargs)
 
-        LOG.info('acquiring lock on %s', filename)
-        fcntl.flock(fd, fcntl.LOCK_EX)
-        LOG.info('acquired lock on %s', filename)
+    LOG.debug('Attempting to acquire lock on %s', filename)
+    lock_acquired = False
+    try:
+        try:
+            # Acquire an exclusive lock on the file
+            fcntl.flock(fd, fcntl.LOCK_EX)
+            lock_acquired = True
+            LOG.debug('Successfully acquired lock on %s', filename)
+        except OSError as ex:
+            LOG.warning('Failed to acquire file lock for %s due to filesystem limitation, '
+                        'which might cause racing conditions if multiple processes access '
+                        'the file simultaneously: %s', filename, ex)
+
+        if lock_acquired and needs_truncate:
+            fd.truncate(0)
+            fd.seek(0)
+            LOG.debug('Truncated file after acquiring lock: %s', filename)
 
         yield fd
 
-        fcntl.flock(fd, fcntl.LOCK_UN)
-        LOG.info('released lock on %s', filename)
+    finally:
+        if lock_acquired:
+            try:
+                fcntl.flock(fd, fcntl.LOCK_UN)
+                LOG.debug('Successfully released lock on %s', filename)
+            except OSError as ex:
+                LOG.warning('Failed to release file lock for %s due to filesystem limitation, '
+                            'which might cause racing conditions if multiple processes access '
+                            'the file simultaneously: %s', filename, ex)
+        fd.close()
 
 
 def ensure_products_dir_exists(products_dir):
@@ -804,7 +879,7 @@ def ensure_products_dir_exists(products_dir):
             raise
 
 
-def export_weblog_as_tar(context, products_dir, name_builder, dry_run=False):
+def export_weblog_as_tar(context, products_dir, name_builder):
     # Construct filename prefix from oussid and recipe name if available.
     prefix = context.get_oussid()
     recipe_name = context.get_recipe_name()
@@ -817,10 +892,9 @@ def export_weblog_as_tar(context, products_dir, name_builder, dry_run=False):
 
     # Save weblog directory to tar archive.
     LOG.info(f"Saving weblog in {tarfilename}")
-    if not dry_run:
-        tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
-        tar.add(os.path.join(os.path.basename(os.path.dirname(context.report_dir)), 'html'))
-        tar.close()
+    tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
+    tar.add(os.path.join(os.path.basename(os.path.dirname(context.report_dir)), 'html'))
+    tar.close()
     return tarfilename
 
 
@@ -852,3 +926,365 @@ def to_plain_dict(default_dict):
             plain_dict[k] = v
 
     return plain_dict
+
+
+def string_to_val(s):
+    """
+    Convert a string to a Python data type.
+    """
+    try:
+        pyobj = ast.literal_eval(s)
+        # PIPE-1030: prevent a string like "1,2,3" from being unexpectedly translated into tuple
+        if type(pyobj) is tuple and s.strip()[0] != '(':
+            pyobj = s
+        return pyobj
+    except ValueError:
+        return s
+    except SyntaxError:
+        return s
+
+
+def remove_trailing_string(s, t):
+    """
+    Remove a trailing string if it exists.
+    """
+    if s.endswith(t):
+        return s[:-len(t)]
+    else:
+        return s
+
+ConditionType = Union[Callable, Dict[str, Dict[str, Dict[str, Any]]]]
+
+def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth: int=5,
+                       condition: Optional[ConditionType]=None, timestamp: bool=True):
+    """
+    Dump arguments and return-objects of a function implement the decolator into pickle files and/or JSON(-like) file.
+    
+    This function is a helper method for development. It should not be used in production codes.
+    
+    Usage:
+    @function_io_dumper()
+    def foobar(self, bar):
+        ...
+        return ret
+    
+    When foobar() is executed, the decolator makes a directory 'foobar.[timestamp]', then it dumps
+    all objects of arguments and return values of foobar() as pickle files and|or JSON files.
+    We can get the same behavior of foobar() with the pickles as when they were dumped:
+    
+    with open('bar.pickle', 'rb') as f:
+        bar = pickle.load(f)
+    foobar(bar)
+    
+    or, understand input/result of the function by JSON-like output. To avoid recursive or tremendous output,
+    it sets max depth of recursive (default to 5).
+
+    Args:
+        to_pickle (bool, optional): Dump pickle or not. Defaults to True.
+        to_json (bool, optional): Dump JSON-like file or not. Defaults to False.
+        json_max_depth (int, optional): Set depth of dumping JSON tree. Defaults to 5.
+        condition (ConditionType): Set callable function user defined, or conditions of
+            argument dumping. Defaults to None.
+            ex1) Callable condition
+                condition = my_condition
+                And, a function my_condition() must be defined as:
+                    def my_condition(kwargs) -> bool:
+                        # Serialize only if the keyword argument 'spw' is 10 or True.
+                        return kwargs.get("spw") in (10, True)
+            ex2) Dict condition
+                condition = {'self', {'spw':10}}
+        timestamp (bool, optional): Add timestamp to the names of output directories. If not and the same function was
+            executed multiple times, the output directory will be overwritten. Defaults to True.
+    """
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            
+            # create timestamp
+            epoch_time = time.time()
+            dt = datetime.fromtimestamp(epoch_time)
+            ns = int((epoch_time - int(epoch_time)) * 1_000_000_000)
+            _timestamp = dt.strftime(f'%Y%m%d-%H%M%S.{ns}')
+            
+            # make signatures of args
+            sig = inspect.signature(func)
+            bound_args = sig.bind(*args, **kwargs)
+            bound_args.apply_defaults()
+
+            try:
+                if callable(condition):
+                    exec_dumpargs = condition(bound_args)
+                else:
+                    exec_dumpargs = _eval_condition(condition, bound_args)
+            except Exception as e:
+                    LOG.warning(f'Error evaluating condition callable: {e}')
+                    exec_dumpargs = False
+
+            extention = ''
+            if timestamp:
+                extention = f'.{_timestamp}'
+                
+            output_folder_name = f"{func.__name__}{extention}"
+
+            json_dict = None
+            if to_json:
+                json_dict = object_to_dict(bound_args.arguments, max_depth=json_max_depth)
+            
+            try:
+                os.makedirs(output_folder_name, exist_ok=True)
+
+                LOG.info(f"Function '{_get_full_method_path(func)}' called at {_timestamp}")
+
+                for arg_name, arg_value in bound_args.arguments.items():
+                    _dump(arg_value, output_folder_name, arg_name, dump_pickle=to_pickle, dump_json=to_json, json_dict=json_dict)
+
+            except pickle.PicklingError as e:
+                exec_dumpargs = False
+                LOG.warning(f'Contained unpickleable object: {e}')
+            except Exception as e:
+                exec_dumpargs = False
+                LOG.warning(f'Exception occurred: {e}')
+
+            result = func(*args, **kwargs)
+
+            if exec_dumpargs and result is not None:
+                try:
+                    _name = f'{output_folder_name}.result'
+                    if to_json:
+                        json_dict = object_to_dict({_name:result}, max_depth=json_max_depth)
+                    _dump({_name:result}, output_folder_name, _name, dump_pickle=to_pickle, dump_json=to_json, json_dict=json_dict)
+                except pickle.PicklingError as e:
+                    LOG.warning(f'Contained unpickleable object: {e}')
+                except Exception as e:
+                    LOG.warning(f'Exception occurred: {e}')
+
+            return result
+        return wrapper
+    return decorator
+
+
+def _dump(obj: object, path: str, name: str, dump_pickle: bool=True, dump_json: bool=False, json_dict={}):
+    file_path = os.path.join(path, f'{name}')
+    
+    if dump_pickle:
+        with open(file_path+'.pickle', 'wb') as f:
+            pickle.dump(obj, f)
+    if dump_json:
+        with open(file_path+'.json', 'w') as f:
+            f.write(json.dumps(json_dict[name], default=str))
+
+
+def _get_full_method_path(func):
+    module_name = func.__module__
+    if hasattr(func, '__qualname__'):
+        qualname = func.__qualname__
+    else:
+        qualname = func.__name__
+    return f'{module_name}.{qualname}'
+
+
+def _eval_condition(condition, args):
+    # {'self', {'spw':10}}, need unittest
+    if condition is None:
+        return True
+    
+    LOG.info(f'condition: {condition}')
+    
+    for key, val in condition:
+        arg = args.get(key, False)
+        if arg:
+            for propname, propval in val:
+                if isinstance(arg, dict) and arg.get(propname, False):
+                    obj = arg.getattr(propname)
+                    if obj == propval:
+                        return True
+    return False
+
+
+def object_to_dict(obj, max_depth=5, current_depth=0):
+
+    if current_depth > max_depth:
+        return None
+
+    if isinstance(obj, dict):
+        result = {}
+        for key, value in obj.items():
+            if hasattr(value, '__dict__') or isinstance(value, Iterable):
+                result[key] = object_to_dict(value, max_depth=max_depth, current_depth=current_depth + 1)
+            else:
+                result[key] = value
+        return result
+
+    elif isinstance(obj, Iterable) and not isinstance(obj, (str, bytes)):
+        result = []
+        for item in obj:
+            if hasattr(item, '__dict__') or isinstance(item, Iterable):
+                result.append(object_to_dict(item, max_depth=max_depth, current_depth=current_depth + 1))
+            else:
+                result.append(item)
+        return result
+
+    elif hasattr(obj, '__dict__'):
+        result = {}
+        for key, value in obj.__dict__.items():
+            if hasattr(value, '__dict__') or isinstance(value, Iterable):
+                result[key] = object_to_dict(value, max_depth=max_depth, current_depth=current_depth + 1)
+            else:
+                result[key] = value
+        return result
+
+    else:
+        return obj
+
+
+def decorate_io_dumper(cls: object, functions: List[str]=[], *args: Any, **kwargs: Any):
+    """Apply function_io_dumper dynamically.
+
+    Usage:
+    ...
+    import pipeline.infrastructure.utils.utils as ut
+    
+    ut.decorate_io_dumper(SDInspection, ['execute'])
+    
+    ...
+    hsd_importdata()  # -> dump args of SDInspection.execute()
+
+    Args:
+        cls (object): the class has functions to be decorated.
+        functions (List[str], optional): Function names to decodate. If not specified or
+            set empty list, then all functions of the class are decorated. Defaults to [].
+    """
+    if len(functions) == 0:
+        _functions = inspect.getmembers(cls, predicate=inspect.isfunction)
+    else:
+        _functions = []
+        for _f in functions:
+            _c = _str_to_func(cls, _f)
+            if _c:
+                _functions.append(_c)
+    for _func in _functions:
+        _name = _func.__name__
+        decorated_func = function_io_dumper(*args, **kwargs)(_func)
+        setattr(cls, _name, decorated_func)
+
+
+def _str_to_func(cls: object, _name: str):
+    if hasattr(cls, _name):
+        _c = getattr(cls, _name)
+        if callable(_c):
+            return _c
+    return False
+
+
+def list_to_str(value: Union[List[Union[Number, str]], npt.NDArray]) -> str:
+    """Convert list or numpy.ndarray into string.
+
+    The list/ndarray should be 1-dimensional. In that case, the function
+    returns comma-separated sequence of its elements. Otherwise it just
+    returns default string representation of the value, str(value).
+
+    Args:
+        value: 1-dimensional list or numpy array
+
+    Returns:
+        String representation of the value. If input value is in
+        compliance with the requirement, it will be comma-separated
+        sequence of elements.
+    """
+    if isinstance(value, (list, np.ndarray)) \
+       and all(isinstance(x, (Number, str)) for x in value):
+        # use np.ndarray.tolist to ensure all the elements
+        # have Python builtin types
+        ret = str(np.asarray(value).tolist())
+    else:
+        ret = str(value)
+    return ret
+
+
+def validate_url(url: str) -> bool:
+    """Validates whether a given URL is properly formatted.
+
+    This function checks if the URL follows a valid format using a regular expression.
+    It also ensures that the parsed URL contains both a scheme (e.g., "http" or "https")
+    and a network location (netloc), which are required components for a valid URL.
+
+    Args:
+        url (str): The URL to validate.
+
+    Returns:
+        bool: True if the URL is valid, False otherwise.
+    """
+    url_regex = re.compile(
+        r'^(https?:\/\/)?'  # HTTP or HTTPS
+        r'([\w.-]+)'        # Domain name or IP address
+        r'(:\d+)?'          # Optional port
+        r'(\/[^\s]*)?$',    # Optional path
+        re.IGNORECASE
+    )
+
+    if not url_regex.match(url):
+        return False
+
+    parsed = urlparse(url)
+
+    return all([parsed.scheme, parsed.netloc])
+
+
+def get_row_count(table_name: str, taql: str) -> int:
+    """Return the number of rows in the specified table that match the given TaQL query.
+
+    Parameters:
+        table_name: Path to the CASA table.
+        taql: The TaQL query string used to filter the table rows.
+
+    Returns:
+        The number of rows matching the query, or 0 if an error occurs.
+    """
+
+    nrows = 0
+    try:
+        with casa_tools.TableReader(table_name) as table:
+            subtb = table.query(taql)
+            nrows = subtb.nrows()
+            subtb.close()
+    except Exception as ex:
+        nrows = 0
+        LOG.warning(ex)
+
+    return nrows
+
+
+def get_valid_url(env_var: str, default: str | list[str]) -> str | list[str]:
+    """
+    Fetches one or more URLs from an environment variable. If a comma-delimited string is provided,
+    it is split and each URL is validated. Falls back to the default if any URL is invalid or not set.
+
+    Args:
+        env_var: The name of the environment variable.
+        default: A single default URL or a list of default URLs.
+
+    Returns:
+        A valid URL string or a list of valid URL strings.
+    """
+    envvar_value = os.getenv(env_var)
+    if not envvar_value:
+        LOG.info('Environment variable %s not defined. Switching to default %s.', env_var, default)
+        return default
+
+    urls = [u.strip() for u in envvar_value.split(',') if u.strip()]
+    if not urls:
+        LOG.warning('Environment variable %s is empty after parsing. Switching to default %s.', env_var, default)
+        return default
+
+    for url in urls:
+        if not validate_url(url):
+            LOG.warning('Environment variable %s URL was set to %s but is misconfigured.', env_var, url)
+            LOG.info('Switching to default %s.', default)
+            return default
+
+    if len(urls) == 1:
+        LOG.info('Environment variable %s set to URL %s.', env_var, urls[0])
+        return urls[0]
+
+    LOG.info('Environment variable %s set to list of URLs %s.', env_var, urls)
+    return urls
