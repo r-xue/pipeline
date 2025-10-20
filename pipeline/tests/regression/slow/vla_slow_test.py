@@ -1,0 +1,159 @@
+import pytest
+
+from pipeline.tests.regression.regression_tester import PipelineRegression
+
+
+@pytest.mark.regression
+@pytest.mark.slow
+@pytest.mark.vla
+def test_13A_537__procedure_hifv_calimage__regression(data_directory):
+    """Run VLA calibration regression for standard procedure_hifv_calimage_cont recipe.
+
+    Recipe name:                procedure_hifv_calimage_cont
+    Dataset:                    13A-537.sb24066356.eb24324502.56514.05971091435
+    """
+    dataset_name = '13A-537.sb24066356.eb24324502.56514.05971091435'
+    input_dir = 'pl-regressiontest/13A-537/'
+    ref_directory = 'pl-regressiontest/13A-537/'
+
+    pr = PipelineRegression(
+        visname=[dataset_name],
+        recipe='procedure_hifv_calimage_cont.xml',
+        input_dir=input_dir,
+        expectedoutput_dir=ref_directory
+        )
+
+    pr.run(telescope='vla', omp_num_threads=1)
+
+
+@pytest.mark.regression
+@pytest.mark.slow
+@pytest.mark.vla
+def test_15B_342__procedure_hifv__regression(data_directory):
+    """Run VLA calibration regression for standard recipe.
+
+    Recipe name:                procedure_hifv_calimage_cont
+    Dataset:                    15B-342.sb31041443.eb31041910.57246.076202627315
+    """
+    dataset_name = '15B-342.sb31041443.eb31041910.57246.076202627315'
+    input_dir = f'{data_directory}/vla/15B-342/'
+    ref_directory = 'pl-regressiontest/15B-342/'
+
+    pr = PipelineRegression(
+        visname=[dataset_name],
+        recipe='procedure_hifv_calimage_cont.xml',
+        input_dir=input_dir,
+        expectedoutput_dir=ref_directory
+        )
+
+    pr.run(telescope='vla', omp_num_threads=1)
+
+
+@pytest.mark.regression
+@pytest.mark.slow
+@pytest.mark.vla
+def test_17B_188__procedure_hifv__regression(data_directory):
+    """Run VLA calibration regression for standard recipe.
+
+    Recipe name:                procedure_hifv_calimage_cont
+    Dataset:                    17B-188.sb35564398.eb35590549.58363.10481791667
+    """
+    dataset_name = '17B-188.sb35564398.eb35590549.58363.10481791667'
+    input_dir = f'{data_directory}/vla/17B-188/'
+    ref_directory = 'pl-regressiontest/17B-188/'
+
+    pr = PipelineRegression(
+        visname=[dataset_name],
+        recipe='procedure_hifv_calimage_cont.xml',
+        input_dir=input_dir,
+        expectedoutput_dir=ref_directory
+        )
+
+    pr.run(telescope='vla', omp_num_threads=1)
+
+
+@pytest.mark.regression
+@pytest.mark.slow
+@pytest.mark.vla
+def test_18A_228__procedure_hifv__regression(data_directory):
+    """Run VLA calibration regression for standard procedure_hifv_calimage_cont.xml recipe.
+
+    Recipe name:                procedure_hifv_calimage_cont
+    Dataset:                    18A-228.sb35538192.eb35676319.58412.135923414358
+    """
+    input_dir = f'{data_directory}/vla/18A-228/'
+    ref_directory = 'pl-regressiontest/18A-228/'
+
+    pr = PipelineRegression(
+        visname=['18A-228.sb35538192.eb35676319.58412.13592341435'],
+        recipe='procedure_hifv_calimage_cont.xml',
+        input_dir=input_dir,
+        expectedoutput_dir=ref_directory
+        )
+
+    pr.run(telescope='vla', omp_num_threads=1)
+
+
+@pytest.mark.regression
+@pytest.mark.slow
+@pytest.mark.vla
+def test_18A_426__procedure_hifv__regression(data_directory):
+    """Run VLA calibration regression for standard procedure_hifv_calimage_cont.xml recipe.
+
+    Recipe name:                procedure_hifv_calimage_cont
+    Dataset:                    18A-426.sb35644955.eb35676220.58411.96917952546
+    """
+    input_dir = f'{data_directory}/vla/18A-426/'
+    ref_directory = 'pl-regressiontest/18A-426/'
+
+    pr = PipelineRegression(
+        visname=['18A-426.sb35644955.eb35676220.58411.96917952546'],
+        recipe='procedure_hifv_calimage_cont.xml',
+        input_dir=input_dir,
+        expectedoutput_dir=ref_directory
+        )
+
+    pr.run(telescope='vla', omp_num_threads=1)
+
+
+@pytest.mark.regression
+@pytest.mark.slow
+@pytest.mark.vla
+def test_21A_423__procedure_hifv__regression(data_directory):
+    """Run VLA calibration regression for standard recipe.
+
+    Recipe name:                procedure_hifv_calimage_cont
+    Dataset:                    21A-423.sb39709588.eb40006153.59420.64362002315
+    """
+    dataset_name = '21A-423.sb39709588.eb40006153.59420.64362002315'
+    input_dir = f'{data_directory}/vla/21A-423/'
+    ref_directory = 'pl-regressiontest/21A-423/'
+
+    pr = PipelineRegression(
+        visname=[dataset_name],
+        recipe='procedure_hifv_calimage_cont.xml',
+        input_dir=input_dir,
+        expectedoutput_dir=ref_directory
+        )
+
+    pr.run(telescope='vla', omp_num_threads=1)
+
+
+@pytest.mark.regression
+@pytest.mark.slow
+@pytest.mark.vla
+def test_13A_537__procedure_hifv__cont__cube__selfcal(self):
+    """PIPE-2357: Run VLA calibration regression for standard procedure_hifv_calimage_cont_cube_selfcal.xml recipe.
+
+    Recipe name:                procedure_hifv_calimage_cont_cube_selfcal.xml
+    Dataset:                    13A-537/13A-537.sb24066356.eb24324502.56514.05971091435
+    """
+
+    input_dir = 'pl-regressiontest/13A-537'
+
+    pr = PipelineRegression(recipe='procedure_hifv_calimage_cont_cube_selfcal.xml',
+                            input_dir=input_dir,
+                            visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
+                            expectedoutput_dir=input_dir)
+
+    pr.run(telescope='vla', omp_num_threads=1)

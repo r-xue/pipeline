@@ -71,3 +71,23 @@ exclude_lines = [
     'raise NotImplementedError',
     'pass',
 ]
+
+[tool.pytest.ini_options]
+markers = [
+  "regression: regression tests",
+  "alma: alma test",
+  "vla: vla test",
+  "vlass: vlass test",
+  "fast: shorter-running test",
+  "slow: longer-running test",
+  "twelve: 12m ALMA ",
+  "seven: 7m ALMA",
+  "sd: single dish",
+
+  "component: component tests",
+  "importdata: importdata task(s)",
+  "selfcal: selfcal task(s)",
+  "makeimages: makeimages task(s)",
+]
+addopts = "-ra"
+junit_family = "legacy"

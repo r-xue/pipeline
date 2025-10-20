@@ -1,0 +1,140 @@
+import os
+import shutil
+
+import pytest
+
+from pipeline.infrastructure import casa_tools
+from pipeline.tests.regression.regression_tester import PipelineRegression
+
+
+@pytest.mark.regression
+@pytest.mark.slow
+@pytest.mark.vlass
+def test_vlass_se_cont_mosaic(data_directory):
+    """Run VLASS regression
+
+    Recipe name: procedure_vlassSEIP_cv.xml
+    Dataset: VLASS2.2.sb40889925.eb40967634.59536.14716583333_J232327.4+5024320_split.ms
+    """
+    dataset_name = 'VLASS2.2.sb40889925.eb40967634.59536.14716583333_J232327.4+5024320_split.ms'
+    input_dir = f'{data_directory}/vlass/se_cont_mosaic/'
+    ref_directory = 'pl-regressiontest/vlass_se_cont_mosaic/'
+
+    pr = PipelineRegression(
+        visname=[dataset_name],
+        recipe=f'{input_dir}/procedure_vlassSEIP_cv.xml',
+        input_dir=input_dir,
+        expectedoutput_dir=ref_directory
+        )
+
+    try:
+        os.mkdir(f'{pr.output_dir}/working/')
+    except FileExistsError:
+        pass
+
+    # Copy parameter list file into the working directory
+    if not pr.compare_only:
+        parameter_list_file = casa_tools.utils.resolve(f'{input_dir}/SEIP_parameter.list')
+        shutil.copyfile(parameter_list_file, casa_tools.utils.resolve(
+            f'{pr.output_dir}/working/SEIP_parameter.list'))
+
+    pr.run(telescope='vla')
+
+
+@pytest.mark.regression
+@pytest.mark.slow
+@pytest.mark.vlass
+def test_vlass_se_cont_awp32(data_directory):
+    """Run VLASS regression
+
+    Recipe name: procedure_vlassSEIP_cv.xml
+    Dataset: VLASS2.2.sb40889925.eb40967634.59536.14716583333_J232327.4+5024320_split.ms
+    """
+    dataset_name = 'VLASS2.2.sb40889925.eb40967634.59536.14716583333_J232327.4+5024320_split.ms'
+    input_dir = f'{data_directory}/vlass/se_cont_awp32/'
+    ref_directory = 'pl-regressiontest/vlass_se_cont_awp32/'
+
+    pr = PipelineRegression(
+        visname=[dataset_name],
+        recipe=f'{input_dir}/procedure_vlassSEIP_cv.xml',
+        input_dir=input_dir,
+        expectedoutput_dir=ref_directory
+        )
+
+    try:
+        os.mkdir(f'{pr.output_dir}/working/')
+    except FileExistsError:
+        pass
+
+    # Copy parameter list file into the working directory
+    if not pr.compare_only:
+        parameter_list_file = casa_tools.utils.resolve(f'{input_dir}/SEIP_parameter_awp32.list')
+        shutil.copyfile(parameter_list_file, casa_tools.utils.resolve(
+            f'{pr.output_dir}/working/SEIP_parameter.list'))
+
+    pr.run(telescope='vla')
+
+
+@pytest.mark.regression
+@pytest.mark.slow
+@pytest.mark.vlass
+def test_vlass_se_cube(data_directory):
+    """Run VLASS regression
+
+    Recipe name: procedure_vlassCCIP.xml
+    Dataset: VLASS2.2.sb40889925.eb40967634.59536.14716583333_J232327.4+5024320_split.ms
+    """
+    dataset_name = 'VLASS2.2.sb40889925.eb40967634.59536.14716583333_J232327.4+5024320_split.ms'
+    input_dir = f'{data_directory}/vlass/se_cube/'
+    ref_directory = 'pl-regressiontest/vlass_se_cube/'
+
+    pr = PipelineRegression(
+        visname=[dataset_name],
+        recipe='procedure_vlassCCIP.xml',
+        input_dir=input_dir,
+        expectedoutput_dir=ref_directory
+        )
+
+    try:
+        os.mkdir(f'{pr.output_dir}/working/')
+    except FileExistsError:
+        pass
+
+    # Copy parameter list files and reimaging resources into the working directory
+    if not pr.compare_only:
+        seip_parameter_list_file = casa_tools.utils.resolve(f'{input_dir}/SEIP_parameter.list')
+        shutil.copyfile(seip_parameter_list_file, casa_tools.utils.resolve(
+            f'{pr.output_dir}/working/SEIP_parameter.list'))
+
+        ccip_parameter_list_file = casa_tools.utils.resolve(f'{input_dir}/CCIP_parameter_sg16.list')
+        shutil.copyfile(ccip_parameter_list_file, casa_tools.utils.resolve(
+            f'{pr.output_dir}/working/CCIP_parameter.list'))
+
+        reimaging_resources_file = casa_tools.utils.resolve(f'{input_dir}/reimaging_resources.tgz')
+        shutil.copyfile(reimaging_resources_file, casa_tools.utils.resolve(
+            f'{pr.output_dir}/working/reimaging_resources.tgz'))
+
+    pr.run(telescope='vla')
+
+
+@pytest.mark.regression
+@pytest.mark.slow
+@pytest.mark.vlass
+def test_vlass_cal(data_directory):
+    """Run VLASS regression
+
+    Recipe name: procedure_hifvcalvlass.xml
+    Dataset: VLASS2.1.sb39020033.eb39038648.59173.7629213426
+    """
+    dataset_name = 'VLASS2.1.sb39020033.eb39038648.59173.7629213426'
+    input_dir = f'{data_directory}/vlass/cal/'
+    ref_directory = 'pl-regressiontest/vlass_cal'
+
+    pr = PipelineRegression(
+        visname=[dataset_name],
+        recipe='procedure_hifvcalvlass.xml',
+        input_dir=input_dir,
+        expectedoutput_dir=ref_directory
+        )
+
+    pr.run(telescope='vla')
