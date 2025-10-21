@@ -20,24 +20,24 @@ import shutil
 import string
 import tarfile
 import time
-from collections.abc import Callable, Collection, Iterable, Iterator, Sequence
+from collections.abc import Iterable
 from datetime import datetime
 from functools import wraps
 from numbers import Number
-from typing import TYPE_CHECKING, Any, TextIO
+from typing import (TYPE_CHECKING, Any, Callable, Collection, Dict, Iterator,
+                    List, Optional, Sequence, TextIO, Tuple, Union)
 from urllib.parse import urlparse
 
 import numpy as np
 import numpy.typing as npt
 
-from pipeline import infrastructure
-from pipeline.infrastructure import casa_tools
+from .. import casa_tools, logging
 from .conversion import commafy, dequote, range_to_list
 
 if TYPE_CHECKING:
     from pipeline.domain import MeasurementSet
 
-LOG = infrastructure.logging.get_logger(__name__)
+LOG = logging.get_logger(__name__)
 
 __all__ = [
     'absolute_path',
@@ -53,7 +53,6 @@ __all__ = [
     'find_ranges',
     'flagged_intervals',
     'get_casa_quantity',
-    'get_field_accessor',
     'get_field_identifiers',
     'get_obj_size',
     'get_products_dir',
@@ -79,7 +78,7 @@ __all__ = [
 ]
 
 
-def find_ranges(data: str | list[int]) -> str:
+def find_ranges(data: Union[str, List[int]]) -> str:
     """Identify numeric ranges in string or list.
 
     This utility function takes a string or a list of integers (e.g. spectral
@@ -116,7 +115,7 @@ def find_ranges(data: str | list[int]) -> str:
     return ','.join(ranges)
 
 
-def dict_merge(a: dict, b: dict | Any) -> dict:
+def dict_merge(a: Dict, b: Union[Dict, any]) -> Dict:
     """Recursively merge dictionaries.
 
     This utility function recursively merges dictionaries. If second argument
@@ -139,7 +138,7 @@ def dict_merge(a: dict, b: dict | Any) -> dict:
     return result
 
 
-def are_equal(a: list | np.ndarray, b: list | np.ndarray) -> bool:
+def are_equal(a: Union[List, np.ndarray], b: Union[List, np.ndarray]) -> bool:
     """Return True if the contents of the given arrays are equal.
 
     This utility function check the equivalence of array like objects. Two arrays
@@ -172,7 +171,7 @@ def approx_equal(x: float, y: float, tol: float = 1e-15) -> bool:
     return (lo + 0.5 * tol) >= (hi - 0.5 * tol)
 
 
-def flagged_intervals(vec: list | np.ndarray) -> list:
+def flagged_intervals(vec: Union[List, np.ndarray]) -> List:
     """Idendity isnads of ones in input array or list.
 
     This utility function finds islands of ones in array or list provided in argument.
@@ -257,7 +256,7 @@ def get_field_accessor(ms, field):
     return accessor
 
 
-def get_field_identifiers(ms) -> dict:
+def get_field_identifiers(ms) -> Dict:
     """Maps numeric field IDs to field names.
 
     Get a dict of numeric field ID to unambiguous field identifier, using the
@@ -268,7 +267,7 @@ def get_field_identifiers(ms) -> dict:
     return {field.id: field_name_accessors[field.id](field) for field in ms.fields}
 
 
-def get_receiver_type_for_spws(ms, spwids: Sequence) -> dict:
+def get_receiver_type_for_spws(ms, spwids: Sequence) -> Dict:
     """Return dictionary of receiver types for requested spectral window IDs.
 
     If spwid is not found in MeasurementSet instance, then detector type is
@@ -291,7 +290,7 @@ def get_receiver_type_for_spws(ms, spwids: Sequence) -> dict:
     return rxmap
 
 
-def get_spectralspec_to_spwid_map(spws: Collection) -> dict:
+def get_spectralspec_to_spwid_map(spws: Collection) -> Dict:
     """
     Returns a dictionary of spectral specs mapped to corresponding spectral
     window IDs for requested list of spectral window objects.
@@ -357,7 +356,7 @@ def get_stokes(imagename):
     return stokes_present
 
 
-def get_casa_quantity(value: None | dict | str | float | int) -> dict:
+def get_casa_quantity(value: Union[None, Dict, str, float, int]) -> Dict:
     """Wrapper around quanta.quantity() that handles None input.
 
     Starting with CASA 6, quanta.quantity() no longer accepts None as input. This
@@ -435,7 +434,7 @@ def absolute_path(name: str) -> str:
     return os.path.abspath(os.path.expanduser(os.path.expandvars(name)))
 
 
-def relative_path(name: str, start: str | None = None) -> str:
+def relative_path(name: str, start: Optional[str]=None) -> str:
     """
     Retun a relative path of a given file with respect a given origin.
 
@@ -480,7 +479,7 @@ def get_task_result_count(context, taskname: str = 'hif_makeimages') -> int:
     return count
 
 
-def place_repr_source_first(itemlist: list[str] | list[tuple], repr_source: str) -> list[str] | list[tuple]:
+def place_repr_source_first(itemlist: Union[List[str], List[Tuple]], repr_source: str) -> Union[List[str], List[Tuple]]:
     """
     Place representative source first in a list of source names
     or tuples with source name as first tuple element.
@@ -575,7 +574,7 @@ def get_obj_size(obj: Any, serialize: bool = True) -> int:
         ) from err
 
 
-def glob_ordered(pattern: str, *args, order: str | None = None, **kwargs) -> list[str]:
+def glob_ordered(pattern: str, *args, order: Optional[str] = None, **kwargs) -> List[str]:
     """Return a sorted list of paths matching a pathname pattern."""
     path_list = glob.glob(pattern, *args, **kwargs)
 
@@ -834,10 +833,10 @@ def remove_trailing_string(s, t):
     else:
         return s
 
-ConditionType = Callable | dict[str, dict[str, dict[str, Any]]]
+ConditionType = Union[Callable, Dict[str, Dict[str, Dict[str, Any]]]]
 
 def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth: int=5,
-                       condition: ConditionType | None = None, timestamp: bool=True):
+                       condition: Optional[ConditionType]=None, timestamp: bool=True):
     """
     Dump arguments and return-objects of a function implement the decolator into pickle files and/or JSON(-like) file.
     
@@ -1018,7 +1017,7 @@ def object_to_dict(obj, max_depth=5, current_depth=0):
         return obj
 
 
-def decorate_io_dumper(cls: object, functions: list[str]=[], *args: Any, **kwargs: Any):
+def decorate_io_dumper(cls: object, functions: List[str]=[], *args: Any, **kwargs: Any):
     """Apply function_io_dumper dynamically.
 
     Usage:
@@ -1032,7 +1031,7 @@ def decorate_io_dumper(cls: object, functions: list[str]=[], *args: Any, **kwarg
 
     Args:
         cls (object): the class has functions to be decorated.
-        functions (list[str], optional): Function names to decodate. If not specified or
+        functions (List[str], optional): Function names to decodate. If not specified or
             set empty list, then all functions of the class are decorated. Defaults to [].
     """
     if len(functions) == 0:
@@ -1057,7 +1056,7 @@ def _str_to_func(cls: object, _name: str):
     return False
 
 
-def list_to_str(value: list[Number | str] | npt.NDArray) -> str:
+def list_to_str(value: Union[List[Union[Number, str]], npt.NDArray]) -> str:
     """Convert list or numpy.ndarray into string.
 
     The list/ndarray should be 1-dimensional. In that case, the function
