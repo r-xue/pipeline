@@ -88,6 +88,8 @@ markers = [
   "importdata: importdata task(s)",
   "selfcal: selfcal task(s)",
   "makeimages: makeimages task(s)",
+
+  "unit: unit tests",
 ]
 addopts = "-ra"
 junit_family = "legacy"

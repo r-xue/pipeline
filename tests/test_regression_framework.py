@@ -1,18 +1,79 @@
 """
-Tests for the regression_tester.py module.
+test_regression_framework.py
+============================
+
+Unit tests for the PipelineRegression framework logic.
+
+Purpose
+-------
+Validate internal behaviors of the regression framework so that regression
+tests can trust the scaffolding they run on.
+
+Scope covered here
+------------------
+- Versioned-results file selection
+  * `_pick_results_file(...)`: parses candidate filenames and chooses the best
+    match for the **current** CASA/Pipeline versions.
+  * `_results_file_heuristics(...)`: rejects candidates that exceed running
+    versions, then prefers the closest not-greater versions.
+- CLI options propagation
+  * Ensures `--compare-only` and `--remove-workdir` options are read from
+    pytest and applied to a `PipelineRegression` instance.
+- Filename regex correctness
+  * Confirms patterns extract versions from names like:
+    `...casa-<X.Y.Z[-build]>-pipeline-<YYYY.M.m.p>`
+
+Out of scope
+------------
+- Actual pipeline execution (PPR/reducer), CASA tools, filesystem side effects.
+  Those are covered by component/regression suites.
+
+Expected filename patterns
+--------------------------
+- CASA:     `casa-6.5.1-15`  (dash is allowed; internally compared as dots)
+- Pipeline: `pipeline-2023.1.0.8`
+Combined example: `test_results_casa-6.5.1-15-pipeline-2023.1.0.8`
+
+How to run
+----------
+Directly call file:
+    xvfb-run casa --nogui --nologger --agg -c "import pytest; pytest.main(['-vv', '<repo root>/tests/test_regression_framework.py'])"
+
+Or as part of the unit suite:
+    xvfb-run casa --nogui --nologger --agg -c "import pytest; pytest.main(['-vv', '-m', 'not regression and not component', '<repo root>'])"
+
+Notes for contributors
+----------------------
+- To add new selection cases, include representative filenames in the
+  `reference_files` lists or expand `reference_dict` with parsed versions.
+- Environment versions are pinned with `unittest.mock.patch`:
+  * `pipeline.environment.casa_version_string`
+  * `pipeline.environment.pipeline_revision`
+  Keep new tests deterministic by patching these accordingly.
+- If you change filename patterns or selection rules in
+  `PipelineRegression`, update tests here first to codify the intended behavior.
+
+Related
+-------
+- Framework under test: `tests.regression.regression_tester.PipelineRegression`
+- Dataset-based tests: `tests/regression/fast/`, `tests/regression/slow/`
+- Component tests: `tests/component/`
 """
 from __future__ import annotations
 
-import packaging
-import pytest
 import unittest
 from typing import TYPE_CHECKING
 from unittest import mock
+
+import packaging
+import pytest
 
 from tests.regression import regression_tester
 
 if TYPE_CHECKING:
     from pytest import Config, Parser
+
+pytestmark = pytest.mark.unit
 
 
 def pytest_addoption(parser: Parser) -> None:
