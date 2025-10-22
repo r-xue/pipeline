@@ -840,7 +840,7 @@ class MeasurementSet(object):
         Get the ALMA cycle number from the observation start time.
 
         Returns:
-            Cycle number or None if not found
+            Cycle number or None if not found or not an ALMA dataset.
         """
         cycle_numbers = {
             '0': ['2011-09-30', '2013-01-20'],
@@ -856,6 +856,8 @@ class MeasurementSet(object):
             '10': ['2023-10-01', '2024-09-30'],
             '11': ['2024-10-01', '2025-09-30'],
         }
+        if self.antenna_array.name in ('VLA', 'EVLA'):
+            return None
         start_time = utils.get_epoch_as_datetime(self.start_time)
         for cycle, (start_str, end_str) in cycle_numbers.items():
             start = datetime.datetime.strptime(start_str, '%Y-%m-%d')
