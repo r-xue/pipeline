@@ -9,7 +9,7 @@ import unittest
 from typing import TYPE_CHECKING
 from unittest import mock
 
-from pipeline.tests.regression import regression_tester
+from tests.regression import regression_tester
 
 if TYPE_CHECKING:
     from pytest import Config, Parser

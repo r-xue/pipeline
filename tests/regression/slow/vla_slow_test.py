@@ -1,6 +1,6 @@
 import pytest
 
-from pipeline.tests.regression.regression_tester import PipelineRegression
+from tests.regression.regression_tester import PipelineRegression
 
 
 @pytest.mark.regression

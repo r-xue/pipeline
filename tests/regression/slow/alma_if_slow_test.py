@@ -1,6 +1,6 @@
 import pytest
 
-from pipeline.tests.regression.regression_tester import PipelineRegression, setup_flux_antennapos
+from tests.regression.regression_tester import PipelineRegression, setup_flux_antennapos
 
 
 # 7m tests

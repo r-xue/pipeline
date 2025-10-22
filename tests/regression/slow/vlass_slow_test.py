@@ -4,7 +4,7 @@ import shutil
 import pytest
 
 from pipeline.infrastructure import casa_tools
-from pipeline.tests.regression.regression_tester import PipelineRegression
+from tests.regression.regression_tester import PipelineRegression
 
 
 @pytest.mark.regression
