@@ -643,11 +643,13 @@ def test_uid___A002_X85c183_X36f__procedure_hsd_calimage__regression():
     Recipe name:                procedure_hsd_calimage
     Dataset:                    uid___A002_X85c183_X36f
     """
+    input_dir = 'pl-regressiontest/uid___A002_X85c183_X36f'
+
     pr = PipelineRegression(
         visname=['uid___A002_X85c183_X36f'],
         recipe='procedure_hsd_calimage.xml',
-        input_dir='pl-regressiontest/uid___A002_X85c183_X36f',
-        expectedoutput_dir='pl-regressiontest/uid___A002_X85c183_X36f'
+        input_dir=input_dir,
+        expectedoutput_dir=input_dir
     )
 
     pr.run()
@@ -661,11 +663,12 @@ def test_uid___A002_X85c183_X36f_SPW15_23__PPR__regression():
     Dataset:                    uid___A002_X85c183_X36f_SPW15_23
     """
     input_dir = 'pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23'
+
     pr = PipelineRegression(
         visname=['uid___A002_X85c183_X36f_SPW15_23.ms'],
         ppr=f'{input_dir}/PPR.xml',
         input_dir=input_dir,
-        expectedoutput_dir='pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23'
+        expectedoutput_dir=input_dir
     )
 
     # copy files use restore task into products folder
@@ -684,11 +687,13 @@ def test_uid___mg2_20170525142607_180419__procedure_hsdn_calimage__regression():
     Recipe name:                procedure_hsdn_calimage
     Dataset:                    mg2-20170525142607-180419
     """
+    input_dir = 'pl-regressiontest/mg2-20170525142607-180419'
+
     pr = PipelineRegression(
         visname=['mg2-20170525142607-180419.ms'],
         recipe='procedure_hsdn_calimage.xml',
-        input_dir='pl-regressiontest/mg2-20170525142607-180419',
-        expectedoutput_dir='pl-regressiontest/mg2-20170525142607-180419'
+        input_dir=input_dir,
+        expectedoutput_dir=input_dir
     )
     pr.run()
 
