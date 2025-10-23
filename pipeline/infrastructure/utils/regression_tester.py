@@ -688,7 +688,7 @@ def test_uid___mg2_20170525142607_180419__procedure_hsdn_calimage__regression():
         visname=['mg2-20170525142607-180419.ms'],
         recipe='procedure_hsdn_calimage.xml',
         input_dir='pl-regressiontest/mg2-20170525142607-180419',
-        expectedoutput_dir='pl-regressiontest/mg2-20170525142607-180419/'
+        expectedoutput_dir='pl-regressiontest/mg2-20170525142607-180419'
     )
     pr.run()
 
