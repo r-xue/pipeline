@@ -13,7 +13,7 @@ import pipeline.infrastructure.vdp as vdp
 
 from pipeline.domain import DataType
 from pipeline.h.tasks.common.sensitivity import Sensitivity
-from pipeline.infrastructure import casa_tools, exceptions, task_registry
+from pipeline.infrastructure import casa_tools, casa_tasks, exceptions, task_registry
 
 from ..tclean import Tclean
 from ..tclean.resultobjects import TcleanResult
@@ -407,34 +407,54 @@ class MakeImages(basetask.StandardTaskTemplate):
 
     def _vlass_cube_set_miscinfo(self, tclean_result):
         """Add the VLASS cube plane rejection header keyword."""
+
         imagename = tclean_result.image
         reject = not tclean_result.imaging_metadata['keep']
         imlist = utils.glob_ordered(imagename.replace('.image', '.*'))
+
+        vis_name = self.inputs.vis[0]
+        msobj = self.inputs.context.observing_run.get_ms(vis_name)
+        job = casa_tasks.flagdata(vis=vis_name, mode='summary', spwchan=True)
+        flag_stats = self._executor.execute(job)
+
+        flagged_by_spw = 0
+        for spw_chan in flag_stats['spw:channel']:
+            spw, _ = spw_chan.split(':')
+            if spw != tclean_result.spw:
+                continue
+            if flag_stats['spw:channel'][spw_chan].get('flagged', 0) != flag_stats['spw:channel'][spw_chan].get('total', 0):
+                flagged_by_spw += 1
+
+        spwobj = msobj.get_spectral_window(tclean_result.spw)
+        chan_diff = np.diff(spwobj.channels.chan_freqs)
+        if len(spwobj.channels.chan_freqs) != 0 and np.allclose(chan_diff, chan_diff[0]):
+            chan_width = spwobj.channels.chan_widths[0]
+        else:
+            chan_width = np.median(np.abs(chan_diff))
+        vlass_bw = flagged_by_spw * chan_width
+        nominal_bw = spwobj.bandwidth
         for name in imlist:
             with casa_tools.ImageReader(name) as image:
                 info = image.miscinfo()
+                info['VLASSBWN'] = float(nominal_bw.value)
                 info['VLASSRJ'] = reject
                 LOG.info('mark the image %s as reject=%r', name, reject)
                 info['VLASSSPW'] = tclean_result.spw
                 info['VLASSPC'] = tclean_result.inputs["phasecenter"]
                 info['VLASSPL'] = tclean_result.stokes
                 info['VLASSPT'] = tclean_result.imaging_mode
-                info['VLASSPV'] = environment.pipeline_revision
+                # trim pipeline version to 68 chars
+                pipever = environment.pipeline_revision
+                if len(pipever) > 68:
+                    pipever = pipever[0:67]
+                info['VLASSPV'] = pipever
                 info['VLASSPK'] = tclean_result.image_max
-                info['VLASSBW'] = tclean_result.eff_ch_bw
+                info['VLASSBW'] = vlass_bw
                 info['VLASSITY'] = self._get_vlass_image_type(name)
                 epoch, tile, version = self._get_vlass_epoch_tile_version(name)
                 info['VLASSTN'] = tile
                 info['VLASSEP'] = epoch
                 info['VLASSVR'] = version
-                if tclean_result.specmode == 'cube':
-                    msobj = self.inputs.context.observing_run.get_ms(name=tclean_result.vis[0])
-                    nbin = tclean_result.inputs["nbin"] if tclean_result.inputs["nbin"] > 0 else 1
-                    SCF, physicalBW_of_1chan, effectiveBW_of_1chan, _ = tclean_result.inputs["image_heuristics"].get_bw_corr_factor(msobj, tclean_result.spw, nbin)
-                    nominal_bw = casa_tools.quanta.quantity(nbin / SCF**2 * effectiveBW_of_1chan, 'Hz')
-                else:
-                    nominal_bw = casa_tools.quanta.convert(tclean_result.aggregate_bw, 'Hz')
-                info['VLASSBWN'] = nominal_bw["value"]
                 image.setmiscinfo(info)
 
     def _get_vlass_epoch_tile_version(self, filename):

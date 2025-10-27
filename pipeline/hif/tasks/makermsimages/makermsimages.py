@@ -18,18 +18,25 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class MakermsimagesResults(basetask.Results):
-    def __init__(self, rmsimagelist=None, rmsimagenames=None, rmsstats=None):
+    def __init__(self, rmsimagelist=None, rmsimagenames=None, rmsstats=None, stats_summary=None):
         super().__init__()
 
         if rmsimagelist is None:
             rmsimagelist = []
+
         if rmsimagenames is None:
             rmsimagenames = []
+
         if rmsstats is None:
             rmsstats = {}
+
+        if stats_summary is None:
+            stats_summary = {}
+
         self.rmsimagelist = rmsimagelist[:]
         self.rmsimagenames = rmsimagenames[:]
         self.rmsstats = rmsstats
+        self.stats_summary = stats_summary
 
     def merge_with_context(self, context):
         """
@@ -138,13 +145,16 @@ class Makermsimages(basetask.StandardTaskTemplate):
                             rmsstats[rmsimagename] = image.statistics(robust=True)
                     # PIPE-2461, adding rms values to image header
                     imagename, _ = os.path.splitext(rmsimagename)
-                    with casa_tools.ImageReader(imagename) as image:
-                        info = image.miscinfo()
-                        info["VLASSRMS"] = np.median(rmsstats[rmsimagename]['madrms'])
-                        image.setmiscinfo(info)
+                    imagenames = utils.glob_ordered(imagename.replace('.image', '.*'))
+                    for imagename in imagenames:
+                        with casa_tools.ImageReader(imagename) as image:
+                            info = image.miscinfo()
+                            info["VLASSRMS"] = float(np.median(rmsstats[rmsimagename]['madrms']))
+                            image.setmiscinfo(info)
 
         LOG.info("RMS image list: " + ','.join(rmsimagenames))
-        return MakermsimagesResults(rmsimagelist=imlist, rmsimagenames=rmsimagenames, rmsstats=rmsstats)
+
+        return MakermsimagesResults(rmsimagelist=imlist, rmsimagenames=rmsimagenames, rmsstats=rmsstats, stats_summary=stats_summary)
 
     def analyse(self, results):
 
