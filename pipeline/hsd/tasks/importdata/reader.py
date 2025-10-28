@@ -922,7 +922,7 @@ class MetaDataReader(object):
         """
         me = casa_tools.measures
 
-        if ephem_table != '':
+        if ephem_table != "":
             me.framecomet(ephem_table)
             me.doframe(mepoch)
             me.doframe(mposition)
@@ -936,7 +936,6 @@ class MetaDataReader(object):
                 obj_azel = me.measure(me.direction(source_name.upper()), 'AZELGEO')
                 ref = me.measure(obj_azel, outframe)
             else:
-                raise RuntimeError('{0} is not registered in known_ephemeris_list'.format(source_name))
-        me.done()
+                raise RuntimeError("{0} is not registered in known_ephemeris_list".format(source_name))
 
         return ref

@@ -1298,7 +1298,7 @@ def clear_time_cache():
     A workaround solution provided by T. Nakazato (NAOJ), 2025-10-16.
     """
     # Define constants for the dummy conversion.
-    DUMMY_EPOCH_MJD = 0.0
+    DUMMY_EPOCH_MJD = 37665.0 # MJD corresponds to beginning of IERS data coverage: 1962-01-01
     DUMMY_AZIMUTH_DEG = 0.0
     DUMMY_ELEVATION_DEG = 90.0
     OBSERVATORY = 'ALMA'
@@ -1315,14 +1315,12 @@ def clear_time_cache():
         measures_tool.doframe(position)
 
         # Perform the dummy direction conversion that triggers the cache clear.
-        # The resulting warning about IERS data is expected and safely ignored.
         dummy_direction = measures_tool.direction(
             rf='AZELGEO',
             v0=quanta_tool.quantity(DUMMY_AZIMUTH_DEG, 'deg'),
             v1=quanta_tool.quantity(DUMMY_ELEVATION_DEG, 'deg'),
         )
 
-        with logging.log_filtermsg('outside the range of the IERS (Earth axis data) table'):
-            _ = measures_tool.measure(rf='ICRS', v=dummy_direction)
+        measures_tool.measure(rf='ICRS', v=dummy_direction)
 
     LOG.debug('Successfully cleared the CASA measures tool time cache.')
