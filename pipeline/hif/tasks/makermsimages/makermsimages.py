@@ -126,11 +126,12 @@ class Makermsimages(basetask.StandardTaskTemplate):
                 rmsimagenames.append(rmsimagename)
                 # PIPE-1163: avoid saving stats from .tt1
                 if '.tt1.' not in rmsimagename:
+                    stats_summary = {}
                     with casa_tools.ImageReader(rmsimagename) as image:
                         if self.inputs.context.imaging_mode == "VLASS-SE-CUBE":
                             rmsstats[rmsimagename] = image.statistics(robust=True, axes=[0, 1, 3])
                             rmsstats[rmsimagename]['madrms'] = rmsstats[rmsimagename]['medabsdevmed'] * 1.4826  # see CAS-9631
-                            stats_summary = {}
+
                             for item in ['max', 'min', 'mean', 'median', 'sigma', 'madrms']:
                                 stats_summary[item] = {'range': np.percentile([rmsstats[rmsimage][item] for rmsimage in rmsstats], (0, 100))}
                                 value_arr = np.array([rmsstats[rmsimage][item] for rmsimage in rmsstats])
@@ -140,16 +141,18 @@ class Makermsimages(basetask.StandardTaskTemplate):
                                 stats_summary[item]['spwwise_madrms'] = mad_func(value_arr, axis=0)
                                 stats_summary[item]['spwwise_median'] = np.median(value_arr, axis=0)
                             stats_summary = stats_summary
-
+                            rmsval = float(np.median(rmsstats[rmsimagename]['madrms'])[0] * 1.4826)
                         else:
                             rmsstats[rmsimagename] = image.statistics(robust=True)
+                            rmsval = float(rmsstats[rmsimagename]['medabsdevmed'][0] * 1.4826)
+
                     # PIPE-2461, adding rms values to image header
                     imagename, _ = os.path.splitext(rmsimagename)
                     imagenames = utils.glob_ordered(imagename.replace('.image', '.*'))
                     for imagename in imagenames:
                         with casa_tools.ImageReader(imagename) as image:
                             info = image.miscinfo()
-                            info["VLASSRMS"] = float(np.median(rmsstats[rmsimagename]['madrms']))
+                            info["VLASSRMS"] = rmsval
                             image.setmiscinfo(info)
 
         LOG.info("RMS image list: " + ','.join(rmsimagenames))
