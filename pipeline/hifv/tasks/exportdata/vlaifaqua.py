@@ -401,10 +401,10 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
 
                 for tag in simple_tags:
                     try:
-                        value = sensitivity.get(tag)
-                        ElementTree.SubElement(nx, tag).text = 'N/A' if value is None else str(value)
+                        value = sensitivity.get(tag, 'N/A')
+                        ElementTree.SubElement(nx, tag).text = str(value)
                     except (KeyError, AttributeError, TypeError) as e:
-                        raise ParseError(f"Error processing field '{tag}': {e}")
+                        raise ParseError(f"Error processing '{tag}': {e}")
 
                 nested_tags = [
                     ("bandwidth", nx),
