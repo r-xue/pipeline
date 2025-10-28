@@ -1633,7 +1633,6 @@ class MeasurementSet(object):
         myel = myazel['m1']['value']
         myaz = (myaz * 180 / np.pi) % 360
         myel *= 180 / np.pi
-        me.done()
 
         return [myaz, myel]
 
