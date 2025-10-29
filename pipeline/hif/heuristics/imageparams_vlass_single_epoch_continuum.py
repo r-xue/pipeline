@@ -561,8 +561,15 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
             outmask_flux = image_outmask.statistics()['sum'].item()
             image_outmask.done()
 
+            mask_flux = inmask_flux + outmask_flux
+            # PIPE-2902: gracefully handling outmaskradio,
+            # if the model is empty for any resoan, set ratio to zero
             # calculate ratio of total flux inside and outside mask
-            outmaskratio = outmask_flux / (inmask_flux + outmask_flux)
+            if mask_flux:
+                outmaskratio = outmask_flux / (inmask_flux + outmask_flux)
+            else:
+                outmaskratio = 0.0
+                LOG.warning('inmask_flux + outmask_flux is zero, setting outmaskratio to 0.0')
 
             if outmaskratio > frac_lim:
                 LOG.warning(f'Flux fraction outside cleanmask is {"%.3g" % outmaskratio}, '

@@ -475,7 +475,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 except Exception as e:
                     continue
 
-            if selfcal_result:
+            if selfcal_result and os.path.exists(selfcal_result.caltable):
                 self.selfcaltable = selfcal_result.caltable
             else:
                 self.selfcaltable = ''
@@ -692,10 +692,11 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         for final_model in self.final_models:
             tar.add(final_model, final_model)
             LOG.info('....Adding {!s}'.format(final_model))
-
-        tar.add(self.selfcaltable, self.selfcaltable)
-        LOG.info('....Adding {!s}'.format(self.selfcaltable))
-
+        if os.path.exists(self.selfcaltable):
+            tar.add(self.selfcaltable, self.selfcaltable)
+            LOG.info('....Adding {!s}'.format(self.selfcaltable))
+        else:
+            LOG.warning(f'{self.selfcaltable} not present')
         tar.add(self.flagversion, self.flagversion)
         LOG.info('....Adding {!s}'.format(self.flagversion))
         tar.close()

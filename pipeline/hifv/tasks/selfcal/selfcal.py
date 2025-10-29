@@ -181,7 +181,11 @@ class Selfcal(basetask.StandardTaskTemplate):
         if self.inputs.selfcalmode == 'VLASS-SE':
             applycal_task_args['calwt'] = False
             applycal_task_args['interp'] = ['nearest']
-
-        job = casa_tasks.applycal(**applycal_task_args)
-
-        return self._executor.execute(job)
+        # PIPE-2902: casa task failing in a few corner cases
+        # when caltable does not exists
+        if os.path.exists(self.caltable):
+            job = casa_tasks.applycal(**applycal_task_args)
+            return self._executor.execute(job)
+        else:
+            LOG.warning(f'{self.caltable} does not exists, skipping applycal.')
+            return None
