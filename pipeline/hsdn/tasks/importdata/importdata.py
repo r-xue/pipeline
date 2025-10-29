@@ -153,7 +153,7 @@ class NROImportDataResults(sd_importdata.SDImportDataResults):
         # Set observatory information
         for ms in self.mses:
             if ms.antenna_array.name in ('NRO',):
-                ms.array_name == 'NRO'
+                ms.array_name = 'NRO'
                 context.project_summary.telescope = 'NRO'
                 context.project_summary.observatory = 'Nobeyama Radio Observatory'
                 break
