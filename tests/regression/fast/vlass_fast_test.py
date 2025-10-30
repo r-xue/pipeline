@@ -4,7 +4,7 @@ import shutil
 import pytest
 
 from pipeline.infrastructure import casa_tools
-from tests.regression.regression_tester import PipelineRegression
+from tests.regression.regression_tester import RegressionTester
 
 
 @pytest.mark.regression
@@ -20,11 +20,11 @@ def test_vlass_quicklook():
     input_dir = 'pl-regressiontest/vlass_quicklook'
     ref_directory = 'pl-regressiontest/vlass_quicklook'
 
-    pr = PipelineRegression(
+    pr = RegressionTester(
         visname=['TSKY0001.sb32295801.eb32296475.57549.31722762731_split_withcorrectdata.ms'],
         recipe='procedure_vlassQLIP.xml',
         input_dir=input_dir,
-        expectedoutput_dir=ref_directory
+        expectedoutput_dir=ref_directory,
         )
 
     # Copy parameter list file into the working directory

@@ -3,7 +3,7 @@ import shutil
 import pytest
 
 from pipeline.infrastructure import casa_tools
-from tests.regression.regression_tester import PipelineRegression
+from tests.regression.regression_tester import RegressionTester
 
 
 @pytest.mark.regression
@@ -17,12 +17,12 @@ def test_13A_537__procedure_hifv__regression():
     """
 
     input_dir = 'pl-regressiontest/13A-537'
-    pr = PipelineRegression(
+    pr = RegressionTester(
         visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
         recipe='procedure_hifv.xml',
         input_dir=input_dir,
         expectedoutput_dir=input_dir,
-        output_dir='13A_537__procedure_hifv__regression'
+        output_dir='13A_537__procedure_hifv__regression',
         )
 
     pr.run(telescope='vla', omp_num_threads=1)
@@ -40,12 +40,12 @@ def test_13A_537__calibration__PPR__regression():
 
     input_dir = 'pl-regressiontest/13A-537'
 
-    pr = PipelineRegression(
+    pr = RegressionTester(
         visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
         ppr=f'{input_dir}/PPR_13A-537.xml',
         input_dir=input_dir,
         expectedoutput_dir=input_dir,
-        output_dir='13A_537__calibration__PPR__regression'
+        output_dir='13A_537__calibration__PPR__regression',
         )
 
     pr.run(telescope='vla', omp_num_threads=1)
@@ -64,13 +64,13 @@ def test_13A_537__restore__PPR__regression():
     Expected results version:   casa-6.2.1.7-pipeline-2021.2.0.128
     """
     input_dir = 'pl-regressiontest/13A-537'
-    pr = PipelineRegression(
+    pr = RegressionTester(
         visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
         ppr=f'{input_dir}/PPR_13A-537_restore.xml',
         input_dir=input_dir,
         expectedoutput_file=f'{input_dir}/restore/' +
                              '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.restore.results.txt',
-        output_dir='13A_537__restore__PPR__regression'
+        output_dir='13A_537__restore__PPR__regression',
         )
 
     # copy files use restore task into products folder
@@ -91,12 +91,12 @@ def test_13A_537__restore__post1553__PPR__regression():
     Dataset:                    13A-537/13A-537.sb24066356.eb24324502.56514.05971091435
     """
     input_dir = 'pl-regressiontest/13A-537'
-    pr = PipelineRegression(
+    pr = RegressionTester(
         visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
         ppr=f'{input_dir}/PPR_13A-537_restore.xml',
         input_dir=input_dir,
         expectedoutput_dir=f'{input_dir}/restore/',
-        output_dir='13A_537__restore__post1553__PPR__regression'
+        output_dir='13A_537__restore__post1553__PPR__regression',
         )
 
     # copy files use restore task into products folder

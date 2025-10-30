@@ -1,4 +1,9 @@
+import os
+
 import pytest
+
+from pipeline.infrastructure import casa_tools
+from tests.component.component_tester import ComponentTester
 
 
 @pytest.mark.component
@@ -6,10 +11,22 @@ import pytest
 def test_chan_flagged_import():
     """Run test of importdata on small dataset with channels flagged.
 
-    Dataset(s): [TODO]
-    Task(s): hif<a,v>_importdata
+    Dataset(s):                 uid___A002_X1181695_X1c6a4_8ant_chans_flagged.ms
+    Task(s):                    hifa_importdata
     """
-    pass
+    data_dir = 'pl-componenttest/chan_flagged_import'
+    visname = 'uid___A002_X1181695_X1c6a4_8ant_chans_flagged.ms'
+    tasks = [
+        ('hifa_importdata', {'vis': casa_tools.utils.resolve(os.path.join(data_dir, visname))}),
+    ]
+    pr = ComponentTester(
+        visname=[visname],
+        tasks=tasks,
+        output_dir='chan_flagged_import',
+        expectedoutput_dir=data_dir,
+        )
+
+    pr.run()
 
 
 @pytest.mark.component
@@ -18,22 +35,82 @@ def test_chan_flagged_import():
 def test_selfcal_and_selfcal_restore():
     """Run test selfcal and selfcal restoration capabilities.
 
-    Dataset(s): [TODO]
-    Task(s): hif<a,v>_importdata, hif_selfcal
+    Dataset(s):                 uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small_target.ms
+    Task(s):                    hifa_importdata, hif_selfcal
     """
-    pass
+    data_dir = 'pl-unittest'
+    visname = 'uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small_target.ms'
+    tasks = [
+        ('hifa_importdata', {'vis': casa_tools.utils.resolve(os.path.join(data_dir, visname)),
+                             'datacolumns': {'data': 'regcal_contline'}}),
+        ('hif_selfcal', {}),
+        ('hif_selfcal', {'restore_only': True}),
+    ]
+    pr = ComponentTester(
+        visname=['uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small_target.ms'],
+        tasks=tasks,
+        output_dir='selfcal_and_selfcal_restore',
+        expectedoutput_dir='pl-componenttest/selfcal_and_selfcal_restore',
+        )
+
+    pr.run()
 
 
 @pytest.mark.component
 @pytest.mark.importdata
 @pytest.mark.makeimages
-def test_missing_spws_between_EBs():
+def test_missing_spws_first_EB():
     """Run tests with two datasets, one with all spws and one missing a single spw.
 
-    Test 1: import dataset 1 then dataset 2
-    Test 2: import dataset 2 then dataset 1
+    test_missing_spws_first_EB: import dataset 1 then dataset 2
+    test_missing_spws_second_EB: import dataset 2 then dataset 1
 
-    Dataset(s): [TODO]
-    Task(s): importdata, hif_makeimages, hif_makelist
+    Dataset(s):                 OphA-X1_spw0_2.ms, OphA-X1_spw0_2_3.ms
+    Task(s):                    hifv_importdata, hif_makelist, hif_makeimages
     """
-    pass
+    data_dir = 'pl-componenttest/missing_spws'
+    visnames = ['OphA-X1_spw0_2.ms', 'OphA-X1_spw0_2_3.ms']
+    vislist = [casa_tools.utils.resolve(os.path.join(data_dir, visname)) for visname in visnames]
+    tasks = [
+        ('hifv_importdata', {'vis': vislist}),
+        ('hif_makeimlist', {'specmode': 'cont'}),
+        ('hif_makeimages', {})
+    ]
+    pr = ComponentTester(
+        visname=visnames,
+        tasks=tasks,
+        output_dir='missing_spws_first_EB',
+        expectedoutput_dir=data_dir,
+        )
+
+    pr.run()
+
+
+@pytest.mark.component
+@pytest.mark.importdata
+@pytest.mark.makeimages
+def test_missing_spws_second_EB():
+    """Run tests with two datasets, one with all spws and one missing a single spw.
+
+    test_missing_spws_first_EB: import dataset 1 then dataset 2
+    test_missing_spws_second_EB: import dataset 2 then dataset 1
+
+    Dataset(s):                 OphA-X1_spw0_2.ms, OphA-X1_spw0_2_3.ms
+    Task(s):                    hifv_importdata, hif_makelist, hif_makeimages
+    """
+    data_dir = 'pl-componenttest/missing_spws'
+    visnames = ['OphA-X1_spw0_2_3.ms', 'OphA-X1_spw0_2.ms']
+    vislist = [casa_tools.utils.resolve(os.path.join(data_dir, visname)) for visname in visnames]
+    tasks = [
+        ('hifv_importdata', {'vis': vislist}),
+        ('hif_makeimlist', {'specmode': 'cont'}),
+        ('hif_makeimages', {})
+    ]
+    pr = ComponentTester(
+        visname=visnames,
+        tasks=tasks,
+        output_dir='missing_spws_second_EB',
+        expectedoutput_dir=data_dir,
+        )
+
+    pr.run()

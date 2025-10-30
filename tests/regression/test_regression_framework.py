@@ -2,7 +2,7 @@
 test_regression_framework.py
 ============================
 
-Unit tests for the PipelineRegression framework logic.
+Unit tests for the RegressionTester framework logic.
 
 Purpose
 -------
@@ -18,7 +18,7 @@ Scope covered here
     versions, then prefers the closest not-greater versions.
 - CLI options propagation
   * Ensures `--compare-only` and `--remove-workdir` options are read from
-    pytest and applied to a `PipelineRegression` instance.
+    pytest and applied to a `RegressionTester` instance.
 - Filename regex correctness
   * Confirms patterns extract versions from names like:
     `...casa-<X.Y.Z[-build]>-pipeline-<YYYY.M.m.p>`
@@ -51,11 +51,11 @@ Notes for contributors
   * `pipeline.environment.pipeline_revision`
   Keep new tests deterministic by patching these accordingly.
 - If you change filename patterns or selection rules in
-  `PipelineRegression`, update tests here first to codify the intended behavior.
+  `RegressionTester`, update tests here first to codify the intended behavior.
 
 Related
 -------
-- Framework under test: `tests.regression.regression_tester.PipelineRegression`
+- Framework under test: `tests.regression.regression_tester.RegressionTester`
 - Dataset-based tests: `tests/regression/fast/`, `tests/regression/slow/`
 - Component tests: `tests/component/`
 """
@@ -82,14 +82,14 @@ def pytest_addoption(parser: Parser) -> None:
     parser.addoption("--remove-workdir", action="store_true", help="Enable workdir removal")
 
 
-class TestPipelineRegression(unittest.TestCase):
+class TestRegressionTester(unittest.TestCase):
 
     @pytest.fixture(autouse=True)
     def setup_pipeline(self, pytestconfig: Config) -> None:
-        """Sets up a PipelineRegression instance with mock environment values."""
+        """Sets up a RegressionTester instance with mock environment values."""
         self.compare_only = pytestconfig.getoption("--compare-only", default=False)
         self.remove_workdir = pytestconfig.getoption("--remove-workdir", default=False)
-        self.pipeline = regression_tester.PipelineRegression(visname=["test_results"], ppr="test.xml")
+        self.pipeline = regression_tester.RegressionTester(visname=["test_results"], ppr="test.xml")
 
     @mock.patch("pipeline.environment.casa_version_string", "6.5.1.15")  # casa_version_string already replaces dash
     @mock.patch("pipeline.environment.pipeline_revision", "2023.1.0.8")

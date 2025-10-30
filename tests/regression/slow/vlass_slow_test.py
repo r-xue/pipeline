@@ -4,7 +4,7 @@ import shutil
 import pytest
 
 from pipeline.infrastructure import casa_tools
-from tests.regression.regression_tester import PipelineRegression
+from tests.regression.regression_tester import RegressionTester
 
 
 @pytest.mark.regression
@@ -20,11 +20,11 @@ def test_vlass_se_cont_mosaic(data_directory):
     input_dir = f'{data_directory}/vlass/se_cont_mosaic/'
     ref_directory = 'pl-regressiontest/vlass_se_cont_mosaic/'
 
-    pr = PipelineRegression(
+    pr = RegressionTester(
         visname=[dataset_name],
         recipe=f'{input_dir}/procedure_vlassSEIP_cv.xml',
         input_dir=input_dir,
-        expectedoutput_dir=ref_directory
+        expectedoutput_dir=ref_directory,
         )
 
     try:
@@ -54,11 +54,11 @@ def test_vlass_se_cont_awp32(data_directory):
     input_dir = f'{data_directory}/vlass/se_cont_awp32/'
     ref_directory = 'pl-regressiontest/vlass_se_cont_awp32/'
 
-    pr = PipelineRegression(
+    pr = RegressionTester(
         visname=[dataset_name],
         recipe=f'{input_dir}/procedure_vlassSEIP_cv.xml',
         input_dir=input_dir,
-        expectedoutput_dir=ref_directory
+        expectedoutput_dir=ref_directory,
         )
 
     try:
@@ -88,11 +88,11 @@ def test_vlass_se_cube(data_directory):
     input_dir = f'{data_directory}/vlass/se_cube/'
     ref_directory = 'pl-regressiontest/vlass_se_cube/'
 
-    pr = PipelineRegression(
+    pr = RegressionTester(
         visname=[dataset_name],
         recipe='procedure_vlassCCIP.xml',
         input_dir=input_dir,
-        expectedoutput_dir=ref_directory
+        expectedoutput_dir=ref_directory,
         )
 
     try:
@@ -130,11 +130,11 @@ def test_vlass_cal(data_directory):
     input_dir = f'{data_directory}/vlass/cal/'
     ref_directory = 'pl-regressiontest/vlass_cal'
 
-    pr = PipelineRegression(
+    pr = RegressionTester(
         visname=[dataset_name],
         recipe='procedure_hifvcalvlass.xml',
         input_dir=input_dir,
-        expectedoutput_dir=ref_directory
+        expectedoutput_dir=ref_directory,
         )
 
     pr.run(telescope='vla')

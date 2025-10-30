@@ -1,6 +1,6 @@
 import pytest
 
-from tests.regression.regression_tester import PipelineRegression
+from tests.regression.regression_tester import RegressionTester
 
 
 @pytest.mark.regression
@@ -16,11 +16,11 @@ def test_13A_537__procedure_hifv_calimage__regression(data_directory):
     input_dir = 'pl-regressiontest/13A-537/'
     ref_directory = 'pl-regressiontest/13A-537/'
 
-    pr = PipelineRegression(
+    pr = RegressionTester(
         visname=[dataset_name],
         recipe='procedure_hifv_calimage_cont.xml',
         input_dir=input_dir,
-        expectedoutput_dir=ref_directory
+        expectedoutput_dir=ref_directory,
         )
 
     pr.run(telescope='vla', omp_num_threads=1)
@@ -39,11 +39,11 @@ def test_15B_342__procedure_hifv__regression(data_directory):
     input_dir = f'{data_directory}/vla/15B-342/'
     ref_directory = 'pl-regressiontest/15B-342/'
 
-    pr = PipelineRegression(
+    pr = RegressionTester(
         visname=[dataset_name],
         recipe='procedure_hifv_calimage_cont.xml',
         input_dir=input_dir,
-        expectedoutput_dir=ref_directory
+        expectedoutput_dir=ref_directory,
         )
 
     pr.run(telescope='vla', omp_num_threads=1)
@@ -62,11 +62,11 @@ def test_17B_188__procedure_hifv__regression(data_directory):
     input_dir = f'{data_directory}/vla/17B-188/'
     ref_directory = 'pl-regressiontest/17B-188/'
 
-    pr = PipelineRegression(
+    pr = RegressionTester(
         visname=[dataset_name],
         recipe='procedure_hifv_calimage_cont.xml',
         input_dir=input_dir,
-        expectedoutput_dir=ref_directory
+        expectedoutput_dir=ref_directory,
         )
 
     pr.run(telescope='vla', omp_num_threads=1)
@@ -84,11 +84,11 @@ def test_18A_228__procedure_hifv__regression(data_directory):
     input_dir = f'{data_directory}/vla/18A-228/'
     ref_directory = 'pl-regressiontest/18A-228/'
 
-    pr = PipelineRegression(
+    pr = RegressionTester(
         visname=['18A-228.sb35538192.eb35676319.58412.13592341435'],
         recipe='procedure_hifv_calimage_cont.xml',
         input_dir=input_dir,
-        expectedoutput_dir=ref_directory
+        expectedoutput_dir=ref_directory,
         )
 
     pr.run(telescope='vla', omp_num_threads=1)
@@ -106,11 +106,11 @@ def test_18A_426__procedure_hifv__regression(data_directory):
     input_dir = f'{data_directory}/vla/18A-426/'
     ref_directory = 'pl-regressiontest/18A-426/'
 
-    pr = PipelineRegression(
+    pr = RegressionTester(
         visname=['18A-426.sb35644955.eb35676220.58411.96917952546'],
         recipe='procedure_hifv_calimage_cont.xml',
         input_dir=input_dir,
-        expectedoutput_dir=ref_directory
+        expectedoutput_dir=ref_directory,
         )
 
     pr.run(telescope='vla', omp_num_threads=1)
@@ -129,11 +129,11 @@ def test_21A_423__procedure_hifv__regression(data_directory):
     input_dir = f'{data_directory}/vla/21A-423/'
     ref_directory = 'pl-regressiontest/21A-423/'
 
-    pr = PipelineRegression(
+    pr = RegressionTester(
         visname=[dataset_name],
         recipe='procedure_hifv_calimage_cont.xml',
         input_dir=input_dir,
-        expectedoutput_dir=ref_directory
+        expectedoutput_dir=ref_directory,
         )
 
     pr.run(telescope='vla', omp_num_threads=1)
@@ -151,9 +151,11 @@ def test_13A_537__procedure_hifv__cont__cube__selfcal(self):
 
     input_dir = 'pl-regressiontest/13A-537'
 
-    pr = PipelineRegression(recipe='procedure_hifv_calimage_cont_cube_selfcal.xml',
-                            input_dir=input_dir,
-                            visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
-                            expectedoutput_dir=input_dir)
+    pr = RegressionTester(
+        visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
+        recipe='procedure_hifv_calimage_cont_cube_selfcal.xml',
+        input_dir=input_dir,
+        expectedoutput_dir=input_dir,
+        )
 
     pr.run(telescope='vla', omp_num_threads=1)

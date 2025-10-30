@@ -1,6 +1,6 @@
 import pytest
 
-from tests.regression.regression_tester import PipelineRegression, setup_flux_antennapos
+from tests.regression.regression_tester import RegressionTester, setup_flux_antennapos
 
 
 @pytest.mark.regression
@@ -16,12 +16,12 @@ def test_2019_2_00093_S__uid___A002_Xe850fb_X2df8_regression(data_directory):
     test_directory = f'{data_directory}/alma_sd/2019.2.00093.S/'
     ref_directory = 'pl-regressiontest/2019.2.00093.S/'
 
-    pr = PipelineRegression(
+    pr = RegressionTester(
         visname=['uid___A002_Xe850fb_X2df8', 'uid___A002_Xe850fb_X36e4', 'uid___A002_Xe850fb_X11e13'],
         recipe='procedure_hsd_calimage.xml',
         input_dir=test_directory,
         project_id="2019_2_00093_S",
-        expectedoutput_dir=ref_directory
+        expectedoutput_dir=ref_directory,
         )
 
     pr.run()
@@ -39,12 +39,12 @@ def test_2019_1_01056_S__uid___A002_Xe1d2cb_X110f1_regression(data_directory):
     test_directory = f'{data_directory}/alma_sd/2019.1.01056.S/'
     ref_directory = 'pl-regressiontest/2019.1.01056.S/'
 
-    pr = PipelineRegression(
+    pr = RegressionTester(
         visname=['uid___A002_Xe1d2cb_X110f1', 'uid___A002_Xe1d2cb_X11d0a', 'uid___A002_Xe1f219_X6eeb'], 
         recipe='procedure_hsd_calimage.xml',
         input_dir=test_directory,
         project_id="2019_1_01056_S",
-        expectedoutput_dir=f'{ref_directory}'
+        expectedoutput_dir=f'{ref_directory}',
         )
 
     setup_flux_antennapos(test_directory, pr.output_dir)
@@ -63,12 +63,12 @@ def test_2016_1_01489_T__uid___A002_Xbadc30_X43ee_regression(data_directory):
     test_directory = f'{data_directory}/alma_sd/2016.1.01489.T/'
     ref_directory = 'pl-regressiontest/2016.1.01489.T/'
 
-    pr = PipelineRegression(
+    pr = RegressionTester(
         visname=['uid___A002_Xbadc30_X43ee', 'uid___A002_Xbaedce_X7694'],
         recipe='procedure_hsd_calimage.xml',
         input_dir=test_directory,
         project_id="2016_1_01489_T",
-        expectedoutput_dir=ref_directory
+        expectedoutput_dir=ref_directory,
         )
 
     pr.run()
