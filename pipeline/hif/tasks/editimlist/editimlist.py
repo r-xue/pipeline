@@ -538,11 +538,13 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['uvtaper'] = (th.uvtaper() if not 'uvtaper' in inp.context.imaging_parameters
                                    else inp.context.imaging_parameters['uvtaper']) if not inpdict['uvtaper'] else inpdict['uvtaper']
 
-        imlist_entry['deconvolver'] = th.deconvolver(None, None) if not inpdict['deconvolver'] else inpdict['deconvolver']
+        imlist_entry['specmode'] = th.specmode() if not inpdict['specmode'] else inpdict['specmode']
+        imlist_entry['deconvolver'] = th.deconvolver(
+            imlist_entry['specmode'], None) if not inpdict['deconvolver'] else inpdict['deconvolver']
         imlist_entry['mask'] = th.mask() if not inpdict['mask'] else inpdict['mask']
         imlist_entry['pbmask'] = None if not inpdict['pbmask'] else inpdict['pbmask']
-        imlist_entry['specmode'] = th.specmode() if not inpdict['specmode'] else inpdict['specmode']
-        imlist_entry['robust'] = th.robust(specmode=imlist_entry['specmode']) if inpdict['robust'] in (None, -999.0) else inpdict['robust']
+        imlist_entry['robust'] = th.robust(specmode=imlist_entry['specmode']
+                                           ) if inpdict['robust'] in (None, -999.0) else inpdict['robust']
 
         imlist_entry['uvrange'], _ = th.uvrange(field=fieldnames[0] if fieldnames else None,
                                                 spwspec=imlist_entry['spw'],
