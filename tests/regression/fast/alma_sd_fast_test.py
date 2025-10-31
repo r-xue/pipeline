@@ -87,9 +87,9 @@ def test_uid___mg2_20170525142607_180419__PPR__regression():
         visname=['mg2-20170525142607-180419.ms'],
         ppr=f'{input_dir}/PPR.xml',
         input_dir=input_dir,
+        output_dir='mg2-20170525142607-180419_PPR',
         expectedoutput_file=(f'{input_dir}/' +
                              'mg2-20170525142607-180419_PPR.casa-6.6.6-16-pipeline-2025.0.1.18.results.txt'),
-        output_dir='mg2-20170525142607-180419_PPR',
         )
 
     # copy files use restore task into products folder

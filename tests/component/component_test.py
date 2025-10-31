@@ -8,7 +8,7 @@ from tests.component.component_tester import ComponentTester
 
 @pytest.mark.component
 @pytest.mark.importdata
-def test_chan_flagged_import():
+def test_uid___A002_X1181695_X1c6a4_8ant__chan_flagged_import__component():
     """Run test of importdata on small dataset with channels flagged.
 
     Dataset(s):                 uid___A002_X1181695_X1c6a4_8ant_chans_flagged.ms
@@ -32,7 +32,7 @@ def test_chan_flagged_import():
 @pytest.mark.component
 @pytest.mark.importdata
 @pytest.mark.selfcal
-def test_selfcal_and_selfcal_restore():
+def test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small_target__selfcal_and_selfcal_restore__component():
     """Run test selfcal and selfcal restoration capabilities.
 
     Dataset(s):                 uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small_target.ms
@@ -59,7 +59,7 @@ def test_selfcal_and_selfcal_restore():
 @pytest.mark.component
 @pytest.mark.importdata
 @pytest.mark.makeimages
-def test_missing_spws_first_EB():
+def test_OphA_X1__missing_spws_first_EB__component():
     """Run tests with two datasets, one with all spws and one missing a single spw.
 
     test_missing_spws_first_EB: import dataset 1 then dataset 2
@@ -89,7 +89,7 @@ def test_missing_spws_first_EB():
 @pytest.mark.component
 @pytest.mark.importdata
 @pytest.mark.makeimages
-def test_missing_spws_second_EB():
+def test_OphA_X1__missing_spws_second_EB__component():
     """Run tests with two datasets, one with all spws and one missing a single spw.
 
     test_missing_spws_first_EB: import dataset 1 then dataset 2

@@ -11,8 +11,8 @@ from tests.regression.regression_tester import RegressionTester
 @pytest.mark.fast
 @pytest.mark.alma
 @pytest.mark.seven
-def test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small__procedure_hifa_calimage__regression():
-    """Run ALMA cal+image regression on a small test dataset.
+def test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small__PPR__regression():
+    """Run ALMA cal+image regression on a small test dataset with a PPR file.
 
     PPR:                        pl-regressiontest/uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small/PPR.xml
     Dataset:                    uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms
@@ -31,7 +31,7 @@ def test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small__procedure_hifa_calimage
 @pytest.mark.fast
 @pytest.mark.alma
 @pytest.mark.seven
-def test_uid___A002_Xef72bb_X9d29_renorm_restore_regression():
+def test_uid___A002_Xef72bb_X9d29__renorm_restore_procedure_hifa_image__regression():
     """Restore renorm from Cycle 8 (with current pipeline)
 
     Recipe name:                procedure_hifa_image
@@ -60,7 +60,7 @@ def test_uid___A002_Xef72bb_X9d29_renorm_restore_regression():
 @pytest.mark.fast
 @pytest.mark.alma
 @pytest.mark.seven
-def test_uid___A002_Xc845c0_X7366_cycle5_restore_regression():
+def test_uid___A002_Xc845c0_X7366__cycle5_restore_procedure_hifa_image__regression():
     """
     Restore from Cycle 5 (with current pipeline)
 
@@ -90,7 +90,7 @@ def test_uid___A002_Xc845c0_X7366_cycle5_restore_regression():
 @pytest.mark.fast
 @pytest.mark.alma
 @pytest.mark.seven
-def test_uid___A002_Xc46ab2_X15ae_selfcal_restore_regression():
+def test_uid___A002_Xc46ab2_X15ae__selfcal_restore_procedure_hifa_image__regression():
     """Restore selfcal from Cycle 10 (with current pipeline)
 
     Recipe name:                procedure_hifa_image
@@ -120,7 +120,7 @@ def test_uid___A002_Xc46ab2_X15ae_selfcal_restore_regression():
 @pytest.mark.fast
 @pytest.mark.alma
 @pytest.mark.twelve
-def test_E2E6_1_00010_S__uid___A002_Xd0a588_X2239_regression():
+def test_E2E6_1_00010_S__uid___A002_Xd0a588_X2239__procedure_hifa_image__regression():
     """Run ALMA cal+image regression on a 12m moderate-size test dataset in ASDM.
 
     Recipe name:                procedure_hifa_calimage
@@ -156,8 +156,8 @@ def test_csv_3899_eb2_small__procedure_hifa_calimage__regression():
         visname=['uid___A002_X1181695_X1c6a4_8ant.ms'],
         recipe='procedure_hifa_calimage.xml',
         input_dir=input_dir,
-        expectedoutput_dir=input_dir,
         output_dir='csv_3899_eb2_small',
+        expectedoutput_dir=input_dir,
         )
 
     pr.run(omp_num_threads=1)
@@ -168,7 +168,7 @@ def test_csv_3899_eb2_small__procedure_hifa_calimage__regression():
 @pytest.mark.fast
 @pytest.mark.alma
 @pytest.mark.twelve
-def test_uid___A002_Xee1eb6_Xc58d_pipeline__procedure_hifa_calsurvey__regression():
+def test_uid___A002_Xee1eb6_Xc58d_original__procedure_hifa_calsurvey__regression():
     """Run ALMA cal+survey regression on a calibration survey test dataset
 
     Recipe name:                procedure_hifa_calsurvey
@@ -179,8 +179,8 @@ def test_uid___A002_Xee1eb6_Xc58d_pipeline__procedure_hifa_calsurvey__regression
         visname=['uid___A002_Xee1eb6_Xc58d_original.ms'],
         recipe='procedure_hifa_calsurvey.xml',
         input_dir=input_directory,
-        expectedoutput_dir=input_directory,
         output_dir='uid___A002_Xee1eb6_Xc58d_calsurvey_output',
+        expectedoutput_dir=input_directory,
         )
 
     pr.run()

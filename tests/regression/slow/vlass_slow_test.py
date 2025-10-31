@@ -10,7 +10,7 @@ from tests.regression.regression_tester import RegressionTester
 @pytest.mark.regression
 @pytest.mark.slow
 @pytest.mark.vlass
-def test_vlass_se_cont_mosaic(data_directory):
+def test_VLASS2_2__se_cont_mosaic_procedure_vlassSEIP__regression(data_directory):
     """Run VLASS regression
 
     Recipe name: procedure_vlassSEIP_cv.xml
@@ -44,7 +44,7 @@ def test_vlass_se_cont_mosaic(data_directory):
 @pytest.mark.regression
 @pytest.mark.slow
 @pytest.mark.vlass
-def test_vlass_se_cont_awp32(data_directory):
+def test_VLASS2_2__se_cont_awp32_procedure_vlassSEIP__regression(data_directory):
     """Run VLASS regression
 
     Recipe name: procedure_vlassSEIP_cv.xml
@@ -78,7 +78,7 @@ def test_vlass_se_cont_awp32(data_directory):
 @pytest.mark.regression
 @pytest.mark.slow
 @pytest.mark.vlass
-def test_vlass_se_cube(data_directory):
+def test_VLASS2_2__se_cube_procedure_vlassCCIP__regression(data_directory):
     """Run VLASS regression
 
     Recipe name: procedure_vlassCCIP.xml
@@ -120,7 +120,7 @@ def test_vlass_se_cube(data_directory):
 @pytest.mark.regression
 @pytest.mark.slow
 @pytest.mark.vlass
-def test_vlass_cal(data_directory):
+def test_VLASS2_1__procedure_hifvcalvlass__regression(data_directory):
     """Run VLASS regression
 
     Recipe name: procedure_hifvcalvlass.xml

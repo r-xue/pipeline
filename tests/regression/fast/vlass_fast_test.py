@@ -10,7 +10,7 @@ from tests.regression.regression_tester import RegressionTester
 @pytest.mark.regression
 @pytest.mark.fast
 @pytest.mark.vlass
-def test_vlass_quicklook():
+def test_TSKY0001__vlass_quicklook_regression():
     """Run VLASS quicklook regression
 
     Recipe name: procedure_vlassQLIP.xml
