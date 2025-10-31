@@ -285,7 +285,7 @@ class PipelineTester:
                     # run the pipeline for new results
                     if self.mode == 'regression':
                         if self.ppr:
-                            self.__run_ppr(input_vis, self.ppr, telescope)
+                            self.__run_ppr(input_vis, telescope)
                         else:
                             LOG.warning("Running without Pipeline Processing Request (PPR). Using recipereducer instead.")
                             recipereducer.reduce(vis=input_vis, procedure=self.recipe)
@@ -427,17 +427,18 @@ class PipelineTester:
                 LOG.warning(msg)
                 pytest.fail(msg)
 
-    def __run_ppr(self, telescope: str) -> None:
+    def __run_ppr(self, input_vis: list[str], telescope: str) -> None:
         """Execute the recipe defined by PPR.
 
         Args:
+            input_vis : relative path of MSes (`input_dir`+`visname`)
             telescope : string 'alma' or 'vla'
 
         NOTE: this private method is expected be called under "working/"
         """
 
         # executeppr expects the rawdata in ../rawdata
-        for vis in self.visname:
+        for vis in input_vis:
             os.symlink(vis, f'../rawdata/{os.path.basename(vis)}')
 
         # save a copy of PPR in the directory one level above "working/".
