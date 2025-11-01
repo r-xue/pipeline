@@ -32,7 +32,7 @@ Contributors and Affiliations
 - Rui Xue (NRAO, 2020-current)
 - Shawn Booth (NRAO, 2024-current)
 - Shinnosuke Kawakami (NAOJ, 2012-2014)
-- Stewart Williams (UKATC, 2010-2015)
+- Stewart Williams (UKATC, 2010-2022, 2024-2025)
 - Takeshi Nakazato (NAOJ, 2009-current)
 - Todd Hunter (NRAO, 2013-current)
 - Vincent Geers (UKATC, 2015-2025)
