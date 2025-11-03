@@ -7,11 +7,13 @@ from tests.regression.regression_tester import RegressionTester, setup_flux_ante
 @pytest.mark.slow
 @pytest.mark.alma
 @pytest.mark.sd
-def test_2019_2_00093_S__uid___A002_Xe850fb_X2df8__regression(data_directory):
+def test_2019_2_00093_S__uid___A001_X14c3_Xc33__regression(data_directory):
     """Run longer regression test on this ALMA SD dataset
 
     Recipe name: procedure_hsd_calimage
-    Dataset: 2019.2.00093.S: uid___A002_Xe850fb_X2df8, uid___A002_Xe850fb_X36e4, uid___A002_Xe850fb_X11e13
+    Project: 2019.2.00093.S
+    MOUS: uid___A001_X14c3_Xc33
+    EBs: uid___A002_Xe850fb_X2df8, uid___A002_Xe850fb_X36e4, uid___A002_Xe850fb_X11e13
     """
     test_directory = f'{data_directory}/alma_sd/2019.2.00093.S/'
     ref_directory = 'pl-regressiontest/2019.2.00093.S/'
@@ -30,11 +32,13 @@ def test_2019_2_00093_S__uid___A002_Xe850fb_X2df8__regression(data_directory):
 @pytest.mark.slow
 @pytest.mark.alma
 @pytest.mark.sd
-def test_2019_1_01056_S__uid___A002_Xe1d2cb_X110f1__regression(data_directory):
+def test_2019_1_01056_S__uid___A001_X1465_X1b44__regression(data_directory):
     """Run weekly regression test on this ALMA SD dataset
 
     Recipe name: procedure_hsd_calimage
-    Dataset: 2019.1.01056.S: uid___A002_Xe1d2cb_X110f1, uid___A002_Xe1d2cb_X11d0a, uid___A002_Xe1f219_X6eeb
+    Project: 2019.1.01056.S
+    MOUS: uid___A001_X1465_X1b44
+    EBs: uid___A002_Xe1d2cb_X110f1, uid___A002_Xe1d2cb_X11d0a, uid___A002_Xe1f219_X6eeb
     """
     test_directory = f'{data_directory}/alma_sd/2019.1.01056.S/'
     ref_directory = 'pl-regressiontest/2019.1.01056.S/'
@@ -54,11 +58,13 @@ def test_2019_1_01056_S__uid___A002_Xe1d2cb_X110f1__regression(data_directory):
 @pytest.mark.slow
 @pytest.mark.alma
 @pytest.mark.sd
-def test_2016_1_01489_T__uid___A002_Xbadc30_X43ee__regression(data_directory):
+def test_2016_1_01489_T__uid___A001_X898_Xda__regression(data_directory):
     """Run weekly regression test on this ALMA SD dataset
 
     Recipe name: procedure_hsd_calimage
-    Dataset: 2016.1.01489.T: uid___A002_Xbadc30_X43ee, uid___A002_Xbaedce_X7694
+    Project: 2016.1.01489.T
+    MOUS: uid___A001_X898_Xda
+    EBs: uid___A002_Xbadc30_X43ee, uid___A002_Xbaedce_X7694
     """
     test_directory = f'{data_directory}/alma_sd/2016.1.01489.T/'
     ref_directory = 'pl-regressiontest/2016.1.01489.T/'
