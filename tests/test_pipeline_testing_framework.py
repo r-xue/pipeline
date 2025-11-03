@@ -1,12 +1,12 @@
 """
-test_regression_framework.py
+test_pipeline_testing_framework.py
 ============================
 
-Unit tests for the RegressionTester framework logic.
+Unit tests for the PipelineTester framework logic.
 
 Purpose
 -------
-Validate internal behaviors of the regression framework so that regression
+Validate internal behaviors of the pipeline framework so that pipeline
 tests can trust the scaffolding they run on.
 
 Scope covered here
@@ -18,7 +18,7 @@ Scope covered here
     versions, then prefers the closest not-greater versions.
 - CLI options propagation
   * Ensures `--compare-only` and `--remove-workdir` options are read from
-    pytest and applied to a `RegressionTester` instance.
+    pytest and applied to a `PipelineTester` instance.
 - Filename regex correctness
   * Confirms patterns extract versions from names like:
     `...casa-<X.Y.Z[-build]>-pipeline-<YYYY.M.m.p>`
@@ -32,15 +32,14 @@ Expected filename patterns
 --------------------------
 - CASA:     `casa-6.5.1-15`  (dash is allowed; internally compared as dots)
 - Pipeline: `pipeline-2023.1.0.8`
-Combined example: `test_results_casa-6.5.1-15-pipeline-2023.1.0.8`
 
 How to run
 ----------
 Directly call file:
-    xvfb-run casa --nogui --nologger --agg -c "import pytest; pytest.main(['-vv', '<repo root>/tests/test_regression_framework.py'])"
+    python3 -m pytest -vv <repo root>/tests/test_pipeline_testing_framework.py
 
 Or as part of the unit suite:
-    xvfb-run casa --nogui --nologger --agg -c "import pytest; pytest.main(['-vv', '-m', 'not regression and not component', '<repo root>'])"
+    python3 -m pytest -vv -m 'not regression and not component' '<repo root>'
 
 Notes for contributors
 ----------------------
@@ -51,13 +50,7 @@ Notes for contributors
   * `pipeline.environment.pipeline_revision`
   Keep new tests deterministic by patching these accordingly.
 - If you change filename patterns or selection rules in
-  `RegressionTester`, update tests here first to codify the intended behavior.
-
-Related
--------
-- Framework under test: `tests.regression.regression_tester.RegressionTester`
-- Dataset-based tests: `tests/regression/fast/`, `tests/regression/slow/`
-- Component tests: `tests/component/`
+  `PipelineTester`, update tests here first to codify the intended behavior.
 """
 from __future__ import annotations
 
@@ -68,7 +61,7 @@ from unittest import mock
 import packaging
 import pytest
 
-from tests.regression import regression_tester
+from tests.testing_utils import PipelineTester
 
 if TYPE_CHECKING:
     from pytest import Config, Parser
@@ -82,14 +75,14 @@ def pytest_addoption(parser: Parser) -> None:
     parser.addoption("--remove-workdir", action="store_true", help="Enable workdir removal")
 
 
-class TestRegressionTester(unittest.TestCase):
+class TestPipelineTester(unittest.TestCase):
 
     @pytest.fixture(autouse=True)
     def setup_pipeline(self, pytestconfig: Config) -> None:
-        """Sets up a RegressionTester instance with mock environment values."""
+        """Sets up a PipelineTester instance with mock environment values."""
         self.compare_only = pytestconfig.getoption("--compare-only", default=False)
         self.remove_workdir = pytestconfig.getoption("--remove-workdir", default=False)
-        self.pipeline = regression_tester.RegressionTester(visname=["test_results"], ppr="test.xml")
+        self.pipeline = PipelineTester(visname=["test_results"], ppr="test.xml")
 
     @mock.patch("pipeline.environment.casa_version_string", "6.5.1.15")  # casa_version_string already replaces dash
     @mock.patch("pipeline.environment.pipeline_revision", "2023.1.0.8")
