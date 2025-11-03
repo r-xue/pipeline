@@ -79,9 +79,6 @@ def fitAtmLines(ATMprof, freq):
         ATMprof : numpy.ndarray
             An atmospheric profile as returned by ATMtrans()
 
-        verbose : boolean : OPTIONAL
-            If True, then information about the fit will be printed to the terminal.
-
     Outputs:
         centers : list of floats
             The center channel of found features.
@@ -170,11 +167,16 @@ def fitAtmLines(ATMprof, freq):
                         p0=[x0_guess, a_guess, gamma_guess, off_guess],
                         bounds=([x0_bounds[0], a_bounds[0], gamma_bounds[0], off_bounds[0]], [x0_bounds[1], a_bounds[1], gamma_bounds[1], off_bounds[1]])
                     )
+
         x2 = int(np.ceil(popt[0]))
         x1 = int(np.floor(popt[0]))
 
-        centers.append((popt[0]-x1)*(float(freq[x2])-float(freq[x1]))/(x2-x1) + float(freq[x1]))
+        freq2=freq[0]+x2*(float(freq[1])-float(freq[0]))  # map to frequency using index, x2
+        freq1=freq[0]+x1*(float(freq[1])-float(freq[0]))  # map to frequency using index, x1
+
+        centers.append((popt[0]-x1)*(freq2-freq1)/(x2-x1) + float(freq1))
         scales.append(popt[2]*abs(float(freq[1])-float(freq[0])))
+
     return centers, scales
 
 
