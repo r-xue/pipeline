@@ -69,6 +69,21 @@ ${procedure}
         h_save()
 
         casa_tools.post_to_log("Terminating procedure execution ...", echo_to_screen=echo_to_screen)
+
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description='Process given set of data with ${func_name} recipe.')
+    parser.add_argument('-i', '--import-only', action='store_true', dest='import_only', help='Exit after data import stage.')
+    parser.add_argument('-q', '--quiet', action='store_true', dest='quiet', help='Do not output log to screen.')
+    parser.add_argument('asdmlist', type=str, nargs='+', default=None,
+                        help='List of input ASDM data sets.')
+    args = parser.parse_args()
+    asdmlist = [x.rstrip("/") for x in args.asdmlist]
+    import_only = args.import_only
+    interactive = not args.quiet
+
+    ${func_name}(asdmlist, importonly=import_only, interactive=interactive)
 '''
 
 
