@@ -6,9 +6,9 @@ from pipeline.infrastructure.renderer import rendererutils
 %>
 
 <div class="page-header">
-	% if len(plots) > 0:
-		<h1>Selfcal Phase vs. time ${plots[0].parameters['type'].title()} Plots<button class="btn btn-default pull-right" onClick="javascript:window.history.back();">Back</button></h1>
-	%endif
+
+	<h1>Selfcal Phase vs. time ${plots[0].parameters['type'].title()} Plots<button class="btn btn-default pull-right" onClick="javascript:window.history.back();">Back</button></h1>
+
 </div>
 
 % for ms in selfcalphasegaincal_subpages.keys():
