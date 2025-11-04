@@ -372,7 +372,7 @@ def test_export(plotlevel_summary, init_args):
     with tempfile.NamedTemporaryFile('w+') as f:
         outfile = f.name
         recipe_converter.export(
-            func_name=func_name,
+            recipe_name=func_name,
             commands=task_property_list,
             script_name=outfile,
             plotlevel_summary=plotlevel_summary
