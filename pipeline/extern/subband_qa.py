@@ -171,11 +171,11 @@ def fitAtmLines(ATMprof, freq):
         x2 = int(np.ceil(popt[0]))
         x1 = int(np.floor(popt[0]))
 
-        freq2=freq[0]+x2*(float(freq[1])-float(freq[0]))  # map to frequency using index, x2
-        freq1=freq[0]+x1*(float(freq[1])-float(freq[0]))  # map to frequency using index, x1
+        freq2 = freq[0] + x2 * (float(freq[1]) - float(freq[0]))  # map to frequency using index, x2
+        freq1 = freq[0] + x1 * (float(freq[1]) - float(freq[0]))  # map to frequency using index, x1
 
-        centers.append((popt[0]-x1)*(freq2-freq1)/(x2-x1) + float(freq1))
-        scales.append(popt[2]*abs(float(freq[1])-float(freq[0])))
+        centers.append((popt[0] - x1) * (freq2 - freq1)/(x2 - x1) + float(freq1))
+        scales.append(popt[2] * abs(float(freq[1]) - float(freq[0])))
 
     return centers, scales
 
