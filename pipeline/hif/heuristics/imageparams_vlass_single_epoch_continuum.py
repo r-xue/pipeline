@@ -566,10 +566,10 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
             # if the model is empty for any resoan, set ratio to zero
             # calculate ratio of total flux inside and outside mask
             if mask_flux:
-                outmaskratio = outmask_flux / (inmask_flux + outmask_flux)
+                outmaskratio = outmask_flux / mask_flux
             else:
                 outmaskratio = 0.0
-                LOG.warning('inmask_flux + outmask_flux is zero, setting outmaskratio to 0.0')
+                LOG.warning('The total mask flux is zero, unable to compute outside mask ratio. Setting ratio to 0.0')
 
             if outmaskratio > frac_lim:
                 LOG.warning(f'Flux fraction outside cleanmask is {"%.3g" % outmaskratio}, '
