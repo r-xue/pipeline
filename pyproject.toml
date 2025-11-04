@@ -56,6 +56,29 @@ optional-dependencies.dev = { file = ["requirements_dev.txt"] }
 optional-dependencies.docs = { file = ["requirements_docs.txt"] }
 optional-dependencies.exp = { file = ["requirements_exp.txt"] }
 
+[tool.ruff]
+line-length = 120
+indent-width = 4
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "D"]
+preview = true
+
+[tool.ruff.lint.pycodestyle]
+max-doc-length = 140
+max-line-length = 120
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+preview = true
+exclude = ["*.pyi"]
+docstring-code-format = true
+docstring-code-line-length = 140
+quote-style = "single"
+skip-magic-trailing-comma = false
+
 [tool.coverage.run]
 branch = true
 source = ['pipeline']

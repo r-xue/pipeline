@@ -188,6 +188,7 @@ def work_directory(
     reset: bool = True,
     capture: bool | str = False,
     subdir: bool = False,
+    reraise_on_error: bool = True,
 ) -> Generator[str, None, None]:
     """A context manager to temporarily change the working directory.
 
@@ -208,6 +209,7 @@ def work_directory(
         subdir: If True, creates and uses a standard subdirectory structure
             (products, working, rawdata) within `workdir`. The context will
             change into the 'working' subdirectory.
+        reraise_on_error: If True, exceptions will be re-raised instead of just being logged.            
 
     Yields:
         The absolute path to the CASA log file being used within the context.
@@ -267,13 +269,17 @@ def work_directory(
             exec_func(capture_start, ret_casa_logfile)
         yield ret_casa_logfile
     except Exception as ex:
-        LOG.info(
-            'An error occurred while setting up the environment (e.g., changing directory to %s): %s - %s',
-            path,
-            type(ex).__name__,
-            ex,
-        )
-        LOG.debug(traceback.format_exc())
+        if reraise_on_error:
+            # re-raises the caught exception, preserving its traceback
+            raise        
+        else:
+            LOG.info(
+                'An error occurred while setting up the environment (e.g., changing directory to %s): %s - %s',
+                path,
+                type(ex).__name__,
+                ex,
+            )
+            LOG.debug(traceback.format_exc())
     finally:
         exec_func(os.chdir, current_dir)
         if reset:
