@@ -76,8 +76,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process given set of data with ${func_name} recipe.')
     parser.add_argument('-i', '--import-only', action='store_true', dest='import_only', help='Exit after data import stage.')
     parser.add_argument('-q', '--quiet', action='store_true', dest='quiet', help='Do not output log to screen.')
-    parser.add_argument('asdmlist', type=str, nargs='+', default=None,
-                        help='List of input ASDM data sets.')
+    parser.add_argument('asdmlist', type=str, nargs='+', default=None, metavar='ASDM',
+                        help='Input ASDM. Can provide multiple ASDMs separated by space.')
     args = parser.parse_args()
     asdmlist = [x.rstrip("/") for x in args.asdmlist]
     import_only = args.import_only
