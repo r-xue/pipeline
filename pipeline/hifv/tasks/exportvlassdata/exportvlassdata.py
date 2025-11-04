@@ -468,18 +468,15 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             # Identify self cal table
             selfcal_result = None
             for result in context.results:
-                try:
-                    selfcal_result = result.read()[0]
-                    if 'self-cal' in selfcal_result.caltable:
-                        break
-                except Exception as e:
-                    continue
+                task_result = result.read()
+                if task_result.taskname == "hifv_selfcal":
+                    selfcal_result = task_result[0]
+                    break
 
             if selfcal_result and os.path.exists(selfcal_result.caltable):
                 self.selfcaltable = selfcal_result.caltable
             else:
                 self.selfcaltable = ''
-                LOG.warning('Unable to locate self-cal table.')
 
             # Identify flagversion
             self.flagversion = os.path.basename(self.inputs.vis)+'.flagversions'
@@ -696,7 +693,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             tar.add(self.selfcaltable, self.selfcaltable)
             LOG.info('....Adding {!s}'.format(self.selfcaltable))
         else:
-            LOG.warning(f'{self.selfcaltable} not present')
+            LOG.warning('self-caltable not present.')
         tar.add(self.flagversion, self.flagversion)
         LOG.info('....Adding {!s}'.format(self.flagversion))
         tar.close()
