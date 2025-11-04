@@ -2,13 +2,11 @@ import collections
 import distutils.cmd
 import distutils.log
 import os
-import shlex
 import shutil
 import subprocess
 import sys
 import setuptools
 from setuptools.command.build_py import build_py
-from setuptools.command.develop import develop
 
 ENCODING = 'utf-8'  # locale.getpreferredencoding()
 PIPELINE_PACKAGES = ['h', 'hif', 'hifa', 'hifv', 'hsd', 'hsdn']
@@ -211,47 +209,12 @@ def _get_git_version() -> str:
         return '0.0.dev0'
 
 
-class GenerateRecipeCommand(distutils.cmd.Command):
-    """Custom command to run recipe_converter.py."""
-
-    description = 'generate recipe scripts from procedure xml files'
-    user_options = []
-
-    def __init__(self, dist):
-        distutils.cmd.Command.__init__(self, dist)
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        # run recipe_converter.py with subprocess module
-        command_string = f'{sys.executable} ./recipe_converter.py -a'
-        command = shlex.split(command_string)
-        build_path = os.path.dirname(os.path.realpath(__file__))
-        recipe_dir = os.path.join(build_path, 'pipeline', 'recipes')
-        self.announce(f'Creating recipe script: {recipe_dir}',
-                      level=distutils.log.INFO)
-        ret = subprocess.run(command, cwd=recipe_dir)
-        if ret.returncode != 0:
-            RuntimeWarning('Recipe generation failed. Recipe scripts may not be included.')
-
-
 class PipelineBuildPyCommand(build_py):
     def run(self):
-        self.run_command('generate_recipe')
         build_py.run(self)
         self.run_command('minify_css')
         self.run_command('minify_js')
         self.run_command('version')
-
-
-class PipelineDevelopCommand(develop):
-    def run(self):
-        self.run_command('generate_recipe')
-        super().run()
 
 
 # The pipeline.XXX.cli packages are not recognised by find_packages as they do
@@ -273,8 +236,6 @@ setuptools.setup(
     description='CASA pipeline',
     cmdclass={
         'build_py': PipelineBuildPyCommand,
-        'develop': PipelineDevelopCommand,
-        'generate_recipe': GenerateRecipeCommand,
         'minify_js': MinifyJSCommand,
         'minify_css': MinifyCSSCommand,
         'version': VersionCommand,
