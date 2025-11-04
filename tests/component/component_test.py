@@ -3,7 +3,7 @@ import os
 import pytest
 
 from pipeline.infrastructure import casa_tools
-from tests.component.component_tester import ComponentTester
+from tests.testing_utils import PipelineTester
 
 
 @pytest.mark.component
@@ -19,8 +19,9 @@ def test_uid___A002_X1181695_X1c6a4_8ant__chan_flagged_import__component():
     tasks = [
         ('hifa_importdata', {'vis': casa_tools.utils.resolve(os.path.join(data_dir, visname))}),
     ]
-    pr = ComponentTester(
+    pr = PipelineTester(
         visname=[visname],
+        mode='component',
         tasks=tasks,
         output_dir='chan_flagged_import',
         expectedoutput_dir=data_dir,
@@ -46,8 +47,9 @@ def test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small_target__selfcal_and_self
         ('hif_selfcal', {}),
         ('hif_selfcal', {'restore_only': True}),
     ]
-    pr = ComponentTester(
+    pr = PipelineTester(
         visname=['uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small_target.ms'],
+        mode='component',
         tasks=tasks,
         output_dir='selfcal_and_selfcal_restore',
         expectedoutput_dir='pl-componenttest/selfcal_and_selfcal_restore',
@@ -76,8 +78,9 @@ def test_OphA_X1__missing_spws_first_EB__component():
         ('hif_makeimlist', {'specmode': 'cont'}),
         ('hif_makeimages', {})
     ]
-    pr = ComponentTester(
+    pr = PipelineTester(
         visname=visnames,
+        mode='component',
         tasks=tasks,
         output_dir='missing_spws_first_EB',
         expectedoutput_dir=data_dir,
@@ -106,8 +109,9 @@ def test_OphA_X1__missing_spws_second_EB__component():
         ('hif_makeimlist', {'specmode': 'cont'}),
         ('hif_makeimages', {})
     ]
-    pr = ComponentTester(
+    pr = PipelineTester(
         visname=visnames,
+        mode='component',
         tasks=tasks,
         output_dir='missing_spws_second_EB',
         expectedoutput_dir=data_dir,

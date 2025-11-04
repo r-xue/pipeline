@@ -4,7 +4,7 @@ import shutil
 import pytest
 
 from pipeline.infrastructure import casa_tools
-from tests.regression.regression_tester import RegressionTester
+from tests.testing_utils import PipelineTester
 
 
 @pytest.mark.regression
@@ -20,7 +20,7 @@ def test_VLASS2_2__se_cont_mosaic_procedure_vlassSEIP__regression(data_directory
     input_dir = f'{data_directory}/vlass/se_cont_mosaic/'
     ref_directory = 'pl-regressiontest/vlass_se_cont_mosaic/'
 
-    pr = RegressionTester(
+    pr = PipelineTester(
         visname=[dataset_name],
         recipe=f'{input_dir}/procedure_vlassSEIP_cv.xml',
         input_dir=input_dir,
@@ -54,7 +54,7 @@ def test_VLASS2_2__se_cont_awp32_procedure_vlassSEIP__regression(data_directory)
     input_dir = f'{data_directory}/vlass/se_cont_awp32/'
     ref_directory = 'pl-regressiontest/vlass_se_cont_awp32/'
 
-    pr = RegressionTester(
+    pr = PipelineTester(
         visname=[dataset_name],
         recipe=f'{input_dir}/procedure_vlassSEIP_cv.xml',
         input_dir=input_dir,
@@ -88,7 +88,7 @@ def test_VLASS2_2__se_cube_procedure_vlassCCIP__regression(data_directory):
     input_dir = f'{data_directory}/vlass/se_cube/'
     ref_directory = 'pl-regressiontest/vlass_se_cube/'
 
-    pr = RegressionTester(
+    pr = PipelineTester(
         visname=[dataset_name],
         recipe='procedure_vlassCCIP.xml',
         input_dir=input_dir,
@@ -130,7 +130,7 @@ def test_VLASS2_1__procedure_hifvcalvlass__regression(data_directory):
     input_dir = f'{data_directory}/vlass/cal/'
     ref_directory = 'pl-regressiontest/vlass_cal'
 
-    pr = RegressionTester(
+    pr = PipelineTester(
         visname=[dataset_name],
         recipe='procedure_hifvcalvlass.xml',
         input_dir=input_dir,

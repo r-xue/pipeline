@@ -21,6 +21,20 @@ if TYPE_CHECKING:
 LOG = infrastructure.logging.get_logger(__name__)
 
 
+def setup_flux_antennapos(test_directory, output_dir):
+    # Copy flux.csv and antennapos.csv into the working directory
+    flux_file = casa_tools.utils.resolve(f'{test_directory}/flux.csv')
+    anteannapos_file = casa_tools.utils.resolve(f'{test_directory}/antennapos.csv')
+
+    try:
+        os.mkdir(f'{output_dir}/working/')
+    except FileExistsError:
+        pass
+
+    shutil.copyfile(flux_file, casa_tools.utils.resolve(f'{output_dir}/working/flux.csv'))
+    shutil.copyfile(anteannapos_file, casa_tools.utils.resolve(f'{output_dir}/working/antennapos.csv'))
+
+
 class PipelineTester:
     """Pipeline Testing Framework.
 
@@ -61,7 +75,8 @@ class PipelineTester:
             expectedoutput_dir: Path to a directory containing expected output files. Ignored if `expectedoutput_file` is set.
 
         Raises:
-            ValueError: If `recipe` is provided.
+            ValueError: For `mode='regression'`, if neither `recipe` nor `ppr` is provided.
+                        For `mode='component'`, if `tasks` is not provided.
         """
         self.visname = visname
         self.mode = mode
@@ -69,8 +84,8 @@ class PipelineTester:
             if not recipe and not ppr:
                 raise ValueError("At least one of recipe or ppr must be provided.")
         elif self.mode == 'component':
-            if not recipe and not tasks:
-                raise ValueError("A recipe or a dictionary of tasks must be provided.")
+            if not tasks:
+                raise ValueError("A list of tasks must be provided.")
         self.ppr = ppr
         self.recipe = recipe
         self.tasks = tasks
@@ -316,8 +331,7 @@ class PipelineTester:
 
         finally:
             # clean up if requested
-            if not self.compare_only and self.remove_workdir and os.path.isdir(self.output_dir):
-                shutil.rmtree(self.output_dir)
+            self._cleanup()
 
         # restore the OpenMP nthreads to the value saved before the Pipeline reducer call.
         if not self.compare_only and omp_num_threads is not None:
@@ -469,8 +483,8 @@ class PipelineTester:
             except Exception:
                 # Log message if an exception occurred that was not handled by
                 # standardtask template (not turned into failed task result).
-                _hif_call = recipereducer._as_task_call(task, task_args)
-                LOG.error("Unhandled error in recipereducer while running pipeline task %s.", _hif_call)
+                call_str = recipereducer._as_task_call(task, task_args)
+                LOG.error("Unhandled error in recipereducer while running pipeline task %s.", call_str)
                 traceback.print_exc()
 
             tracebacks = utils.get_tracebacks(result)
@@ -480,3 +494,9 @@ class PipelineTester:
 
         LOG.info('Saving context...')
         cli.h_save()
+
+    def _cleanup(self):
+        """Cleans up the working directory if it exists."""
+        if not self.compare_only and self.remove_workdir and os.path.isdir(self.output_dir):
+            LOG.info("Removing working directory %s as requested.", self.output_dir)
+            shutil.rmtree(self.output_dir)

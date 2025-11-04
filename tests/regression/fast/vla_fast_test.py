@@ -3,7 +3,7 @@ import shutil
 import pytest
 
 from pipeline.infrastructure import casa_tools
-from tests.regression.regression_tester import RegressionTester
+from tests.testing_utils import PipelineTester
 
 
 @pytest.mark.regression
@@ -17,7 +17,7 @@ def test_13A_537__procedure_hifv__regression():
     """
 
     input_dir = 'pl-regressiontest/13A-537'
-    pr = RegressionTester(
+    pr = PipelineTester(
         visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
         recipe='procedure_hifv.xml',
         input_dir=input_dir,
@@ -40,7 +40,7 @@ def test_13A_537__calibration__PPR__regression():
 
     input_dir = 'pl-regressiontest/13A-537'
 
-    pr = RegressionTester(
+    pr = PipelineTester(
         visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
         ppr=f'{input_dir}/PPR_13A-537.xml',
         input_dir=input_dir,
@@ -64,7 +64,7 @@ def test_13A_537__restore__PPR__regression():
     Expected results version:   casa-6.2.1.7-pipeline-2021.2.0.128
     """
     input_dir = 'pl-regressiontest/13A-537'
-    pr = RegressionTester(
+    pr = PipelineTester(
         visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
         ppr=f'{input_dir}/PPR_13A-537_restore.xml',
         input_dir=input_dir,
@@ -91,7 +91,7 @@ def test_13A_537__restore__post1553__PPR__regression():
     Dataset:                    13A-537/13A-537.sb24066356.eb24324502.56514.05971091435
     """
     input_dir = 'pl-regressiontest/13A-537'
-    pr = RegressionTester(
+    pr = PipelineTester(
         visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
         ppr=f'{input_dir}/PPR_13A-537_restore.xml',
         input_dir=input_dir,
@@ -117,7 +117,7 @@ def test_13A_537__restore__cont_cube_selfcal__regression():
     Dataset:                    13A-537/13A-537.sb24066356.eb24324502.56514.05971091435
     """
     input_dir = 'pl-regressiontest/13A-537'
-    pr = RegressionTester(
+    pr = PipelineTester(
         visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
         ppr=f'{input_dir}/PPR_13A-537_restore__cont_cube_selfcal.xml',
         input_dir=input_dir,
