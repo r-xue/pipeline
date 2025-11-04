@@ -164,3 +164,7 @@ tags
 
 # ignore _version.py, created by setup.py
 _version.py
+
+# auto-generated recipe scripts
+pipeline/recipes/procedure_*.py
+
