@@ -54,6 +54,7 @@ Notes for contributors
 """
 from __future__ import annotations
 
+import os
 import unittest
 from typing import TYPE_CHECKING
 from unittest import mock
@@ -64,15 +65,9 @@ import pytest
 from tests.testing_utils import PipelineTester
 
 if TYPE_CHECKING:
-    from pytest import Config, Parser
+    from pytest import Config
 
 pytestmark = pytest.mark.unit
-
-
-def pytest_addoption(parser: Parser) -> None:
-    """Adds command-line options to pytest."""
-    parser.addoption("--compare-only", action="store_true", help="Run tests with compare-only mode")
-    parser.addoption("--remove-workdir", action="store_true", help="Enable workdir removal")
 
 
 class TestPipelineTester(unittest.TestCase):
@@ -82,9 +77,9 @@ class TestPipelineTester(unittest.TestCase):
         """Sets up a PipelineTester instance with mock environment values."""
         self.compare_only = pytestconfig.getoption("--compare-only", default=False)
         self.remove_workdir = pytestconfig.getoption("--remove-workdir", default=False)
-        self.pipeline = PipelineTester(visname=["test_results"], ppr="test.xml")
+        self.pipeline = PipelineTester(visname=["test_results"], recipe='test_procedure.xml', output_dir="test_workdir")
 
-    @mock.patch("pipeline.environment.casa_version_string", "6.5.1.15")  # casa_version_string already replaces dash
+    @mock.patch("pipeline.environment.casa_version_string", "6.5.1.15")
     @mock.patch("pipeline.environment.pipeline_revision", "2023.1.0.8")
     def test_pick_results_file_valid_cases(self) -> None:
         """Tests that _pick_results_file correctly extracts and selects the best matching file."""
@@ -156,3 +151,28 @@ class TestPipelineTester(unittest.TestCase):
 
             self.assertEqual(casa_version, expected_casa)
             self.assertEqual(pipeline_version, expected_pipeline)
+
+    def test_remove_workdir_option(self):
+        """Ensure remove_workdir option is set correctly."""
+        self.assertEqual(self.pipeline.remove_workdir, self.remove_workdir)
+
+    def test_remove_workdir(self):
+        """Ensure workdir is properly removed given the right conditions."""
+        workdir = self.pipeline.output_dir
+
+        # If compare_only=True, the directory should never be created, so skip further checks
+        if self.pipeline.compare_only:
+            self.assertFalse(os.path.exists(workdir))
+            return
+
+        # Otherwise, verify the directory was created initially
+        self.assertTrue(os.path.exists(workdir))
+
+        # Run the cleanup logic
+        self.pipeline._cleanup()
+
+        # If remove_workdir=True, the directory should be deleted after instantiation
+        if self.pipeline.remove_workdir:
+            self.assertFalse(os.path.exists(workdir))  # Workdir should be removed
+        else:
+            self.assertTrue(os.path.exists(workdir))  # Workdir should still exist
