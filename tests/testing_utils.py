@@ -295,7 +295,7 @@ class PipelineTester:
             casa_tools.casalog.ompSetNumThreads(omp_num_threads)
 
         try:
-            with utils.work_directory(self.output_dir, create=True, subdir=True):
+            with utils.work_directory(self.output_dir, create=True, subdir=True, reraise_on_error=True):
                 if not self.compare_only:
                     # run the pipeline for new results
                     if self.mode == 'regression':
