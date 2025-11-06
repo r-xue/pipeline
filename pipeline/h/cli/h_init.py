@@ -5,7 +5,7 @@ from . import cli, utils
 
 
 @utils.cli_wrapper
-def h_init(loglevel='info', plotlevel='default', weblog=True):
+def h_init(loglevel='info', plotlevel='default', weblog=True, processing_intents=dict()):
 
     """Initialize the pipeline
 
@@ -19,7 +19,7 @@ def h_init(loglevel='info', plotlevel='default', weblog=True):
     into the context. any of the pipeline importdata tasks can be used to load data.
 
     The pipeline context is returned.
-    
+
     Args:
         loglevel: Log level for pipeline messages. Log messages below this threshold will not be displayed.
 
@@ -27,6 +27,8 @@ def h_init(loglevel='info', plotlevel='default', weblog=True):
             'summary' omits detail plots; 'default' generates all plots apart from for the hif_applycal task.
 
         weblog: Generate the web log
+
+        processing_intents: Dictionary of processing intents for the current pipeline run.
 
     Returns:
         The results object for the pipeline task is returned.
@@ -38,13 +40,10 @@ def h_init(loglevel='info', plotlevel='default', weblog=True):
 
     """
 
-    # TBD: DECIDE WHETHER DRY RUN REALLY MAKES SENSE FOR THIS TASK AND IF
-    # SO HOW TO IMPLEMENT IT.
-
     # TBD: CASA PARAMETER CHECKS BEFORE CREATING A CONTEXT ?
 
     # Create the pipeline and store the Pipeline object in the stack
-    pipeline = launcher.Pipeline(loglevel=loglevel, plotlevel=plotlevel)
+    pipeline = launcher.Pipeline(loglevel=loglevel, plotlevel=plotlevel, processing_intents=processing_intents)
     cli.stack[cli.PIPELINE_NAME] = pipeline
 
     basetask.DISABLE_WEBLOG = not weblog

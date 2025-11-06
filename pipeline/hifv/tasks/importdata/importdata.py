@@ -114,7 +114,9 @@ class VLAImportDataInputs(importdata.ImportDataInputs):
                 calibrator, in degrees. The default of 0.0 is used for
                 non-polarisation processing.
 
-            parallel: Execute using CASA HPC functionality, if available.
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: False
 
         """
         super().__init__(context, vis=vis, output_dir=output_dir, asis=asis,

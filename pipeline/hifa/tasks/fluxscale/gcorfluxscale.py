@@ -46,7 +46,7 @@ ORIGIN = 'gcorfluxscale'
 class GcorFluxscaleResults(commonfluxresults.FluxCalibrationResults):
     def __init__(self, vis, resantenna=None, uvrange=None, measurements=None, fluxscale_measurements=None,
                  applies_adopted=False, ampcal_flagcmds=None):
-        super(GcorFluxscaleResults, self).__init__(vis, resantenna=resantenna, uvrange=uvrange,
+        super().__init__(vis, resantenna=resantenna, uvrange=uvrange,
                                                    measurements=measurements)
         self.applies_adopted = applies_adopted
 
@@ -101,11 +101,13 @@ class GcorFluxscaleInputs(fluxscale.FluxscaleInputs):
                                                    'POLLEAKAGE')
     uvrange = vdp.VisDependentProperty(default='')
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
     # docstring and type hints: supplements hifa_gfluxscale
     def __init__(self, context, output_dir=None, vis=None, caltable=None, fluxtable=None, reffile=None, reference=None,
                  transfer=None, refspwmap=None, refintent=None, transintent=None, solint=None, phaseupsolint=None,
                  minsnr=None, refant=None, hm_resolvedcals=None, antenna=None, uvrange=None, peak_fraction=None,
-                 amp_outlier_sigma=None):
+                 amp_outlier_sigma=None, parallel=None):
         """Initialize Inputs.
 
         Args:
@@ -133,14 +135,14 @@ class GcorFluxscaleInputs(fluxscale.FluxscaleInputs):
                 Example: reffile='', reffile='working/flux.csv'
 
             reference: A string containing a comma delimited list of field names
-                defining the reference calibrators. Defaults to field names with
-                intent '`*AMP*`'.
+                defining the reference calibrators. Defaults to names of fields
+                with intents in ``refintent``.
 
                 Example: reference='M82,3C273'
 
             transfer: A string containing a comma delimited list of field names
-                defining the transfer calibrators. Defaults to field names with
-                intent '`*PHASE*`'.
+                defining the transfer calibrators. Defaults to names of fields
+                with intents in ``transintent``.
 
                 Example: transfer='J1328+041,J1206+30'
 
@@ -157,7 +159,7 @@ class GcorFluxscaleInputs(fluxscale.FluxscaleInputs):
 
             transintent: A string containing a comma delimited list of intents
                 defining the transfer calibrators. Defaults to
-                'PHASE,BANDPASS,CHECK,POLARIZATION,POLANGLE,POLLEAKAGE'.
+                'PHASE,BANDPASS,CHECK,DIFFGAINREF,DIFFGAINSRC,POLARIZATION,POLANGLE,POLLEAKAGE'.
 
                 Example: transintent='', transintent='PHASE,BANDPASS'
 
@@ -203,10 +205,14 @@ class GcorFluxscaleInputs(fluxscale.FluxscaleInputs):
 
                 Example: amp_outlier_sigma=30.0
 
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)         
+
         """
-        super(GcorFluxscaleInputs, self).__init__(context, output_dir=output_dir, vis=vis, caltable=caltable,
-                                                  fluxtable=fluxtable, reference=reference, transfer=transfer,
-                                                  refspwmap=refspwmap, refintent=refintent, transintent=transintent)
+        super().__init__(context, output_dir=output_dir, vis=vis, caltable=caltable,
+                         fluxtable=fluxtable, reference=reference, transfer=transfer,
+                         refspwmap=refspwmap, refintent=refintent, transintent=transintent)
         self.reffile = reffile
         self.solint = solint
         self.phaseupsolint = phaseupsolint
@@ -218,16 +224,14 @@ class GcorFluxscaleInputs(fluxscale.FluxscaleInputs):
         self.peak_fraction = peak_fraction
         self.amp_outlier_sigma = amp_outlier_sigma
 
+        self.parallel = parallel
 
-@task_registry.set_equivalent_casa_task('hifa_gfluxscale')
-@task_registry.set_casa_commands_comment(
-    'The absolute flux calibration is transferred to secondary calibrator sources.'
-)
-class GcorFluxscale(basetask.StandardTaskTemplate):
+
+class SerialGcorFluxscale(basetask.StandardTaskTemplate):
     Inputs = GcorFluxscaleInputs
 
     def __init__(self, inputs):
-        super(GcorFluxscale, self).__init__(inputs)
+        super().__init__(inputs)
 
     def prepare(self, **parameters):
         inputs = self.inputs
@@ -241,9 +245,26 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             LOG.error('%s has no data with reference intent %s' % (inputs.ms.basename, inputs.refintent))
             return result
 
-        # Run setjy for sources in the reference list which have transfer intents.
+        # If the reference intent field(s) (amplitude calibrator) also covered
+        # one or more of the transfer intents, then:
         if inputs.ms.get_fields(inputs.reference, intent=inputs.transintent):
+            # First run setjy on the reference field(s), where the setjy always
+            # acts on the transfer intent scans. This is essential to ensure
+            # that the transfer intent scans on this reference field (typically
+            # amplitude calibrator) get their model flux set.
             self._do_setjy(reffile=inputs.reffile, field=inputs.reference)
+
+            # PIPE-2822: after the setjy step, update the list of transfer
+            # intents to only keep those intents that are not already covered by
+            # the reference field.
+            transintent_to_keep = []
+            for intent in inputs.transintent.split(','):
+                if inputs.ms.get_fields(inputs.reference, intent=intent):
+                    LOG.info(f"{inputs.ms.basename}: removing {intent} from the amplitude solve list as this intent is"
+                             f" already covered by the amplitude calibrator field(s) {inputs.reference}.")
+                else:
+                    transintent_to_keep.append(intent)
+            inputs.transintent = ','.join(transintent_to_keep)
         else:
             LOG.info('Flux calibrator field(s) {!r} in {!s} have no data with '
                      'intent {!s}'.format(inputs.reference, inputs.ms.basename, inputs.transintent))
@@ -730,11 +751,14 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
         # PIPE-1831: update the CalApplication to add the other non-phase/check
         # calibrator intents as valid intents that this phase caltable can be
-        # applied to. This is necessary for datasets where a field that covers
-        # both the amplitude calibrator and other (non-phase/check)
-        # calibrators. Without this, any subsequent gaincal on this field would
-        # split the call for this field into separate ones for AMP and other
-        # intents, leading to undesired duplicate solutions.
+        # applied to. This is necessary for datasets where the amplitude
+        # calibrator field(s) also cover one or more of the "other" (non-phase/
+        # non-check) calibrator intents. Without this, any subsequent gaincal on
+        # this field would split the call for this field into separate ones for
+        # AMP and other intents, leading to undesired duplicate solutions.
+        # This does assume that the AMPLITUDE *scans* on the amplitude
+        # calibrator field(s) also covered those "other" calibrator intents;
+        # this is not always the case, see discussion on PIPE-2822.
         if phase_result.pool:
             original_calapp = phase_result.pool[0]
             intents_str = ",".join({original_calapp.intent} | non_pc_intents)
@@ -1157,6 +1181,13 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         # Return flag commands for rendering in weblog.
         return flagcmds
 
+@task_registry.set_equivalent_casa_task('hifa_gfluxscale')
+@task_registry.set_casa_commands_comment(
+    'The absolute flux calibration is transferred to secondary calibrator sources.'
+)
+class GcorFluxscale(sessionutils.ParallelTemplate):
+    Inputs = GcorFluxscaleInputs
+    Task = SerialGcorFluxscale
 
 class SessionGcorFluxscaleInputs(GcorFluxscaleInputs):
     # use common implementation for parallel inputs argument
@@ -1166,7 +1197,7 @@ class SessionGcorFluxscaleInputs(GcorFluxscaleInputs):
                  transfer=None, refspwmap=None, refintent=None, transintent=None, solint=None, phaseupsolint=None,
                  minsnr=None, refant=None, hm_resolvedcals=None, antenna=None, uvrange=None, peak_fraction=None,
                  parallel=None):
-        super(SessionGcorFluxscaleInputs, self).__init__(context, output_dir=output_dir, vis=vis, caltable=caltable,
+        super().__init__(context, output_dir=output_dir, vis=vis, caltable=caltable,
                                                          fluxtable=fluxtable, reffile=reffile, reference=reference,
                                                          transfer=transfer, refspwmap=refspwmap, refintent=refintent,
                                                          transintent=transintent, solint=solint,
@@ -1184,7 +1215,7 @@ class SessionGcorFluxscale(basetask.StandardTaskTemplate):
     Inputs = SessionGcorFluxscaleInputs
 
     def __init__(self, inputs):
-        super(SessionGcorFluxscale, self).__init__(inputs)
+        super().__init__(inputs)
 
     is_multi_vis_task = True
 
@@ -1194,7 +1225,7 @@ class SessionGcorFluxscale(basetask.StandardTaskTemplate):
         vis_list = sessionutils.as_list(inputs.vis)
 
         assessed = []
-        with sessionutils.VDPTaskFactory(inputs, self._executor, GcorFluxscale) as factory:
+        with sessionutils.VDPTaskFactory(inputs, self._executor, SerialGcorFluxscale) as factory:
             task_queue = [(vis, factory.get_task(vis)) for vis in vis_list]
 
             for (vis, (task_args, task)) in task_queue:

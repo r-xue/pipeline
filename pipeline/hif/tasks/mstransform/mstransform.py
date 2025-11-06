@@ -5,11 +5,12 @@ import shutil
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
+import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import task_registry
+from pipeline.hif.heuristics.auto_selfcal.selfcal_helpers import get_calinfo_from_ms
+from pipeline.infrastructure import casa_tasks, task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -26,13 +27,6 @@ class MstransformInputs(vdp.StandardInputs):
     def outputvis(self):
         vis_root = os.path.splitext(self.vis)[0]
         return vis_root + '_targets.ms'
-
-    @outputvis.convert
-    def outputvis(self, value):
-        if isinstance(value, str):
-            return list(value.replace('[', '').replace(']', '').replace("'", "").split(','))
-        else:
-            return value
 
     # By default find all the fields with TARGET intent
     @vdp.VisDependentProperty
@@ -111,9 +105,11 @@ class MstransformInputs(vdp.StandardInputs):
     chanbin = vdp.VisDependentProperty(default=1)
     timebin = vdp.VisDependentProperty(default='0s')
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
     # docstring and type hints: supplements hif_mstransform
     def __init__(self, context, output_dir=None, vis=None, outputvis=None, field=None, intent=None, spw=None,
-                 chanbin=None, timebin=None):
+                 chanbin=None, timebin=None, parallel=None):
         """Initialize Inputs.
 
         Args:
@@ -127,11 +123,15 @@ class MstransformInputs(vdp.StandardInputs):
 
                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
 
-            outputvis: The list of output transformed MeasurementSets to be used for imaging. The output list must be the same length as the input
-                list. The default output name defaults to
-                <msrootname>_targets.ms
+            outputvis: A list of output MeasurementSets for line detection and imaging,. This list must have
+                the same length as the input list.
+                
+                Default Naming: By default, an input MS named `<msrootname>.ms`
+                will produce an output named `<msrootname>_targets.ms`.
 
-                Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+                Examples:
+                    - outputvis='ngc5921_targets.ms'
+                    - outputvis=['ngc5921a_targets.ms', 'ngc5921b_targets.ms', 'ngc5921c_targets.ms']
 
             field: Select fields name(s) or id(s) to transform. Only fields with data matching the intent will be selected.
 
@@ -149,9 +149,12 @@ class MstransformInputs(vdp.StandardInputs):
 
             timebin: Bin width for time averaging. If timebin > 0s then timeaverage is automatically switched to True.
 
-        """
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
 
-        super(MstransformInputs, self).__init__()
+        """
+        super().__init__()
 
         # set the properties to the values given as input arguments
         self.context = context
@@ -163,11 +166,12 @@ class MstransformInputs(vdp.StandardInputs):
         self.spw = spw
         self.chanbin = chanbin
         self.timebin = timebin
+        self.parallel = parallel
 
     def to_casa_args(self):
 
         # Get parameter dictionary.
-        d = super(MstransformInputs, self).to_casa_args()
+        d = super().to_casa_args()
 
         # Force the data column to be 'corrected' and the
         # new (with casa 4.6) reindex parameter to be False
@@ -184,11 +188,13 @@ class MstransformInputs(vdp.StandardInputs):
         else:
             d['timeaverage'] = False
 
+        # Remove parallel if it exists, as mstransform does not support it.
+        d.pop('parallel', None)
+
         return d
 
 
-@task_registry.set_equivalent_casa_task('hif_mstransform')
-class Mstransform(basetask.StandardTaskTemplate):
+class SerialMstransform(basetask.StandardTaskTemplate):
     Inputs = MstransformInputs
 
     def prepare(self):
@@ -207,6 +213,9 @@ class Mstransform(basetask.StandardTaskTemplate):
 
         # Copy across requisite XML files.
         self._copy_xml_files(inputs.vis, inputs.outputvis)
+
+        # Update output MS history.
+        self._update_history(inputs.vis, inputs.outputvis)
 
         return result
 
@@ -243,10 +252,14 @@ class Mstransform(basetask.StandardTaskTemplate):
                 LOG.trace('Copying %s: %s to %s', xml_filename, vis_source, outputvis_targets_contline)
                 shutil.copyfile(vis_source, outputvis_targets_contline)
 
+    @staticmethod
+    def _update_history(vis, outputvis):
+        get_calinfo_from_ms(vis, save_to_ms=outputvis)
+
 
 class MstransformResults(basetask.Results):
     def __init__(self, vis, outputvis):
-        super(MstransformResults, self).__init__()
+        super().__init__()
         self.vis = vis
         self.outputvis = outputvis
         self.mses = []
@@ -295,6 +308,12 @@ class MstransformResults(basetask.Results):
 
     def __repr__(self):
         return 'MstranformResults({}, {})'.format(os.path.basename(self.vis), os.path.basename(self.outputvis))
+
+
+@task_registry.set_equivalent_casa_task('hif_mstransform')
+class Mstransform(sessionutils.ParallelTemplate):
+    Inputs = MstransformInputs
+    Task = SerialMstransform
 
 
 FLAGGING_TEMPLATE_HEADER = '''#

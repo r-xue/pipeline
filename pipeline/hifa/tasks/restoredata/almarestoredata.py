@@ -10,8 +10,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class ALMARestoreDataInputs(restoredata.RestoreDataInputs):
+    # PIPE-2794/PIPE-2799: Added Pointing to retrieve ASDM_POINTING table for offset information (PIPE-2067)
     asis = vdp.VisDependentProperty(
-        default='SBSummary ExecBlock Antenna Annotation Station Receiver Source CalAtmosphere CalWVR CalPointing')
+        default='SBSummary ExecBlock Antenna Annotation Station Receiver Source CalAtmosphere CalWVR CalPointing Pointing')
 
     # docstring and type hints: supplements hifa_restoredata
     def __init__(self, context, copytoraw=None, products_dir=None, rawdata_dir=None, output_dir=None, session=None,

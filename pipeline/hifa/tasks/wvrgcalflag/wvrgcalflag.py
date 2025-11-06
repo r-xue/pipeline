@@ -6,6 +6,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.vdp as vdp
+import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.h.tasks.common import viewflaggers
 from pipeline.hifa.tasks import bandpass
@@ -54,13 +55,15 @@ class WvrgcalflagInputs(wvrgcal.WvrgcalInputs):
         value_set.update(self.flag_intent.split(','))
         return ','.join(value_set)
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
     # docstring and type hints: supplements hifa_wvrgcalflag
     def __init__(self, context, output_dir=None, vis=None, caltable=None, offsetstable=None, hm_toffset=None,
                  toffset=None, segsource=None, hm_tie=None, tie=None, sourceflag=None, nsol=None, disperse=None,
                  wvrflag=None, hm_smooth=None, smooth=None, scale=None, maxdistm=None, minnumants=None,
                  mingoodfrac=None, refant=None, flag_intent=None, qa_intent=None, qa_bandpass_intent=None,
                  accept_threshold=None, flag_hi=None, fhi_limit=None, fhi_minsample=None, ants_with_wvr_thresh=None,
-                 ants_with_wvr_nr_thresh=None):
+                 ants_with_wvr_nr_thresh=None, parallel=None):
         """Initialize Inputs.
 
         Args:
@@ -217,9 +220,12 @@ class WvrgcalflagInputs(wvrgcal.WvrgcalInputs):
 
             ants_with_wvr_nr_thresh:
 
-        """
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
 
-        super(WvrgcalflagInputs, self).__init__(
+        """
+        super().__init__(
             context, output_dir=output_dir, vis=vis, caltable=caltable, offsetstable=offsetstable,
             hm_toffset=hm_toffset, toffset=toffset, segsource=segsource, hm_tie=hm_tie, tie=tie, sourceflag=sourceflag,
             nsol=nsol, disperse=disperse, wvrflag=wvrflag, hm_smooth=hm_smooth, smooth=smooth, scale=scale,
@@ -236,16 +242,11 @@ class WvrgcalflagInputs(wvrgcal.WvrgcalInputs):
         self.fhi_limit = fhi_limit
         self.fhi_minsample = fhi_minsample
 
+        self.parallel = parallel
 
-@task_registry.set_equivalent_casa_task('hifa_wvrgcalflag')
-@task_registry.set_casa_commands_comment(
-    'Water vapour radiometer corrections are calculated for each antenna. The quality of the correction is assessed by '
-    'comparing a phase gain solution calculated with and without the WVR correction. This requires calculation of a '
-    'temporary phase gain on the bandpass calibrator, a temporary bandpass using that temporary gain, followed by phase'
-    ' gains with the temporary bandpass, with and without the WVR correction. After that, some antennas are wvrflagged '
-    '(so that their WVR corrections are interpolated), and then the quality of the correction recalculated.'
-)
-class Wvrgcalflag(basetask.StandardTaskTemplate):
+
+
+class SerialWvrgcalflag(basetask.StandardTaskTemplate):
     Inputs = WvrgcalflagInputs
 
     def prepare(self):
@@ -489,15 +490,27 @@ class WvrgcalflagDataInputs(vdp.StandardInputs):
     def as_dict(self):
         skip = ['context', 'ms']
         return {dd_name: dd
-                for dd_name, dd in inspect.getmembers(self, lambda a: not(inspect.isroutine(a)))
+                for dd_name, dd in inspect.getmembers(self, lambda a: not (inspect.isroutine(a)))
                 if not (dd_name.startswith('_') or dd_name in skip)}
+
+
+@task_registry.set_equivalent_casa_task('hifa_wvrgcalflag')
+@task_registry.set_casa_commands_comment(
+    'Water vapour radiometer corrections are calculated for each antenna. The quality of the correction is assessed by '
+    'comparing a phase gain solution calculated with and without the WVR correction. This requires calculation of a '
+    'temporary phase gain on the bandpass calibrator, a temporary bandpass using that temporary gain, followed by phase'
+    ' gains with the temporary bandpass, with and without the WVR correction. After that, some antennas are wvrflagged '
+    '(so that their WVR corrections are interpolated), and then the quality of the correction recalculated.')
+class Wvrgcalflag(sessionutils.ParallelTemplate):
+    Inputs = WvrgcalflagInputs
+    Task = SerialWvrgcalflag
 
 
 class WvrgcalflagData(basetask.StandardTaskTemplate):
     Inputs = WvrgcalflagDataInputs
 
     def __init__(self, inputs):
-        super(WvrgcalflagData, self).__init__(inputs)
+        super().__init__(inputs)
 
         # Initialize parameters that should persist across multiple flagging
         # iterations. These will be populated by the output from Wvrgcal on
