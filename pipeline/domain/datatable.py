@@ -955,7 +955,8 @@ class DataTableImpl(object):
                                   incr=[1, 1])
                 # Update FLAG_SUMMARY
                 flag_summary = self.getcell('FLAG_SUMMARY', int(dt_row))
-                # flag summary shall be valid (1) only if both flag summary and online flag are valid (1)
+                # Incorporate updated online flag status to flag summary.
+                # note: The value shall be 1 for valid spectrum and 0 for invalid one.
                 flag_summary *= online_flag[:npol, 0]
                 self.putcell('FLAG_SUMMARY', int(dt_row), flag_summary)
 
