@@ -408,9 +408,9 @@ def export(recipe_name: str, commands: list[dict], script_name: str, plotlevel_s
     procedure = to_procedure(commands)
     init_args = "plotlevel='summary'" if plotlevel_summary else ''
 
-    from pipeline.infrastructure.executeppr import knownProcessingIntents
+    from pipeline.infrastructure.executeppr import KNOWN_PROCESSING_INTENTS
     processing_intents = dict(
-        (k, True) for k, v in knownProcessingIntents.items()
+        (k, True) for k, v in KNOWN_PROCESSING_INTENTS.items()
         if recipe_name in v
     )
     if processing_intents:

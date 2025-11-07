@@ -29,8 +29,10 @@ if TYPE_CHECKING:
 # Dictionary with known processing intents and their possible recipe
 # names. The latter is fragile, but initially necessary until the PPR
 # contains the actual intents.
-knownProcessingIntents = {'INTERFEROMETRY_FULL_POL_CUBE_IMAGING': ['hifa_polcalimage', 'hifa_polimage'],
-                          'INTERFEROMETRY_HETEROGENEOUS_IMAGING': []}
+KNOWN_PROCESSING_INTENTS = {
+    'INTERFEROMETRY_FULL_POL_CUBE_IMAGING': ['hifa_polcalimage', 'hifa_polimage'],
+    'INTERFEROMETRY_HETEROGENEOUS_IMAGING': []
+}
 
 
 def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'breakpoint', bpaction: str = 'ignore',
@@ -594,10 +596,10 @@ def _getProcessingIntents(intentsDict: dict, procedureName: str) -> dict:
     """
 
     # Initial filtering of PPR intents
-    processingIntents = dict((k, v) for (k, v) in intentsDict.items() if k in knownProcessingIntents)
+    processingIntents = dict((k, v) for (k, v) in intentsDict.items() if k in KNOWN_PROCESSING_INTENTS)
 
     # Fallback via recipe names
-    for k, v in knownProcessingIntents.items():
+    for k, v in KNOWN_PROCESSING_INTENTS.items():
         if (k not in processingIntents) and (procedureName in v):
             processingIntents[k] = True
 
