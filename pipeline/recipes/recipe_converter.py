@@ -1,15 +1,15 @@
 """
-recipe_conversion.py - conversion script from procedure xml file to Python code.
+recipe_conversion.py - convertor script from procedure xml file to Python code.
 
 Please run the script with -h option to see complete usage.
 
 Usage:
 
-    python3 /path/to/recipe_converter.py [recipe] [script]
+    python3 /path/to/recipe_converter.py [-a] [recipe] [script]
 
     or
 
-    casa -c /path/to/recipe_converter.py [recipe] [script]
+    casa -c /path/to/recipe_converter.py [-a] [recipe] [script]
 
 """
 import argparse
@@ -201,15 +201,13 @@ def parse_command(node: DOM) -> dict:
 
             {task_name: {
                 'comment': str,
-                'parameter': dict,
-                'parameter_types': dict,
+                'parameter': dict
             }}
 
-        where comment is a string taken from pipeline task xml file
-        (shortdescription tag), parameter is a dictionary of the pair
-        of parameter name and value specified in procedure xml file,
-        and parameter_types is a dictionary of the pair of parameter
-        name and its type also taken from pipeline task xml file.
+        where comment is a string taken from the first line of the
+        docstring of pipeline task, parameter is a dictionary of
+        the pair of parameter name and value specified in procedure
+        xml file.
 
     """
     command_element = get_element(node, 'Command', expect_unique=True)
@@ -362,12 +360,12 @@ def c2p(command: dict) -> str:
         Python code snippet invoking given pipeline task.
         The string will look like the following:
 
-            # task shortdescription taken from the task xml file
+            # task shortdescription taken from the docstring of pipeline task
             taskname()
 
         or, if parameters are customized in the procedure xml file,
 
-            # task shortdescription taken from the task xml file
+            # task shortdescription taken from the docstring of pipeline task
             taskname(custom_param=custom_value)
 
         Note that there will be some additional code for importdata stage.
