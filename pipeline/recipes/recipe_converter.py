@@ -102,6 +102,7 @@ def get_recipe_dir() -> str:
 
 
 def insert_pipeline_path(f):
+    """Decorator to insert pipeline source directory to sys.path temporarily."""
     @functools.wraps(f)
     def wrapper(*args, **kwargs):
         pipeline_src = f'{get_recipe_dir()}/../../'
