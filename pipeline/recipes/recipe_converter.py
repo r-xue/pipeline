@@ -201,18 +201,15 @@ def parse_command(node: DOM) -> dict:
 
             {task_name: {
                 'comment': str,
-                'note': str,
                 'parameter': dict,
                 'parameter_types': dict,
             }}
 
         where comment is a string taken from pipeline task xml file
-        (shortdescription tag), note is a string taken from comment
-        element of ProcessingCommand in procedure xml file, parameter
-        is a dictionary of the pair of parameter name and value
-        specified in procedure xml file, and parameter_types is
-        a dictionary of the pair of parameter name and its type also
-        taken from pipeline task xml file.
+        (shortdescription tag), parameter is a dictionary of the pair
+        of parameter name and value specified in procedure xml file,
+        and parameter_types is a dictionary of the pair of parameter
+        name and its type also taken from pipeline task xml file.
 
     """
     command_element = get_element(node, 'Command', expect_unique=True)
@@ -225,10 +222,6 @@ def parse_command(node: DOM) -> dict:
     task_property = {}
     LOG.debug(f'parameters are {parameters}')
     task_property['parameter'] = parameters
-
-    comment_elements = get_element(node, 'Comment')
-    note = get_data(comment_elements[0]) if comment_elements else ''
-    task_property['note'] = note
 
     import pipeline.cli as cli
 
@@ -296,14 +289,6 @@ def get_comment(task_name: str, config: dict) -> str:
         # handle multi-line comment
         comment = re.sub('\n *', f'\n{prefix}', comment)
         comment = prefix + comment + '\n'
-
-    note = config.get('note', '')
-    if note:
-        note = note.strip(' \n')
-        # handle multi-line comment
-        note = re.sub('\n *', f'\n{prefix}', note)
-        note = note + '\n'
-        comment += prefix + '\n' + prefix + note
 
     return comment
 

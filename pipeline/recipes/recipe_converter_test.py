@@ -113,16 +113,7 @@ def test_parse_parameter(xml_string, expected):
             '<Command>h_save</Command>' \
             '<ParameterSet></ParameterSet>' \
             '</ProcessingCommand>',
-            {'h_save': {'comment': 'not_tested', 'note': '', 'parameter': {}}}
-        ),
-        # valid Command with default parameters and comment
-        (
-            '<ProcessingCommand>' \
-            '<Comment>Save-Pipeline-Context</Comment>'
-            '<Command>h_save</Command>' \
-            '<ParameterSet></ParameterSet>' \
-            '</ProcessingCommand>',
-            {'h_save': {'comment': 'not_tested', 'note': 'Save-Pipeline-Context', 'parameter': {}}}
+            {'h_save': {'comment': 'not_tested', 'parameter': {}}}
         ),
         # valid Command with custom parameters
         (
@@ -132,7 +123,7 @@ def test_parse_parameter(xml_string, expected):
             '<Parameter><Keyword>filename</Keyword><Value>output.context</Value></Parameter>' \
             '</ParameterSet>' \
             '</ProcessingCommand>',
-            {'h_save': {'comment': 'not_tested', 'note': '', 'parameter': {'filename': 'output.context'}}}
+            {'h_save': {'comment': 'not_tested', 'parameter': {'filename': 'output.context'}}}
         ),
         # breakpoint
         (
@@ -178,9 +169,6 @@ def test_parse_command(xml_string, expected):
             for key in expected_prop.keys():
                 assert key in prop
             assert prop['parameter'] == expected_prop['parameter']
-            if 'note' in expected_prop:
-                assert 'note' in prop
-                assert prop['note'] == expected_prop['note']
         else:
             pytest.fail('Should not reach here')
 
@@ -196,7 +184,7 @@ def test_parse_command(xml_string, expected):
             '<ProcedureTitle>h_test</ProcedureTitle>' \
             '<ProcessingCommand><Command>h_save</Command><ParameterSet></ParameterSet></ProcessingCommand>' \
             '</ProcessingProcedure>',
-            ('h_test', [{'h_save': {'comment': 'not_tested', 'note': 'not_tested', 'parameter': {}}}])
+            ('h_test', [{'h_save': {'comment': 'not_tested', 'parameter': {}}}])
         )
     ]
 )
