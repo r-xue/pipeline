@@ -197,7 +197,7 @@ def parse_command(node: DOM) -> dict:
     Returns:
         Dictionary representation of DOM object.
 
-        Return value has the follwoing structure:
+        Return value has the following structure:
 
             {task_name: {
                 'comment': str,
@@ -507,7 +507,7 @@ if __name__ == '__main__':
     parser.add_argument('recipe', type=str, nargs='?', default='hsd_calimage',
                         help='recipe type. will be translated to xml file name, "procedure_<recipe>.xml"')
     parser.add_argument('script', type=str, nargs='?', default=None,
-                        help='output scirpt name. defaults to <recipe>.py')
+                        help='output script name. defaults to <recipe>.py')
     args = parser.parse_args()
 
     recipe_name = args.recipe
@@ -523,7 +523,7 @@ if __name__ == '__main__':
     LOG.debug(f'generate_all={flag_generate_all}')
 
     if flag_generate_all:
-        LOG.info('Generating recipe scrpts for all procedure files.')
+        LOG.info('Generating recipe scripts for all procedure files.')
         generate_all()
     else:
         if script_name is None:
