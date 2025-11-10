@@ -2,6 +2,8 @@ import copy
 import operator
 import os
 
+import numpy as np
+
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -13,7 +15,7 @@ from pipeline.hif.heuristics import imageparams_factory
 from pipeline.hif.tasks.makeimages.resultobjects import MakeImagesResult
 from pipeline.infrastructure import casa_tools, task_registry
 
-from .cleantarget import CleanTarget
+from .cleantarget import CleanTarget, CleanTargetInfo
 from .resultobjects import MakeImListResult
 
 LOG = infrastructure.get_logger(__name__)
@@ -45,6 +47,7 @@ class MakeImListInputs(vdp.StandardInputs):
     robust = vdp.VisDependentProperty(default=None)
     uvtaper = vdp.VisDependentProperty(default=None)
     allow_wproject = vdp.VisDependentProperty(default=False)
+    stokes = vdp.VisDependentProperty(default='')
 
     # properties requiring some processing or MS-dependent logic -------------------------------------------------------
 
@@ -187,7 +190,7 @@ class MakeImListInputs(vdp.StandardInputs):
             return mitigated_hm_imsize
 
     # docstring and type hints: supplements hif_makeimlist
-    def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
+    def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None, stokes= None,
                  contfile=None, linesfile=None, uvrange=None, specmode=None, outframe=None, hm_imsize=None,
                  hm_cell=None, calmaxpix=None, phasecenter=None, psf_phasecenter=None, nchan=None, start=None, width=None, nbins=None,
                  robust=None, uvtaper=None, clearlist=None, per_eb=None, per_session=None, calcsb=None, datatype=None,
@@ -219,6 +222,9 @@ class MakeImListInputs(vdp.StandardInputs):
                 "" Fields matching intent, one image per target source.
 
             spw: Select spectral windows to image. "": Images will be computed for all science spectral windows.
+
+            stokes: Select the Stokes parameters to image. "": Stokes I will be computed except for polarization calibrators, where the
+                automatic heuristics selects IQUV. Setting a value here will override the heuristics. Allowed values are 'I' and 'IQUV'.
 
             contfile: Name of file with frequency ranges to use for continuum images.
 
@@ -318,7 +324,9 @@ class MakeImListInputs(vdp.StandardInputs):
 
             datacolumn: Data column to image. Only to be used for manual overriding when the automatic choice by data type is not appropriate.
 
-            parallel: Use MPI cluster where possible
+            parallel: Use the CASA imager parallel processing when possible.
+                options: 'automatic', 'true', 'false', True, False
+                default: 'automatic'
 
             known_synthesized_beams:
 
@@ -335,6 +343,7 @@ class MakeImListInputs(vdp.StandardInputs):
         self.intent = intent
         self.field = field
         self.spw = spw
+        self.stokes = stokes
         self.contfile = contfile
         self.linesfile = linesfile
         self.uvrange = uvrange
@@ -395,19 +404,23 @@ class MakeImList(basetask.StandardTaskTemplate):
 
         # describe the function of this task by interpreting the inputs
         # parameters to give an execution context
-        long_descriptions = [_DESCRIPTIONS.get((intent.strip(), inputs.specmode), inputs.specmode) for intent in inputs.intent.split(',')]
+        long_descriptions = [_get_description(intent.strip(), inputs.specmode, inputs.stokes) for intent in inputs.intent.split(',')]
         result.metadata['long description'] = 'Set-up parameters for %s imaging' % ' & '.join(utils.deduplicate(long_descriptions))
 
-        sidebar_suffixes = {_SIDEBAR_SUFFIX.get((intent.strip(), inputs.specmode), inputs.specmode) for intent in inputs.intent.split(',')}
+        sidebar_suffixes = {_get_sidebar_suffix(intent.strip(), inputs.specmode, inputs.stokes) for intent in inputs.intent.split(',')}
         result.metadata['sidebar suffix'] = '/'.join(sidebar_suffixes)
 
         # Check if this stage has been disabled for vla (never set for ALMA)
-        if inputs.context.vla_skip_mfs_and_cube_imaging and inputs.specmode in ('mfs', 'cube'):
-            result.set_info({'msg': 'Line imaging stages have been disabled for VLA due to no MS being produced for line imaging.',
-                                 'intent': inputs.intent,
-                                 'specmode': inputs.specmode})
+        if self._skip_mfs_and_cube_imaging():
+            result.set_info({
+                'msg': 'Cube imaging stages have been disabled due to the absence of data in suitable Datatypes.',
+                'intent': inputs.intent,
+                'specmode': inputs.specmode,
+                'stokes': inputs.stokes,
+            })
             result.contfile = None
             result.linesfile = None
+            result.skip_stage = True
             return result
 
         # Check for size mitigation errors.
@@ -416,7 +429,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                 result.mitigation_error = True
                 result.set_info({'msg': 'Size mitigation had failed. No imaging targets were created.',
                                  'intent': inputs.intent,
-                                 'specmode': inputs.specmode})
+                                 'specmode': inputs.specmode,
+                                 'stokes': inputs.stokes})
                 result.contfile = None
                 result.linesfile = None
                 return result
@@ -448,6 +462,14 @@ class MakeImList(basetask.StandardTaskTemplate):
         # validate datacolumn
         if inputs.datacolumn.upper() not in (None, '', 'DATA', 'CORRECTED'):
             msg = '"datacolumn" must be "data" or "corrected"'
+            LOG.error(msg)
+            result.error = True
+            result.error_msg = msg
+            return result
+
+        # validate stokes
+        if inputs.stokes.upper() not in ('', 'I', 'IQUV'):
+            msg = '"stokes" must be "I" or "IQUV"'
             LOG.error(msg)
             result.error = True
             result.error_msg = msg
@@ -519,7 +541,8 @@ class MakeImList(basetask.StandardTaskTemplate):
         if not ms_objects_and_columns:
             result.set_info({'msg': 'No data found. No imaging targets were created.',
                              'intent': inputs.intent,
-                             'specmode': inputs.specmode})
+                             'specmode': inputs.specmode,
+                             'stokes': inputs.stokes})
             result.contfile = None
             result.linesfile = None
             return result
@@ -684,12 +707,20 @@ class MakeImList(basetask.StandardTaskTemplate):
             contfile=inputs.contfile,
             linesfile=inputs.linesfile,
             imaging_params=inputs.context.imaging_parameters,
+            processing_intents=inputs.context.processing_intents,
             imaging_mode=imaging_mode
         )
 
         # Get representative target information
-        repr_target, repr_source, repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal = self.heuristics.representative_target()
-
+        # PIPE-2625: The following logic is executed only when inputs.specmode is 'repBW'
+        # or 'TARGET' is present in inputs.intent. This is a performance optimization
+        # (per PIPE-2625) to prevent costly I/O operations from representative_target()
+        # when not strictly required.
+        if inputs.specmode == 'repBW' or 'TARGET' in inputs.intent:
+            repr_target, repr_source, repr_spw, _, reprBW_mode, real_repr_target, _, _, _, _ = (
+                self.heuristics.representative_target()
+            )
+        
         # representative target case
         if inputs.specmode == 'repBW':
             repr_target_mode = True
@@ -700,7 +731,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                 LOG.info('No representative target found. No PI cube will be made.')
                 result.set_info({'msg': 'No representative target found. No PI cube will be made.',
                                  'intent': 'TARGET',
-                                 'specmode': 'repBW'})
+                                 'specmode': 'repBW',
+                                 'stokes': inputs.stokes})
                 result.contfile = None
                 result.linesfile = None
                 return result
@@ -711,7 +743,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                 result.set_info({'msg': "Representative target bandwidth specifies aggregate continuum. No PI cube will"
                                         " be made since specmode='cont' already covers this case.",
                                  'intent': 'TARGET',
-                                 'specmode': 'repBW'})
+                                 'specmode': 'repBW',
+                                 'stokes': inputs.stokes})
                 result.contfile = None
                 result.linesfile = None
                 return result
@@ -721,7 +754,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                 result.set_info({'msg': "Representative target bandwidth specifies per spw continuum. No PI cube will"
                                         " be made since specmode='mfs' already covers this case.",
                                  'intent': 'TARGET',
-                                 'specmode': 'repBW'})
+                                 'specmode': 'repBW',
+                                 'stokes': inputs.stokes})
                 result.contfile = None
                 result.linesfile = None
                 return result
@@ -757,7 +791,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                             ' averaged default cube channel width. No PI cube will be made since the'
                                             ' default cube already covers this case.',
                                      'intent': 'TARGET',
-                                     'specmode': 'repBW'})
+                                     'specmode': 'repBW',
+                                     'stokes': inputs.stokes})
                     result.contfile = None
                     result.linesfile = None
                     return result
@@ -844,6 +879,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                         contfile=inputs.contfile,
                         linesfile=inputs.linesfile,
                         imaging_params=inputs.context.imaging_parameters,
+                        processing_intents=inputs.context.processing_intents,
                         imaging_mode=imaging_mode
                     )
                     if inputs.specmode == 'cont':
@@ -994,31 +1030,29 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                     # Select only the lowest / highest frequency spw to get the smallest (for cell size)
                     # and largest beam (for imsize)
-                    min_freq = 1e15
-                    max_freq = 0.0
-                    min_freq_spwid = -1
-                    max_freq_spwid = -1
+
+                    filtered_spwlist_center_freq = []
                     for spwid in filtered_spwlist:
                         try:
                             ref_msname = self.heuristics.get_ref_msname(spwid)
                             ref_ms = inputs.context.observing_run.get_ms(ref_msname)
                             real_spwid = inputs.context.observing_run.virtual2real_spw_id(spwid, ref_ms)
-                            spwid_centre_freq = ref_ms.get_spectral_window(real_spwid).centre_frequency.to_units(measures.FrequencyUnits.HERTZ)
-                            if spwid_centre_freq < min_freq:
-                                min_freq = spwid_centre_freq
-                                min_freq_spwid = spwid
-                            if spwid_centre_freq > max_freq:
-                                max_freq = spwid_centre_freq
-                                max_freq_spwid = spwid
+                            spwid_centre_freq = float(ref_ms.get_spectral_window(
+                                real_spwid).centre_frequency.to_units(measures.FrequencyUnits.HERTZ))
+                            filtered_spwlist_center_freq.append(spwid_centre_freq)
                         except Exception as e:
-                            LOG.warning(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
+                            LOG.warning(f'Could not determine center frequency for spw {spwid}. Exception: {str(e)}')
+                            filtered_spwlist_center_freq.append(np.nan)
 
-                    if min_freq_spwid == -1 or max_freq_spwid == -1:
-                        LOG.error('Could not determine min/max frequency spw IDs for %s.' % (str(filtered_spwlist_local)))
+                    if np.nan in filtered_spwlist_center_freq:
+                        LOG.error('Could not determine min/max frequency spw IDs for %s.' %
+                                  (str(filtered_spwlist_local)))
                         continue
 
-                    min_freq_spwlist = [str(min_freq_spwid)]
-                    max_freq_spwlist = [str(max_freq_spwid)]
+                    # get a spw list ranked from highest freq to the lowest freq
+                    filtered_spwlist_by_freq = [filtered_spwlist[i]
+                                                for i in np.argsort(filtered_spwlist_center_freq)][::-1]
+                    min_freq_spwlist = [filtered_spwlist_by_freq[-1]]
 
                     # Get robust and uvtaper values
                     if inputs.robust not in (None, -999.0):
@@ -1042,7 +1076,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                     if cell == []:
                         synthesized_beams = {}
                         min_cell = ['3600arcsec']
-                        for spwspec in max_freq_spwlist:
+                        for spwspec in filtered_spwlist_by_freq:
                             # Use only fields that were observed in spwspec
                             actual_field_intent_list = []
                             for field_intent in field_intent_list:
@@ -1057,20 +1091,31 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 parallel=parallel, shift=True)
 
                             if synthesized_beams[spwspec] == 'invalid':
-                                LOG.error('Beam for virtual spw %s and robust value of %.1f is invalid. Cannot continue.'
-                                          '' % (spwspec, robust))
-                                result.error = True
-                                result.error_msg = 'Invalid beam'
-                                return result
+                                LOG.warning(
+                                    'Beam for virtual spw %s and robust value of %.1f is invalid likely due to heavy flagging.', spwspec, robust)
+                                continue
 
                             # Avoid recalculating every time since the dictionary will be cleared with the first recalculation request.
                             calcsb = False
                             # the heuristic cell is always the same for x and y as
                             # the value derives from the single value returned by
                             # imager.advise
-                            cells[spwspec] = self.heuristics.cell(beam=synthesized_beams[spwspec], pixperbeam=pixperbeam)
+                            cells[spwspec] = self.heuristics.cell(
+                                beam=synthesized_beams[spwspec], pixperbeam=pixperbeam)
                             if ('invalid' not in cells[spwspec]):
-                                min_cell = cells[spwspec] if (qaTool.convert(cells[spwspec][0], 'arcsec')['value'] < qaTool.convert(min_cell[0], 'arcsec')['value']) else min_cell
+                                min_cell = cells[spwspec] if (qaTool.convert(cells[spwspec][0], 'arcsec')[
+                                                              'value'] < qaTool.convert(min_cell[0], 'arcsec')['value']) else min_cell
+
+                            if '3600arcsec' not in min_cell:
+                                break
+
+                        if '3600arcsec' in min_cell:
+                            LOG.error(
+                                'Beams for all virtual spw list %s with robust value of %.1f is invalid. Cannot continue.', filtered_spwlist_by_freq, robust)
+                            result.error = True
+                            result.error_msg = 'Invalid beam'
+                            return result
+
                         # Rounding to two significant figures
                         min_cell = ['%.2g%s' % (qaTool.getvalue(min_cell[0]), qaTool.getunit(min_cell[0]))]
                         # Need to populate all spw keys because the imsize heuristic picks
@@ -1415,7 +1460,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                             # (inputs.intent) is used to decide whether to do IQUV
                             # for ALMA as PIPE-1829 asked for Stokes I only if other
                             # calibration intents are done together with POLARIZATION.
-                            stokes = self.heuristics.stokes(field_intent[1], inputs.intent)
+                            if inputs.stokes not in ('', None):
+                                stokes = inputs.stokes.upper()
+                            else:
+                                stokes = self.heuristics.stokes(field_intent[1], inputs.intent)
 
                             if spwspec_ok and (field_intent[0], spwspec) in imsizes and ('invalid' not in cells[spwspec]):
                                 LOG.debug(
@@ -1455,7 +1503,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 target_heuristics.imaging_params['maxthreshold'] = maxthreshold
                                 nfrms_multiplier = self._get_nfrms_multiplier(
                                     field_intent[0], actual_spwspec, local_selected_datatype_str)
-                                target_heuristics.imaging_params['nfrms_multiplier'] = nfrms_multiplier                                
+                                target_heuristics.imaging_params['nfrms_multiplier'] = nfrms_multiplier
 
                                 deconvolver, nterms = self._get_deconvolver_nterms(field_intent[0], field_intent[1],
                                                                                    actual_spwspec, stokes, inputs.specmode,
@@ -1476,6 +1524,15 @@ class MakeImList(basetask.StandardTaskTemplate):
                                         # Nevertheless, we retain this exception handler as an extra precaution.
                                         LOG.warning("Error calculating the heuristics uvrange value for field %s spw %s : %s",
                                                     field_intent[0], actual_spwspec, ex)
+
+                                # Check for pre-existing Stokes I masks to be re-used for TARGET IQUV imaging
+                                if field_intent[1] == 'TARGET' and stokes == 'IQUV':
+                                    cleanTargetKey = CleanTargetInfo(datatype=local_selected_datatype_str, field=field_intent[0], intent=field_intent[1], virtspw=actual_spwspec, stokes='I', specmode=inputs.specmode)
+                                    mask = inputs.context.clean_masks.get(cleanTargetKey, None)
+                                    threshold = inputs.context.clean_thresholds.get(cleanTargetKey, None)
+                                else:
+                                    mask = None
+                                    threshold = None
 
                                 target = CleanTarget(
                                     antenna=antenna,
@@ -1516,26 +1573,29 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     drcorrect=drcorrect,
                                     deconvolver=deconvolver,
                                     nterms=nterms,
-                                    reffreq=reffreq)
+                                    reffreq=reffreq,
+                                    mask=mask,
+                                    threshold=threshold)
 
                                 result.add_target(target)
 
         if inputs.intent == 'TARGET' and result.num_targets == 0 and not result.clean_list_info:
             result.set_info({'msg': 'No data found. No imaging targets were created.',
                              'intent': inputs.intent,
-                             'specmode': inputs.specmode})
+                             'specmode': inputs.specmode,
+                             'stokes': inputs.stokes})
 
         if inputs.intent == 'CHECK':
             if not any(have_targets.values()):
                 info_msg = 'No check source found.'
                 LOG.info(info_msg)
-                result.set_info({'msg': info_msg, 'intent': 'CHECK', 'specmode': inputs.specmode})
+                result.set_info({'msg': info_msg, 'intent': 'CHECK', 'specmode': inputs.specmode, 'stokes': inputs.stokes})
             elif inputs.per_eb and (not all(have_targets.values())):
                 info_msg = 'No check source data found in EBs %s.' % (','.join([os.path.basename(k)
                                                                                 for k, v in have_targets.items()
                                                                                 if not v]))
                 LOG.info(info_msg)
-                result.set_info({'msg': info_msg, 'intent': 'CHECK', 'specmode': inputs.specmode})
+                result.set_info({'msg': info_msg, 'intent': 'CHECK', 'specmode': inputs.specmode, 'stokes': inputs.stokes})
 
         # Record total number of expected clean targets
         result.set_expected_num_targets(expected_num_targets)
@@ -1558,10 +1618,9 @@ class MakeImList(basetask.StandardTaskTemplate):
         context = self.inputs.context
 
         if (
-            context.project_summary.telescope in ("VLA", "JVLA", "EVLA")
-            and hasattr(context, "selfcal_targets")
-            and datatype_str.startswith("SELFCAL_")
-            and self.inputs.specmode == "cont"
+            context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA')
+            and datatype_str.startswith('SELFCAL_')
+            and self.inputs.specmode == 'cont'
         ):
             for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target["spw"].split(","))
@@ -1603,7 +1662,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         deconvolver, nterms = None, None
         context = self.inputs.context
 
-        if hasattr(context, 'selfcal_targets') and datatype_str.startswith('SELFCAL_') and specmode == 'cont':
+        if datatype_str.startswith('SELFCAL_') and specmode == 'cont':
             for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
                 im_spw = set(spw.split(','))
@@ -1631,7 +1690,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         if context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA'):
             return drcorrect, maxthreshold
 
-        if hasattr(context, 'selfcal_targets') and datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
+        if datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
 
             for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
@@ -1648,10 +1707,13 @@ class MakeImList(basetask.StandardTaskTemplate):
                         result = r.read()
                         if isinstance(result, MakeImagesResult):
                             for tclean_result in result.results:
-                                if tclean_result.datatype_info.startswith('REGCAL_CONTLINE') and \
-                                        tclean_result.specmode == 'cont' and \
-                                        tclean_result.sourcename == field and \
-                                        im_spw.intersection(set(tclean_result.spw.split(','))):
+                                if (
+                                    tclean_result.datatype_info is not None
+                                    and tclean_result.datatype_info.startswith('REGCAL_CONTLINE')
+                                    and tclean_result.specmode == 'cont'
+                                    and tclean_result.sourcename == field
+                                    and im_spw.intersection(set(tclean_result.spw.split(',')))
+                                ):
                                     maxthreshold = tclean_result.threshold
                     if maxthreshold is not None:
                         LOG.info(
@@ -1661,54 +1723,78 @@ class MakeImList(basetask.StandardTaskTemplate):
 
         return drcorrect, maxthreshold
 
+    def _skip_mfs_and_cube_imaging(self) -> bool:
+        """Check if we can proceed with the cube imaging planning.
 
-# maps intent and specmode Inputs parameters to textual description of execution context.
-_DESCRIPTIONS = {
-    ('PHASE', 'mfs'): 'phase calibrator',
-    ('PHASE', 'cont'): 'phase calibrator',
-    ('BANDPASS', 'mfs'): 'bandpass calibrator',
-    ('BANDPASS', 'cont'): 'bandpass calibrator',
-    ('AMPLITUDE', 'mfs'): 'flux calibrator',
-    ('AMPLITUDE', 'cont'): 'flux calibrator',
-    ('POLARIZATION', 'mfs'): 'polarization calibrator',
-    ('POLARIZATION', 'cont'): 'polarization calibrator',
-    ('POLANGLE', 'mfs'): 'polarization calibrator',
-    ('POLANGLE', 'cont'): 'polarization calibrator',
-    ('POLLEAKAGE', 'mfs'): 'polarization calibrator',
-    ('POLLEAKAGE', 'cont'): 'polarization calibrator',
-    ('DIFFGAINREF', 'mfs'): 'diffgain calibrator',
-    ('DIFFGAINREF', 'cont'): 'diffgain calibrator',
-    ('DIFFGAINSRC', 'mfs'): 'diffgain calibrator',
-    ('DIFFGAINSRC', 'cont'): 'diffgain calibrator',
-    ('CHECK', 'mfs'): 'check source',
-    ('CHECK', 'cont'): 'check source',
-    ('TARGET', 'mfs'): 'target per-spw continuum',
-    ('TARGET', 'cont'): 'target aggregate continuum',
-    ('TARGET', 'cube'): 'target cube',
-    ('TARGET', 'repBW'): 'representative bandwidth target cube'
-}
+        Note: this is only relevant for VLA to check if we should proceed with VLA cube imaging
+        """
+        cube_imaging_datatypes = [
+            DataType.SELFCAL_LINE_SCIENCE,
+            DataType.REGCAL_LINE_SCIENCE,
+            DataType.SELFCAL_CONTLINE_SCIENCE,
+            DataType.REGCAL_CONTLINE_SCIENCE,
+        ]
+        ms_list = self.inputs.context.observing_run.get_measurement_sets_of_type(cube_imaging_datatypes, msonly=True)
+        telescope = self.inputs.context.project_summary.telescope
+        return 'VLA' in telescope.upper() and self.inputs.specmode in ('mfs', 'cube') and not ms_list
 
-_SIDEBAR_SUFFIX = {
-    ('PHASE', 'mfs'): 'cals',
-    ('PHASE', 'cont'): 'cals',
-    ('BANDPASS', 'mfs'): 'cals',
-    ('BANDPASS', 'cont'): 'cals',
-    ('AMPLITUDE', 'mfs'): 'cals',
-    ('AMPLITUDE', 'cont'): 'cals',
-    ('DIFFGAINREF', 'mfs'): 'cals',
-    ('DIFFGAINREF', 'cont'): 'cals',
-    ('DIFFGAINSRC', 'mfs'): 'cals',
-    ('DIFFGAINSRC', 'cont'): 'cals',
-    ('POLARIZATION', 'mfs'): 'pol',
-    ('POLARIZATION', 'cont'): 'pol',
-    ('POLANGLE', 'mfs'): 'pol',
-    ('POLANGLE', 'cont'): 'pol',
-    ('POLLEAKAGE', 'mfs'): 'pol',
-    ('POLLEAKAGE', 'cont'): 'pol',
-    ('CHECK', 'mfs'): 'checksrc',
-    ('CHECK', 'cont'): 'checksrc',
-    ('TARGET', 'mfs'): 'mfs',
-    ('TARGET', 'cont'): 'cont',
-    ('TARGET', 'cube'): 'cube',
-    ('TARGET', 'repBW'): 'cube_repBW'
-}
+
+# maps intent, specmode and stokes inputs parameters to textual description of execution context.
+
+def _get_description(intent, specmode, stokes):
+    if intent == 'PHASE':
+        return 'phase calibrator'
+    elif intent == 'BANDPASS':
+        return 'bandpass calibrator'
+    elif intent == 'AMPLITUDE':
+        return 'flux calibrator'
+    elif intent in ('POLARIZATION', 'POLANGLE', 'POLLEAKAGE'):
+        return 'polarization calibrator'
+    elif intent in ('DIFFGAINREF', 'DIFFGAINSRC'):
+        return 'diffgain calibrator'
+    elif intent == 'CHECK':
+        return 'check source'
+    elif intent == 'TARGET':
+        if stokes.upper() in ('', 'I'):
+            pol_str = ''
+        elif stokes.upper() =='IQUV':
+            pol_str = 'fullpol '
+        else:
+            raise Exception(f'Unknown Stokes value "{stokes}"')
+
+        if specmode == 'mfs':
+            return f'target per-spw {pol_str}continuum'
+        elif specmode == 'cont':
+            return f'target {pol_str}aggregate continuum'
+        elif specmode == 'cube':
+            return f'target {pol_str}cube'
+        elif specmode == 'repBW':
+            return f'representative bandwidth target {pol_str}cube'
+        else:
+            raise Exception(f'Unknown specmode value "{specmode}"')
+
+def _get_sidebar_suffix(intent, specmode, stokes):
+    if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE', 'DIFFGAINREF', 'DIFFGAINSRC'):
+        return 'cals'
+    elif intent in ('POLARIZATION', 'POLANGLE', 'POLLEAKAGE'):
+        return 'pol'
+    elif intent == 'CHECK':
+        return 'checksrc'
+    elif intent == 'TARGET':
+        if stokes.upper() in ('', 'I'):
+            pol_str = ''
+        elif stokes.upper() =='IQUV':
+            pol_str = '_fullpol'
+        else:
+            raise Exception(f'Unknown Stokes value "{stokes}"')
+
+        if specmode == 'mfs':
+            return f'mfs{pol_str}'
+        elif specmode == 'cont':
+            return f'cont{pol_str}'
+        elif specmode == 'cube':
+            return f'cube{pol_str}'
+        elif specmode == 'repBW':
+            return f'repBW{pol_str}'
+        else:
+            raise Exception(f'Unknown specmode value "{specmode}"')

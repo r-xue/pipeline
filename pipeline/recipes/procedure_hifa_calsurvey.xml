@@ -51,10 +51,6 @@
     <ProcessingCommand>
         <Command xmlns="">hifa_antpos</Command>
         <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">search</Keyword>
-                <Value xmlns="">both_latest</Value>
-            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -115,6 +111,10 @@
     <ProcessingCommand>
         <Command xmlns="">hif_applycal</Command>
         <ParameterSet>
+          <Parameter>
+            <Keyword>intent</Keyword>
+            <Value>PHASE,BANDPASS,AMPLITUDE,CHECK</Value>
+          </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 

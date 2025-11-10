@@ -1,3 +1,5 @@
+import collections
+
 class CleanTarget(dict):
     """Clean target template definition."""
 
@@ -44,6 +46,7 @@ class CleanTarget(dict):
         self['nmajor'] = None               # int
         self['sensitivity'] = None          # string
         self['threshold'] = None            # string
+        self['mask'] = None                 # string
         self['reffreq'] = None              # string
         self['restfreq'] = None             # string
         self['heuristics'] = None           # object
@@ -56,6 +59,8 @@ class CleanTarget(dict):
 
         dict.__init__(self, *args, **kwargs)
 
+# Class to be used in lookup dictionaries like clean_masks and clean_thresholds
+CleanTargetInfo = collections.namedtuple('CleanTargetInfo', 'datatype field intent virtspw stokes specmode')
 
 class ScalTarget(CleanTarget):
     """Selfcal target template definition."""
@@ -66,10 +71,12 @@ class ScalTarget(CleanTarget):
         self['sc_solints'] = None           # list
         self['sc_lib'] = None               # dictionary
         self['sc_workdir'] = None           # string
+        self['sc_exception'] = None         # boolean
         self['sc_vislist'] = None           # input vis list
         self['sc_telescope'] = None         # string
         self['sc_parallel'] = None          # string
-        self['sc_field']= None              # string, dequoted, alias of field_name
+        self['sc_field'] = None             # string, dequoted, alias of field_name
         self['field_name'] = None           # string, dequoted
         self['field_id'] = None             # int
+        self['is_mosaic'] = None            # boolean
         self['spw_real'] = None             # spw_real lookup table

@@ -28,7 +28,8 @@ LOG = infrastructure.get_logger(__name__)
 
 __all__ = [
     'ALMAPhcorBandpassInputs',
-    'ALMAPhcorBandpass',
+    'SerialALMAPhcorBandpass',
+    'ALMAPhcorBandpass',    
     'SessionALMAPhcorBandpass',
     'SessionALMAPhcorBandpassInputs'
 ]
@@ -124,10 +125,12 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
     # PIPE-628: new parameter to unregister existing bcals before appending to callibrary
     unregister_existing = vdp.VisDependentProperty(default=False)
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
     def __init__(self, context, output_dir=None, vis=None, mode='channel', hm_phaseup=None, phaseupbw=None,
                  phaseupmaxsolint=None, phaseupsolint=None, phaseupsnr=None, phaseupnsols=None, hm_phaseup_combine=None,
                  hm_bandpass=None, solint=None, maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None,
-                 bpnsols=None, unregister_existing=None, hm_auto_fillgaps=None, **parameters):
+                 bpnsols=None, unregister_existing=None, hm_auto_fillgaps=None, parallel=None, **parameters):
         """Initialize Inputs.
 
         Args:
@@ -189,7 +192,7 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
                 solution. Accepts one of following 3 options:
 
                 - 'snr', default: heuristics will use combine='spw' in phase-up
-                  gaincal, when SpWs have SNR <20.
+                  gaincal, when SpWs have SNR < phaseupsnr (default = 20).
                 - 'always': heuristic will force combine='spw' in the phase-up
                   gaincal.
                 - 'never': heuristic will not use spw combination; this was the
@@ -310,8 +313,13 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
                 bandpass solves.
 
                 Example: minsnr=3.0
+
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
+
         """
-        super(ALMAPhcorBandpassInputs, self).__init__(context, output_dir=output_dir, vis=vis, mode=mode, **parameters)
+        super().__init__(context, output_dir=output_dir, vis=vis, mode=mode, **parameters)
         self.bpnsols = bpnsols
         self.bpsnr = bpsnr
         self.minbpsnr = minbpsnr
@@ -328,14 +336,11 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
         self.phaseupsolint = phaseupsolint
         self.solint = solint
         self.unregister_existing = unregister_existing
+        self.parallel = parallel
 
 
-@task_registry.set_equivalent_casa_task('hifa_bandpass')
-@task_registry.set_casa_commands_comment(
-    'The spectral response of each antenna is calibrated. A short-solint phase gain is calculated to remove '
-    'decorrelation of the bandpass calibrator before the bandpass is calculated.'
-)
-class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
+
+class SerialALMAPhcorBandpass(bandpassworker.BandpassWorker):
     Inputs = ALMAPhcorBandpassInputs
 
     def prepare(self, **parameters):
@@ -515,14 +520,18 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
             # For Band-to-Band datasets, only refine solint based on the TARGET
             # (high frequency) spectral windows that are expected to have the
             # lowest SNRs.
-            LOG.info(f"{inputs.ms.basename} is a Band-to-Band dataset: selecting high-frequency SpWs for solint"
-                     f" refinement.")
-            spwindex = [snr_result.spwids.index(s.id) for s in inputs.ms.get_spectral_windows(intent='TARGET')]
+            LOG.info(
+                '%s is a Band-to-Band dataset: selecting high-frequency SpWs for solint refinement.', inputs.ms.basename
+            )
+            spwindex = [
+                snr_result.spwids.index(s.id)
+                for s in inputs.ms.get_spectral_windows(inputs.spw, intent='TARGET')
+            ]
         else:
             # For all other datasets, restrict the refinement to the SpWs of a
             # single SpectralSpec. Start with retrieving mapping of SpectralSpec
             # to science spectral windows.
-            spspec_to_spwid = utils.get_spectralspec_to_spwid_map(inputs.ms.get_spectral_windows())
+            spspec_to_spwid = utils.get_spectralspec_to_spwid_map(inputs.ms.get_spectral_windows(inputs.spw))
 
             # If there is only 1 SpectralSpec, then use that one.
             if len(spspec_to_spwid) == 1:
@@ -1205,6 +1214,16 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
         return ','.join(outspw)
 
 
+@task_registry.set_equivalent_casa_task('hifa_bandpass')
+@task_registry.set_casa_commands_comment(
+    'The spectral response of each antenna is calibrated. A short-solint phase gain is calculated to remove '
+    'decorrelation of the bandpass calibrator before the bandpass is calculated.'
+)
+class ALMAPhcorBandpass(sessionutils.ParallelTemplate):
+    Inputs = ALMAPhcorBandpassInputs
+    Task = SerialALMAPhcorBandpass
+
+
 class SessionALMAPhcorBandpassInputs(ALMAPhcorBandpassInputs):
     # We want to apply bandpass calibrations from BANDPASS scans, not
     # fall back to calibration against PHASE or AMPLITUDE scans
@@ -1216,7 +1235,7 @@ class SessionALMAPhcorBandpassInputs(ALMAPhcorBandpassInputs):
     def __init__(self, context, mode=None, hm_phaseup=None, phaseupbw=None, phaseupsolint=None, phaseupsnr=None,
                  phaseupnsols=None, hm_bandpass=None, solint=None, maxchannels=None, evenbpints=None, bpsnr=None,
                  minbpsnr=None, bpnsols=None, parallel=None, **parameters):
-        super(SessionALMAPhcorBandpassInputs, self).__init__(context, mode=mode, hm_phaseup=hm_phaseup,
+        super().__init__(context, mode=mode, hm_phaseup=hm_phaseup,
                                                              phaseupbw=phaseupbw, phaseupsolint=phaseupsolint,
                                                              phaseupsnr=phaseupsnr, phaseupnsols=phaseupnsols,
                                                              hm_bandpass=hm_bandpass, solint=solint,
@@ -1224,6 +1243,9 @@ class SessionALMAPhcorBandpassInputs(ALMAPhcorBandpassInputs):
                                                              bpsnr=bpsnr, minbpsnr=minbpsnr,
                                                              bpnsols=bpnsols, **parameters)
         self.parallel = parallel
+
+
+
 
 
 BANDPASS_MISSING = '___BANDPASS_MISSING___'
@@ -1241,7 +1263,7 @@ class SessionALMAPhcorBandpass(basetask.StandardTaskTemplate):
         vis_list = sessionutils.as_list(inputs.vis)
 
         assessed = []
-        with sessionutils.VDPTaskFactory(inputs, self._executor, ALMAPhcorBandpass) as factory:
+        with sessionutils.VDPTaskFactory(inputs, self._executor, SerialALMAPhcorBandpass) as factory:
             task_queue = [(vis, factory.get_task(vis)) for vis in vis_list]
 
             for (vis, (task_args, task)) in task_queue:

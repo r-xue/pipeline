@@ -63,7 +63,9 @@ class UVcontSubInputs(vdp.StandardInputs):
 
                 Example: {'3C279': {'15': 1, '17': 2}, 'M82': {'13': 2}}
 
-            parallel: Execute using CASA HPC functionality, if available.
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
 
         """
         self.context = context
@@ -88,8 +90,9 @@ class SerialUVcontSub(basetask.StandardTaskTemplate):
         # frequency ranges to TOPO.
         MinimalTcleanHeuristicsInputsGenerator = namedtuple('MinimalTcleanHeuristicsInputs', 'vis field intent phasecenter spw spwsel_lsrk specmode')
 
-        # Check if this stage has been disabled for vla (never set for ALMA)
-        if inputs.context.vla_skip_mfs_and_cube_imaging:
+        
+        if self._skip_uvcontsub():
+            # Check if this stage should be skipped (never triggered for ALMA)
             result = UVcontSubResults()
             result.skip_stage = True
             return result
@@ -282,6 +285,19 @@ class SerialUVcontSub(basetask.StandardTaskTemplate):
             result.line_mses.extend(observing_run.measurement_sets)
 
         return result
+
+    def _skip_uvcontsub(self) -> bool:
+        """Check if we should skip the continuum finding heuristics.
+
+        Note: this is only relevant for VLA to check if we should proceed with VLA cube imaging sequence
+        """
+        uvcontsub_datatypes = [
+            DataType.SELFCAL_CONTLINE_SCIENCE,
+            DataType.REGCAL_CONTLINE_SCIENCE,
+        ]
+        ms_list = self.inputs.context.observing_run.get_measurement_sets_of_type(uvcontsub_datatypes, msonly=True)
+        telescope = self.inputs.context.project_summary.telescope
+        return 'VLA' in telescope.upper() and not ms_list
 
     @staticmethod
     def _copy_xml_files(vis, outputvis):

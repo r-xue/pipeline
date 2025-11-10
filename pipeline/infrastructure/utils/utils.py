@@ -29,7 +29,7 @@ from datetime import datetime
 from functools import wraps
 from numbers import Number
 from typing import (Any, Callable, Collection, Dict, List, Optional, Sequence,
-                    Tuple, TYPE_CHECKING, Union)
+                    Tuple, TYPE_CHECKING, Union, Iterator, TextIO)
 from urllib.parse import urlparse
 
 import casaplotms
@@ -60,10 +60,10 @@ __all__ = [
     'get_casa_quantity',
     'get_casa_session_details',
     'get_field_identifiers',
-    'get_num_caltable_polarizations',
     'get_obj_size',
     'get_products_dir',
     'get_receiver_type_for_spws',
+    'get_row_count',
     'get_si_prefix',
     'get_spectralspec_to_spwid_map',
     'get_stokes',
@@ -177,33 +177,6 @@ def approx_equal(x: float, y: float, tol: float = 1e-15) -> bool:
     lo = min(x, y)
     hi = max(x, y)
     return (lo + 0.5 * tol) >= (hi - 0.5 * tol)
-
-
-def get_num_caltable_polarizations(caltable: str) -> int:
-    """Obtain number of polarisations from calibration table.
-
-    Seemingly the number of QA ID does not map directly to the number of
-    polarisations for the spw in the MS, but the number of polarisations for
-    the spw as held in the caltable.
-    """
-    with casa_tools.TableReader(caltable) as tb:
-        col_shapes = set(tb.getcolshapestring('CPARAM'))
-
-    # get the number of pols stored in the caltable, checking that this
-    # is consistent across all rows
-    fmt = re.compile(r'\[(?P<num_pols>\d+), (?P<num_rows>\d+)\]')
-    col_pols = set()
-    for shape in col_shapes:
-        m = fmt.match(shape)
-        if m:
-            col_pols.add(int(m.group('num_pols')))
-        else:
-            raise ValueError('Could not find shape of polarisation from %s' % shape)
-
-    if len(col_pols) != 1:
-        raise ValueError('Got %s polarisations from %s' % (len(col_pols), col_shapes))
-
-    return int(col_pols.pop())
 
 
 def flagged_intervals(vec: Union[List, np.ndarray]) -> List:
@@ -814,59 +787,88 @@ def request_omp_threading(num_threads=None):
 
 
 @contextlib.contextmanager
-def open_with_lock(filename, mode='r'):
-    """Open file with a lock.
+def open_with_lock(filename: str, mode: str = 'r', *args: Any, **kwargs: Any) -> Iterator[TextIO]:
+    """Open a file with an exclusive lock.
 
-    The file open context manager function will try to lock the file upon opening 
-    so other processes using the same "opener" will wait for the file to unlock. 
-    The applied lock will be released when leaving the context.
-
-    Notes: 
+    This context manager attempts to acquire an exclusive lock on the file upon opening.
+    Other processes using `open_with_lock` will wait until the lock is automatically released
+    when exiting the context.
     
-    all file open calls with `open_with_lock` will block other `open_with_lock` usages 
-    (even from different processes/lustre-clients) from read/write until the lock is released.
-    However, this locking/blocking mechanism will not prevent the file access (potentially 
-    causing IO error) from other file openers (e.g. the default open() function).
-
-    Because the Python/fcntl API depends on the underlying OS/storage implementation: 
-        https://docs.python.org/3/library/fcntl.html
-    Not all OS/fsys is fully supported. For Lustre, it seems to depend on fsys mount `-o flock` 
-    options, which is indeed used for cv/naasc/aoc lustre systems:
-        $ mount -l | grep lustre
-            192.168.1.30@o2ib:/aoclst03 on /.lustre/aoc type lustre (rw,flock,user_xattr,lazystatfs)
-    For NFS, please see additional notes in PIPE-2051.
-
-    For a practical test, try the code snippet below from different clients/processes to see 
-    if the fnctl blocking mechanism can prevent non-exclusive access to a file.
-        import fcntl
-        fd=open(filename,'w')
-        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-
     Args:
-        filename (str): the file name
-        mode (str, optional): open mode. Defaults to 'r'.
+        filename: Path to the file to open and lock.
+        mode: File open mode (e.g., 'rt', 'wt', 'a', 'rb').
+        *args: Additional positional arguments to the built-in `open()` function.
+        **kwargs: Additional keyword arguments to the built-in `open()` function.
 
+    Yields:
+        The opened file object with an exclusive lock acquired (if supported by the filesystem).
+
+    Notes:
+        All file open calls with `open_with_lock` will block other `open_with_lock` usages
+        (even from different processes/Lustre clients) from read/write until the lock is
+        released. However, this locking/blocking mechanism does not prevent file access
+        (which could potentially cause IO errors) from other file openers (e.g., the
+        built-in `open()` function).
+
+        **Filesystem Support:**
+        The Python `fcntl` API's behavior depends on the underlying OS/storage
+        implementation: https://docs.python.org/3/library/fcntl.html. Not all
+        OS/file systems fully support file locking.        
+        - **Lustre**: Requires mount option `-o flock`. Check with: `mount -l | grep lustre`
+            e.g. : `192.168.1.30@o2ib:/aoclst03 on /.lustre/aoc type lustre (rw,flock,user_xattr,lazystatfs)`
+        - **NFS**: Support varies by configuration (see PIPE-2051 for details)
+        - **Local filesystems**: Generally well-supported on Unix-like systems        
+
+        **Testing Lock Behavior:**
+        To verify exclusive locking works on your system, run this from multiple processes:
+
+        ```python
+        import fcntl
+        with open(filename, 'w') as fd:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)  # Should block/fail on second process
+        ```
     """
+    needs_truncate = 'w' in mode
+    is_binary = 'b' in mode
+    base_mode = 'r+b' if is_binary else 'r+'
 
-    with open(filename, mode) as fd:
+    try:
+        fd = open(filename, base_mode, *args, **kwargs)
+    except FileNotFoundError:
+        base_mode = 'w+b' if is_binary else 'w+'
+        fd = open(filename, base_mode, *args, **kwargs)
 
-        LOG.debug('acquiring lock on %s', filename)
+    LOG.debug('Attempting to acquire lock on %s', filename)
+    lock_acquired = False
+    try:
         try:
+            # Acquire an exclusive lock on the file
             fcntl.flock(fd, fcntl.LOCK_EX)
-            LOG.debug('acquired lock on %s', filename)
-        except OSError as e:
-            LOG.warning('failed to acquire file lock due to the filesystem limitation,'
-                        'which might cause racing conditions if multiple processes access %s simultaneously.',
-                        filename)
+            lock_acquired = True
+            LOG.debug('Successfully acquired lock on %s', filename)
+        except OSError as ex:
+            LOG.warning('Failed to acquire file lock for %s due to filesystem limitation, '
+                        'which might cause racing conditions if multiple processes access '
+                        'the file simultaneously: %s', filename, ex)
+
+        if lock_acquired and needs_truncate:
+            fd.truncate(0)
+            fd.seek(0)
+            LOG.debug('Truncated file after acquiring lock: %s', filename)
 
         yield fd
-        try:
-            fcntl.flock(fd, fcntl.LOCK_UN)
-            LOG.debug('released lock on %s', filename)
-        except OSError as e:
-            LOG.warning('failed to acquire file lock due to the filesystem limitation,'
-                        'which might cause racing conditions if multiple processes access %s simultaneously.',
-                        filename)
+
+    finally:
+        if lock_acquired:
+            try:
+                fcntl.flock(fd, fcntl.LOCK_UN)
+                LOG.debug('Successfully released lock on %s', filename)
+            except OSError as ex:
+                LOG.warning('Failed to release file lock for %s due to filesystem limitation, '
+                            'which might cause racing conditions if multiple processes access '
+                            'the file simultaneously: %s', filename, ex)
+        fd.close()
+
 
 def ensure_products_dir_exists(products_dir):
     try:
@@ -1226,6 +1228,30 @@ def validate_url(url: str) -> bool:
     parsed = urlparse(url)
 
     return all([parsed.scheme, parsed.netloc])
+
+
+def get_row_count(table_name: str, taql: str) -> int:
+    """Return the number of rows in the specified table that match the given TaQL query.
+
+    Parameters:
+        table_name: Path to the CASA table.
+        taql: The TaQL query string used to filter the table rows.
+
+    Returns:
+        The number of rows matching the query, or 0 if an error occurs.
+    """
+
+    nrows = 0
+    try:
+        with casa_tools.TableReader(table_name) as table:
+            subtb = table.query(taql)
+            nrows = subtb.nrows()
+            subtb.close()
+    except Exception as ex:
+        nrows = 0
+        LOG.warning(ex)
+
+    return nrows
 
 
 def get_valid_url(env_var: str, default: str | list[str]) -> str | list[str]:

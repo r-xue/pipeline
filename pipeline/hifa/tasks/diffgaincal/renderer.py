@@ -5,6 +5,7 @@ from typing import List, Union
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
+from pipeline.hifa.tasks.common.common_renderer_utils import get_spwmaps
 from pipeline.hifa.tasks.gaincal import display as gaincal_displays
 from pipeline.hifa.tasks.gaincal import renderer as gaincal_renderer
 from pipeline.infrastructure import generate_detail_plots
@@ -34,11 +35,15 @@ class T2_4MDetailsDiffgaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             pipeline_context, results, gaincal_displays.GaincalPhaseVsTimeSummaryChart,
             gaincal_displays.GaincalPhaseVsTimeDetailChart, gaincal_renderer.GaincalPhaseVsTimePlotRenderer)
 
-        offset_results = [result.phaseoffsetresult for result in results]
+        offset_results = [result.residual_phase_result for result in results]
         offset_vs_time_summaries, offset_vs_time_subpages = get_plots(
             pipeline_context, offset_results, gaincal_displays.GaincalPhaseVsTimeSummaryChart,
             gaincal_displays.GaincalPhaseVsTimeDetailChart,
             gaincal_renderer.GaincalPhaseOffsetVsTimeDiagnosticPlotRenderer)
+
+        # Retrieve any new SpW mappings that may have been derived during task
+        # for PHASE calibrator.
+        spwmaps = get_spwmaps(pipeline_context, results, include_empty=False)
 
         # Update mako context.
         mako_context.update({
@@ -47,6 +52,7 @@ class T2_4MDetailsDiffgaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             'offset_vs_time_subpages': offset_vs_time_subpages,
             'phase_vs_time_plots': phase_vs_time_summaries,
             'phase_vs_time_subpages': phase_vs_time_subpages,
+            'spwmaps': spwmaps,
         })
 
 

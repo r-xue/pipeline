@@ -21,9 +21,9 @@ LOG = infrastructure.get_logger(__name__)
 class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile,
-                                       linesfile, imaging_params)
+                                       linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CONT'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
@@ -582,9 +582,9 @@ class ImageParamsHeuristicsVlassSeContAWPP001(ImageParamsHeuristicsVlassSeCont):
     """
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
-                                                  contfile, linesfile, imaging_params)
+                                                  contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CONT-AWP-P001'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
@@ -602,9 +602,9 @@ class ImageParamsHeuristicsVlassSeContAWP2(ImageParamsHeuristicsVlassSeCont):
     """Special heuristics case for AWP2 gridder with the default wprojplanes=32."""
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
-                                                  contfile, linesfile, imaging_params)
+                                                  contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CONT-AWP2'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
@@ -626,9 +626,9 @@ class ImageParamsHeuristicsVlassSeContAWP2P001(ImageParamsHeuristicsVlassSeCont)
     """Special heuristics case for AWP2 gridder with the default wprojplanes=1."""
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
-                                                  contfile, linesfile, imaging_params)
+                                                  contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CONT-AWP2-P001'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
@@ -654,9 +654,9 @@ class ImageParamsHeuristicsVlassSeContAWPHPG(ImageParamsHeuristicsVlassSeCont):
     """Special heuristics case for AWPHPG gridder with the default wprojplanes=32."""
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
-                                                  contfile, linesfile, imaging_params)
+                                                  contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CONT-AWPHPG'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
@@ -678,9 +678,9 @@ class ImageParamsHeuristicsVlassSeContAWPHPGP001(ImageParamsHeuristicsVlassSeCon
     """Special heuristics case for AWPHPG gridder with the default wprojplanes=1."""
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
-                                                  contfile, linesfile, imaging_params)
+                                                  contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CONT-AWPHPG-P001'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
@@ -709,9 +709,9 @@ class ImageParamsHeuristicsVlassSeContMosaic(ImageParamsHeuristicsVlassSeCont):
     """
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
-                                                  contfile, linesfile, imaging_params)
+                                                  contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CONT-MOSAIC'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0

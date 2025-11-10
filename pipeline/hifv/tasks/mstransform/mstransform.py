@@ -1,15 +1,13 @@
 import os
-import shutil
 import traceback
 
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
-import pipeline.infrastructure.callibrary as callibrary
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import task_registry
 from pipeline.hif.tasks.mstransform import mstransform as mst
+from pipeline.infrastructure import casa_tasks, task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -45,14 +43,15 @@ class VlaMstransformInputs(mst.MstransformInputs):
 
                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
 
-            outputvis: The list of output transformed MeasurementSets to be used for continuum imaging. The output list must be the same length as the input
-                list. The default output name defaults to
-                <msrootname>_targets_cont.ms
+            outputvis: A list of output MeasurementSets that will contain the transformed and flagged data 
+                for continuum imaging. This list must have the same length as the input list.
+                
+                Default Naming: By default, an input MS named `<msrootname>.ms`
+                will produce an output named `<msrootname>_targets_cont.ms`.
 
                 Examples:
-
-                - outputvis='ngc5921.ms',
-                - outputvis=['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+                    - outputvis='ngc5921_targets_cont.ms'
+                    - outputvis=['ngc5921a_targets_cont.ms', 'ngc5921b_targets_cont.ms', 'ngc5921c_targets_cont.ms']
 
             field: Select fields name(s) or id(s) to transform. Only fields with data matching the intent will be selected.
 
@@ -74,18 +73,20 @@ class VlaMstransformInputs(mst.MstransformInputs):
 
             timebin: Bin width for time averaging. If timebin > 0s then timeaverage is automatically switched to True.
 
-            outputvis_for_line: The list of output transformed MeasurementSets to be used for line imaging. The output list must be the same length as the input
-                list. The default output name defaults to
-                <msrootname>_targets.ms
+            outputvis_for_line: A list of output MeasurementSets for line detection
+                and imaging, created without RFI flagging. This list must have
+                the same length as the input list.
+                
+                Default Naming: By default, an input MS named `<msrootname>.ms`
+                will produce an output named `<msrootname>_targets.ms`.
 
                 Examples:
-                - outputvis_for_line='ngc5921.ms',
-                - outputvis_for_line=['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-
+                    - outputvis_for_line='ngc5921_targets.ms'
+                    - outputvis_for_line=['ngc5921a_targets.ms', 'ngc5921b_targets.ms', 'ngc5921c_targets.ms']
+            
             omit_contline_ms: If True, don't make the contline ms (_targets.ms). Only make cont MS (_targets_cont.ms). Default is False.
 
         """
-
         super().__init__(context, output_dir, vis, outputvis, field, intent, spw, chanbin, timebin)
         self.spw_line = spw_line
         self.outputvis = outputvis
@@ -94,7 +95,7 @@ class VlaMstransformInputs(mst.MstransformInputs):
 
 
 @task_registry.set_equivalent_casa_task('hifv_mstransform')
-class VlaMstransform(mst.Mstransform):
+class VlaMstransform(mst.SerialMstransform):
     Inputs = VlaMstransformInputs
 
     def prepare(self):
@@ -107,6 +108,8 @@ class VlaMstransform(mst.Mstransform):
         mstransform_args.pop('outputvis_for_line', None)
         mstransform_args.pop('spw_line', None)
         mstransform_args.pop('omit_contline_ms', None)
+        mstransform_args.pop('parallel', None)
+        
         mstransform_job = casa_tasks.mstransform(**mstransform_args)
 
         try:
@@ -115,7 +118,10 @@ class VlaMstransform(mst.Mstransform):
             LOG.warning(f"Caught mstransform exception: {ee}")
 
         # Copy across requisite XML files.
-        mst.Mstransform._copy_xml_files(inputs.vis, inputs.outputvis)
+        mst.SerialMstransform._copy_xml_files(inputs.vis, inputs.outputvis)
+
+        # Update ms history.
+        mst.SerialMstransform._update_history(inputs.vis, inputs.outputvis)
 
         if not self.inputs.omit_contline_ms:
             # Create output MS for line data (_target.ms)
@@ -153,8 +159,7 @@ class VlaMstransform(mst.Mstransform):
         return result
 
     def _create_targets_ms(self, inputs, mstransform_args) -> bool:
-        """
-        Create _targets.ms for line imaging.
+        """Create _targets.ms for line imaging.
 
         This will be created if pre-RFI flags exist and there are spectral lines in
         any spws.
@@ -213,7 +218,10 @@ class VlaMstransform(mst.Mstransform):
             self._executor.execute(task)
 
             # Copy across requisite XML files.
-            mst.Mstransform._copy_xml_files(inputs.vis, inputs.outputvis_for_line)
+            mst.SerialMstransform._copy_xml_files(inputs.vis, inputs.outputvis_for_line)
+
+            # Update ms history
+            mst.SerialMstransform._update_history(inputs.vis, inputs.outputvis_for_line)
 
         # Restore RFI flags to main MS
         task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname='rfi_flagged_statwt')
