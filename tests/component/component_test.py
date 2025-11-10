@@ -6,7 +6,6 @@ from pipeline.infrastructure import casa_tools
 from tests.testing_utils import PipelineTester
 
 
-@pytest.mark.component
 @pytest.mark.importdata
 def test_uid___A002_X1181695_X1c6a4_8ant__chan_flagged_import__component():
     """Run test of importdata on small dataset with channels flagged.
@@ -14,23 +13,23 @@ def test_uid___A002_X1181695_X1c6a4_8ant__chan_flagged_import__component():
     Dataset(s):                 uid___A002_X1181695_X1c6a4_8ant_chans_flagged.ms
     Task(s):                    hifa_importdata
     """
-    data_dir = 'pl-componenttest/chan_flagged_import'
+    ref_directory = 'pl-componenttest/chan_flagged_import'
     visname = 'uid___A002_X1181695_X1c6a4_8ant_chans_flagged.ms'
     tasks = [
-        ('hifa_importdata', {'vis': casa_tools.utils.resolve(os.path.join(data_dir, visname))}),
+        ('hifa_importdata', {'vis': casa_tools.utils.resolve(os.path.join(ref_directory, visname))}),
     ]
-    pr = PipelineTester(
+
+    pt = PipelineTester(
         visname=[visname],
         mode='component',
         tasks=tasks,
         output_dir='chan_flagged_import',
-        expectedoutput_dir=data_dir,
+        expectedoutput_dir=ref_directory,
         )
 
-    pr.run()
+    pt.run()
 
 
-@pytest.mark.component
 @pytest.mark.importdata
 @pytest.mark.selfcal
 def test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small_target__selfcal_and_selfcal_restore__component():
@@ -47,7 +46,8 @@ def test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small_target__selfcal_and_self
         ('hif_selfcal', {}),
         ('hif_selfcal', {'restore_only': True}),
     ]
-    pr = PipelineTester(
+
+    pt = PipelineTester(
         visname=['uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small_target.ms'],
         mode='component',
         tasks=tasks,
@@ -55,10 +55,9 @@ def test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small_target__selfcal_and_self
         expectedoutput_dir='pl-componenttest/selfcal_and_selfcal_restore',
         )
 
-    pr.run()
+    pt.run()
 
 
-@pytest.mark.component
 @pytest.mark.importdata
 @pytest.mark.makeimages
 def test_OphA_X1__missing_spws_first_EB__component():
@@ -70,26 +69,26 @@ def test_OphA_X1__missing_spws_first_EB__component():
     Dataset(s):                 OphA-X1_spw0_2.ms, OphA-X1_spw0_2_3.ms
     Task(s):                    hifv_importdata, hif_makelist, hif_makeimages
     """
-    data_dir = 'pl-componenttest/missing_spws'
+    ref_directory = 'pl-componenttest/missing_spws'
     visnames = ['OphA-X1_spw0_2.ms', 'OphA-X1_spw0_2_3.ms']
-    vislist = [casa_tools.utils.resolve(os.path.join(data_dir, visname)) for visname in visnames]
+    vislist = [casa_tools.utils.resolve(os.path.join(ref_directory, visname)) for visname in visnames]
     tasks = [
         ('hifv_importdata', {'vis': vislist}),
         ('hif_makeimlist', {'specmode': 'cont'}),
         ('hif_makeimages', {})
     ]
-    pr = PipelineTester(
+
+    pt = PipelineTester(
         visname=visnames,
         mode='component',
         tasks=tasks,
         output_dir='missing_spws_first_EB',
-        expectedoutput_dir=data_dir,
+        expectedoutput_dir=ref_directory,
         )
 
-    pr.run()
+    pt.run()
 
 
-@pytest.mark.component
 @pytest.mark.importdata
 @pytest.mark.makeimages
 def test_OphA_X1__missing_spws_second_EB__component():
@@ -101,20 +100,21 @@ def test_OphA_X1__missing_spws_second_EB__component():
     Dataset(s):                 OphA-X1_spw0_2.ms, OphA-X1_spw0_2_3.ms
     Task(s):                    hifv_importdata, hif_makelist, hif_makeimages
     """
-    data_dir = 'pl-componenttest/missing_spws'
+    ref_directory = 'pl-componenttest/missing_spws'
     visnames = ['OphA-X1_spw0_2_3.ms', 'OphA-X1_spw0_2.ms']
-    vislist = [casa_tools.utils.resolve(os.path.join(data_dir, visname)) for visname in visnames]
+    vislist = [casa_tools.utils.resolve(os.path.join(ref_directory, visname)) for visname in visnames]
     tasks = [
         ('hifv_importdata', {'vis': vislist}),
         ('hif_makeimlist', {'specmode': 'cont'}),
         ('hif_makeimages', {})
     ]
-    pr = PipelineTester(
+
+    pt = PipelineTester(
         visname=visnames,
         mode='component',
         tasks=tasks,
         output_dir='missing_spws_second_EB',
-        expectedoutput_dir=data_dir,
+        expectedoutput_dir=ref_directory,
         )
 
-    pr.run()
+    pt.run()

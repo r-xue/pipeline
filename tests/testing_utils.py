@@ -47,6 +47,7 @@ class PipelineTester:
     def __init__(
             self,
             visname: list[str],
+            *,
             mode: Literal['regression', 'component'] = 'regression',
             ppr: str | None = None,
             recipe: str | None = None,
@@ -58,8 +59,6 @@ class PipelineTester:
             expectedoutput_dir: str | None = None,
             ):
         """Initializes a PipelineTester instance.
-
-        A list of MeasurementSet names (`visname`) is required. A `recipe` must be provided.
 
         Args:
             visname: List of MeasurementSets used for testing.
@@ -261,6 +260,7 @@ class PipelineTester:
 
     def run(
             self,
+            *,
             telescope: Literal['alma', 'vla'] = 'alma',
             default_relative_tolerance: float = 1e-7,
             omp_num_threads: int | None = None,
@@ -498,5 +498,8 @@ class PipelineTester:
     def _cleanup(self):
         """Cleans up the working directory if it exists."""
         if not self.compare_only and self.remove_workdir and os.path.isdir(self.output_dir):
-            LOG.info("Removing working directory %s as requested.", self.output_dir)
-            shutil.rmtree(self.output_dir)
+            try:
+                shutil.rmtree(self.output_dir)
+                LOG.info("Removing working directory %s as requested.", self.output_dir)
+            except FileNotFoundError:
+                pass

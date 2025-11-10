@@ -55,6 +55,7 @@ Notes for contributors
 from __future__ import annotations
 
 import os
+import tempfile
 import unittest
 from typing import TYPE_CHECKING
 from unittest import mock
@@ -65,19 +66,24 @@ import pytest
 from tests.testing_utils import PipelineTester
 
 if TYPE_CHECKING:
-    from pytest import Config
+    from pytest import Config, FixtureRequest
 
-pytestmark = pytest.mark.unit
+
+@pytest.fixture(autouse=True)
+def _isolate_testcase_tmpdir(request: FixtureRequest, pytestconfig: Config):
+    inst = getattr(request, "instance", None)
+    if isinstance(inst, unittest.TestCase):
+        inst.compare_only = pytestconfig.getoption("--compare-only", False)
+        inst.remove_workdir = pytestconfig.getoption("--remove-workdir", False)
+        inst._tmpdir = tempfile.mkdtemp(prefix="pltest_")
+        inst.pipeline = PipelineTester(
+            visname=["test_results"],
+            recipe="test_procedure.xml",
+            output_dir=inst._tmpdir,
+        )
 
 
 class TestPipelineTester(unittest.TestCase):
-
-    @pytest.fixture(autouse=True)
-    def setup_pipeline(self, pytestconfig: Config) -> None:
-        """Sets up a PipelineTester instance with mock environment values."""
-        self.compare_only = pytestconfig.getoption("--compare-only", default=False)
-        self.remove_workdir = pytestconfig.getoption("--remove-workdir", default=False)
-        self.pipeline = PipelineTester(visname=["test_results"], recipe='test_procedure.xml', output_dir="test_workdir")
 
     @mock.patch("pipeline.environment.casa_version_string", "6.5.1.15")
     @mock.patch("pipeline.environment.pipeline_revision", "2023.1.0.8")
