@@ -99,6 +99,7 @@ exclude_lines = [
 markers = [
   "regression: regression tests",
   "alma: alma test",
+  "nobeyama: nobeyama test",
   "vla: vla test",
   "vlass: vlass test",
   "fast: shorter-running test",
@@ -106,6 +107,7 @@ markers = [
   "twelve: 12m ALMA ",
   "seven: 7m ALMA",
   "sd: single dish",
+  "interferometry: interferometry",
 
   "component: component tests",
   "importdata: importdata task(s)",
@@ -114,5 +116,5 @@ markers = [
 
   "unit: unit tests",
 ]
-addopts = "-ra"
+addopts = "-ra -p pipeline.pytest_plugins"
 junit_family = "legacy"
