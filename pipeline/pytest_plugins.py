@@ -20,7 +20,7 @@ def pytest_addoption(parser: Parser) -> None:
 
     nologfile_help = r"""
         Do not create CASA log files, equivalent to 'casa --nologfile'.
-        Please note that if you're using regression_tester.py, casa logfiles 
+        Please note that if you're running regression tests, casa logfiles 
         will still be generated within individual test "working/" directories and 
         appear in test weblogs. In general, this option is only recommended when 
         manually/frequently running unit tests, to keep your local repo clean.
