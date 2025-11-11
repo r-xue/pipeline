@@ -11,11 +11,11 @@ LOG = logging.get_logger(__name__)
 
 
 class T2_4MDetailsALMAAntposRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
-    def __init__(self, uri='almaantpos.mako', 
+    def __init__(self, uri='almaantpos.mako',
                  description='Correct for antenna position offsets',
                  always_rerender=False):
-        super(T2_4MDetailsALMAAntposRenderer, self).__init__(uri=uri,
-                description=description, always_rerender=always_rerender)
+        super().__init__(uri=uri,
+                         description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, mako_context, pipeline_context, results):
         table_rows, _ = make_antpos_table(pipeline_context, results)
@@ -81,8 +81,8 @@ def make_antpos_table(context, results, sort_by=lambda x: getattr(x, 'antenna'),
     return utils.merge_td_columns(rows), rep_wavelength
 
 
-def make_xyzoffsets_list (offsets_list, rep_wavelength):
-    if len(offsets_list) == 0:
+def make_xyzoffsets_list(offsets_list, rep_wavelength):
+    if offsets_list is None or len(offsets_list) == 0:
         return []
 
     xyz_list = []
