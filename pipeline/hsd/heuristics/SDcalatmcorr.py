@@ -373,8 +373,8 @@ def skysel(skylines, linestouse = 'all', avoidpeak = 0.0):
             skysel[startrange:endrange] = np.zeros(endrange-startrange, dtype=bool)
 
     return skysel
-
-def calcmetric(rawsample, rawsigmasample, metrictype = 'intabsdiff', smoothbox = 1):
+ 
+def calcmetric(rawsample, rawsigmasample, metrictype = 'intsqdiff', smoothbox = 1):
     '''Function that calculates a metric value for a given piece of spectrum (time-averaged data), typically
     a section around the skyline selected by its "grade".
     param:
@@ -1065,7 +1065,7 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
             jyperkfactor = None, dobackup = False, forcespws = None, forcefield = None, forcemetricline = None,
             maxonlyspw = False, minpeaklevel = 0.05, timestamp = None, plotsfolder = None, diffsmooth = 0.002,
             psize = 2, isize = 300, defatmtype = 1, defmaxalt = 120, deflapserate = -5.6, defscaleht = 2.0,
-            decisionmetric = 'intabsdiff'):
+            decisionmetric = 'intsqdiff'):
     ''' Task to apply CSV-3320 correction for atmospheric lines.
     Parameter list:
     ms: (first argument) MS file to be processed
@@ -1611,7 +1611,7 @@ def getTimeStamp(timefmt = '{0:04d}{1:02d}{2:02d}{3:02d}{4:02d}{5:02d}'):
     return timestamp
 
 def redPipeSDatmcorr(iant = 'auto', atmtype = [1, 2, 3, 4],
-                     maxalt = 120, lapserate = -5.6, scaleht = 2.0, decisionmetric = 'intabsdiff',
+                     maxalt = 120, lapserate = -5.6, scaleht = 2.0, decisionmetric = 'intsqdiff',
                      dobackup = True, pcode = '0000.1.00000.S', mousstatusuid = 'uid://A000/X000/X000',
                      metricspws = None, metricfield = None, metricline = None, minpeaklevel = 0.05, diffsmooth = 0.002):
     ''' Task to run SD pipeline, applying CSV-3320 correction for atmospheric lines

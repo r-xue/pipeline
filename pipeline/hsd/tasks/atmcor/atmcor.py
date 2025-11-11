@@ -689,7 +689,7 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
             heuristics_result = SDcalatmcorr.selectModelParams(
                 mslist=[ms_name],
                 context=self.inputs.context,
-                decisionmetric='intabsdiff',
+                decisionmetric='intsqdiff',
                 atmtype=atmtype_list,
                 maxalt=self.inputs.maxalt,
                 lapserate=self.inputs.dtem_dh,
