@@ -108,18 +108,23 @@ def _auto_mark(item: Item) -> None:
     # High-level buckets by directory
     if "tests" in parts and "regression" in parts:
         item.add_marker(pytest.mark.regression)
+        # separate fast and slow tests
         if "slow" in parts:
             item.add_marker(pytest.mark.slow)
-        if "fast" in parts:
+        elif "fast" in parts:
             item.add_marker(pytest.mark.fast)
+
+        # separate by telescope
         if "alma" in parts[-1]:
             item.add_marker(pytest.mark.alma)
-        if "nobeyama" in parts[-1]:
+        elif "nobeyama" in parts[-1]:
             item.add_marker(pytest.mark.nobeyama)
         elif "vlass" in parts[-1]:
             item.add_marker(pytest.mark.vlass)
         elif "vla" in parts[-1]:
             item.add_marker(pytest.mark.vla)
+
+        # separate between single-dish and interferometry
         if "sd" in parts[-1]:
             item.add_marker(pytest.mark.sd)
         elif "if" in parts[-1]:
