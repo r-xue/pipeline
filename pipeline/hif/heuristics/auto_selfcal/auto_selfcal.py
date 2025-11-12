@@ -893,13 +893,10 @@ class SelfcalHeuristics(object):
                     inf_EB_gaincal_combine_dict[target][band][vis] = self.inf_EB_gaincal_combine  # 'scan'
                     if selfcal_library[target][band]['obstype'] == 'mosaic':
                         inf_EB_gaincal_combine_dict[target][band][vis] += ',field'
-                    # if selfcal_library[target][band][vis]['pol_type'] == 'single-pol':
-                    #     inf_EB_gaintype_dict[target][band][vis]='T'
-                    # else:
-                    #     inf_EB_gaintype_dict[target][band][vis]=self.inf_EB_gaintype  # G
-                    # the original code of analyze_inf_EB_flagging() and get_flagged_solns_per_spw() might contain
-                    # a bug wheng spw_combine_test_gaintable is None.
-                    inf_EB_gaintype_dict[target][band][vis] = self.inf_EB_gaintype  # G
+                    if selfcal_library[target][band][vis]['pol_type'] == 'single-pol':
+                        inf_EB_gaintype_dict[target][band][vis] = 'T'
+                    else:
+                        inf_EB_gaintype_dict[target][band][vis] = self.inf_EB_gaintype  # 'G'
 
                     inf_EB_fallback_mode_dict[target][band][vis] = ''  # 'scan'
                     LOG.info('Estimated SNR per solint:')
@@ -2168,8 +2165,11 @@ class SelfcalHeuristics(object):
                                                                                        solint=solint.replace('_EB', '').replace('_ap', ''), minsnr=gaincal_minsnr if applymode == "calflag" else max(gaincal_minsnr, gaincal_unflag_minsnr), minblperant=4, combine=test_gaincal_combine,
                                                                                        field=include_targets[0], gaintable='', spwmap=[], uvrange=slib['uvrange'], refantmode=refantmode, append=os.path.exists('test_inf_EB_'+gaintype+'.g'))]
                             spwlist = slib[vis]['spws'].split(',')
-                            fallback[vis], map_index, spwmap, applycal_spwmap_inf_EB = analyze_inf_EB_flagging(slib, band, spwlist, sani_target+'_'+vis+'_'+band+'_'+solint+'_'+str(
-                                iteration)+'_'+solmode[band][target][iteration]+'.g', vis, target, 'test_inf_EB_'+gaincal_gaintype+'.g', spectral_scan, telescope, solint_snr_per_spw[target][band], minsnr_to_proceed, 'test_inf_EB_T.g' if gaincal_gaintype == 'G' else None)
+                            fallback[vis], map_index, spwmap, applycal_spwmap_inf_EB = analyze_inf_EB_flagging(slib, band, spwlist, 
+                                                                                                               sani_target+'_'+vis+'_'+band+'_'+solint+'_'+str(iteration)+'_'+solmode[band][target][iteration]+'.g',
+                                                                                                               vis, target, 'test_inf_EB_'+gaincal_gaintype+'.g',
+                                                                                                               spectral_scan, telescope, solint_snr_per_spw[target][band], minsnr_to_proceed, 
+                                                                                                               'test_inf_EB_T.g' if gaincal_gaintype == 'G' else None)
 
                             inf_EB_fallback_mode_dict[target][band][vis] = fallback[vis]+''
                             LOG.info('inf_EB %s %s', fallback[vis], applycal_spwmap_inf_EB)
