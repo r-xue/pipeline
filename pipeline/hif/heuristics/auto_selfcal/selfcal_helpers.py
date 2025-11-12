@@ -1822,15 +1822,14 @@ def get_flagged_solns_per_spw(spwlist, gaintable, extendpol=False):
             - nflags (list): Number of flagged solutions per spw.
             - nunflagged (list): Number of unflagged solutions per spw.
             - fracflagged (numpy.ndarray): Fraction of flagged solutions per spw.
-
-    Raises:
-        FileNotFoundError: If the specified gain table directory does not exist.
-
     """
-
     if gaintable is None or not os.path.isdir(gaintable):
         LOG.warning('The gaintable to be examined %s does not exist', gaintable)
-        return 0, 0, 1
+        num_spw = len(spwlist)
+        nflags = np.zeros(num_spw)
+        nunflagged = np.zeros(num_spw)
+        fracflagged = np.ones(num_spw)
+        return nflags, nunflagged, fracflagged
 
     gaintable_temp = 'tempgaintable.g'
     shutil.copytree(gaintable, gaintable_temp, dirs_exist_ok=True)
