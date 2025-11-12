@@ -4,6 +4,7 @@ import numpy as np
 
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure as infrastructure
+from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.hifv.heuristics.lib_EVLApipeutils import vla_minbaselineforcal
@@ -106,6 +107,32 @@ def computeChanFlag(vis, caltable, context):
     return (largechunk, spwids)
 
 
+def _compute_median_snr(ms, caltable):
+
+    median_snr = {}
+
+    with casa_tools.TableReader(caltable) as table:
+        # Get all unique SPWs
+        uniq_spws = np.unique(table.getcol('SPECTRAL_WINDOW_ID'))
+
+        for spw in uniq_spws:
+            # Query the subtable for this SPW
+            query_str = f'SPECTRAL_WINDOW_ID=={spw}'
+            subtable = table.query(query=query_str)
+
+            # Read SNR and FLAG columns
+            snr = subtable.getcol('SNR')
+
+            # Compute median SNR
+            if len(snr) > 0:
+                median_snr[spw] = np.median(snr)
+            else:
+                median_snr[spw] = 0
+
+            subtable.close()
+    return median_snr
+
+
 def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypecaltable=None,
                 bpdgain_touse=None, solint=None, append=None, executor=None):
     """Run CASA task bandpass"""
@@ -170,6 +197,43 @@ def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypec
 
         job = casa_tasks.bandpass(**bandpass_task_args)
 
+        executor.execute(job)
+
+    # PIPE-2512:  Re-run bandpass for low-S/N SPWs with smoothing
+    median_snrs = _compute_median_snr(m, caltable)
+    low_snr_spws = [spw for spw, snr in median_snrs.items() if snr < 50.0]
+    good_snr_spws = [spw for spw, snr in median_snrs.items() if snr >= 50.0]
+    if not low_snr_spws:
+        LOG.info("All SPWs have median S/N ≥ 50 — no rerun needed.")
+        return
+
+    LOG.info(f"Re-running bandpass for SPWs with low S/N: {low_snr_spws}")
+    # rename the old caltable
+    if os.path.exists(caltable):
+        os.rename(caltable, f"{caltable}.allspws.bak")
+
+    # Run bandpass using high-SNR SPWs only
+    bandpass_task_args['spw'] = ','.join(map(str, good_snr_spws))
+    bandpass_task_args['append'] = False
+    job = casa_tasks.bandpass(**bandpass_task_args)
+    executor.execute(job)
+
+    # re-run the low-SNR SPWs individually with smoothing
+    for bad_spw in low_snr_spws:
+        snr = median_snrs[bad_spw]
+        nchan = m.get_spectral_window(bad_spw).num_channels
+        Nbin = min((50.0 / snr) ** 2, nchan / 16)
+        solint_smooth = f"inf,{int(Nbin)}ch"
+
+        LOG.info(f"SPW {bad_spw}: median S/N={snr:.1f}, rerunning with solint='{solint_smooth}'")
+
+        bandpass_task_args.update({
+            'spw': str(bad_spw),
+            'solint': solint_smooth,
+            'append': True,
+        })
+
+        job = casa_tasks.bandpass(**bandpass_task_args)
         executor.execute(job)
 
     return True
