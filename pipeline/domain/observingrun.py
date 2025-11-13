@@ -120,6 +120,12 @@ class ObservingRun(object):
                         f'an existing virtual-ID-to-name mapping: {self.virtual_science_spw_names[matched_name]} - {matched_name}.'
                     )
                     LOG.info(msg)
+                else:
+                    msg = (
+                        f'Virtual SPW mapping: Identified the science SPW name {s.name} (ID {s.id}) from EB {eb_name} to '
+                        f'a unique existing virtual-ID-to-name mapping: {self.virtual_science_spw_names[matched_name]} - {matched_name}.'
+                    )
+                    LOG.info(msg)
             elif match_count > 1:
                 # Multiple matches found - unlikely situation - log error
                 msg = (
@@ -395,30 +401,38 @@ class ObservingRun(object):
             )
             return None
 
-    def get_real_spwsel(self, spwsel: list[str], vis: list[str]) -> list[str]:
+    def get_real_spwsel(self, spwsel: list[str], vis: list[str]) -> list[str | None]:
         """Translate a virtual (science) spw selection to the real one for a given MS.
 
         Args:
             spwsel: The list of spw selections to convert.
-            vis: The list of MS names for which to convert the virtual spw
-                selection to a real spw selection.
+            vis: The list of MS names for which to convert the virtual spw selection to a real spw selection.
 
         Returns:
-            List of real spw selections for given virtual spw selections and
-            MS names.
+            List of real spw selections for given virtual spw selections and MS names. Returns None for 
+            entries where no valid real spw mappings are found.
         """
-        real_spwsel = []
+        real_spwsel: list[str | None] = []
+
         for spwsel_item, ms_name in zip(spwsel, vis):
-            real_spwsel_items = []
+            real_spwsel_items: list[str] = []
+
             for spw_item in spwsel_item.split(','):
-                if spw_item.find(':') == -1:
+                if ':' not in spw_item:
+                    # Handle simple spw ID without channel selection
                     real_spw_id = self.virtual2real_spw_id(int(spw_item), self.get_ms(ms_name))
-                    real_spwsel_items.append(str(real_spw_id))
+                    if real_spw_id is not None:
+                        real_spwsel_items.append(str(real_spw_id))
                 else:
-                    virtual_spw_id, selection = spw_item.split(':')
+                    # Handle spw ID with channel selection (format: spw:channels)
+                    virtual_spw_id, selection = spw_item.split(':', 1)
                     real_spw_id = self.virtual2real_spw_id(int(virtual_spw_id), self.get_ms(ms_name))
-                    real_spwsel_items.append('%s:%s' % (str(real_spw_id), selection))
-            real_spwsel.append(','.join(real_spwsel_items))
+                    if real_spw_id is not None:
+                        real_spwsel_items.append(f'{real_spw_id}:{selection}')
+
+            # Add comma-separated real spw selection or None if no valid mappings found
+            real_spwsel.append(','.join(real_spwsel_items) if real_spwsel_items else None)
+
         return real_spwsel
 
     @property
