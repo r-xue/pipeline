@@ -144,9 +144,7 @@ $(function () {
 
     <%
     plots = rmsplots[ms_name]
-    #spw_colname=[plot[0].parameters['virtspw'] for plot in plots]
     stats=plotter.result.rmsstats
-    from IPython import embed; embed()
     stats_summary=plotter.result.stats_summary
     %>
 

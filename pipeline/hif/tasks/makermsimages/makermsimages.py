@@ -1,5 +1,6 @@
 import numpy as np
 import os
+from scipy.stats import median_abs_deviation
 
 
 import pipeline.infrastructure as infrastructure
@@ -137,11 +138,10 @@ class Makermsimages(basetask.StandardTaskTemplate):
                                 value_arr = np.array([rmsstats[rmsimage][item] for rmsimage in rmsstats])
                                 # note: np.stats.median_absolute_deviation has the default scale=1.4826 and is deprecated with scipy>1.5.0.
                                 # TODO: It should replaced with scipy.stats.median_abs_deviation(x, scale='normal') in the future.
-                                mad_func = compatibility.get_scipy_function_for_mad()
-                                stats_summary[item]['spwwise_madrms'] = mad_func(value_arr, axis=0)
+                                stats_summary[item]['spwwise_madrms'] = median_abs_deviation(value_arr, axis=0, scale='normal')
                                 stats_summary[item]['spwwise_median'] = np.median(value_arr, axis=0)
                             stats_summary = stats_summary
-                            rmsval = float(np.median(rmsstats[rmsimagename]['madrms'])[0] * 1.4826)
+                            rmsval = float(np.median(rmsstats[rmsimagename]['madrms']) * 1.4826)
                         else:
                             rmsstats[rmsimagename] = image.statistics(robust=True)
                             rmsval = float(rmsstats[rmsimagename]['medabsdevmed'][0] * 1.4826)
