@@ -484,7 +484,7 @@ def select_tsys_field(
         LookupError if no Tsys fields are found or if no Tsys field is matched to the source.
     """
     # Retrieve correct Tsys field for source based on mapping
-    is_sd = ms.array_name in ('TP', 'NRO')
+    is_sd = ms.array_name == 'TP'
     tsys_fields = get_intent_to_tsysfield_map(ms, is_single_dish=is_sd)['TARGET'].split(',')
     if not tsys_fields:
         raise LookupError('No Tsys fields associated with TARGET.')
