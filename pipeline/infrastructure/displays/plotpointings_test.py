@@ -40,46 +40,76 @@ def case_same_id() -> tuple[MeasurementSet, Source, Field]:
 
 
 def case_same_name() -> tuple[MeasurementSet, Source, Field]:
-    f0 = Field(0,"J1007-3333", 0, np.ndarray(1), {})
+    f0 = Field(0, "J1007-3333", 0, np.ndarray(1), {})
     f0.intents = {"ATMOSPHERE","PHASE","POINTING","WVR"}
-    f1 = Field(1,"NGC_2997", 1, np.ndarray(1), {})
+    f1 = Field(1, "NGC_2997", 1, np.ndarray(1), {})
     f1.intents = {"ATMOSPHERE"}
-    f2 = Field(2,"NGC_2997", 1, np.ndarray(1), {})
+    f2 = Field(2, "NGC_2997", 1, np.ndarray(1), {})
     f2.intents = {"TARGET"}
-    ms = make_ms("test2.ms","12M",[
-        make_source(0,"J1007-3333",[f0]),
-        make_source(1,"NGC_2997",[f1,f2]),
+    ms = make_ms("test2.ms", "12M", [
+        make_source(0, "J1007-3333", [f0]),
+        make_source(1, "NGC_2997", [f1, f2]),
     ])
     return ms, f2.source, f1
 
 
 def case_partial_name() -> tuple[MeasurementSet, Source, Field]:
-    f0 = Field(1,"24013+0488_OFF_0", 1, np.ndarray(1), {})
+    f0 = Field(1, "24013+0488_OFF_0", 1, np.ndarray(1), {})
     f0.intents = {"ATMOSPHERE", "REFERENCE"}
-    f1 = Field(2,"24013+0488", 2, np.ndarray(1), {})
+    f1 = Field(2, "24013+0488", 2, np.ndarray(1), {})
     f1.intents = {"TARGET"}
-    f2 = Field(3,"31946+0076_OFF_0", 3, np.ndarray(1), {})
+    f2 = Field(3, "31946+0076_OFF_0", 3, np.ndarray(1), {})
     f2.intents = {"ATMOSPHERE", "REFERENCE"}
-    f3 = Field(4,"31946+0076", 4, np.ndarray(1), {})
+    f3 = Field(4, "31946+0076", 4, np.ndarray(1), {})
     f3.intents = {"TARGET"}
-    ms = make_ms("test3.ms","TP",[
-        make_source(3,"24013+0488_OFF_0",[f0]),
-        make_source(1,"24013+0488",[f1]),
-        make_source(4,"31946+0076_OFF_0",[f2]),
-        make_source(2,"31946+0076",[f3]),
+    ms = make_ms("test3.ms", "TP", [
+        make_source(3, "24013+0488_OFF_0", [f0]),
+        make_source(1, "24013+0488", [f1]),
+        make_source(4, "31946+0076_OFF_0", [f2]),
+        make_source(2, "31946+0076", [f3]),
     ])
     return ms, f1.source, f0
 
 
+def case_no_valid_tsys_field() -> tuple[MeasurementSet, Source, Field | None]:
+    f0 = Field(0, "J1007-3333", 0, np.ndarray(1), {})
+    f0.intents = {"ATMOSPHERE", "PHASE", "POINTING", "WVR"}
+    f1 = Field(1, "Jupiter", 1, np.ndarray(1), {})
+    f1.intents = {"TARGET"}
+    ms = make_ms("test4.ms", "12M", [
+        make_source(0, "J1007-3333", [f0]),
+        make_source(1, "Jupiter", [f1]),
+    ])
+    return ms, f1.source, None
+
+
+def case_double_quote_name() -> tuple[MeasurementSet, Source, Field]:
+    f0 = Field(0, '"J1007-3333"', 0, np.ndarray(1), {})
+    f0.intents = {"ATMOSPHERE", "PHASE", "POINTING", "WVR"}
+    f1 = Field(1, '"S Pav_OFF"', 1, np.ndarray(1), {})
+    f1.intents = {"ATMOSPHERE"}
+    f2 = Field(2, '"S Pav"', 1, np.ndarray(1), {})
+    f2.intents = {"TARGET"}
+    ms = make_ms("test5.ms", "12M", [
+        make_source(0, '"J1007-3333"', [f0]),
+        make_source(1, '"S Pav"', [f1, f2]),
+    ])
+    return ms, f2.source, f1
+
+
 @pytest.fixture(
-    params=[case_same_id, case_same_name, case_partial_name],
-    ids=["same-id","same-name","partial-name"],
+    params=[case_same_id, case_same_name, case_partial_name, case_no_valid_tsys_field, case_double_quote_name],
+    ids=["same-id","same-name","partial-name","no-valid-tsys-field", "double-quote-name"],
 )
-def case(request) -> tuple[MeasurementSet, Source, Field]:
+def case(request) -> tuple[MeasurementSet, Source, Field | None]:
     return request.param()
 
 
-def test_select_tsys_field(case: tuple[MeasurementSet, Source, Field]) -> None:
+def test_select_tsys_field(case: tuple[MeasurementSet, Source, Field | None]) -> None:
     """Test select_tsys_field for correct selections."""
     ms, source, expected = case
-    assert select_tsys_field(ms, source) == expected
+    if expected is None:
+        with pytest.raises(LookupError):
+            select_tsys_field(ms, source)
+    else:
+        assert select_tsys_field(ms, source) == expected

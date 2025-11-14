@@ -492,17 +492,18 @@ def select_tsys_field(
     # Precompute lookup structures
     src_fields = source.fields
     src_by_id = {f.id: f for f in src_fields}
-    src_by_name = {f.name: f for f in src_fields}
+    src_by_name = {f.name.strip().strip('"'): f for f in src_fields}
 
     # ID or name match to a source field
     for field_str in tsys_fields:
-        if field_str.isdigit() and int(field_str) in src_by_id:
-            return src_by_id[int(field_str)]
-        if field_str in src_by_name:
-            return src_by_name[field_str]
+        field_str_clean = field_str.strip().strip('"')
+        if field_str_clean.isdigit() and int(field_str_clean) in src_by_id:
+            return src_by_id[int(field_str_clean)]
+        if field_str_clean in src_by_name:
+            return src_by_name[field_str_clean]
         # PIPE-2869: Partial name match
         for name in src_by_name:
-            if name in field_str:
+            if name in field_str_clean:
                 return ms.get_fields(name=field_str)[0]
 
     # If truly nothing matched, raise a clear error instead of returning a wrong field silently.
