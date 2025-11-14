@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import ssl
+import sys
 import urllib
 from typing import TYPE_CHECKING
 
@@ -161,7 +162,7 @@ class ALMAImportDataResults(importdata.ImportDataResults):
     def __init__(
             self,
             mses: list[MeasurementSet] | None = None,
-            setjy_results: list[FluxCalibrationResults] | None = None
+            setjy_results: list[FluxCalibrationResults] | None = None,
             ):
         super().__init__(mses=mses, setjy_results=setjy_results)
 
@@ -175,7 +176,9 @@ class SerialALMAImportData(importdata.ImportData):
     Results = ALMAImportDataResults
 
     def _get_fluxes(
-            self, context: Context, observing_run: ObservingRun
+            self,
+            context: Context,
+            observing_run: ObservingRun,
             ) -> tuple[str | None, list[FluxCalibrationResults], list[dict[str, str | None]] | None]:
         # get the flux measurements from Source.xml for each MS
 
@@ -191,7 +194,7 @@ class SerialALMAImportData(importdata.ImportData):
                 urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
                 xml_results, qastatus = dbfluxes.get_setjy_results(observing_run.measurement_sets)
                 fluxservice = 'FIRSTURL'
-            except Exception as e:
+            except Exception:
                 try:
                     LOG.warning('Unable to execute initial test query with primary flux service.')
                     ssl_context = ssl.create_default_context(cafile=certifi.where())
@@ -200,12 +203,9 @@ class SerialALMAImportData(importdata.ImportData):
                     urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
                     xml_results, qastatus = dbfluxes.get_setjy_results(observing_run.measurement_sets)
                     fluxservice='BACKUPURL'
-                except Exception as e2:
-                    LOG.warning(('Unable to execute backup test query with flux service.\n'
-                                 'Proceeding without using the online flux catalog service.'))
-                    xml_results = fluxes.get_setjy_results(observing_run.measurement_sets)
-                    fluxservice = 'FAIL'
-                    qastatus = None
+                except Exception:
+                    LOG.error('Unable to execute backup test query with flux service. Exiting pipeline...')
+                    sys.exit(1)
         else:
             xml_results = fluxes.get_setjy_results(observing_run.measurement_sets)
             fluxservice = None
