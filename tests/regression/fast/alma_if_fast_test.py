@@ -99,6 +99,31 @@ def test_uid___A002_Xc46ab2_X15ae__selfcal_restore_procedure_hifa_image__regress
     pt.run()
 
 
+@pytest.mark.seven
+def test_E2E9_1_00084_S__uid___A001_X2df7_X1ec__PPR__regression():
+    """Run ALMA polcal+image regression on a multi-EB 7m test dataset with a PPR file.
+
+    PPR:                        pl-regressiontest/E2E9.1.00084.S/PPR.xml
+    Project:                    E2E9.1.00084.S
+    MOUS:                       uid___A001_X2df7_X1ec
+    EBs:                        uid___A002_Xfd80cd_X128a
+                                uid___A002_Xfd80cd_X1531
+                                uid___A002_Xfd80cd_X1748
+    """
+    ref_directory = 'pl-regressiontest/E2E9.1.00084.S'
+
+    pt = PipelineTester(
+        visname=['uid___A002_Xfd80cd_X128a',
+                 'uid___A002_Xfd80cd_X1531',
+                 'uid___A002_Xfd80cd_X1748'],
+        ppr=f"{ref_directory}/PPR.xml",
+        input_dir=ref_directory,
+        expectedoutput_dir=ref_directory,
+        )
+
+    pt.run()
+
+
 # 12m tests
 @pytest.mark.twelve
 def test_E2E6_1_00010_S__uid___A002_Xd0a588_X2239__procedure_hifa_image__regression():
