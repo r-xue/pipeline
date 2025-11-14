@@ -2150,7 +2150,7 @@ class SelfcalHeuristics(object):
                             if slib['obstype'] == 'mosaic':
                                 test_gaincal_combine += ',field'
                             test_gaincal_return = {'G': [], 'T': []}
-                            for gaintype in np.unique([gaincal_gaintype, 'T']):
+                            for gaintype in utils.deduplicate([gaincal_gaintype, 'T']):
                                 # run gaincal on each spw set to handle spectral scans
                                 for i in range(spws_set[band][vis].shape[0]):
                                     if nspw_sets == 1 and spws_set[band][vis].ndim == 1:
@@ -2172,25 +2172,41 @@ class SelfcalHeuristics(object):
                                                                                                                'test_inf_EB_T.g' if gaincal_gaintype == 'G' else None)
 
                             inf_EB_fallback_mode_dict[target][band][vis] = fallback[vis]+''
-                            LOG.info('inf_EB %s %s', fallback[vis], applycal_spwmap_inf_EB)
+                            LOG.info('inf_EB: fallback=%s applycal/spwmap=%s', fallback[vis], applycal_spwmap_inf_EB)
+
                             if fallback[vis] != '':
                                 if 'combinespw' in fallback[vis]:
                                     gaincal_spwmap[vis] = [slib[vis]['spwmap']]
                                     gaincal_combine[band][target][iteration] = 'scan,spw'
                                     inf_EB_gaincal_combine_dict[target][band][vis] = 'scan,spw'
                                     applycal_spwmap[vis] = [slib[vis]['spwmap']]
-                                    os.system('rm -rf           '+sani_target+'_'+vis+'_'+band+'_'+solint +
-                                              '_'+str(iteration)+'_'+solmode[band][target][iteration]+'.g')
-                                    for gaintype in np.unique([gaincal_gaintype, 'T']):
-                                        os.system('cp -r test_inf_EB_'+gaintype+'.g '+sani_target+'_'+vis+'_'+band+'_'+solint +
-                                                  '_'+str(iteration)+'_'+solmode[band][target][iteration]+'.gaintype'+gaintype+'.g')
-                                    if fallback[vis] == 'combinespw':
-                                        gaincal_gaintype = 'G'
-                                    else:
-                                        gaincal_gaintype = 'T'
-                                    os.system('mv test_inf_EB_'+gaincal_gaintype+'.g '+sani_target+'_'+vis+'_' +
-                                              band+'_'+solint+'_'+str(iteration)+'_'+solmode[band][target][iteration]+'.g')
-                                    slib[vis][solint]['gaincal_return'] = test_gaincal_return[gaincal_gaintype]
+
+                                    # save test_inf_EB_*.g to appropriately named gaintable
+                                    for gaintype in utils.deduplicate([gaincal_gaintype, 'T']):
+                                        src = 'test_inf_EB_'+gaintype+'.g'
+                                        if not os.path.isdir(src):
+                                            continue
+                                        dst = sani_target+'_'+vis+'_'+band+'_'+solint+'_' + \
+                                            str(iteration)+'_' + \
+                                            solmode[band][target][iteration]+'.gaintype'+gaintype+'.g'
+                                        if os.path.exists(dst):
+                                            shutil.rmtree(dst)
+                                        LOG.debug('Copying %s to %s', src, dst)
+                                        shutil.copytree(src, dst)
+
+                                    # save the selected gaintable to the one named in selfcal_library
+                                    gaincal_gaintype_select = gaincal_gaintype
+                                    if fallback[vis] == 'combinespwpol':
+                                        gaincal_gaintype_select = 'T'
+                                    src = 'test_inf_EB_'+gaincal_gaintype_select+'.g'
+                                    dst = sani_target+'_'+vis+'_'+band+'_'+solint+'_' + \
+                                        str(iteration)+'_'+solmode[band][target][iteration]+'.g'
+                                    if os.path.exists(dst):
+                                        shutil.rmtree(dst)
+                                    LOG.debug('Moving %s to %s', src, dst)
+                                    shutil.move(src, dst)
+                                    slib[vis][solint]['gaincal_return'] = test_gaincal_return[gaincal_gaintype_select]
+
                                 if fallback[vis] == 'spwmap':
                                     gaincal_spwmap[vis] = applycal_spwmap_inf_EB
                                     inf_EB_gaincal_combine_dict[target][band][vis] = 'scan'
@@ -2204,7 +2220,9 @@ class SelfcalHeuristics(object):
                                     slib[fid][vis][solint]['spwmap'] = applycal_spwmap[vis]
                                     slib[fid][vis][solint]['gaincal_combine'] = gaincal_combine[band][target][iteration]+''
 
-                            os.system('rm -rf test_inf_EB_*.g')
+                            # cleaning up test_inf_EB_*.g
+                            for test_gaintable_path in glob.glob('test_inf_EB_*.g'):
+                                shutil.rmtree(test_gaintable_path)
 
                         # If iteration two, try restricting to just the antennas with enough unflagged data.
                         # Should we also restrict to just long baseline antennas?

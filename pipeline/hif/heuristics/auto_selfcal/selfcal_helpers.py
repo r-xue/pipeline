@@ -1823,8 +1823,8 @@ def get_flagged_solns_per_spw(spwlist, gaintable, extendpol=False):
             - nunflagged (list): Number of unflagged solutions per spw.
             - fracflagged (numpy.ndarray): Fraction of flagged solutions per spw.
     """
-    if gaintable is None or not os.path.isdir(gaintable):
-        LOG.warning('The gaintable to be examined %s does not exist', gaintable)
+    if not os.path.isdir(gaintable):
+        LOG.warning('The gaintable to be examined %s does not exist.', gaintable)
         num_spw = len(spwlist)
         nflags = np.zeros(num_spw)
         nunflagged = np.zeros(num_spw)
@@ -1950,13 +1950,12 @@ def analyze_inf_EB_flagging(
         fallback = 'combinespw'
         applycal_spwmap = []
 
-    if fallback == "combinespw":
+    if fallback == "combinespw" and spwpol_combine_test_gaintable is not None:
         # If we end up with combinespw, check whether going to combinespw with gaintype='T' offers further improvement.
         nflags_spwcomb, nunflagged_spwcomb, fracflagged_spwcomb = get_flagged_solns_per_spw(
             [spwlist[0]], spw_combine_test_gaintable, extendpol=True)
         nflags_spwpolcomb, nunflagged_spwpolcomb, fracflagged_spwpolcomb = get_flagged_solns_per_spw(
             [spwlist[0]], spwpol_combine_test_gaintable)
-
         if np.sqrt((nunflagged_spwcomb[0]*(nunflagged_spwcomb[0]-1)) / (nunflagged_spwpolcomb[0]*(nunflagged_spwpolcomb[0]-1))) < 0.95:
             fallback = 'combinespwpol'
 
