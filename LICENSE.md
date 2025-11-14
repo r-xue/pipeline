@@ -1,4 +1,8 @@
-Copyright (C) 2025 Associated Universities, Inc. Washington DC, USA.
+Copyright (C) 2011 Associated Universities, Inc. (AUI),
+European Southern Observatory (ESO), and
+National Astronomical Observatory of Japan (NAOJ),
+in the framework of the Atacama Large Millimeter/submillimeter Array
+(ALMA) collaboration.
 All rights reserved.
 
 This library is free software; you can redistribute it and/or modify it under
