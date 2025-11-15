@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import ssl
-import sys
 import urllib
 from typing import TYPE_CHECKING
 
@@ -175,6 +174,19 @@ class SerialALMAImportData(importdata.ImportData):
     Inputs = ALMAImportDataInputs
     Results = ALMAImportDataResults
 
+    def prepare(self, **parameters) -> Results:
+        results = super().prepare()
+
+        # If online flux services were requested but unavailable, signal an error
+        # after weblog generation to stop the pipeline before the next task.
+        if getattr(self.inputs, 'dbservice', False) and results.fluxservice == 'FAIL':
+            results.tb = (
+                'Online flux catalog unavailable; fell back to local Source.xml fluxes. '
+                'Stopping after weblog export.'
+            )
+
+        return results
+
     def _get_fluxes(
             self,
             context: Context,
@@ -204,8 +216,15 @@ class SerialALMAImportData(importdata.ImportData):
                     xml_results, qastatus = dbfluxes.get_setjy_results(observing_run.measurement_sets)
                     fluxservice='BACKUPURL'
                 except Exception:
-                    LOG.error('Unable to execute backup test query with flux service. Exiting pipeline...')
-                    sys.exit(1)
+                    LOG.error(
+                        (
+                            'Unable to execute backup test query with flux service. '
+                            'Proceeding without using the online flux catalog service.'
+                        )
+                    )
+                    xml_results = fluxes.get_setjy_results(observing_run.measurement_sets)
+                    fluxservice = 'FAIL'
+                    qastatus = None
         else:
             xml_results = fluxes.get_setjy_results(observing_run.measurement_sets)
             fluxservice = None
