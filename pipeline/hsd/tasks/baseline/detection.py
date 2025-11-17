@@ -511,16 +511,19 @@ class LineWindowParser(object):
 
     def __init__(self,
                  ms: 'MeasurementSet',
-                 window: LineWindow) -> None:
+                 window: LineWindow,
+                 context: 'Context' = None) -> None:
         """
         Construct LineWindowParser instance.
 
         Args:
             ms: ms domain object
             window: line window parameter
+            context: Pipeline context
         """
         self.ms = ms
         self.window = window
+        self.context = context
         self.parsed = None
 
         # science spectral windows
@@ -594,11 +597,11 @@ class LineWindowParser(object):
         for spwid in self.science_spw:
             assert spwid in self.parsed
 
-    def get_result(self, spw_id: int) -> Optional[List[int]]:
+    def get_result(self, spw_id: int) -> List[int] | None:
         """Return parsed line windows for given spw id.
 
         Args:
-            spw_id: spw id
+            spw_id: real spw id
 
         Returns:
             Line windows as one-dimensional list that provides start/end channels
@@ -655,8 +658,10 @@ class LineWindowParser(object):
 
             new_window[spwid].append(chansel)
 
+        real_window = self._virtual_to_real_spws(new_window)
+
         for spwid in self.science_spw:
-            if spwid not in new_window:
+            if spwid not in real_window:
                 new_window[spwid] = []
 
         return new_window
@@ -673,9 +678,8 @@ class LineWindowParser(object):
             Dictionary containing line window list per spw
         """
         # apply given window to all science windows
-
         return dict((spwid, window) for spwid in self.science_spw)
-
+ 
     def _dict2dict(self, window: dict) -> dict:
         """Convert line window dict into another dict.
 
@@ -688,7 +692,9 @@ class LineWindowParser(object):
             Dictionary containing line window list per spw
         """
         # key should be an integer
-        return dict((int(spw), value) for spw, value in window.items())
+        dict_window = dict((int(spw), value) for spw, value in window.items())
+        
+        return self._virtual_to_real_spws(dict_window)
 
     def _exclude_non_science_spws(self, window: dict) -> dict:
         """Filter line windows only for science spws.
@@ -712,6 +718,25 @@ class LineWindowParser(object):
             else:
                 new_window[spwid] = []
 
+        return new_window
+    
+    def _virtual_to_real_spws(self, window: dict) -> dict:
+        """Convert virtual spws to real for the current ms.
+
+        Args:
+            window: Line window list per spw
+
+        Returns:
+            Converted dict of line window list per spw
+        """
+        new_window = {}
+        for v_spwid, w in window.items():
+                r_spwid = self.context.observing_run.virtual2real_spw_id(v_spwid, self.ms) if self.context else v_spwid # for unit tests
+                if w is None:
+                    new_window[r_spwid] = None
+                else:
+                    new_window[r_spwid] = list(w)
+                
         return new_window
 
     def _freq2chan(self,

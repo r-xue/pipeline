@@ -6,9 +6,8 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hif.tasks.setmodel.setmodel.SetModelsInputs.__init__
 @utils.cli_wrapper
 def hif_setmodels(vis=None, reference=None, refintent=None, transfer=None, transintent=None, reffile=None,
-                  normfluxes=None, scalebychan=None):
-
-    """Set calibrator source models
+                  normfluxes=None, scalebychan=None, parallel=None):
+    """Set calibrator source models.
 
     Set model fluxes values for calibrator reference and transfer sources using lookup
     values. By default the reference sources are the flux calibrators and the transfer
@@ -35,8 +34,6 @@ def hif_setmodels(vis=None, reference=None, refintent=None, transfer=None, trans
         >>> hif_setmodels()
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

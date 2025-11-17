@@ -1,6 +1,6 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>hifv_vlassSEIP</ProcedureTitle>
+    <ProcedureTitle>hifv_vlassCCIP</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifv_importdata</Command>

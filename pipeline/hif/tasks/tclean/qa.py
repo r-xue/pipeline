@@ -109,7 +109,10 @@ class TcleanQAHandler(pqa.QAPlugin):
         try:
             # For the score we compare the image RMS with the DR corrected
             # sensitivity as an estimate of the expected RMS.
-            rms_score = imageScorer(result.image_rms / result.dr_corrected_sensitivity)
+            if result.stokes == 'I':
+                rms_score = imageScorer(result.image_rms / result.dr_corrected_sensitivity)
+            else:
+                rms_score = imageScorer(result.image_rms_iquv[0] / result.dr_corrected_sensitivity)
 
             if (np.isnan(rms_score)):
                 rms_score = 0.0
@@ -227,16 +230,18 @@ class TcleanQAHandler(pqa.QAPlugin):
         if result.intent == 'POLARIZATION' and result.inputs['specmode'] in (
                 'mfs', 'cont') and result.stokes == 'IQUV' and result.imaging_mode == 'ALMA':
             try:
+                extension = '.tt0' if result.multiterm else ''
+
                 # Calculate POLI/POLA images
-                imstat_arg = {'imagename': result.residual, 'axes': [0, 1]}
+                imstat_arg = {'imagename': f'{result.residual}{extension}', 'axes': [0, 1]}
                 job = casa_tasks.imstat(**imstat_arg)
                 calstat = job.execute()
                 rms = calstat['rms']
                 prms = np.sqrt(rms[1]**2. + rms[2]**2.)
 
-                imagename = result.image.replace('.pbcor', '')
+                imagename = result.image.replace('.pbcor', '').replace('.image', f'.image{extension}')
                 poli_imagename = imagename.replace('IQUV', 'POLI')
-                immath_arg = {'imagename': imagename, 'outfile': poli_imagename, 'mode': 'poli', 'sigma': '0.0Jy/beam'}
+                immath_arg = {'imagename': imagename, 'outfile': poli_imagename, 'mode': 'lpoli', 'sigma': '0.0Jy/beam'}
                 job = casa_tasks.immath(**immath_arg)
                 res = job.execute()
                 pola_imagename = imagename.replace('IQUV', 'POLA')

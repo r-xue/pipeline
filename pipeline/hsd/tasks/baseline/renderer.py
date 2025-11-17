@@ -154,8 +154,18 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
 
             for fieldobj in sorted_fields:
                 name = self.get_field_key(plot_list, fieldobj)
-                assert name is not None
-                subpage[name] = os.path.basename(renderer.path)
+                if name is not None:
+                    subpage[name] = os.path.basename(renderer.path)
+                else:
+                    # no plots available for this field, most probably because
+                    # on-source data are fully flagged.
+                    if subtype == 'flatness':
+                        plot_desc = "baseline flatness plots"
+                    else:
+                        datatype = 'raw' if subtype == 'raw' else 'averaged'
+                        plot_desc = f"{datatype} sparse profile map {maptype} baseline subtraction"
+                    LOG.info(f'No {plot_desc} for field {fieldobj.name}')
+
             ctx.update({'sparsemap_subpage_{}_{}'.format(maptype.lower(), subtype.lower()): subpage,
                         'sparsemap_{}_{}'.format(maptype.lower(), subtype.lower()): summary})
 

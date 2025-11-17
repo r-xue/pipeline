@@ -11,6 +11,7 @@ from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.filenamer import sanitize_for_ms
+import pipeline.infrastructure.sessionutils as sessionutils
 
 # the logger for this module
 LOG = infrastructure.get_logger(__name__)
@@ -69,20 +70,15 @@ class FlagTargetsALMAInputs(vdp.StandardInputs):
         vis_root = sanitize_for_ms(self.vis)
         return vis_root + '.flagtargetstemplate.txt'
 
-    @filetemplate.convert
-    def filetemplate(self, value):
-        if isinstance(value, str):
-            return list(value.replace('[', '').replace(']', '').replace("'", "").split(','))
-        else:
-            return value
-
     @vdp.VisDependentProperty
     def inpfile(self):
         vis_root = sanitize_for_ms(self.vis)
         return os.path.join(self.output_dir, vis_root + '.flagtargetscmds.txt')
+    
+    parallel = sessionutils.parallel_inputs_impl(default=False)
 
     # docstring and type hints: supplements hifa_flagtargets
-    def __init__(self, context, vis=None, output_dir=None, flagbackup=None, template=None, filetemplate=None):
+    def __init__(self, context, vis=None, output_dir=None, flagbackup=None, template=None, filetemplate=None, parallel=None):
         """Initialize Inputs.
 
         Args:
@@ -103,9 +99,12 @@ class FlagTargetsALMAInputs(vdp.StandardInputs):
                 If the template flags files is undefined a name of the
                 form 'msname_flagtargetstemplate.txt' is assumed.
 
-        """
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
 
-        super(FlagTargetsALMAInputs, self).__init__()
+        """
+        super().__init__()
 
         # pipeline inputs
         self.context = context
@@ -116,6 +115,7 @@ class FlagTargetsALMAInputs(vdp.StandardInputs):
         self.flagbackup = flagbackup
         self.template = template
         self.filetemplate = filetemplate
+        self.parallel = parallel
 
     def to_casa_args(self):
         """
@@ -172,8 +172,8 @@ class FlagTargetsALMAResults(basetask.Results):
         return s
 
 
-@task_registry.set_equivalent_casa_task('hifa_flagtargets')
-class FlagTargetsALMA(basetask.StandardTaskTemplate):
+
+class SerialFlagTargetsALMA(basetask.StandardTaskTemplate):
     """
     FlagTargetsALMA is a class for target flagging. It can perform
 
@@ -267,3 +267,10 @@ class FlagTargetsALMA(basetask.StandardTaskTemplate):
         return [cmd for cmd in flaghelper.readFile(filename)
                 if not cmd.strip().startswith('#')
                 and not all(c in string.whitespace for c in cmd)]
+
+
+@task_registry.set_equivalent_casa_task('hifa_flagtargets')
+class FlagTargetsALMA(sessionutils.ParallelTemplate):
+
+    Inputs = FlagTargetsALMAInputs
+    Task = SerialFlagTargetsALMA

@@ -30,13 +30,10 @@ class RflagDevHeuristic(api.Heuristic):
         self.spw_rms_scale = self._get_spw_rms_scale(ignore_sefd=ignore_sefd)
 
     def calculate(self, rflag_report):
-
-        _, baseband_spws_list = self.ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=True)
-
         if 'rflag' in rflag_report['type'] == 'rflag':
             return self._correct_rflag_ftdev(rflag_report)
         else:
-            LOG.error("Invalid input rflag report")
+            LOG.error('Invalid input rflag report')
             return None
 
     @staticmethod
@@ -122,7 +119,7 @@ class RflagDevHeuristic(api.Heuristic):
             devs_med = new_report[ftdev][:, 2].copy()
             bbs = np.full_like(spws, -1)
 
-            _, baseband_spws_list = self.ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=True)
+            baseband_spws_list = self.ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=True)
             for bb_idx, bb_spws in enumerate(baseband_spws_list):
                 bb_mask = np.isin(spws, bb_spws)
                 bbs[bb_mask] = bb_idx
@@ -195,8 +192,9 @@ class RflagDevHeuristic(api.Heuristic):
 
         spw_rms_scale = dict()
 
-        baseband_spws, baseband_spws_list = self.ms.get_vla_baseband_spws(
-            science_windows_only=science_windows_only, return_select_list=True)
+        baseband_spws = self.ms.get_vla_baseband_spws(
+            science_windows_only=science_windows_only, return_select_list=False
+        )
         for band in baseband_spws:
             for baseband in baseband_spws[band]:
                 for spwitem in baseband_spws[band][baseband]:

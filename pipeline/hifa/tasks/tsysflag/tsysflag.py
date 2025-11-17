@@ -2,6 +2,7 @@ import pipeline.h.tasks.tsysflag.tsysflag as tsysflag
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import task_registry
+import pipeline.infrastructure.sessionutils as sessionutils
 
 __all__ = [
     'Tsysflag',
@@ -17,6 +18,7 @@ class TsysflagInputs(tsysflag.TsysflagInputs):
     """
 
     fd_max_limit = vdp.VisDependentProperty(default=13)
+    parallel = sessionutils.parallel_inputs_impl(default=False)
 
     # docstring and type hints: supplements hifa_tsysflag
     def __init__(self, context, output_dir=None, vis=None, caltable=None,
@@ -26,7 +28,8 @@ class TsysflagInputs(tsysflag.TsysflagInputs):
                  flag_fieldshape=None, ff_refintent=None, ff_max_limit=None,
                  flag_birdies=None, fb_sharps_limit=None,
                  flag_toomany=None, tmf1_limit=None, tmef1_limit=None,
-                 metric_order=None, normalize_tsys=None, filetemplate=None):
+                 metric_order=None, normalize_tsys=None, filetemplate=None,
+                 parallel=None):
         """Initialize Inputs.
 
         Args:
@@ -98,7 +101,7 @@ class TsysflagInputs(tsysflag.TsysflagInputs):
                 'msname.flagtsystemplate.txt' is assumed.
 
         """
-        super(TsysflagInputs, self).__init__(
+        super().__init__(
             context=context, output_dir=output_dir, vis=vis, caltable=caltable,
             flag_nmedian=flag_nmedian, fnm_limit=fnm_limit, fnm_byfield=fnm_byfield,
             flag_derivative=flag_derivative, fd_max_limit=fd_max_limit,
@@ -108,8 +111,15 @@ class TsysflagInputs(tsysflag.TsysflagInputs):
             flag_toomany=flag_toomany, tmf1_limit=tmf1_limit, tmef1_limit=tmef1_limit,
             metric_order=metric_order, normalize_tsys=normalize_tsys, filetemplate=filetemplate)
 
+        self.parallel = parallel
+
+
+class SerialTsysflag(tsysflag.Tsysflag):
+    Inputs = TsysflagInputs
+
 
 @task_registry.set_equivalent_casa_task('hifa_tsysflag')
 @task_registry.set_casa_commands_comment('The Tsys calibration and spectral window map is computed.')
-class Tsysflag(tsysflag.Tsysflag):
+class Tsysflag(sessionutils.ParallelTemplate):
     Inputs = TsysflagInputs
+    Task = SerialTsysflag

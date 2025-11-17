@@ -103,3 +103,44 @@ are summarized below.</p>
 % else:
 <p>No flux densities were imported.</p>
 % endif
+
+<%block name="addendum">
+<h3>Parallactic Angle Ranges</h3>
+% if parang_ranges['intents_found']:
+<p>The following table and plots show the ranges of parallactic angles of the phase calibrator(s) per session.</p>
+<table class="table table-bordered table-striped table-condensed"
+       summary="Parallactic angle information">
+    <thead>
+        <tr>
+            <th>Session</th>
+            <th>Parallactic angle range</th>
+            <th>Parallactic angle plot</th>
+        </tr>
+    </thead>
+	<tbody>
+	% for session_name, session_details in parang_ranges['sessions'].items():
+		<tr>
+			<td>${session_name}</td>
+			<td style="vertical-align: top;">
+				% for intent_name, fields in session_details.items():
+					% if intent_name not in ['min_parang_range', 'vis'] and fields:
+						<div style="margin-top: 0.3em;">
+							<strong>${intent_name}</strong>:
+							<ul style="margin: 0.2em 0 0.2em 1em; padding-left: 0;">
+								% for field_name, parang_val in fields.items():
+									<li>${field_name}: ${'%.1f' % parang_val}&deg;</li>
+								% endfor
+							</ul>
+						</div>
+					% endif
+				% endfor
+			</td>
+			<td>${parang_plots[session_name]['html']}</td>
+		</tr>
+	% endfor
+	</tbody>
+</table>
+% else:
+<p>No phase intents found.</p>
+% endif
+</%block>

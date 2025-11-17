@@ -95,7 +95,7 @@ def hifv (vislist, importonly=False, interactive=True):
         hif_makeimages(hm_masking='centralregion')
 
         # Export the data
-        # hifv_exportdata()
+        hifv_exportdata()
 
     except Exception as e:
         if str(e) == IMPORT_ONLY:

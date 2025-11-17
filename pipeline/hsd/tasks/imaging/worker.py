@@ -376,8 +376,9 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             self._get_map_coord(inputs, context, infiles, antid_list, spwid_list, fieldid_list)
         is_eph_obj = rep_ms.get_fields(field_id=rep_fieldid)[0].source.is_eph_obj
 
-        if self._do_imaging(infiles, antid_list, spwid_list, fieldid_list, outfile, imagemode,
-                            edge, phasecenter, cellx, celly, nx, ny):
+        status, stokes = self._do_imaging(infiles, antid_list, spwid_list, fieldid_list, outfile, imagemode,
+                                          edge, phasecenter, cellx, celly, nx, ny)
+        if status:
             specmode = 'cubesource' if is_eph_obj else 'cube'
             # missing attributes in result instance will be filled in by the
             # parent class
@@ -385,6 +386,8 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
                                                 sourcename=source_name,
                                                 spwlist=v_spwids,  # virtual
                                                 specmode=specmode,
+                                                stokes=stokes,
+                                                datatype='N/A',
                                                 sourcetype='TARGET',
                                                 org_direction=org_direction)
             image_item.antenna = ant_name  # name #(group name)
@@ -438,7 +441,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
 
     def _do_imaging(self, infiles: List[str], antid_list: List[int], spwid_list: List[int],
                     fieldid_list: List[int], imagename: str, imagemode: str, edge: List[int],
-                    phasecenter: str, cellx: 'sdtyping.Angle', celly: 'sdtyping.Angle', nx: int, ny: int) -> bool:
+                    phasecenter: str, cellx: 'sdtyping.Angle', celly: 'sdtyping.Angle', nx: int, ny: int) -> Tuple[bool, str]:
         """Process imaging.
 
         Args:
@@ -457,7 +460,8 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             ny: the number of pixels y
 
         Returns:
-            Whether an image file with valid pixels has been generated.
+            Whether an image file with valid pixels has been generated (bool)
+            Stokes identifier (str)
         """
         context = self.inputs.context
         reference_data = context.observing_run.get_ms(infiles[0])
@@ -520,7 +524,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             # set start and step values to make the frequency axis of all FITS in ascending order.
             if numpy.logical_not(self.inputs.is_freq_axis_ascending):
                 step = -1
-                start = nchan - edge[1] - 1
+                start = total_nchan - edge[1] - 1
             else:
                 step = 1
                 start = edge[0]
@@ -651,7 +655,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         weightname = imagename + '.weight'
         if not os.path.exists(imagename) or not os.path.exists(weightname):
             LOG.error("Generation of %s failed" % imagename)
-            return False
+            return False, stokes
 
         # check for valid pixels (non-zero weight)
         # Task tsdimaging does not fail even if no data is gridded to image.
@@ -661,7 +665,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             sumsq = ia.statistics()['sumsq'][0]
         if sumsq == 0.0:
             LOG.warning("No valid pixel found in image, %s. Discarding the image from futher processing." % imagename)
-            return False
+            return False, stokes
 
         virtual_spw_id = context.observing_run.real2virtual_spw_id(ref_spwid, reference_data)
 
@@ -669,4 +673,4 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             LOG.info(f"Channel frequencies in spw {virtual_spw_id} is in decending order in observation data. "
                      f"They will be reversed to have the frequency axis of output image cube {imagename} in ascending order.")
 
-        return True
+        return True, stokes

@@ -36,7 +36,7 @@ class TecMapsInputs(vdp.StandardInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
             show_tec_maps:
 
@@ -112,20 +112,27 @@ class TecMaps(basetask.StandardTaskTemplate):
     def prepare(self):
         inputs = self.inputs
 
-        tec_image = None
-        tec_rms_image = None
-
+        tec_image, tec_rms_image, tec_plotfile = None, None, None
+        callist = []
         if self.inputs.show_tec_maps or self.inputs.apply_tec_correction:
-
-            callist = []
             try:
                 tec_image, tec_rms_image, tec_plotfile = tec_maps.create(vis=inputs.vis, doplot=True, imname='iono')
-            except UnboundLocalError as e:
-                LOG.warning("TEC information or retrieval service is unavailable")
-                LOG.warning("    CASA error: {!s}".format(e))
+            except UnboundLocalError as ex:
+                LOG.warning('    TEC map query error: %s', ex)
 
-                return TecMapsResults(pool=callist, final=callist, tec_image=None,
-                                      tec_rms_image=None, tec_plotfile=None)
+            # IPE-2795: the return values from tec_maps.create()
+            # could be 'none' (string) instead of None.
+            if tec_image in ('none', 'None', ''):
+                tec_image = None
+            if tec_rms_image in ('none', 'None', ''):
+                tec_rms_image = None
+            if tec_plotfile in ('none', 'None', ''):
+                tec_plotfile = None
+            if not tec_image:
+                LOG.warning('TEC information or retrieval service is unavailable')
+                return TecMapsResults(
+                    pool=callist, final=callist, tec_image=None, tec_rms_image=None, tec_plotfile=None
+                )
 
             if self.inputs.apply_tec_correction:
                 gencal_args = inputs.to_casa_args()
@@ -140,10 +147,11 @@ class TecMaps(basetask.StandardTaskTemplate):
                 calapp = callibrary.CalApplication(calto, calfrom)
                 callist.append(calapp)
 
-            return TecMapsResults(pool=callist, final=callist, tec_image=tec_image, tec_rms_image=tec_rms_image,
-                                  tec_plotfile=tec_plotfile)
+            return TecMapsResults(
+                pool=callist, final=callist, tec_image=tec_image, tec_rms_image=tec_rms_image, tec_plotfile=tec_plotfile
+            )
         else:
-            return None
+            return TecMapsResults(pool=callist, final=callist, tec_image=None, tec_rms_image=None, tec_plotfile=None)
 
     def analyse(self, result):
         # double-check that the caltable was actually generated

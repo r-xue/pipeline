@@ -74,7 +74,7 @@ def fm_reason(slib):
 vislist=slib['vislist']
 %>
 
-<h3>${target}&nbsp;${fm_band(band)}</h3>
+<h3>${qa_desc}&nbsp;${fm_band(band)}</h3>
 
 <h4>
   Passed: ${fm_sc_success(slib[vislist[-1]][solint]['Pass'])}
@@ -123,7 +123,8 @@ vislist=slib['vislist']
 
 
 <%base:plot_group plot_dict="${phasefreq_plots}"
-                                  url_fn="${lambda ms: 'noop'}">
+                  thumbnail_check="${False}"
+                  url_fn="${lambda ms: 'noop'}">
 
         <%def name="title()">
         </%def>

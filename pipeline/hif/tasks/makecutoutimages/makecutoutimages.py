@@ -55,6 +55,8 @@ class MakecutoutimagesResults(basetask.Results):
                     imagename=subitem['imagename'] + '.subim', sourcename=subitem['sourcename'],
                     spwlist=subitem['spwlist'], specmode=subitem['specmode'],
                     sourcetype=subitem['sourcetype'],
+                    stokes=subitem['stokes'],
+                    datatype=subitem['datatype'],
                     multiterm=subitem['multiterm'],
                     metadata=subitem['metadata'],
                     imageplot=subitem['imageplot'])

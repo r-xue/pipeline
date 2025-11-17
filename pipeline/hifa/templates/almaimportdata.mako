@@ -4,7 +4,7 @@
 
 <%block name="addendum">
 <h3>Parallactic Angle Ranges</h3>
-% if parang_ranges['pol_intents_found']:
+% if parang_ranges['intents_found']:
 <p>The following table and plots show the ranges of parallactic angles of the polarization calibrator(s) per session.</p>
 <table class="table table-bordered table-striped table-condensed"
        summary="Parallactic angle information">

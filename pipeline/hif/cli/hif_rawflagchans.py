@@ -6,11 +6,11 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hif.tasks.rawflagchans.rawflagchans.RawflagchansInputs.__init__
 @utils.cli_wrapper
 def hif_rawflagchans(vis=None, spw=None, intent=None,
-  flag_hilo=None, fhl_limit=None, fhl_minsample=None,
-  flag_bad_quadrant=None, fbq_hilo_limit=None,
-  fbq_antenna_frac_limit=None, fbq_baseline_frac_limit=None):
-
-    """Flag deviant baseline/channels in raw data
+                     flag_hilo=None, fhl_limit=None, fhl_minsample=None,
+                     flag_bad_quadrant=None, fbq_hilo_limit=None,
+                     fbq_antenna_frac_limit=None, fbq_baseline_frac_limit=None,
+                     parallel=None):
+    """Flag deviant baseline/channels in raw data.
 
     hif_rawflagchans flags deviant baseline/channels in the raw data.
 
@@ -61,8 +61,6 @@ def hif_rawflagchans(vis=None, spw=None, intent=None,
         ...                  fbq_antenna_frac_limit=0.2, fbq_baseline_frac_limit=1.0)
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

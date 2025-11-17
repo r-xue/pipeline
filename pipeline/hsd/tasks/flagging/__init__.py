@@ -4,6 +4,7 @@ import pipeline.infrastructure.renderer.weblog as weblog
 from .flagdeteralmasd import FlagDeterALMASingleDish, SerialFlagDeterALMASingleDish
 from . import renderer
 from . import flagdeteralmasd
+from . import qa
 
 qaadapter.registry.register_to_flagging_topic(flagdeteralmasd.FlagDeterALMASingleDishResults)
 

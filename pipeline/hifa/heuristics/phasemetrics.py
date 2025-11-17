@@ -916,11 +916,11 @@ class PhaseStabilityHeuristics(object):
         qa_spws = [inputsin.ms.get_spectral_window(spwid) for spwid in qa_spw_list]
         qa_spw_list = [str(spw.id) for spw in qa_spws if spw.spectralspec == qa_spws[0].spectralspec]
 
-        # PIPE-2442: Filter initial SpW candidates to restrict to SpWs available
-        # in the bandpass phase-up caltable. Log if this filtering changes the
-        # list of SpW candidates.
+        # PIPE-2442: Filter initial rank-ordered SpW candidates to restrict to
+        # SpWs available in the bandpass phase-up caltable. Log if this
+        # filtering changes the list of SpW candidates.
         spws_in_caltable = self._get_spws_in_caltable(self.caltable)
-        qa_spw_list_filtered = list(set(qa_spw_list) & spws_in_caltable)
+        qa_spw_list_filtered = [spw for spw in qa_spw_list if spw in spws_in_caltable]
         if len(qa_spw_list_filtered) <= len(qa_spw_list):
             LOG.info(f"{inputsin.ms.basename}: updated SpW candidates to reject SpWs that are not present in the"
                      f" bandpass phase-up caltable.")

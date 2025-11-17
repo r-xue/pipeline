@@ -3,10 +3,12 @@ import math
 import os
 import sys
 from copy import deepcopy
+from typing import Literal
 
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
+from pipeline.h.heuristics.tsysfieldmap import get_intent_to_tsysfield_map
 from pipeline.h.tasks.importdata.fluxes import ORIGIN_XML, ORIGIN_ANALYSIS_UTILS
 from pipeline.hifa.tasks.importdata.dbfluxes import ORIGIN_DB
 from pipeline.infrastructure import casa_tasks
@@ -69,10 +71,12 @@ def estimate_gaincalsnr(ms, fieldlist, intent, spwidlist, compute_nantennas,
         key: 'median_tsys'                value: The median tsys value
 
         key: 'flux_Jy'                    value: The flux of the source in Jy
-        key: 'scantime_minutes'           value: The exposure time in minutes
-        key: 'inttime_minutes'            value: The exposure time in minutes
+        key: 'scantime_minutes'           value: The (scan) exposure time in minutes
+        key: 'inttime_minutes'            value: The integration time in minutes
         key: 'sensitivity_per_scan_mJy'   value: The sensitivity per scan in mJy
+        key: 'sensitivity_per_int_mJy'    value: The sensitivity per integration in mJy
         key: 'snr_per_scan'               value: The snr per scan
+        key: 'snr_per_int'                value: The snr per integration
     """
     # Get the flux dictionary from the pipeline context
     flux_dict = get_fluxinfo(ms, fieldlist, intent, spwidlist)
@@ -110,7 +114,7 @@ def estimate_gaincalsnr(ms, fieldlist, intent, spwidlist, compute_nantennas,
     spw_dict = join_dicts(spwidlist, tsys_dict, flux_dict, tsystemp_dict, obs_dict)
 
     # Compute the gain SNR values for each spw
-    gaincalsnr_dict = compute_gaincalsnr(ms, spwidlist, spw_dict, edge_fraction=edge_fraction)
+    gaincalsnr_dict = compute_gaincalsnr(ms, spwidlist, spw_dict, intent, edge_fraction=edge_fraction)
 
     return gaincalsnr_dict
 
@@ -146,7 +150,7 @@ def estimate_bpsolint(ms, fieldlist, intent, spwidlist, compute_nantennas, max_f
         key: 'median_tsys'                       value: The median tsys value
 
         key: 'flux_Jy'                           value: The flux of the source in Jy
-        key: 'exptime_minutes'                   value: The exposure time in minutes
+        key: 'exptime_minutes'                   value: The exposure time in minutes - total time (sum of scans)
         key: 'integration_minutes                value: Integration 'int' time in minutes
         key: 'sensitivity_per_integration_mJy'   value: The sensitivity per integration in mJy
         key: 'snr_per_channel'                   value: The signal-to-noise per channel
@@ -323,6 +327,18 @@ def get_tsysinfo(ms, fieldnamelist, intent, spwidlist):
 
     # Get atmospheric scans associated with the field name list
     atmscans = get_scans_for_field_intent(ms, fieldnamelist, 'ATMOSPHERE')
+
+    # PIPE-2658: if no atmospheric scans were found for field of current
+    # intent, then use the Tsyscal heuristic for generating a mapping of
+    # "intent-to-Tsys-gainfield", and try to use this identify appropriate Tsys
+    # field and corresponding atmospheric scans.
+    if not atmscans:
+        intent_to_tsysfield_map = get_intent_to_tsysfield_map(ms, is_single_dish=False)
+        tsysfield = intent_to_tsysfield_map.get(intent, '')
+        # If no match was found, or the Tsys field was set to "nearest", then
+        # this approach cannot work.
+        if tsysfield and tsysfield != 'nearest':
+            atmscans = get_scans_for_field_intent(ms, [tsysfield], 'ATMOSPHERE')
 
     # If no atmospheric scans were found, and the intent specifies a phase
     # calibrator or check source, then try to find atmospheric scans associated
@@ -935,38 +951,42 @@ def _transfer_obsinfo(spwlist, spw_dict, obs_dict):
         spw_dict[spw]['chanwidths'] = obs_dict[spw]['chanwidths']
 
 
-def compute_gaincalsnr(ms, spwlist, spw_dict, edge_fraction):
+def compute_gaincalsnr(ms, spwlist, spw_dict, intent, edge_fraction):
     """Compute the gain to signal-to-noise given the spw list and the spw
     dictionary.
 
     This code assumes that the science spws are observed in both the
     calibrator and the science target.
 
-    The input parameters
-        spwlist                     The list of spw ids
-        spw_dict                    The spw dictionary
-        edge_fraction               Fraction of the edge that is flagged
+    Args:
+        ms: The pipeline context MeasurementSet object.
+        spwlist: List of spw ids.
+        spw_dict: Spw dictionary (join from spwid, tsys, flux, temp, obs dicts).
+        intent: Intent of source.
+        edge_fraction: Fraction of the edge that is flagged.
 
-    The output SNR dictionary keys and values:
-        key: spw id (int)    value: the pre-averaging parameter dictionary for spwid.
+    Returns:
+        The output SNR dictionary containing:
+            key: spw id (int)    value: the pre-averaging parameter dictionary for spwid.
 
-    The pre-averaging parameter dictionary keys and values:
-        key: 'band'                       value: The ALMA receiver band
-        key: 'frequency_Hz'               value: The frequency of the spw in Hz
-        key: 'bandwidth'                  value: The bandwidth of the spw in Hz
-        key: 'nchan_total'                value: The total number of channels
-        key: 'chanwidth_Hz'               value: The median channel width in Hz
+        The pre-averaging parameter dictionary keys and values:
+            key: 'band'                       value: The ALMA receiver band
+            key: 'frequency_Hz'               value: The frequency of the spw in Hz
+            key: 'bandwidth'                  value: The bandwidth of the spw in Hz
+            key: 'nchan_total'                value: The total number of channels
+            key: 'chanwidth_Hz'               value: The median channel width in Hz
 
-        key: 'tsys_spw'                   value: The tsys spw id as an integer
-        key: 'median_tsys'                value: The median tsys value
+            key: 'tsys_spw'                   value: The tsys spw id as an integer
+            key: 'median_tsys'                value: The median tsys value
 
-        key: 'flux_Jy'                    value: The flux of the source in Jy
-        key: 'scantime_minutes'           value: The exposure time in minutes
-        key: 'inttime_minutes'            value: The exposure time in minutes
-        key: 'sensitivity_per_scan_mJy'   value: The sensitivity per scan in mJy
-        key: 'snr_per_scan'               value: The snr per scan
+            key: 'flux_Jy'                    value: The flux of the source in Jy
+            key: 'scantime_minutes'           value: The (scan) exposure time in minutes
+            key: 'inttime_minutes'            value: The integration time in minutes
+            key: 'sensitivity_per_scan_mJy'   value: The sensitivity per scan in mJy
+            key: 'sensitivity_per_int_mJy'    value: The sensitivity per integration in mJy
+            key: 'snr_per_scan'               value: The snr per scan
+            key: 'snr_per_int'                value: The snr per integration
     """
-
     # Initialize the output solution interval dictionary
     snr_dict = collections.OrderedDict()
 
@@ -977,8 +997,37 @@ def compute_gaincalsnr(ms, spwlist, spw_dict, edge_fraction):
     flag_task = casa_tasks.flagdata(vis=ms.name, scan=','.join(map(str, list(scans))), mode='summary')
     flag_result = flag_task.execute()
 
-    LOG.info('Signal to noise summary')
+    # PIPE-2499: log whether combine and solint will be set based on integration
+    # time or scan time.
+    if intent in {'AMPLITUDE', 'BANDPASS', 'DIFFGAINREF', 'DIFFGAINSRC'}:
+        LOG.info(f"{ms.basename}: for intent {intent}, the integration time {spw_dict[spwlist[0]]['integrationtime']:.2f}"
+                 f" (min) will govern combine and solint calculations.")
+    else:
+        # The exptime is added across all scans for given intent, so dividing by
+        # nr. of scans to report scan time.
+        LOG.info(f"{ms.basename}: for intent {intent}, the scan time"
+                 f" {spw_dict[spwlist[0]]['exptime'] / len(spw_dict[spwlist[0]]['snr_scans']):.2f} (min) will govern"
+                 f" combine and solint calculations.")
+
     for spwid in spwlist:
+        # Add entry to output SNR dictionary for spw.
+        snr_dict[spwid] = collections.OrderedDict()
+
+        # Science spw info
+        #    Channel information probably not required
+        snr_dict[spwid]['band'] = spw_dict[spwid]['band']
+        snr_dict[spwid]['frequency_Hz'] = spw_dict[spwid]['bandcenter']
+        snr_dict[spwid]['bandwidth'] = spw_dict[spwid]['bandwidth']
+        snr_dict[spwid]['nchan_total'] = spw_dict[spwid]['nchan']
+        snr_dict[spwid]['chanwidth_Hz'] = spw_dict[spwid]['chanwidths']
+
+        # Tsys spw info
+        snr_dict[spwid]['tsys_spw'] = spw_dict[spwid]['tsys_spw']
+        snr_dict[spwid]['median_tsys'] = spw_dict[spwid]['median_tsys']
+
+        # Info on integration time and exposure time.
+        snr_dict[spwid]['inttime_minutes'] = spw_dict[spwid]['integrationtime']
+        snr_dict[spwid]['scantime_minutes'] = spw_dict[spwid]['exptime'] / len(spw_dict[spwid]['snr_scans'])
 
         # Determine the receiver band
         bandidx = ALMA_BANDS.index(spw_dict[spwid]['band'])
@@ -986,7 +1035,7 @@ def compute_gaincalsnr(ms, spwlist, spw_dict, edge_fraction):
         # Compute the various generic SNR factors
         if spw_dict[spwid]['median_tsys'] <= 0.0:
             relativeTsys = 1.0
-            LOG.warning('Spw %d <= 0K in MS %s assuming nominal Tsys' % (spwid, ms.basename))
+            LOG.info('Spw %d Tsys <= 0K in MS; %s assuming nominal Tsys for SNR calculation', spwid, ms.basename)
         else:
             relativeTsys = spw_dict[spwid]['median_tsys'] / ALMA_TSYS[bandidx]
         nbaselines = spw_dict[spwid]['num_7mantenna'] + spw_dict[spwid]['num_12mantenna'] - 1
@@ -1002,58 +1051,93 @@ def compute_gaincalsnr(ms, spwlist, spw_dict, edge_fraction):
         polarizationFactor = np.sqrt(2.0)
 
         # SNR computation
-        timeFactor = np.sqrt(ALMA_FIDUCIAL_EXP_TIME / (spw_dict[spwid]['exptime'] / len(spw_dict[spwid]['snr_scans'])))
+        # Compute common bandwidth factor.
         bandwidthFactor = np.sqrt(ALMA_FIDUCIAL_BANDWIDTH / min(spw_dict[spwid]['bandwidth'], maxEffectiveBW))
         # PIPE-788: multiply the exposure time by the fraction of unflagged data
         flagFactor = 1.0 / np.sqrt(1 - flag_result['spw'][str(spwid)]['flagged'] / flag_result['spw'][str(spwid)]['total'])
-        factor = relativeTsys * timeFactor * arraySizeFactor * \
+
+        # Compute sensitivity scaled by integration time and add to output dict.
+        timeFactorInt = np.sqrt(ALMA_FIDUCIAL_EXP_TIME / spw_dict[spwid]['integrationtime'])
+        factorInt = relativeTsys * timeFactorInt * arraySizeFactor * \
             areaFactor * bandwidthFactor * polarizationFactor * flagFactor
-        sensitivity = ALMA_SENSITIVITIES[bandidx] * factor
+        sensitivityInt = ALMA_SENSITIVITIES[bandidx] * factorInt
+        snr_dict[spwid]['sensitivity_per_int_mJy'] = sensitivityInt
+
+        # Compute sensitivity scaled by scan time and add to output dict.
+        timeFactorScan = np.sqrt(ALMA_FIDUCIAL_EXP_TIME / (spw_dict[spwid]['exptime'] / len(spw_dict[spwid]['snr_scans'])))
+        factorScan = relativeTsys * timeFactorScan * arraySizeFactor * \
+            areaFactor * bandwidthFactor * polarizationFactor * flagFactor
+        sensitivityScan = ALMA_SENSITIVITIES[bandidx] * factorScan
+        snr_dict[spwid]['sensitivity_per_scan_mJy'] = sensitivityScan
+
+        # If valid flux info is available for the current SpW, then store this
+        # and corresponding SNR info.
         if 'flux' in spw_dict[spwid]:
-            snrPerScan = spw_dict[spwid]['flux'] * 1000.0 / sensitivity  # factor of 1000 converting from Jy to mJy
-        else:
-            snrPerScan = None
-
-        # Fill in the dictionary
-        snr_dict[spwid] = collections.OrderedDict()
-
-        # Science spw info
-        #    Channel information probably not required
-        snr_dict[spwid]['band'] = spw_dict[spwid]['band']
-        snr_dict[spwid]['frequency_Hz'] = spw_dict[spwid]['bandcenter']
-        snr_dict[spwid]['bandwidth'] = spw_dict[spwid]['bandwidth']
-        snr_dict[spwid]['nchan_total'] = spw_dict[spwid]['nchan']
-        snr_dict[spwid]['chanwidth_Hz'] = spw_dict[spwid]['chanwidths']
-
-        # Tsys spw info
-        snr_dict[spwid]['tsys_spw'] = spw_dict[spwid]['tsys_spw']
-        snr_dict[spwid]['median_tsys'] = spw_dict[spwid]['median_tsys']
-
-        # Sensitivity info
-        if 'flux' in spw_dict[spwid]:
+            # Store flux in Jansky
             snr_dict[spwid]['flux_Jy'] = spw_dict[spwid]['flux']
+            # SNR info, integration-time based and scan-based; convert flux to mJy
+            flux_mJy = spw_dict[spwid]['flux'] * 1000.0
+            snr_dict[spwid]['snr_per_int'] = flux_mJy / sensitivityInt
+            snr_dict[spwid]['snr_per_scan'] = flux_mJy / sensitivityScan
+
+            _log_sensitivity_info(spwid, snr_dict, 'int', has_flux=True)
+            _log_sensitivity_info(spwid, snr_dict, 'scan', has_flux=True)
         else:
             snr_dict[spwid]['flux_Jy'] = None
-        snr_dict[spwid]['inttime_minutes'] = spw_dict[spwid]['integrationtime']
-        snr_dict[spwid]['scantime_minutes'] = spw_dict[spwid]['exptime'] / len(spw_dict[spwid]['snr_scans'])
-        snr_dict[spwid]['sensitivity_per_scan_mJy'] = sensitivity
-        if not snrPerScan:
+            snr_dict[spwid]['snr_per_int'] = None
             snr_dict[spwid]['snr_per_scan'] = None
-            LOG.info("Spw %3d  scan (minutes) %6.3f  integration (minutes) %6.3f  sensitivity (mJy) %7.3f  SNR unknown" %
-                     (spwid,
-                      snr_dict[spwid]['scantime_minutes'],
-                      snr_dict[spwid]['inttime_minutes'],
-                      snr_dict[spwid]['sensitivity_per_scan_mJy']))
-        else:
-            snr_dict[spwid]['snr_per_scan'] = snrPerScan
-            LOG.info("Spw %3d  scan (minutes) %6.3f  integration (minutes) %6.3f  sensitivity (mJy) %7.3f  SNR %10.3f" %
-                     (spwid,
-                      snr_dict[spwid]['scantime_minutes'],
-                      snr_dict[spwid]['inttime_minutes'],
-                      snr_dict[spwid]['sensitivity_per_scan_mJy'],
-                      snr_dict[spwid]['snr_per_scan']))
+
+            _log_sensitivity_info(spwid, snr_dict, 'int', has_flux=False)
+            _log_sensitivity_info(spwid, snr_dict, 'scan', has_flux=False)
 
     return snr_dict
+
+
+def _log_sensitivity_info(
+        spwid: int,
+        snr_dict: dict,
+        time_type: Literal['scan', 'int'],
+        has_flux: bool =True
+):
+    """
+    Logs sensitivity and SNR information for the given spectral window.
+
+    This function logs information regarding sensitivity and SNR for a specific
+    spectral window (spwid). It uses data supplied in a dictionary containing SNR and
+    related metrics. If flux information is available (has_flux), it includes the
+    estimated SNR in the log message; otherwise, the SNR is logged as unknown.
+
+    Parameters:
+    spwid: int
+        Spectral window identifier for which sensitivity information is logged.
+    snr_dict: dict
+        Dictionary containing signal-to-noise ratio data along with sensitivity,
+        time measurements, and other metrics.
+    time_type: str
+        Type of time measurement used for generating the log message. Must be either
+        'scan' or 'int'.
+    has_flux: bool, optional
+        Indicates whether flux values are available in the source catalog. If set
+        to True, the message includes sensitivity and SNR values; otherwise, SNR
+        is marked as unknown. Default is True.
+    """
+    time_key = f"{time_type}time_minutes"
+    sensitivity_key = f"sensitivity_per_{time_type}_mJy"
+    snr_key = f"snr_per_{time_type}"
+
+    base_msg = (
+        f"{'Based on values' if has_flux else 'No values present'} in source catalogue, "
+        f"spw {spwid:3d} {time_type:>4} = {snr_dict[spwid][time_key]:6.3f} minutes; "
+        f"estimated sensitivity = {snr_dict[spwid][sensitivity_key]:7.3f} mJy"
+    )
+
+    if has_flux:
+        snr_value = snr_dict[spwid][snr_key]
+        msg = f"{base_msg}, estimated SNR = {snr_value:10.3f}"
+    else:
+        msg = f"{base_msg}, estimated SNR = unknown"
+
+    LOG.info(msg)
 
 
 def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqBpSnr, minBpNchan, evenbpsolints=False):
@@ -1101,7 +1185,8 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
         LOG.info("Forcing bandpass frequency solint to divide evenly into bandpass")
 
     # Initialize the output solution interval dictionary
-    solint_dict = collections.OrderedDict()
+    solint_dict = {}
+    low_channel_solutions: list[int] = []
 
     for spwid in spwlist:
 
@@ -1113,7 +1198,7 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
         #    the bandpass frequency solint
         if spw_dict[spwid]['median_tsys'] <= 0.0:
             relativeTsys = 1.0
-            LOG.warning('Spw %d <= 0K in MS %s assuming nominal Tsys' % (spwid, ms.basename))
+            LOG.info('Spw %d Tsys <= 0K in MS; %s assuming nominal Tsys for SNR calculation', spwid, ms.basename)
         else:
             relativeTsys = spw_dict[spwid]['median_tsys'] / ALMA_TSYS[bandidx]
         nbaselines = spw_dict[spwid]['num_7mantenna'] + spw_dict[spwid]['num_12mantenna'] - 1
@@ -1205,7 +1290,7 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
                   reqPhaseupSnr))
         solint_dict[spwid]['nphaseup_solutions'] = solInts
         if tooFewIntervals:
-            LOG.warning('%s Spw %d would have less than %d time intervals in its solution in MS %s' %
+            LOG.warning('%s Spw %d would have fewer than %d time intervals in its solution in MS %s' %
                         (asterisks, spwid, minBpNintervals, ms.basename))
 
         # Bandpass solution
@@ -1265,8 +1350,9 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
                   reqBpSnr))
         solint_dict[spwid]['nbandpass_solutions'] = solChannels
         if tooFewChannels:
-            LOG.warning('%s Spw %d would have less than %d channels in its solution in MS %s' %
-                        (asterisks, spwid, minBpNchan, ms.basename))
+            low_channel_solutions.append(spwid)
+
+    solint_dict['low_channel_solutions'] = low_channel_solutions
 
     return solint_dict
 

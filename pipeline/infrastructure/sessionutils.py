@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import abc
 import collections
 import datetime
@@ -6,13 +8,12 @@ import os
 import tempfile
 import traceback
 from inspect import signature
+from typing import TYPE_CHECKING
 
-from pipeline.infrastructure import basetask
-from pipeline.infrastructure import exceptions
-from pipeline.infrastructure import logging
-from . import mpihelpers
-from . import utils
-from . import vdp
+from pipeline.domain.spectralwindow import match_spw_basename
+from pipeline.infrastructure import basetask, exceptions, logging
+
+from . import mpihelpers, utils, vdp
 
 __all__ = [
     'as_list',
@@ -24,6 +25,9 @@ __all__ = [
     'VDPTaskFactory',
     'VisResultTuple'
 ]
+
+if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet
 
 LOG = logging.get_logger(__name__)
 
@@ -197,6 +201,29 @@ class VDPTaskFactory(object):
         if self.__context_path and os.path.exists(self.__context_path):
             os.unlink(self.__context_path)
 
+    def _validate_args(self, task_args):
+        inputs_constructor_fn = getattr(self.__task.Inputs, '__init__')
+        valid_args = remove_unexpected_args(inputs_constructor_fn, task_args)
+        LOG.debug('Validated input arguments from %s: ', self.__task.Inputs)
+        LOG.debug('  %s', valid_args)
+
+        if issubclass(self.__task.Inputs, vdp.ModeInputs):
+            # PIPE-2841: add arguments from the underlying active task referenced via ModeInputs,
+            # which might be absent from the constructor task input class signature.
+            active_mode_task = self.__task.Inputs._modes[self.__inputs.mode]
+            task_inputs_cls = active_mode_task.Inputs
+            inputs_constructor_fn = getattr(task_inputs_cls, '__init__')
+            valid_args_modeinputs = remove_unexpected_args(inputs_constructor_fn, task_args)
+
+            LOG.debug('Validated input arguments from %s (delegated from ModeInputs) ', task_inputs_cls)
+            LOG.debug('  %s', valid_args_modeinputs)
+            valid_args = valid_args | valid_args_modeinputs
+
+        LOG.debug('Validated input arguments for constructing a vdp task from %s: ', self.__task)
+        LOG.debug('  %s', valid_args)
+
+        return valid_args
+
     def get_task(self, vis):
         """
         Create and return a SyncTask or AsyncTask for the job.
@@ -215,18 +242,7 @@ class VDPTaskFactory(object):
         # task, and hence and hence have a different signature. For
         # instance, the session-aware Inputs classes accept a
         # 'parallel' argument, which the non-session tasks do not.
-        #
-        # To make things complicated, ModeInputs are a special case.
-        # Here we shouldn't inspect the constructor signature of the
-        # task as it doesn't reflect that of the active task, which is
-        # the one that we would want to filter on. So, if the task's
-        # Inputs are ModeInputs, dereference the task's Inputs class.
-        if issubclass(self.__task.Inputs, vdp.ModeInputs):
-            active_mode_task = self.__task.Inputs._modes[self.__inputs.mode]
-            task_inputs_cls = active_mode_task.Inputs
-        else:
-            task_inputs_cls = self.__task.Inputs
-        valid_args = validate_args(task_inputs_cls, task_args)
+        valid_args = self._validate_args(task_args)
 
         is_mpi_ready = mpihelpers.is_mpi_ready()
         is_tier0_job = is_mpi_ready
@@ -281,49 +297,54 @@ def remove_unexpected_args(fn, fn_args):
     return x
 
 
-def validate_args(inputs_cls, task_args):
-    inputs_constructor_fn = getattr(inputs_cls, '__init__')
-    valid_args = remove_unexpected_args(inputs_constructor_fn, task_args)
-    return valid_args
+def get_spwmap(source_ms: MeasurementSet, target_ms: MeasurementSet) -> dict[int, int]:
+    """Generates a SPW ID mapping between two MeasurementSets.
 
+    This function creates a mapping dictionary that associates SPW IDs from the
+    source MeasurementSet to their corresponding IDs in the target MeasurementSet.
+    The mapping relies on matching SPW basenames. Only science SPWs whose basenames are
+    found in both the source and target MeasurementSets will be included in the
+    final mapping.
 
-def get_spwmap(source_ms, target_ms):
+    Args:
+        source_ms: Source MeasurementSet containing SPWs to be mapped from.
+        target_ms: Target MeasurementSet containing SPWs to be mapped to.
+
+    Returns:
+        A dictionary mapping source SPW IDs (keys) to target SPW IDs (values).
     """
-    Get a map of spectral windows IDs that map from a source spw ID in
-    the source MS to its equivalent spw in the target MS.
+    spw_id_map = {}
 
-    :param source_ms: the MS to map spws from
-    :type source_ms: domain.MeasurementSet
-    :param target_ms: the MS to map spws to
-    :type target_ms: domain.MeasurementSet
-    :return: dict of integer spw IDs
-    """
-    # spw names are not guaranteed to be unique. They seem to be unique
-    # across science intents, but they could be repeated for other
-    # scans (pointing, sideband, etc.) in non-science spectral windows.
-    # if not eliminated, these non-science window names collide with
-    # the science windows and you end up having science windows map to
-    # non-science windows and vice versa. Not what we want! This set
-    # will be used to filter for the spectral windows we want to
-    # consider.
-    science_intents = {'AMPLITUDE', 'BANDPASS', 'PHASE', 'TARGET', 'CHECK', 'POLARIZATION'}
+    # SPW names aren't guaranteed to be unique over the entire MS.
+    # While they tend to be unique within science intents, they can repeat
+    # in non-science spectral windows (e.g., for pointing or sideband scans).
+    # If not filtered, these non-science SPWs could lead to incorrect mappings
+    # or collisions with science windows. Therefore, we only consider
+    # relevant science spectral windows for mapping.
 
-    # map spw id to spw name for source MS - just for science intents
-    id_to_name = {spw.id: spw.name
-                  for spw in source_ms.spectral_windows
-                  if not science_intents.isdisjoint(spw.intents)}
+    for spw_source in source_ms.get_spectral_windows(science_windows_only=True):
+        matched_target_spw_id = None
 
-    # map spw name to spw id for target MS - just for science intents
-    name_to_id = {spw.name: spw.id
-                  for spw in target_ms.spectral_windows
-                  if not science_intents.isdisjoint(spw.intents)}
+        for spw_target in target_ms.get_spectral_windows(science_windows_only=True):
+            # Check if the base names of the SPWs match
+            if match_spw_basename(spw_source.name, spw_target.name):
+                if matched_target_spw_id is not None:
+                    target_ms_basename = os.path.basename(target_ms.name).replace('.ms', '')
+                    source_ms_basename = os.path.basename(source_ms.name).replace('.ms', '')
+                    msg = (
+                        f'Multiple matches found for SPW name "{spw_source.name}" in MS '
+                        f'"{target_ms_basename}". The SPW ID mapping from {target_ms_basename} to '
+                        f'{source_ms_basename} might be incorrect.'
+                    )
+                    LOG.warning(msg)
+                matched_target_spw_id = spw_target.id
 
-    # note the get(v, k) here. This says that for non-science windows,
-    # which have been filtered from the maps, use the original spw ID -
-    # hence non-science spws are not remapped.
-    return {k: name_to_id.get(v, k)
-            for k, v in id_to_name.items()
-            if v in name_to_id}
+        # Only science SPWs with their basenames referenced in both target and source MSes
+        # will be present in the mapping dictionary.
+        if matched_target_spw_id is not None:
+            spw_id_map[spw_source.id] = matched_target_spw_id
+
+    return spw_id_map
 
 
 def remap_spw_int(source_ms, target_ms, spws):
@@ -364,7 +385,8 @@ def remap_spw_str(source_ms, target_ms, spws):
 class ParallelTemplate(basetask.StandardTaskTemplate):
     is_multi_vis_task = True
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def Task(self):
         """
         A reference to the :class:`Task` class containing the implementation

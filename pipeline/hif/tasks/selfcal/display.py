@@ -4,11 +4,11 @@ import shutil
 
 import matplotlib.pyplot as plt
 import numpy as np
+import traceback
 
 import pipeline.infrastructure.logging as logging
-from pipeline.h.tasks.common.displays import sky as sky
-from pipeline.hif.heuristics.auto_selfcal.selfcal_helpers import \
-    unflag_failed_antennas
+from pipeline.h.tasks.common.displays import sky
+from pipeline.hif.heuristics.auto_selfcal.selfcal_helpers import unflag_failed_antennas
 from pipeline.infrastructure import casa_tools, filenamer
 from pipeline.infrastructure.casa_tasks import CasaTasks
 from pipeline.infrastructure.displays.plotstyle import matplotlibrc_formal
@@ -18,7 +18,7 @@ from pipeline.infrastructure.renderer import logger
 LOG = logging.get_logger(__name__)
 
 ct = CasaTasks()
-
+tq = None # a module-level TaskQueue instance, intialized as None, but could be later set by the renderer
 
 class SelfcalSummary(object):
     def __init__(self, context, r, target):
@@ -90,8 +90,7 @@ class SelfcalSummary(object):
         image_plots[-1].parameters['caption'] = f'Post-Selfcal Image<br>Solint: {solint}'
         image_plots[-1].parameters['group'] = 'Pre-/Post-Selfcal Image Comparison'
 
-        vislist = self.slib['vislist']
-        for vis in vislist:
+        for vis in self.slib['vislist']:
 
             # only evaluate last gaintable not the pre-apply table
             gaintable = self.slib[vis][solint]['gaintable'][-1]
@@ -99,9 +98,9 @@ class SelfcalSummary(object):
             figname = os.path.join(self.stage_dir, 'plot_ants_'+gaintable+'.png')
             ms = self.context.observing_run.get_ms(vis)
             caltb_loc = os.path.join(self.scal_dir, gaintable)
-            self.plot_ants_flagging_colored(figname, ms, caltb_loc)
+            SelfcalSummary.plot_ants_flagging_colored(figname, ms, caltb_loc)
 
-            nflagged_sols, nsols = self.get_sols_flagged_solns(caltb_loc, ms)
+            nflagged_sols, nsols = SelfcalSummary.get_sols_flagged_solns(caltb_loc, ms)
             antpos_plots[vis] = logger.Plot(figname, parameters={
                                             'nflagged_sols': nflagged_sols, 'nsols': nsols})
             antpos_plots[vis].parameters['title'] = 'Frac. Flagged Sol. Per Antenna'
@@ -114,8 +113,8 @@ class SelfcalSummary(object):
             caltb_loc_predrop = os.path.join(self.scal_dir, gaintable_predrop)
             if os.path.exists(caltb_loc_predrop):
                 figname = os.path.join(self.stage_dir, 'plot_ants_'+gaintable_predrop+'.png')
-                self.plot_ants_flagging_colored(figname, ms, caltb_loc_predrop)
-                nflagged_sols_predrop, nsols_predrop = self.get_sols_flagged_solns(caltb_loc_predrop, ms)
+                SelfcalSummary.plot_ants_flagging_colored(figname, ms, caltb_loc_predrop)
+                nflagged_sols_predrop, nsols_predrop = SelfcalSummary.get_sols_flagged_solns(caltb_loc_predrop, ms)
                 antpos_predrop_plots[vis] = logger.Plot(figname, parameters={
                     'nflagged_sols': nflagged_sols_predrop, 'nsols': nsols_predrop})
                 antpos_predrop_plots[vis].parameters['title'] = 'Frac. Flagged Sol. Per Antenna (pre-drop)'
@@ -126,12 +125,12 @@ class SelfcalSummary(object):
                 antpos_predrop_plots[vis] = None
 
             # phase-vs-freq-per-ant plots
-            vis_desc = ('<a class="anchor" id="{0}_byant"></a>'
-                        '<a href="#{0}_summary" class="btn btn-link btn-sm">'
-                        '  <span class="glyphicon glyphicon-th-list"></span>'
-                        '</a>'
-                        '{0}'.format(vis))
-            phasefreq_plots[vis_desc] = self._plot_gain(ms, gaintable, solint)
+            vis_desc = (f'<a class="anchor" id="{vis}_byant"></a>'
+                        f'<a href="#{vis}_summary" class="btn btn-link btn-sm">'
+                        f'  <span class="glyphicon glyphicon-th-list"></span>'
+                        f'</a>'
+                        f'{vis}')
+            phasefreq_plots[vis_desc] = self._plot_gain(gaintable, solint)
 
             # PIPE-2447: Check pre-pass gaincal table
             caltb_loc_prepass = os.path.splitext(caltb_loc)[0]+'.pre-pass.g'
@@ -145,7 +144,8 @@ class SelfcalSummary(object):
                 if os.path.exists(figname):
                     fracflag_plots[vis] = plot_wrapper
                     fracflag_plots[vis].parameters['title'] = 'Frac. Flagged Sol. vs. Baseline'
-                    fracflag_plots[vis].parameters['caption'] = f'Frac. Flagged Sol. vs. Baseline<br>Solint: {solint}'
+                    fracflag_plots[vis].parameters[
+                        'caption'] = f'Frac. Flagged Sol. vs. Baseline<br>Solint: {solint}'
                     fracflag_plots[vis].parameters['group'] = 'Frac. Flagged Sol. vs. Baseline'
                 else:
                     fracflag_plots[vis] = None
@@ -282,7 +282,7 @@ class SelfcalSummary(object):
 
         return names, offset_x, offset_y, offsets, nflags, nunflagged, fracflagged
 
-    def _plot_gain(self, ms, gaintable, solint):
+    def _plot_gain(self, gaintable, solint):
 
         caltb_loc = os.path.join(self.scal_dir, gaintable)
 
@@ -294,29 +294,37 @@ class SelfcalSummary(object):
 
         phasefreq_plots = []
 
-        with TaskQueue() as tq:
-
-            for ant_name in ant_names:
-                if solint == 'inf_EB':
-                    xaxis = 'frequency'
-                    xtitle = 'Freq.'
+        for ant_name in ant_names:
+            if solint == 'inf_EB':
+                xaxis = 'frequency'
+                xtitle = 'Freq.'
+            else:
+                xaxis = 'time'
+                xtitle = 'Time'
+            if 'ap' in solint:
+                yaxis = 'amp'
+                ytitle = 'Amp'
+                plotrange = [0, 0, 0, 2.0]
+            else:
+                yaxis = 'phase'
+                ytitle = 'Phase'
+                plotrange = [0, 0, -180, 180]
+            try:
+                figname = os.path.join(self.stage_dir, 'plot_' + ant_name + '_' + gaintable.replace('.g', '.png'))
+                if isinstance(tq, TaskQueue):
+                    tq.add_functioncall(
+                        SelfcalSummary._plot_gain_perant, caltb_loc, xaxis, yaxis, plotrange, ant_name, figname
+                    )
                 else:
-                    xaxis = 'time'
-                    xtitle = 'Time'
-                if 'ap' in solint:
-                    yaxis = 'amp'
-                    ytitle = 'Amp'
-                    plotrange = [0, 0, 0, 2.0]
-                else:
-                    yaxis = 'phase'
-                    ytitle = 'Phase'
-                    plotrange = [0, 0, -180, 180]
-                try:
-                    figname = os.path.join(self.stage_dir, 'plot_' + ant_name + '_' + gaintable.replace('.g', '.png'))
-                    tq.add_functioncall(self._plot_gain_perant, caltb_loc, xaxis, yaxis, plotrange, ant_name, figname)
-                    phasefreq_plots.append(logger.Plot(figname, x_axis=f'{xtitle} ({ant_name})', y_axis=f'{ytitle}'))
-                except Exception as e:
-                    continue
+                    SelfcalSummary._plot_gain_perant(caltb_loc, xaxis, yaxis, plotrange, ant_name, figname)
+                phasefreq_plots.append(
+                    logger.Plot(figname, x_axis=f'{xtitle} ({ant_name})', y_axis=f'{ytitle}', thumbnail_check=False)
+                )
+            except Exception as ex:
+                LOG.debug('Failed to generate gain plot for %s: %s', ant_name, ex)
+                traceback_msg = traceback.format_exc()
+                LOG.debug(traceback_msg)
+                continue
 
         return phasefreq_plots
 
@@ -339,6 +347,7 @@ class SelfcalSummary(object):
                       title=' ',
                       overwrite=True, clearplots=False,
                       titlefont=10, xaxisfont=10, yaxisfont=10)
+            logger.Plot.create_thumbnail(figname)
         return
 
     @matplotlibrc_formal
@@ -371,32 +380,46 @@ class SelfcalSummary(object):
                 plot_wrappers[-1].parameters['group'] = 'Initial/Final Comparisons'
             summary_plots = plot_wrappers
 
-            n_initial, intensity_initial, rms_inital = self.create_noise_histogram(ims['initial'])
-            n_final, intensity_final, rms_final = self.create_noise_histogram(ims['final'])
-            if 'theoretical_sensitivity' in self.slib:
-                rms_theory = self.slib['theoretical_sensitivity']
-                if rms_theory != -99.0:
-                    rms_theory = self.slib['theoretical_sensitivity']
-                else:
-                    rms_theory = 0.0
-            else:
-                rms_theory = 0.0
-
             noise_histogram_plots_path = os.path.join(
-                self.stage_dir, 'sc.'+filenamer.sanitize(tb[0])+'_'+tb[1]+'_noise_plot.png')
+                self.stage_dir, 'sc.' + filenamer.sanitize(tb[0]) + '_' + tb[1] + '_noise_plot.png'
+            )
 
             LOG.debug('generating the noise histogram: %s', noise_histogram_plots_path)
-            LOG.debug('rms_initial %s', rms_inital)
-            LOG.debug('rms_final %s', rms_final)
-            LOG.debug('rms_theory %s', rms_theory)
 
-            self.create_noise_histogram_plots(
-                n_initial, n_final, intensity_initial, intensity_final, rms_inital, rms_final,
-                noise_histogram_plots_path, rms_theory)
             noisehist_plot = logger.Plot(noise_histogram_plots_path)
             noisehist_plot.parameters['title'] = 'Noise Histogram'
             noisehist_plot.parameters['caption'] = 'Noise Histogram'
             noisehist_plot.parameters['group'] = 'Initial/Final Comparisons'
+
+            if not os.path.exists(noise_histogram_plots_path):
+                n_initial, intensity_initial, rms_inital = SelfcalSummary.create_noise_histogram(ims['initial'])
+                n_final, intensity_final, rms_final = SelfcalSummary.create_noise_histogram(ims['final'])
+
+                if 'theoretical_sensitivity' in self.slib:
+                    rms_theory = self.slib['theoretical_sensitivity']
+                    if rms_theory != -99.0:
+                        rms_theory = self.slib['theoretical_sensitivity']
+                    else:
+                        rms_theory = 0.0
+                else:
+                    rms_theory = 0.0
+
+                LOG.debug('rms_initial %s', rms_inital)
+                LOG.debug('rms_final %s', rms_final)
+                LOG.debug('rms_theory %s', rms_theory)
+
+                SelfcalSummary.create_noise_histogram_plots(
+                    n_initial,
+                    n_final,
+                    intensity_initial,
+                    intensity_final,
+                    rms_inital,
+                    rms_final,
+                    noise_histogram_plots_path,
+                    rms_theory,
+                )
+            else:
+                LOG.info('the noise histogram already exists: %s', noise_histogram_plots_path)
 
         return summary_plots, noisehist_plot
 

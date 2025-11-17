@@ -13,6 +13,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure.utils import caltable_tools
 from pipeline.domain import MeasurementSet
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -458,7 +459,7 @@ class PolComposite(LeafComposite):
             num_pols = dd.num_polarizations
 
         else:
-            num_pols = utils.get_num_caltable_polarizations(calapp.gaintable)
+            num_pols = caltable_tools.get_num_caltable_polarizations(calapp.gaintable)
 
         children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
                                     spw=spw, ant=ant, pol=pol, **kwargs)

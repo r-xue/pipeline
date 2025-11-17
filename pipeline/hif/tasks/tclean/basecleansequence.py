@@ -44,6 +44,8 @@ class BaseCleanSequence:
          nonpbcor_image_robust_rms_and_spectra,
          pbcor_image_min_iquv,
          pbcor_image_max_iquv,
+         nonpbcor_image_non_cleanmask_rms_min_iquv,
+         nonpbcor_image_non_cleanmask_rms_max_iquv,
          nonpbcor_image_non_cleanmask_rms_iquv) = \
             cbheuristic.analyse_clean_result(self.multiterm, model, restored,
                                              residual, flux, cleanmask,
@@ -70,6 +72,8 @@ class BaseCleanSequence:
                nonpbcor_image_robust_rms_and_spectra, \
                pbcor_image_min_iquv, \
                pbcor_image_max_iquv, \
+               nonpbcor_image_non_cleanmask_rms_min_iquv, \
+               nonpbcor_image_non_cleanmask_rms_max_iquv, \
                nonpbcor_image_non_cleanmask_rms_iquv
 
     def iteration(self):

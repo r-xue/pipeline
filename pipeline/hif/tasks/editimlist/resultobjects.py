@@ -3,15 +3,19 @@ import pipeline.infrastructure.basetask as basetask
 
 class EditimlistResult(basetask.Results):
     def __init__(self):
-        super(EditimlistResult, self).__init__()
+        super().__init__()
         self.targets = []
         self._max_num_targets = 0
         self.buffer_size_arcsec = 0
         self.img_mode = ''
         self.editmode = 'add'
 
-    def add_target(self, target):
-        self.targets.append(target)
+    def add_target(self, target, inputs):
+        subtargets = target['heuristics'].get_subtargets(target, inputs)
+        if subtargets:
+            self.targets.extend(subtargets)
+        else:
+            self.targets.append(target)
 
     def capture_buffer_size(self, buffsize):
         self.buffer_size_arcsec = buffsize

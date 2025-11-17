@@ -122,6 +122,13 @@ $(document).ready(function() {
                     <td></td>
                 </tr>
                 <tr>
+                    <th>Pipeline Recipe</th>
+                    <td>${pipeline_recipe}
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
                     <th>CASA Version</th>
                     <td>${casa_version} (<a href="javascript:"
                                             data-fancybox

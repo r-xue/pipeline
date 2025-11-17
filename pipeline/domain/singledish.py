@@ -1,4 +1,5 @@
 import pipeline.infrastructure as infrastructure
+from pipeline.domain.spectralwindow import match_spw_basename
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -75,7 +76,7 @@ class MSReductionGroupDesc(list):
 
     @property
     def field_name(self):
-        return self.field.name.strip('"')    
+        return self.field.name.strip('"')
 
     def merge(self, other):
         assert self == other
@@ -119,7 +120,7 @@ class MSReductionGroupDesc(list):
                 and self.nchan == other.nchan \
                 and self.field_name == other.field_name
         else:
-            return self.spw_name == other.spw_name \
+            return match_spw_basename(self.spw_name, other.spw_name) \
                 and self.field_name == other.field_name
 
     def __ne__(self, other):
@@ -129,7 +130,7 @@ class MSReductionGroupDesc(list):
                 or self.nchan != other.nchan \
                 or self.field_name != other.field_name
         else:
-            return self.spw_name != other.spw_name \
+            return (not match_spw_basename(self.spw_name, other.spw_name)) \
                 or self.field_name != other.field_name
 
     def __repr__(self):

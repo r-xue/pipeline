@@ -1,7 +1,7 @@
 """Parameter classes of Imaging."""
 
 import re
-from typing import TYPE_CHECKING, Any, Dict, List, NewType, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, NewType, Optional, Union, Final
 
 import numpy
 
@@ -217,7 +217,7 @@ class ReductionGroupParameters(Parameters):
         self.member_list = None            # List[int]: List of reduction group ID
         self.members = None                # List[List[MeasurementSet, int, List[str]]]: Image group of reduction group
         self.msobjs = None                 # List[MeasurementSet]: List of MeasurementSet
-        self.name = None                   # str: Name of MeasurementSet
+        self.name = None                   # str: Name of reduction group
         self.nx = None                     # Union[int, numpy.int64]: X of image shape
         self.ny = None                     # Union[int, numpy.int64]: Y of image shape
         self.org_direction = None          # Direction: a direction of origin for ephemeris object
@@ -328,8 +328,8 @@ class TheoreticalImageRmsParameters(Parameters):
         self.cqa = casa_tools.quanta       # LoggingQuanta: LoggingQuanta object
         self.failed_rms = self.cqa.quantity(-1, _pp.brightnessunit)    # Dict[str, float]: Failed RMS value
         self.sq_rms = 0.0                  # float: Square of RMS
-        self.N = 0.0                       # float: Number of data for statistics
-        self.time_unit = 's'               # str: Time unit
+        self.weight_sum = 0.0              # float: Weighted sum of time on source.
+        self.time_unit: Final[str] = 's'                   # str: Time unit (constant)
         self.ang_unit = self.cqa.getunit(_pp.qcell[0])     # str: Ang unit
         self.cx_val = self.cqa.getvalue(_pp.qcell[0])[0]   # float: cx
         self.cy_val = self.cqa.getvalue(self.cqa.convert(_pp.qcell[1], self.ang_unit))[0]  # float: cy

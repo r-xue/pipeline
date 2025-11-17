@@ -80,7 +80,8 @@ from typing import List, Union, Dict
 from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy import signal
+from scipy.optimize import curve_fit
+from scipy.signal import find_peaks
 import copy
 
 try:
@@ -273,11 +274,19 @@ class ACreNorm(object):
         myms.open(self.msname)
         spwInfo = myms.getspectralwindowinfo()
         myms.close()
-
-        self.fdmspws=self.msmeta.fdmspws()
         
-        # Collect relevant TDM spws. Need to ignore those used for Tsys only, WVR, Pointing, etc.
-        self.tdmspws = [spw for spw in self.msmeta.tdmspws() if 'OBSERVE_TARGET#ON_SOURCE' in self.msmeta.intentsforspw(spw)]
+        # Need to only find those spws that are related to science targets.
+        # This protects the Band-to-Band case
+        self.fdmspws=np.intersect1d(
+                self.msmeta.fdmspws(), 
+                self.msmeta.spwsforintent('OBSERVE_TARGET#ON_SOURCE')
+                )
+        
+        # Collect relevant TDM spws. 
+        self.tdmspws = np.intersect1d(
+                self.msmeta.tdmspws(), 
+                self.msmeta.spwsforintent('OBSERVE_TARGET#ON_SOURCE')
+                ) 
 
         # Make sure there are FDM windows, if not, work around that.
         if len(self.fdmspws) != 0:
@@ -292,18 +301,10 @@ class ACreNorm(object):
                 self.num_corrs = 2
             else:
                 self.full_pol = False
-            #mytb.open(self.msname+'/SPECTRAL_WINDOW')
-            # try to get the reference frequency directly but REF_FREQUENCY doesn't exist for
-            # older data so in those cases we just take the mean of the spw. 
-            #try: 
-            #    bandFreq = mytb.getcol('REF_FREQUENCY')[self.fdmspws[0]]
-            #except RuntimeError:
-            #    bandFreq = np.mean(mytb.getcell('CHAN_FREQ',[self.fdmswps[0]]))
-            #mytb.close()
         else:
             casalog.post('No FDM windows found! Renormalization unnecessary.')
             self.tdm_only = True
-            bandFreq = spwInfo['0']['Chan1Freq']
+            bandFreq = spwInfo[str(self.tdmspws[0])]['Chan1Freq']
             self.num_corrs = self.msmeta.ncorrforpol(self.msmeta.polidfordatadesc(self.msmeta.datadescids(spw=self.msmeta.tdmspws()[-1])[0]))
         
         self.Band = int(self.getband(bandFreq))
@@ -1227,7 +1228,7 @@ class ACreNorm(object):
 
         # the spws to process (FDM only)
         if len(spws)==0:
-            spws=list(self.msmeta.almaspws(fdm=True)) 
+            spws=list(self.fdmspws)  
             casalog.post('Found FDM spws = '+str(spws))
         else:
             # Force input list to be of type int
@@ -2398,7 +2399,7 @@ class ACreNorm(object):
                     #      remaining is 3 chans, but edge chans are 20, so 
                     #      they are anyway set to to the median value (~1)
                     #      and we can use nseg = 5 without worry 
-                    if nchan%nseg < edge*nchan:
+                    if nchan%nseg <= edge*nchan:
                         # round down to nearest int and exit the while statment                        
                         dNchan=float(int(dNchan)) 
                     else:
@@ -2542,9 +2543,6 @@ class ACreNorm(object):
             This utilizes the scipy package, specifically scipy.signal.find_peaks and
             scipy.optimize.curve_fit. 
         """
-        from scipy.optimize import curve_fit
-        from scipy.signal import find_peaks
-
         def get_atm_peaks(ATMprof):
             """
             Purpose: Use scipy's peak finding algorithm to find ATM dips >1%.
@@ -2619,42 +2617,48 @@ class ACreNorm(object):
                     get_gamma_bounds(self.msmeta.chanfreqs(spw)[x0_guess])/abs(self.msmeta.chanwidths(spw)[0])
                     ]
             off_bounds = [0,1]
-
-            popt, cov = curve_fit(
-                            f=lorentzian, 
-                            xdata=xData, 
-                            ydata=yData, 
-                            p0=[x0_guess,a_guess,gamma_guess, off_guess],
-                            bounds=(
-                                [x0_bounds[0], a_bounds[0], gamma_bounds[0], off_bounds[0]],
-                                [x0_bounds[1], a_bounds[1], gamma_bounds[1], off_bounds[1]]
-                                )
-                        )
-            centers.append(popt[0])
-            scales.append(popt[2])
-            if verbose:
-                casalog.post('Initial Guesses:')
-                casalog.post('\tx0 = '+str(x0_guess))
-                casalog.post('\ta = '+str(a_guess))
-                casalog.post('\tgamma = '+str(gamma_guess))
-                casalog.post('\toffset = '+str(off_guess))
-                casalog.post('')
-                casalog.post('Bounds:')
-                casalog.post('\tx0 : ['+str(x0_bounds[0])+', '+ str(x0_bounds[1])+']')
-                casalog.post('\ta : ['+str(a_bounds[0])+', '+str(a_bounds[1])+']')
-                casalog.post('\tgamma : ['+str(gamma_bounds[0])+', '+str(gamma_bounds[1])+']')
-                casalog.post('\toffset : ['+str(off_bounds[0])+', '+str(off_bounds[1])+']')
-                casalog.post('')
-                casalog.post('Best Fit from scipy.optimize.curve_fit:')
-                casalog.post('\tx0 = '+str(popt[0]))
-                casalog.post('\ta = '+str(popt[1]))
-                casalog.post('\tgamma = '+str(popt[2]))
-                casalog.post('\toffset = '+str(popt[3]))
-                casalog.post('')
-                casalog.post('\tcovariance matrix:')
-                casalog.post(str(cov))
-                casalog.post('')
-                casalog.post('\t std_devs = '+str(np.sqrt(np.diag(cov))))
+            try:
+                popt, cov = curve_fit(
+                                f=lorentzian, 
+                                xdata=xData, 
+                                ydata=yData, 
+                                p0=[x0_guess,a_guess,gamma_guess, off_guess],
+                                bounds=(
+                                    [x0_bounds[0], a_bounds[0], gamma_bounds[0], off_bounds[0]],
+                                    [x0_bounds[1], a_bounds[1], gamma_bounds[1], off_bounds[1]]
+                                    ),
+                            )
+                centers.append(popt[0])
+                scales.append(popt[2])
+                if verbose:
+                    casalog.post('Initial Guesses:')
+                    casalog.post('\tx0 = '+str(x0_guess))
+                    casalog.post('\ta = '+str(a_guess))
+                    casalog.post('\tgamma = '+str(gamma_guess))
+                    casalog.post('\toffset = '+str(off_guess))
+                    casalog.post('')
+                    casalog.post('Bounds:')
+                    casalog.post('\tx0 : ['+str(x0_bounds[0])+', '+ str(x0_bounds[1])+']')
+                    casalog.post('\ta : ['+str(a_bounds[0])+', '+str(a_bounds[1])+']')
+                    casalog.post('\tgamma : ['+str(gamma_bounds[0])+', '+str(gamma_bounds[1])+']')
+                    casalog.post('\toffset : ['+str(off_bounds[0])+', '+str(off_bounds[1])+']')
+                    casalog.post('')
+                    casalog.post('Best Fit from scipy.optimize.curve_fit:')
+                    casalog.post('\tx0 = '+str(popt[0]))
+                    casalog.post('\ta = '+str(popt[1]))
+                    casalog.post('\tgamma = '+str(popt[2]))
+                    casalog.post('\toffset = '+str(popt[3]))
+                    casalog.post('')
+                    casalog.post('\tcovariance matrix:')
+                    casalog.post(str(cov))
+                    casalog.post('')
+                    casalog.post('\t std_devs = '+str(np.sqrt(np.diag(cov))))
+            except RuntimeError:
+                casalog.post('\tWARN: ATM fitting failed to converge in default number of iterations!')
+                casalog.post('\tWARN: Resorting to using best initial guesses for exclusion.')
+                
+                centers.append(x0_guess)
+                scales.append(np.mean(gamma_guess))
         return centers, scales 
 
 
@@ -5674,6 +5678,3 @@ class ACreNorm(object):
         fWidthSB = chansepSB*len(fSB)
 
         return fSB, chansepSB, fCenterSB, fWidthSB
-
-
-        

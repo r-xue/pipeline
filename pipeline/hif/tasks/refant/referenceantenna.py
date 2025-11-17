@@ -106,9 +106,9 @@ class RefAntInputs(vdp.StandardInputs):
 
                 Example:  refantignore='ea02,ea03'
 
-            parallel: Execute using CASA HPC functionality, if available. options: 'automatic', 'true', 'false', True, False
-
-                Default: None (equivalent to False)
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
 
         """
         self.context = context

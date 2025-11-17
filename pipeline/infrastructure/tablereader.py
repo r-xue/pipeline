@@ -9,6 +9,7 @@ import itertools
 import operator
 import os
 import re
+import traceback
 import xml
 from typing import TYPE_CHECKING
 
@@ -26,17 +27,94 @@ if TYPE_CHECKING:
 LOG = infrastructure.logging.get_logger(__name__)
 
 
-def find_EVLA_band(
-        frequency,
-        bandlimits: list[float] | None = None,
-        BBAND: str | None = '?4PLSCXUKAQ?'
-        ) -> str:
-    """identify VLA band"""
+def find_EVLA_band(frequency: float, bandlimits: list[float] | None = None, BBAND: str | None = '?4PLSCXUKAQ?') -> str:
+    """Identify VLA frequency band based on input frequency.
+
+    Determines the appropriate VLA band designation for a given frequency
+    by comparing against predefined frequency limits. Returns 'unknown' if the frequency
+    falls outside defined bands.
+
+    Args:
+        frequency: Input frequency in Hz to classify
+        bandlimits: Custom frequency boundaries in Hz. If None, uses default VLA band limits
+        BBAND: Band designation string where each character represents a band. '?' indicates
+            undefined bands
+
+    Returns:
+        Single character string representing the VLA band designation, or 'unknown' if the
+        frequency cannot be classified
+
+    Example:
+        >>> find_EVLA_band(1.4e9)  # 1.4 GHz L-band
+        'L'
+        >>> find_EVLA_band(100e6)  # 100 MHz, undefined band
+        'unknown'
+    """
     if bandlimits is None:
+        # Default VLA frequency band limits in Hz
         bandlimits = [0.0e6, 150.0e6, 700.0e6, 2.0e9, 4.0e9, 8.0e9, 12.0e9, 18.0e9, 26.5e9, 40.0e9, 56.0e9]
+
     i = bisect.bisect_left(bandlimits, frequency)
 
-    return BBAND[i]
+    if BBAND[i] == '?':
+        # Band is undefined - log warning and return unknown
+        LOG.warning('Unable to determine VLA band for frequency %.2f MHz', frequency / 1e6)
+        return 'unknown'
+    else:
+        return BBAND[i]
+
+
+def _get_groupingid_spectralspec_from_alma_spw_name(spw_name: str) -> tuple[str | None, str | None]:
+    """
+    Parse an ALMA spectral window name to pick out the Grouping ID and the
+    SpectralSpec ID, if present.
+
+    PIPE-1132: introduced support for retrieving SpectralSpec.
+    PIPE-2384: added support for retrieving the Grouping ID.
+    PIPE-2697: refactored to handle older datasets that do not define
+      Grouping ID and/or SpectralSpec.
+
+    Example of full SpW name: X100001#X900000004#ALMA_RB_06#BB_1#SW-01#FULL_RES
+    where Grouping ID: X100001; Spectral Spec: X900000004
+
+    Example of SpW names from Cycle 3 - 11: X1398968310#ALMA_RB_06#BB_1#SW-01#FULL_RES
+    where SpectralSpec: X1398968310; no Grouping ID set.
+
+    Example of SpW names from ALMA data before Cycle 3: ALMA_RB_06#BB_1#SW-01#FULL_RES
+    where no Grouping ID or SpectralSpec is set.
+
+    Args:
+        spw_name: Spectral window name string to parse.
+
+    Returns:
+        2-tuple containing Grouping ID and Spectral Spec ID, where each can be
+        None if not found in SpW name.
+    """
+    parts = spw_name.split('#')
+    try:
+        alma_index = next(i for i, part in enumerate(parts) if part.startswith("ALMA"))
+    except StopIteration:
+        # If "ALMA" is not found, consider spw name malformed and return without
+        # Grouping ID or SpectralSpec.
+        return None, None
+
+    # Select the parts preceding "ALMA", and set defaults.
+    metadata_parts = parts[:alma_index]
+    groupingid, spectralspec = None, None
+
+    # If there is only 1 element preceding, this is assumed to be the SpectralSpec.
+    if len(metadata_parts) == 1:
+        spectralspec = metadata_parts[0]
+    # If there are 2 elements preceding, these are assumed to be Grouping ID
+    # followed by SpectralSpec.
+    elif len(metadata_parts) == 2:
+        groupingid, spectralspec = metadata_parts
+    # If there are zero elements preceding, then no Grouping ID or SpectralSpec
+    # were found, so return with defaults of None.
+    # If there are more than 2 elements preceding, then consider the spw name
+    # malformed and return with defaults of None.
+
+    return groupingid, spectralspec
 
 
 def _get_ms_name(ms: MeasurementSet | str) -> str:
@@ -124,7 +202,7 @@ class MeasurementSetReader:
 
                 scan_mask = (scan_number_col == scan_id)
 
-                # get the antennas used for this scan 
+                # get the antennas used for this scan
                 LOG.trace('Calculating antennas used for scan %s', scan_id)
                 antenna_ids = set()
                 scan_antenna1 = antenna1_col[scan_mask]
@@ -162,11 +240,9 @@ class MeasurementSetReader:
 
     @staticmethod
     def add_band_to_spws(ms: domain.MeasurementSet) -> None:
-        """
-        Sets spw.band, which is a string describing a band. 
-        """
+        """Sets spw.band, which is a string describing a band."""
         observatory = ms.antenna_array.name.upper()
-        
+
         # This dict is only populated if the spw's band number cannot be determined from its name for ALMA.
         alma_receiver_band = {}
 
@@ -176,12 +252,12 @@ class MeasurementSetReader:
                 LOG.debug("For MS {}, SpW {}, setting band to WVR.".format(ms.name, spw.id))
                 continue
 
-            # Determining the band number for ALMA data 
+            # Determining the band number for ALMA data
             #
             # First, try to determine the band number from the spw name
             # The expected format is something like ALMA_RB_03#BB_1#SW-01#FULL_RES
             # If this doesn't work and this is ALMA data, try to get the band number from the ASDM_RECEIVER table
-            # If this also fails, then set the band number using a look-up-table. 
+            # If this also fails, then set the band number using a look-up-table.
             #
             # See: PIPE-140 or PIPE-1078
             #
@@ -207,33 +283,31 @@ class MeasurementSetReader:
                 else:
                     LOG.debug("For MS {}, SpW {}, could not find band number information in ALMA_RECEIVER table.".format(ms.name, spw.id))
 
-            # If both fail for ALMA, set the band number as follows: 
+            # If both fail for ALMA, set the band number as follows:
             spw.band = BandDescriber.get_description(spw.ref_frequency, observatory=ms.antenna_array.name)
-            LOG.debug("For MS {}, SpW {}, setting band to {}, based on Pipeline internal look-up table.".format(ms.name, spw.id, spw.band))
+            LOG.debug(
+                'For MS {}, SpW {}, setting band to {}, based on Pipeline internal look-up table.'.format(
+                    ms.name, spw.id, spw.band
+                )
+            )
 
-            # Used EVLA band name from spw instead of frequency range
-
+            # For VLA/EVLA, we can use the spw2band mapping to get the band name.
             if observatory in ('VLA', 'EVLA'):
                 spw2band = ms.get_vla_spw2band()
-
-                try:
-                    EVLA_band = spw2band[spw.id]
-                except:
-                    LOG.info('Unable to get band from spw id - using reference frequency instead')
-                    freqHz = float(spw.ref_frequency.value)
-                    EVLA_band = find_EVLA_band(freqHz)
-
-                EVLA_band_dict = {'4': '4m (4)',
-                                  'P': '90cm (P)',
-                                  'L': '20cm (L)',
-                                  'S': '13cm (S)',
-                                  'C': '6cm (C)',
-                                  'X': '3cm (X)',
-                                  'U': '2cm (Ku)',
-                                  'K': '1.3cm (K)',
-                                  'A': '1cm (Ka)',
-                                  'Q': '0.7cm (Q)'}
-
+                EVLA_band = spw2band[spw.id]
+                EVLA_band_dict = {
+                    '4': '4m (4)',
+                    'P': '90cm (P)',
+                    'L': '20cm (L)',
+                    'S': '13cm (S)',
+                    'C': '6cm (C)',
+                    'X': '3cm (X)',
+                    'U': '2cm (Ku)',
+                    'K': '1.3cm (K)',
+                    'A': '1cm (Ka)',
+                    'Q': '0.7cm (Q)',
+                    '?': 'unknown',
+                }
                 spw.band = EVLA_band_dict[EVLA_band]
 
     @staticmethod
@@ -241,21 +315,11 @@ class MeasurementSetReader:
         ms.spectralspec_spwmap = utils.get_spectralspec_to_spwid_map(ms.spectral_windows)
 
     @staticmethod
-    def add_spectralspec_to_spws(ms):
-        # For ALMA, extract spectral spec from spw name.
+    def add_spectralspec_and_groupingid_to_spws(ms):
+        """Add SpectralSpec and Grouping ID to each SpW for ALMA measurement sets"""
         for spw in ms.spectral_windows:
             if 'ALMA' in spw.name:
-                # PIPE-2384: new spw names will include grouping ID as first 'token'
-                # if present, the spectralspec will then be the second 'token'
-                # New SPW Example: X100001#X900000004#ALMA_RB_06#BB_1#SW-01#FULL_RES
-                # Grouping ID: X100001; Spectral Spec: X900000004
-                # Old SPW Example: X1398968310#ALMA_RB_06#BB_1#SW-01#FULL_RES
-                # Spectral Spec: X1398968310
-                spw_split = spw.name.split('#')
-                alma_ind = [spw_split.index(x) for x in spw_split if x.startswith('ALMA')][0]
-                spw.spectralspec = spw_split[alma_ind - 1]
-                if alma_ind == 2:
-                    spw.grouping_id = spw_split[0]
+                spw.grouping_id, spw.spectralspec = _get_groupingid_spectralspec_from_alma_spw_name(spw.name)
 
     @staticmethod
     def link_intents_to_spws(msmd, ms):
@@ -413,12 +477,12 @@ class MeasurementSetReader:
                 ms.science_goals['spectralDynamicRangeBandWidth'] = sbinfo.spectralDynamicRangeBandWidth
 
                 ms.science_goals['sbName'] = sbinfo.sbName
-            
+
                 # Populate the online ALMA Control Software names
                 LOG.info('Populating ms.acs_software_version and ms.acs_software_build_version...')
                 ms.acs_software_version, ms.acs_software_build_version = \
                     MeasurementSetReader.get_acs_software_version(ms, msmd)
-                    
+
             LOG.info('Populating ms.array_name...')
             # No MSMD functions to help populating the ASDM_EXECBLOCK table
             ms.array_name = ExecblockTable.get_execblock_info(ms)
@@ -455,7 +519,7 @@ class MeasurementSetReader:
 
         # Update spectral windows in ms with band and spectralspec.
         MeasurementSetReader.add_band_to_spws(ms)
-        MeasurementSetReader.add_spectralspec_to_spws(ms)
+        MeasurementSetReader.add_spectralspec_and_groupingid_to_spws(ms)
 
         # Populate mapping of spectralspecs to spws.
         MeasurementSetReader.add_spectralspec_spwmap(ms)
@@ -504,7 +568,7 @@ class MeasurementSetReader:
             correlator_name = None
             msg = "Error while populating correlator name for {}, error: {}".format(ms.basename, str(e))
             LOG.warning(msg)
-            
+
         return correlator_name
 
     @staticmethod
@@ -537,20 +601,24 @@ class MeasurementSetReader:
         return (acs_software_version, acs_software_build_version)
 
     @staticmethod
-    def get_history(ms: domain.MeasurementSet) -> numpy.ndarray:
-        """
-        Retrieve the MS history.
+    def get_history(ms_name: str) -> np.ndarray | None:
+        """Retrieve the MS history from the HISTORY table.
+
+        Args:
+            ms_name: Path to the measurement set directory.
 
         Returns:
-            A numpy array with the history messages.
+            Numpy array containing history messages, or None if table cannot be read.
         """
         try:
-            history_table = os.path.join(ms.name, 'HISTORY')
+            history_table = os.path.join(ms_name, 'HISTORY')
             with casa_tools.TableReader(history_table) as ht:
                 msgs = ht.getcol('MESSAGE')
             return msgs
-        except:
-            LOG.info(f"Unable to read HISTORY table for MS {_get_ms_basename(ms)}")
+        except Exception:
+            LOG.info("Unable to read HISTORY table for MS %s", os.path.basename(ms_name))
+            traceback_msg = traceback.format_exc()
+            LOG.debug(traceback_msg)
             return None
 
 

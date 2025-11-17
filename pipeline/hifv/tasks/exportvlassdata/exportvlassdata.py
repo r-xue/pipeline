@@ -74,7 +74,7 @@ class ExportvlassdataInputs(exportdata.ExportDataInputs):
 
             session:
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
             exportmses:
 
@@ -256,8 +256,12 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             LOG.info('Wrote {ff}'.format(ff=fitsfile))
             fits_list.append(fitsfile)
 
-            # Apply position corrections to VLASS QL, MOSAIC and AWP=1 product images (PIPE-587, PIPE-641, PIPE-1134)
-            if img_mode in ('VLASS-QL', 'VLASS-SE-CONT-MOSAIC', 'VLASS-SE-CONT-AWP-P001', 'VLASS-SE-CUBE'):
+            # PIPE-587/PIPE-641/PIPE-1134/PIPE-2423: apply position corrections for modes that don't use
+            # aw-projection with nplane=32.
+            if img_mode.startswith('VLASS-') and img_mode not in ('VLASS-SE-CONT-AWPHPG', 'VLASS-SE-CONT-AWPHPG-P032',
+                                                                  'VLASS-SE-CONT-AWP2', 'VLASS-SE-CONT-AWP2-P032',
+                                                                  'VLASS-SE-CONT', 'VLASS-SE-CONT-AWP',
+                                                                  'VLASS-SE-CONT-AWP-P032'):
                 # Mean antenna geographic coordinates
                 observatory = casa_tools.measures.observatory(self.inputs.context.project_summary.telescope)
                 # Mean observing date

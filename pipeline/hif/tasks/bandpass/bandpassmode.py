@@ -29,7 +29,7 @@ class BandpassModeInputs(vdp.ModeInputs):
             if read_only_attr in parameters:
                 del parameters[read_only_attr]
 
-        super(BandpassModeInputs, self).__init__(context, mode, **parameters)
+        super().__init__(context, mode, **parameters)
 
 
 class BandpassMode(basetask.ModeTask):

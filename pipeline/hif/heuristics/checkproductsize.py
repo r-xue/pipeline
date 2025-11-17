@@ -22,10 +22,12 @@ class CheckProductSizeHeuristics(object):
         ref_ms = self.context.observing_run.measurement_sets[0]
         for target in imlist:
             nx, ny = target['imsize']
+
             if target['nbin'] != -1:
                 nbin = target['nbin']
             else:
                 nbin = 1
+
             if target['specmode'] == 'cube':
                 real_spw = self.context.observing_run.virtual2real_spw_id(int(target['spw']), ref_ms)
                 nchan = ref_ms.get_spectral_window(real_spw).num_channels
@@ -34,7 +36,14 @@ class CheckProductSizeHeuristics(object):
             else:
                 nchan = 1
                 cubesize = 0.0
+
             mfssize = 4. * nx * ny / 1e9 # Should include nterms, though overall size is dominated by cube mode which is currently always nterms=1
+
+            if self.context.processing_intents is not None and 'INTERFEROMETRY_FULL_POL_CUBE_IMAGING' in self.context.processing_intents:
+                # Original I plus IQUV products
+                cubesize = 5 * cubesize
+                mfssize = 5 * mfssize
+
             cubesizes.append(cubesize)
             productsize = 2.0 * (mfssize + cubesize)
             productsizes[target['spw']] = productsize

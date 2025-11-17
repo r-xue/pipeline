@@ -25,10 +25,10 @@ def get_ms_data_types_from_history(msgs: np.ndarray) -> (dict, dict):
     # written multiple times as new history entries throughout the pipeline processing.
     for item in reversed(msgs):
         if not found_data_type_per_column and 'data_type_per_column' in item:
-            data_type_per_column_strtypes = ast.literal_eval(item.split('=')[1])
+            data_type_per_column_strtypes = ast.literal_eval(item.split(sep='=', maxsplit=1)[1])
             found_data_type_per_column = True
         if not found_data_types_per_source_and_spw and 'data_types_per_source_and_spw' in item:
-            data_types_per_source_and_spw_strtypes = ast.literal_eval(item.split('=')[1])
+            data_types_per_source_and_spw_strtypes = ast.literal_eval(item.split(sep='=', maxsplit=1)[1])
             found_data_types_per_source_and_spw = True
         if found_data_type_per_column and found_data_types_per_source_and_spw:
             break

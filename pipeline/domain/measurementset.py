@@ -4,38 +4,28 @@ from __future__ import annotations
 
 import collections
 import contextlib
+import datetime
 import inspect
 import itertools
 import operator
 import os
-import re
-from typing import TYPE_CHECKING, Sequence
+from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 import numpy as np
 
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure import casa_tools
+from pipeline import infrastructure
+from pipeline.domain import measures, spectralwindow
+from pipeline.infrastructure import casa_tools, tablereader, utils
 
-if TYPE_CHECKING:  # Avoid circular import. Used only for type annotation.
+if TYPE_CHECKING:
+    from pipeline.domain import AntennaArray, Antenna, DataDescription, DataType, Field, Polarization, Scan, State
     from pipeline.infrastructure.tablereader import RetrieveByIndexContainer
-    from .antenna import Antenna
-    from .datadescription import DataDescription
-    from .field import Field
-    from .scan import Scan
-    from .state import State
 
-from pipeline.infrastructure import logging
-
-from . import measures, spectralwindow
-from .antennaarray import AntennaArray
-from .datatype import DataType
-from .polarization import Polarization
-
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
-class MeasurementSet(object):
+class MeasurementSet:
     """
     A class to store logical representation of a MeasurementSet (MS).
 
@@ -277,9 +267,13 @@ class MeasurementSet(object):
         else:
             return None
 
-    def get_scans(self, scan_id: int | Sequence[int] | None = None, scan_intent: str | Sequence[str] | None = None,
-                  field: int | str | None = None, spw: int | str | Sequence[int] | Sequence[str] | None = None) \
-            -> list[Scan]:
+    def get_scans(
+            self,
+            scan_id: int | Sequence[int] | None = None,
+            scan_intent: str | Sequence[str] | None = None,
+            field: int | str | None = None,
+            spw: int | str | Sequence[int] | Sequence[str] | None = None,
+            ) -> list[Scan]:
         """
         Return Scan(s) in MeasurementSet matching the given criteria (ID,
         intent, field, and/or spectral window). If no criteria are given, all
@@ -336,8 +330,11 @@ class MeasurementSet(object):
 
         return pool
 
-    def get_data_description(self, spw: int | spectralwindow.SpectralWindow | None = None, id: int | None = None) \
-            -> DataDescription | None:
+    def get_data_description(
+            self,
+            spw: int | spectralwindow.SpectralWindow | None = None,
+            id: int | None = None,
+            ) -> DataDescription | None:
         """
         Return the DataDescription in the MeasurementSet that matches the given
         criteria (spectral window or ID). If no criteria are given, this will
@@ -367,8 +364,11 @@ class MeasurementSet(object):
         else:
             return None
 
-    def get_representative_source_spw(self, source_name: str | None = None, source_spwid: int | None = None) \
-            -> tuple[str | None, int | None]:
+    def get_representative_source_spw(
+            self,
+            source_name: str | None = None,
+            source_spwid: int | None = None,
+            ) -> tuple[str | None, int | None]:
         """
         Get the representative target source object:
 
@@ -390,9 +390,9 @@ class MeasurementSet(object):
 
         # PIPE-1504: only issue certain messages at the WARNING level if they are executed by hifa_imageprecheck
         if 'hifa_imageprecheck' in [fn_name for (_, _, _, fn_name, _, _) in inspect.stack()]:
-            log_level = logging.WARNING
+            log_level = infrastructure.logging.WARNING
         else:
-            log_level = logging.INFO
+            log_level = infrastructure.logging.INFO
 
         if source_name:
             # Use the first target source that matches the user defined name
@@ -400,12 +400,12 @@ class MeasurementSet(object):
                               if source.name == source_name
                               and 'TARGET' in source.intents]
             if len(target_sources) > 0:
-                LOG.info('Selecting user defined representative target source %s for data set %s' %
-                         (source_name, self.basename))
+                LOG.info('Selecting user defined representative target source %s for data set %s',
+                         source_name, self.basename)
                 target_source = target_sources[0]
             else:
-                LOG.warning('User defined representative target source %s not found in data set %s' %
-                            (source_name, self.basename))
+                LOG.warning('User defined representative target source %s not found in data set %s',
+                            source_name, self.basename)
                 target_source = None
         elif self.representative_target[0]:
             # Use the first target source that matches the representative source name in the ASDM
@@ -415,21 +415,21 @@ class MeasurementSet(object):
                               if source.name == source_name
                               and 'TARGET' in source.intents]
             if len(target_sources) > 0:
-                LOG.info('Selecting representative target source %s for data set %s' %
-                         (self.representative_target[0], self.basename))
+                LOG.info('Selecting representative target source %s for data set %s',
+                         self.representative_target[0], self.basename)
                 target_source = target_sources[0]
             else:
-                LOG.warning('Representative target source %s not found in data set %s' %
-                            (self.representative_target[0], self.basename))
+                LOG.warning('Representative target source %s not found in data set %s',
+                            self.representative_target[0], self.basename)
                 # Try to fall back first target source
                 target_sources = [source for source in self.sources
                                   if 'TARGET' in source.intents]
                 if len(target_sources) > 0:
                     target_source = target_sources[0]
-                    LOG.info('Falling back to first target source (%s) for data set %s' %
-                             (target_source.name, self.basename))
+                    LOG.info('Falling back to first target source (%s) for data set %s',
+                             target_source.name, self.basename)
                 else:
-                    LOG.warning('No target sources observed for data set %s' % self.basename)
+                    LOG.warning('No target sources observed for data set %s', self.basename)
                     target_source = None
         else:
             # Use first target source no matter what it is
@@ -437,10 +437,10 @@ class MeasurementSet(object):
                               if 'TARGET' in source.intents]
             if len(target_sources) > 0:
                 target_source = target_sources[0]
-                LOG.info('Undefined representative target source, defaulting to first target source (%s) for data set %s' %
-                         (target_source.name, self.basename))
+                LOG.info('Undefined representative target source, defaulting to first target source (%s) for data set %s',
+                         target_source.name, self.basename)
             else:
-                LOG.warning('No target sources observed for data set %s' % self.basename)
+                LOG.warning('No target sources observed for data set %s', self.basename)
                 target_source = None
 
         # Target source not found
@@ -460,12 +460,12 @@ class MeasurementSet(object):
                     found = True
                     break
             if found:
-                LOG.info('Selecting user defined representative spw %s for data set %s' %
-                         (str(source_spwid), self.basename))
+                LOG.info('Selecting user defined representative spw %s for data set %s',
+                         str(source_spwid), self.basename)
                 return target_source_name, source_spwid
             else:
-                LOG.warning('No target source data for representative spw %s in data set %s' %
-                            (str(source_spwid), self.basename))
+                LOG.warning('No target source data for representative spw %s in data set %s',
+                            str(source_spwid), self.basename)
                 return target_source_name, None
 
         target_spwid = None
@@ -474,7 +474,7 @@ class MeasurementSet(object):
             try:
                 target_spwid = [s.id for s in self.get_spectral_windows() if s.name == self.representative_window][0]
             except:
-                LOG.log(log_level, 'Could not translate spw name %s to ID. Trying frequency matching heuristics.' %
+                LOG.log(log_level, 'Could not translate spw name %s to ID. Trying frequency matching heuristics.',
                         self.representative_window)
 
         if target_spwid is not None:
@@ -484,9 +484,9 @@ class MeasurementSet(object):
         #     Return if there isn't one
         if not self.representative_target[2]:
             if self.antenna_array.name not in ('VLA', 'EVLA'):
-                LOG.warning('Undefined representative bandwidth for data set %s' % self.basename)
+                LOG.warning('Undefined representative bandwidth for data set %s', self.basename)
             return target_source_name, None
-        
+
         target_bw = cme.frequency('TOPO',
             qa.quantity(qa.getvalue(self.representative_target[2]),
             qa.getunit(self.representative_target[2])))
@@ -494,7 +494,7 @@ class MeasurementSet(object):
         # Get the representative frequency
         #     Return if there isn't one
         if not self.representative_target[1]:
-            LOG.warning('Undefined representative frequency for data set %s' % self.basename)
+            LOG.warning('Undefined representative frequency for data set %s', self.basename)
             return target_source_name, None
         target_frequency = cme.frequency('BARY',
             qa.quantity(qa.getvalue(self.representative_target[1]),
@@ -512,7 +512,7 @@ class MeasurementSet(object):
             cme.doframe(target_scans[0].start_time)
             target_frequency_topo = cme.measure(target_frequency, 'TOPO')
         else:
-            LOG.error('Unable to convert representative frequency to TOPO for data set %s' % self.basename)
+            LOG.error('Unable to convert representative frequency to TOPO for data set %s', self.basename)
             target_frequency_topo = None
         cme.done()
 
@@ -520,7 +520,7 @@ class MeasurementSet(object):
         if not target_frequency_topo:
             return target_source_name, None
 
-        # Find the science spw 
+        # Find the science spw
 
         # Get the science spw ids
         science_spw_ids = [spw.id for spw in self.get_spectral_windows()]
@@ -538,14 +538,14 @@ class MeasurementSet(object):
                           if spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ) <= 1.01 * target_bw['m0']['value']]
 
         if len(target_spws_bw) <= 0:
-            LOG.warning('No target spws have channel width <= representative bandwidth in data set %s' % self.basename)
+            LOG.warning('No target spws have channel width <= representative bandwidth in data set %s', self.basename)
 
             # Now find all the target spws that contain the representative frequency.
             target_spws_freq = [spw for spw in target_spws
                                 if spw.min_frequency.value <= target_frequency_topo['m0']['value'] <= spw.max_frequency.value]
 
             if len(target_spws_freq) <= 0:
-                LOG.warning('No target spws overlap the representative frequency in data set %s' % self.basename)
+                LOG.warning('No target spws overlap the representative frequency in data set %s', self.basename)
 
                 # Now find the closest match to the center frequency
                 max_freqdiff = np.finfo('d').max
@@ -554,16 +554,16 @@ class MeasurementSet(object):
                     if freqdiff < max_freqdiff:
                         target_spwid = spw.id
                         max_freqdiff = freqdiff
-                LOG.info('Selecting spw %s which is closest to the representative frequency in data set %s' %
-                         (str(target_spwid), self.basename))
+                LOG.info('Selecting spw %s which is closest to the representative frequency in data set %s',
+                         str(target_spwid), self.basename)
             else:
                 min_chanwidth = None
                 for spw in target_spws_freq:
                     chanwidth = spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ)
                     if not min_chanwidth or chanwidth < min_chanwidth:
                         target_spwid = spw.id
-                LOG.info('Selecting the narrowest chanwidth spw id %s which overlaps the representative frequency in data set %s' %
-                         (str(target_spwid), self.basename))
+                LOG.info('Selecting the narrowest chanwidth spw id %s which overlaps the representative frequency in data set %s',
+                         str(target_spwid), self.basename)
 
             return target_source_name, target_spwid
 
@@ -571,16 +571,18 @@ class MeasurementSet(object):
         target_spws_freq = [spw for spw in target_spws_bw
                             if spw.min_frequency.value <= target_frequency_topo['m0']['value'] <= spw.max_frequency.value]
         if len(target_spws_freq) <= 0:
-            LOG.log(log_level,
-                    'No target spws with channel spacing <= representative bandwith overlap the representative frequency in data set %s' %
-                    self.basename)
+            LOG.log(
+                log_level,
+                'No target spws with channel spacing <= representative bandwith overlap the representative frequency in data set %s',
+                self.basename,
+                )
             max_chanwidth = None
             for spw in target_spws_bw:
                 chanwidth = spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ)
                 if (max_chanwidth is None) or (chanwidth > max_chanwidth):
                     target_spwid = spw.id
-            LOG.info('Selecting widest channel width spw id {} with channel width <= representative bandwidth in data'
-                     ' set {}'.format(str(target_spwid), self.basename))
+            LOG.info('Selecting widest channel width spw id %s with channel width <= representative bandwidth in data'
+                     ' set %s', str(target_spwid), self.basename)
 
             return target_source_name, target_spwid
 
@@ -598,8 +600,13 @@ class MeasurementSet(object):
 
         return target_source_name, target_spwid
 
-    def get_fields(self, task_arg: int | str | None = None, field_id: int | Sequence[int] | None = None,
-                   name: str | Sequence[str] | None = None, intent: str | Sequence[str] | None = None) -> list[Field]:
+    def get_fields(
+            self,
+            task_arg: int | str | None = None,
+            field_id: int | Sequence[int] | None = None,
+            name: str | Sequence[str] | None = None,
+            intent: str | Sequence[str] | None = None,
+            ) -> list[Field]:
         """
         Get Fields from this MeasurementSet matching the given criteria. If no
         criteria are given, all Fields in the MeasurementSet will be returned.
@@ -673,10 +680,15 @@ class MeasurementSet(object):
                 raise KeyError('No spectral window with ID \'{0}\' found in '
                                '{1}'.format(spw_id, self.basename))
 
-    def get_spectral_windows(self, task_arg: int | str = '', with_channels: bool = False,
-                             num_channels: list | None = None, science_windows_only: bool = True,
-                             spectralspecs: list | None = None, intent: str | None = None) \
-            -> list[spectralwindow.SpectralWindow | spectralwindow.SpectralWindowWithChannelSelection]:
+    def get_spectral_windows(
+            self,
+            task_arg: int | str = '',
+            with_channels: bool = False,
+            num_channels: list | None = None,
+            science_windows_only: bool = True,
+            spectralspecs: list | None = None,
+            intent: str | None = None,
+            ) -> list[spectralwindow.SpectralWindow | spectralwindow.SpectralWindowWithChannelSelection]:
         """
         Return spectral windows matching given criteria.
 
@@ -748,8 +760,11 @@ class MeasurementSet(object):
         """Return list of all spectral specs used in the MS."""
         return list(self.spectralspec_spwmap.keys())
 
-    def get_all_spectral_windows(self, task_arg: int | str = '', with_channels: bool = False) \
-            -> list[spectralwindow.SpectralWindow | spectralwindow.SpectralWindowWithChannelSelection]:
+    def get_all_spectral_windows(
+            self,
+            task_arg: int | str = '',
+            with_channels: bool = False,
+            ) -> list[spectralwindow.SpectralWindow | spectralwindow.SpectralWindowWithChannelSelection]:
         """
         Return spectral windows corresponding to the given CASA-style spw
         argument.
@@ -768,7 +783,7 @@ class MeasurementSet(object):
             for given CASA-style search criteria.
         """
         # we may have more spectral windows in our MeasurementSet than have
-        # data in the measurement set on disk. Ask for all 
+        # data in the measurement set on disk. Ask for all
         if task_arg in (None, ''):
             task_arg = '*'
 
@@ -848,18 +863,35 @@ class MeasurementSet(object):
 
     def get_alma_cycle_number(self) -> int | None:
         """
-        Get the ALMA cycle number from the ALMA control software version that
-        this MeasurementSet was acquired with.
+        Get the ALMA cycle number from the observation start time.
 
         Returns:
-            int cycle_number or None if not found
+            Cycle number or None if not found or not an ALMA dataset.
         """
-        match = re.search(r"CYCLE(\d+)", self.acs_software_build_version)
-        if match:
-            cycle_number = int(match.group(1))
-            return cycle_number
-        else:
+        cycle_numbers = {
+            '0': ['2011-09-30', '2013-01-20'],
+            '1': ['2013-01-21', '2014-06-02'],
+            '2': ['2014-06-03', '2015-09-30'],
+            '3': ['2015-10-01', '2016-09-30'],
+            '4': ['2016-10-01', '2017-09-30'],
+            '5': ['2017-10-01', '2018-09-30'],
+            '6': ['2018-10-01', '2019-09-30'],
+            '7': ['2019-10-01', '2021-09-30'],
+            '8': ['2021-10-01', '2022-09-30'],
+            '9': ['2022-10-01', '2023-09-30'],
+            '10': ['2023-10-01', '2024-09-30'],
+            '11': ['2024-10-01', '2025-09-30'],
+            '12': ['2025-10-01', '2026-09-30'],
+        }
+        if self.antenna_array.name in ('VLA', 'EVLA', 'NRO'):
             return None
+        start_time = utils.get_epoch_as_datetime(self.start_time)
+        for cycle, (start_str, end_str) in cycle_numbers.items():
+            start = datetime.datetime.strptime(start_str, '%Y-%m-%d')
+            end = datetime.datetime.strptime(end_str, '%Y-%m-%d')
+            if start <= start_time <= end:
+                return cycle
+        return None  # No match
 
     @property
     def start_time(self) -> dict:
@@ -884,7 +916,8 @@ class MeasurementSet(object):
         # Prep string listing of correlations from dictionary created by method buildscans
         # For now, only use the parallel hands.  Cross hands will be implemented later.
 
-        corrstring_list = self.polarizations[self.data_descriptions[0].pol_id].corr_type_string if len(self.polarizations) and len(self.data_descriptions) > 0 else []
+        corrstring_list = self.polarizations[self.data_descriptions[0].pol_id].corr_type_string \
+            if len(self.polarizations) and len(self.data_descriptions) > 0 else []
         removal_list = ['RL', 'LR', 'XY', 'YX']
         corrstring_list = sorted(set(corrstring_list).difference(set(removal_list)))
         corrstring = ','.join(corrstring_list)
@@ -928,26 +961,46 @@ class MeasurementSet(object):
 
         return corrstring
 
-    def get_vla_spw2band(self) -> dict:
-        """Find field spws for VLA
-
+    def get_vla_spw2band(self) -> dict[int, str]:
+        """Find spectral windows id-to-band mapping for VLA.
+        
+        Creat spw id-to-band mapping from spw names or derives it from reference frequency
+        when name parsing fails. Handles special cases for KU and KA band naming conventions.
+        
         Returns:
-            spw2band: dictionary with each string key spw index giving a single letter string value of the band
+            Dictionary mapping spectral window IDs to single-letter band codes (e.g., '4', 'P', 'L', 
+            'S', 'C', 'X', 'U', 'K', 'A', 'Q').
         """
-
-        spw2band = {}
+        spw2band: dict[int, str] = {}
 
         for spw in self.spectral_windows:
+            
+            try:
+                # Extract band from 6th character of SPW name
+                spw_name_chars = list(spw.name)
+                band_char = spw_name_chars[5]
 
-            strelems = list(spw.name)
-            bandname = strelems[5]
-            if bandname in '4PLSCXUKAQ':
-                spw2band[spw.id] = strelems[5]
-            # Check for U / KU
-            if strelems[5] == 'K' and strelems[6] == 'U':
-                spw2band[spw.id] = 'U'
-            if strelems[5] == 'K' and strelems[6] == 'A':
-                spw2band[spw.id] = 'A'
+                if band_char in '4PLSCXUKAQ':
+                    spw2band[spw.id] = band_char
+
+                # Handle special multi-character band names
+                if band_char == 'K' and len(spw_name_chars) > 6:
+                    if spw_name_chars[6] == 'U':  # KU band
+                        spw2band[spw.id] = 'U'
+                    elif spw_name_chars[6] == 'A':  # KA band
+                        spw2band[spw.id] = 'A'
+            except IndexError:
+                # SPW name too short or malformed
+                pass
+
+            # Fallback to frequency-based band determination
+            if spw.id not in spw2band:
+                evla_band = tablereader.find_EVLA_band(float(spw.ref_frequency.value))
+                LOG.info(
+                    "Unable to extract band name from SPW ID %s (name: %s); "
+                    "derived band name %s from reference frequency",
+                    spw.id, spw.name, evla_band)
+                spw2band[spw.id] = evla_band
 
         return spw2band
 
@@ -1072,42 +1125,60 @@ class MeasurementSet(object):
                 else:
                     spws_info.append([band, baseband, [subband], [ii]])
                     bands.append(band)
-            # logprint("Bands/basebands/spws are:", logfileout='logs/msinfo.log')
-            for spw_info in spws_info:
-                spw_info_string = spw_info[0] + '   ' + spw_info[1] + '   [' + ','.join(["%d" % ii for ii in spw_info[2]]) + ']   [' + ','.join(["%d" % ii for ii in spw_info[3]]) + ']'
-                # logprint(spw_info_string, logfileout='logs/msinfo.log')
 
             # Critical fraction of flagged solutions in delay cal to avoid an
             # entire baseband being flagged on all antennas
             critfrac = 0.9/float(len(spws_info))
         elif ':' in spw_names[0]:
             print("old spw names with :")
-            # logprint("old spw names with :", logfileout='logs/msinfo.log')
         else:
             print("unknown spw names")
 
         return critfrac
 
-    def get_vla_baseband_spws(self, science_windows_only: bool = True, return_select_list: bool = True,
-                              warning: bool = True) -> dict | tuple[dict, list]:
+    def get_vla_baseband_spws(
+            self,
+            science_windows_only: bool = True,
+            return_select_list: bool = True,
+            warning: bool = True,
+            ) -> dict | list[list[int]]:
         """Get the SPW information from individual VLA band/baseband.
 
         Args:
-            science_windows_only (bool, optional): Defaults to True.
-            return_select_list (bool, optional): return spw list of each baseband. Defaults to True.
-            warning (bool, optional): Defaults to True.
+            science_windows_only: Whether to include only science spectral windows.
+            return_select_list: Whether to return SPW list of each baseband instead of full band/subband info.
+            warning: Whether to log warnings for parsing errors.
 
         Returns:
-            baseband_spws: spws info of individual basebands as baseband_spws[band][baseband]
-            baseband_spws_list: spw_list of individual basebands
-                e.g., [[0,1,2,3],[4,5,6,7]]
+            If return_select_list is False:
+                Dictionary with SPW info organized as baseband_spws[band][baseband], where each
+                entry contains a list of spw info as {spwid, (min_freq, max_freq, mean_freq, chan_width)}.
+
+            If return_select_list is True:
+                List of SPW ID lists for each band.baseband, e.g., [[0,1,2,3], [4,5,6,7]].
         """
         baseband_spws = collections.defaultdict(lambda: collections.defaultdict(list))
+        spw2band = self.get_vla_spw2band()
 
         for spw in self.get_spectral_windows(science_windows_only=science_windows_only):
             try:
-                band = spw.name.split('#')[0].split('_')[1]
-                baseband = spw.name.split('#')[1]
+                band = spw2band.get(spw.id, 'unknown')
+                # PIPE-2634: historically, the codes calling `ms.get_vla_baseband_spws` was imeplemented to
+                # use two-letter convetions for KU and KA bands, e.g. 'KU' and 'KA' instead of 'U' and 'A'.
+                if band in ('U', 'A'):
+                    band = 'K' + band
+                if '#' in spw.name:
+                    baseband = spw.name.split('#')[1]
+                else:
+                    # older VLA data might have this spw naming pattern:
+                    # spwid - name
+                    #   0   - Subband:7
+                    #   1   - Subband:5
+                    #     ..
+                    #   8   - Subband:7
+                    # Here as a fallback, we use the full spw name as baseband; likely band name is generated from
+                    # the frequency-base heuristics in ms.spw2band
+                    baseband = spw.name
                 min_freq = spw.min_frequency
                 max_freq = spw.max_frequency
                 mean_freq = spw.mean_frequency
@@ -1115,7 +1186,7 @@ class MeasurementSet(object):
                 baseband_spws[band][baseband].append({spw.id: (min_freq, max_freq, mean_freq, chan_width)})
             except Exception as ex:
                 if warning:
-                    LOG.warning("Exception: Baseband name cannot be parsed. {!s}".format(str(ex)))
+                    LOG.warning('Exception: Baseband name cannot be parsed. %s', ex)
                 else:
                     pass
 
@@ -1124,11 +1195,18 @@ class MeasurementSet(object):
             for band in baseband_spws.values():
                 for baseband in band.values():
                     baseband_spws_list.append([[*spw_info][0] for spw_info in baseband])
-            return baseband_spws, baseband_spws_list
+            return baseband_spws_list
         else:
             return baseband_spws
 
-    def get_integration_time_stats(self, intent: str | None = None, spw: str | None = None, science_windows_only: bool = False, stat_type: str = "max") -> float:
+    def get_integration_time_stats(
+            self,
+            intent: str | None = None,
+            spw: str | None = None,
+            science_windows_only: bool = False,
+            stat_type: str = "max",
+            band: str | None = None,
+            ) -> float:
         """Get the given statistcs of integration time.
 
         Args:
@@ -1136,6 +1214,8 @@ class MeasurementSet(object):
             spw: spw string list - '1,7,11,18'.
             science_windows_only: Use integration time of science spws only to compute the given statistics.
             stat_type: Type of the statistics.
+            band: return maximum integration time for the given VLA band.
+                Ignored for non-VLA datasets; has no effect in that case. Default is None.default None
         Returns
             Computed statistics value.
         """
@@ -1168,8 +1248,15 @@ class MeasurementSet(object):
                 spws = [ispw for ispw in all_spws if str(ispw.id) in spw_string_list]
             except:
                 LOG.error("Incorrect spw string format.")
-
-        if science_windows_only == True:
+        if band is not None:
+            if self.antenna_array.name not in ('VLA', 'EVLA'):
+                LOG.warning(
+                    "The band parameter is only applicable to VLA data. For non-VLA datasets, "
+                    "it has no effect on the maximum integration time calculation.")
+            spw2band = self.get_vla_spw2band()
+            spws = [spw_obj for spw_obj in spws if spw2band[spw_obj.id].lower() == band.lower()]
+            science_spw_dd_ids = [self.get_data_description(spw).id for spw in spws]
+        if science_windows_only:
             # now get the science spws, those used for scientific intent
             science_spws = [
                 ispw for ispw in spws
@@ -1196,10 +1283,10 @@ class MeasurementSet(object):
 
         state_str = utils.list_to_str(science_state_ids if science_windows_only else state_ids)
         field_str = utils.list_to_str(science_field_ids if science_windows_only else field_ids)
-        spw_str = utils.list_to_str(science_spw_dd_ids) if science_windows_only else ""
+        spw_str = utils.list_to_str(science_spw_dd_ids) if science_windows_only or band is not None else ""
 
         taql = f"(STATE_ID IN {state_str} AND FIELD_ID IN {field_str}" + \
-            (f" AND DATA_DESC_ID IN {spw_str}" if science_windows_only else "") + ")"
+            (f" AND DATA_DESC_ID IN {spw_str}" if spw_str else "") + ")"
 
         with casa_tools.TableReader(self.name) as table:
             with contextlib.closing(table.query(taql)) as subtable:
@@ -1232,7 +1319,7 @@ class MeasurementSet(object):
         times_on_source_per_field_id = dict()
         for field_id in field_ids:
             with casa_tools.TableReader(self.name) as table:
-                taql = '(STATE_ID IN %s AND FIELD_ID IN [%s] AND DATA_DESC_ID in [%s] AND SCAN_NUMBER in %s AND ANTENNA1=%s AND ANTENNA2=%s)' % (utils.list_to_str(state_ids), field_id, first_science_spw_dd_id, utils.list_to_str(scan_ids), ant1, ant2)
+                taql = '(STATE_ID IN %s AND FIELD_ID IN [%s] AND DATA_DESC_ID in [%s] AND SCAN_NUMBER in %s AND ANTENNA1=%s AND ANTENNA2=%s)'.format(utils.list_to_str(state_ids), field_id, first_science_spw_dd_id, utils.list_to_str(scan_ids), ant1, ant2)
                 with contextlib.closing(table.query(taql)) as subtable:
                     integration = subtable.getcol('INTERVAL')
                 times_on_source_per_field_id[field_id] = np.sum(integration)
@@ -1268,8 +1355,11 @@ class MeasurementSet(object):
             raise AttributeError(f'Refant list for {self.basename} is locked')
         self._reference_antenna = value
 
-    def update_reference_antennas(self, ants_to_demote: set[str] | None = None, ants_to_remove: set[str] | None = None)\
-            -> None:
+    def update_reference_antennas(
+            self,
+            ants_to_demote: set[str] | None = None,
+            ants_to_remove: set[str] | None = None,
+            ) -> None:
         """Update the reference antenna list for this MS to demote/remove specified antennas.
 
         Args:
@@ -1299,11 +1389,11 @@ class MeasurementSet(object):
         # Update refant list.
         self.reference_antenna = ','.join(refants_to_keep)
 
-        LOG.info('ms.update_reference_antennas for MS {} ({}): previous list={}, removed={}, demoted={}, new list={}'.
-                 format(self.basename, hex(id(self)), previous_reference_antenna,
-                        ','.join(sorted(ants_to_remove)) if ants_to_remove else 'none',
-                        ','.join(sorted(ants_to_demote)) if ants_to_demote else 'none',
-                        self.reference_antenna))
+        LOG.info('ms.update_reference_antennas for MS %s (%s): previous list=%s, removed=%s, demoted=%s, new list=%s',
+                 self.basename, hex(id(self)), previous_reference_antenna,
+                 ','.join(sorted(ants_to_remove)) if ants_to_remove else 'none',
+                 ','.join(sorted(ants_to_demote)) if ants_to_demote else 'none',
+                 self.reference_antenna)
 
     @property
     def session(self):
@@ -1352,8 +1442,14 @@ class MeasurementSet(object):
         self.data_column = data_type_per_column
         self.data_types_per_source_and_spw = data_types_per_source_and_spw
 
-    def set_data_column(self, dtype: DataType, column: str, source: str | None = None, spw: str | None = None,
-                        overwrite: bool = False, save_to_ms: bool = True) -> None:
+    def set_data_column(
+            self,
+            dtype: DataType,
+            column: str, source: str | None = None,
+            spw: str | None = None,
+            overwrite: bool = False,
+            save_to_ms: bool = True,
+            ) -> None:
         """Assign a data type to a column in the MS domain object.
 
         Set data type and column to MS domain object and record the available
@@ -1416,7 +1512,7 @@ class MeasurementSet(object):
         # Update MS domain object
         if dtype not in self.data_column:
             self.data_column[dtype] = column
-            LOG.info('Updated data column information of {}. Set {} to column {}'.format(self.basename, dtype, column))
+            LOG.info('Updated data column information of %s. Set %s to column %s', self.basename, dtype, column)
 
         # Write data type lookup dictionaries to MS history (PIPEREQ-195). This is a
         # minimum fallback implementation and should be replaced by a properly
@@ -1559,3 +1655,56 @@ class MeasurementSet(object):
             spw_list = utils.range_to_list(spw_select)
 
         return spw_list
+
+    # PIPE-2307: moving compute_az_el_to_field, compute_az_el_for_ms methods from pipeline.infrastructure.htmlrenderer to here
+    def compute_az_el_to_field(self, field: Field | None = None, epoch: dict | None = None) -> list[float]:
+        """Computes azimuth and elevation of a field at a given epoch.
+
+        This method uses the CASA `measures` tool to convert the direction
+        of a field to azimuth and elevation (AZELGEO frame) at the time
+        specified by the epoch and location of the observatory.
+
+        Args:
+            field : Field domain object or None.
+            epoch :  A dictionary representing the time epoch.
+
+        Returns:
+            list: A list containing azimuth (degrees) and elevation (degrees), in that order.
+        """
+        me = casa_tools.measures
+        me.doframe(epoch)
+        me.doframe(me.observatory(self.antenna_array.name))
+        myazel = me.measure(field.mdirection, 'AZELGEO')
+        myaz = myazel['m0']['value']
+        myel = myazel['m1']['value']
+        myaz = (myaz * 180 / np.pi) % 360
+        myel *= 180 / np.pi
+
+        return [myaz, myel]
+
+    def compute_az_el_for_ms(self, func: callable) -> tuple[float, float]:
+        """Computes overall azimuth and elevation values across POINTING, SIDEBAND, ATMOSPHERE scans.
+
+        Applies the given aggregation function (e.g. `min`, `max`, `mean`) to azimuth and elevation
+        values computed at the start and end of each field in science scans.
+
+        Args:
+            func (callable): A function that takes a list of floats and returns a single float.
+                Common examples include `min`, `max`, or `np.mean`.
+
+        Returns:
+            tuple[float, float]: A tuple containing the aggregated azimuth and elevation values.
+        """
+        cal_scans = self.get_scans(scan_intent='POINTING,SIDEBAND,ATMOSPHERE')
+        scans = [s for s in self.scans if s not in cal_scans]
+
+        az = []
+        el = []
+        for scan in scans:
+            for field in scan.fields:
+                az0, el0 = self.compute_az_el_to_field(field, scan.start_time)
+                az1, el1 = self.compute_az_el_to_field(field, scan.end_time)
+                az.append(func([az0, az1]))
+                el.append(func([el0, el1]))
+
+        return func(az), func(el)

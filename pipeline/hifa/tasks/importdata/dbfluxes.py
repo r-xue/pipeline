@@ -1,47 +1,41 @@
+from __future__ import annotations
+
 import certifi
 import collections
 import datetime
 import decimal
-import os
 import ssl
 import urllib
+from typing import TYPE_CHECKING, Any, DefaultDict
 from xml.dom import minidom
 from xml.parsers.expat import ExpatError
 
-import pipeline.domain as domain
-import pipeline.domain.measures as measures
-import pipeline.h.tasks.common.commonfluxresults as commonfluxresults
-import pipeline.h.tasks.importdata.fluxes as fluxes
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.utils as utils
+from pipeline import domain, infrastructure
+from pipeline.domain import measures
+from pipeline.h.tasks.common import commonfluxresults
+from pipeline.h.tasks.importdata import fluxes
+from pipeline.infrastructure import utils
 
-LOG = infrastructure.get_logger(__name__)
+if TYPE_CHECKING:
+    from pipeline.domain import FluxMeasurement, MeasurementSet, Source, SpectralWindow
+    from pipeline.h.tasks.common.commonfluxresults import FluxCalibrationResults
+
+LOG = infrastructure.logging.get_logger(__name__)
 ORIGIN_DB = 'DB'
+FLUX_SERVICE_URL = 'https://almascience.org/sc/flux'
+FLUX_SERVICE_URL_BACKUP = 'https://asa.alma.cl/sc/flux'
 
 
-def get_valid_url(env_var, default):
-    """Fetches a URL from an environment variable, validates it, and falls back to default if needed."""
-    url = os.getenv(env_var)
-    if not url:
-        url = default
-        LOG.info('Environment variable %s not defined.  Switching to default %s.', env_var, default)
-        return default
-    if not utils.validate_url(url):
-        LOG.warning('Environment variable %s URL was set to %s but is misconfigured.', env_var, url)
-        LOG.info('Switching to default %s.', default)
-        return default
-    LOG.info('Environment variable %s set to URL %s for ALMA flux service.', env_var, url)
-    return url
-
-
-def get_flux_urls():
+def get_flux_urls() -> tuple[str, str]:
     """Returns the primary and backup flux service URLs."""
-    flux_url = get_valid_url('FLUX_SERVICE_URL', 'https://almascience.org/sc/flux')
-    backup_flux_url = get_valid_url('FLUX_SERVICE_URL_BACKUP', 'https://asa.alma.cl/sc/flux')
+    flux_url = utils.get_valid_url('FLUX_SERVICE_URL', FLUX_SERVICE_URL)
+    backup_flux_url = utils.get_valid_url('FLUX_SERVICE_URL_BACKUP', FLUX_SERVICE_URL_BACKUP)
     return flux_url, backup_flux_url
 
 
-def get_setjy_results(mses):
+def get_setjy_results(
+        mses: list[MeasurementSet]
+        ) -> tuple[list[FluxCalibrationResults], list[dict[str, Any]]]:
     """
     Get flux values from the database service reverting to the Source
     tables XML for backup values and store the values in the context
@@ -70,7 +64,9 @@ def get_setjy_results(mses):
     return results, qastatus
 
 
-def read_fluxes_db(ms):
+def read_fluxes_db(
+        ms: MeasurementSet,
+        ) -> tuple[DefaultDict[Source, list[FluxMeasurement]], list[dict[str, Any]] | None]:
     """
     Read fluxes from the database server, defaulting to the Source XML table
     if no fluxes can be found
@@ -86,23 +82,38 @@ def read_fluxes_db(ms):
     return results, qacodes
 
 
-def flux_nosourcexml(ms):
+def flux_nosourcexml(ms: MeasurementSet) -> DefaultDict[Source, list[tuple[FluxMeasurement | str | None]]]:
     """
     Call the flux service and get the frequencies from the ms if no Source.xml is available
     """
     result = collections.defaultdict(list)
+    flux_url, _ = get_flux_urls()
 
     for source in ms.sources:
         for spw in ms.get_spectral_windows(science_windows_only=True):
-            m = query_online_catalogue(ms, spw, source)
-            if m:
-                result[source].append(m)
-                log_result(source, spw, 'N/A', m.I, m.spix, m.age)
+            url, version, status_code, data_conditions, clarification, catalogue_measurement = query_online_catalogue(
+                flux_url, ms, spw, source
+                )
+            result[source].append((url, version, status_code, data_conditions, clarification, catalogue_measurement))
+            if catalogue_measurement:
+                # set text for logging statements
+                catalogue_I = catalogue_measurement.I
+                spix = catalogue_measurement.spix
+                age = catalogue_measurement.age
+
+            else:
+                # set text for logging statements
+                catalogue_I = 'N/A'
+                spix = 'N/A'
+                age = 'N/A'
+
+            log_result(source, spw, 'N/A', catalogue_I, spix, age, url, version,
+                       status_code, data_conditions, clarification)
 
     return result
 
 
-def buildurl(service_url, obs_time, frequency, sourcename):
+def buildurl(service_url: str, obs_time: datetime.datetime, frequency: str, sourcename: str) -> str:
     # Example:
     # https://almascience.eso.org/sc/flux?DATE=10-August-2017&FREQUENCY=232101563000.0&NAME=J1924-2914&WEIGHTED=true&RESULT=1&CATALOGUE=5
     # New Example May 2019:
@@ -117,13 +128,18 @@ def buildurl(service_url, obs_time, frequency, sourcename):
     return url
 
 
-def fluxservice(service_url, obs_time, frequency, sourcename):
+def fluxservice(
+        service_url: str,
+        obs_time: datetime.datetime,
+        frequency: str,
+        sourcename: str,
+        ) -> dict[str, str | None]:
     """
     Usage of this online service requires:
         - service_url - url for the db service
         - obs_time - for getting the date
-        - frequency_text - we will get the frequency out of this in Hz
-        - source - we will get source.name from this object
+        - frequency - we will get the frequency out of this in Hz
+        - sourcename - name of the source
     """
 
     url = buildurl(service_url, obs_time, frequency, sourcename)
@@ -170,7 +186,7 @@ def fluxservice(service_url, obs_time, frequency, sourcename):
     return rowdict
 
 
-def buildparams(name, date, frequency):
+def buildparams(name: str, date: str, frequency: str) -> str:
     """
     Inputs are all strings with the format:
     NAME=3c279&DATE=04-Apr-2014&FREQUENCY=231.435E9&WEIGHTED=true&RESULT=1&CATALOGUE=5
@@ -179,14 +195,19 @@ def buildparams(name, date, frequency):
     return urllib.parse.urlencode(params)
 
 
-def sanitize_string(name):
+def sanitize_string(name: str) -> str:
     """
     Sanitize source name if needed, taking first alias.
     """
     return name.split(';')[0]
 
 
-def query_online_catalogue(flux_url, ms, spw, source):
+def query_online_catalogue(
+        flux_url: str,
+        ms: MeasurementSet,
+        spw: SpectralWindow,
+        source: Source,
+        ) -> tuple[FluxMeasurement | str | None]:
     # At this point we take:
     #  - the source name string
     #  - the frequency of the spw_id in Hz
@@ -225,8 +246,12 @@ def query_online_catalogue(flux_url, ms, spw, source):
            domain.FluxMeasurement(spw.id, final_I, spix=final_spix, origin=ORIGIN_DB, queried_at=utcnow, age=age_n_m_p)
 
 
-def add_catalogue_fluxes(measurements, ms):
+def add_catalogue_fluxes(
+        measurements: DefaultDict[Source, list[FluxMeasurement]],
+        ms: MeasurementSet,
+        ) -> tuple[DefaultDict[Source, list[FluxMeasurement]], list[dict[str, Any]]]:
     results = collections.defaultdict(list)
+    qacodes = []  # Dictionaries will be added here for codes and warning messages from the sources catalog
     science_windows = ms.get_spectral_windows(science_windows_only=True)
 
     # Test query to see if we need to switch to the backup URL
@@ -258,15 +283,12 @@ def add_catalogue_fluxes(measurements, ms):
             fluxservice(flux_url, obs_time, freq_hz, source_name)
         except IOError:
             # LOG.error("Could not contact the backup flux service URL.")
-            return results
-
-    qacodes = []   # Dictionaries will be added here for codes and warning messages from the sources catalog
+            return results, qacodes
 
     # Continue with required queries
     for source, xml_measurements in measurements.items():
         for xml_measurement in xml_measurements:
             spw = ms.get_spectral_window(xml_measurement.spw_id)
-            # LOG.info("SPW ID: "+str(spw.id))
 
             # only query database for science windows
             if spw not in science_windows:
@@ -289,7 +311,6 @@ def add_catalogue_fluxes(measurements, ms):
 
             else:
                 # No/invalid catalogue entry, so use Source.XML measurement
-
                 results[source].append(xml_measurement)
 
                 # set text for logging statements
@@ -306,7 +327,19 @@ def add_catalogue_fluxes(measurements, ms):
     return results, qacodes
 
 
-def log_result(source, spw, asdm_I, catalogue_I, spix, age, url, version, status_code, data_conditions, clarification):
+def log_result(
+        source: Source,
+        spw: SpectralWindow,
+        asdm_I: str,
+        catalogue_I: str,
+        spix: str,
+        age: str,
+        url: str,
+        version: str,
+        status_code: str,
+        data_conditions: str,
+        clarification: str,
+        ) -> None:
 
     codedict = {}
     codedict[0] = "Grid cal flux estimation heuristic used"

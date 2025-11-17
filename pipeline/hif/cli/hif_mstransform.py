@@ -5,9 +5,9 @@ import pipeline.h.cli.utils as utils
 
 # docstring and type hints: inherits from hif.tasks.mstransform.mstransform.MstransformInputs.__init__
 @utils.cli_wrapper
-def hif_mstransform(vis=None, outputvis=None, field=None, intent=None, spw=None, chanbin=None, timebin=None):
-
-    """Create new MeasurementSets for science target imaging
+def hif_mstransform(vis=None, outputvis=None, field=None, intent=None, spw=None, chanbin=None, timebin=None,
+                    parallel=None):
+    """Create new MeasurementSets for science target imaging.
 
     Create new MeasurementSets for imaging from the corrected column of the input
     MeasurementSet via a single call to mstransform with all data selection parameters.
@@ -29,8 +29,6 @@ def hif_mstransform(vis=None, outputvis=None, field=None, intent=None, spw=None,
         >>> hif_mstransform(intent='PHASE,BANDPASS')
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

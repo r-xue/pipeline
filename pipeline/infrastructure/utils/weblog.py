@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 
 __all__ = ['OrderedDefaultdict', 'merge_td_columns', 'merge_td_rows', 'get_vis_from_plots', 'total_time_on_source',
            'total_time_on_target_on_source', 'get_logrecords', 'get_intervals', 'table_to_html', 'plots_to_html',
-           'scale_uv_range', 'split_spw']
+           'scale_uv_range', 'split_spw', 'get_directory_size']
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -70,15 +70,14 @@ class OrderedDefaultdict(collections.OrderedDict):
 
 
 def merge_td_columns(rows, num_to_merge=None, vertical_align=False):
-    """
-    Merge HTML TD columns with identical values using rowspan.
+    """Merge HTML TD columns with identical values using rowspan.
 
     Arguments:
     rows -- a list of tuples, one tuple per row, containing n elements for the
             n columns.
     num_to_merge -- the number of columns to merge, starting from the left
                     hand column. Leave as None to merge all columns.
-    vertical_align -- Set to True to vertically centre any merged cells.
+    vertical_align -- Set to True to vertically centre any merged/unmerged cells.
 
     Output:
     A list of strings, one string per row, containing TD elements.
@@ -103,13 +102,11 @@ def merge_td_columns(rows, num_to_merge=None, vertical_align=False):
             start += rowspan
 
             if rowspan > 1:
-                new_td = ['<td rowspan="%s"%s>%s</td>' % (rowspan,
-                                                          valign,
-                                                          same_vals[0])]
+                new_td = [f'<td rowspan="{rowspan}"{valign}>{same_vals[0]}</td>']
                 blanks = [''] * (rowspan - 1)
                 merged.extend(new_td + blanks)
             else:
-                td = '<td>%s</td>' % (same_vals[0])
+                td = f'<td{valign}>{same_vals[0]}</td>'
                 merged.append(td)
 
         new_cols.append(merged)
@@ -459,3 +456,29 @@ def split_spw(spw_string: str) -> str:
             return "<br/>".join(parts[:i] + ["".join(parts[i:])])
 
     return spw_string
+
+
+def get_directory_size(directory):
+    """
+    Calculate the total size of a directory in megabytes (MB).
+
+    This includes all files in the directory and its subdirectories.
+    Symlinks are ignored to avoid counting linked files or causing errors.
+
+    Parameters:
+        directory (str): Path to the target directory.
+
+    Returns:
+        float: Total size of the directory in megabytes.
+    """
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(directory):
+        for filename in filenames:
+            filepath = os.path.join(dirpath, filename)
+            if not os.path.islink(filepath):
+                try:
+                    total_size += os.path.getsize(filepath)
+                except OSError as e:
+                    # make it log.warning
+                    print(f"Error accessing {filepath}: {e}")
+    return total_size / (1024 * 1024)

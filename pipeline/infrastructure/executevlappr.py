@@ -17,7 +17,7 @@ from . import exceptions
 from . import project
 from . import utils
 from .. import cli
-from .executeppr import _getCommands, _getIntents, _getPerformanceParameters, _getPprObject, save_existing_context
+from .executeppr import _getCommands, _getIntents, _getPerformanceParameters, _getProcessingIntents, _getPprObject, save_existing_context
 
 if TYPE_CHECKING:
     from pipeline.extern.XmlObjectifier import XmlObject
@@ -54,6 +54,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
         casa_tools.post_to_log("Analyzing pipeline processing request ...", echo_to_screen=echo_to_screen)
         info, structure, relativePath, intentsDict, asdmList, procedureName, commandsList = \
             _getFirstRequest(pprXmlFile)
+        processing_intents = _getProcessingIntents(intentsDict, procedureName)
 
         # Set the directories
         if 'SCIPIPE_ROOTDIR' in os.environ:
@@ -68,7 +69,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
             rawDir = os.path.abspath(os.path.join('..', 'rawdata'))
 
         # Get the pipeline context
-        context = cli.h_init(loglevel=loglevel, plotlevel=plotlevel)
+        context = cli.h_init(loglevel=loglevel, plotlevel=plotlevel, processing_intents=processing_intents)
 
     except Exception:
         casa_tools.post_to_log("Beginning pipeline run ...", echo_to_screen=echo_to_screen)

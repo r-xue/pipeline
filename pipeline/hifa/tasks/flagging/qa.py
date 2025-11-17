@@ -16,7 +16,7 @@ _lowtrans_qa_metric_name = 'LowTransmissionFlags'
 class FlagDeterALMAQAHandler(pqa.QAPlugin):
     result_cls = flagdeteralma.FlagDeterALMAResults
     child_cls = None
-    generating_task = flagdeteralma.FlagDeterALMA
+    generating_task = flagdeteralma.SerialFlagDeterALMA
 
     def handle(self, context, result):
         vis = result.inputs['vis']
@@ -44,11 +44,10 @@ class FlagDeterALMAQAHandler(pqa.QAPlugin):
                 shortmsg='Unable to determine baseband range'))
 
 
-
 class FlagDeterALMAListQAHandler(pqa.QAPlugin):
     result_cls = collections.abc.Iterable
     child_cls = flagdeteralma.FlagDeterALMAResults
-    generating_task = flagdeteralma.FlagDeterALMA
+    generating_task = flagdeteralma.SerialFlagDeterALMA
 
     def handle(self, context, result):
         # collate the QAScores from each child result, pulling them into our

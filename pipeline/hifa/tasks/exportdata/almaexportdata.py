@@ -1,18 +1,21 @@
+from __future__ import annotations
+
 import collections
-import json
 import os
 import shutil
 import traceback
+from typing import TYPE_CHECKING
 
-import pipeline.h.tasks.exportdata.exportdata as exportdata
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import task_registry
-from pipeline.infrastructure.renderer import stats_extractor
+from pipeline import infrastructure
+from pipeline.h.tasks.exportdata import exportdata
+from pipeline.infrastructure import task_registry, vdp
 
 from . import almaifaqua
 
-LOG = infrastructure.get_logger(__name__)
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
+
+LOG = infrastructure.logging.get_logger(__name__)
 
 AuxFileProducts = collections.namedtuple('AuxFileProducts', 'flux_file antenna_file cont_file flagtargets_list')
 
@@ -22,9 +25,21 @@ class ALMAExportDataInputs(exportdata.ExportDataInputs):
     imaging_products_only = vdp.VisDependentProperty(default=False)
 
     # docstring and type hints: supplements hifa_exportdata
-    def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None, tarms=None,
-                 pprfile=None, calintents=None,
-                 calimages=None, targetimages=None, products_dir=None, imaging_products_only=None):
+    def __init__(
+            self,
+            context: Context,
+            output_dir: str = None,
+            session: list[str] = None,
+            vis: list[str] = None,
+            exportmses: bool = None,
+            tarms: bool = None,
+            pprfile: list[str] = None,
+            calintents: str = None,
+            calimages: list[str] = None,
+            targetimages: list[str] = None,
+            products_dir: str = None,
+            imaging_products_only: bool = None,
+            ):
         """Initialize the Inputs.
 
         Args:
@@ -45,6 +60,8 @@ class ALMAExportDataInputs(exportdata.ExportDataInputs):
 
             exportmses: Export the final MeasurementSets instead of the final flags,
                 calibration tables, and calibration instructions.
+
+            tarms: Tar final MeasurementSets
 
             pprfile: Name of the pipeline processing request to be exported. Defaults
                 to a file matching the template 'PPR_*.xml'.
@@ -68,7 +85,7 @@ class ALMAExportDataInputs(exportdata.ExportDataInputs):
             imaging_products_only: Export science target imaging products only
 
         """
-        super(ALMAExportDataInputs, self).__init__(context, output_dir=output_dir, session=session, vis=vis,
+        super().__init__(context, output_dir=output_dir, session=session, vis=vis,
                                                    exportmses=exportmses, tarms=tarms, pprfile=pprfile, calintents=calintents,
                                                    calimages=calimages, targetimages=targetimages,
                                                    products_dir=products_dir,
@@ -174,28 +191,6 @@ class ALMAExportData(exportdata.ExportData):
                 os.path.basename(apply_file_list[i])
 
         return visdict
-
-    def _export_stats_file(self, context, oussid='') -> str:
-        """Generate and output the stats file.
-
-        Args:
-          context: the pipieline context
-          oussid: the ous id
-
-        Returns:
-          The filename of the outputfile.
-        """
-        statsfile_name = "pipeline_stats_{}.json".format(oussid)
-        stats_file = os.path.join(context.output_dir, statsfile_name)
-        LOG.info('Generating pipeline statistics file')
-
-        stats_dict = stats_extractor.generate_stats(context)
-
-        # Write the stats file to disk
-        with open(stats_file, 'w', encoding='utf-8') as f:
-            json.dump(stats_dict, f, ensure_ascii=False, indent=4, sort_keys=True)
-
-        return stats_file
 
     def _export_casa_restore_script(self, context, script_name, products_dir, oussid, vislist, session_list):
         """

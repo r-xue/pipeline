@@ -14,6 +14,7 @@ def hifa_tsysflagcontamination(
     relative_detection_factor=None,
     diagnostic_plots=None,
     continue_on_failure=None,
+    parallel=None,
 ):
     """Flag line contamination in ALMA interferometric Tsys caltables
 

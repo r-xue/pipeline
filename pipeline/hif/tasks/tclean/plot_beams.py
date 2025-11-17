@@ -25,14 +25,14 @@ def plot_beams(psf_name, plotfile):
     num_chan = im_info['shape'][f_index]
 
     channels = np.arange(num_chan)
-    freq_refval = float(qaTool.getvalue(qaTool.convert(qaTool.quantity(im_info['refval'][f_index], f_unit), 'GHz')))
-    freq_refchan = float(qaTool.getvalue(qaTool.convert(qaTool.quantity(im_info['refpix'][f_index], f_unit), 'GHz')))
-    freq_step = float(qaTool.getvalue(qaTool.convert(qaTool.quantity(im_info['incr'][f_index], f_unit), 'GHz')))
+    freq_refval = float(qaTool.getvalue(qaTool.convert(qaTool.quantity(im_info['refval'][f_index], f_unit), 'GHz'))[0])
+    freq_refchan = float(qaTool.getvalue(qaTool.convert(qaTool.quantity(im_info['refpix'][f_index], f_unit), 'GHz'))[0])
+    freq_step = float(qaTool.getvalue(qaTool.convert(qaTool.quantity(im_info['incr'][f_index], f_unit), 'GHz'))[0])
     freqs = np.array([freq_refval+freq_step*(c-freq_refchan) for c in channels])
 
     rb = im_info['perplanebeams']
-    major = np.array([float(qaTool.getvalue(qaTool.convert(rb['beams'][f'*{c}']['*0']['major'], 'arcsec'))) for c in channels])
-    minor = np.array([float(qaTool.getvalue(qaTool.convert(rb['beams'][f'*{c}']['*0']['minor'], 'arcsec'))) for c in channels])
+    major = np.array([float(qaTool.getvalue(qaTool.convert(rb['beams'][f'*{c}']['*0']['major'], 'arcsec'))[0]) for c in channels])
+    minor = np.array([float(qaTool.getvalue(qaTool.convert(rb['beams'][f'*{c}']['*0']['minor'], 'arcsec'))[0]) for c in channels])
 
     plt.close('all')
     fig, ax = plt.subplots(figsize=(6.4, 4.8), sharex=True)

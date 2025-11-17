@@ -1,6 +1,7 @@
 import bz2
 import itertools
 import math
+import os
 import pickle
 import re
 
@@ -14,6 +15,7 @@ from casatools import table as tbtool
 
 import pipeline.infrastructure.logging
 from pipeline.extern.almahelpers import tsysspwmap
+from pipeline.infrastructure import casa_tools
 
 LOG = pipeline.infrastructure.logging.get_logger(__name__)
 
@@ -217,79 +219,81 @@ def weather_function(msfile):
     # conditions['pwv'] = _pwv_function(msfile)
     # PWV data
     pwv = []
-    try:
-        tb.open(msfile + "/ASDM_CALWVR")
-        pwvtime = tb.getcol("startValidTime")  # mjdsec
-        assert len(pwvtime) > 0, "no valid data in table ASDM_CALWVR"
-        antenna = tb.getcol("antennaName")
-        nant = len(set(list(antenna)))
-        assert nant > 0, "no valid data in table ASDM_CALWVR"
-        pwv = tb.getcol("water")
-        tb.close()
-        assert len(pwv) % nant == 0, "weather_function: incompatible dimensions"
-        ntimes = int(len(pwv) / nant)
-        pwvtime = np.median(pwvtime.reshape(ntimes, nant), axis=1)
-        if np.all(pwv == 1.0):
-            LOG.info("weather_function: PWV all ones, no valid data")
-            pwv *= 0
-        pwv = np.median(pwv.reshape(ntimes, nant), axis=1)
-        conditions["pwv"] = lambda tt: np.interp(tt, pwvtime, pwv)
-    except RuntimeError:
-        LOG.warning(
-            "This measurement set does not have or has problems with ASDM_CALWVR table. Try the option asis='SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing' in importasdm"
-        )
-        raise RuntimeError()
-    except AssertionError:
-        LOG.info("no valid data in table ASDM_CALWVR. Trying ASDM_CALATMOSPHERE.")
 
+    table_name = f'{msfile}/ASDM_CALWVR'
+    if os.path.exists(table_name):
+        with casa_tools.TableReader(table_name) as table:
+            try:
+                pwvtime = table.getcol('startValidTime')  # mjdsec
+                assert len(pwvtime) > 0, 'no valid data in table ASDM_CALWVR'
+                antenna = table.getcol('antennaName')
+                nant = len(set(list(antenna)))
+                assert nant > 0, 'no valid data in table ASDM_CALWVR'
+                pwv = table.getcol('water')
+                assert len(pwv) % nant == 0, 'weather_function: incompatible dimensions'
+                ntimes = int(len(pwv) / nant)
+                pwvtime = np.median(pwvtime.reshape(ntimes, nant), axis=1)
+                if np.all(pwv == 1.0):
+                    LOG.info('weather_function: PWV all ones, no valid data')
+                    pwv *= 0
+                pwv = np.median(pwv.reshape(ntimes, nant), axis=1)
+                conditions['pwv'] = lambda tt: np.interp(tt, pwvtime, pwv)
+            except AssertionError:
+                LOG.info('no valid data in table %s. Trying ASDM_CALATMOSPHERE.', table_name)
+    else:
+        LOG.info('Could not find %s. Trying ASDM_CALATMOSPHERE.', table_name)
+
+    # Fallback source: ASDM_CALATMOSPHERE table
     if len(pwv) <= 0:
-        try:
-            tb.open(msfile + "/ASDM_CALATMOSPHERE")
-            pwvtime = tb.getcol("startValidTime")  # mjdsec
-            antenna = tb.getcol("antennaName")
-            pwv = tb.getcol("water")[
-                0
-            ]  # There seem to be 2 identical entries per row, so take first one.
-            tb.close()
-            conditions["pwv"] = lambda tt: np.interp(tt, pwvtime, pwv)
-        except RuntimeError:
+        table_name = f'{msfile}/ASDM_CALATMOSPHERE'
+        if os.path.exists(table_name):
+            with casa_tools.TableReader(table_name) as table:
+                pwvtime = table.getcol('startValidTime')  # mjdsec
+                antenna = table.getcol('antennaName')
+                if not table.nrows():
+                    LOG.warning('no valid data in table %s.', table_name)
+                    raise RuntimeError()
+                pwv = table.getcol('water')[0]  # There seem to be 2 identical entries per row, so take first one.
+                conditions['pwv'] = lambda tt: np.interp(tt, pwvtime, pwv)
+        else:
             LOG.warning(
-                "This measurement set does not have an ASDM_CALATMOSPHERE table. Try the option asis='SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR CalPointing' in importasdm"
+                '%s does not have an ASDM_CALATMOSPHERE table or no valid data inside. Try the '
+                "option asis='SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR "
+                "CalPointing' in importasdm",
+                msfile,
             )
             raise RuntimeError()
 
     # Get the weather table.
-    try:
-        tb.open(msfile + "/WEATHER")
-    except RuntimeError:
-        LOG.info("Could not open the WEATHER table for this ms, default returned.")
-        conditions["pressure"] = lambda tt: 563.0
-        conditions["temperature"] = lambda tt: 0.0  # in deg C
-        conditions["humidity"] = lambda tt: 20.0
-        # return(conditions)
+    table_name = msfile + '/WEATHER'
+    if os.path.exists(table_name):
+        with casa_tools.TableReader(table_name) as table:
+            # Get all weather information.
+            mjdsec = table.getcol('TIME')
+            indices = np.argsort(mjdsec)  # sometimes slightly out of order, fix.
+            pressure = table.getcol('PRESSURE')
+            relativeHumidity = table.getcol('REL_HUMIDITY')
+            temperature = table.getcol('TEMPERATURE')
+            # If in units of Kelvin, convert to C
+            if np.mean(temperature) > 100:
+                temperature = temperature - 273.15
 
-    # Get all weather information.
-    mjdsec = tb.getcol("TIME")
-    indices = np.argsort(mjdsec)  # sometimes slightly out of order, fix.
-    pressure = tb.getcol("PRESSURE")
-    relativeHumidity = tb.getcol("REL_HUMIDITY")
-    temperature = tb.getcol("TEMPERATURE")
-    # If in units of Kelvin, convert to C
-    if np.mean(temperature) > 100:
-        temperature = temperature - 273.15
-
-    # Apply correct ordering
-    mjdsec = np.array(mjdsec)[indices]
-    pressure = np.array(pressure)[indices]
-    # assert False, pressure
-    relativeHumidity = np.array(relativeHumidity)[indices]
-    temperature = np.array(temperature)[indices]
-    # Grab weather station IDs.
-    if "NS_WX_STATION_ID" in tb.colnames():
-        stations = tb.getcol("NS_WX_STATION_ID")
+            # Apply correct ordering
+            mjdsec = np.array(mjdsec)[indices]
+            pressure = np.array(pressure)[indices]
+            # assert False, pressure
+            relativeHumidity = np.array(relativeHumidity)[indices]
+            temperature = np.array(temperature)[indices]
+            # Grab weather station IDs.
+            if 'NS_WX_STATION_ID' in table.colnames():
+                stations = table.getcol('NS_WX_STATION_ID')
+            else:
+                stations = None
     else:
-        stations = None
-    tb.close()
+        LOG.info('%s does not have a WEATHER table, default returned', msfile)
+        conditions['pressure'] = lambda tt: 563.0
+        conditions['temperature'] = lambda tt: 0.0  # in deg C
+        conditions['humidity'] = lambda tt: 20.0
 
     prefix = ["WSTB", "Meteo", "OSF"]  # Do not know why
     asdmStation = msfile + "/ASDM_STATION"

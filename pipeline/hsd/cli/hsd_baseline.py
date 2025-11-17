@@ -2,11 +2,13 @@ import sys
 
 import pipeline.h.cli.utils as utils
 
+
 # docstring and type hints: inherits from hsd.tasks.baseline.baseline.SDBaselineInputs.__init__
 @utils.cli_wrapper
 def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
                  linewindow=None, linewindowmode=None, edge=None, broadline=None,
-                 clusteringalgorithm=None, deviationmask=None, parallel=None,
+                 clusteringalgorithm=None,
+                 deviationmask=None, deviationmask_sigma_threshold=None, parallel=None,
                  infiles=None, field=None, antenna=None, spw=None, pol=None):
 
     """Detect and validate spectral lines, subtract baseline by masking detected lines.
@@ -68,7 +70,6 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
                          linewindowmode='merge')
 
     """
-
 
     ##########################################################################
     #                                                                        #

@@ -20,20 +20,28 @@ def plot_beams_vlasscube(vlass_cube_metadata, figfile='beams_vlasscube.png', log
     ref_idx = vlass_cube_metadata['ref_idx']
 
     fig, (ax, ax2) = plt.subplots(2, 1, figsize=(8, 6), gridspec_kw={'height_ratios': [3, 2]})
-    ax.plot(freq_list, bmajor_list, label=r'$\rm Bmaj_{rej.}$', c='darkblue', marker='o', linestyle='None', fillstyle='none')
-    ax.plot(freq_list, bminor_list, label=r'$\rm Bmin_{rej.}$', c='green', marker='o', linestyle='None', fillstyle='none')
+    ax.plot(
+        freq_list, bmajor_list, label=r'$\rm Bmaj_{rej.}$', c='darkblue', marker='o', linestyle='None', fillstyle='none'
+    )
+    ax.plot(
+        freq_list, bminor_list, label=r'$\rm Bmin_{rej.}$', c='green', marker='o', linestyle='None', fillstyle='none'
+    )
     ax.plot(freq_list[plane_keep], bmajor_list[plane_keep], c='darkblue', marker='o', linestyle='None')
     ax.plot(freq_list[plane_keep], bminor_list[plane_keep], c='green', marker='o', linestyle='None')
-    ax.plot(freq_list[ref_idx], bmajor_list[ref_idx], label=r'$\rm Bmaj_{ref}$', c='darkblue', marker='s', linestyle='None')
-    ax.plot(freq_list[ref_idx], bminor_list[ref_idx], label=r'$\rm Bmin_{ref}$', c='green', marker='s', linestyle='None')
+    ax.plot(
+        freq_list[ref_idx], bmajor_list[ref_idx], label=r'$\rm Bmaj_{ref}$', c='darkblue', marker='s', linestyle='None'
+    )
+    ax.plot(
+        freq_list[ref_idx], bminor_list[ref_idx], label=r'$\rm Bmin_{ref}$', c='green', marker='s', linestyle='None'
+    )
 
-    freq_scaled = np.arange(min(freq_list)-0.5, max(freq_list)+0.5, 0.1)
-    bmajor_scaled = bmajor_list[ref_idx]*freq_list[ref_idx]/freq_scaled
-    bminor_scaled = bminor_list[ref_idx]*freq_list[ref_idx]/freq_scaled
+    freq_scaled = np.arange(min(freq_list) - 0.5, max(freq_list) + 0.5, 0.1)
+    bmajor_scaled = bmajor_list[ref_idx] * freq_list[ref_idx] / freq_scaled
+    bminor_scaled = bminor_list[ref_idx] * freq_list[ref_idx] / freq_scaled
 
     dfreq = 0.1
     if len(freq_list) > 1:
-        dfreq = abs(freq_list[1]-freq_list[0])*0.5
+        dfreq = abs(freq_list[1] - freq_list[0]) * 0.5
 
     ax2.bar(freq_list, flagpct_list, color='gray', alpha=1.0, width=dfreq, label=spwgroup_list)
     ax2.axhline(y=flagpct_threshold, color='red', linestyle='dashed')
@@ -57,25 +65,27 @@ def plot_beams_vlasscube(vlass_cube_metadata, figfile='beams_vlasscube.png', log
 
     ax.set_xlim(xmin, xmax)
     ax.plot(freq_scaled, bmajor_scaled, label=r'$\rm Bmaj_{scaled}$', c='darkblue', linestyle='dashed')
-    ax.fill_between(freq_scaled, bmajor_scaled*(1.-beam_dev), bmajor_scaled*(1.+beam_dev), color='darkblue', alpha=0.2)
+    ax.fill_between(
+        freq_scaled, bmajor_scaled * (1.0 - beam_dev), bmajor_scaled * (1.0 + beam_dev), color='darkblue', alpha=0.2
+    )
     ax.plot(freq_scaled, bminor_scaled, label=r'$\rm Bmin_{scaled}$', c='green', linestyle='dashed')
-    ax.fill_between(freq_scaled, bminor_scaled*(1.-beam_dev), bminor_scaled*(1.+beam_dev), color='green', alpha=0.2)
+    ax.fill_between(
+        freq_scaled, bminor_scaled * (1.0 - beam_dev), bminor_scaled * (1.0 + beam_dev), color='green', alpha=0.2
+    )
 
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.25),
-              fancybox=False, shadow=False, ncol=3, frameon=False)
-
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.25), fancybox=False, shadow=False, ncol=3, frameon=False)
     ax.set_xlabel('Ref. Freq. [GHz]')
-    ax2.set_xlabel('Spw Selection')
-
-    with plt.rc_context({'mathtext.default':  'regular'}):
+    with plt.rc_context({'mathtext.default': 'regular'}):
         ax2.set_xlabel(
-            f'Spw Selection\n BeamDev$_\mathdefault{{th}}$={beam_dev}, flagpct$_\mathdefault{{th}}$={flagpct_threshold*100}%')
+            'Spw Selection\n'
+            rf'BeamDev$_\mathdefault{{th}}$={beam_dev}, flagpct$_\mathdefault{{th}}$={flagpct_threshold * 100}%'
+        )
 
     ax.set_ylabel('Beam Size [arcsec]')
 
     if logscale:
-        ax.set_yscale("log")
-        ax.set_xscale("log")
+        ax.set_yscale('log')
+        ax.set_xscale('log')
         ax.xaxis.set_major_formatter(ScalarFormatter())
         ax.xaxis.set_minor_formatter(ScalarFormatter())
         ax.yaxis.set_major_formatter(ScalarFormatter())

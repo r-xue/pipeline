@@ -200,10 +200,21 @@ class Syspower(basetask.StandardTaskTemplate):
             antexclude_dict = ast.literal_eval(self.inputs.antexclude)
         elif isinstance(self.inputs.antexclude, dict):
             antexclude_dict = self.inputs.antexclude
+        priorcals_results = None
+        for result in self.inputs.context.results:
+            objresult = result.read()
+            if objresult.taskname == "hifv_priorcals":
+                priorcals_results = objresult[0]
 
-        # PIPE-2164: getting rq table from context
-        # Assumes hifv_priorcals was executed as the previous stage
-        rq_table = next(iter(self.inputs.context.callibrary.active.get_caltable('rq')))
+        if priorcals_results is not None:
+            try:
+                rq_table = priorcals_results.rq_result[0].final[0].gaintable
+            except Exception as ex:
+                rq_table = priorcals_results.rq_result.final[0].gaintable
+                LOG.debug(ex)
+        else:
+            rq_table = ""
+            LOG.warning("Unable to find hifv_priorcals results")
 
         band_baseband_spw = collections.defaultdict(dict)
 
@@ -344,7 +355,7 @@ class Syspower(basetask.StandardTaskTemplate):
                 with open(flag_file_name, 'r') as flag_file:
                     for line in flag_file:
                         try:
-                            r = re.search(r"antenna='ea(\d*)&&\*' timerange='(.*)' reason", line)
+                            r = re.search(r"antenna='ea(\d*)&&\*' timerange='(.*)\' (?:spw='(.*)\')? (?:correlation='(.*)\')? reason", line)
                         except Exception as e:
                             r = False
                         if r:

@@ -39,7 +39,7 @@ class HanningInputs(vdp.StandardInputs):
         Args:
             context: Pipeline context
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
             maser_detection: Run maser detect algorithm on spectral line windows if spws_to_smooth is None. Defaults to True.
 
@@ -283,8 +283,8 @@ class Hanning(basetask.StandardTaskTemplate):
             return False
 
         to_lsrk = suTool.advisechansel(msname=ms_info.name, spwselection=spw, getfreqrange=True, freqframe='LSRK')
-        freq_low = float(qaTool.getvalue(qaTool.convert(to_lsrk['freqstart'], 'Hz')))
-        freq_high = float(qaTool.getvalue(qaTool.convert(to_lsrk['freqend'], 'Hz')))
+        freq_low = float(qaTool.getvalue(qaTool.convert(to_lsrk['freqstart'], 'Hz'))[0])
+        freq_high = float(qaTool.getvalue(qaTool.convert(to_lsrk['freqend'], 'Hz'))[0])
         LOG.debug("Freq low: {}; Freq high: {}".format(freq_low, freq_high))
 
         for value in maser_dict.values():

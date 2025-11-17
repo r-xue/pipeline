@@ -680,13 +680,13 @@ def xml_for_sensitivity_stage(context, stage_results, exporter, name):
     sensitivity_dicts = exporter(stage_results)
 
     for d in sensitivity_dicts:
-        ms_xml = xml_for_sensitivity(d)
+        ms_xml = xml_for_sensitivity(d, stage_name)
         xml_root.append(ms_xml)
 
     return xml_root
 
 
-def xml_for_sensitivity(d):
+def xml_for_sensitivity(d, stage_name):
     """
     Return the XML representation for a sensitivity dictionary.
 
@@ -770,11 +770,11 @@ def xml_for_sensitivity(d):
         positionangle_deg = 'N/A'
 
     try:
-        if d['sensitivity'] is None:
-            sensitivity_jy_per_beam  = 'N/A'
+        if d['observed_sensitivity'] is None:
+            observed_sensitivity_jy_per_beam  = 'N/A'
         else:
-            sensitivity = qa.quantity(d['sensitivity'])
-            sensitivity_jy_per_beam = value(qa.convert(sensitivity, 'Jy/beam'))
+            observed_sensitivity = qa.quantity(d['observed_sensitivity'])
+            observed_sensitivity_jy_per_beam = value(qa.convert(observed_sensitivity, 'Jy/beam'))
     except:
         sensitivity_jy_per_beam  = 'N/A'
 
@@ -805,6 +805,15 @@ def xml_for_sensitivity(d):
         imagename = 'N/A'
 
     try:
+        if d['theoretical_sensitivity'] is None or float(d['theoretical_sensitivity']['value']) < 0:
+            theoretical_sensitivity_jy_per_beam = 'N/A'
+        else:
+            theoretical_sensitivity = qa.quantity(d['theoretical_sensitivity'])
+            theoretical_sensitivity_jy_per_beam = value(qa.convert(theoretical_sensitivity, 'Jy/beam'))
+    except:
+        theoretical_sensitivity_jy_per_beam = 'N/A'
+
+    try:
         if d['datatype'] is None:
             datatype = 'N/A'
         else:
@@ -826,7 +835,15 @@ def xml_for_sensitivity(d):
         Field=d['field'],
         Robust=str(d.get('robust', '')),
         UVTaper=str(d.get('uvtaper', '')),
-        SensitivityJyPerBeam=sensitivity_jy_per_beam,
+        # The conditional is just for PL2025 when the new names TheoreticalSensitivityJyPerBeam
+        # and ObservedSensitivityJyPerBeam were introduced late in the development cycle.
+        # Downstream systems needs to be adjusted next year to pick up the information from the
+        # new parameters. Then SensitivityJyPerBeam will be deprecated and this line removed.
+        # The "stage_name" parameter of the "xml_for_sensitivity" method can then also be
+        # removed again.
+        SensitivityJyPerBeam=theoretical_sensitivity_jy_per_beam if stage_name in ['hifa_imageprecheck'] else observed_sensitivity_jy_per_beam,
+        TheoreticalSensitivityJyPerBeam=theoretical_sensitivity_jy_per_beam,
+        ObservedSensitivityJyPerBeam=observed_sensitivity_jy_per_beam,
         MsSpwId=d['spw'],
         IsRepresentative=is_representative,
         PbcorImageMinJyPerBeam=pbcor_image_min_jy_per_beam,

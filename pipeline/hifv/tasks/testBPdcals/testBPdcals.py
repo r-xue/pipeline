@@ -44,7 +44,7 @@ class testBPdcalsInputs(vdp.StandardInputs):
         Args:
             context (:obj:): Pipeline context
 
-            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
             weakbp(Boolean): Activate weak bandpass heuristics.
                 Weak bandpass heuristics on/off - currently not used - see PIPE-104.
@@ -347,8 +347,11 @@ class testBPdcals(basetask.StandardTaskTemplate):
         tablebase = tableprefix + str(stage_number) + '_3.' + 'testBPdinitialgain'
         table_suffix = ['_{!s}.tbl'.format(band), '3_{!s}.tbl'.format(band), '10_{!s}.tbl'.format(band)]
         soltimes = [1.0, 3.0, 10.0]
-
-        integration_time = m.get_integration_time_stats(stat_type="max")
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-1703: In multi-band data, the maximum integration time returned was determined
+        # by considering the integration time of all scans. The get_vla_max_integration_time
+        # method has been updated to return the maximum integration time for the input band.
+        integration_time = m.get_integration_time_stats(stat_type="max", band=band, science_windows_only=True)
         soltimes = [integration_time * x for x in soltimes]
         solints = ['int', str(soltimes[1]) + 's', str(soltimes[2]) + 's']
         soltime = soltimes[0]
@@ -478,7 +481,10 @@ class testBPdcals(basetask.StandardTaskTemplate):
                                      "The fraction of flagged solutions is " + str(fracFlaggedSolns10))
 
         LOG.info("Test amp and phase calibration on delay and bandpass calibrators complete for band {!s}".format(band))
-        LOG.info("Using short solint = {!s} for band {!s}".format(str(gain_solint1), band))
+        if solint == solints[0]:
+            LOG.info("Using short solint = {!s} =  {:.6f}s for band {!s}".format(str(gain_solint1), soltimes[0], band))
+        else:
+            LOG.info("Using short solint = {!s} for band {!s}".format(str(gain_solint1), band))
 
         LOG.info("Doing test bandpass calibration for band {!s}".format(band))
 

@@ -24,17 +24,21 @@ import copy
 import os
 import shutil
 import string
+import traceback
+import textwrap
 from typing import List, Optional
 
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
-import matplotlib.text as mtext
 import numpy as np
 from matplotlib.offsetbox import AnnotationBbox, HPacker, TextArea
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
+import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tasks, casa_tools, filenamer
+from pipeline.infrastructure.displays.plotstyle import matplotlibrc_formal
 from pipeline.infrastructure.utils import get_stokes
 
 LOG = infrastructure.get_logger(__name__)
@@ -65,7 +69,7 @@ def plotfilename(image, reportdir, collapseFunction=None, stokes=None):
     return name
 
 
-class SkyDisplay(object):
+class SkyDisplay:
     """Class to plot sky images."""
 
     def __init__(self, exclude_desc=False, overwrite=False, figsize=(6.4, 4.8), dpi=None):
@@ -140,20 +144,41 @@ class SkyDisplay(object):
 
         return None
 
-    def _get_vla_band(self, context, miscinfo):
+    def _get_vla_band(self, context, miscinfo) -> str | None:
         """Get the VLA band string, only for VLA aggregated cont imaging."""
-
         last_result = context.results[-1]
-        if last_result.taskname == 'hif_makeimages':
-            if (context.results[-1].results[0].imaging_mode in ('VLA', 'EVLA', 'JVLA') and
-                    context.results[-1].results[0].specmode == 'cont'):
-                ms = context.observing_run.get_measurement_sets()[0]  # only 1 ms for VLA
-                spw2band = ms.get_vla_spw2band()
-                bands = {spw2band[int(spw)] for spw in miscinfo['virtspw'].split(',') if int(spw) in spw2band}
-                # VLA imaging only happens per-band and you will likely end up with one-element set
-                if bands:
-                    return ','.join(bands)
-        return None
+
+        # Check if we should use band notation based on task and imaging mode
+        use_band_notation = (
+            # hif_makeimage VLA-PI cont imaging sky plots
+            (
+                last_result.taskname == 'hif_makeimages'
+                and last_result.results[0].imaging_mode in {'VLA', 'EVLA', 'JVLA'}
+                and miscinfo.get('specmode') == 'cont'
+            )
+            or
+            # hifv_pbcor VLA-PI cont imaging sky plots
+            (
+                last_result.taskname == 'hifv_pbcor'
+                and context.imaging_mode is None
+                and miscinfo.get('specmode') == 'cont'
+            )
+        )
+
+        if not use_band_notation:
+            return None
+
+        # Get measurement set and band mapping - VLA has only 1 MS
+        ms = context.observing_run.get_measurement_sets()[0]
+        spw2band = ms.get_vla_spw2band()
+        virtspw_str = miscinfo.get('virtspw', '')
+        if not virtspw_str:
+            return None
+
+        bands = {spw2band[spw_id] for spw in virtspw_str.split(',') if (spw_id := int(spw)) in spw2band}
+
+        # VLA imaging happens per-band, typically resulting in single-element set
+        return ','.join(bands) if bands else None
 
     def plot(self, context, imagename, reportdir, intent=None, collapseFunction='mean',
              stokes: Optional[str] = None, vmin=None, vmax=None, mom8_fc_peak_snr=None,
@@ -221,11 +246,11 @@ class SkyDisplay(object):
             collapsed.done()
         return mdata
 
+    @matplotlibrc_formal
     def _plot_panel(self, context, reportdir, imagename, collapseFunction='mean',
                     stokes: Optional[str] = None, mom8_fc_peak_snr=None,
                     maskname=None, dpi=None, **imshow_args):
         """Method to plot a map."""
-
         plotfile = plotfilename(image=os.path.basename(imagename),
                                 reportdir=reportdir, collapseFunction=collapseFunction, stokes=stokes)
         LOG.info('Plotting %s to %s', imagename, plotfile)
@@ -236,54 +261,90 @@ class SkyDisplay(object):
             # PIPE-1401: plot mask sky images for different stokes plane even when the mask file has a single Stokes plane.
             # note: the fallback is required for vlass-se-cube because the user input mask is from vlass-se-cont with only Stokes=I.
             if isinstance(stokes, str):
-                LOG.warning(f'Stokes {stokes} is requested, but only Stokes={stokes_present} is present.')
-                LOG.warning(f'We will try to create a plot with a fallback of Stokes={stokes_select}.')
+                LOG.warning('Stokes %s is requested, but only Stokes=%s is present.', stokes, stokes_present)
+                LOG.warning('We will try to create a plot with a fallback of Stokes=%s.', stokes_present)
             else:
                 LOG.info(
-                    f'No Stokes selection is specified, we will use the first present Stokes plane: Stokes={stokes_select}.')
+                    'No Stokes selection is specified, we will use the first present Stokes plane: Stokes=%s.',
+                    stokes_select,
+                )
         else:
             stokes_select = stokes
             LOG.info(f'Stokes={stokes_select} is selected.')
 
-        with casa_tools.ImageReader(imagename) as image:
-
-            try:
-                if collapseFunction == 'center':
-                    collapsed = image.collapse(function='mean', chans=str(
-                        image.summary()['shape'][3]//2), stokes=stokes_select, axes=3)
-                elif collapseFunction == 'mom0':
-                    # image.collapse does not have a true "mom0" option. "sum" is close, but the
-                    # scaling is different.
-                    # TODO: Switch the whole _plot_panel method to using immoments(?) Though the
-                    #       downside is that images can no longer be made just in memory. They
-                    #       always have to be written to disk.
-                    tmpfile = f'{os.path.basename(imagename)}_mom0_tmp.img'
-                    casa_tasks.immoments(imagename=imagename, moments=[0], outfile=tmpfile, stokes=stokes_select).execute()
-                    assert os.path.exists(tmpfile)
-                    collapsed = image.newimagefromimage(infile=tmpfile)
-                    shutil.rmtree(tmpfile)
-                elif collapseFunction == 'mom8':
-                    collapsed = image.collapse(function='max', stokes=stokes_select, axes=3)
+        if not os.path.exists(plotfile) or self.overwrite:
+            with casa_tools.ImageReader(imagename) as image:
+                _, _, _, nchan = image.shape()
+                if nchan == 1:
+                    # Use Stokes-axis slicing instead of frequency collapsing
+                    rgtool = casa_tools.regionmanager
+                    region = rgtool.frombcs(csys=image.coordsys().torecord(), shape=image.shape(),
+                                            stokes=stokes_select, stokescontrol='a')
+                    collapsed = image.subimage(region=region)
                 else:
-                    # Note: in case 'max' and non-pbcor image a moment 0 map was written to disk
-                    # in the past. With PIPE-558 this is done in hif/tasks/tclean.py tclean._calc_mom0_8()
-                    collapsed = image.collapse(function=collapseFunction, stokes=stokes_select, axes=3)
-            except:
-                # All channels flagged or some other error. Make collapsed zero image.
-                collapsed_new = image.newimagefromimage(infile=imagename)
-                collapsed_new.set(pixelmask=True, pixels='0')
-                collapsed = collapsed_new.collapse(function='mean', stokes=stokes_select, axes=3)
-                collapsed_new.done()
+                    try:
+                        if collapseFunction == 'center':
+                            collapsed = image.collapse(function='mean', chans=str(
+                                image.summary()['shape'][3]//2), stokes=stokes_select, axes=3)
+                        elif collapseFunction == 'mom0':
+                            # image.collapse does not have a true "mom0" option. "sum" is close, but the
+                            # scaling is different.
+                            # TODO: Switch the whole _plot_panel method to using immoments(?) Though the
+                            #       downside is that images can no longer be made just in memory. They
+                            #       always have to be written to disk.
+                            tmpfile = f'{os.path.basename(imagename)}_mom0_tmp.img'
+                            casa_tasks.immoments(imagename=imagename, moments=[
+                                0], outfile=tmpfile, stokes=stokes_select).execute()
+                            assert os.path.exists(tmpfile)
+                            collapsed = image.newimagefromimage(infile=tmpfile)
+                            shutil.rmtree(tmpfile)
+                        elif collapseFunction == 'mom8':
+                            collapsed = image.collapse(function='max', stokes=stokes_select, axes=3)
+                        else:
+                            # Note: in case 'max' and non-pbcor image a moment 0 map was written to disk
+                            # in the past. With PIPE-558 this is done in hif/tasks/tclean.py tclean._calc_mom0_8()
+                            collapsed = image.collapse(function=collapseFunction, stokes=stokes_select, axes=3)
+                    except Exception as ex:
+                        LOG.info(ex)
+                        traceback_msg = traceback.format_exc()
+                        LOG.debug(traceback_msg)
+                        # All channels flagged or some other error. Make collapsed zero image.
+                        collapsed_new = image.newimagefromimage(infile=imagename)
+                        collapsed_new.set(pixelmask=True, pixels='0')
+                        collapsed = collapsed_new.collapse(function='mean', stokes=stokes_select, axes=3)
+                        collapsed_new.done()
+        else:
+            collapsed = casa_tools.image
+            collapsed.open(imagename)
 
         cs = collapsed.coordsys()  # needs to explicitly close later
         coord_names = cs.names()
+        miscinfo = collapsed.miscinfo()
+
+        vla_cont_band = self._get_vla_band(context, miscinfo)
+        if vla_cont_band is not None:
+            # VLA-specmode='cont' only, not triggered for ALMA, VLASS.
+            miscinfo['band'] = vla_cont_band
+        else:
+            # Use the reference-frequencey (in Hz) as the fallback value of the 'band' key
+            # This key is only used for VLASS and VLA so will not affect ALMA
+            miscinfo['band'] = cs.referencevalue(format='n')['numeric'][3]
+
+        field_name = miscinfo.get('field', None)
+        band_name = miscinfo.get('band', None)
+
+        # early abort: don't replot if a file with the required name already exists
+        if os.path.exists(plotfile) and not self.overwrite:
+            LOG.info('plotfile already exists: %s', plotfile)
+            # done with ia/cs tool instances
+            collapsed.done()
+            cs.done()
+            return plotfile, coord_names, field_name, band_name
+        
         cs.setunits(type='direction', value='arcsec arcsec')
         coord_units = cs.units()
         coord_refs = cs.referencevalue(format='s')
-
         brightness_unit = collapsed.brightnessunit()
-        miscinfo = collapsed.miscinfo()
-
         beam_rec = collapsed.restoringbeam()
         if 'major' in beam_rec:
             cqa = casa_tools.quanta
@@ -293,22 +354,6 @@ class SkyDisplay(object):
             beam = [bmaj, bmin, bpa]
         else:
             beam = None
-
-        vla_cont_band = self._get_vla_band(context, miscinfo)
-        if vla_cont_band is not None:
-            # VLA-specmode='cont' only, not triggered for ALMA, VLASS.
-            miscinfo['band'] = vla_cont_band
-        else:
-            # Use the reference-frequencey (in Hz) as the fallback value of the 'band' key
-            # This key is only used for VLASS and VLA.
-            miscinfo['band'] = cs.referencevalue(format='n')['numeric'][3]
-
-        # don't replot if a file of the required name already exists
-        if os.path.exists(plotfile) and not self.overwrite:
-            LOG.info('plotfile already exists: %s', plotfile)
-            # done with ia.coordsys()
-            cs.done()
-            return plotfile, coord_names, miscinfo.get('field', None), miscinfo.get('band', None)
 
         # otherwise do the plot
         data = collapsed.getchunk()
@@ -325,7 +370,10 @@ class SkyDisplay(object):
 
         # remove any incomplete matplotlib plots, if left these can cause weird errors
         plt.close('all')
-        fig, ax = plt.subplots(figsize=self.figsize)
+
+        # PIPE-2843: disable constrained layout to prevent potential bad interaction with AnnotationBbox
+        # Also see: https://github.com/matplotlib/matplotlib/issues/24453
+        fig, ax = plt.subplots(figsize=self.figsize, constrained_layout=False)
 
         # plot data
         if 'cmap' not in imshow_args:
@@ -351,11 +399,23 @@ class SkyDisplay(object):
             labels.set_fontsize(0.5 * labels.get_fontsize())
 
         # colour bar
-        cb = plt.colorbar(im, ax=ax, shrink=0.5)
+        if self.exclude_desc:
+            height = '80%'
+        else:
+            height = '50%'
+        cax = inset_axes(
+            ax,
+            width='4%',
+            height=height,
+            loc='center left',
+            bbox_to_anchor=(1.01, 0.0, 1, 1),
+            bbox_transform=ax.transAxes,
+        )
+        cb = plt.colorbar(im, cax=cax)
         fontsize = 8
-        for labels in cb.ax.get_yticklabels() + cb.ax.get_xticklabels():
-            labels.set_fontsize(fontsize)
+        cb.ax.tick_params(labelsize=fontsize)
         cb.set_label(brightness_unit, fontsize=fontsize)
+        cb.ax.yaxis.set_offset_position('left')
 
         # plot beam
         if beam is not None:
@@ -366,23 +426,30 @@ class SkyDisplay(object):
             ax.add_patch(beam_patch)
 
         # add xy labels
-        ax.set_xlabel('%s (%s)' % (coord_names[0], coord_units[0]))
-        ax.set_ylabel('%s (%s)' % (coord_names[1], coord_units[1]))
+        ax.set_xlabel(f'{coord_names[0]} ({coord_units[0]})')
+        ax.set_ylabel(f'{coord_names[1]} ({coord_units[1]})')
 
         # Add the color text box
         if not self.exclude_desc:
-
             # image reference pixel
-            yoff = 0.10
-            yoff = self.plottext(1.05, yoff, 'Reference position:', 40)
+            yoff = -0.15
+            xoff = 0.0
+            yoff = SkyDisplay.plottext(cb.ax, xoff, yoff, 'Reference Position:', 40)
             for i, k in enumerate(coord_refs['string']):
                 # note: the labels present the reference value at individual axes of the collapsed image
-                # https://casa.nrao.edu/docs/casaref/image.collapse.html
-                yoff = self.plottext(1.05, yoff, '%s: %s' % (coord_names[i], k), 40, mult=0.8)
+                # https://casadocs.readthedocs.io/en/latest/api/tt/casatools.image.html#casatools.image.image.collapse
+                name_abbreviations = {
+                    'Right Ascension': '  R.A.',
+                    'Declination': '  Dec.',
+                }
+                coord_name = coord_names[i]
+                for name, abbr in name_abbreviations.items():
+                    coord_name = coord_name.replace(name, abbr)
+                yoff = SkyDisplay.plottext(cb.ax, xoff, yoff, f'{coord_name}: {k}', 40, mult=0.8)
             # if peaksnr is available for the mom8_fc image, include it in the plot
             if 'mom8_fc' in imagename and mom8_fc_peak_snr is not None:
-                yoff = 0.90
-                self.plottext(1.05, yoff, 'Peak SNR: {:.5f}'.format(mom8_fc_peak_snr), 40)
+                yoff = 1.15
+                SkyDisplay.plottext(cb.ax, xoff, yoff, 'Peak SNR: {:.5f}'.format(mom8_fc_peak_snr), 40)
 
             mode_texts = {
                 'mean': 'mean',
@@ -394,6 +461,9 @@ class SkyDisplay(object):
 
             image_info = {'display': mode_texts[collapseFunction]}
             image_info.update(miscinfo)
+            # PIPE-2708: improve the virtspw key formatting
+            if image_info.get('virtspw') is not None:
+                image_info['virtspw'] = utils.find_ranges(image_info['virtspw'])
 
             type_mapping = {
                 'flux': 'pb',
@@ -424,10 +494,11 @@ class SkyDisplay(object):
                       if image_info.get(key) is not None]
 
             txt = HPacker(children=labels, align="baseline", pad=0, sep=7)
-            bbox = AnnotationBbox(txt, xy=(0.5, 1.05),
+            bbox = AnnotationBbox(txt, xy=(0.5, 1.04),
                                   xycoords='axes fraction',
                                   frameon=True,
-                                  box_alignment=(0.5, 0.5))
+                                  box_alignment=(0.5, 0.0),
+                                  pad=0.3)
             ax.add_artist(bbox)
 
         # PIPE-997: plot a 41pix-wide PSF inset if the image is larger than 41*3
@@ -439,8 +510,7 @@ class SkyDisplay(object):
             self._plot_psf_inset(ax, mdata, imshow_args, beam=beam, cs=cs)
 
         # save the image
-        fig.tight_layout()
-        fig.savefig(plotfile, bbox_inches='tight', bbox_extra_artists=ax.findobj(mtext.Text), dpi=dpi)
+        fig.savefig(plotfile, bbox_inches='tight', dpi=dpi, pil_kwargs={'optimize': True})
         plt.close(fig)
 
         if not os.path.exists(plotfile):
@@ -450,7 +520,8 @@ class SkyDisplay(object):
 
         # done with ia.coordsys()
         cs.done()
-        return plotfile, coord_names, miscinfo.get('field', None), miscinfo.get('band', None)
+        
+        return plotfile, coord_names, field_name, band_name
 
     def _plot_psf_inset(self, ax, mdata, imshow_args, beam=None, cs=None):
         """Plot the PSF inset panel."""
@@ -495,44 +566,41 @@ class SkyDisplay(object):
                 axinset.add_patch(beam_patch)
 
     @staticmethod
-    def plottext(xoff, yoff, text, maxchars, ny_subplot=1, mult=1):
-        """Utility method to plot text and put line breaks in to keep the
-        text within a given limit.
+    def plottext(ax, xoff, yoff, text, maxchars, mult=1.0, line_spacing=0.04):
+        """Plots text on a Matplotlib Axes object with automatic line breaks.
 
-        Keyword arguments:
-        xoff       -- world x coord where text is to start.
-        yoff       -- world y coord where text is to start.
-        text       -- Text to print.
-        maxchars   -- Maximum number of characters before a newline is
-                      inserted.
-        ny_subplot -- Number of sub-plots along the y-axis of the page.
-        mult       -- Factor by which the text fontsize is to be multiplied.
+        This function is designed to be robust and uses standard library
+        tools for text wrapping.
+
+        Args:
+            ax (matplotlib.axes.Axes): The Axes object to plot the text on.
+            xoff (float): World x-coordinate where text is to start (in axes coordinates, 0-1).
+            yoff (float): World y-coordinate where text is to start (in axes coordinates, 0-1).
+            text (str): The text string to display.
+            maxchars (int): The maximum number of characters before a newline is inserted.
+            mult (float, optional): Factor by which the text fontsize is to be multiplied.
+                                    Defaults to 1.0.
+            line_spacing (float, optional): Vertical spacing between lines in axes coordinates.
+                                        Defaults to 0.04.
+
+        Returns:
+            float: The final y-coordinate after plotting the text.
         """
+        lines = textwrap.wrap(text, width=maxchars)
 
-        words = text.rsplit()
-        words_in_line = 0
-        line = ''
-        ax = plt.gca()
-        for i in range(len(words)):
-            temp = line + words[i] + ' '
-            words_in_line += 1
-            if len(temp) > maxchars:
-                if words_in_line == 1:
-                    ax.text(xoff, yoff, temp, va='center', fontsize=mult*8,
-                            transform=ax.transAxes, clip_on=False)
-                    yoff -= 0.03 * ny_subplot * mult
-                    words_in_line = 0
-                else:
-                    ax.text(xoff, yoff, line, va='center', fontsize=mult*8,
-                            transform=ax.transAxes, clip_on=False)
-                    yoff -= 0.03 * ny_subplot * mult
-                    line = words[i] + ' '
-                    words_in_line = 1
-            else:
-                line = temp
-        if len(line) > 0:
-            ax.text(xoff, yoff, line, va='center', fontsize=mult*8,
-                    transform=ax.transAxes, clip_on=False)
-            yoff -= 0.03 * ny_subplot * mult
-        yoff -= 0.01 * ny_subplot * mult
-        return yoff
+        current_yoff = yoff
+
+        for line in lines:
+            ax.text(
+                xoff,
+                current_yoff,
+                line,
+                va='top',
+                fontsize=mult * 8,                transform=ax.transAxes,
+                clip_on=False,
+            )
+            current_yoff -= line_spacing * mult
+
+        current_yoff -= line_spacing * mult
+
+        return current_yoff

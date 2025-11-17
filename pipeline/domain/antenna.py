@@ -50,9 +50,9 @@ class Antenna(object):
 
         # The longitude, latitude and height of a CASA position are given in
         # canonical units, so we don't need to perform any further conversion
-        self.longitude = position['m0']
-        self.latitude = position['m1']
-        self.height = position['m2']
+        self.longitude = position['m0']  # CASA quantity in radians
+        self.latitude = position['m1']  # CASA quantity in radians
+        self.height = position['m2']  # CASA quantity in meters
 
         mt = casa_tools.measures
         self.direction = mt.direction(v0=self.longitude, v1=self.latitude)

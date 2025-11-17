@@ -9,7 +9,7 @@ def hifa_wvrgcalflag(vis=None, caltable=None, offsetstable=None, hm_toffset=None
                      sourceflag=None, hm_tie=None, tie=None, nsol=None, disperse=None, wvrflag=None, hm_smooth=None,
                      smooth=None, scale=None, maxdistm=None, minnumants=None, mingoodfrac=None, refant=None,
                      flag_intent=None, qa_intent=None, qa_bandpass_intent=None, accept_threshold=None, flag_hi=None,
-                     fhi_limit=None, fhi_minsample=None, ants_with_wvr_thresh=None):
+                     fhi_limit=None, fhi_minsample=None, ants_with_wvr_thresh=None, parallel=None):
     """Generate a gain table based on Water Vapor Radiometer data, interpolating over
     antennas with bad radiometers.
 

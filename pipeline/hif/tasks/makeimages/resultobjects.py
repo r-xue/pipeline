@@ -5,6 +5,8 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.imagelibrary as imagelibrary
 import pipeline.infrastructure.utils as utils
 
+from pipeline.hif.tasks.makeimlist.cleantarget import CleanTargetInfo
+
 
 class MakeImagesResult(basetask.Results):
     def __init__(self):
@@ -41,6 +43,8 @@ class MakeImagesResult(basetask.Results):
                     imagename=result.image, sourcename=result.sourcename,
                     spwlist=result.spw, specmode=result.specmode,
                     sourcetype=result.intent,
+                    stokes=result.stokes,
+                    datatype=result.datatype,
                     multiterm=result.multiterm,
                     metadata=result.imaging_metadata,
                     imaging_params=img_params,  # imaging parameters for each iteration
@@ -52,7 +56,7 @@ class MakeImagesResult(basetask.Results):
             except:
                 pass
 
-        # Calculated sensitivities for later stages
+        # Save quantities in the context for later stages
         skip_recalc = False
         for result in self.results:
             # Calculated beams for later stages
@@ -72,6 +76,12 @@ class MakeImagesResult(basetask.Results):
                     skip_recalc = True
                 else:
                     utils.update_sens_dict(context.per_spw_cont_sensitivities_all_chan, result.per_spw_cont_sensitivities_all_chan)
+
+            # Clean masks and thresholds for later stages
+            if result.stokes == 'I' and (result.cleanmask not in (None, '')):
+                cleanTargetKey = CleanTargetInfo(datatype=result.datatype, field=result.sourcename, intent=result.intent, virtspw=result.spw, stokes=result.stokes, specmode=result.specmode)
+                context.clean_masks[cleanTargetKey] = result.cleanmask
+                context.clean_thresholds[cleanTargetKey] = result.threshold
 
         # empty the pending list and message
         context.clean_list_pending = []

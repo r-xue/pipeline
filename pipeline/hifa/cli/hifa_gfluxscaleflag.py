@@ -7,8 +7,8 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifa_gfluxscaleflag(vis=None, intent=None, phaseupsolint=None, solint=None, minsnr=None, refant=None,
                         antnegsig=None, antpossig=None, tmantint=None, tmint=None, tmbl=None, antblnegsig=None,
-                        antblpossig=None, relaxed_factor=None, niter=None):
-    """Flag the flux, diffgain, phase calibrators and check source
+                        antblpossig=None, relaxed_factor=None, niter=None, parallel=None):
+    """Flag the flux, diffgain, phase calibrators and check source.
 
     This task computes the flagging heuristics on the flux, diffgain, and phase
     calibrators and the check source, by calling hif_correctedampflag which
@@ -31,6 +31,10 @@ def hifa_gfluxscaleflag(vis=None, intent=None, phaseupsolint=None, solint=None, 
     the 'after' plots are not generated or displayed. The score for this stage
     is the standard data flagging score, which depends on the fraction of data
     flagged.
+
+    The preliminary phase solutions use the mapping/combine and gaintype options
+    as established in hifa_spwphaseup.
+
 
     Returns:
         The results object for the pipeline task is returned.

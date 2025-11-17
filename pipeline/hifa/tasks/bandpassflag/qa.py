@@ -9,9 +9,8 @@ LOG = logging.get_logger(__name__)
 
 
 class BandpassflagQAHandler(pqa.QAPlugin):
-    """
-    QA handler for an uncontained BandpassflagResults.
-    """
+    """QA handler for an uncontained BandpassflagResults."""
+
     result_cls = resultobjects.BandpassflagResults
     child_cls = None
 
@@ -24,9 +23,8 @@ class BandpassflagQAHandler(pqa.QAPlugin):
 
 
 class BandpassflagListQAHandler(pqa.QAPlugin):
-    """
-    QA handler for a list containing BandpassflagResults.
-    """
+    """QA handler for a list containing BandpassflagResults."""
+
     result_cls = basetask.ResultsList
     child_cls = resultobjects.BandpassflagResults
 

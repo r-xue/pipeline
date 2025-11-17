@@ -137,7 +137,7 @@ def set_miscinfo(
             info = clean_extendable_keys(info, 'filnam')
 
         if spw is not None:
-            unique_spws = ','.join(np.unique(spw.split(',')))
+            unique_spws = ','.join(map(str, sorted({int(s) for s in spw.split(',') if s})))
             if context is not None and context.observing_run is not None:
                 spw_names = [
                     context.observing_run.virtual_science_spw_ids.get(int(spw_id), 'N/A')

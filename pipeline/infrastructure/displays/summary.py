@@ -1,34 +1,30 @@
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import datetime
 import math
 import operator
 import os
-from typing import TYPE_CHECKING, Generator, List, Tuple
+import shutil
+from typing import TYPE_CHECKING, Generator
 
 import matplotlib
-import matplotlib.dates as dates
-import matplotlib.figure as figure
 import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
 import numpy as np
+from matplotlib import dates, figure, ticker
 
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.renderer.logger as logger
-import pipeline.infrastructure.utils as utils
-import pipeline.infrastructure.vdp as vdp
-from pipeline.domain.measures import FrequencyUnits, DistanceUnits
+from pipeline import infrastructure
+from pipeline.domain import measures
 from pipeline.h.tasks.common import atmutil
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.displays.plotstyle import casa5style_plot
-from . import plotmosaic
-from . import plotpwv
-from . import plotweather
-from . import plotsuntrack
+from pipeline.infrastructure import casa_tasks, casa_tools, utils, vdp
+from pipeline.infrastructure.displays import plotpointings, plotpwv, plotstyle, plotsuntrack, plotweather
+from pipeline.infrastructure.renderer import logger
 
 if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet, Source
     from pipeline.infrastructure.launcher import Context
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 DISABLE_PLOTMS = False
 
 ticker.TickHelper.MAXTICKS = 10000
@@ -331,7 +327,7 @@ class FieldVsTimeChart(ParameterVsTimeChart):
     def __init__(self, inputs):
         self.inputs = inputs
 
-    @casa5style_plot
+    @plotstyle.casa5style_plot
     def plot(self):
         ms = self.inputs.ms
 
@@ -575,37 +571,168 @@ class PWVChart(object):
                            parameters={'vis': self.ms.basename})
 
 
-class MosaicChart(object):
-    def __init__(self, context, ms, source):
+class PointingsChart(object):
+    """Base class for generating a pointings chart.
+
+    This class provides a framework for creating and managing pointings plots for a
+    given measurement set and source.
+
+    Attributes:
+        context: The context of the processing session.
+        ms: The measurement set to be analyzed.
+        source: The source for which the pointings plot is generated.
+        figfile: The file path where the plot will be saved.
+    """
+
+    def __init__(self, context: Context, ms: MeasurementSet, source: Source):
+        """
+        Initializes the PointingsChart with the given context, measurement set, and source.
+
+        Args:
+            context: The processing session context.
+            ms: The measurement set to analyze.
+            source: The source for which the pointings is created.
+        """
         self.context = context
         self.ms = ms
         self.source = source
-        self.figfile = self._get_figfile()
+        self.figfile: str = self._get_figfile()
 
-    def plot(self):
+    def plot(self) -> logger.Plot | None:
+        """
+        Abstract method to generate the pointings plot.
+
+        Raises:
+            NotImplementedError: If the subclass does not implement this method.
+        """
+        raise NotImplementedError
+
+    def _get_figfile(self) -> str:
+        """
+        Abstract method to determine the file path for the plot.
+
+        Returns:
+            str: The file path for storing the generated plot.
+
+        Raises:
+            NotImplementedError: If the subclass does not implement this method.
+        """
+        raise NotImplementedError
+
+    def _get_plot_object(self) -> logger.Plot:
+        """
+        Creates a Plot object with metadata.
+
+        Returns:
+            A plot object containing metadata about the generated pointings.
+        """
+        return logger.Plot(
+            self.figfile,
+            x_axis='RA Offset',
+            y_axis='Dec Offset',
+            parameters={'vis': self.ms.basename}
+            )
+
+
+class MosaicPointingsChart(PointingsChart):
+    """Generates a mosaic plot of pointings for a given source in a measurement set."""
+
+    def __init__(self, context: Context, ms: MeasurementSet, source: Source):
+        """
+        Initializes the MosaicPointingsChart with the given parameters.
+
+        Args:
+            context: The processing session context.
+            ms: The measurement set to analyze.
+            source: The source for which the mosaic pointings plot is created.
+        """
+        super().__init__(context, ms, source)
+
+    def plot(self) -> logger.Plot | None:
+        """
+        Generates and saves the mosaic pointings plot.
+
+        Returns:
+            The plot object if successful, otherwise None.
+        """
         if os.path.exists(self.figfile):
+            LOG.debug("%s already exists.", self.figfile)
             return self._get_plot_object()
 
         try:
-            plotmosaic.plot_mosaic(self.ms, self.source, self.figfile)
+            plotpointings.plot_mosaic_source(self.ms, self.source, self.figfile)
         except Exception as e:
-            LOG.warn('Could not create mosaic plot: {}'.format(e))
+            LOG.warning('Could not create mosaic pointings plot: %s', e)
             return None
 
         return self._get_plot_object()
 
-    def _get_figfile(self):
-        session_part = self.ms.session
-        ms_part = self.ms.basename
-        return os.path.join(self.context.report_dir,
-                            'session%s' % session_part,
-                            ms_part, 'mosaic_source%s.png' % self.source.id)
+    def _get_figfile(self) -> str:
+        """
+        Determines the file path for the mosaic pointings plot.
 
-    def _get_plot_object(self):
-        return logger.Plot(self.figfile,
-                           x_axis='RA Offset',
-                           y_axis='Dec Offset',
-                           parameters={'vis': self.ms.basename})
+        Returns:
+            The file path for storing the mosaic pointings plot.
+        """
+        return os.path.join(
+            self.context.report_dir,
+            f"session{self.ms.session}",
+            self.ms.basename,
+            f"source{self.source.id}_mosaic_pointings.png"
+        )
+
+
+class TsysScansChart(PointingsChart):
+    """Generates a plot of system temperature (Tsys) scan(s) for a given source."""
+
+    def __init__(
+            self,
+            context: Context,
+            ms: MeasurementSet,
+            source: Source,
+            ):
+        """
+        Initializes the TsysScansChart with the given parameters.
+
+        Args:
+            context: The processing session context.
+            ms: The measurement set to analyze.
+            source: The source for which the Tsys scan(s) plot is created.
+        """
+        super().__init__(context, ms, source)
+
+    def plot(self) -> logger.Plot | None:
+        """
+        Generates and saves the Tsys scan(s) plot.
+
+        Returns:
+            The plot object if successful, otherwise None.
+        """
+        if os.path.exists(self.figfile):
+            LOG.debug("%s already exists.", self.figfile)
+            return self._get_plot_object()
+
+        try:
+            plotpointings.plot_tsys_scans(self.ms, self.source, self.figfile)
+        except Exception as e:
+            LOG.warning('Could not create Tsys scan(s) plot: %s', e)
+            return None
+
+        return self._get_plot_object()
+
+    def _get_figfile(self) -> str:
+        """
+        Determines the file path for the Tsys scan(s) plot.
+
+        Returns:
+            The file path for storing the Tsys scan(s) plot.
+        """
+        return os.path.join(
+            self.context.report_dir,
+            f"session{self.ms.session}",
+            self.ms.basename,
+            f"source{self.source.id}_tsys_scans.png"
+        )
 
 
 class PlotAntsChart(object):
@@ -880,8 +1007,8 @@ class UVChart(object):
 
             # get max UV via unprojected baseline
             spw = ms.get_spectral_window(self.spw_id)
-            wavelength_m = 299792458 / float(spw.max_frequency.to_units(FrequencyUnits.HERTZ))
-            bl_max = float(ms.antenna_array.baseline_max.length.to_units(DistanceUnits.METRE))
+            wavelength_m = 299792458 / float(spw.max_frequency.to_units(measures.FrequencyUnits.HERTZ))
+            bl_max = float(ms.antenna_array.baseline_max.length.to_units(measures.DistanceUnits.METRE))
             self.uv_max = math.ceil(1.05 * bl_max / wavelength_m)
 
     def plot(self):
@@ -942,7 +1069,7 @@ class UVChart(object):
                                        'spw': self.spw_id},
                            command=str(task))
 
-    def _get_spwid_and_field(self) -> Tuple[str, str, str, str]:
+    def _get_spwid_and_field(self) -> tuple[str, str, str, str]:
         # Attempt to get representative source and spwid.
         repr_src, repr_spw = self._get_representative_source_and_spwid()
 
@@ -967,7 +1094,7 @@ class UVChart(object):
         # If no representative source was identified, then get the preferred source and science spw
         return self._get_preferred_science_spw_and_field()
 
-    def _get_representative_source_and_spwid(self) -> Tuple[str, int]:
+    def _get_representative_source_and_spwid(self) -> tuple[str, int]:
         # Is the representative source in the context or not
         if not self.context.project_performance_parameters.representative_source:
             source_name = None
@@ -1013,7 +1140,7 @@ class UVChart(object):
         spw = str(final_spw.id)
         return spw
 
-    def _get_preferred_science_spw_and_field(self) -> Tuple[str, str, str, str]:
+    def _get_preferred_science_spw_and_field(self) -> tuple[str, str, str, str]:
         # take first TARGET sources, otherwise first AMPLITUDE sources, etc.
         for intent in self.preferred_intent_order:
             sources_with_intent = [s for s in self.ms.sources if intent in s.intents]
@@ -1030,7 +1157,7 @@ class UVChart(object):
 
         return spw, field, field_name, intent
 
-    def _get_field_for_source(self, src_name: str) -> Tuple[str, str, str]:
+    def _get_field_for_source(self, src_name: str) -> tuple[str, str, str]:
         sources_with_name = [s for s in self.ms.sources if s.name == src_name]
         if not sources_with_name:
             LOG.error("Source {} not found in MS.".format(src_name))
@@ -1091,7 +1218,7 @@ class SpwIdVsFreqChartInputs(vdp.StandardInputs):
                               ms_part, 'spwid_vs_freq.png')
         return output
 
-    def __init__(self, context: 'Context', vis: str) -> None:
+    def __init__(self, context: Context, vis: str) -> None:
         """Construct SpwIdVsFreqChartInputs instance.
 
         Args:
@@ -1109,7 +1236,7 @@ class SpwIdVsFreqChart(object):
 
     Inputs = SpwIdVsFreqChartInputs
 
-    def __init__(self, inputs: SpwIdVsFreqChartInputs, context: 'Context') -> None:
+    def __init__(self, inputs: SpwIdVsFreqChartInputs, context: Context) -> None:
         """Construct SpwIdVsFreqChart instance.
 
         Args:
@@ -1119,7 +1246,7 @@ class SpwIdVsFreqChart(object):
         self.inputs = inputs
         self.context = context
 
-    def _extract_spwdata_vla(self) -> Generator[List[int], None, None]:
+    def _extract_spwdata_vla(self) -> Generator[list[int], None, None]:
         """Extract list of SPW IDs of VLA from measurement set.
 
         Yields:
@@ -1132,7 +1259,7 @@ class SpwIdVsFreqChart(object):
                 spw_list = [list(spwitem.keys())[0] for spwitem in banddict[band][baseband]]
                 yield spw_list
 
-    def _extract_spwdata_alma_nro(self) -> Generator[List[int], None, None]:
+    def _extract_spwdata_alma_nro(self) -> Generator[list[int], None, None]:
         """Extract list of SPW IDs of ALMA or NRO from measurement set.
 
         Yields:
@@ -1148,14 +1275,24 @@ class SpwIdVsFreqChart(object):
     def plot(self) -> logger.Plot | None:
         """Create the plot.
 
+        If the plot file already exists, Plot object is generated from
+        the existing file. If input MS is the one generated by the
+        pipeline (e.g., in mstransform or baseline stages), this method
+        will copy the plot file from the origin MS if it exists.
+
         Returns:
             Plot object
             Note that it returns None if no TARGET scans found in MS
         """
         filename = self.inputs.output
+        ms = self.inputs.ms
+        origin_filename = filename.replace(ms.basename, ms.origin_ms)
         if os.path.exists(filename):
             return self._get_plot_object()
-        ms = self.inputs.ms
+        elif os.path.exists(origin_filename):
+            LOG.info("Copying frequency coverage plot for origin_ms.")
+            shutil.copyfile(origin_filename, filename)
+            return self._get_plot_object()
         request_spws = ms.get_spectral_windows()
         targeted_scans = ms.get_scans(scan_intent='TARGET')
         if len(targeted_scans) == 0:
@@ -1193,8 +1330,8 @@ class SpwIdVsFreqChart(object):
 
                 # 1. draw bars
                 spwdata = [spw for spw in scan_spws if spw.id == spwid][0]
-                bw = float(spwdata.bandwidth.to_units(FrequencyUnits.GIGAHERTZ))
-                fmin = float(spwdata.min_frequency.to_units(FrequencyUnits.GIGAHERTZ))
+                bw = float(spwdata.bandwidth.to_units(measures.FrequencyUnits.GIGAHERTZ))
+                fmin = float(spwdata.min_frequency.to_units(measures.FrequencyUnits.GIGAHERTZ))
                 xmin, xmax = min(xmin, fmin), max(xmax, fmin+bw)
                 ax_spw.barh(idx, bw, height=bar_height, left=fmin, color=color)
 
@@ -1203,7 +1340,7 @@ class SpwIdVsFreqChart(object):
                     ax_spw.annotate(str(spwid), (fmin + bw/2, idx - bar_height/2), fontsize=14, ha='center', va='bottom')
                 idx += 1
                 rmin = min(rmin, abs(atmutil.get_spw_spec(vis=ms.name, spw_id=spwid)[2]))
-        
+
         # 3. Frequency vs. ATM transmission
         center_freq = (xmin + xmax) / 2.0
         # Determining the resolution value so that generates fine ATM transmission curve: it is set

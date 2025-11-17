@@ -73,7 +73,8 @@ class IFApplycalInputs(applycal.ApplycalInputs):
 
             flagdetailedsum: Compute detailed before and after flagging statistics summaries. Parameter available only when if flagsum is True.
 
-            parallel: Execute using CASA HPC functionality, if available. options: 'automatic', 'true', 'false', True, False
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
                 default: None (equivalent to False)
         """
         super().__init__(context, output_dir=output_dir, vis=vis, field=field, spw=spw,

@@ -190,7 +190,6 @@ def _get_tasks(context: launcher.Context, args: TaskArgs, procedure: str):
         task_args = {}
 
         if cli_command in ['h_importdata',
-                           'hif_importdata',
                            'hifa_importdata',
                            'hifv_importdata',
                            'hsd_importdata',

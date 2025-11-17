@@ -21,9 +21,9 @@ LOG = infrastructure.get_logger(__name__)
 class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile,
-                                       linesfile, imaging_params)
+                                       linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CONT'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
@@ -582,9 +582,9 @@ class ImageParamsHeuristicsVlassSeContAWPP001(ImageParamsHeuristicsVlassSeCont):
     """
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
-                                                  contfile, linesfile, imaging_params)
+                                                  contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CONT-AWP-P001'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
@@ -602,9 +602,9 @@ class ImageParamsHeuristicsVlassSeContAWP2(ImageParamsHeuristicsVlassSeCont):
     """Special heuristics case for AWP2 gridder with the default wprojplanes=32."""
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
-                                                  contfile, linesfile, imaging_params)
+                                                  contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CONT-AWP2'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
@@ -615,11 +615,10 @@ class ImageParamsHeuristicsVlassSeContAWP2(ImageParamsHeuristicsVlassSeCont):
 
     def pblimits(self, pb: Union[None, str], specmode: Optional[str] = None) -> Tuple[float, float]:
         """Tclean pblimit parameter and cleanmask pblimit heuristics."""
+        _, pblimit_cleanmask = super().pblimits(pb)
 
-        pblimit_image, pblimit_cleanmask = super().pblimits(pb)
-
-        # Overwrite pblimit_image (to be used in tclean as pblimit parameter) with
-        # the VLASS-SE-CONT-MOSAIC specific value.
+        # PIPE-2423: overwrite pblimit_image (to be used in tclean as pblimit parameter) with
+        # the VLASS-SE-CONT-AWP2/HPG specific value.
         return 0.2, pblimit_cleanmask
 
 
@@ -627,9 +626,9 @@ class ImageParamsHeuristicsVlassSeContAWP2P001(ImageParamsHeuristicsVlassSeCont)
     """Special heuristics case for AWP2 gridder with the default wprojplanes=1."""
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
-                                                  contfile, linesfile, imaging_params)
+                                                  contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CONT-AWP2-P001'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
@@ -644,22 +643,21 @@ class ImageParamsHeuristicsVlassSeContAWP2P001(ImageParamsHeuristicsVlassSeCont)
 
     def pblimits(self, pb: Union[None, str], specmode: Optional[str] = None) -> Tuple[float, float]:
         """Tclean pblimit parameter and cleanmask pblimit heuristics."""
+        _, pblimit_cleanmask = super().pblimits(pb)
 
-        pblimit_image, pblimit_cleanmask = super().pblimits(pb)
-
-        # Overwrite pblimit_image (to be used in tclean as pblimit parameter) with
-        # the VLASS-SE-CONT-MOSAIC specific value.
+        # PIPE-2423: overwrite pblimit_image (to be used in tclean as pblimit parameter) with
+        # the VLASS-SE-CONT-AWP2/HPG specific value.
         return 0.2, pblimit_cleanmask
 
 
-class ImageParamsHeuristicsVlassSeContHPG(ImageParamsHeuristicsVlassSeCont):
+class ImageParamsHeuristicsVlassSeContAWPHPG(ImageParamsHeuristicsVlassSeCont):
     """Special heuristics case for AWPHPG gridder with the default wprojplanes=32."""
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
-                                                  contfile, linesfile, imaging_params)
-        self.imaging_mode = 'VLASS-SE-CONT-HPG'
+                                                  contfile, linesfile, imaging_params, processing_intents)
+        self.imaging_mode = 'VLASS-SE-CONT-AWPHPG'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
 
@@ -669,22 +667,21 @@ class ImageParamsHeuristicsVlassSeContHPG(ImageParamsHeuristicsVlassSeCont):
 
     def pblimits(self, pb: Union[None, str], specmode: Optional[str] = None) -> Tuple[float, float]:
         """Tclean pblimit parameter and cleanmask pblimit heuristics."""
+        _, pblimit_cleanmask = super().pblimits(pb)
 
-        pblimit_image, pblimit_cleanmask = super().pblimits(pb)
-
-        # Overwrite pblimit_image (to be used in tclean as pblimit parameter) with
-        # the VLASS-SE-CONT-MOSAIC specific value.
+        # PIPE-2423: overwrite pblimit_image (to be used in tclean as pblimit parameter) with
+        # the VLASS-SE-CONT-AWP2/HPG specific value.
         return 0.2, pblimit_cleanmask
 
 
-class ImageParamsHeuristicsVlassSeContHPGP001(ImageParamsHeuristicsVlassSeCont):
+class ImageParamsHeuristicsVlassSeContAWPHPGP001(ImageParamsHeuristicsVlassSeCont):
     """Special heuristics case for AWPHPG gridder with the default wprojplanes=1."""
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
-                                                  contfile, linesfile, imaging_params)
-        self.imaging_mode = 'VLASS-SE-CONT-HPG-P001'
+                                                  contfile, linesfile, imaging_params, processing_intents)
+        self.imaging_mode = 'VLASS-SE-CONT-AWPHPG-P001'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
 
@@ -698,11 +695,10 @@ class ImageParamsHeuristicsVlassSeContHPGP001(ImageParamsHeuristicsVlassSeCont):
 
     def pblimits(self, pb: Union[None, str], specmode: Optional[str] = None) -> Tuple[float, float]:
         """Tclean pblimit parameter and cleanmask pblimit heuristics."""
+        _, pblimit_cleanmask = super().pblimits(pb)
 
-        pblimit_image, pblimit_cleanmask = super().pblimits(pb)
-
-        # Overwrite pblimit_image (to be used in tclean as pblimit parameter) with
-        # the VLASS-SE-CONT-MOSAIC specific value.
+        # PIPE-2423: overwrite pblimit_image (to be used in tclean as pblimit parameter) with
+        # the VLASS-SE-CONT-AWP2/AWPHPG specific value.
         return 0.2, pblimit_cleanmask
 
 
@@ -713,9 +709,9 @@ class ImageParamsHeuristicsVlassSeContMosaic(ImageParamsHeuristicsVlassSeCont):
     """
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
-                                                  contfile, linesfile, imaging_params)
+                                                  contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CONT-MOSAIC'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
@@ -764,9 +760,9 @@ class ImageParamsHeuristicsVlassSeContMosaic(ImageParamsHeuristicsVlassSeCont):
 
     def pblimits(self, pb: Union[None, str], specmode: Optional[str] = None) -> Tuple[float, float]:
         """Tclean pblimit parameter and cleanmask pblimit heuristics."""
-        pblimit_image, pblimit_cleanmask = super().pblimits(pb)
+        _, pblimit_cleanmask = super().pblimits(pb)
 
-        # Overwrite pblimit_image (to be used in tclean as pblimit parameter) with
+        # PIPE-978: overwrite pblimit_image (to be used in tclean as pblimit parameter) with
         # the VLASS-SE-CONT-MOSAIC specific value.
         return 0.1, pblimit_cleanmask
 

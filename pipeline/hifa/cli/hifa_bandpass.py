@@ -9,8 +9,8 @@ def hifa_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, an
                   phaseupbw=None, phaseupmaxsolint=None, phaseupsolint=None, phaseupsnr=None, phaseupnsols=None,
                   hm_phaseup_combine=None, hm_bandpass=None, solint=None, maxchannels=None, evenbpints=None, bpsnr=None,
                   minbpsnr=None, bpnsols=None, combine=None, refant=None, solnorm=None, minblperant=None, minsnr=None,
-                  unregister_existing=None, hm_auto_fillgaps=None):
-    """Compute bandpass calibration solutions
+                  unregister_existing=None, hm_auto_fillgaps=None, parallel=None):
+    """Compute bandpass calibration solutions.
 
     The hifa_bandpass task computes a bandpass solution for every specified
     science spectral window. By default, a 'phaseup' pre-calibration is

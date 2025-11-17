@@ -13,6 +13,7 @@ from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
+import pipeline.hsd.tasks.common.flagcmd_util as flagcmd_util
 from pipeline.domain.datatable import DataTableColumnMaskList as ColMaskList
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import OnlineFlagIndex
@@ -23,7 +24,6 @@ from pipeline.infrastructure.launcher import Context
 
 from ..common import direction_utils as dirutil
 from ..common import rasterutil
-from ..common.utils import mjd_to_datetime
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -38,19 +38,6 @@ def get_value_in_deg(quantity: Dict[str, Any]) -> numpy.ndarray:
     """
     qa = casa_tools.quanta
     return qa.getvalue(qa.convert(quantity, 'deg'))
-
-
-def mjdsec2str(t: float) -> str:
-    """Convert datetime to string.
-
-    Args:
-        t: MJD second to convert
-    Returns:
-        str: formatted datetime
-    """
-    date_time = mjd_to_datetime(t / 86400)
-    attributes = ('year', 'month', 'day', 'hour', 'minute', 'second', 'microsecond')
-    return '{}/{}/{}/{}:{}:{}.{:0>6d}'.format(*[getattr(date_time, name) for name in attributes])
 
 
 def get_state_id(ms: MeasurementSet, spw: str, intent: str) -> numpy.ndarray:
@@ -77,26 +64,6 @@ def get_state_id(ms: MeasurementSet, spw: str, intent: str) -> numpy.ndarray:
             # Need to reset explicitly after CASA 5.3. See CAS-11088 for detail.
             msreader.selectinit(reset=True)
     return numpy.fromiter(state_ids, dtype=numpy.int32)
-
-
-def merge_timerange(timerange_list: List[List]) -> List[List]:
-    """Merge time ranges.
-
-    Args:
-        timerange_list: list of timerange
-    Returns:
-        List: merged time ranges
-    """
-    timegap_list = numpy.asarray([l1[0] - l0[1] for l0, l1 in zip(timerange_list, timerange_list[1:])])
-    LOG.info(f'timegap_list is {timegap_list}')
-
-    # regard timegap <= 0.1msec as continuous
-    gap_index = [-1] + numpy.where(timegap_list > 1e-4)[0].tolist() + [len(timegap_list)]
-
-    timerange_merged = [[timerange_list[i + 1][0], timerange_list[j][1]] for i, j in zip(gap_index, gap_index[1:])]
-    LOG.info(f'timerange_merged is {timerange_merged}')
-
-    return timerange_merged
 
 
 def initialize_template(flagtemplate: str):
@@ -433,28 +400,20 @@ class MetaDataReader(object):
             else:
                 spw_id = '*'
                 antenna_id = key
-            time_list, sort_index = numpy.unique(
-                [datatable.getcell('TIME', row) for row in rowlist],
-                return_index=True)
 
-            # day -> sec
-            time_list *= 86400.0
+            timerangestr_list = flagcmd_util.datatable_rowid_to_timerange(
+                datatable, rowlist
+            )
 
-            interval_list = [datatable.getcell('EXPOSURE', row) for row in numpy.asarray(rowlist)[sort_index]]
+            LOG.info(
+                "antenna %s spw %s: timerange_list is %s",
+                antenna_id, spw_id, timerangestr_list
+            )
 
-            LOG.info(f'antenna {antenna_id} spw {spw_id}: time_list is {time_list}')
-
-            if len(time_list) == 0:
+            if len(timerangestr_list) == 0:
                 continue
 
-            timerange_list = [[t - i / 2, t + i / 2] for t, i in zip(time_list, interval_list)]
-            LOG.info(f'antenna {antenna_id} spw {spw_id}: timerange_list is {timerange_list}')
-
-            timerange_merged = merge_timerange(timerange_list)
-
-            for t in timerange_merged:
-                # timerange is [start, end] list of MJD [sec]
-                timerange_str = '~'.join(map(mjdsec2str, t))
+            for timerange_str in timerangestr_list:
                 cmdlist.append((str(spw_id), str(antenna_id), timerange_str))
 
         cmd_merged = merge_flagcmd(cmdlist)
