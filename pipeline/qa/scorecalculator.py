@@ -5090,14 +5090,14 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
     for spw in sci_spws:
         str_spwid = str(spw.id)
         if str_spwid in flag_spw.keys():
-            flag_percentage = flagdata_result['spw'][str(0)]['flagged']/flagdata_result['spw'][str(0)]['total']
+            flag_percentage = flag_spw[str_spwid]['flagged']/flag_spw[str_spwid]['total']
             if flag_percentage > 0.5:
                 ignored_spw_count = ignored_spw_count + 1
         else:
             ignored_spw_count = ignored_spw_count + 1
     # PIPE-2584, part-1: If > 50% of science spws are fully flagged
     # or missing from calibrators.ms: QA score < 0.5
-    flag_ratio = (ignored_spw_count/total_sci_spws )
+    flag_ratio = ignored_spw_count/total_sci_spws
     score = 1 - flag_ratio
     msg = f"{flag_ratio*100}% of science SPWs flagged or not present in calibrator.ms"
     origin = pqa.QAOrigin(metric_name='score_fluxboot',
@@ -5110,8 +5110,8 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
     score = 1 - tota_flag_ratio
     msg = f"{tota_flag_ratio*100}% of data flagged in calibrator.ms"
     origin = pqa.QAOrigin(metric_name='score_fluxboot',
-                        metric_score=score,
-                        metric_units='')
+                          metric_score=score,
+                          metric_units='')
     qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin))
 
     # PIPE-2584, part-3: IF spectral index > +/- 5: QA score < 0.5
