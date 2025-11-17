@@ -307,6 +307,9 @@ class MakeImages(basetask.StandardTaskTemplate):
 
         if self.inputs.context.imaging_mode == 'VLASS-SE-CUBE':
             result = self._add_vlass_se_cube_metadata(result)
+        else:
+            # PIPE-2461: add VLASS header keywords to images
+            self._vlass_cube_set_miscinfo(result.results[0])
 
         return result
 
@@ -407,37 +410,42 @@ class MakeImages(basetask.StandardTaskTemplate):
 
     def _vlass_cube_set_miscinfo(self, tclean_result):
         """Add the VLASS cube plane rejection header keyword."""
-
         imagename = tclean_result.image
-        reject = not tclean_result.imaging_metadata['keep']
+        reject = None
+        if 'keep' in tclean_result.imaging_metadata:
+            reject = not tclean_result.imaging_metadata['keep']
         imlist = utils.glob_ordered(imagename.replace('.image', '.*'))
 
         vis_name = self.inputs.vis[0]
         msobj = self.inputs.context.observing_run.get_ms(vis_name)
-        job = casa_tasks.flagdata(vis=vis_name, mode='summary', spwchan=True)
+        job = casa_tasks.flagdata(vis=vis_name, mode='summary', spwchan=True,  spw=tclean_result.spw)
         flag_stats = self._executor.execute(job)
+        vlass_bw = 0
+        spwobj = None
+        for curspw in tclean_result.spw.split(","):
+            flagged_by_spw = 0
+            for spw_chan in flag_stats['spw:channel']:
+                spw, _ = spw_chan.split(':')
+                if spw != curspw and self.inputs.context.imaging_mode == 'VLASS-SE-CUBE':
+                    continue
+                if flag_stats['spw:channel'][spw_chan].get('flagged', 0) != flag_stats['spw:channel'][spw_chan].get('total', 0):
+                    flagged_by_spw += 1
 
-        flagged_by_spw = 0
-        for spw_chan in flag_stats['spw:channel']:
-            spw, _ = spw_chan.split(':')
-            if spw != tclean_result.spw:
-                continue
-            if flag_stats['spw:channel'][spw_chan].get('flagged', 0) != flag_stats['spw:channel'][spw_chan].get('total', 0):
-                flagged_by_spw += 1
-
-        spwobj = msobj.get_spectral_window(tclean_result.spw)
-        chan_diff = np.diff(spwobj.channels.chan_freqs)
-        if len(spwobj.channels.chan_freqs) != 0 and np.allclose(chan_diff, chan_diff[0]):
-            chan_width = spwobj.channels.chan_widths[0]
-        else:
-            chan_width = np.median(np.abs(chan_diff))
-        vlass_bw = flagged_by_spw * chan_width
-        nominal_bw = spwobj.bandwidth
+            spwobj = msobj.get_spectral_window(curspw)
+            chan_diff = np.diff(spwobj.channels.chan_freqs)
+            if len(spwobj.channels.chan_freqs) != 0 and np.allclose(chan_diff, chan_diff[0]):
+                chan_width = spwobj.channels.chan_widths[0]
+            else:
+                chan_width = np.median(np.abs(chan_diff))
+            vlass_bw += flagged_by_spw * chan_width
+        if spwobj:
+            nominal_bw = spwobj.bandwidth
         for name in imlist:
             with casa_tools.ImageReader(name) as image:
                 info = image.miscinfo()
                 info['VLASSBWN'] = float(nominal_bw.value)
-                info['VLASSRJ'] = reject
+                if reject:
+                    info['VLASSRJ'] = reject
                 LOG.info('mark the image %s as reject=%r', name, reject)
                 info['VLASSSPW'] = tclean_result.spw
                 info['VLASSPC'] = tclean_result.inputs["phasecenter"]
@@ -466,17 +474,17 @@ class MakeImages(basetask.StandardTaskTemplate):
         if epoch_match:
             epoch = epoch_match.group(1)
         else:
-            LOG.warning("Unable to get epoch given the filename {!s}, setting epoch to None", filename)
+            LOG.warning(f"Unable to get epoch given the filename {filename}, setting epoch to None")
             epoch = None
         if tilename_match:
             tile = tilename_match.group(1)
         else:
-            LOG.warning("Unable to get tile name given the filename {!s}, setting tile name to None", filename)
+            LOG.warning(f"Unable to get tile name given the filename {filename}, setting tile name to None")
             tile = None
         if version_match:
             version = version_match.group(1)
         else:
-            LOG.warning("Unable to get version number given the filename {!s}, setting version number to None", filename)
+            LOG.warning(f"Unable to get version number given the filename {filename}, setting version number to None")
             version = None
 
         return epoch, tile, version
@@ -486,12 +494,10 @@ class MakeImages(basetask.StandardTaskTemplate):
         return (
             "ALPHAERR" if ".alphaerr." in filename else
             "ALPHA" if ".alpha." in filename else
-            "RMS_TT0" if ".rms." in filename and ".tt0" in filename else
-            "RMS_TT1" if ".rms." in filename and ".tt1" in filename else
             "RMS" if ".rms." in filename else
-            "INTENSITY_PBCOR_TT0" if ".pbcor." in filename and ".tt0" in filename else
-            "INTENSITY_PBCOR_TT1" if ".pbcor." in filename and ".tt1" in filename else
             "INTENSITY_PBCOR" if ".pbcor." in filename else
+            "WEIGHT" if ".weight." in filename else
+            "SUMWT" if ".sumwt." in filename else
             "UNKNOWN"
         )
 

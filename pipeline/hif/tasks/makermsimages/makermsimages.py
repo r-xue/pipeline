@@ -8,7 +8,6 @@ import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.imagelibrary as imagelibrary
-import pipeline.infrastructure.utils.compatibility as compatibility
 from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -136,8 +135,6 @@ class Makermsimages(basetask.StandardTaskTemplate):
                             for item in ['max', 'min', 'mean', 'median', 'sigma', 'madrms']:
                                 stats_summary[item] = {'range': np.percentile([rmsstats[rmsimage][item] for rmsimage in rmsstats], (0, 100))}
                                 value_arr = np.array([rmsstats[rmsimage][item] for rmsimage in rmsstats])
-                                # note: np.stats.median_absolute_deviation has the default scale=1.4826 and is deprecated with scipy>1.5.0.
-                                # TODO: It should replaced with scipy.stats.median_abs_deviation(x, scale='normal') in the future.
                                 stats_summary[item]['spwwise_madrms'] = median_abs_deviation(value_arr, axis=0, scale='normal')
                                 stats_summary[item]['spwwise_median'] = np.median(value_arr, axis=0)
                             stats_summary = stats_summary
@@ -145,10 +142,10 @@ class Makermsimages(basetask.StandardTaskTemplate):
                         else:
                             rmsstats[rmsimagename] = image.statistics(robust=True)
                             rmsval = float(rmsstats[rmsimagename]['medabsdevmed'][0] * 1.4826)
-
                     # PIPE-2461, adding rms values to image header
                     imagename, _ = os.path.splitext(rmsimagename)
-                    imagenames = utils.glob_ordered(imagename.replace('.image', '.*'))
+                    basename = imagename.split('.image')[0] + ".image"
+                    imagenames = utils.glob_ordered( basename + "*")
                     for imagename in imagenames:
                         with casa_tools.ImageReader(imagename) as image:
                             info = image.miscinfo()
