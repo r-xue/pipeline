@@ -162,17 +162,23 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
                 imagenames.extend(utils.glob_ordered(imageitem['imagename'].replace('.image', '.image.residual.pbcor')))
                 imagenames.extend(utils.glob_ordered(imageitem['imagename'].replace('.image', '.pb')))
 
+        cutout_imsize_map = {imageitem['imagename']: imageitem['metadata'].get('cutout_imsize') for imageitem in imlist}
+
         subimagenames = []
         subimage_size = None
         for imagename in imagenames:
-            subimagename = imagename + '.subim'
+            subimagename = f'{imagename}.subim'
             if not os.path.exists(subimagename):
-                LOG.info(f"Make a cutout image under the image name: {subimagename}")
-                _, _ = self._do_subim(imagename)
+                LOG.info('Make a cutout image under the image name: %s', subimagename)
+
+                cutout_imsize = next((v for k, v in cutout_imsize_map.items() if subimagename.startswith(k)), None)
+                if cutout_imsize is not None:
+                    LOG.info('Using cutout_imsize from imlist metadata: %s', cutout_imsize)
+                self._do_subim(imagename, cutout_imsize=cutout_imsize)
                 subimagenames.append(subimagename)
             else:
-                LOG.info(
-                    f"A cutout image named {subimagename} already exists, and we will reuse this image for weblog.")
+                LOG.info('A cutout image named %s already exists, and we will reuse this image for weblog.',
+                         subimagename)
                 subimagenames.append(subimagename)
             subimage_size = self._get_image_size(subimagename)
 
@@ -193,7 +199,7 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
 
         return self._executor.execute(task)
 
-    def _do_subim(self, imagename):
+    def _do_subim(self, imagename, cutout_imsize=None):
 
         inputs = self.inputs
 
@@ -223,6 +229,10 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
             3600.0 * (image_size_x + buffer_deg) / xcellsize)   # Cutout size with buffer in pixels
         fld_subim_size_y = utils.round_half_up(
             3600.0 * (image_size_y + buffer_deg) / ycellsize)   # Cutout size with buffer in pixels
+        
+        if cutout_imsize is not None:
+            fld_subim_size_x = cutout_imsize[0]
+            fld_subim_size_y = cutout_imsize[1]
 
         # equivalent blc,trc for extracting requested field, in pixels:
         blcx = imsize[0] // 2 - (fld_subim_size_x / 2)
