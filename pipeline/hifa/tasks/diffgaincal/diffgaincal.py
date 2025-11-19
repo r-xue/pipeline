@@ -1,3 +1,4 @@
+import os
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
@@ -546,9 +547,27 @@ class DiffGaincal(basetask.StandardTaskTemplate):
             # Run gaincal for any additional scan groups, appending to the initial caltable.
             if len(scan_groups) > 1:
                 caltable = result.inputs['caltable']
+
+                # loop the remaining scan groups - specifically diffgain_onsource 'b2b offset' solve
+                # should only be one 'more' as current operations as of 2024 use two diffgain 'blocks'
                 for scan_group in scan_groups[1:]:
-                    self._do_gaincal(intent=intent, spw=spwids_str, combine=combine, caltable=caltable, scan=scan_group,
-                                     append=True)
+                    # PIPE-2915
+                    # check if there was a gaintable made in the first instance, then we append
+                    if os.path.exists(caltable): 
+                        self._do_gaincal(intent=intent, spw=spwids_str, combine=combine, caltable=caltable,
+                                         scan=scan_group, append=True)                       
+                    else:
+                        # scenario that first scan group solve did not get made, possibly due to flags
+                        # now then use the scan group 'next' in the loop to make a fresh gaintable and save the
+                        # local result. Any subsequent scan group in the loop would pick up that
+                        # caltable and then append the further solutions to it
+                        # note - in operations there is likely only ever two scan groups for this solve
+                        #       so if the first is missing, the second will be solved below
+                        LOG.info('Diffgain B2B offset caltable not found for initial scan group') # not a critical message, for testing
+                        # reset the result, but can use the same caltable naming
+                        result = self._do_gaincal(intent=intent, caltable=caltable, spw=spwids_str,
+                                                  combine=combine, scan=scan_group) 
+
 
         return result
 
