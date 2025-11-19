@@ -532,22 +532,21 @@ class Tclean(cleanbase.CleanBase):
                     LOG.warning('Calculated stop frequency (%s GHz) > f_high_native (%s GHz) for Field %s '
                                 'SPW %s, adjusting nchan from %d to %d to avoid imaging out of the SPW coverage.',
                                 if1/1e9, if1_auto/1e9, inputs.field, inputs.spw, inputs.nchan, nchan_use)
-                if nchan_use < 1:
-                    LOG.error('No coverage overlap with the requested imaging frequency range for Field %s '
-                              'SPW %s', inputs.field, inputs.spw)
-                    error_result = TcleanResult(vis=inputs.vis,
-                                                sourcename=inputs.field,
-                                                intent=inputs.intent,
-                                                spw=inputs.spw,
-                                                specmode=inputs.specmode,
-                                                imaging_mode=self.image_heuristics.imaging_mode)
-                    error_result.error = (
-                        f'{inputs.field}/{inputs.intent}/spw{inputs.spw} '
-                        'clean error: invalid specification for imaging channel grid'
-                    )
-                    return error_result
-
-                inputs.nchan = nchan_use
+                    if nchan_use < 1:
+                        LOG.error('No coverage overlap with the requested imaging frequency range for Field %s '
+                                  'SPW %s', inputs.field, inputs.spw)
+                        error_result = TcleanResult(vis=inputs.vis,
+                                                    sourcename=inputs.field,
+                                                    intent=inputs.intent,
+                                                    spw=inputs.spw,
+                                                    specmode=inputs.specmode,
+                                                    imaging_mode=self.image_heuristics.imaging_mode)
+                        error_result.error = (
+                            f'{inputs.field}/{inputs.intent}/spw{inputs.spw} '
+                            'clean error: invalid specification for imaging channel grid'
+                        )
+                        return error_result
+                    inputs.nchan = nchan_use
                 LOG.info('Using nchan=%d', inputs.nchan)
             else:
                 # Skip edge channels and extra channels if no nchan is supplied.
