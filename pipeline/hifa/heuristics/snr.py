@@ -1039,6 +1039,34 @@ def compute_gaincalsnr(ms, spwlist, spw_dict, intent, edge_fraction):
         else:
             relativeTsys = spw_dict[spwid]['median_tsys'] / ALMA_TSYS[bandidx]
         nbaselines = spw_dict[spwid]['num_7mantenna'] + spw_dict[spwid]['num_12mantenna'] - 1
+        # PIPE-2901 incorrect namenclatour of "nbaselines" this is actually number of unique antennas minus 1
+        # The process below is a simplification of two steps, this can be confusing due to the
+        # incorrectly named variable 'nbaselines'
+        #
+        # The calculation for the sensitivities should follow
+        # 1) convert from FIDUCIAL_SENSITIVITIES (image based parameter) into an ANTENNA based sensitivity (strictly)
+        #    e.g.   FIDUCIAL_ANTBASED  =  FIDUCIAL_SENSITIVITIES  *  np.sqrt( ALMA_FIDUCIAL_NBASELINES  /  ALMA_FIDUCIAL_NUM_ANTENNAS - 3)
+        #    where:  ALMA_FIDUCIAL_NBASELINES = ALMA_FIDUCIAL_NUM_ANTENNAS * (ALMA_FIDUCIAL_NUM_ANTENNAS-1)  / 2.0
+        #    expanded:   FIDUCIAL_ANTBASED  =  FIDUCIAL_SENSITIVITIES  *  np.sqrt((ALMA_FIDUCIAL_NUM_ANTENNAS * (ALMA_FIDUCIAL_NUM_ANTENNAS-1)) / (2.0 * (ALMA_FIDUCIAL_NUM_ANTENNAS-3)))
+        #
+        # 2) convert from the ALMA_FIDUCIAL_NUM_ANTENNAS to the observing arrange number of antennas
+        #        np.sqrt(ALMA_FIDUCIAL_NUM_ANTENNAS /  nantennas)
+        #
+        # The 'arraySizeFactor' below therefore uses some simplification to make an approximation of this conversion in one line
+        # Expanding above (1) and (2):
+        #
+        # arraySizeFactor = FIDUCIAL_ANTBASED  =  FIDUCIAL_SENSITIVITIES  *
+        #                                   np.sqrt((ALMA_FIDUCIAL_NUM_ANTENNAS * (ALMA_FIDUCIAL_NUM_ANTENNAS-1)) / (2.0 * (ALMA_FIDUCIAL_NUM_ANTENNAS-3)))  *
+        #                                   np.sqrt(ALMA_FIDUCIAL_NUM_ANTENNAS /  nantennas)
+        #
+        # what appears to be the simplification is that ALMA_FIDUCIAL_NUM_ANTENNAS and ALMA_FIDUCIAL_NUM_ANTENNAS-3 'drop out'
+        # in addition nantennas is 'called' nbaselines, and is actually nantennas - 1
+        #
+        # Numerically an example for the fiducail 16 nants, and a 43 ant full array are:
+        # full expansion:  ant = img * sqrt (( 16 * 15 * 16 ) / (2 * 13 * 43)) =>  sqrt(3.43) => 1.85
+        # below simplification:  ant = img * sqrt ((16*15) / (2*42))  => sqrt(2.85) => 1.69
+        #
+        # thus the simplification in this case is a ~9% underestimate
         arraySizeFactor = np.sqrt(ALMA_FIDUCIAL_NUM_ANTENNAS * (ALMA_FIDUCIAL_NUM_ANTENNAS-1) / 2.0 / nbaselines)
         if spw_dict[spwid]['num_7mantenna'] == 0:
             areaFactor = 1.0
@@ -1203,6 +1231,36 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
             relativeTsys = spw_dict[spwid]['median_tsys'] / ALMA_TSYS[bandidx]
         nbaselines = spw_dict[spwid]['num_7mantenna'] + spw_dict[spwid]['num_12mantenna'] - 1
 
+        # PIPE-2901 incorrect namenclatour of "nbaselines" this is actually number of unique antennas minus 1
+        # The process below is a simplification of two steps, this can be confusing due to the
+        # incorrectly named variable 'nbaselines'
+        #
+        # The calculation for the sensitivities should follow
+        # 1) convert from FIDUCIAL_SENSITIVITIES (image based parameter) into an ANTENNA based sensitivity (strictly)
+        #    e.g.   FIDUCIAL_ANTBASED  =  FIDUCIAL_SENSITIVITIES  *  np.sqrt( ALMA_FIDUCIAL_NBASELINES  /  ALMA_FIDUCIAL_NUM_ANTENNAS - 3)
+        #    where:  ALMA_FIDUCIAL_NBASELINES = ALMA_FIDUCIAL_NUM_ANTENNAS * (ALMA_FIDUCIAL_NUM_ANTENNAS-1)  / 2.0
+        #    expanded:   FIDUCIAL_ANTBASED  =  FIDUCIAL_SENSITIVITIES  *  np.sqrt((ALMA_FIDUCIAL_NUM_ANTENNAS * (ALMA_FIDUCIAL_NUM_ANTENNAS-1)) / (2.0 * (ALMA_FIDUCIAL_NUM_ANTENNAS-3)))
+        #
+        # 2) convert from the ALMA_FIDUCIAL_NUM_ANTENNAS to the observing arrange number of antennas
+        #        np.sqrt(ALMA_FIDUCIAL_NUM_ANTENNAS /  nantennas)
+        #
+        # The 'arraySizeFactor' below therefore uses some simplification to make an approximation of this conversion in one line
+        # Expanding above (1) and (2):
+        #
+        # arraySizeFactor = FIDUCIAL_ANTBASED  =  FIDUCIAL_SENSITIVITIES  *
+        #                                   np.sqrt((ALMA_FIDUCIAL_NUM_ANTENNAS * (ALMA_FIDUCIAL_NUM_ANTENNAS-1)) / (2.0 * (ALMA_FIDUCIAL_NUM_ANTENNAS-3)))  *
+        #                                   np.sqrt(ALMA_FIDUCIAL_NUM_ANTENNAS /  nantennas)
+        #
+        # what appears to be the simplification is that ALMA_FIDUCIAL_NUM_ANTENNAS and ALMA_FIDUCIAL_NUM_ANTENNAS-3 'drop out'
+        # in addition nantennas is 'called' nbaselines, and is actually nantennas - 1
+        #
+        # Numerically an example for the fiducail 16 nants, and a 43 ant full array are:
+        # full expansion:  ant = img * sqrt (( 16 * 15 * 16 ) / (2 * 13 * 43)) =>  sqrt(3.43) => 1.85
+        # below simplification:  ant = img * sqrt ((16*15) / (2*42))  => sqrt(2.85) => 1.69
+        #
+        # thus the simplification in this case is a ~9% underestimate
+
+        
         # PIPE-408: do not continue if there are no unflagged baselines for current spw; this will cause this spw
         # to be absent from the solution interval dictionary that is returned.
         if nbaselines < 0:
@@ -1210,7 +1268,8 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
                         " baselines were found".format(spwid, ms.basename))
             continue
 
-        arraySizeFactor = np.sqrt(16 * 15 / 2.0) / np.sqrt(nbaselines)
+        arraySizeFactor = np.sqrt(ALMA_FIDUCIAL_NUM_ANTENNAS * (ALMA_FIDUCIAL_NUM_ANTENNAS-1) / 2.0 / nbaselines)
+        
         if spw_dict[spwid]['num_7mantenna'] == 0:
             areaFactor = 1.0
         elif spw_dict[spwid]['num_12mantenna'] == 0:
