@@ -350,9 +350,9 @@ class SerialTimeGaincal(gtypegaincal.GTypeGaincal):
         # for plotting purposes.
         np_intents = ','.join(set(inputs.intent.split(',')) - {p_intent})
         np_fields = ','.join([f.name for f in inputs.ms.get_fields(intent=np_intents) if 'PHASE' not in f.intents])
-        # PIPE-2571: If there are no non-phase fields, then no need to proceed.
+        # PIPE-2752: If there are no exclusive non-phase calibrator fields, then no need to proceed.
         if not np_fields:
-            LOG.debug('Non non-phase fields for intents=%s selection on %s', np_intents, inputs.ms)
+            LOG.debug('No exclusive non-phase fields for intents=%s selection on %s', np_intents, inputs.ms)
             return calapp_list
 
         # Determine which SpWs to solve for, which SpWs the solutions should
