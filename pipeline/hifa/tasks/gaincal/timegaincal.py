@@ -348,12 +348,16 @@ class SerialTimeGaincal(gtypegaincal.GTypeGaincal):
 
         # Determine non-phase calibrator fields, to be added to gaincal solve
         # for plotting purposes.
-        np_intents = ','.join(set(inputs.intent.split(',')) - {p_intent})
-        np_fields = ','.join([f.name for f in inputs.ms.get_fields(intent=np_intents) if 'PHASE' not in f.intents])
-        # PIPE-2752: If there are no exclusive non-phase calibrator fields, then no need to proceed.
-        if not np_fields:
-            LOG.debug('No exclusive non-phase fields for intents=%s selection on %s', np_intents, inputs.ms)
-            return calapp_list
+        np_intents = ','.join(dict.fromkeys(item for item in inputs.intent.split(',') if item != p_intent))
+        np_fields = None
+        if np_intents:
+            # PIPE-2752: Identify fields that have non-phase intents but lack the PHASE intent.
+            candidates = inputs.ms.get_fields(intent=np_intents)
+            exclusive_fields = [f.name for f in candidates if p_intent not in f.intents]
+            if exclusive_fields:
+                np_fields = ','.join(dict.fromkeys(exclusive_fields))
+            else:
+                LOG.debug('No exclusive non-phase fields for intents=%s selection on %s', np_intents, inputs.ms)
 
         # Determine which SpWs to solve for, which SpWs the solutions should
         # apply to, and whether to override refantmode. By default, use all
@@ -451,10 +455,10 @@ class SerialTimeGaincal(gtypegaincal.GTypeGaincal):
         """
         inputs = self.inputs
 
-        # If provided, add additional fields to gaincal.
         gc_fields = field
         if include_field:
-            gc_fields = f'{field},{include_field}'
+            gc_field_list = gc_fields.split(',').extend(include_field.split(','))
+            gc_fields = ','.join(dict.fromkeys(gc_field_list))
 
         # PIPE-1154: for phase solutions of target, check, phase, always use
         # solint=inputs.targetsolint.

@@ -23,17 +23,18 @@ LOG = infrastructure.get_logger(__name__)
 COLSHAPE_FORMAT = re.compile(r'\[(?P<num_pols>\d+), (?P<num_rows>\d+)\]')
 
 
-class PlotbandpassDetailBase(object):
+class PlotbandpassDetailBase:
     def __init__(self, context, result, xaxis, yaxis, **kwargs):
-        
-        
-        # PIPE-2752: identify the bandpass solution for the target, falling back to AMPLITUDE/BANDPASS
-        for intent_attempt in ['TARGET', 'AMPLITUDE', 'BANDPASS']:
-            calapps = [c for c in result.final if (c.intent == '' or intent_attempt in c.intent)]
+
+        # PIPE-2752: identify the bandpass/tsys for the target, falling back to PHASE/AMPLITUDE/BANDPASS
+        for intent in ['TARGET', 'PHASE', 'AMPLITUDE', 'BANDPASS']:
+            calapps = [c for c in result.final if not c.intent or intent in c.intent]
+            if not calapps:
+                continue
             if len({c.gaintable for c in calapps}) > 1:
                 raise ValueError('Target solutions != 1')
-            if len(calapps) > 0:
-                break
+            LOG.debug('Using calapp - %s - for PlotbandpassDetail', calapps[0])
+            break
 
         calapp = calapps[0]
 
