@@ -5,7 +5,6 @@ The framework module contains:
  2. utility functions used by pipeline tasks to help process framework
     objects (Results, CalLibrary objects, etc.).
 """
-# Do not evaluate type annotations at definition time.
 from __future__ import annotations
 
 import collections
@@ -22,11 +21,12 @@ import string
 import uuid
 from typing import TYPE_CHECKING, List, Optional, Tuple
 
-from .. import daskhelpers, jobrequest, logging, mpihelpers
+from pipeline.infrastructure import daskhelpers, logging, mpihelpers
+from pipeline.infrastructure.jobrequest import JobRequest
+
 from .conversion import flatten, safe_split
 
 if TYPE_CHECKING:
-    from pipeline.infrastructure.jobrequest import JobRequest
     from pipeline.infrastructure.launcher import Context
     from pipeline.infrastructure.renderer.logger import Plot
 
@@ -357,7 +357,7 @@ def plotms_iterate(
             len(jobs_and_wrappers) == 1 and
             # .. when we're not plotting basebands, i.e., comma-separated spws
             ',' not in jobs_and_wrappers[0][0].kw.get(iteraxis, '')):
-        jobs_and_wrappers = [(jobrequest.JobRequest(job.fn, *job.args, iteraxis='spw', **job.kw), wrappers)
+        jobs_and_wrappers = [(JobRequest(job.fn, *job.args, iteraxis='spw', **job.kw), wrappers)
                              for job, wrappers in jobs_and_wrappers]
 
     # component jobs containing a comma should be executed as they are. An
