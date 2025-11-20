@@ -51,9 +51,12 @@ class testBPdcalsQAHandler(pqa.QAPlugin):
             score3 = qacalc.score_flagged_vla_baddef(result.amp_collection[bandname],
                                                      result.phase_collection[bandname],
                                                      result.num_antennas[bandname])
-
             scores.append(score3)
 
+            bandwise_scores = qacalc.score_testBPdcals(result.ktypecaltable[bandname], result.amp_collection[bandname], result.phase_collection[bandname],
+                                                       result.has_bad_ref_ant[bandname], bandname)
+            if bandwise_scores:
+                scores.append(bandwise_scores)
         for antenna, spwlist in self.antspw.items():
             uniquespw = list(set(spwlist))
             uniquespwlist = [int(spw) for spw in uniquespw]
