@@ -1188,9 +1188,13 @@ class ImageParamsHeuristics(object):
         qa_tool = casa_tools.quanta
         cell_arcsec = qa_tool.convert(cell, 'arcsec')['value']
 
-        buffer_size = int(primary_beam * 1.5 / cell_arcsec * 0.5)
-        imsize = [size + 2 * buffer_size for size in cutout_imsize]
-        cutout_imsize_str = [f"{size * cell_arcsec}arcsec" for size in cutout_imsize]
+        buffer_size = math.ceil(primary_beam * 1.5 / cell_arcsec * 0.5)
+        
+        csu = casa_tools.synthesisutils
+        imsize = [csu.getOptimumSize(size + 2 * buffer_size) for size in cutout_imsize]
+        csu.done()
+        
+        cutout_imsize_str = [f'{size * cell_arcsec}arcsec' for size in cutout_imsize]
 
         return imsize, cutout_imsize_str
 
