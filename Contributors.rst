@@ -25,7 +25,7 @@ Contributors and Affiliations
 - Kazuhiko Shimada (NAOJ, 2021-2025)
 - Kristin Berry (NRAO, 2021-current)
 - Lindsey Davis (NRAO, 2003-2018)
-- Luke Maud (ESO, 2023-current)
+- Luke Maud (ESO, 2020-current)
 - László Szűcs (NRAO, 2020-2021)
 - Patrick Sheehan (NRAO, 2022-current)
 - Remy Indebetouw (NRAO, 2005-current)
