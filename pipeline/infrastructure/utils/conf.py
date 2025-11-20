@@ -186,7 +186,7 @@ def work_directory(
     create: bool = False,
     cleanup: bool = False,
     reset: bool = True,
-    capture: bool | str = False,
+    capture_log: bool | str = False,
     subdir: bool = False,
     reraise_on_error: bool = True,
 ) -> Generator[str, None, None]:
@@ -204,12 +204,12 @@ def work_directory(
             the target working directory before execution.
         reset: If True, resets CASA log files and other modules before execution
             and upon exit.
-        capture: If True, captures CASA logs to a new timestamped log file. If
+        capture_log: If True, captures CASA logs to a new timestamped log file. If
             a string is provided, it is used as the log file path.
         subdir: If True, creates and uses a standard subdirectory structure
             (products, working, rawdata) within `workdir`. The context will
             change into the 'working' subdirectory.
-        reraise_on_error: If True, exceptions will be re-raised instead of just being logged.            
+        reraise_on_error: If True, exceptions will be re-raised instead of just being logged.
 
     Yields:
         The absolute path to the CASA log file being used within the context.
@@ -219,16 +219,13 @@ def work_directory(
             print(f"Working in directory. Logs are being saved to {log_file}")
             # Your code runs here, in the '/tmp/my_analysis' directory
     """
-    current_dir = os.getcwd()
-    workdir_path = os.path.abspath(workdir)
-
+    last_path = os.getcwd()
     if subdir:
-        # Define and check the standard subdirectory structure
-        path = os.path.join(workdir_path, 'working')
-        dir_checklist = [os.path.join(workdir_path, name) for name in ['products', 'working', 'rawdata']]
+        # Define the standard pipeline processing subdirectory structure
+        dir_checklist = [os.path.join(os.path.abspath(workdir), name) for name in ['working', 'rawdata', 'products']]
     else:
-        path = workdir_path
-        dir_checklist = [path]
+        dir_checklist = [os.path.abspath(workdir)]
+    work_path = dir_checklist[0]
 
     if create:
         # Create directory structure if it doesn't exist
@@ -236,10 +233,10 @@ def work_directory(
         for dir_to_create in dir_checklist:
             os.makedirs(dir_to_create, exist_ok=True)
 
-    if cleanup and os.path.isdir(path):
+    if cleanup and os.path.isdir(work_path):
         # Clean up the target directory's contents
-        for item in os.listdir(path):
-            item_path = os.path.join(path, item)
+        for item in os.listdir(work_path):
+            item_path = os.path.join(work_path, item)
             if os.path.isfile(item_path) or os.path.islink(item_path):
                 os.unlink(item_path)
             elif os.path.isdir(item_path):
@@ -248,45 +245,45 @@ def work_directory(
     last_casa_logfile = casa_tools.casalog.logfile()
     ret_casa_logfile = last_casa_logfile
 
-    if capture:
-        if isinstance(capture, str):
-            ret_casa_logfile = os.path.abspath(capture)
+    if capture_log:
+        if isinstance(capture_log, str):
+            ret_casa_logfile = os.path.abspath(os.path.join(work_path, capture_log))
         else:
             now_str = datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S')
-            ret_casa_logfile = os.path.abspath(f'casa-{now_str}.log')
+            ret_casa_logfile = os.path.abspath(os.path.join(work_path, f'casa-{now_str}.log'))
 
     # The following operations are performed on all processes (using exec_func) to maintain consistency
 
     try:
-        exec_func(os.chdir, path)
+        exec_func(os.chdir, work_path)
         if reset:
             exec_func(reset_logfiles, casa_logfile=ret_casa_logfile, prepend=False)
             # PIPE-1301: Shut down existing plotms to avoid side-effects from changing CWD.
             # This is a workaround for CAS-13626.
             exec_func(shutdown_plotms)
             exec_func(reset_tec_maps_module)
-        if capture:
+        if capture_log:
             exec_func(capture_start, ret_casa_logfile)
         yield ret_casa_logfile
     except Exception as ex:
         if reraise_on_error:
             # re-raises the caught exception, preserving its traceback
-            raise        
+            raise
         else:
             LOG.info(
                 'An error occurred while setting up the environment (e.g., changing directory to %s): %s - %s',
-                path,
+                work_path,
                 type(ex).__name__,
                 ex,
             )
             LOG.debug(traceback.format_exc())
     finally:
-        exec_func(os.chdir, current_dir)
+        exec_func(os.chdir, last_path)
         if reset:
             exec_func(reset_logfiles, casa_logfile=last_casa_logfile, prepend=False)
             exec_func(shutdown_plotms)
             exec_func(reset_tec_maps_module)
-        if capture:
+        if capture_log:
             exec_func(capture_stop)
 
 
