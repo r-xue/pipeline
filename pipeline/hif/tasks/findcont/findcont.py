@@ -275,8 +275,14 @@ class FindCont(basetask.StandardTaskTemplate):
                     if target['width'] != '':
                         channel_width_manual = qaTool.convert(target['width'], 'Hz')['value']
                         if channel_width_manual < channel_width_auto:
-                            LOG.error('User supplied channel width (%s GHz) smaller than native value (%s GHz) for Field %s '
-                                      'SPW %s' % (channel_width_manual/1e9, channel_width_auto/1e9, target['field'], target['spw']))
+                            LOG.error(
+                                'User supplied channel width (%s MHz) is smaller than the native value (%s MHz) '
+                                'for Field %s SPW %s',
+                                channel_width_manual / 1e6,
+                                channel_width_auto / 1e6,
+                                target['field'],
+                                target['spw'],
+                            )
                             continue
                         LOG.info('Using supplied width %s' % (target['width']))
                         channel_width = channel_width_manual
