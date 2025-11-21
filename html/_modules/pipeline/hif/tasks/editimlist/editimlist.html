@@ -1131,6 +1131,7 @@ window.addEventListener("load", load);
         <span class="k">if</span> <span class="n">fieldnames</span><span class="p">:</span>
             <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fieldnames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># only used for VLASS imaging modes where fieldnames is empty</span>
             <span class="k">if</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;phasecenter&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
                 <span class="c1"># TODO: remove the dependency on cell size being in arcsec</span>
 
@@ -1141,10 +1142,18 @@ window.addEventListener("load", load);
                 <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;]&#39;</span><span class="p">)</span>
                 <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
                 <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-                <span class="c1"># We always search for fields in 1sq degree with a surrounding buffer</span>
-                <span class="n">mosaic_side_arcsec</span> <span class="o">=</span> <span class="mi">3600</span>  <span class="c1"># 1 degree</span>
-                <span class="n">dist</span> <span class="o">=</span> <span class="p">(</span><span class="n">mosaic_side_arcsec</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">buffer_arcsec</span><span class="p">)</span>
-                <span class="n">dist_arcsec</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;arcsec&#39;</span>
+
+                <span class="n">cutout_imsize</span> <span class="o">=</span> <span class="n">inpdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cutout_imsize&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">cutout_imsize</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;imsize&#39;</span><span class="p">],</span> <span class="n">dist_arcsec</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">imaging_imsize</span><span class="p">(</span>
+                        <span class="n">cutout_imsize</span><span class="p">,</span> <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">],</span> <span class="n">largest_primary_beam</span><span class="p">)</span>
+                    <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;misc_vlass&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;misc_vlass&#39;</span><span class="p">]</span> <span class="ow">or</span> <span class="p">{})</span> <span class="o">|</span> <span class="p">{</span><span class="s1">&#39;cutout_imsize&#39;</span><span class="p">:</span> <span class="n">cutout_imsize</span><span class="p">}</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># We always search for fields in 1sq degree with a surrounding buffer</span>
+                    <span class="n">mosaic_side_arcsec</span> <span class="o">=</span> <span class="mi">3600</span>  <span class="c1"># 1 degree</span>
+                    <span class="n">dist</span> <span class="o">=</span> <span class="p">(</span><span class="n">mosaic_side_arcsec</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">buffer_arcsec</span><span class="p">)</span>
+                    <span class="n">dist_arcsec</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;arcsec&#39;</span>
+
                 <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{k}</span><span class="s2"> = </span><span class="si">{v}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="s1">&#39;dist_arcsec&#39;</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">dist_arcsec</span><span class="p">))</span>
 
                 <span class="c1"># PIPE-1948/PIPE-2004: we updated the field select algorithm for VLASS-PL2023.</span>
@@ -1287,7 +1296,7 @@ window.addEventListener("load", load);
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2120-gd41e219cdf-update-docs-build-and-packaging-setup.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2129-g6299ba7b91-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

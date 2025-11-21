@@ -761,15 +761,20 @@ window.addEventListener("load", load);
 <div class="viewcode-block" id="MakeImages.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.MakeImages.html#pipeline.hif.tasks.MakeImages.analyse">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">imaging_mode</span> <span class="o">==</span> <span class="s1">&#39;VLASS-SE-CUBE&#39;</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_vlass_se_cube_metadata</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">imaging_mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;VLASS-&#39;</span><span class="p">):</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_vlass_metadata</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">result</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_add_vlass_se_cube_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_vlass_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Attach extra imaging metadata to Tclean results for the VLASS Coarse Cube imaging.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">imaging_mode</span> <span class="o">!=</span> <span class="s1">&#39;VLASS-SE-CUBE&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">tclean_result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">results</span><span class="p">):</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">targets</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                <span class="n">imaging_metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;cutout_imsize&#39;</span><span class="p">:</span> <span class="n">target</span><span class="p">[</span><span class="s1">&#39;misc_vlass&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cutout_imsize&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)}</span>
+                <span class="n">tclean_result</span><span class="o">.</span><span class="n">imaging_metadata</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">imaging_metadata</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
 
         <span class="n">vlass_plane_reject_keys_allowed</span> <span class="o">=</span> <span class="p">[</span>
             <span class="s1">&#39;apply&#39;</span><span class="p">,</span> <span class="s1">&#39;exclude_spw&#39;</span><span class="p">,</span> <span class="s1">&#39;flagpct_thresh&#39;</span><span class="p">,</span> <span class="s1">&#39;beamdev_thresh&#39;</span><span class="p">]</span>
@@ -821,7 +826,7 @@ window.addEventListener("load", load);
                     <span class="n">freq_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imaging_metadata</span><span class="p">[</span><span class="s1">&#39;freq&#39;</span><span class="p">])</span>
                     <span class="n">spwgroup_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imaging_metadata</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">])</span>
                     <span class="n">flagpct_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">imaging_metadata</span><span class="p">[</span><span class="s1">&#39;flagpct&#39;</span><span class="p">])</span>
-            <span class="n">tclean_result</span><span class="o">.</span><span class="n">imaging_metadata</span> <span class="o">=</span> <span class="n">imaging_metadata</span>
+            <span class="n">tclean_result</span><span class="o">.</span><span class="n">imaging_metadata</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">imaging_metadata</span><span class="p">)</span>
 
         <span class="c1"># update tclean_result.imaging_metadata[&#39;keep&#39;] based on the beam size and flagging percentage</span>
         <span class="k">if</span> <span class="n">bminor_list</span><span class="p">:</span>
@@ -1300,7 +1305,7 @@ window.addEventListener("load", load);
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2120-gd41e219cdf-update-docs-build-and-packaging-setup.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2129-g6299ba7b91-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
