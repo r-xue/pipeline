@@ -15,6 +15,7 @@ dependencies:
   - openmpi
   - mpi4py
   - certifi
+  - sqlite # required by myst_nb
   - poppler # required by PL
   - imagemagick # required by PL
   - pandoc # required by nbsphinx; not 'pandoc' Python library from PyPI
