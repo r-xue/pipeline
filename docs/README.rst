@@ -8,7 +8,7 @@ Pipeline
 
   This is a **demonstration** of the new internal documentation framework for the Pipeline development.
   It is designed to provide *up-to-date and version-controlled* supplementary technical information to complement the official Pipeline documentatios from the `ALMA <https://almascience.nrao.edu/processing/science-pipeline>`_ and `VLA <https://science.nrao.edu/facilities/vla/data-processing>`_ science portals.
-  Pipeline development is a collaborative effort led by `NRAO`_, `ESO`_ (in partnership with `UKATC`_ and `MPIfR`_), and `NAOJ`_.
+  Pipeline development is a collaborative effort led by `NRAO`_, `ESO`_, and `NAOJ`_.
 
 
 Official Repository

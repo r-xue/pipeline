@@ -1168,6 +1168,37 @@ class ImageParamsHeuristics(object):
 
         return repr_target, repr_source, virtual_repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal
 
+    def imaging_imsize(
+        self, cutout_imsize: list[int], cell: str, primary_beam: float, sfpblimit: Optional[float] = None
+    ) -> tuple[list[int], list[str]]:
+        """Calculates imaging imsize based on a requested cutout size.
+
+        Args:
+            cutout_imsize: A list of two integers [nxpix, nypix] defining the
+                requested cutout/final image size.
+            cell: cell size of imaging in string format with units (e.g. '0.1arcsec').
+            primary_beam: The primary beam size in arcseconds.
+            sfpblimit: The single field primary beam response limit. This argument is
+                not used in the current implementation.
+
+        Returns:
+            A tuple containing:
+                - A list of two integers for the calculated image size in pixels.
+                - A list of two strings for the cutout size with units.
+        """
+        qa_tool = casa_tools.quanta
+        cell_arcsec = qa_tool.convert(cell, 'arcsec')['value']
+
+        buffer_size = math.ceil(primary_beam * 1.5 / cell_arcsec * 0.5)
+        
+        csu = casa_tools.synthesisutils
+        imsize = [csu.getOptimumSize(size + 2 * buffer_size) for size in cutout_imsize]
+        csu.done()
+        
+        cutout_imsize_str = [f'{size * cell_arcsec}arcsec' for size in cutout_imsize]
+
+        return imsize, cutout_imsize_str
+
     def imsize(self, fields, cell, primary_beam, sfpblimit=None, max_pixels=None,
                centreonly=False, vislist=None, spwspec=None, intent: str = '', joint_intents: str = '', specmode=None):
         """

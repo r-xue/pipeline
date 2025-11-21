@@ -50,7 +50,14 @@ LOG = infrastructure.get_logger(__name__)
 
 class EditimlistInputs(vdp.StandardInputs):
     # Search order of input vis
-    processing_data_type = [DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+    processing_data_type = [
+        DataType.SELFCAL_LINE_SCIENCE,
+        DataType.REGCAL_LINE_SCIENCE,
+        DataType.SELFCAL_CONTLINE_SCIENCE,
+        DataType.REGCAL_CONTLINE_SCIENCE,
+        DataType.REGCAL_CONTLINE_ALL,
+        DataType.RAW,
+    ]
 
     search_radius_arcsec = vdp.VisDependentProperty(default=1000.0)
     conjbeams = vdp.VisDependentProperty(default=False)
@@ -558,11 +565,13 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['uvtaper'] = (th.uvtaper() if not 'uvtaper' in inp.context.imaging_parameters
                                    else inp.context.imaging_parameters['uvtaper']) if not inpdict['uvtaper'] else inpdict['uvtaper']
 
-        imlist_entry['deconvolver'] = th.deconvolver(None, None) if not inpdict['deconvolver'] else inpdict['deconvolver']
+        imlist_entry['specmode'] = th.specmode() if not inpdict['specmode'] else inpdict['specmode']
+        imlist_entry['deconvolver'] = th.deconvolver(
+            imlist_entry['specmode'], None) if not inpdict['deconvolver'] else inpdict['deconvolver']
         imlist_entry['mask'] = th.mask() if not inpdict['mask'] else inpdict['mask']
         imlist_entry['pbmask'] = None if not inpdict['pbmask'] else inpdict['pbmask']
-        imlist_entry['specmode'] = th.specmode() if not inpdict['specmode'] else inpdict['specmode']
-        imlist_entry['robust'] = th.robust(specmode=imlist_entry['specmode']) if inpdict['robust'] in (None, -999.0) else inpdict['robust']
+        imlist_entry['robust'] = th.robust(specmode=imlist_entry['specmode']
+                                           ) if inpdict['robust'] in (None, -999.0) else inpdict['robust']
 
         imlist_entry['uvrange'], _ = th.uvrange(field=fieldnames[0] if fieldnames else None,
                                                 spwspec=imlist_entry['spw'],
@@ -672,6 +681,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         if fieldnames:
             imlist_entry['field'] = fieldnames[0]
         else:
+            # only used for VLASS imaging modes where fieldnames is empty
             if imlist_entry['phasecenter'] not in ['', None]:
                 # TODO: remove the dependency on cell size being in arcsec
 
@@ -682,10 +692,18 @@ class Editimlist(basetask.StandardTaskTemplate):
                 imlist_entry['cell'] = imlist_entry['cell'].strip('[').strip(']')
                 imlist_entry['cell'] = imlist_entry['cell'].replace("'", '')
                 imlist_entry['cell'] = imlist_entry['cell'].replace('"', '')
-                # We always search for fields in 1sq degree with a surrounding buffer
-                mosaic_side_arcsec = 3600  # 1 degree
-                dist = (mosaic_side_arcsec / 2.) + float(buffer_arcsec)
-                dist_arcsec = str(dist) + 'arcsec'
+
+                cutout_imsize = inpdict.get('cutout_imsize', None)
+                if cutout_imsize is not None:
+                    imlist_entry['imsize'], dist_arcsec = th.imaging_imsize(
+                        cutout_imsize, imlist_entry['cell'], largest_primary_beam)
+                    imlist_entry['misc_vlass'] = (imlist_entry['misc_vlass'] or {}) | {'cutout_imsize': cutout_imsize}
+                else:
+                    # We always search for fields in 1sq degree with a surrounding buffer
+                    mosaic_side_arcsec = 3600  # 1 degree
+                    dist = (mosaic_side_arcsec / 2.) + float(buffer_arcsec)
+                    dist_arcsec = str(dist) + 'arcsec'
+
                 LOG.info("{k} = {v}".format(k='dist_arcsec', v=dist_arcsec))
 
                 # PIPE-1948/PIPE-2004: we updated the field select algorithm for VLASS-PL2023.

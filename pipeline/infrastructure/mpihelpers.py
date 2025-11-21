@@ -9,8 +9,10 @@ from inspect import signature
 from pipeline.infrastructure import daskhelpers, exceptions, logging
 from pipeline.infrastructure.utils import gen_hash, get_obj_size, human_file_size
 
-mpi_spec = importlib.util.find_spec('casampi')
-if mpi_spec is None:
+casampi_spec = importlib.util.find_spec('casampi')
+casalith_spec = importlib.util.find_spec('casalith')
+
+if casampi_spec is None:
     # casampi not available
     class DummyMPIEnvironment:
         is_mpi_enabled = False
@@ -532,7 +534,7 @@ if MPIEnvironment.is_mpi_enabled:
         LOG.warning('Problem initialising MPI. Pipeline falling back to single host mode.')
         mpiclient = None
 else:
-    if not daskhelpers.is_worker():
+    if casalith_spec:
         LOG.info('Environment is not MPI enabled. Pipeline operating in single host mode')
     mpiclient = None
 

@@ -41,18 +41,20 @@ distributed_spec = importlib.util.find_spec('distributed')
 dask_jobqueue_spec = importlib.util.find_spec('dask_jobqueue')
 dask_available = all([dask_spec, distributed_spec, dask_jobqueue_spec])
 
-is_mpi_session = False
-is_mpi_worker = False
+
 if importlib.util.find_spec('casampi'):
     from casampi.MPIEnvironment import MPIEnvironment
     from mpi4py import MPI
-
     is_mpi_session = MPIEnvironment.is_mpi_enabled
     is_mpi_worker = MPIEnvironment.is_mpi_enabled and not MPIEnvironment.is_mpi_client
     comm = MPI.COMM_WORLD
     mpi_rank = comm.Get_rank()
     rank = comm.Get_rank()
     size = comm.Get_size()
+else:
+    is_mpi_session = False
+    is_mpi_worker = False
+    mpi_rank = 0
 
 if dask_available and not is_mpi_worker:
     # We should avoid importing dask in MPI worker processes as some Python libraaries (e.g. signal)
@@ -151,27 +153,37 @@ def is_worker() -> bool:
     return is_worker
 
 
-def is_daskclient_allowed():
+def is_daskclient_allowed() -> bool:
     """Check if Dask client/initialization is allowed in the current process.
 
     Returns:
-        bool: True if a Dask client/cluster initialization is permitted, False otherwise.
+        True if a Dask client/cluster initialization is permitted, False otherwise.
     """
-    # disallow starting dask client if running inside a MPI worker process
-    # this can be identifeded by both RANK or casampi APIs.
+    # Disallow starting dask client if running inside a MPI worker process.
+    # This can be identified by both RANK or casampi APIs.
     if is_mpi_worker or mpi_rank != 0:
         return False
-    # disallow starting dask client if running inside a dask worker process,
+
+    # Disallow starting dask client if running inside a dask worker process,
     # identified by env variables.
-    if os.getenv('DASK_WORKER_NAME') is not None or os.getenv('DASK_PARENT') is not None:
+    if any(os.getenv(var) for var in ['DASK_WORKER_NAME', 'DASK_PARENT']):
         return False
-    # disallow starting dask client if there are existing dask worker instances,
+
+    # Disallow starting dask client if there are existing dask worker instances,
     # identified by weak references.
-    if dask_available and Worker._instances:
-        return False
-    if not dask_available:
-        return False
-    return True
+    return dask_available and not Worker._instances
+
+
+def is_dask_worker() -> bool:
+    """Check if the current process is a Dask worker.
+
+    Returns:
+        True if the current process is a Dask worker, False otherwise.
+    """
+    return (
+        any(os.getenv(var) for var in ['DASK_WORKER_NAME', 'DASK_PARENT'])
+        or bool(dask_available and Worker._instances)
+    )
 
 
 class FutureTask:
