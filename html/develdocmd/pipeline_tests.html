@@ -81,7 +81,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Pipeline testing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#unit-tests">Unit tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#regression-tests">Regression tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#regression-tests">Regression tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#combining-coverage-reports">Combining Coverage Reports</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#custom-pytest-options">Custom pytest options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#custom-markers">Custom markers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#casa-data-and-pipeline-testdata"><code class="docutils literal notranslate"><span class="pre">casa-data</span></code> and <code class="docutils literal notranslate"><span class="pre">pipeline-testdata</span></code></a></li>
@@ -182,6 +185,19 @@ walltime   2m13.076s # without pytest-xdist
 </pre></div>
 </div>
 <p>The coverage report will be saved as <code class="docutils literal notranslate"><span class="pre">htmlcov/index.html</span></code>. A similar call can be issued to report the test coverage of the entire regression test suite, although such run will take much longer.</p>
+<section id="combining-coverage-reports">
+<h3>Combining Coverage Reports<a class="headerlink" href="#combining-coverage-reports" title="Link to this heading"></a></h3>
+<p>You can merge coverage reports from multiple test runs into a single, comprehensive report using the <code class="docutils literal notranslate"><span class="pre">coverage</span> <span class="pre">combine</span></code> command. This is especially useful when tests are run in parallel, such as in different subdirectories or on separate machines, as each run creates its own data file (e.g., <code class="docutils literal notranslate"><span class="pre">.coverage.host1</span></code>).</p>
+<p>First, run <code class="docutils literal notranslate"><span class="pre">coverage</span> <span class="pre">combine</span></code> to merge the individual data files. The <code class="docutils literal notranslate"><span class="pre">find</span></code> command in this example gathers all files named <code class="docutils literal notranslate"><span class="pre">.coverage*</span></code> from the subdirectories. Using the <code class="docutils literal notranslate"><span class="pre">--keep</span></code> flag is recommended to prevent the original files from being deleted after combination.</p>
+<p>After the data is merged into a single <code class="docutils literal notranslate"><span class="pre">.coverage</span></code> file, you can generate the final HTML report.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Find<span class="w"> </span>and<span class="w"> </span>combine<span class="w"> </span>all<span class="w"> </span>.coverage*<span class="w"> </span>files<span class="w"> </span>from<span class="w"> </span>subdirectories
+<span class="go">coverage combine --keep $(find ./* -name &quot;.coverage*&quot;)</span>
+
+<span class="gp"># </span>Generate<span class="w"> </span>the<span class="w"> </span>final<span class="w"> </span>HTML<span class="w"> </span>report<span class="w"> </span>from<span class="w"> </span>the<span class="w"> </span>combined<span class="w"> </span>data
+<span class="go">coverage html</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="custom-pytest-options">
 <h2>Custom pytest options<a class="headerlink" href="#custom-pytest-options" title="Link to this heading"></a></h2>
@@ -329,7 +345,7 @@ Meanwhile, the Git <code class="docutils literal notranslate"><span class="pre">
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2120-gd41e219cdf-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

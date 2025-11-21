@@ -21,6 +21,7 @@ pipeline.domain.measurementset
       :nosignatures:
    
       MeasurementSet
+      Sequence
    
    
 

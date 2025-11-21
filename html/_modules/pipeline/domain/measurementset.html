@@ -24,12 +24,175 @@
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../_static/copybutton.js?v=0729d509"></script>
-      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
       <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
-      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
       <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
-      <script type="module">
-import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const style = document.createElement('style');
+style.textContent = `.mermaid-container {
+    position: relative !important;
+    display: inline-block;
+    width: 100%;
+}
+
+.mermaid-fullscreen-btn {
+    position: absolute !important;
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-fullscreen-content {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-fullscreen-content.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-fullscreen-content .mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-fullscreen-content .mermaid svg {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    max-height: 85vh;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}
+`;
+document.head.appendChild(style);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
 const load = async () => {
     await mermaid.run();
     const all_mermaids = document.querySelectorAll(".mermaid");
@@ -38,11 +201,9 @@ const load = async () => {
     if(mermaids_to_add_zoom > 0) {
         var svgs = d3.selectAll(".mermaid svg");
         if(all_mermaids.length !== mermaids_processed.length) {
-            // try again in a sec, wait for mermaids to load
             setTimeout(load, 200);
             return;
         } else if(svgs.size() !== mermaids_to_add_zoom) {
-            // try again in a sec, wait for mermaids to load
             setTimeout(load, 200);
             return;
         } else {
@@ -57,6 +218,138 @@ const load = async () => {
             });
         }
     }
+
+    const darkTheme = isDarkTheme();
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-fullscreen-content${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-fullscreen-content');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.display = 'block';
+
+                setTimeout(() => {
+                    const g = svg.querySelector('g');
+                    if (g) {
+                        var svgD3 = d3.select(svg);
+                        svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                        var inner = svgD3.select("g");
+                        var zoom = d3.zoom().on("zoom", function(event) {
+                            inner.attr("transform", event.transform);
+                        });
+                        svgD3.call(zoom);
+                    }
+                }, 100);
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
 };
 
 window.addEventListener("load", load);
@@ -161,7 +454,8 @@ window.addEventListener("load", load);
 <span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
@@ -179,7 +473,7 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="MeasurementSet">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">MeasurementSet</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MeasurementSet</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class to store logical representation of a MeasurementSet (MS).</span>
 
@@ -432,9 +726,13 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="MeasurementSet.get_scans">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_scans">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_scans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">scan_intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                  <span class="n">field</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
-            <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Scan</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_scans</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">scan_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">scan_intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">field</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">spw</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Scan</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return Scan(s) in MeasurementSet matching the given criteria (ID,</span>
 <span class="sd">        intent, field, and/or spectral window). If no criteria are given, all</span>
@@ -494,8 +792,11 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="MeasurementSet.get_data_description">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_data_description">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_data_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">spectralwindow</span><span class="o">.</span><span class="n">SpectralWindow</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
-            <span class="o">-&gt;</span> <span class="n">DataDescription</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_data_description</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">spw</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">spectralwindow</span><span class="o">.</span><span class="n">SpectralWindow</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataDescription</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the DataDescription in the MeasurementSet that matches the given</span>
 <span class="sd">        criteria (spectral window or ID). If no criteria are given, this will</span>
@@ -528,8 +829,11 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="MeasurementSet.get_representative_source_spw">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_representative_source_spw">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_representative_source_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">source_spwid</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
-            <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_representative_source_spw</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">source_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">source_spwid</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the representative target source object.</span>
 
 <span class="sd">        * Use user name if ``source_name`` is supplied by user and it has TARGET intent.</span>
@@ -561,12 +865,12 @@ window.addEventListener("load", load);
                               <span class="k">if</span> <span class="n">source</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">source_name</span>
                               <span class="ow">and</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">source</span><span class="o">.</span><span class="n">intents</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_sources</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Selecting user defined representative target source </span><span class="si">%s</span><span class="s1"> for data set </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
-                         <span class="p">(</span><span class="n">source_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Selecting user defined representative target source </span><span class="si">%s</span><span class="s1"> for data set </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                         <span class="n">source_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
                 <span class="n">target_source</span> <span class="o">=</span> <span class="n">target_sources</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;User defined representative target source </span><span class="si">%s</span><span class="s1"> not found in data set </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
-                            <span class="p">(</span><span class="n">source_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;User defined representative target source </span><span class="si">%s</span><span class="s1"> not found in data set </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                            <span class="n">source_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
                 <span class="n">target_source</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">representative_target</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
             <span class="c1"># Use the first target source that matches the representative source name in the ASDM</span>
@@ -576,21 +880,21 @@ window.addEventListener("load", load);
                               <span class="k">if</span> <span class="n">source</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">source_name</span>
                               <span class="ow">and</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">source</span><span class="o">.</span><span class="n">intents</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_sources</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Selecting representative target source </span><span class="si">%s</span><span class="s1"> for data set </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
-                         <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">representative_target</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Selecting representative target source </span><span class="si">%s</span><span class="s1"> for data set </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">representative_target</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
                 <span class="n">target_source</span> <span class="o">=</span> <span class="n">target_sources</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Representative target source </span><span class="si">%s</span><span class="s1"> not found in data set </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
-                            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">representative_target</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Representative target source </span><span class="si">%s</span><span class="s1"> not found in data set </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">representative_target</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
                 <span class="c1"># Try to fall back first target source</span>
                 <span class="n">target_sources</span> <span class="o">=</span> <span class="p">[</span><span class="n">source</span> <span class="k">for</span> <span class="n">source</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sources</span>
                                   <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">source</span><span class="o">.</span><span class="n">intents</span><span class="p">]</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_sources</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">target_source</span> <span class="o">=</span> <span class="n">target_sources</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Falling back to first target source (</span><span class="si">%s</span><span class="s1">) for data set </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
-                             <span class="p">(</span><span class="n">target_source</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Falling back to first target source (</span><span class="si">%s</span><span class="s1">) for data set </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                             <span class="n">target_source</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No target sources observed for data set </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No target sources observed for data set </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
                     <span class="n">target_source</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Use first target source no matter what it is</span>
@@ -598,10 +902,10 @@ window.addEventListener("load", load);
                               <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">source</span><span class="o">.</span><span class="n">intents</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_sources</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">target_source</span> <span class="o">=</span> <span class="n">target_sources</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Undefined representative target source, defaulting to first target source (</span><span class="si">%s</span><span class="s1">) for data set </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
-                         <span class="p">(</span><span class="n">target_source</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Undefined representative target source, defaulting to first target source (</span><span class="si">%s</span><span class="s1">) for data set </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                         <span class="n">target_source</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No target sources observed for data set </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No target sources observed for data set </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
                 <span class="n">target_source</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># Target source not found</span>
@@ -621,12 +925,12 @@ window.addEventListener("load", load);
                     <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
                     <span class="k">break</span>
             <span class="k">if</span> <span class="n">found</span><span class="p">:</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Selecting user defined representative spw </span><span class="si">%s</span><span class="s1"> for data set </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
-                         <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">source_spwid</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Selecting user defined representative spw </span><span class="si">%s</span><span class="s1"> for data set </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                         <span class="n">source_spwid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">target_source_name</span><span class="p">,</span> <span class="n">source_spwid</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No target source data for representative spw </span><span class="si">%s</span><span class="s1"> in data set </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
-                            <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">source_spwid</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No target source data for representative spw </span><span class="si">%s</span><span class="s1"> in data set </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                            <span class="n">source_spwid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">target_source_name</span><span class="p">,</span> <span class="kc">None</span>
 
         <span class="n">target_spwid</span> <span class="o">=</span> <span class="kc">None</span>
@@ -635,7 +939,7 @@ window.addEventListener("load", load);
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">target_spwid</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">()</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">representative_window</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">except</span><span class="p">:</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">log_level</span><span class="p">,</span> <span class="s1">&#39;Could not translate spw name </span><span class="si">%s</span><span class="s1"> to ID. Trying frequency matching heuristics.&#39;</span> <span class="o">%</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">log_level</span><span class="p">,</span> <span class="s1">&#39;Could not translate spw name </span><span class="si">%s</span><span class="s1"> to ID. Trying frequency matching heuristics.&#39;</span><span class="p">,</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">representative_window</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">target_spwid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -645,7 +949,7 @@ window.addEventListener("load", load);
         <span class="c1">#     Return if there isn&#39;t one</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">representative_target</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna_array</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;VLA&#39;</span><span class="p">,</span> <span class="s1">&#39;EVLA&#39;</span><span class="p">):</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Undefined representative bandwidth for data set </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Undefined representative bandwidth for data set </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">target_source_name</span><span class="p">,</span> <span class="kc">None</span>
 
         <span class="n">target_bw</span> <span class="o">=</span> <span class="n">cme</span><span class="o">.</span><span class="n">frequency</span><span class="p">(</span><span class="s1">&#39;TOPO&#39;</span><span class="p">,</span>
@@ -655,7 +959,7 @@ window.addEventListener("load", load);
         <span class="c1"># Get the representative frequency</span>
         <span class="c1">#     Return if there isn&#39;t one</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">representative_target</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Undefined representative frequency for data set </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Undefined representative frequency for data set </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">target_source_name</span><span class="p">,</span> <span class="kc">None</span>
         <span class="n">target_frequency</span> <span class="o">=</span> <span class="n">cme</span><span class="o">.</span><span class="n">frequency</span><span class="p">(</span><span class="s1">&#39;BARY&#39;</span><span class="p">,</span>
             <span class="n">qa</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">qa</span><span class="o">.</span><span class="n">getvalue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">representative_target</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
@@ -673,7 +977,7 @@ window.addEventListener("load", load);
             <span class="n">cme</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">target_scans</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">start_time</span><span class="p">)</span>
             <span class="n">target_frequency_topo</span> <span class="o">=</span> <span class="n">cme</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">target_frequency</span><span class="p">,</span> <span class="s1">&#39;TOPO&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unable to convert representative frequency to TOPO for data set </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unable to convert representative frequency to TOPO for data set </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
             <span class="n">target_frequency_topo</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">cme</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
 
@@ -699,14 +1003,14 @@ window.addEventListener("load", load);
                           <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">getWidth</span><span class="p">()</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">1.01</span> <span class="o">*</span> <span class="n">target_bw</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]]</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_spws_bw</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No target spws have channel width &lt;= representative bandwidth in data set </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No target spws have channel width &lt;= representative bandwidth in data set </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
 
             <span class="c1"># Now find all the target spws that contain the representative frequency.</span>
             <span class="n">target_spws_freq</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">target_spws</span>
                                 <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">min_frequency</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;=</span> <span class="n">target_frequency_topo</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">spw</span><span class="o">.</span><span class="n">max_frequency</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_spws_freq</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No target spws overlap the representative frequency in data set </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No target spws overlap the representative frequency in data set </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
 
                 <span class="c1"># Now find the closest match to the center frequency</span>
                 <span class="n">max_freqdiff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">max</span>
@@ -715,16 +1019,16 @@ window.addEventListener("load", load);
                     <span class="k">if</span> <span class="n">freqdiff</span> <span class="o">&lt;</span> <span class="n">max_freqdiff</span><span class="p">:</span>
                         <span class="n">target_spwid</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span>
                         <span class="n">max_freqdiff</span> <span class="o">=</span> <span class="n">freqdiff</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Selecting spw </span><span class="si">%s</span><span class="s1"> which is closest to the representative frequency in data set </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
-                         <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">target_spwid</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Selecting spw </span><span class="si">%s</span><span class="s1"> which is closest to the representative frequency in data set </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                         <span class="n">target_spwid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">min_chanwidth</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">target_spws_freq</span><span class="p">:</span>
                     <span class="n">chanwidth</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">getWidth</span><span class="p">()</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">min_chanwidth</span> <span class="ow">or</span> <span class="n">chanwidth</span> <span class="o">&lt;</span> <span class="n">min_chanwidth</span><span class="p">:</span>
                         <span class="n">target_spwid</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Selecting the narrowest chanwidth spw id </span><span class="si">%s</span><span class="s1"> which overlaps the representative frequency in data set </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
-                         <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">target_spwid</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Selecting the narrowest chanwidth spw id </span><span class="si">%s</span><span class="s1"> which overlaps the representative frequency in data set </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                         <span class="n">target_spwid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="n">target_source_name</span><span class="p">,</span> <span class="n">target_spwid</span>
 
@@ -732,16 +1036,18 @@ window.addEventListener("load", load);
         <span class="n">target_spws_freq</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">target_spws_bw</span>
                             <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">min_frequency</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;=</span> <span class="n">target_frequency_topo</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">spw</span><span class="o">.</span><span class="n">max_frequency</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_spws_freq</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">log_level</span><span class="p">,</span>
-                    <span class="s1">&#39;No target spws with channel spacing &lt;= representative bandwith overlap the representative frequency in data set </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
+                <span class="n">log_level</span><span class="p">,</span>
+                <span class="s1">&#39;No target spws with channel spacing &lt;= representative bandwith overlap the representative frequency in data set </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+                <span class="p">)</span>
             <span class="n">max_chanwidth</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">target_spws_bw</span><span class="p">:</span>
                 <span class="n">chanwidth</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">getWidth</span><span class="p">()</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">measures</span><span class="o">.</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">)</span>
                 <span class="k">if</span> <span class="p">(</span><span class="n">max_chanwidth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">chanwidth</span> <span class="o">&gt;</span> <span class="n">max_chanwidth</span><span class="p">):</span>
                     <span class="n">target_spwid</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Selecting widest channel width spw id </span><span class="si">{}</span><span class="s1"> with channel width &lt;= representative bandwidth in data&#39;</span>
-                     <span class="s1">&#39; set </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">target_spwid</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Selecting widest channel width spw id </span><span class="si">%s</span><span class="s1"> with channel width &lt;= representative bandwidth in data&#39;</span>
+                     <span class="s1">&#39; set </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">target_spwid</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="n">target_source_name</span><span class="p">,</span> <span class="n">target_spwid</span>
 
@@ -762,8 +1068,13 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="MeasurementSet.get_fields">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_fields">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_arg</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">field_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                   <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Field</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_fields</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">task_arg</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">field_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Field</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get Fields from this MeasurementSet matching the given criteria. If no</span>
 <span class="sd">        criteria are given, all Fields in the MeasurementSet will be returned.</span>
@@ -843,10 +1154,15 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="MeasurementSet.get_spectral_windows">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_spectral_windows">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_spectral_windows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_arg</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">with_channels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-                             <span class="n">num_channels</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">science_windows_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                             <span class="n">spectralspecs</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> \
-            <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">spectralwindow</span><span class="o">.</span><span class="n">SpectralWindow</span> <span class="o">|</span> <span class="n">spectralwindow</span><span class="o">.</span><span class="n">SpectralWindowWithChannelSelection</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_spectral_windows</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">task_arg</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">with_channels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">num_channels</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">science_windows_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">spectralspecs</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">spectralwindow</span><span class="o">.</span><span class="n">SpectralWindow</span> <span class="o">|</span> <span class="n">spectralwindow</span><span class="o">.</span><span class="n">SpectralWindowWithChannelSelection</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return spectral windows matching given criteria.</span>
 
@@ -924,8 +1240,11 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="MeasurementSet.get_all_spectral_windows">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_all_spectral_windows">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_all_spectral_windows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_arg</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">with_channels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> \
-            <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">spectralwindow</span><span class="o">.</span><span class="n">SpectralWindow</span> <span class="o">|</span> <span class="n">spectralwindow</span><span class="o">.</span><span class="n">SpectralWindowWithChannelSelection</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_all_spectral_windows</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">task_arg</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">with_channels</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">spectralwindow</span><span class="o">.</span><span class="n">SpectralWindow</span> <span class="o">|</span> <span class="n">spectralwindow</span><span class="o">.</span><span class="n">SpectralWindowWithChannelSelection</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return spectral windows corresponding to the given CASA-style spw</span>
 <span class="sd">        argument.</span>
@@ -1032,11 +1351,10 @@ window.addEventListener("load", load);
 <div class="viewcode-block" id="MeasurementSet.get_alma_cycle_number">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_alma_cycle_number">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_alma_cycle_number</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the ALMA cycle number from the observation start time.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the ALMA cycle number from the observation start time.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Cycle number or None if not found</span>
+<span class="sd">            Cycle number or None if not found or not an ALMA dataset.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cycle_numbers</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;0&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2011-09-30&#39;</span><span class="p">,</span> <span class="s1">&#39;2013-01-20&#39;</span><span class="p">],</span>
@@ -1051,7 +1369,10 @@ window.addEventListener("load", load);
             <span class="s1">&#39;9&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2022-10-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2023-09-30&#39;</span><span class="p">],</span>
             <span class="s1">&#39;10&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2023-10-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2024-09-30&#39;</span><span class="p">],</span>
             <span class="s1">&#39;11&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2024-10-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2025-09-30&#39;</span><span class="p">],</span>
+            <span class="s1">&#39;12&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2025-10-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2026-09-30&#39;</span><span class="p">],</span>
         <span class="p">}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna_array</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;VLA&#39;</span><span class="p">,</span> <span class="s1">&#39;EVLA&#39;</span><span class="p">,</span> <span class="s1">&#39;NRO&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_epoch_as_datetime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">cycle</span><span class="p">,</span> <span class="p">(</span><span class="n">start_str</span><span class="p">,</span> <span class="n">end_str</span><span class="p">)</span> <span class="ow">in</span> <span class="n">cycle_numbers</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">start_str</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -1078,7 +1399,7 @@ window.addEventListener("load", load);
 <div class="viewcode-block" id="MeasurementSet.get_vla_corrstring">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_corrstring">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_vla_corrstring</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get correlation string for VLA</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get correlation string for VLA.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            corrstring: string value of correlation</span>
@@ -1086,7 +1407,8 @@ window.addEventListener("load", load);
         <span class="c1"># Prep string listing of correlations from dictionary created by method buildscans</span>
         <span class="c1"># For now, only use the parallel hands.  Cross hands will be implemented later.</span>
 
-        <span class="n">corrstring_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">polarizations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_descriptions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pol_id</span><span class="p">]</span><span class="o">.</span><span class="n">corr_type_string</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">polarizations</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_descriptions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">[]</span>
+        <span class="n">corrstring_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">polarizations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_descriptions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pol_id</span><span class="p">]</span><span class="o">.</span><span class="n">corr_type_string</span> \
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">polarizations</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_descriptions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">[]</span>
         <span class="n">removal_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RL&#39;</span><span class="p">,</span> <span class="s1">&#39;LR&#39;</span><span class="p">,</span> <span class="s1">&#39;XY&#39;</span><span class="p">,</span> <span class="s1">&#39;YX&#39;</span><span class="p">]</span>
         <span class="n">corrstring_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">corrstring_list</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">removal_list</span><span class="p">)))</span>
         <span class="n">corrstring</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">corrstring_list</span><span class="p">)</span>
@@ -1105,7 +1427,6 @@ window.addEventListener("load", load);
 <span class="sd">        Returns:</span>
 <span class="sd">            list: a list of correlation labels.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">corrs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">dd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_descriptions</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">spw</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">dd</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">in</span> <span class="n">spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)):</span>
@@ -1221,10 +1542,7 @@ window.addEventListener("load", load);
 <div class="viewcode-block" id="MeasurementSet.get_vla_numchan">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_numchan">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_vla_numchan</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get number of channels for VLA</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            None</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get number of channels for VLA.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            channels:  NUM_CHAN column from spectral window table</span>
@@ -1240,8 +1558,9 @@ window.addEventListener("load", load);
 <div class="viewcode-block" id="MeasurementSet.get_vla_tst_bpass_spw">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_tst_bpass_spw">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_vla_tst_bpass_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwlist</span><span class="o">=</span><span class="p">[]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get VLA test bandpass or delay spws</span>
-<span class="sd">            This function replaced functionality for get_vla_tst_delay_spw - PIPE-1325</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get VLA test bandpass or delay spws.</span>
+
+<span class="sd">        This function replaced functionality for get_vla_tst_delay_spw - PIPE-1325</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            spwlist (List, optional): list of string spws   [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;]</span>
@@ -1270,7 +1589,7 @@ window.addEventListener("load", load);
 <div class="viewcode-block" id="MeasurementSet.get_vla_critfrac">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_critfrac">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_vla_critfrac</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Identify bands/basebands/spws</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Identify bands/basebands/spws.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            critical fraction</span>
@@ -1315,17 +1634,12 @@ window.addEventListener("load", load);
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">spws_info</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">band</span><span class="p">,</span> <span class="n">baseband</span><span class="p">,</span> <span class="p">[</span><span class="n">subband</span><span class="p">],</span> <span class="p">[</span><span class="n">ii</span><span class="p">]])</span>
                     <span class="n">bands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">band</span><span class="p">)</span>
-            <span class="c1"># logprint(&quot;Bands/basebands/spws are:&quot;, logfileout=&#39;logs/msinfo.log&#39;)</span>
-            <span class="k">for</span> <span class="n">spw_info</span> <span class="ow">in</span> <span class="n">spws_info</span><span class="p">:</span>
-                <span class="n">spw_info_string</span> <span class="o">=</span> <span class="n">spw_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;   &#39;</span> <span class="o">+</span> <span class="n">spw_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;   [&#39;</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ii</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">spw_info</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span> <span class="o">+</span> <span class="s1">&#39;]   [&#39;</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ii</span> <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">spw_info</span><span class="p">[</span><span class="mi">3</span><span class="p">]])</span> <span class="o">+</span> <span class="s1">&#39;]&#39;</span>
-                <span class="c1"># logprint(spw_info_string, logfileout=&#39;logs/msinfo.log&#39;)</span>
 
             <span class="c1"># Critical fraction of flagged solutions in delay cal to avoid an</span>
             <span class="c1"># entire baseband being flagged on all antennas</span>
             <span class="n">critfrac</span> <span class="o">=</span> <span class="mf">0.9</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spws_info</span><span class="p">))</span>
         <span class="k">elif</span> <span class="s1">&#39;:&#39;</span> <span class="ow">in</span> <span class="n">spw_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;old spw names with :&quot;</span><span class="p">)</span>
-            <span class="c1"># logprint(&quot;old spw names with :&quot;, logfileout=&#39;logs/msinfo.log&#39;)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;unknown spw names&quot;</span><span class="p">)</span>
 
@@ -1335,8 +1649,11 @@ window.addEventListener("load", load);
 <div class="viewcode-block" id="MeasurementSet.get_vla_baseband_spws">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_baseband_spws">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_vla_baseband_spws</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">science_windows_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">return_select_list</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">warning</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">science_windows_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">return_select_list</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">warning</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the SPW information from individual VLA band/baseband.</span>
 
 <span class="sd">        Args:</span>
@@ -1397,8 +1714,14 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="MeasurementSet.get_integration_time_stats">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.get_integration_time_stats">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_integration_time_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">science_windows_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-                                   <span class="n">stat_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;max&quot;</span><span class="p">,</span> <span class="n">band</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_integration_time_stats</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">science_windows_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">stat_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;max&quot;</span><span class="p">,</span>
+            <span class="n">band</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the given statistcs of integration time.</span>
 
 <span class="sd">        Args:</span>
@@ -1442,7 +1765,10 @@ window.addEventListener("load", load);
                 <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Incorrect spw string format.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">band</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna_array</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;VLA&#39;</span><span class="p">,</span> <span class="s1">&#39;EVLA&#39;</span><span class="p">):</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;The band parameter is only applicable to VLA data. For non-VLA datasets, it has no effect on the maximum integration time calculation.&quot;</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s1">&#39;The band parameter is only applicable to VLA data. For non-VLA datasets, &#39;</span>
+                    <span class="s1">&#39;it has no effect on the maximum integration time calculation.&#39;</span>
+                <span class="p">)</span>
             <span class="n">spw2band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_vla_spw2band</span><span class="p">()</span>
             <span class="n">spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw_obj</span> <span class="k">for</span> <span class="n">spw_obj</span> <span class="ow">in</span> <span class="n">spws</span> <span class="k">if</span> <span class="n">spw2band</span><span class="p">[</span><span class="n">spw_obj</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">band</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
             <span class="n">science_spw_dd_ids</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">]</span>
@@ -1512,7 +1838,13 @@ window.addEventListener("load", load);
         <span class="n">times_on_source_per_field_id</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">field_id</span> <span class="ow">in</span> <span class="n">field_ids</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
-                <span class="n">taql</span> <span class="o">=</span> <span class="s1">&#39;(STATE_ID IN </span><span class="si">%s</span><span class="s1"> AND FIELD_ID IN [</span><span class="si">%s</span><span class="s1">] AND DATA_DESC_ID in [</span><span class="si">%s</span><span class="s1">] AND SCAN_NUMBER in </span><span class="si">%s</span><span class="s1"> AND ANTENNA1=</span><span class="si">%s</span><span class="s1"> AND ANTENNA2=</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">state_ids</span><span class="p">),</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">first_science_spw_dd_id</span><span class="p">,</span> <span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">scan_ids</span><span class="p">),</span> <span class="n">ant1</span><span class="p">,</span> <span class="n">ant2</span><span class="p">)</span>
+                <span class="n">state_str</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">state_ids</span><span class="p">)</span>
+                <span class="n">scan_str</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">scan_ids</span><span class="p">)</span>
+                <span class="n">taql</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;(STATE_ID IN </span><span class="si">{</span><span class="n">state_str</span><span class="si">}</span><span class="s1"> AND FIELD_ID IN [</span><span class="si">{</span><span class="n">field_id</span><span class="si">}</span><span class="s1">] &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;AND DATA_DESC_ID IN [</span><span class="si">{</span><span class="n">first_science_spw_dd_id</span><span class="si">}</span><span class="s1">] &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;AND SCAN_NUMBER IN </span><span class="si">{</span><span class="n">scan_str</span><span class="si">}</span><span class="s1"> AND ANTENNA1=</span><span class="si">{</span><span class="n">ant1</span><span class="si">}</span><span class="s1"> AND ANTENNA2=</span><span class="si">{</span><span class="n">ant2</span><span class="si">}</span><span class="s1">)&#39;</span>
+                <span class="p">)</span>
                 <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">taql</span><span class="p">))</span> <span class="k">as</span> <span class="n">subtable</span><span class="p">:</span>
                     <span class="n">integration</span> <span class="o">=</span> <span class="n">subtable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;INTERVAL&#39;</span><span class="p">)</span>
                 <span class="n">times_on_source_per_field_id</span><span class="p">[</span><span class="n">field_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">integration</span><span class="p">)</span>
@@ -1551,8 +1883,11 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="MeasurementSet.update_reference_antennas">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.update_reference_antennas">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_reference_antennas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ants_to_demote</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ants_to_remove</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-            <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_reference_antennas</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">ants_to_demote</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">ants_to_remove</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the reference antenna list for this MS to demote/remove specified antennas.</span>
 
 <span class="sd">        Args:</span>
@@ -1582,11 +1917,11 @@ window.addEventListener("load", load);
         <span class="c1"># Update refant list.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reference_antenna</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">refants_to_keep</span><span class="p">)</span>
 
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;ms.update_reference_antennas for MS </span><span class="si">{}</span><span class="s1"> (</span><span class="si">{}</span><span class="s1">): previous list=</span><span class="si">{}</span><span class="s1">, removed=</span><span class="si">{}</span><span class="s1">, demoted=</span><span class="si">{}</span><span class="s1">, new list=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span>
-                 <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)),</span> <span class="n">previous_reference_antenna</span><span class="p">,</span>
-                        <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ants_to_remove</span><span class="p">))</span> <span class="k">if</span> <span class="n">ants_to_remove</span> <span class="k">else</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ants_to_demote</span><span class="p">))</span> <span class="k">if</span> <span class="n">ants_to_demote</span> <span class="k">else</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">reference_antenna</span><span class="p">))</span></div>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;ms.update_reference_antennas for MS </span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">): previous list=</span><span class="si">%s</span><span class="s1">, removed=</span><span class="si">%s</span><span class="s1">, demoted=</span><span class="si">%s</span><span class="s1">, new list=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)),</span> <span class="n">previous_reference_antenna</span><span class="p">,</span>
+                 <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ants_to_remove</span><span class="p">))</span> <span class="k">if</span> <span class="n">ants_to_remove</span> <span class="k">else</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ants_to_demote</span><span class="p">))</span> <span class="k">if</span> <span class="n">ants_to_demote</span> <span class="k">else</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">reference_antenna</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
@@ -1647,8 +1982,14 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="MeasurementSet.set_data_column">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.MeasurementSet.set_data_column">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_data_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">DataType</span><span class="p">,</span> <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                        <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">save_to_ms</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_data_column</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="p">:</span> <span class="n">DataType</span><span class="p">,</span>
+            <span class="n">column</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">save_to_ms</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Assign a data type to a column in the MS domain object.</span>
 
 <span class="sd">        Set data type and column to MS domain object and record the available</span>
@@ -1711,7 +2052,7 @@ window.addEventListener("load", load);
         <span class="c1"># Update MS domain object</span>
         <span class="k">if</span> <span class="n">dtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">[</span><span class="n">dtype</span><span class="p">]</span> <span class="o">=</span> <span class="n">column</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Updated data column information of </span><span class="si">{}</span><span class="s1">. Set </span><span class="si">{}</span><span class="s1"> to column </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">column</span><span class="p">))</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Updated data column information of </span><span class="si">%s</span><span class="s1">. Set </span><span class="si">%s</span><span class="s1"> to column </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span>
 
         <span class="c1"># Write data type lookup dictionaries to MS history (PIPEREQ-195). This is a</span>
         <span class="c1"># minimum fallback implementation and should be replaced by a properly</span>
@@ -1930,7 +2271,7 @@ window.addEventListener("load", load);
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2050-gdc53299c3d-update-docs-build-and-packaging-setup.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2120-gd41e219cdf-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

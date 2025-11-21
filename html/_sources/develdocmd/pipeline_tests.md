@@ -78,6 +78,22 @@ PYTHONNOUSERSITE=1 xvfb-run -d ${casa_dir}/bin/python3 -m pytest -v --pyclean --
 
 The coverage report will be saved as `htmlcov/index.html`. A similar call can be issued to report the test coverage of the entire regression test suite, although such run will take much longer.
 
+### Combining Coverage Reports
+
+You can merge coverage reports from multiple test runs into a single, comprehensive report using the `coverage combine` command. This is especially useful when tests are run in parallel, such as in different subdirectories or on separate machines, as each run creates its own data file (e.g., `.coverage.host1`).
+
+First, run `coverage combine` to merge the individual data files. The `find` command in this example gathers all files named `.coverage*` from the subdirectories. Using the `--keep` flag is recommended to prevent the original files from being deleted after combination.
+
+After the data is merged into a single `.coverage` file, you can generate the final HTML report.
+
+```console
+# Find and combine all .coverage* files from subdirectories
+coverage combine --keep $(find ./* -name ".coverage*")
+
+# Generate the final HTML report from the combined data
+coverage html
+```
+
 ## Custom pytest options
 
 Pipeline has several pytest custom options, which can be found by invoking `--help` inside a repository directory.
