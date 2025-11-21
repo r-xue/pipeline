@@ -17,15 +17,11 @@ dependencies:
   - certifi
   - poppler # required by PL
   - imagemagick # required by PL
-  - pandoc # required by nbsphinx; also available from macports/homebrew/apt; different from 'pandoc' on PyPI
+  - pandoc # required by nbsphinx; not 'pandoc' Python library from PyPI
   - pip:
       - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-group/simple
-      - casatools==6.7.3.*
-      - casatasks==6.7.3.*
-      - casashell==6.7.3.*
+      - casashell==6.7.3.* # casatools/casatasks will also be installed as dependencies
       - casampi
-      - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-qt5/simple # for linux
-      - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-qt6/simple # for macOS-arm64
       - protobuf~=3.20 # casatplotms still requires ver<=3.20 currently
         # https://casadocs.readthedocs.io/en/stable/notebooks/introduction.html#Known-Issues
       - casaplotms
