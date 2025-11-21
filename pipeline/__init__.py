@@ -332,14 +332,14 @@ inherit_docstring_and_type_hints()
 if infrastructure.daskhelpers.is_daskclient_allowed():
     log_host_environment()
 
-if config.config['pipeconfig'].get('xvfb', False) or not infrastructure.daskhelpers.is_daskclient_allowed():
-    # either xvfb is explicitly requested, or any worker process (which is essentially headless)
-    if not infrastructure.mpihelpers.is_mpi_server():
+
+if config.config['pipeconfig'].get('xvfb', False) or infrastructure.daskhelpers.is_dask_worker():
+    # Either xvfb is explicitly requested, or any Dask worker process, which should stay headless.
+    if os.getenv('XVFB_RUN') != '1' and not infrastructure.mpihelpers.is_mpi_server():
+        # Avoid starting another Xvfb instance if already running under xvfb-run.
         # Avoid starting Xvfb in the MPI server process to prevent multiple nested instances.
         # By design, casampi already starts Xvfb for all MPI worker processes.
-        if os.getenv("XVFB_RUN") != "1":
-            # Avoid starting another Xvfb instance if already running under xvfb-run
-            start_xvfb()
+        start_xvfb()
 
 # Use the `agg` backend for any process.
 # Tkinter (which Matplotlib often uses by default) are not thread-safe.
