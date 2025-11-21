@@ -565,12 +565,10 @@ def format_spwmap(spwmap, scispws):
 	</%def>
 
     <%def name="ms_preamble(ms)">
-	% if uv_max[ms].value > 0.0:
 		<p>Plots for AMPLITUDE calibration intent were created with UV
 		range set to capture the inner half of the data
 		(UV max < ${str(uv_max[ms])}). Plots for other intents have no UV
 		range restriction.</p>
-	% endif
 	</%def>
 
 	<%def name="mouseover(plot)">Click to show the ratio of the corrected amplitude to model column for spw ${plot.parameters['spw']}</%def>
@@ -611,10 +609,8 @@ def format_spwmap(spwmap, scispws):
 	</%def>
 
     <%def name="ms_preamble(ms)">
-	% if uv_max[ms].value > 0.0:
 		<p>Plots for ${ms} were created with UV range set to capture the inner
 		half of the data (UV max < ${str(uv_max[ms])}).</p>
-	% endif
 	</%def>
 
 	<%def name="mouseover(plot)">Click to show the ratio of the corrected amplitude to model column for spw ${plot.parameters['spw']}</%def>
