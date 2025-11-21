@@ -681,6 +681,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         if fieldnames:
             imlist_entry['field'] = fieldnames[0]
         else:
+            # only used for VLASS imaging modes where fieldnames is empty
             if imlist_entry['phasecenter'] not in ['', None]:
                 # TODO: remove the dependency on cell size being in arcsec
 
@@ -691,10 +692,18 @@ class Editimlist(basetask.StandardTaskTemplate):
                 imlist_entry['cell'] = imlist_entry['cell'].strip('[').strip(']')
                 imlist_entry['cell'] = imlist_entry['cell'].replace("'", '')
                 imlist_entry['cell'] = imlist_entry['cell'].replace('"', '')
-                # We always search for fields in 1sq degree with a surrounding buffer
-                mosaic_side_arcsec = 3600  # 1 degree
-                dist = (mosaic_side_arcsec / 2.) + float(buffer_arcsec)
-                dist_arcsec = str(dist) + 'arcsec'
+
+                cutout_imsize = inpdict.get('cutout_imsize', None)
+                if cutout_imsize is not None:
+                    imlist_entry['imsize'], dist_arcsec = th.imaging_imsize(
+                        cutout_imsize, imlist_entry['cell'], largest_primary_beam)
+                    imlist_entry['misc_vlass'] = (imlist_entry['misc_vlass'] or {}) | {'cutout_imsize': cutout_imsize}
+                else:
+                    # We always search for fields in 1sq degree with a surrounding buffer
+                    mosaic_side_arcsec = 3600  # 1 degree
+                    dist = (mosaic_side_arcsec / 2.) + float(buffer_arcsec)
+                    dist_arcsec = str(dist) + 'arcsec'
+
                 LOG.info("{k} = {v}".format(k='dist_arcsec', v=dist_arcsec))
 
                 # PIPE-1948/PIPE-2004: we updated the field select algorithm for VLASS-PL2023.
