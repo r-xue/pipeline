@@ -5,14 +5,13 @@ import glob
 import os
 import re
 import shutil
-import traceback
 from typing import TYPE_CHECKING, Any, Literal
 
 import packaging.version
 import pytest
 
-from pipeline import cli, environment, infrastructure, recipereducer
-from pipeline.infrastructure import casa_tools, exceptions, executeppr, executevlappr, launcher, utils
+from pipeline import environment, infrastructure, recipereducer
+from pipeline.infrastructure import casa_tools, executeppr, executevlappr, launcher, utils
 from pipeline.infrastructure.renderer import regression
 
 if TYPE_CHECKING:
@@ -65,7 +64,7 @@ class PipelineTester:
             mode: Signifies testing workflow to follow. Options are 'regression' and 'component'. Default is 'regression'.
             ppr: Path to the PPR file, only used in regression tests. Takes precedence over `recipe` if both are provided.
             recipe: Path to the recipe XML file.
-            tasks: List of tuples with pipeline stage strings first and optional parameters second, which only used in
+            tasks: List of tuples with pipeline stage strings first and optional parameters second. Only used in
                 component tests.
             project_id: Project ID. If provided, it is prefixed to the `output_dir` name.
             input_dir: Path to the directory containing input files.
@@ -305,7 +304,7 @@ class PipelineTester:
                             LOG.warning("Running without Pipeline Processing Request (PPR). Using recipereducer instead.")
                             recipereducer.reduce(vis=input_vis, procedure=self.recipe)
                     elif self.mode == 'component':
-                        self.__run_tasks()
+                        recipereducer.run_named_tasks(self.tasks)
 
                 # Do sanity checks
                 self.__do_sanity_checks()
@@ -466,34 +465,6 @@ class PipelineTester:
             executevlappr.executeppr(ppr_local, importonly=False)
         else:
             LOG.error("Telescope is not 'alma' or 'vla'. Can't run executeppr.")
-
-    def __run_tasks(self):
-        """Execute the pipeline tasks in order and with optional parameters.
-
-        NOTE: this private method is expected be called under "working/"
-        """
-        LOG.info('Initializing context...')
-        cli.h_init()
-
-        for task_name, task_args in self.tasks:
-            try:
-                task = cli.get_pipeline_task_with_name(task_name=task_name)
-                LOG.info('Executing pipeline task %s', recipereducer._as_task_call(task, task_args))
-                result = task(**task_args)
-            except Exception:
-                # Log message if an exception occurred that was not handled by
-                # standardtask template (not turned into failed task result).
-                call_str = recipereducer._as_task_call(task, task_args)
-                LOG.error("Unhandled error in recipereducer while running pipeline task %s.", call_str)
-                traceback.print_exc()
-
-            tracebacks = utils.get_tracebacks(result)
-            if len(tracebacks) > 0:
-                previous_tracebacks_as_string = "{}".format("\n".join([tb for tb in tracebacks]))
-                raise exceptions.PipelineException(previous_tracebacks_as_string)
-
-        LOG.info('Saving context...')
-        cli.h_save()
 
     def _cleanup(self):
         """Cleans up the working directory if it exists."""
