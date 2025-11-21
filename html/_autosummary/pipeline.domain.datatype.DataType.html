@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.datatype.DataType &mdash; Pipeline 
- (2024.2.0.4) 2025.1.0 documentation</title>
+ (2025.1.1.52) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
@@ -42,7 +42,7 @@
           
           <a href="../index.html" class="icon icon-home">
             Pipeline 
- (2024.2.0.4)
+ (2025.1.1.52)
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -142,7 +142,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline 
- (2024.2.0.4)</a>
+ (2025.1.1.52)</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -167,7 +167,7 @@
 <h1>pipeline.domain.datatype.DataType<a class="headerlink" href="#pipeline-domain-datatype-datatype" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.domain.datatype.DataType">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DataType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/datatype.html#DataType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.datatype.DataType" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DataType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/datatype.html#DataType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.datatype.DataType" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="pipeline.domain.datatype.Enum.html#pipeline.domain.datatype.Enum" title="enum.Enum"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
 <p>A class to define DataType enum.</p>
 <dl class="py attribute">
@@ -276,6 +276,34 @@
 </tbody>
 </table>
 <dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.datatype.DataType.__contains__">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__contains__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.domain.datatype.DataType.__contains__" title="Link to this definition"></a></dt>
+<dd><p>Return True if <cite>value</cite> is in <cite>cls</cite>.</p>
+<p><cite>value</cite> is in <cite>cls</cite> if:
+1) <cite>value</cite> is a member of <cite>cls</cite>, or
+2) <cite>value</cite> is the value of one of the <cite>cls</cite>'s members.
+3) <cite>value</cite> is a pseudo-member (flags)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.datatype.DataType.__getitem__">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.domain.datatype.DataType.__getitem__" title="Link to this definition"></a></dt>
+<dd><p>Return the member matching <cite>name</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.datatype.DataType.__iter__">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.domain.datatype.DataType.__iter__" title="Link to this definition"></a></dt>
+<dd><p>Return members in definition order.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.datatype.DataType.__len__">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.domain.datatype.DataType.__len__" title="Link to this definition"></a></dt>
+<dd><p>Return the number of members (no aliases)</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.datatype.DataType.get_short_datatype_desc">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_short_datatype_desc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datatype_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/datatype.html#DataType.get_short_datatype_desc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.datatype.DataType.get_short_datatype_desc" title="Link to this definition"></a></dt>
 <dd><p>Return a short summary string for weblog purposes.</p>
@@ -316,7 +344,7 @@ manually overridden).</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2130-g356079c234-update-docs-build-and-packaging-setup.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.52+228-g8ad9560bbb-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

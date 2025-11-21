@@ -21,10 +21,4 @@ pipeline.domain.datatype.auto
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
-   
-      ~auto.value
-   
    

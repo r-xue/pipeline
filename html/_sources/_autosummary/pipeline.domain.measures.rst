@@ -20,6 +20,7 @@ pipeline.domain.measures
       :template: custom-class-template.rst
       :nosignatures:
    
+      Any
       ArcUnits
       ComparableUnit
       Distance

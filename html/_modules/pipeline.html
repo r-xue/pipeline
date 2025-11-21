@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline &mdash; Pipeline 
- (2024.2.0.4) 2025.1.0 documentation</title>
+ (2025.1.1.52) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
@@ -369,7 +369,7 @@ window.addEventListener("load", load);
           
           <a href="../index.html" class="icon icon-home">
             Pipeline 
- (2024.2.0.4)
+ (2025.1.1.52)
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -424,7 +424,7 @@ window.addEventListener("load", load);
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline 
- (2024.2.0.4)</a>
+ (2025.1.1.52)</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -798,14 +798,14 @@ window.addEventListener("load", load);
 <span class="k">if</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">daskhelpers</span><span class="o">.</span><span class="n">is_daskclient_allowed</span><span class="p">():</span>
     <span class="n">log_host_environment</span><span class="p">()</span>
 
-<span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;pipeconfig&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;xvfb&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">daskhelpers</span><span class="o">.</span><span class="n">is_daskclient_allowed</span><span class="p">():</span>
-    <span class="c1"># either xvfb is explicitly requested, or any worker process (which is essentially headless)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">mpihelpers</span><span class="o">.</span><span class="n">is_mpi_server</span><span class="p">():</span>
+
+<span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;pipeconfig&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;xvfb&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">daskhelpers</span><span class="o">.</span><span class="n">is_dask_worker</span><span class="p">():</span>
+    <span class="c1"># Either xvfb is explicitly requested, or any Dask worker process, which should stay headless.</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;XVFB_RUN&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">&#39;1&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">mpihelpers</span><span class="o">.</span><span class="n">is_mpi_server</span><span class="p">():</span>
+        <span class="c1"># Avoid starting another Xvfb instance if already running under xvfb-run.</span>
         <span class="c1"># Avoid starting Xvfb in the MPI server process to prevent multiple nested instances.</span>
         <span class="c1"># By design, casampi already starts Xvfb for all MPI worker processes.</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;XVFB_RUN&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;1&quot;</span><span class="p">:</span>
-            <span class="c1"># Avoid starting another Xvfb instance if already running under xvfb-run</span>
-            <span class="n">start_xvfb</span><span class="p">()</span>
+        <span class="n">start_xvfb</span><span class="p">()</span>
 
 <span class="c1"># Use the `agg` backend for any process.</span>
 <span class="c1"># Tkinter (which Matplotlib often uses by default) are not thread-safe.</span>
@@ -834,7 +834,7 @@ window.addEventListener("load", load);
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2130-g356079c234-update-docs-build-and-packaging-setup.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.52+228-g8ad9560bbb-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

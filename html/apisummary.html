@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Full APIs (autosummary) &mdash; Pipeline 
- (2024.2.0.4) 2025.1.0 documentation</title>
+ (2025.1.1.52) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
@@ -42,7 +42,7 @@
           
           <a href="index.html" class="icon icon-home">
             Pipeline 
- (2024.2.0.4)
+ (2025.1.1.52)
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -426,7 +426,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">Pipeline 
- (2024.2.0.4)</a>
+ (2025.1.1.52)</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -512,7 +512,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pipeline.domain.DataTable.html#pipeline.domain.DataTable" title="pipeline.domain.DataTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataTable</span></code></a></p></td>
 <td><p>alias of <a class="reference internal" href="_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl" title="pipeline.domain.datatable.DataTableImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataTableImpl</span></code></a></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pipeline.domain.DataType.html#pipeline.domain.DataType" title="pipeline.domain.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataType</span></code></a>(value)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pipeline.domain.DataType.html#pipeline.domain.DataType" title="pipeline.domain.DataType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataType</span></code></a>(value[, names, module, qualname, ...])</p></td>
 <td><p>A class to define DataType enum.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pipeline.domain.Field.html#pipeline.domain.Field" title="pipeline.domain.Field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Field</span></code></a>(field_id, name, source_id, time, direction)</p></td>
@@ -557,16 +557,19 @@ from a saved context state.</p>
 <h3>Classes<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="_autosummary/pipeline.infrastructure.launcher.Context.html#module-pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Context</span></code></a>([name])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code>(*args, **kwargs)</p></td>
+<td><p>Special type indicating an unconstrained type.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="_autosummary/pipeline.infrastructure.launcher.Context.html#module-pipeline.infrastructure.launcher.Context" title="pipeline.infrastructure.launcher.Context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Context</span></code></a>([name])</p></td>
 <td><p>Context holds all pipeline state, consisting of metadata describing the data set, objects describing the pipeline calibration state, the tree of Results objects summarising the results of each pipeline task, and a small number of internal pipeline variables and objects.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextCreatedEvent</span></code>([context_name, output_dir])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextCreatedEvent</span></code>([context_name, output_dir])</p></td>
 <td><p>Emitted when a pipeline Context is created.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextResumedEvent</span></code>([context_name, output_dir])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ContextResumedEvent</span></code>([context_name, output_dir])</p></td>
 <td><p>Emitted when a pipeline Context is resumed.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline" title="pipeline.infrastructure.launcher.Pipeline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Pipeline</span></code></a>([context, loglevel, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline" title="pipeline.infrastructure.launcher.Pipeline"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Pipeline</span></code></a>([context, loglevel, ...])</p></td>
 <td><p>Pipeline is the entry point for initialising the pipeline.</p></td>
 </tr>
 </tbody>
@@ -576,19 +579,16 @@ from a saved context state.</p>
 <h3>Variables<a class="headerlink" href="#variables" title="Link to this heading"></a></h3>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code></p></td>
-<td><p>Special type indicating an unconstrained type.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.launcher.LOG.html#pipeline.infrastructure.launcher.LOG" title="pipeline.infrastructure.launcher.LOG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LOG</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.launcher.LOG.html#pipeline.infrastructure.launcher.LOG" title="pipeline.infrastructure.launcher.LOG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LOG</span></code></a></p></td>
 <td><p>Instances of the Logger class represent a single logging channel.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.launcher.MAX_CASA_REVISION.html#pipeline.infrastructure.launcher.MAX_CASA_REVISION" title="pipeline.infrastructure.launcher.MAX_CASA_REVISION"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MAX_CASA_REVISION</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.launcher.MAX_CASA_REVISION.html#pipeline.infrastructure.launcher.MAX_CASA_REVISION" title="pipeline.infrastructure.launcher.MAX_CASA_REVISION"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MAX_CASA_REVISION</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.launcher.MIN_CASA_REVISION.html#pipeline.infrastructure.launcher.MIN_CASA_REVISION" title="pipeline.infrastructure.launcher.MIN_CASA_REVISION"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MIN_CASA_REVISION</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.launcher.MIN_CASA_REVISION.html#pipeline.infrastructure.launcher.MIN_CASA_REVISION" title="pipeline.infrastructure.launcher.MIN_CASA_REVISION"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MIN_CASA_REVISION</span></code></a></p></td>
 <td><p>Built-in mutable sequence.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.launcher.current_task_name.html#pipeline.infrastructure.launcher.current_task_name" title="pipeline.infrastructure.launcher.current_task_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">current_task_name</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.launcher.current_task_name.html#pipeline.infrastructure.launcher.current_task_name" title="pipeline.infrastructure.launcher.current_task_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">current_task_name</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -812,7 +812,7 @@ from a saved context state.</p>
 <td><p>datetime(year, month, day[, hour[, minute[, second[, microsecond[,tzinfo]]]]])</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Callable</span></code></p></td>
-<td><p>Callable type; Callable[[int], str] is a function of (int) -&gt; str.</p></td>
+<td><p>Deprecated alias to collections.abc.Callable.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Generator</span></code></p></td>
 <td><p>A generic version of collections.abc.Generator.</p></td>
@@ -830,7 +830,7 @@ from a saved context state.</p>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.callibrary.tsd_accessor.html#pipeline.infrastructure.callibrary.tsd_accessor" title="pipeline.infrastructure.callibrary.tsd_accessor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tsd_accessor</span></code></a></p></td>
-<td><p>attrgetter(attr, ...) --&gt; attrgetter object</p></td>
+<td><p>Return a callable object that fetches the given attribute(s) from its operand.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1579,7 +1579,7 @@ return int(user_input)</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-2130-g356079c234-update-docs-build-and-packaging-setup.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.52+228-g8ad9560bbb-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
