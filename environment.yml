@@ -2,7 +2,6 @@ name: pipeline
 
 channels:
   - conda-forge
-  - defaults
 
 dependencies:
   - conda-ecosystem-user-package-isolation
@@ -15,7 +14,7 @@ dependencies:
   - openmpi
   - mpi4py
   - certifi
-  - sqlite=3.49 # required by myst_nb; higher versions has library mismatch issues.
+  - sqlite=3.49 # required by myst_nb; higher versions have library mismatch issues.
   - poppler # required by PL
   - imagemagick # required by PL
   - pandoc # required by nbsphinx; not 'pandoc' Python library from PyPI
