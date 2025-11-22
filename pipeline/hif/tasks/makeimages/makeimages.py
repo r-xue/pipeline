@@ -306,7 +306,7 @@ class MakeImages(basetask.StandardTaskTemplate):
         return result
 
     def analyse(self, result):
-        if self.inputs.context.imaging_mode.startswith('VLASS-'):
+        if self.inputs.context.imaging_mode is not None and self.inputs.context.imaging_mode.startswith('VLASS-'):
             result = self._add_vlass_metadata(result)
 
         return result
