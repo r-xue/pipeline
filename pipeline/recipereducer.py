@@ -54,8 +54,6 @@ if TYPE_CHECKING:
     from pipeline.infrastructure.launcher import Context
 
 LOG = infrastructure.logging.get_logger(__name__)
-
-
 RECIPES_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), 'recipes'))
 
 
@@ -102,7 +100,7 @@ def _register_context(loglevel: str, plotlevel: str, context: Context) -> None:
             # save global context with intrinsic name
             global_context.save()
             context_file = f'{global_context.name}.context'
-            LOG.info(f'Global context exists. Saved it {context_file} to disk.')
+            LOG.info('Global context exists. Saved it %s to disk.', context_file)
         else:
             # global context is different from given context but
             # they accidentally have the same name
@@ -112,7 +110,7 @@ def _register_context(loglevel: str, plotlevel: str, context: Context) -> None:
                 context_file = f'{global_context.name}-{i}.context'
                 if not os.path.exists(context_file):
                     global_context.save(context_file)
-                    LOG.info(f'Global context exists. Saved it {context_file} to disk.')
+                    LOG.info('Global context exists. Saved it %s to disk.', context_file)
                     break
             else:
                 # failed attempt to find appropriate context name
@@ -143,7 +141,7 @@ def _register_context(loglevel: str, plotlevel: str, context: Context) -> None:
 
 def _get_context_name(procedure: str) -> str:
     root, _ = os.path.splitext(os.path.basename(procedure))
-    return 'pipeline-%s' % root
+    return f'pipeline-{root}'
 
 
 def _get_processing_procedure(procedure: str) -> ElementTree:
@@ -153,7 +151,7 @@ def _get_processing_procedure(procedure: str) -> ElementTree:
     else:
         procedure_file = os.path.join(RECIPES_DIR, procedure)
     if os.path.exists(procedure_file):
-        LOG.info('Using procedure file: %s' % procedure_file)
+        LOG.info('Using procedure file: %s', procedure_file)
     else:
         msg = f'Procedure not found:: {procedure}'
         LOG.error(msg)
@@ -224,12 +222,12 @@ def _get_tasks(context: Context, args: TaskArgs, procedure: str):
 
 def _format_arg_value(arg_val: tuple[Any, Any]) -> str:
     arg, val = arg_val
-    return '%s=%r' % (arg, val)
+    return f'{arg}={val!r}'
 
 
 def _as_task_call(task_func: Callable, task_args: dict) -> str:
     kw_args = list(map(_format_arg_value, task_args.items()))
-    return '%s(%s)' % (task_func.__name__, ', '.join(kw_args))
+    return f"{task_func.__name__}({', '.join(kw_args)})"
 
 
 def _execute_task(task: Callable, task_args: dict) -> Any:
@@ -272,13 +270,12 @@ def _execute_task(task: Callable, task_args: dict) -> Any:
     return result
 
 
-def run_named_tasks(tasks: list[tuple[str, dict]]) -> Context:
+def run_named_tasks(tasks: list[tuple[str, dict[str, Any]]]) -> Context:
     """Run a sequence of pipeline tasks specified by name and argument dicts.
 
     This utility centralizes the logic previously duplicated in the test
-    framework (`PipelineTester.__run_tasks`) so that component tests and other
-    callers can invoke a consistent execution path with uniform logging and
-    error handling.
+    framework so that component tests and other callers can invoke a 
+    consistent execution path with uniform logging and error handling.
 
     The function will:
       1. Initialize a fresh pipeline context via `cli.h_init()`.
