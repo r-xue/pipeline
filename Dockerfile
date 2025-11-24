@@ -11,12 +11,13 @@ ENV DEBIAN_FRONTEND=noninteractive \
     DISPLAY=:0
 
 # Install only the bare minimum to download and run the Miniforge installer.
-RUN apt-get update && \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
-        bash wget ca-certificates git xvfb nano less rsync \
-        libfuse2 fuse libxcb-cursor0 libglib2.0-0t64 libfontconfig1 libfreetype6 \
-        libsm6 libxext6 libxml2-utils libxrender1 && \
-    apt-get autoremove -y && \ 
+    bash wget ca-certificates git xvfb nano less rsync \
+    libfuse2 fuse libxcb-cursor0 libglib2.0-0t64 libfontconfig1 libfreetype6 \
+    libsm6 libxext6 libxml2-utils libxrender1 && \
+    apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -32,10 +33,15 @@ ENV PATH="${CONDA_DIR}/bin:${PATH}"
 
 # 3. Create Python Environment and install the CASA6 Package Stack
 COPY environment.yml requirements.txt ./
-RUN --mount=type=cache,target=/opt/conda/pkgs \
-    --mount=type=cache,target=/root/.cache/pip \
+RUN --mount=type=cache,target=/opt/conda/pkgs,sharing=locked \
+    --mount=type=cache,target=/root/.cache/pip,sharing=locked \
     mamba env create -f environment.yml --yes && \
-    mamba clean --all --yes
+    mamba clean --all --yes && \
+    find ${CONDA_DIR} -follow -type f -name '*.a' -delete && \
+    find ${CONDA_DIR} -follow -type f -name '*.pyc' -delete && \
+    find ${CONDA_DIR} -follow -type f -name '*.js.map' -delete && \
+    find ${CONDA_DIR} -follow -type f -name "*.lock" -delete && \
+    rm environment.yml requirements.txt
 
 # Set the PATH to automatically "activate" the pipeline environment
 ENV PATH="${CONDA_DIR}/envs/pipeline/bin:${PATH}" \
@@ -45,7 +51,8 @@ ENV PATH="${CONDA_DIR}/envs/pipeline/bin:${PATH}" \
 # Create a non-root user
 RUN useradd -m -s /bin/bash pipeline && \
     mkdir -p /home/pipeline/.casa/data && \
-    chown -R pipeline:pipeline /home/pipeline
+    chown -R pipeline:pipeline /home/pipeline && \
+    chown -R pipeline:pipeline "${CONDA_DIR}"
 
 USER pipeline
 WORKDIR /home/pipeline
