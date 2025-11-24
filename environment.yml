@@ -8,9 +8,6 @@ dependencies:
   - python=3.12
   - ipython
   - pip
-  - numpy
-  - matplotlib
-  - scipy
   - openmpi
   - mpi4py
   - certifi
@@ -20,7 +17,8 @@ dependencies:
   - pandoc # required by nbsphinx; not 'pandoc' Python library from PyPI
   - pip:
       - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-group/simple
-      - casashell==6.7.3.* # casatools/casatasks will also be installed as dependencies
+      - casashell==6.7.3.*
+        # casatools/casatasks/numpy etc. will be installed as indirect dependencies
       - casampi
       - protobuf~=3.20 # casatplotms still requires ver<=3.20 currently
         # https://casadocs.readthedocs.io/en/stable/notebooks/introduction.html#Known-Issues

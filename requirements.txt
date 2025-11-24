@@ -8,7 +8,7 @@
 
 # -- Core Runtime Dependencies --
 
-astropy~=7.1; python_version > '3.10'     # Main astronomy library; version for Python 3.11+
+astropy~=7.1; python_version >= '3.11'    # Main astronomy library; version for Python 3.11+
 astropy~=6.1; python_version == '3.10'    # Last major version compatible with Python 3.10
 cachetools~=6.2                           # Extensible memoizing collections and decorators
 docstring-inheritance~=2.2                # For inheriting docstrings
@@ -23,17 +23,17 @@ pypubsub==4.0.3                           # Pinned due to API changes in later v
 bdsf~=1.13                                # Source finder for VLASS pipeline (PyBDSF)
 ps_mem~=3.14                              # For accurately reporting memory usage
 
-# -- Other Dependencies Provided by CASA Environment --
+# -- Other Dependencies Provided by CASA Environment 
+# NOT explictly installed via pip/conda
 #
 # The following packages are already included in the monolithic CASA Python
 # environment and by default will NOT be installed/upgraded from this file. However, 
 # they are listed here for documentation and dependency awareness purposes.
 #
-casatools
-casatasks
-casampi ; sys_platform != 'darwin'  # note that the underlying stack is available from macOS/Conda 
-matplotlib
-numpy
-pyparsing
-scipy
-pyyaml
+# casatools  # requested from casashell
+# casatasks  # requested from casashell
+# matplotlib  # requested from casatasks
+# numpy  # requested from casatasks
+# pyparsing  # requested from casatasks
+# scipy  # requested from casatasks
+# pyyaml  # requested from casatasks 
