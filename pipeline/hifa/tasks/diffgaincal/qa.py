@@ -70,6 +70,9 @@ class DiffgaincalQAHandler(pqa.QAPlugin):
             refant_id = table.getcol("ANTENNA2")
             cparams = table.getcol("CPARAM")
 
+        # filter the ant_ids to use - dont assess the refant
+        ant_loop = np.unique(np.array([ant_id for ant_id in ant_ids if ant_id not in refant_id]))
+
         # Convert phase to angles in degrees.
         angles = np.degrees(np.angle(cparams))
 
@@ -101,7 +104,7 @@ class DiffgaincalQAHandler(pqa.QAPlugin):
                 residual_data[(spwid, corr, 'all', 'snr')] = np.ma.mean(snrs_sel_masked)
 
                 # For each antenna, compute max, mean, and RMS for phase angles.
-                for ant_id in ant_ids:
+                for ant_id in ant_loop: # only loop over the unique antennas and below find the respective index from the array of solns
                     ant_name = antenna_id_to_name[ant_id]
                     # Select data for current SpW, polarization, and antenna.
                     ant_idx = np.where((ant_ids == ant_id) & (spwids == spwid))[0]
