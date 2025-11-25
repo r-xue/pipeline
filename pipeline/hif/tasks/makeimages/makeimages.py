@@ -306,14 +306,18 @@ class MakeImages(basetask.StandardTaskTemplate):
         return result
 
     def analyse(self, result):
-
-        if self.inputs.context.imaging_mode == 'VLASS-SE-CUBE':
-            result = self._add_vlass_se_cube_metadata(result)
+        if self.inputs.context.imaging_mode is not None and self.inputs.context.imaging_mode.startswith('VLASS-'):
+            result = self._add_vlass_metadata(result)
 
         return result
 
-    def _add_vlass_se_cube_metadata(self, result):
+    def _add_vlass_metadata(self, result):
         """Attach extra imaging metadata to Tclean results for the VLASS Coarse Cube imaging."""
+        if self.inputs.context.imaging_mode != 'VLASS-SE-CUBE':
+            for idx, tclean_result in enumerate(result.results):
+                target = result.targets[idx]
+                tclean_result.imaging_metadata['cutout_imsize'] = (target['misc_vlass'] or {}).get('cutout_imsize')
+            return result
 
         vlass_plane_reject_keys_allowed = [
             'apply', 'exclude_spw', 'flagpct_thresh', 'beamdev_thresh']
@@ -365,7 +369,7 @@ class MakeImages(basetask.StandardTaskTemplate):
                     freq_list.append(imaging_metadata['freq'])
                     spwgroup_list.append(imaging_metadata['spw'])
                     flagpct_list.append(imaging_metadata['flagpct'])
-            tclean_result.imaging_metadata = imaging_metadata
+            tclean_result.imaging_metadata.update(imaging_metadata)
 
         # update tclean_result.imaging_metadata['keep'] based on the beam size and flagging percentage
         if bminor_list:
