@@ -97,24 +97,24 @@ exclude_lines = [
 
 [tool.pytest.ini_options]
 markers = [
-  "regression: regression tests",
+  "regression: regression test",
   "alma: alma test",
   "nobeyama: nobeyama test",
   "vla: vla test",
   "vlass: vlass test",
   "fast: shorter-running test",
   "slow: longer-running test",
-  "twelve: 12m ALMA ",
-  "seven: 7m ALMA",
-  "sd: single dish",
-  "interferometry: interferometry",
+  "twelve: 12m ALMA test",
+  "seven: 7m ALMA test",
+  "sd: single dish test",
+  "interferometry: interferometry test",
 
   "component: component tests",
   "importdata: importdata task(s)",
   "selfcal: selfcal task(s)",
   "makeimages: makeimages task(s)",
 
-  "unit: unit tests",
+  "unit: unit test",
 ]
 addopts = "-ra -p pipeline.pytest_plugins"
 junit_family = "legacy"
