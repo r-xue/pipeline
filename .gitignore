@@ -166,6 +166,4 @@ tags
 _version.py
 
 # auto-generated recipe scripts (any .py files except __init__.py and recipe_converter*.py)
-pipeline/recipes/*.py
-!pipeline/recipes/__init__.py
-!pipeline/recipes/recipe_converter*.py
+pipeline/recipes/python_recipes

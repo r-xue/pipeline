@@ -472,11 +472,17 @@ def generate_all() -> None:
         'hifv_contimage',
         'vlassQLIP'
     ]
+
+    output_dir = 'python_recipes'
+    LOG.info(f"Scripts will be generated in '{output_dir}' directory.")
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
     for r in recipe_xml_files:
         xml_file = os.path.basename(r)
         LOG.debug(xml_file)
         recipe_name = re.sub(r'procedure_(.*).xml', r'\1', xml_file)
-        script_name = f'{recipe_name}.py'
+        script_name = os.path.join(output_dir, f'{recipe_name}.py')
         LOG.info(f'Processing {recipe_name}...')
         plotlevel_summary = recipe_name in summary_plotlevel_recipes
         main(recipe_name, script_name, plotlevel_summary)
