@@ -1076,6 +1076,11 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         elapsed = 0.0
         self.DebugOutVer[1] += 1
         for Ncluster in range(1, MaxCluster + 1):
+            # We cannot perform clustering analysis with the number of clusters
+            # exceeding number of data
+            if Region2.shape[0] < Ncluster:
+                break
+
             index0=len(ListScore)
             # Fix the random seed 2008/5/23
             numpy.random.seed((1234, 567))
