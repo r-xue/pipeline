@@ -751,7 +751,7 @@ def test_uid___A002_Xee1eb6_Xc58d_pipeline__procedure_hifa_calsurvey__regression
     """
     input_directory = 'pl-regressiontest/uid___A002_Xee1eb6_Xc58d_calsurvey/'
     pr = PipelineRegression(
-        visname=['uid___A002_Xee1eb6_Xc58d_original.ms'],
+        visname=['uid___A002_Xee1eb6_Xc58d'],
         recipe='procedure_hifa_calsurvey.xml',
         input_dir=input_directory,
         expectedoutput_dir=input_directory,
