@@ -213,6 +213,8 @@ class SerialTimeGaincal(gtypegaincal.GTypeGaincal):
         # context so that it is marked for inclusion in pre-apply (gaintable)
         # in subsequent gaincal calls during this task.
         for cpres in cal_phase_results:
+            if not cpres.final:
+                continue
             cpres.accept(inputs.context)
 
         # Look through calibrator phasecal results for any CalApplications for
@@ -220,6 +222,8 @@ class SerialTimeGaincal(gtypegaincal.GTypeGaincal):
         # AMPLITUDE, BANDPASS, POL*, and DIFFGAIN*). Add these CalApps to the
         # final task result, to be merged into the final context / callibrary.
         for cpres in cal_phase_results:
+            if not cpres.final:
+                continue
             cp_calapp = cpres.final[0]
             if cp_calapp.intent != 'PHASE':
                 result.final.append(cp_calapp)
@@ -808,9 +812,8 @@ class SerialTimeGaincal(gtypegaincal.GTypeGaincal):
 
         # Create a modified CalApplication and replace CalApp in result with
         # this new one.
-        modified_calapp = callibrary.copy_calapplication(result.final[0], **calapp_overrides)
-        result.final = [modified_calapp]
-        result.pool = [modified_calapp]
+        result.pool = [callibrary.copy_calapplication(c, **calapp_overrides) for c in result.pool]
+        result.final = [callibrary.copy_calapplication(c, **calapp_overrides) for c in result.final]
 
         return result
 
@@ -1058,6 +1061,6 @@ def do_gtype_gaincal(context, executor, task_args) -> GaincalResults:
     result = executor.execute(task)
 
     # sanity checks in case gaincal starts returning additional caltable applications
-    assert len(result.final) == 1, '>1 caltable application registered by gaincal'
+    assert len(result.final) <= 1, '>1 caltable application registered by gaincal'
 
     return result
