@@ -308,7 +308,7 @@ class MakeImages(basetask.StandardTaskTemplate):
         return result
 
     def analyse(self, result):
-        if self.inputs.context.imaging_mode.startswith('VLASS-'):
+        if self.inputs.context.imaging_mode is not None and self.inputs.context.imaging_mode.startswith('VLASS-'):
             result = self._add_vlass_metadata(result)
 
         return result
@@ -318,8 +318,7 @@ class MakeImages(basetask.StandardTaskTemplate):
         if self.inputs.context.imaging_mode != 'VLASS-SE-CUBE':
             for idx, tclean_result in enumerate(result.results):
                 target = result.targets[idx]
-                imaging_metadata = {'cutout_imsize': target['misc_vlass'].get('cutout_imsize', None)}
-                tclean_result.imaging_metadata.update(imaging_metadata)
+                tclean_result.imaging_metadata['cutout_imsize'] = (target['misc_vlass'] or {}).get('cutout_imsize')
             return result
 
         vlass_plane_reject_keys_allowed = [
