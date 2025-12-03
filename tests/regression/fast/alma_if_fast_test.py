@@ -124,6 +124,25 @@ def test_E2E9_1_00084_S__uid___A001_X2df7_X1ec__PPR__regression():
     pt.run()
 
 
+@pytest.mark.seven
+def test_2022_1_000017_CSV__uid___A002_Xff99e1_X15e4f__procedure_hifa_cal_diffgain__regression():
+    """Run ALMA cal+image regression on a 7m calibration survey test dataset with differential gains.
+
+    Recipe name:                procedure_hifa_cal_diffgain
+    Dataset:                    2022.1.00017.CSV: uid___A002_Xff99e1_X15e4f
+    """
+    ref_directory = 'pl-regressiontest/2022.1.00017.CSV'
+
+    pt = PipelineTester(
+        visname=['uid___A002_Xff99e1_X15e4f'],
+        recipe='procedure_hifa_cal_diffgain.xml',
+        input_dir=ref_directory,
+        expectedoutput_dir=ref_directory,
+        )
+
+    pt.run()
+
+
 # 12m tests
 @pytest.mark.twelve
 def test_E2E6_1_00010_S__uid___A002_Xd0a588_X2239__procedure_hifa_image__regression():
