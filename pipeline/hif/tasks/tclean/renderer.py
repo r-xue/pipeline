@@ -1849,7 +1849,7 @@ def get_cycle_stats(context, makeimages_result, r):
 
             if 'summaryminor' in iterdata:
                 # after CAS-6692
-                # note: For MPI runs, one must use the proposed new CASA/tclean parameter fullsummary=True (see CAS-13924).
+                # note: For MPI runs, one must use CASA/tclean parameter fullsummary=True (see CAS-13924).
                 field_id, channel_id = 0, 0  # explictly assume one imaging field & one channel (valid for VLASS)
                 if field_id in iterdata['summaryminor'] and channel_id in iterdata['summaryminor'][field_id]:
                     summaryminor = iterdata['summaryminor'][field_id][channel_id]

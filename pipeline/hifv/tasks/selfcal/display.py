@@ -121,7 +121,7 @@ class selfcalSolutionNumPerFieldChart(object):
             LOG.debug('Returning existing selfcal solution summary plot')
             return self._get_plot_object()
         if not os.path.exists(self.caltable):
-            LOG.warning(f'{self.caltable} does not exists.')
+            LOG.warning(f'{self.caltable} does not exist.')
             return None
         selfcal_stats = self._calstat_from_caltable()
         LOG.debug('Creating new selfcal solution summary plot')

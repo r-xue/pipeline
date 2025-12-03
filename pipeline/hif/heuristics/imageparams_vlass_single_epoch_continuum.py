@@ -563,7 +563,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
             mask_flux = inmask_flux + outmask_flux
             # PIPE-2902: gracefully handling outmaskradio,
-            # if the model is empty for any resoan, set ratio to zero
+            # if the model is empty for any reason, set ratio to zero
             # calculate ratio of total flux inside and outside mask
             if mask_flux:
                 outmaskratio = outmask_flux / mask_flux
