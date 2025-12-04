@@ -12,7 +12,7 @@ import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics.vlascanheuristics import VLAScanHeuristics
 from pipeline.hifv.heuristics.specline_detect import detect_spectral_lines
-from pipeline.infrastructure import casa_tasks, casa_tools, task_registry, utils
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -280,7 +280,6 @@ class SerialVLAImportData(importdata.ImportData):
                                      createmms=createmms)
 
         self._executor.execute(task)
-        utils.clear_time_cache()
 
         for xml_filename in ['Source.xml', 'SpectralWindow.xml', 'DataDescription.xml']:
             asdm_source = os.path.join(asdm, xml_filename)

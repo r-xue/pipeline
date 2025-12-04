@@ -289,6 +289,7 @@ class ImportData(basetask.StandardTaskTemplate):
         # launch an import job for each ASDM we need to convert
         for asdm in to_convert:
             self._do_importasdm(asdm)
+            utils.clear_time_cache()
 
         # calculate the filenames of the resultant measurement sets
         asdms = [os.path.join(abs_output_dir, f) for f in to_convert]
@@ -537,7 +538,6 @@ class ImportData(basetask.StandardTaskTemplate):
                                      createmms=createmms)
         try:
             self._executor.execute(task)
-            utils.clear_time_cache()
         except Exception as ee:
             LOG.warning(f"Caught importasdm exception: {ee}")
 
