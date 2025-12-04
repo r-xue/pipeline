@@ -30,6 +30,9 @@ LOG = logging.getLogger(os.path.basename(__file__))
 # type alias
 DOM = minidom.Document | minidom.Element
 
+# output directory
+RECIPE_OUTPUT_DIR = 'python_recipes'
+
 # special strings for recipe conversion
 INDENT = '        '
 TEMPLATE_TEXT = '''# General imports
@@ -417,8 +420,8 @@ def export(recipe_name: str, commands: list[dict], script_name: str, plotlevel_s
         init_args = ', '.join([init_args, f'processing_intents={processing_intents}']).strip(', ')
 
     python_recipes_dir = 'python_recipes'
-    if not os.path.exists(python_recipes_dir):
-        os.mkdir(python_recipes_dir)
+    os.makedirs(python_recipes_dir, exist_ok=True)
+
     with open(os.path.join(python_recipes_dir, script_name), 'w') as f:
         f.write(template.safe_substitute(
             func_name=recipe_name,
@@ -476,16 +479,11 @@ def generate_all() -> None:
         'vlassQLIP'
     ]
 
-    output_dir = 'python_recipes'
-    LOG.info(f"Scripts will be generated in '{output_dir}' directory.")
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
     for r in recipe_xml_files:
         xml_file = os.path.basename(r)
         LOG.debug(xml_file)
         recipe_name = re.sub(r'procedure_(.*).xml', r'\1', xml_file)
-        script_name = os.path.join(output_dir, f'{recipe_name}.py')
+        script_name = f'{recipe_name}.py'
         LOG.info(f'Processing {recipe_name}...')
         plotlevel_summary = recipe_name in summary_plotlevel_recipes
         main(recipe_name, script_name, plotlevel_summary)
@@ -514,6 +512,8 @@ if __name__ == '__main__':
         LOG.setLevel(logging.DEBUG)
 
     LOG.debug(f'generate_all={flag_generate_all}')
+
+    LOG.info(f"Scripts will be generated in '{RECIPE_OUTPUT_DIR}' directory.")
 
     if flag_generate_all:
         LOG.info('Generating recipe scripts for all procedure files.')
