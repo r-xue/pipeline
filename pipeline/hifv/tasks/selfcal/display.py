@@ -35,7 +35,7 @@ class selfcalphaseGainPerAntennaChart(object):
         LOG.info("Plotting phase/SNR vs. time after running hifv_selfcal")
 
         snr_plotrange = [0, 0, 0, 5.0]
-        if not os.path.exists(result.caltable):
+        if result.caltable is None or not os.path.exists(result.caltable):
             return []
         with casa_tools.TableReader(result.caltable) as table:
             snr = table.getcol('SNR')
@@ -120,8 +120,8 @@ class selfcalSolutionNumPerFieldChart(object):
         if os.path.exists(self.figfile):
             LOG.debug('Returning existing selfcal solution summary plot')
             return self._get_plot_object()
-        if not os.path.exists(self.caltable):
-            LOG.warning(f'{self.caltable} does not exist.')
+        if self.caltable is None or not os.path.exists(self.caltable):
+            LOG.warning('selfcal table does not exist.')
             return None
         selfcal_stats = self._calstat_from_caltable()
         LOG.debug('Creating new selfcal solution summary plot')
@@ -183,9 +183,11 @@ class selfcalSolutionNumPerFieldChart(object):
         return self._get_plot_object()
 
     def _get_figfile(self):
-
-        return os.path.join(self.reportdir,
-                            self.caltable+'.nsols.png')
+        if self.caltable is not None:
+            return os.path.join(self.reportdir,
+                                self.caltable+'.nsols.png')
+        else:
+            return ''
 
     def _get_plot_object(self):
         return logger.Plot(self.figfile,

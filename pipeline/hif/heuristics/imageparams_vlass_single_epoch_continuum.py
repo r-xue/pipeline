@@ -567,15 +567,14 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
             # calculate ratio of total flux inside and outside mask
             if mask_flux:
                 outmaskratio = outmask_flux / mask_flux
+                if outmaskratio > frac_lim:
+                    LOG.warning(f'Flux fraction outside cleanmask is {"%.3g" % outmaskratio}, '
+                                f'exceeds {frac_lim} limit!')
+                else:
+                    LOG.info(f'Flux fraction outside clean mask ({cleanmask}) is {"%.3g" % outmaskratio}')
             else:
-                outmaskratio = 0.0
-                LOG.warning('The total mask flux is zero, unable to compute outside mask ratio. Setting ratio to 0.0')
-
-            if outmaskratio > frac_lim:
-                LOG.warning(f'Flux fraction outside cleanmask is {"%.3g" % outmaskratio}, '
-                            f'exceeds {frac_lim} limit!')
-            else:
-                LOG.info(f'Flux fraction outside clean mask ({cleanmask}) is {"%.3g" % outmaskratio}')
+                outmaskratio = None
+                LOG.warning('The total mask flux is zero, unable to compute outside mask ratio. Setting ratio to None')
 
             return outmaskratio
         else:

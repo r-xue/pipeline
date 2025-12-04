@@ -693,7 +693,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             tar.add(self.selfcaltable, self.selfcaltable)
             LOG.info('....Adding {!s}'.format(self.selfcaltable))
         else:
-            LOG.warning('self-caltable not present.')
+            LOG.warning('selfcal table not present.')
         tar.add(self.flagversion, self.flagversion)
         LOG.info('....Adding {!s}'.format(self.flagversion))
         tar.close()
