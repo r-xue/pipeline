@@ -416,7 +416,10 @@ def export(recipe_name: str, commands: list[dict], script_name: str, plotlevel_s
     if processing_intents:
         init_args = ', '.join([init_args, f'processing_intents={processing_intents}']).strip(', ')
 
-    with open(script_name, 'w') as f:
+    python_recipes_dir = 'python_recipes'
+    if not os.path.exists(python_recipes_dir):
+        os.mkdir(python_recipes_dir)
+    with open(os.path.join(python_recipes_dir, script_name), 'w') as f:
         f.write(template.safe_substitute(
             func_name=recipe_name,
             procedure=procedure,
