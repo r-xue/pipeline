@@ -2,7 +2,7 @@ Pipeline
 ========
 *The operational data processing pipelines for ALMA, VLA, and the NRO 45m telescope.*
 
-|Sphinx Build|
+|Docs GH-pages| |Docs RTD|
 
 .. important::
 
@@ -34,6 +34,10 @@ Some sections are highlighted below:
 .. _MPIfR: https://www.mpifr-bonn.mpg.de  
 .. _NAOJ: https://www.nao.ac.jp  
 
-.. |Sphinx Build| image:: https://github.com/r-xue/pipeline/actions/workflows/sphinx.yml/badge.svg  
- :target: https://github.com/r-xue/pipeline/actions/workflows/sphinx.yml  
- :alt: Sphinx: Build
+.. |Docs GH-pages| image:: https://github.com/r-xue/pipeline/actions/workflows/build-gh-pages.yml/badge.svg  
+  :target: https://github.com/r-xue/pipeline/actions/workflows/build-gh-pages.yml
+  :alt: Docs: GH-Pages-Status
+
+.. |Docs RTD| image:: https://readthedocs.org/projects/pipe-docs/badge/?version=latest
+  :target: https://pipe-docs.readthedocs.io/en/latest/?badge=latest
+  :alt: Docs: RTD-Status
