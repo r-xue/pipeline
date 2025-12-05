@@ -38,6 +38,6 @@ Some sections are highlighted below:
   :target: https://github.com/r-xue/pipeline/actions/workflows/build-gh-pages.yml
   :alt: Docs: GH-Pages-Status
 
-.. |Docs RTD| image:: https://readthedocs.org/projects/pipe-docs/badge/?version=latest
+.. |Docs RTD| image:: https://readthedocs.org/projects/pipe-docs/badge/?version=latest&&style=plastic&label=Docs-RTD
   :target: https://pipe-docs.readthedocs.io/en/latest/?badge=latest
   :alt: Docs: RTD-Status
