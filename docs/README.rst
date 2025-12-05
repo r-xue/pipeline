@@ -2,7 +2,7 @@ Pipeline
 ========
 *The operational data processing pipelines for ALMA, VLA, and the NRO 45m telescope.*
 
-|Docs GH-pages| |Docs RTD|
+|Docs Pages| |Docs RTD|
 
 .. important::
 
@@ -34,10 +34,10 @@ Some sections are highlighted below:
 .. _MPIfR: https://www.mpifr-bonn.mpg.de  
 .. _NAOJ: https://www.nao.ac.jp  
 
-.. |Docs GH-pages| image:: https://github.com/r-xue/pipeline/actions/workflows/build-gh-pages.yml/badge.svg  
+.. |Docs Pages| image:: https://img.shields.io/github/actions/workflow/status/r-xue/pipeline/build-gh-pages.yml?style=plastic&logo=githubactions&label=docs-pages
   :target: https://github.com/r-xue/pipeline/actions/workflows/build-gh-pages.yml
   :alt: Docs: GH-Pages-Status
 
-.. |Docs RTD| image:: https://readthedocs.org/projects/pipe-docs/badge/?version=latest&&style=plastic&label=Docs-RTD
+.. |Docs RTD| image:: https://img.shields.io/readthedocs/pipe-docs?style=plastic&logo=readthedocs&label=docs-rtd
   :target: https://pipe-docs.readthedocs.io/en/latest/?badge=latest
   :alt: Docs: RTD-Status
