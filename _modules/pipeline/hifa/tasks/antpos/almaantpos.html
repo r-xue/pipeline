@@ -1,0 +1,885 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.antpos.almaantpos &mdash; Pipeline 
+ (2025.1.1.52) 2025.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=047bd54c" />
+
+  
+    <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("True" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll(".mermaid svg");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("True" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline 
+ (2025.1.1.52)
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Full APIs (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline 
+ (2025.1.1.52)</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.antpos.almaantpos</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.antpos.almaantpos</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Literal</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">infrastructure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks.antpos</span><span class="w"> </span><span class="kn">import</span> <span class="n">antpos</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks.antpos.antpos</span><span class="w"> </span><span class="kn">import</span> <span class="n">AntposResults</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">exceptions</span><span class="p">,</span> <span class="n">task_registry</span><span class="p">,</span> <span class="n">utils</span><span class="p">,</span> <span class="n">vdp</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.launcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;ALMAAntpos&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ALMAAntposInputs&#39;</span>
+<span class="p">]</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">ANTPOS_SERVICE_URL</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;https://asa.alma.cl/uncertainties-service/uncertainties/versions/last/measurements/casa/&#39;</span><span class="p">]</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ALMAAntposInputs</span><span class="p">(</span><span class="n">antpos</span><span class="o">.</span><span class="n">AntposInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ALMAAntposInputs defines the inputs for the ALMAAntpos pipeline task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># These are ALMA specific settings and override the defaults in</span>
+    <span class="c1"># the base class.</span>
+
+    <span class="n">hm_antpos</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;online&#39;</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">antposfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;antennapos.json&quot;</span>
+
+    <span class="nd">@antposfile</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">antposfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">hm_antpos</span> <span class="o">==</span> <span class="s1">&#39;online&#39;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;antennapos.json&quot;</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Input parameter antposfile cannot be empty when hm_antpos=&#39;online&#39;, using antposfile=</span><span class="si">%s</span><span class="s2"> instead.&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="n">threshold</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">snr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
+    <span class="n">search</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span>
+            <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">vis</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">caltable</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">hm_antpos</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;online&#39;</span><span class="p">,</span> <span class="s1">&#39;manual&#39;</span><span class="p">,</span> <span class="s1">&#39;file&#39;</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">antposfile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">offsets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">snr</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">search</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;both_latest&#39;</span><span class="p">,</span> <span class="s1">&#39;both_closest&#39;</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the pipeline input parameters for antenna position corrections.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: The pipeline execution context.</span>
+
+<span class="sd">            output_dir: Directory where output files will be stored.</span>
+<span class="sd">                Defaults to the current working directory.</span>
+
+<span class="sd">            vis: List of input MeasurementSets.</span>
+<span class="sd">                Defaults to those specified in the pipeline context.</span>
+
+<span class="sd">                Example: [&#39;ngc5921.ms&#39;]</span>
+
+<span class="sd">            caltable: List of output calibration table names.</span>
+<span class="sd">                Defaults to the standard pipeline naming convention.</span>
+
+<span class="sd">                Example: [&#39;ngc5921.gcal&#39;]</span>
+
+<span class="sd">            hm_antpos: </span>
+<span class="sd">                - `&#39;online&#39;` : Query ALMA database through CASA task `getantposalma` or reuse </span>
+<span class="sd">                pre-existing queried/downloaded JSON files. Files follow the naming pattern </span>
+<span class="sd">                `{eb_name}.{antposfile}`. For multi-MS pipeline runs, the MS basename </span>
+<span class="sd">                is appended to the filename (e.g., `uid___A002_X123_X4567.antennapos.json`).</span>
+<span class="sd">                - `&#39;manual&#39;` : Use user-provided corrections.</span>
+<span class="sd">                - `&#39;file&#39;` : Load corrections from a single old-style CSV antenna position file.</span>
+<span class="sd">                </span>
+<span class="sd">                Example: &#39;manual&#39;</span>
+
+<span class="sd">            antposfile: </span>
+<span class="sd">                Path to a csv file containing antenna position offsets for `hm_antpos=&#39;file&#39;` (required) or the name</span>
+<span class="sd">                 of the outfile created by `getantposalma` for `hm_antpos=&#39;online&#39;`. In order to work with multi-MS</span>
+<span class="sd">                 pipeline runs, the MS basename will be appended to the file name when using `hm_antpos=&#39;online&#39;` (i.e.</span>
+<span class="sd">                 &#39;uid___A002_X123_X4567.antennapos.json&#39;).</span>
+
+<span class="sd">                Default: &#39;antennapos.json&#39;                </span>
+
+<span class="sd">            antenna: </span>
+<span class="sd">                A comma-separated string of antennas whose positions are to be corrected (if `hm_antpos` is &#39;manual&#39; </span>
+<span class="sd">                or &#39;online&#39;).</span>
+
+<span class="sd">                Example: &#39;DV05,DV07&#39;</span>
+
+<span class="sd">            offsets: </span>
+<span class="sd">                A flat list of floating-point offsets (X, Y, Z) for all specified antennas.</span>
+<span class="sd">                The length of the list must be three times the number of antennas.</span>
+
+<span class="sd">                Example (for two antennas): `[0.01, 0.02, 0.03, 0.03, 0.02, 0.01]`</span>
+
+<span class="sd">            threshold: </span>
+<span class="sd">                Threshold value (in wavelengths) above which antenna position offsets are highlighted in the weblog.</span>
+<span class="sd">                Defaults to 1.0.</span>
+
+<span class="sd">                Example: 1.0</span>
+
+<span class="sd">            snr:</span>
+<span class="sd">                A float value describing the signal-to-noise threshold used by the getantposalma task. Antennas with </span>
+<span class="sd">                snr below the threshold will not be retrieved. Only used with `hm_antpos=&#39;online&#39;`. Defaults to &#39;default&#39;.</span>
+
+<span class="sd">                Example: 5.0</span>
+
+<span class="sd">            search:</span>
+<span class="sd">                Search algorithm used by the getantposalma task. Supports &#39;both_latest&#39;, &#39;both_closest&#39;, and &#39;auto&#39;.</span>
+<span class="sd">                Only used with `hm_antpos=&#39;online&#39;`. Defaults to &#39;auto&#39;.</span>
+
+<span class="sd">                Example: &#39;both_closest&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">context</span><span class="p">,</span>
+            <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span>
+            <span class="n">caltable</span><span class="o">=</span><span class="n">caltable</span><span class="p">,</span>
+            <span class="n">hm_antpos</span><span class="o">=</span><span class="n">hm_antpos</span><span class="p">,</span>
+            <span class="n">antposfile</span><span class="o">=</span><span class="n">antposfile</span><span class="p">,</span>
+            <span class="n">antenna</span><span class="o">=</span><span class="n">antenna</span><span class="p">,</span>
+            <span class="n">offsets</span><span class="o">=</span><span class="n">offsets</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threshold</span> <span class="o">=</span> <span class="n">threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">snr</span> <span class="o">=</span> <span class="n">snr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">search</span> <span class="o">=</span> <span class="n">search</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Configure gencal task arguments and return them in dictionary format.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            vis: Name of the input visibility file (MS).</span>
+<span class="sd">            caltable: Name of the input calibration table.</span>
+<span class="sd">            infile: Antenna positions file obtained with getantposalma task.</span>
+<span class="sd">            antenna: Filter data selection based on antenna/baseline.</span>
+<span class="sd">            parameter: List of calibration values; For this purpose, the offsets for all specified antennas.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">infile</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hm_antpos</span> <span class="o">==</span> <span class="s1">&#39;online&#39;</span><span class="p">:</span>
+            <span class="n">infile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">online_antpos_filename</span>
+
+        <span class="c1"># Get the antenna and offset lists.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hm_antpos</span> <span class="o">==</span> <span class="s1">&#39;file&#39;</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">antposfile</span><span class="p">)</span>
+            <span class="n">antenna</span><span class="p">,</span> <span class="n">offsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_antpos_csvfile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">antenna</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span>
+            <span class="n">offsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offsets</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span><span class="p">,</span> <span class="s1">&#39;infile&#39;</span><span class="p">:</span> <span class="n">infile</span><span class="p">,</span> <span class="s1">&#39;antenna&#39;</span><span class="p">:</span> <span class="n">antenna</span><span class="p">,</span> <span class="s1">&#39;parameter&#39;</span><span class="p">:</span> <span class="n">offsets</span><span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_antpos_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;both_latest&#39;</span><span class="p">,</span> <span class="s1">&#39;both_closest&#39;</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Configure getantposalma task arguments and return them in dictionary format.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            outfile: Name of file to write antenna positions retrieved from DB.</span>
+<span class="sd">            overwrite: Tells `getantposalma` whether to overwrite the file if it exists. If False and the file exists,</span>
+<span class="sd">                it will throw an error.</span>
+<span class="sd">            asdm: The execution block ID (ASDM) of the dataset.</span>
+<span class="sd">            snr: A float value describing the signal-to-noise threshold. Antennas with snr below the threshold will </span>
+<span class="sd">                not be retrieved.</span>
+<span class="sd">            search: Search algorithm to use. Supports &#39;both_latest&#39; and &#39;both_closest&#39;.</span>
+<span class="sd">            hosts: Priority-ranked list of hosts to query. Can be customized with ANTPOS_SERVICE_URL environment</span>
+<span class="sd">                variable, a comma-delimited string ordered by priority.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">hosts</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_valid_url</span><span class="p">(</span><span class="s1">&#39;ANTPOS_SERVICE_URL&#39;</span><span class="p">,</span> <span class="n">ANTPOS_SERVICE_URL</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;outfile&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">online_antpos_filename</span><span class="p">,</span>
+                <span class="s1">&#39;overwrite&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;asdm&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span><span class="o">.</span><span class="n">execblock_id</span><span class="p">,</span>
+                <span class="s1">&#39;snr&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">snr</span><span class="p">,</span>
+                <span class="s1">&#39;search&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="p">,</span>
+                <span class="s1">&#39;hosts&#39;</span><span class="p">:</span> <span class="n">hosts</span><span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">online_antpos_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">eb_antposfile</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.ms&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">antposfile</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">eb_antposfile</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;AlmaAntposInputs:</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">vis: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">caltable: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">caltable</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">hm_antpos: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">hm_antpos</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">antposfile: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">online_antpos_filename</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">antenna: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">antenna</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">offsets: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">offsets</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">threshold: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">threshold</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">snr: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">snr</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">search: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">search</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+
+<div class="viewcode-block" id="ALMAAntpos">
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.ALMAAntpos.html#pipeline.hifa.tasks.ALMAAntpos">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_antpos&#39;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ALMAAntpos</span><span class="p">(</span><span class="n">antpos</span><span class="o">.</span><span class="n">Antpos</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">ALMAAntposInputs</span>
+
+<div class="viewcode-block" id="ALMAAntpos.prepare">
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.ALMAAntpos.html#pipeline.hifa.tasks.ALMAAntpos.prepare">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_antpos</span> <span class="o">==</span> <span class="s1">&#39;online&#39;</span><span class="p">:</span>
+            <span class="c1"># PIPE-51: retrieve json file for MS to include in the call to gencal</span>
+            <span class="n">antpos_args</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to_antpos_args</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">antpos_args</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">]):</span>
+                <span class="n">antpos_job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">getantposalma</span><span class="p">(</span><span class="o">**</span><span class="n">antpos_args</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="c1"># PIPE-2868: catch RuntimeError from getantposalma task and continue with the current session.</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">antpos_job</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;CASA/getantposalma task failed without generating </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">antpos_args</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">],</span> <span class="n">ex</span><span class="p">)</span>
+                    <span class="n">traceback_msg</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;ALLOW_GETANTPOSALMA_FAILURE&#39;</span><span class="p">,</span> <span class="s1">&#39;false&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">traceback_msg</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">PipelineException</span><span class="p">(</span><span class="n">traceback_msg</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Antenna position file </span><span class="si">%s</span><span class="s1"> exists. Skipping getantposalma task.&#39;</span><span class="p">,</span> <span class="n">antpos_args</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">antpos_args</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">]):</span>
+                <span class="c1"># PIPE-2653 remove antennas from JSON file that are missing from the MS</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_remove_missing_antennas_from_json</span><span class="p">(</span><span class="n">antpos_args</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># PIPE-2868: likely getantposalma failed and no json file was created.</span>
+                <span class="c1"># set result offsets to None instead of empty list [] and continue with the current session.</span>
+                <span class="k">return</span> <span class="n">AntposResults</span><span class="p">(</span><span class="n">offsets</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_remove_missing_antennas_from_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antposfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Removes antennas from JSON file that are missing from the measurement set.</span>
+
+<span class="sd">        Handles inconsistencies between antennas in the MS and JSON file, which can occur</span>
+<span class="sd">        due to online database issues or truncated datasets.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            antposfile: Path to the antenna position JSON file to modify.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># get sorted antenna names from measurement set</span>
+        <span class="n">ant_names_from_ms</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">antenna</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">])</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">antposfile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">query_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">JSONDecodeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Failed to read JSON file </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">antposfile</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="s1">&#39;data&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">query_dict</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;The antpos JSON file </span><span class="si">%s</span><span class="s2"> missing required &#39;data&#39; key.&quot;</span><span class="p">,</span> <span class="n">antposfile</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># find antennas to remove (in JSON but not in MS)</span>
+        <span class="n">ants_from_json</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">query_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">ants_from_ms</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ant_names_from_ms</span><span class="p">)</span>
+
+        <span class="c1"># PIPE-2652: issue warnings if some antennas from MS are missing in JSON.</span>
+        <span class="n">ants_not_in_json</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ants_from_ms</span> <span class="o">-</span> <span class="n">ants_from_json</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ants_not_in_json</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s1">&#39;Antenna(s) from </span><span class="si">%s</span><span class="s1"> are not found in the corresponding antpos JSON file </span><span class="si">%s</span><span class="s1"> : </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                <span class="n">antposfile</span><span class="p">,</span>
+                <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">ants_not_in_json</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Remove missing antennas and update file</span>
+        <span class="n">remove_ants</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ants_from_json</span> <span class="o">-</span> <span class="n">ants_from_ms</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">remove_ants</span><span class="p">:</span>
+            <span class="n">query_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">ant</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">remove_ants</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s1">&#39;Removed antenna(s) that are missing in </span><span class="si">%s</span><span class="s1"> from the corresponding antpos JSON file </span><span class="si">%s</span><span class="s1"> : </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                <span class="n">antposfile</span><span class="p">,</span>
+                <span class="n">utils</span><span class="o">.</span><span class="n">commafy</span><span class="p">(</span><span class="n">remove_ants</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">antposfile</span><span class="p">,</span> <span class="n">antposfile</span> <span class="o">+</span> <span class="s1">&#39;.original&#39;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">antposfile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">query_dict</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="p">,</span> <span class="s1">&#39;: &#39;</span><span class="p">))</span>
+
+<div class="viewcode-block" id="ALMAAntpos.analyse">
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.ALMAAntpos.html#pipeline.hifa.tasks.ALMAAntpos.analyse">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">analyse</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="c1"># add the offsets to the result for online query</span>
+        <span class="n">antpos_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">to_antpos_args</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">hm_antpos</span> <span class="o">==</span> <span class="s1">&#39;online&#39;</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">antpos_args</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">]):</span>
+            <span class="n">offsets_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_antenna_offsets</span><span class="p">()</span>
+            <span class="n">antenna_names</span><span class="p">,</span> <span class="n">offsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_antennas_with_significant_offset</span><span class="p">(</span><span class="n">offsets_dict</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">antenna_names</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">antenna</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">antenna_names</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">offsets</span> <span class="o">=</span> <span class="n">offsets</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Antennas with non-zero corrections applied: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">antenna</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_antenna_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieves the antenna names and positions from the vis ANTENNA table and computes the offsets.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary mapping antenna names to (x, y, z) offset tuples.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span> <span class="o">+</span> <span class="s1">&#39;/ANTENNA&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tb</span><span class="p">:</span>
+            <span class="n">antennas</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;NAME&#39;</span><span class="p">)</span>
+            <span class="c1"># Retrieve antenna positions from the ANTENNA table</span>
+            <span class="c1"># For ALMA, this is in meters / ITRF.</span>
+            <span class="n">tb_positions</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;POSITION&#39;</span><span class="p">)</span>
+
+        <span class="n">tb_antpos_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">antennas</span><span class="p">,</span> <span class="n">tb_positions</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+
+        <span class="c1"># Retrieve antenna corrections from antennapos.json</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">online_antpos_filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">query_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">db_antpos_dict</span> <span class="o">=</span> <span class="n">query_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+
+        <span class="c1"># calculate offsets</span>
+        <span class="n">offsets_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">antennas</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">antenna</span><span class="p">)</span> <span class="ow">in</span> <span class="n">db_antpos_dict</span><span class="p">:</span>
+                <span class="n">offsets_dict</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span> <span class="o">=</span> <span class="n">db_antpos_dict</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span> <span class="o">-</span> <span class="n">tb_antpos_dict</span><span class="p">[</span><span class="n">antenna</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">offsets_dict</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_antennas_with_significant_offset</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">offsets_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">str_</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Identifies antennas with significant non-zero coordinate offsets.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            offsets_dict: Dictionary mapping antenna names to (x, y, z) offset tuples.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of antenna names with significant offsets, and a flattened list of their </span>
+<span class="sd">            corresponding offset values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">flattened_offsets</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">offsets</span> <span class="ow">in</span> <span class="n">offsets_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">offsets</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">antenna</span><span class="p">)</span>
+                <span class="n">flattened_offsets</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">offsets</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">names</span><span class="p">,</span> <span class="n">flattened_offsets</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.52+251-g181ccae797-update-docs-build-and-packaging-setup.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+﻿pipeline.hsd.cli
+================
+
+.. automodule:: pipeline.hsd.cli
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      hsd_applycal
+      hsd_atmcor
+      hsd_baseline
+      hsd_blflag
+      hsd_exportdata
+      hsd_flagdata
+      hsd_imaging
+      hsd_importdata
+      hsd_k2jycal
+      hsd_restoredata
+      hsd_skycal
+      hsd_tsysflag
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   

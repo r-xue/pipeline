@@ -1,0 +1,29 @@
+Polcal
+======
+
+.. currentmodule:: pipeline.hifa.tasks
+
+.. autoclass:: Polcal
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~Polcal.is_multi_vis_task
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~Polcal.analyse
+      ~Polcal.prepare
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: is_multi_vis_task
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: analyse
+   .. automethod:: prepare

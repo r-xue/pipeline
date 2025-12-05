@@ -1,0 +1,1288 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hifa.tasks.wvrgcal.wvrgcal &mdash; Pipeline 
+ (2025.1.1.52) 2025.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=047bd54c" />
+
+  
+    <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("True" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll(".mermaid svg");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("True" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline 
+ (2025.1.1.52)
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Full APIs (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline 
+ (2025.1.1.52)</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hifa.tasks.wvrgcal.wvrgcal</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hifa.tasks.wvrgcal.wvrgcal</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.domain.measures</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">measures</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.callibrary</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">callibrary</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.heuristics</span><span class="w"> </span><span class="kn">import</span> <span class="n">caltable</span> <span class="k">as</span> <span class="n">caltable_heuristic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">commonhelpermethods</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">gaincal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks.bandpass.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">BandpassResults</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks.gaincal.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaincalResults</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hifa.heuristics</span><span class="w"> </span><span class="kn">import</span> <span class="n">atm</span> <span class="k">as</span> <span class="n">atm_heuristic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hifa.heuristics</span><span class="w"> </span><span class="kn">import</span> <span class="n">wvrgcal</span> <span class="k">as</span> <span class="n">wvrgcal_heuristic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hifa.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">bandpass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">resultobjects</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">wvrg_qa</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;Wvrgcal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;WvrgcalInputs&#39;</span>
+<span class="p">]</span>
+
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">WVRInfo</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;WVRInfo&#39;</span><span class="p">,</span>
+                                 <span class="s1">&#39;antenna wvr flag rms disc&#39;</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">WvrgcalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    WvrgcalInputs defines the inputs for the Wvrgcal pipeline task.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">accept_threshold</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">bandpass_result</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">disperse</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">hm_smooth</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;automatic&#39;</span><span class="p">)</span>
+    <span class="n">hm_tie</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;automatic&#39;</span><span class="p">)</span>
+    <span class="n">hm_toffset</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;automatic&#39;</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">null_input</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">])</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">maxdistm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Identify fraction of antennas that are 7m.</span>
+        <span class="n">nants_7m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">([</span><span class="n">ant</span>
+                        <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span>
+                        <span class="k">if</span> <span class="n">ant</span><span class="o">.</span><span class="n">diameter</span> <span class="o">==</span> <span class="mf">7.0</span><span class="p">])</span>
+        <span class="n">frac</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">nants_7m</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">)</span>
+
+        <span class="c1"># If more than 50% of the antennas are 7m, then set maxdistm to a</span>
+        <span class="c1"># lower value.</span>
+        <span class="k">if</span> <span class="n">frac</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">100.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">500.0</span>
+
+    <span class="n">minnumants</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">mingoodfrac</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+    <span class="n">nowvr_result</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">nsol</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># Default for offsetstable is blank, which means the wvrgcal task will not</span>
+    <span class="c1"># apply any offsets.</span>
+    <span class="n">offsetstable</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">refant</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="c1"># Default for qa_bandpass_intent is blank, which allows the bandpass task</span>
+    <span class="c1"># to select a sensible default if the dataset lacks data with BANDPASS</span>
+    <span class="c1"># intent.</span>
+    <span class="n">qa_bandpass_intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">qa_intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">qa_spw</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">segsource</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">smooth</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sourceflag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tie</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">toffset</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wvrflag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="nd">@wvrflag</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wvrflag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">):</span>
+                <span class="c1"># Remove the characters [, ], and &#39; from the value.</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="nb">str</span><span class="o">.</span><span class="n">maketrans</span><span class="p">(</span><span class="s2">&quot;[]&#39;&quot;</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span>
+
+    <span class="c1"># docstring and type hints: supplements hifa_wvrgcal</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetstable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_toffset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">toffset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">segsource</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_tie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sourceflag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nsol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">disperse</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">wvrflag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_smooth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxdistm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minnumants</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">mingoodfrac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa_bandpass_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa_spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">accept_threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bandpass_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nowvr_result</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context object containing state information.</span>
+
+<span class="sd">            output_dir: Output directory.</span>
+<span class="sd">                Defaults to ``None``, which corresponds to the current working directory.</span>
+
+<span class="sd">            vis: List of input visibility files.</span>
+<span class="sd">                Default: ``None``, in which case the vis files to be used</span>
+<span class="sd">                will be read from the context.</span>
+
+<span class="sd">                Example: ``vis=[&#39;ngc5921.ms&#39;]``</span>
+
+<span class="sd">            caltable: List of output gain calibration tables.</span>
+<span class="sd">                Default: none, in which case the names of the caltables</span>
+<span class="sd">                will be generated automatically.</span>
+
+<span class="sd">                Example: ``caltable=&#39;ngc5921.wvr&#39;``</span>
+
+<span class="sd">            offsetstable: List of input temperature offsets table files to subtract</span>
+<span class="sd">                from WVR measurements before calculating phase corrections.</span>
+<span class="sd">                Default: none, in which case no offsets are applied.</span>
+
+<span class="sd">                Example: ``offsetstable=[&#39;ngc5921.cloud_offsets&#39;]``</span>
+
+<span class="sd">            hm_toffset: If &#39;manual&#39;, set the ``toffset`` parameter to the user-specified value.</span>
+<span class="sd">                If &#39;automatic&#39;, set the ``toffset`` parameter according to the</span>
+<span class="sd">                date of the MeasurementSet; ``toffset=-1`` if before 2013-01-21T00:00:00</span>
+<span class="sd">                ``toffset=0`` otherwise.</span>
+
+<span class="sd">            toffset: Time offset (sec) between interferometric and WVR data.</span>
+
+<span class="sd">            segsource: If True calculate new atmospheric phase correction coefficients</span>
+<span class="sd">                for each source, subject to the constraints of the ``tie`` parameter.</span>
+<span class="sd">                &#39;segsource&#39; is forced to be True if the ``tie`` parameter is set to a</span>
+<span class="sd">                non-empty value by the user or by the automatic heuristic.</span>
+
+<span class="sd">            hm_tie: If &#39;manual&#39;, set the ``tie`` parameter to the</span>
+<span class="sd">                user-specified value. If &#39;automatic&#39;, set the ``tie``</span>
+<span class="sd">                parameter to include with the target all calibrators</span>
+<span class="sd">                that are within 15 degrees of it: if no calibrators are</span>
+<span class="sd">                that close then ``tie`` is left empty.</span>
+
+<span class="sd">            tie: Use the same atmospheric phase correction coefficients</span>
+<span class="sd">                when calculating the WVR correction for all sources in</span>
+<span class="sd">                the ``tie``. If ``tie`` is not empty then ``segsource``</span>
+<span class="sd">                is forced to be True. Ignored unless ``hm_tie`` = &#39;manual&#39;.</span>
+
+<span class="sd">                Example: ``tie=[&#39;3C273,NGC253&#39;, &#39;IC433,3C279&#39;]``</span>
+
+<span class="sd">            sourceflag: Flag the WVR data for these source(s) as bad and do not</span>
+<span class="sd">                produce corrections for it. Requires ``segsource`` = True.</span>
+
+<span class="sd">                Example: ``[&#39;3C273&#39;]``</span>
+
+<span class="sd">            nsol: Number of solutions for phase correction coefficients during this</span>
+<span class="sd">                observation, evenly distributed in time throughout the observation. It</span>
+<span class="sd">                is used only if ``segsource`` = False because if ``segsource`` = True then the</span>
+<span class="sd">                coefficients are recomputed whenever the telescope moves to a new</span>
+<span class="sd">                source (within the limits imposed by ``tie``).</span>
+
+<span class="sd">            disperse: Apply correction for dispersion. (Deprecated; will be removed)</span>
+
+<span class="sd">            wvrflag: Flag the WVR data for the listed antennas as bad and replace</span>
+<span class="sd">                their data with values interpolated from the 3 nearest antennas with</span>
+<span class="sd">                unflagged data.</span>
+
+<span class="sd">                Example: ``[&#39;DV03&#39;,&#39;DA05&#39;,&#39;PM02&#39;]``</span>
+
+<span class="sd">            hm_smooth: If &#39;manual&#39; set the ``smooth`` parameter to the user-specified value.</span>
+<span class="sd">                If &#39;automatic&#39;, run the wvrgcal task with the range of ``smooth`` parameters</span>
+<span class="sd">                required to match the integration time of the wvr data to that of the</span>
+<span class="sd">                interferometric data in each spectral window.</span>
+
+<span class="sd">            smooth: Smooth WVR data on this timescale before calculating the correction.</span>
+<span class="sd">                Ignored unless hm_smooth=&#39;manual&#39;.</span>
+
+<span class="sd">            scale: Scale the entire phase correction by this factor.</span>
+
+<span class="sd">            maxdistm: Maximum distance in meters of an antenna used for interpolation</span>
+<span class="sd">                from a flagged antenna.</span>
+<span class="sd">                Default: -1  (automatically set to 100m if &gt;50% of</span>
+<span class="sd">                antennas are 7m antennas without WVR and otherwise set to</span>
+<span class="sd">                500m).</span>
+
+<span class="sd">                Example: ``maxdistm=550``</span>
+
+<span class="sd">            minnumants: Minimum number of nearby antennas (up to 3) used for</span>
+<span class="sd">                interpolation from a flagged antenna.</span>
+
+<span class="sd">                Example: ``minnumants=3``</span>
+
+<span class="sd">            mingoodfrac: Minimum fraction of good data per antenna.</span>
+
+<span class="sd">            refant: Ranked comma delimited list of reference antennas.</span>
+
+<span class="sd">                Example: ``refant=&#39;DV01,DV02&#39;``</span>
+
+<span class="sd">            qa_intent: The list of data intents on which the wvr correction is to be</span>
+<span class="sd">                tried as a means of estimating its effectiveness.</span>
+<span class="sd">                A QA &#39;view&#39; will be calculated for each specified intent, in each spectral</span>
+<span class="sd">                window in each vis file.</span>
+<span class="sd">                Each QA &#39;view&#39; will consist of a pair of 2-d images with dimensions</span>
+<span class="sd">                [&#39;ANTENNA&#39;, &#39;TIME&#39;], one showing the data phase-noise before the</span>
+<span class="sd">                wvr application, the second showing the phase noise after (both &#39;before&#39;</span>
+<span class="sd">                and &#39;after&#39; images have a bandpass calibration applied as well).</span>
+<span class="sd">                An overall QA score is calculated for each vis file, by dividing the</span>
+<span class="sd">                &#39;before&#39; images by the &#39;after&#39; and taking the median of the result. An</span>
+<span class="sd">                overall score of 1 would correspond to no change in the phase noise,</span>
+<span class="sd">                a score &gt; 1 implies an improvement.</span>
+<span class="sd">                If the overall score for a vis file is less than the value in</span>
+<span class="sd">                &#39;accept_threshold&#39; then the wvr calibration file is not made available</span>
+<span class="sd">                for merging into the context for use in the subsequent reduction.</span>
+<span class="sd">                If you do not want any QA calculations then set qa_intent=&#39;&#39;.</span>
+
+<span class="sd">                Example: ``qa_intent=&#39;PHASE&#39;``</span>
+
+<span class="sd">            qa_bandpass_intent: The data intent to use for the bandpass calibration in</span>
+<span class="sd">                the qa calculation. The default is blank to allow the underlying bandpass</span>
+<span class="sd">                task to select a sensible intent if the dataset lacks BANDPASS data.</span>
+
+<span class="sd">            qa_spw: The SpW(s) to use for the qa calculation, in the order that they</span>
+<span class="sd">                should be tried. Input as a comma-separated list. The default is blank, in</span>
+<span class="sd">                which case the task will try SpWs in order of decreasing median sky</span>
+<span class="sd">                opacity.</span>
+
+<span class="sd">            accept_threshold: The phase-rms improvement ratio</span>
+<span class="sd">                (rms without wvr / rms with wvr) above which the wrvg file will be</span>
+<span class="sd">                accepted into the context for subsequent application.</span>
+
+<span class="sd">            bandpass_result:</span>
+
+<span class="sd">            nowvr_result:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># pipeline inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="c1"># vis must be set first, as other properties may depend on it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">output_dir</span>
+
+        <span class="c1"># data selection arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">caltable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offsetstable</span> <span class="o">=</span> <span class="n">offsetstable</span>
+
+        <span class="c1"># solution parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_toffset</span> <span class="o">=</span> <span class="n">hm_toffset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toffset</span> <span class="o">=</span> <span class="n">toffset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segsource</span> <span class="o">=</span> <span class="n">segsource</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_tie</span> <span class="o">=</span> <span class="n">hm_tie</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tie</span> <span class="o">=</span> <span class="n">tie</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sourceflag</span> <span class="o">=</span> <span class="n">sourceflag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nsol</span> <span class="o">=</span> <span class="n">nsol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">disperse</span> <span class="o">=</span> <span class="n">disperse</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wvrflag</span> <span class="o">=</span> <span class="n">wvrflag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hm_smooth</span> <span class="o">=</span> <span class="n">hm_smooth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">smooth</span> <span class="o">=</span> <span class="n">smooth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">scale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxdistm</span> <span class="o">=</span> <span class="n">maxdistm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minnumants</span> <span class="o">=</span> <span class="n">minnumants</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mingoodfrac</span> <span class="o">=</span> <span class="n">mingoodfrac</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refant</span> <span class="o">=</span> <span class="n">refant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qa_intent</span> <span class="o">=</span> <span class="n">qa_intent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qa_bandpass_intent</span> <span class="o">=</span> <span class="n">qa_bandpass_intent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qa_spw</span> <span class="o">=</span> <span class="n">qa_spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">accept_threshold</span> <span class="o">=</span> <span class="n">accept_threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bandpass_result</span> <span class="o">=</span> <span class="n">bandpass_result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nowvr_result</span> <span class="o">=</span> <span class="n">nowvr_result</span>
+
+
+<div class="viewcode-block" id="Wvrgcal">
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Wvrgcal.html#pipeline.hifa.tasks.Wvrgcal">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_wvrgcal&#39;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Wvrgcal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">WvrgcalInputs</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Wvrgcal</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Wvrgcal.prepare">
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Wvrgcal.html#pipeline.hifa.tasks.Wvrgcal.prepare">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">resultobjects</span><span class="o">.</span><span class="n">WvrgcalResult</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># get parameters that can be set from outside or which will be derived</span>
+        <span class="c1"># from heuristics otherwise</span>
+        <span class="n">wvrheuristics</span> <span class="o">=</span> <span class="n">wvrgcal_heuristic</span><span class="o">.</span><span class="n">WvrgcalHeuristics</span><span class="p">(</span>
+            <span class="n">context</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">hm_tie</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">hm_tie</span><span class="p">,</span>
+            <span class="n">tie</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">tie</span><span class="p">,</span> <span class="n">hm_smooth</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">hm_smooth</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">smooth</span><span class="p">,</span>
+            <span class="n">sourceflag</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">sourceflag</span><span class="p">,</span> <span class="n">nsol</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">nsol</span><span class="p">,</span>
+            <span class="n">segsource</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">segsource</span><span class="p">)</span>
+
+        <span class="c1"># return an empty results object if no WVR data available</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">wvrheuristics</span><span class="o">.</span><span class="n">wvr_available</span><span class="p">():</span>
+            <span class="c1"># only 12m antennas are expected to have WVRs fitted</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">diameter</span> <span class="o">==</span> <span class="mf">12.0</span><span class="p">]):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;WVR data expected but not found in </span><span class="si">%s</span><span class="s1">&#39;</span>
+                          <span class="s1">&#39;&#39;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">([</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">diameter</span> <span class="o">==</span> <span class="mf">12.0</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># WVR data available for only 1 antenna</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;WVR data available for only 1 antenna in </span><span class="si">%s</span><span class="s1">&#39;</span>
+                      <span class="s1">&#39;&#39;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_toffset</span> <span class="o">==</span> <span class="s1">&#39;automatic&#39;</span><span class="p">:</span>
+            <span class="n">toffset</span> <span class="o">=</span> <span class="n">wvrheuristics</span><span class="o">.</span><span class="n">toffset</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">toffset</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">toffset</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">segsource</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">segsource</span> <span class="o">=</span> <span class="n">wvrheuristics</span><span class="o">.</span><span class="n">segsource</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">segsource</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">segsource</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_tie</span> <span class="o">==</span> <span class="s1">&#39;automatic&#39;</span><span class="p">:</span>
+            <span class="n">tie</span> <span class="o">=</span> <span class="n">wvrheuristics</span><span class="o">.</span><span class="n">tie</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tie</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">tie</span>
+        <span class="c1"># add tie to results object for display in the weblog. Tie is not spw</span>
+        <span class="c1"># dependent, so we can add it early.</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">tie</span> <span class="o">=</span> <span class="n">tie</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">sourceflag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sourceflag</span> <span class="o">=</span> <span class="n">wvrheuristics</span><span class="o">.</span><span class="n">sourceflag</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sourceflag</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">sourceflag</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">nsol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">nsol</span> <span class="o">=</span> <span class="n">wvrheuristics</span><span class="o">.</span><span class="n">nsol</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nsol</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">nsol</span>
+
+        <span class="c1"># get parameters that must be set from outside</span>
+        <span class="n">disperse</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">disperse</span>
+        <span class="n">wvrflag</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">wvrflag</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">scale</span>
+        <span class="n">maxdistm</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">maxdistm</span>
+        <span class="n">minnumants</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">minnumants</span>
+        <span class="n">mingoodfrac</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">mingoodfrac</span>
+
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+
+        <span class="c1"># Set the reference antenna</span>
+        <span class="n">refant</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">refant</span>
+        <span class="k">if</span> <span class="n">refant</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">refant</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">reference_antenna</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">refant</span> <span class="ow">and</span> <span class="n">refant</span><span class="o">.</span><span class="n">strip</span><span class="p">()):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;No reference antenna specified and none found in &#39;</span>
+                       <span class="s1">&#39;context for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">refant</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">refant</span> <span class="o">=</span> <span class="n">refant</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+
+        <span class="c1"># smooth may vary with spectral window so need to ensure we calculate</span>
+        <span class="c1"># results that can cover them all</span>
+        <span class="n">science_spws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">science_spwids</span> <span class="o">=</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">science_spws</span><span class="p">]</span>
+        <span class="n">wvr_spwids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">spectral_windows</span> <span class="k">if</span>
+                             <span class="n">spw</span><span class="o">.</span><span class="n">num_channels</span> <span class="o">==</span> <span class="mi">4</span> <span class="ow">and</span> <span class="s1">&#39;WVR&#39;</span> <span class="ow">in</span> <span class="n">spw</span><span class="o">.</span><span class="n">intents</span><span class="p">])</span>
+
+        <span class="n">smooths_done</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">callist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">caltables</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">science_spwids</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_smooth</span> <span class="o">==</span> <span class="s1">&#39;automatic&#39;</span><span class="p">:</span>
+                <span class="c1"># smooth = wvrheuristics.smooth(spw)</span>
+                <span class="c1"># Force the smooth heuristics to a single value</span>
+                <span class="c1"># (If integration times vary between spws this may not be</span>
+                <span class="c1"># the right thing to do). Integration times varying between</span>
+                <span class="c1"># intents within an spw then it is right to smooth according</span>
+                <span class="c1"># to the longest.</span>
+                <span class="n">smooth</span> <span class="o">=</span> <span class="n">wvrheuristics</span><span class="o">.</span><span class="n">smoothall</span><span class="p">(</span><span class="n">science_spwids</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">smooth</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">smooth</span>
+
+            <span class="c1"># prepare to run the wvrgcal task if necessary</span>
+            <span class="n">caltable</span> <span class="o">=</span> <span class="n">caltable_heuristic</span><span class="o">.</span><span class="n">WvrgCaltable</span><span class="p">()</span>
+            <span class="n">caltable</span> <span class="o">=</span> <span class="n">caltable</span><span class="p">(</span><span class="n">output_dir</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+                                <span class="n">stage</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stage</span><span class="p">,</span>
+                                <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="n">smooth</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">smooth</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">smooths_done</span><span class="p">:</span>
+                <span class="c1"># different caltable for each smoothing, remove old versions</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">caltable</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">wvrgcal</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="n">caltable</span><span class="p">,</span>
+                                          <span class="n">offsetstable</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">offsetstable</span><span class="p">,</span>
+                                          <span class="n">toffset</span><span class="o">=</span><span class="n">toffset</span><span class="p">,</span> <span class="n">segsource</span><span class="o">=</span><span class="n">segsource</span><span class="p">,</span>
+                                          <span class="n">tie</span><span class="o">=</span><span class="n">tie</span><span class="p">,</span> <span class="n">sourceflag</span><span class="o">=</span><span class="n">sourceflag</span><span class="p">,</span>
+                                          <span class="n">nsol</span><span class="o">=</span><span class="n">nsol</span><span class="p">,</span> <span class="n">disperse</span><span class="o">=</span><span class="n">disperse</span><span class="p">,</span>
+                                          <span class="n">wvrflag</span><span class="o">=</span><span class="n">wvrflag</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="n">smooth</span><span class="p">,</span>
+                                          <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">maxdistm</span><span class="o">=</span><span class="n">maxdistm</span><span class="p">,</span>
+                                          <span class="n">minnumants</span><span class="o">=</span><span class="n">minnumants</span><span class="p">,</span>
+                                          <span class="n">mingoodfrac</span><span class="o">=</span><span class="n">mingoodfrac</span><span class="p">,</span>
+                                          <span class="n">spw</span><span class="o">=</span><span class="n">science_spwids</span><span class="p">,</span>
+                                          <span class="n">wvrspw</span><span class="o">=</span><span class="p">[</span><span class="n">wvr_spwids</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
+                                          <span class="n">refant</span><span class="o">=</span><span class="n">refant</span><span class="p">)</span>
+                <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+                <span class="n">smooths_done</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">smooth</span><span class="p">)</span>
+
+            <span class="c1"># add this wvrg table to the callibrary for this spw</span>
+            <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">)</span>
+            <span class="n">calfrom</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">(</span><span class="n">caltable</span><span class="p">,</span> <span class="n">caltype</span><span class="o">=</span><span class="s1">&#39;wvr&#39;</span><span class="p">,</span> <span class="n">spwmap</span><span class="o">=</span><span class="p">[],</span>
+                                         <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">,</span> <span class="n">calwt</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">calapp</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">)</span>
+            <span class="n">callist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">calapp</span><span class="p">)</span>
+            <span class="n">caltables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">caltable</span><span class="p">)</span>
+
+        <span class="c1"># execute the jobs</span>
+        <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
+            <span class="n">job_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">job_result</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">]:</span>
+                <span class="c1"># extract flags found by CASA job</span>
+                <span class="n">job_name</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">job_result</span><span class="p">[</span><span class="s1">&#39;Name&#39;</span><span class="p">])</span>
+                <span class="n">job_flag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">job_result</span><span class="p">[</span><span class="s1">&#39;Flag&#39;</span><span class="p">])</span>
+                <span class="n">job_wvrflag</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">job_name</span><span class="p">[</span><span class="n">job_flag</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;CASA wvrgcal job terminated unexpectedly with &#39;</span>
+                            <span class="s1">&#39;exit code </span><span class="si">%s</span><span class="s1">; no flags generated.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">job_result</span><span class="p">[</span><span class="s1">&#39;rval&#39;</span><span class="p">]))</span>
+                <span class="n">job_wvrflag</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([])</span>
+
+            <span class="n">input_wvrflag</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">wvrflag</span><span class="p">)</span>
+            <span class="n">generated_wvrflag</span> <span class="o">=</span> <span class="n">job_wvrflag</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">input_wvrflag</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">generated_wvrflag</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> wvrgcal has flagged antennas: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">),</span> <span class="nb">list</span><span class="p">(</span><span class="n">generated_wvrflag</span><span class="p">)))</span>
+
+            <span class="n">wvrflag_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">wvrflag</span><span class="p">)</span>
+            <span class="n">wvrflag_set</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">job_wvrflag</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">wvrflag</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">wvrflag_set</span><span class="p">)</span>
+
+            <span class="n">result</span><span class="o">.</span><span class="n">wvr_infos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_wvrinfos</span><span class="p">(</span><span class="n">job_result</span><span class="p">)</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;wvrgcal complete&#39;</span><span class="p">)</span>
+
+        <span class="c1"># removed any &#39;unsmoothed&#39; wvrcal tables generated by the wvrgcal jobs</span>
+        <span class="k">for</span> <span class="n">caltable</span> <span class="ow">in</span> <span class="n">caltables</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_unsmoothed&#39;</span> <span class="o">%</span> <span class="n">caltable</span><span class="p">,</span> <span class="n">ignore_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">result</span><span class="o">.</span><span class="n">pool</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">callist</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="Wvrgcal.analyse">
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Wvrgcal.html#pipeline.hifa.tasks.Wvrgcal.analyse">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+
+        <span class="c1"># check that the caltable was actually generated</span>
+        <span class="n">on_disk</span> <span class="o">=</span> <span class="p">[</span><span class="n">ca</span> <span class="k">for</span> <span class="n">ca</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">ca</span><span class="o">.</span><span class="n">exists</span><span class="p">()]</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">ca</span> <span class="k">for</span> <span class="n">ca</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">ca</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">on_disk</span><span class="p">]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span>
+
+        <span class="c1"># wvrcal files to be applied</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">on_disk</span>
+
+        <span class="c1"># If no QA intent was provided, then return early. Otherwise, continue</span>
+        <span class="c1"># with computing the QA results.</span>
+        <span class="n">qa_intent</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">qa_intent</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">qa_intent</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="c1"># Return early if no WVR caltable was created.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="c1"># Determine the list of SpWs for which QA results are needed. If no QA</span>
+        <span class="c1"># SpW order was specified explicitly, then calculate an order here based</span>
+        <span class="c1"># on SpW bandwidth and Tsys; otherwise use the specified order.</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">qa_spw</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="c1"># PIPE-2056: if the observing mode is band-to-band, then restrict</span>
+            <span class="c1"># the list of QA SpWs to only the diffgain on-source SpWs, otherwise</span>
+            <span class="c1"># use all science SpWs.</span>
+            <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">is_band_to_band</span><span class="p">:</span>
+                <span class="n">spws</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">spws</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># Initialize atmosphere heuristics.</span>
+            <span class="n">atmheuristics</span> <span class="o">=</span> <span class="n">atm_heuristic</span><span class="o">.</span><span class="n">AtmHeuristics</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spws</span><span class="p">)</span>
+
+            <span class="c1"># Create a ranked list preferably by Tsys and SpW bandwidth.</span>
+            <span class="n">qa_spw_list</span> <span class="o">=</span> <span class="n">atmheuristics</span><span class="o">.</span><span class="n">spwid_rank_by_tsys_and_bandwidth</span><span class="p">(</span><span class="n">qa_intent</span><span class="p">)</span>
+
+            <span class="c1"># If ranking by Tsys failed (e.g. no Tsys table, or due to</span>
+            <span class="c1"># flagging), then fall back to ranking by opacity and bandwidth:</span>
+            <span class="k">if</span> <span class="n">qa_spw_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;qa: ranking spws by bandwidth and Tsys failed for </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s2">; will rank by&quot;</span>
+                         <span class="sa">f</span><span class="s2">&quot; bandwidth and opacity instead.&quot;</span><span class="p">)</span>
+                <span class="n">qa_spw_list</span> <span class="o">=</span> <span class="n">atmheuristics</span><span class="o">.</span><span class="n">spwid_rank_by_opacity_and_bandwidth</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">qa_spw_list</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">qa_spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">qa_spw</span> <span class="ow">in</span> <span class="n">qa_spw_list</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;qa: </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="si">}</span><span class="s1"> attempting to calculate wvrgcal QA using spw </span><span class="si">{</span><span class="n">qa_spw</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">qa_spw</span> <span class="o">=</span> <span class="n">qa_spw</span>
+
+            <span class="c1"># Do a bandpass calibration</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;qa: calculating bandpass calibration&#39;</span><span class="p">)</span>
+            <span class="n">bp_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_qa_bandpass</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+            <span class="c1"># Do a gain calibration</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">bp_result</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;qa: calculating phase calibration without bandpass applied&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;qa: calculating phase calibration with bandpass applied&#39;</span><span class="p">)</span>
+            <span class="n">nowvr_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_nowvr_gaincal</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">nowvr_result</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">inputs</span><span class="o">.</span><span class="n">bandpass_result</span> <span class="o">=</span> <span class="n">bp_result</span>
+            <span class="n">inputs</span><span class="o">.</span><span class="n">nowvr_result</span> <span class="o">=</span> <span class="n">nowvr_result</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">qa_wvr</span><span class="o">.</span><span class="n">bandpass_result</span> <span class="o">=</span> <span class="n">bp_result</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">qa_wvr</span><span class="o">.</span><span class="n">nowvr_result</span> <span class="o">=</span> <span class="n">nowvr_result</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">qa_wvr</span><span class="o">.</span><span class="n">qa_spw</span> <span class="o">=</span> <span class="n">qa_spw</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;qa: wvrgcal QA calculation was successful&#39;</span><span class="p">)</span>
+            <span class="k">break</span>
+
+        <span class="c1"># Accept the result object into the local copy of the context, thus</span>
+        <span class="c1"># adding the WVR table to the callibrary of this local copy.</span>
+        <span class="c1"># PIPE-1058: accepting the result requires a stage number. Normally,</span>
+        <span class="c1"># this would be added by the task execution infrastructure. In this</span>
+        <span class="c1"># the result of the currently-still-running task is being accepted</span>
+        <span class="c1"># into a local context already, before the result has been finalised,</span>
+        <span class="c1"># so need to explicitly set stage number now.</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;qa: accept WVR results into copy of context&#39;</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">stage_number</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">task_counter</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="c1"># do a phase calibration on the bandpass and phase calibrators, now</span>
+        <span class="c1"># with bandpas *and* wvr preapplied.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">bp_result</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;qa: calculating phase calibration with wvr applied&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;qa: calculating phase calibration with bandpass and wvr applied&#39;</span><span class="p">)</span>
+        <span class="n">wvr_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_wvr_gaincal</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+        <span class="n">nowvr_caltable</span> <span class="o">=</span> <span class="n">nowvr_result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;caltable&#39;</span><span class="p">]</span>
+        <span class="n">wvr_caltable</span> <span class="o">=</span> <span class="n">wvr_result</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s1">&#39;caltable&#39;</span><span class="p">]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">qa_wvr</span><span class="o">.</span><span class="n">gaintable_wvr</span> <span class="o">=</span> <span class="n">wvr_caltable</span>
+
+        <span class="c1"># Edited for PIPE-1837 adding BPgood and PHgood</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;qa: calculate ratio with-WVR phase RMS / without-WVR phase rms&#39;</span><span class="p">)</span>
+        <span class="n">PHnoisy</span><span class="p">,</span> <span class="n">BPnoisy</span><span class="p">,</span> <span class="n">PHgood</span><span class="p">,</span> <span class="n">BPgood</span> <span class="o">=</span> <span class="n">wvrg_qa</span><span class="o">.</span><span class="n">calculate_view</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">nowvr_caltable</span><span class="p">,</span> <span class="n">wvr_caltable</span><span class="p">,</span>
+                                                                  <span class="n">result</span><span class="o">.</span><span class="n">qa_wvr</span><span class="p">,</span> <span class="n">qa_intent</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">PHnoisy</span> <span class="o">=</span> <span class="n">PHnoisy</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">BPnoisy</span> <span class="o">=</span> <span class="n">BPnoisy</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">PHgood</span> <span class="o">=</span> <span class="n">PHgood</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">BPgood</span> <span class="o">=</span> <span class="n">BPgood</span>
+
+        <span class="n">suggest_remcloud</span> <span class="o">=</span> <span class="n">wvrg_qa</span><span class="o">.</span><span class="n">calculate_qa_numbers</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">qa_wvr</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">wvr_infos</span><span class="p">,</span> <span class="n">PHnoisy</span><span class="p">,</span> <span class="n">BPnoisy</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">suggest_remcloud</span> <span class="o">=</span> <span class="n">suggest_remcloud</span>
+
+        <span class="c1"># PIPE-846: report improvement factors.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_report_wvr_improvement</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+        <span class="c1"># if the qa score indicates that applying the wvrg file will</span>
+        <span class="c1"># make things worse then remove it from the results so that</span>
+        <span class="c1"># it cannot be accepted into the context.</span>
+        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">qa_wvr</span><span class="o">.</span><span class="n">overall_score</span> <span class="o">&lt;</span> <span class="n">inputs</span><span class="o">.</span><span class="n">accept_threshold</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;wvrgcal has qa score (</span><span class="si">%s</span><span class="s1">) below accept_threshold &#39;</span>
+                        <span class="s1">&#39;(</span><span class="si">%s</span><span class="s1">) and will not be applied&#39;</span> <span class="o">%</span>
+                        <span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">qa_wvr</span><span class="o">.</span><span class="n">overall_score</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">accept_threshold</span><span class="p">))</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_report_wvr_improvement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">resultobjects</span><span class="o">.</span><span class="n">WvrgcalResult</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Report the improvement factors from QA data views to the log (PIPE-846).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get translation from antenna IDs to names.</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
+        <span class="n">ant_names</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">commonhelpermethods</span><span class="o">.</span><span class="n">get_antenna_names</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+
+        <span class="c1"># Report improvement values for each view:</span>
+        <span class="k">for</span> <span class="n">description</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">qa_wvr</span><span class="o">.</span><span class="n">descriptions</span><span class="p">():</span>
+            <span class="c1"># Get list of antennas and timestamps from data view.</span>
+            <span class="n">qa_result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">qa_wvr</span><span class="o">.</span><span class="n">last</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+            <span class="n">antids</span> <span class="o">=</span> <span class="n">qa_result</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+            <span class="n">timestamps</span> <span class="o">=</span> <span class="n">qa_result</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+
+            <span class="c1"># For each antenna, and then each timestamp, report the improvement</span>
+            <span class="c1"># factor, and whether that entry was flagged.</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Phase improvement ratios for </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">vis</span><span class="si">}</span><span class="s2">, intent </span><span class="si">{</span><span class="n">qa_result</span><span class="o">.</span><span class="n">intent</span><span class="si">}</span><span class="s2">, SpW </span><span class="si">{</span><span class="n">qa_result</span><span class="o">.</span><span class="n">spw</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">xid</span><span class="p">,</span> <span class="n">antid</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">antids</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">yid</span><span class="p">,</span> <span class="n">timestamp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">timestamps</span><span class="p">):</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ant #</span><span class="si">{</span><span class="n">antid</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">ant_names</span><span class="p">[</span><span class="n">antid</span><span class="p">]</span><span class="si">}</span><span class="s2">), time </span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">qa_result</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">xid</span><span class="p">,</span><span class="w"> </span><span class="n">yid</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="s1">&#39;(flagged)&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">qa_result</span><span class="o">.</span><span class="n">flag</span><span class="p">[</span><span class="n">xid</span><span class="p">,</span><span class="w"> </span><span class="n">yid</span><span class="p">]</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_qa_bandpass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BandpassResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a bandpass caltable for QA analysis, returning the result of</span>
+<span class="sd">        the worker bandpass task.</span>
+
+<span class="sd">        If a suitable bandpass caltable already exists, it will be reused.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">bandpass_result</span><span class="p">:</span>
+            <span class="c1"># table already exists use it</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Reusing B calibration result:</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                     <span class="n">inputs</span><span class="o">.</span><span class="n">bandpass_result</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_user_qa_bandpass</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Calculating new bandpass for QA analysis&#39;</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_new_qa_bandpass</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_user_qa_bandpass</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BandpassResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Accept and return the bandpass result affixed to the inputs.</span>
+
+<span class="sd">        This code path is used as an optimisation, so identical caltables</span>
+<span class="sd">        need not be recalculated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bp_result</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">bandpass_result</span>
+        <span class="n">bp_result</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bp_result</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_new_qa_bandpass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BandpassResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new bandpass caltable by spawning a bandpass worker task,</span>
+<span class="sd">        merging the results with the context.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># passing an empty string as intent tells bandpass to use all intents,</span>
+        <span class="c1"># which resolves to all fields. Convert empty/blank string to None,</span>
+        <span class="c1"># which will tell bandpass to use the default bandpass intents, as</span>
+        <span class="c1"># expected.</span>
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">qa_bandpass_intent</span> <span class="ow">and</span> <span class="n">inputs</span><span class="o">.</span><span class="n">qa_bandpass_intent</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="c1"># qa_bandpass_intent is not None and is not empty/blank string.</span>
+            <span class="n">intent</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">qa_bandpass_intent</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">intent</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;channel&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">intent</span><span class="p">,</span>
+                <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">qa_spw</span><span class="p">,</span>
+                <span class="s1">&#39;hm_phaseup&#39;</span><span class="p">:</span> <span class="s1">&#39;manual&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;hm_bandpass&#39;</span><span class="p">:</span> <span class="s1">&#39;fixed&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="s1">&#39;inf,7.8125MHz&#39;</span><span class="p">}</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">bandpass</span><span class="o">.</span><span class="n">SerialALMAPhcorBandpass</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">bandpass</span><span class="o">.</span><span class="n">SerialALMAPhcorBandpass</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_nowvr_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaincalResults</span><span class="p">:</span>
+        <span class="c1"># do a phase calibration on the bandpass and phase</span>
+        <span class="c1"># calibrators with B preapplied</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Calculating phase calibration with B applied&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">nowvr_result</span><span class="p">:</span>
+            <span class="c1"># if table already exists use it</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Reusing WVR-uncorrected gain result for RMS:</span><span class="se">\n</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                      <span class="n">inputs</span><span class="o">.</span><span class="n">nowvr_result</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">inputs</span><span class="o">.</span><span class="n">nowvr_result</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Calculating new gaincal with B but no WVR&#39;</span><span class="p">)</span>
+            <span class="c1"># get namer that will add &#39;.wvr&#39; to caltable filename</span>
+            <span class="n">nowvr_caltable_namer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_nowvr_caltable_namer</span><span class="p">()</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_qa_gaincal</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">nowvr_caltable_namer</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_wvr_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaincalResults</span><span class="p">:</span>
+        <span class="c1"># get namer that will add &#39;.flags_1_2.wvr&#39; to caltable filename</span>
+        <span class="n">wvr_caltable_namer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_wvr_caltable_namer</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_qa_gaincal</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">wvr_caltable_namer</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_qa_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">,</span> <span class="n">caltable_namer</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">GaincalResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a new gain caltable via a call to a child pipeline task.</span>
+
+<span class="sd">        Analysing the improvement gained by applying the WVR requires that</span>
+<span class="sd">        exactly the same gaincal job is called with and without the WVR</span>
+<span class="sd">        preapply. Coding the gaincal as a separate function with minimal</span>
+<span class="sd">        outside interaction helps enforce that requirement.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
+                <span class="s1">&#39;intent&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">qa_intent</span><span class="p">,</span>
+                <span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">qa_spw</span><span class="p">,</span>
+                <span class="s1">&#39;solint&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;calmode&#39;</span><span class="p">:</span> <span class="s1">&#39;p&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;minsnr&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
+
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="c1"># give calling code a chance to customise the caltable name via the</span>
+        <span class="c1"># callback passed as an argument</span>
+        <span class="n">inputs</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">caltable_namer</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">caltable</span><span class="p">)</span>
+
+        <span class="n">task</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_nowvr_caltable_namer</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a function that inserts a &#39;.nowvr&#39; component into a filename.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">caltable_namer</span><span class="p">(</span><span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">caltable</span><span class="p">)</span>
+            <span class="n">new_caltable_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.nowvr</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;WVR uncorrected phase RMS gain table is </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                      <span class="n">new_caltable_name</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">new_caltable_name</span>
+
+        <span class="k">return</span> <span class="n">caltable_namer</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_wvr_caltable_namer</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a function that inserts a &#39;&#39;.flagged_&lt;N&gt;_antennas.wvr&#39; component into a</span>
+<span class="sd">        filename.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">flags</span> <span class="o">=</span> <span class="s1">&#39;.flagged_</span><span class="si">%d</span><span class="s1">_antennas&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">wvrflag</span><span class="p">)</span> <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">wvrflag</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">caltable_namer</span><span class="p">(</span><span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">caltable</span><span class="p">)</span>
+            <span class="n">new_caltable</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1">.wvr</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;WVR-corrected phase RMS gain table is </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                      <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">new_caltable</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">new_caltable</span>
+
+        <span class="k">return</span> <span class="n">caltable_namer</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_wvrinfos</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">WVRInfo</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve necessary information from the result returned by the CASA</span>
+<span class="sd">        &#39;wvrgcal&#39; task.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: result dictionary returned by CASA &#39;wvrgcal&#39;</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List containing WVR info for each antenna.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">to_microns</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">measures</span><span class="o">.</span><span class="n">Distance</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">measures</span><span class="o">.</span><span class="n">Distance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">DistanceUnits</span><span class="o">.</span><span class="n">MICROMETRE</span><span class="p">)</span>
+
+        <span class="c1"># copy result in case we need it unaltered elsewhere, then convert raw</span>
+        <span class="c1"># values to domain measures</span>
+        <span class="n">copied</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">copied</span><span class="p">[</span><span class="s1">&#39;RMS_um&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_microns</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">copied</span><span class="p">[</span><span class="s1">&#39;RMS_um&#39;</span><span class="p">]]</span>
+        <span class="n">copied</span><span class="p">[</span><span class="s1">&#39;Disc_um&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_microns</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">copied</span><span class="p">[</span><span class="s1">&#39;Disc_um&#39;</span><span class="p">]]</span>
+
+        <span class="n">attrs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Name&#39;</span><span class="p">,</span> <span class="s1">&#39;WVR&#39;</span><span class="p">,</span> <span class="s1">&#39;Flag&#39;</span><span class="p">,</span> <span class="s1">&#39;RMS_um&#39;</span><span class="p">,</span> <span class="s1">&#39;Disc_um&#39;</span><span class="p">]</span>
+        <span class="n">zipped</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">copied</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">]))</span>
+        <span class="n">wvr_infos</span> <span class="o">=</span> <span class="p">[</span><span class="n">WVRInfo</span><span class="p">(</span><span class="o">*</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">zipped</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">wvr_infos</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.52+251-g181ccae797-update-docs-build-and-packaging-setup.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

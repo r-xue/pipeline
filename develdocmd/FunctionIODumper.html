@@ -1,0 +1,403 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Specification Document for the Function I/O Dumper Decorator and Helper Functions &mdash; Pipeline 
+ (2025.1.1.52) 2025.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=047bd54c" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=0729d509"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline 
+ (2025.1.1.52)
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline 
+ (2025.1.1.52)</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Specification Document for the Function I/O Dumper Decorator and Helper Functions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/develdocmd/FunctionIODumper.md" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="specification-document-for-the-function-i-o-dumper-decorator-and-helper-functions">
+<h1>Specification Document for the Function I/O Dumper Decorator and Helper Functions<a class="headerlink" href="#specification-document-for-the-function-i-o-dumper-decorator-and-helper-functions" title="Link to this heading"></a></h1>
+<p>This document will explain for the Decorator pipeline/infrastructure/utils/utils.py::function_io_dumper() and helper methods.</p>
+<p>This decorator and helper methods provide a set of function and auxiliary tools for serializing the input and output (arguments and return value) of a function.
+The decorator outputs the arguments and return value of a function in pickle and/or JSON format when the user-specified conditions are met.
+This allows debugging of individual functions, regression testing, behavior analysis, and even automatic test template generation using actual behavior data.</p>
+<section id="basic-functionality">
+<h2>1. Basic Functionality<a class="headerlink" href="#basic-functionality" title="Link to this heading"></a></h2>
+<ul>
+<li><p><strong>I/O Serialization</strong>:</p>
+<ul class="simple">
+<li><p>The decorator captures the function’s inputs (arguments and keyword arguments), output (return value).</p></li>
+<li><p>Data is serialized in two supported formats:</p>
+<ul>
+<li><p><strong>Pickle</strong>: Suitable for complete Python object serialization.</p></li>
+<li><p><strong>JSON</strong>: Provides human-readable output (with options to limit JSON depth to prevent excessively large dumps). It is not possible to serialize all objects into JSON format, so the exact representation is a JSON-like file.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Condition</strong>:</p>
+<ul>
+<li><p>A user-supplied condition determines whether serialization should work or not.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">condition</span></code> parameter can be specified either as a <strong>callable</strong> or as a <strong>dict</strong>:</p>
+<ul>
+<li><p><strong>Callable Condition:</strong>
+If a callable is provided, it is invoked with the positional arguments (<code class="docutils literal notranslate"><span class="pre">args</span></code>) and keyword arguments (<code class="docutils literal notranslate"><span class="pre">kwargs</span></code>) of the function call. The callable must return <code class="docutils literal notranslate"><span class="pre">True</span></code> if serialization should occur, or <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">my_condition</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="c1"># Serialize only if the keyword argument &#39;spw&#39; is 10 or True.</span>
+    <span class="k">return</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;spw&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Dictionary Condition:</strong>
+If a dictionary is provided, the decorator checks that for each key in the dictionary, the corresponding keyword argument has a matching value. Serialization occurs only if all key-value pairs in the dictionary match the keyword arguments.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># This condition will cause serialization only when the keyword argument &#39;spw&#39; equals 10.</span>
+<span class="n">simple_condition</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="optional-additional-functionality">
+<h2>2. Optional/Additional Functionality<a class="headerlink" href="#optional-additional-functionality" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Error Handling</strong>:</p>
+<ul>
+<li><p>If serialization (or condition evaluation) fails, the decorator logs the error (or warning) but does not affect the primary function execution.</p></li>
+</ul>
+</li>
+<li><p><strong>JSON Depth Control</strong>:</p>
+<ul>
+<li><p>A parameter (<code class="docutils literal notranslate"><span class="pre">json_max_depth</span></code>) allows users to limit the nested levels in the JSON output to prevent huge or recursive dumps.</p></li>
+</ul>
+</li>
+<li><p><strong>File Naming and Storage</strong>:</p>
+<ul>
+<li><p>Unique file names are generated based on the function name and timestamp to avoid overwriting existing files.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="use-cases">
+<h2>3. Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading"></a></h2>
+<p>This decorator is designed to address a wide variety of scenarios:</p>
+<ul>
+<li><p><strong>Debugging and Issue Reproduction</strong>:</p>
+<ul>
+<li><p>Log detailed state information (arguments, outputs, exceptions) when certain conditions are met, aiding in diagnosing problems during development.</p></li>
+<li><p>By using the dumped arguments and return values, the behavior of a particular function is reproduced and verified individually.</p></li>
+<li><p>Help development and debug rapidly. For example, when a debugging of the weblog would normally require regenerating all PNG files per one test run, however, it can be regenerated for a limited number of PNG files by the execution of the individual function which has been debugging, with dumped files.</p>
+<hr class="docutils" />
+<p><strong>Practical Example</strong>: regenerating a part of weblog faster</p>
+<p>First, decorate update_mako_context() of a Renderer class. For example, the following code is for imaging of SingleDish (stage 13). When it run, the decorator serializes three files: ctx.pickle, context.pickle, and results.pickle into the directory  ‘update_mako_context.[TimeStamp]’ named as the function name.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">T2_4MDetailsSingleDishImagingRenderer</span><span class="p">(</span><span class="n">basetemplates</span><span class="o">.</span><span class="n">T2_4MDetailsDefaultRenderer</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="nd">@function_io_dumper</span><span class="p">()</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_mako_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ctx</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>Next, disable the decorator (to avoid creating pickles during the re-run of the decorated step), and copy pickle files from dumped directory to the current, then run the code below in the working directory, then it regenerates PNG images of the stage 13 only:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hsd.tasks.imaging.renderer</span><span class="w"> </span><span class="kn">import</span> <span class="n">T2_4MDetailsSingleDishImagingRenderer</span>
+
+<span class="n">pickle_path</span> <span class="o">=</span> <span class="s1">&#39;&lt;path_to_pickles&gt;&#39;</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pickle_path</span><span class="p">,</span> <span class="s1">&#39;ctx.pickle&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">ctx</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pickle_path</span><span class="p">,</span> <span class="s1">&#39;context.pickle&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+      <span class="n">context</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pickle_path</span><span class="p">,</span> <span class="s1">&#39;results.pickle&#39;</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+      <span class="n">context</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="n">render</span> <span class="o">=</span> <span class="n">T2_4MDetailsSingleDishImagingRenderer</span><span class="p">()</span>
+<span class="n">render</span><span class="o">.</span><span class="n">update_mako_context</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><strong>Use pickles as input data of a unit test</strong>:</p>
+<p>For example, decorate hsd/tasks/importdata/reader.py::merge_flagcmd() and execute hsd_importdata,
+then it will output pickle files of argument objects and returning object into merge_flagcmd* directory in current (working) directory.
+We use the pickle file as expected input/output for a unit test.
+This sample velow uses a pickle file for the input argument, but basically input parameters should be specified and used for unit testing.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">unittest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deepdiff.diff</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeepDiff</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hsd.tasks.importdata.reader</span><span class="w"> </span><span class="kn">import</span> <span class="n">merge_flagcmd</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">load_pickle</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+    <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fname</span><span class="p">,</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TestHsdImportData</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_merge_flagcmd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">basepath</span> <span class="o">=</span> <span class="s2">&quot;merge_flagcmd.expected/&quot;</span>
+        
+        <span class="c1"># load input data and expected result</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">commands</span> <span class="o">=</span> <span class="n">load_pickle</span><span class="p">(</span><span class="n">basepath</span> <span class="o">+</span> <span class="s1">&#39;commands.pickle&#39;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">merge_flagcmd</span><span class="p">(</span><span class="n">commands</span><span class="p">)</span>
+        
+        <span class="c1"># load expected result</span>
+        <span class="n">objname</span><span class="p">,</span> <span class="n">expected</span> <span class="o">=</span> <span class="n">load_pickle</span><span class="p">(</span><span class="n">basepath</span> <span class="o">+</span> <span class="s1">&#39;merge_flagcmd.expected.result.pickle&#39;</span><span class="p">)</span>
+
+        <span class="c1"># compare results</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">DeepDiff</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">expected</span><span class="p">[</span><span class="n">objname</span><span class="p">],</span> <span class="n">ignore_order</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertDictEqual</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="p">{},</span> <span class="sa">f</span><span class="s2">&quot;Result is different:</span><span class="se">\n</span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Regression Testing Automation</strong>:</p>
+<ul class="simple">
+<li><p>Automatically capture function inputs and outputs during execution. Later, these dumps can be used to generate test cases or compare against new code versions.</p></li>
+</ul>
+</li>
+<li><p><strong>Dynamic Decoration for Temporary Logging</strong>:</p>
+<ul class="simple">
+<li><p>By helper function, we can apply the decorator at runtime to a function without modifying its source code. This is useful for on-demand logging or debugging sessions.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="operating-specifications">
+<h2>4. Operating Specifications<a class="headerlink" href="#operating-specifications" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Execution Flow</strong>:</p>
+<ol class="arabic simple">
+<li><p>When the decorated function is called, the decorator first evaluates the supplied <code class="docutils literal notranslate"><span class="pre">condition</span></code> using the function’s arguments.</p></li>
+<li><p>If the condition is met (i.e. returns <code class="docutils literal notranslate"><span class="pre">True</span></code> for a callable or matches the provided dictionary) or it is not specified, the decorator serializes the available arguments and the return value into the specified formats (Pickle and/or JSON).</p></li>
+</ol>
+</li>
+<li><p><strong>Error Handling</strong>:</p>
+<ul>
+<li><p>If the condition evaluation raises an exception (in the case of a callable), a warning is logged and serialization is skipped.</p></li>
+<li><p>Any errors during serialization (e.g., file write failures) are logged without impacting the function’s return value.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="interface-specifications">
+<h2>5. Interface Specifications<a class="headerlink" href="#interface-specifications" title="Link to this heading"></a></h2>
+<section id="main-decorator-function-io-dumper">
+<h3>5.1 Main Decorator: <code class="docutils literal notranslate"><span class="pre">function_io_dumper</span></code><a class="headerlink" href="#main-decorator-function-io-dumper" title="Link to this heading"></a></h3>
+<ul>
+<li><p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">to_pickle:</span> <span class="pre">bool</span></code><br />
+Enable/disable Pickle serialization.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">to_json:</span> <span class="pre">bool</span></code><br />
+Enable/disable JSON serialization.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">json_max_depth:</span> <span class="pre">int</span></code><br />
+Limit the depth of JSON serialization (optional, for controlling output size).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">condition:</span> <span class="pre">Optional[Union[Callable[[Tuple[Any,</span> <span class="pre">...],</span> <span class="pre">Dict[str,</span> <span class="pre">Any]],</span> <span class="pre">bool],</span> <span class="pre">Dict[str,</span> <span class="pre">Any]]]</span></code><br />
+A condition that determines whether serialization should occur. It can be specified as either:</p>
+<ul>
+<li><p>A callable with the signature <code class="docutils literal notranslate"><span class="pre">Callable[[Tuple[Any,</span> <span class="pre">...],</span> <span class="pre">Dict[str,</span> <span class="pre">Any]],</span> <span class="pre">bool]</span></code>, or</p></li>
+<li><p>A dictionary for simple equality checking (e.g., <code class="docutils literal notranslate"><span class="pre">{'spw':</span> <span class="pre">10}</span></code>).</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timestamp:</span> <span class="pre">bool</span></code><br />
+When <code class="docutils literal notranslate"><span class="pre">True</span></code>, include a timestamp in the serialized data and file names.</p></li>
+</ul>
+</li>
+<li><p><strong>Return Value:</strong></p>
+<ul class="simple">
+<li><p>Returns a decorated function that retains the original function’s signature.</p></li>
+</ul>
+</li>
+<li><p><strong>Usage Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using a callable condition:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_condition</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;spw&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="nd">@function_io_dumper</span><span class="p">(</span><span class="n">to_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">to_json</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="n">my_condition</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_function</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using a dictionary condition:</span>
+<span class="n">simple_condition</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;spw&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span>
+
+<span class="nd">@function_io_dumper</span><span class="p">(</span><span class="n">to_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">to_json</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="n">simple_condition</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_function</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+</section>
+<section id="helper-function-specifications-and-use-cases">
+<h2>6. Helper Function Specifications and Use Cases<a class="headerlink" href="#helper-function-specifications-and-use-cases" title="Link to this heading"></a></h2>
+<section id="dynamic-decoration-helper-decorate-io-dumper">
+<h3>6.1 Dynamic Decoration Helper: <code class="docutils literal notranslate"><span class="pre">decorate_io_dumper</span></code><a class="headerlink" href="#dynamic-decoration-helper-decorate-io-dumper" title="Link to this heading"></a></h3>
+<p><strong>Purpose:</strong></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">decorate_io_dumper</span></code> function dynamically applies the <code class="docutils literal notranslate"><span class="pre">function_io_dumper</span></code> decorator to methods of a specified class. This enables conditional input/output serialization of selected functions within a class without modifying their source code.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">cls:</span> <span class="pre">object</span></code></strong><br />
+The class whose methods should be decorated with <code class="docutils literal notranslate"><span class="pre">function_io_dumper</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">functions:</span> <span class="pre">List[str]</span></code> (optional)</strong><br />
+A list of function names to be decorated.</p>
+<ul>
+<li><p>If specified, only the listed functions will be decorated.</p></li>
+<li><p>If left empty (<code class="docutils literal notranslate"><span class="pre">[]</span></code>), all methods of the class will be decorated.</p></li>
+</ul>
+</li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">*args:</span> <span class="pre">Any</span></code></strong>, <strong><code class="docutils literal notranslate"><span class="pre">**kwargs:</span> <span class="pre">Any</span></code></strong></p>
+<ul>
+<li><p>Other parameters corresponding to <code class="docutils literal notranslate"><span class="pre">function_io_dumper</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">to_pickle</span></code>, <code class="docutils literal notranslate"><span class="pre">to_json</span></code>, <code class="docutils literal notranslate"><span class="pre">json_max_depth</span></code>, <code class="docutils literal notranslate"><span class="pre">condition</span></code>, <code class="docutils literal notranslate"><span class="pre">timestamp</span></code>).</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Usage Example:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ut</span>
+
+<span class="n">ut</span><span class="o">.</span><span class="n">decorate_io_dumper</span><span class="p">(</span><span class="n">SDInspection</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;execute&#39;</span><span class="p">])</span>
+
+<span class="o">...</span>
+<span class="n">hsd_importdata</span><span class="p">()</span>  <span class="c1"># -&gt; dump args of SDInspection.execute()</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.52+251-g181ccae797-update-docs-build-and-packaging-setup.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

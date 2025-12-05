@@ -1,0 +1,50 @@
+﻿pipeline.hif.cli
+================
+
+.. automodule:: pipeline.hif.cli
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+      :nosignatures:
+   
+      hif_analyzealpha
+      hif_applycal
+      hif_checkproductsize
+      hif_correctedampflag
+      hif_editimlist
+      hif_findcont
+      hif_lowgainflag
+      hif_makecutoutimages
+      hif_makeimages
+      hif_makeimlist
+      hif_makermsimages
+      hif_mstransform
+      hif_rawflagchans
+      hif_refant
+      hif_selfcal
+      hif_setjy
+      hif_setmodels
+      hif_transformimagedata
+      hif_uvcontsub
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   

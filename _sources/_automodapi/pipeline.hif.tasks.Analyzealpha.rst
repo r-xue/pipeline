@@ -1,0 +1,29 @@
+Analyzealpha
+============
+
+.. currentmodule:: pipeline.hif.tasks
+
+.. autoclass:: Analyzealpha
+   :show-inheritance:
+
+   .. rubric:: Attributes Summary
+
+   .. autosummary::
+
+      ~Analyzealpha.is_multi_vis_task
+
+   .. rubric:: Methods Summary
+
+   .. autosummary::
+
+      ~Analyzealpha.analyse
+      ~Analyzealpha.prepare
+
+   .. rubric:: Attributes Documentation
+
+   .. autoattribute:: is_multi_vis_task
+
+   .. rubric:: Methods Documentation
+
+   .. automethod:: analyse
+   .. automethod:: prepare
