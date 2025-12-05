@@ -1,0 +1,1410 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pipeline.hsd.tasks.baseline.baseline &mdash; Pipeline 
+ (2025.1.1.52) 2025.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=047bd54c" />
+
+  
+    <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=e72a64b0"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("True" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll(".mermaid svg");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("True" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            Pipeline 
+ (2025.1.1.52)
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html">Full APIs (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Pipeline 
+ (2025.1.1.52)</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../../../pipeline.html">pipeline</a></li>
+      <li class="breadcrumb-item active">pipeline.hsd.tasks.baseline.baseline</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pipeline.hsd.tasks.baseline.baseline</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Spectral baseline subtraction stage.&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.callibrary</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">callibrary</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.mpihelpers</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpihelpers</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.sessionutils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sessionutils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hsd.heuristics</span><span class="w"> </span><span class="kn">import</span> <span class="n">MaskDeviationHeuristic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">maskline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">worker</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..common</span><span class="w"> </span><span class="kn">import</span> <span class="n">compress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hsd.tasks.common.inspection_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_ms</span><span class="p">,</span> <span class="n">inspect_reduction_group</span><span class="p">,</span> <span class="n">merge_reduction_group</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..common</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">FitFunc</span><span class="p">,</span> <span class="n">FitOrder</span><span class="p">,</span> <span class="n">LineWindow</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">Heuristic</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.launcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
+
+<span class="c1"># import memory_profiler</span>
+<span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SDBaselineInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs for baseline subtraction task.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Search order of input vis</span>
+    <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">ATMCORR</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
+
+    <span class="n">infiles</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">null_input</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[],</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]])</span>
+    <span class="n">spw</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">pol</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">linewindow</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[])</span>
+    <span class="n">linewindowmode</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">)</span>
+    <span class="n">edge</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">broadline</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">fitorder</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">fitfunc</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;cspline&#39;</span><span class="p">)</span>
+    <span class="n">switchpoly</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">clusteringalgorithm</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;hierarchy&#39;</span><span class="p">)</span>
+    <span class="n">deviationmask</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">deviationmask_sigma_threshold</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
+
+    <span class="c1"># Synchronization between infiles and vis is still necessary</span>
+    <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">vis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return input MS name.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">infiles</span>
+
+    <span class="c1"># handle conversion from string to bool</span>
+    <span class="nd">@switchpoly</span><span class="o">.</span><span class="n">convert</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">switchpoly</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert switchpoly value into bool.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: any value provided by the user. It should be</span>
+<span class="sd">                   boolean value or its string representation</span>
+<span class="sd">                   such as &#39;True&#39; or &#39;FALSE&#39;.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            boolean value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">converted</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="n">converted</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">s</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">s</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()):</span>
+                    <span class="n">converted</span> <span class="o">=</span> <span class="n">b</span>
+                    <span class="k">break</span>
+        <span class="k">assert</span> <span class="n">converted</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">converted</span>
+
+    <span class="c1"># use common implementation for parallel inputs argument</span>
+    <span class="n">parallel</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">parallel_inputs_impl</span><span class="p">()</span>
+
+    <span class="c1"># docstring and type hints: supplements hsd_baseline</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span>
+                 <span class="n">infiles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">antenna</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">spw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">pol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">linewindow</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LineWindow</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">linewindowmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">edge</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">broadline</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">fitfunc</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FitFunc</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">fitorder</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">FitOrder</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">switchpoly</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">clusteringalgorithm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">deviationmask</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">deviationmask_sigma_threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">parallel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct SDBaselineInputs instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context</span>
+
+<span class="sd">            infiles: List of data files. These must be a name of MeasurementSets that are</span>
+<span class="sd">                registered to context via hsd_importdata or hsd_restoredata task.</span>
+
+<span class="sd">                Example: ``vis=[&#39;X227.ms&#39;, &#39;X228.ms&#39;]``</span>
+<span class="sd">                Default: ``None`` (process all registered MeasurementSets)</span>
+
+<span class="sd">            antenna: Data selection by antenna.</span>
+
+<span class="sd">                Example: &#39;1&#39; (select by ANTENNA_ID), &#39;PM03&#39; (select by antenna name), &#39;&#39; (all antennas)</span>
+
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;&#39;``)</span>
+
+<span class="sd">            spw: Data selection by spw.</span>
+
+<span class="sd">                Example: ``&#39;3,4&#39;`` (process spw 3 and 4), [&#39;0&#39;,&#39;2&#39;] (spw 0 for first data, 2 for second), ``&#39;&#39;`` (all spws)</span>
+
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;&#39;``)</span>
+
+<span class="sd">            pol: Data selection by polarizations.</span>
+
+<span class="sd">                Example: ``&#39;0&#39;`` (process pol 0), ``[&#39;0~1&#39;,&#39;0&#39;]`` (pol 0 and 1 for first data, only 0 for second), ``&#39;&#39;`` (all polarizations)</span>
+
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;&#39;``)</span>
+
+<span class="sd">            field: Data selection by field.</span>
+
+<span class="sd">                Example: ``&#39;1&#39;`` (select by FIELD_ID), ``&#39;M100*&#39;`` (select by field name), ``&#39;&#39;`` (all fields)</span>
+
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;&#39;``)</span>
+
+<span class="sd">            linewindow: Pre-defined line window. If this is set, specified line windows are used as</span>
+<span class="sd">                a line mask for baseline subtraction instead to determine masks based on line detection and</span>
+<span class="sd">                validation stage. Several types of format are acceptable. One is channel-based window.</span>
+<span class="sd">                ::</span>
+
+<span class="sd">                    [min_chan, max_chan]</span>
+
+<span class="sd">                where min_chan and max_chan should be an integer. For multiple  windows, nested list is</span>
+<span class="sd">                also acceptable.</span>
+<span class="sd">                ::</span>
+
+<span class="sd">                    [[min_chan0, max_chan0], [min_chan1, max_chan1], ...]</span>
+
+<span class="sd">                Another way is frequency-based window.</span>
+<span class="sd">                ::</span>
+
+<span class="sd">                    [min_freq, max_freq]</span>
+
+<span class="sd">                where min_freq and max_freq should be either a float or a string. If float value is given,</span>
+<span class="sd">                it is interpreted as a frequency in Hz. String should be a quantity consisting</span>
+<span class="sd">                of &quot;value&quot; and &quot;unit&quot;, e.g., &#39;100GHz&#39;. Multiple windows are also supported.</span>
+<span class="sd">                ::</span>
+
+<span class="sd">                    [[min_freq0, max_freq0], [min_freq1, max_freq1], ...]</span>
+
+<span class="sd">                Note that the specified frequencies are assumed to be the value in LSRK frame.</span>
+<span class="sd">                Note also that there is a limitation when multiple MSes are processed.</span>
+<span class="sd">                If native frequency frame of the data is not LSRK (e.g. TOPO), frequencies need to be</span>
+<span class="sd">                converted to that frame. As a result, corresponding channel range may vary</span>
+<span class="sd">                between MSes. However, current implementation is not able to handle such case.</span>
+<span class="sd">                Frequencies are converted to desired frame using representative MS (time, position,</span>
+<span class="sd">                direction).</span>
+
+<span class="sd">                In the above cases, specified line windows are applied to all science spws.</span>
+<span class="sd">                In case when line windows vary with spw, line windows can be specified by a dictionary whose</span>
+<span class="sd">                key is spw id while value is line window. For example, the following dictionary gives different</span>
+<span class="sd">                line windows to spws 17 and 19. Other spws, if available, will have an empty line window.</span>
+<span class="sd">                ::</span>
+
+<span class="sd">                    {17: [[100, 200], [1200, 1400]], 19: [&#39;112115MHz&#39;, &#39;112116MHz&#39;]}</span>
+
+<span class="sd">                Furthermore, linewindow accepts MS selection string. The following string gives</span>
+<span class="sd">                [[100,200],[1200,1400]] for spw 17 while [1000,1500] for spw 21.</span>
+<span class="sd">                ::</span>
+
+<span class="sd">                    &quot;17:100~200;1200~1400,21:1000~1500&quot;</span>
+
+<span class="sd">                The string also accepts frequency with units. Note, however, that frequency reference frame</span>
+<span class="sd">                in this case is not fixed to LSRK. Instead, the frame will be taken from the MS</span>
+<span class="sd">                (typically TOPO for ALMA). Thus, the following two frequency-based line windows</span>
+<span class="sd">                result different channel selections.</span>
+<span class="sd">                ::</span>
+
+<span class="sd">                    {19: [&#39;112115MHz&#39;, &#39;112116MHz&#39;]} # frequency frame is LSRK</span>
+<span class="sd">                    &quot;19:11215MHz~11216MHz&quot; # frequency frame is taken from the data (TOPO for ALMA)</span>
+
+<span class="sd">                None is allowed as a value of dictionary input to indicate that no line detection/validation</span>
+<span class="sd">                is required even if manually specified line window does not exist. When None is given as a value</span>
+<span class="sd">                and if ``linewindowmode`` is &#39;replace&#39;, line detection/validation is not performed</span>
+<span class="sd">                for the corresponding spw. For example, suppose the following parameters are given for the data</span>
+<span class="sd">                with four science spws, 17, 19, 21, and 23.</span>
+<span class="sd">                ::</span>
+
+<span class="sd">                    linewindow={17: [112.1e9, 112.2e9], 19: [113.1e9, 113.15e9], 21: None}</span>
+<span class="sd">                    linewindowmode=&#39;replace&#39;</span>
+
+<span class="sd">                The task will use given line window for 17 and 19 while the task performs</span>
+<span class="sd">                line deteciton/validation for spw 23 because no line window is set.</span>
+<span class="sd">                On the other hand, line detection/validation is skipped for spw 21 due to the effect of None.</span>
+
+<span class="sd">                Example: [100,200] (channel), [115e9, 115.1e9] (frequency in Hz), [&#39;115GHz&#39;, &#39;115.1GHz&#39;] (see above for more examples)</span>
+
+<span class="sd">                Default: None</span>
+
+<span class="sd">            linewindowmode: Merge or replace given manual line window with line detection/validation result.</span>
+<span class="sd">                If &#39;replace&#39; is given, line detection and validation will not be performed.</span>
+<span class="sd">                On the other hand, when &#39;merge&#39; is specified, line detection/validation will be performed</span>
+<span class="sd">                and manually specified line windows are added to the result.</span>
+<span class="sd">                Note that this has no effect when linewindow for target spw is an empty list. In that case,</span>
+<span class="sd">                line detection/validation will be performed regardless of the value of linewindowmode.</span>
+<span class="sd">                In case if no linewindow nor line detection/validation are necessary, you should set</span>
+<span class="sd">                linewindowmode to &#39;replace&#39; and specify None as a value of the linewindow dictionary</span>
+<span class="sd">                for the spw to apply. See parameter description of ``linewindow`` for detail.</span>
+
+<span class="sd">            edge: Number of edge channels to be dropped from baseline subtraction.</span>
+<span class="sd">                The value must be a list with length of 2, whose values specify left and right edge channels,</span>
+<span class="sd">                respectively.</span>
+
+<span class="sd">                Example: ``[10,10]``</span>
+
+<span class="sd">                Default: ``None``</span>
+
+<span class="sd">            broadline: Try to detect broad component of spectral line if ``True``.</span>
+
+<span class="sd">                Default: ``None`` (equivalent to ``True``)</span>
+
+<span class="sd">            fitfunc: Fitting function for baseline subtraction. You can choose either cubic spline</span>
+<span class="sd">                (&#39;spline&#39; or &#39;cspline&#39;), polynomial (&#39;poly&#39; or &#39;polynomial&#39;).</span>
+
+<span class="sd">                Accepts:</span>
+
+<span class="sd">                - A string: Applies the same function to all spectral windows (SPWs).</span>
+<span class="sd">                - A dictionary: Maps SPW IDs (int or str) to a specific fitting function.</span>
+
+<span class="sd">                If an SPW ID is not present in the dictionary, ``&#39;cspline&#39;`` will be used as the default.</span>
+
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;cspline&#39;``)</span>
+
+<span class="sd">            fitorder: Fitting order for polynomial. For cubic spline, it is used to determine how</span>
+<span class="sd">                much the spectrum is segmented into.</span>
+
+<span class="sd">                Accepts:</span>
+
+<span class="sd">                - An integer: Applies the same order to all SPWs. Valid values: ``-1`` (automatic), ``0``, or any positive integer.</span>
+<span class="sd">                - A dictionary: Maps SPW IDs (int or str) to a specific fitting order.</span>
+
+<span class="sd">                If an SPW ID is not present in the dictionary, ``-1`` will be used as the default, triggering automatic order selection.</span>
+
+<span class="sd">                Default: ``None`` (equivalent to ``-1``)</span>
+
+<span class="sd">            switchpoly: Whether to fall back the fits from cubic spline to 1st or 2nd order polynomial</span>
+<span class="sd">                when large masks exist at the edges of the spw. Condition for switching is as follows:</span>
+
+<span class="sd">                - if nmask &gt; nchan/2      =&gt; 1st order polynomial</span>
+<span class="sd">                - else if nmask &gt; nchan/4 =&gt; 2nd order polynomial</span>
+<span class="sd">                - else                    =&gt; use fitfunc and fitorder</span>
+
+<span class="sd">                where nmask is a number of channels for mask at edge while</span>
+<span class="sd">                nchan is a number of channels of entire spectral window.</span>
+
+<span class="sd">                Default: ``None`` (equivalent to ``True``)</span>
+
+<span class="sd">            clusteringalgorithm: Selection of the algorithm used in the clustering analysis</span>
+<span class="sd">                to check the validity of detected line features. The &#39;kmean&#39; algorithm,</span>
+<span class="sd">                hierarchical clustering algorithm, &#39;hierarchy&#39;, and their combination (&#39;both&#39;)</span>
+<span class="sd">                are so far implemented.</span>
+
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;hierarchy&#39;``)</span>
+
+<span class="sd">            deviationmask: Apply deviation mask in addition to masks determined by the automatic line detection.</span>
+
+<span class="sd">                Default: ``None`` (equivalent to ``True``)</span>
+
+<span class="sd">            deviationmask_sigma_threshold: Threshold factor (F) to detect the deviation.</span>
+<span class="sd">                Actual threshold will be median + F * standard-deviation of the spectrum.</span>
+
+<span class="sd">                Default: ``None`` (equivallent to ``5.0``)</span>
+
+<span class="sd">            parallel: Execute using CASA HPC functionality, if available.</span>
+
+<span class="sd">                Options: ``&#39;automatic&#39;``, ``&#39;true&#39;``, ``&#39;false&#39;``, ``True``, ``False``.</span>
+
+<span class="sd">                Default: ``None`` (equivalent to ``&#39;automatic&#39;``).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infiles</span> <span class="o">=</span> <span class="n">infiles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span> <span class="o">=</span> <span class="n">antenna</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pol</span> <span class="o">=</span> <span class="n">pol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linewindow</span> <span class="o">=</span> <span class="n">linewindow</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linewindowmode</span> <span class="o">=</span> <span class="n">linewindowmode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge</span> <span class="o">=</span> <span class="n">edge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">broadline</span> <span class="o">=</span> <span class="n">broadline</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fitorder</span> <span class="o">=</span> <span class="n">fitorder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fitfunc</span> <span class="o">=</span> <span class="n">fitfunc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">switchpoly</span> <span class="o">=</span> <span class="n">switchpoly</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clusteringalgorithm</span> <span class="o">=</span> <span class="n">clusteringalgorithm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deviationmask</span> <span class="o">=</span> <span class="n">deviationmask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deviationmask_sigma_threshold</span> <span class="o">=</span> <span class="n">deviationmask_sigma_threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert Inputs instance into task execution parameter.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Task execution parameter as kwargs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">infiles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">infiles</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">infiles</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">infiles</span> <span class="o">=</span> <span class="n">infiles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">SDBaselineInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">infiles</span> <span class="o">=</span> <span class="n">infiles</span>
+
+        <span class="k">if</span> <span class="s1">&#39;antenna&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">args</span><span class="p">[</span><span class="s1">&#39;antenna&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">return</span> <span class="n">args</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SDBaselineResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Results class to hold the result of baseline subtraction task.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">task</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">success</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">outcome</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct SDBaselineResults instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            task: Task class that produced the result.</span>
+<span class="sd">            success: Whether task execution is successful or not.</span>
+<span class="sd">            outcome: Outcome of the task execution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SDBaselineResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_mses</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># @utils.profiler</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge result instance into context.</span>
+
+<span class="sd">        Merge of the result instance of baseline subtraction task includes</span>
+<span class="sd">        the following updates to Pipeline context,</span>
+
+<span class="sd">          - register measurementset domain object for the output of sdbaseline</span>
+<span class="sd">            task to Pipeline context, namely measurement_sets list and</span>
+<span class="sd">            reduction_group</span>
+<span class="sd">          - register detected spectral lines to reduction group</span>
+<span class="sd">          - register deviation mask to each measurementset domain object</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context object containing state information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SDBaselineResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="c1"># register output MS domain object and reduction_group to context</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span>
+        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_mses</span><span class="p">:</span>
+            <span class="c1"># remove existing MS in context if the same MS is already in list.</span>
+            <span class="n">oldms_index</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">oldms</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">get_measurement_sets</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">oldms</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                    <span class="n">oldms_index</span> <span class="o">=</span> <span class="n">index</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="n">oldms_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Replace </span><span class="si">{}</span><span class="s1"> in context&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+                <span class="k">del</span> <span class="n">target</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">[</span><span class="n">oldms_index</span><span class="p">]</span>
+
+            <span class="c1"># Adding mses to context</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Adding </span><span class="si">{}</span><span class="s1"> to context&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="n">target</span><span class="o">.</span><span class="n">add_measurement_set</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+            <span class="c1"># Initialize callibrary</span>
+            <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Registering </span><span class="si">{}</span><span class="s1"> with callibrary&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="c1"># register output MS to processing group</span>
+            <span class="n">reduction_group</span> <span class="o">=</span> <span class="n">inspect_reduction_group</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
+            <span class="n">merge_reduction_group</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reduction_group</span><span class="p">)</span>
+
+        <span class="c1"># increment iteration counter (only to in MS for now)</span>
+        <span class="c1"># register detected lines to reduction group member (to both in and out MS)</span>
+        <span class="n">reduction_group</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">ms_reduction_group</span>
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;baselined&#39;</span><span class="p">]:</span>
+            <span class="n">group_id</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="s1">&#39;group_id&#39;</span><span class="p">]</span>
+            <span class="n">member_list</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="s1">&#39;members&#39;</span><span class="p">]</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="s1">&#39;lines&#39;</span><span class="p">]</span>
+            <span class="n">channelmap_range</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="s1">&#39;channelmap_range&#39;</span><span class="p">]</span>
+            <span class="n">group_desc</span> <span class="o">=</span> <span class="n">reduction_group</span><span class="p">[</span><span class="n">group_id</span><span class="p">]</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">spw</span><span class="p">)</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">iterate_group_member</span><span class="p">(</span><span class="n">reduction_group</span><span class="p">[</span><span class="n">group_id</span><span class="p">],</span> <span class="n">member_list</span><span class="p">):</span>
+                <span class="n">group_desc</span><span class="o">.</span><span class="n">iter_countup</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
+                <span class="n">out_ms</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;vis_map&#39;</span><span class="p">][</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ms</span><span class="p">,</span> <span class="n">out_ms</span><span class="p">]:</span>
+                    <span class="n">group_desc</span><span class="o">.</span><span class="n">add_linelist</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span>
+                                            <span class="n">channelmap_range</span><span class="o">=</span><span class="n">channelmap_range</span><span class="p">)</span>
+
+        <span class="c1"># merge deviation_mask with context</span>
+        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="s1">&#39;deviation_mask&#39;</span><span class="p">):</span> <span class="n">ms</span><span class="o">.</span><span class="n">deviation_mask</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="s1">&#39;deviation_mask&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcome</span><span class="p">:</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">basename</span><span class="p">,</span> <span class="n">masks</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;deviation_mask&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">ms</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">basename</span><span class="p">)</span>
+                <span class="n">ms</span><span class="o">.</span><span class="n">deviation_mask</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">antenna</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                            <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">antenna</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">masks</span><span class="p">:</span>
+                                <span class="n">ms</span><span class="o">.</span><span class="n">deviation_mask</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">masks</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="n">out_ms</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;vis_map&#39;</span><span class="p">][</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+                <span class="n">out_ms</span><span class="o">.</span><span class="n">deviation_mask</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">deviation_mask</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_outcome_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string summarizing the outcome.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            summary of the outcome.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;Reduction Group </span><span class="si">{0}</span><span class="s1">: member </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="s1">&#39;group_id&#39;</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="s1">&#39;members&#39;</span><span class="p">])</span>
+                          <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;baselined&#39;</span><span class="p">]])</span>
+
+
+<div class="viewcode-block" id="SDBaseline">
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDBaseline.html#pipeline.hsd.tasks.SDBaseline">[docs]</a>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hsd_baseline&#39;</span><span class="p">)</span>
+<span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
+    <span class="s1">&#39;Subtracts spectral baseline by least-square fitting with N-sigma clipping. Spectral lines are automatically &#39;</span>
+    <span class="s1">&#39;detected and examined to determine the region that is masked to protect these features from the fit.</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="s1">&#39;This stage performs a pipeline calculation without running any CASA commands to be put in this file.&#39;</span>
+<span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SDBaseline</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Baseline subtraction task.&quot;&quot;&quot;</span>
+
+    <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDBaselineInputs</span>
+    <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="c1">#    @memory_profiler.profile</span>
+<div class="viewcode-block" id="SDBaseline.prepare">
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDBaseline.html#pipeline.hsd.tasks.SDBaseline.prepare">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDBaselineResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform baseline subtraction.</span>
+
+<span class="sd">        The method first evaluates deviation mask for each MS if the mask</span>
+<span class="sd">        is not available, then perform line detection by combining all</span>
+<span class="sd">        spectral data, and finally perform baseline subtraction using</span>
+<span class="sd">        sdbaseline task.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            SDBaselineResults instance that holds list of output MS names</span>
+<span class="sd">            with the map among input MS names, necessary data for</span>
+<span class="sd">            weblog rendering, and the metric representing the quality of</span>
+<span class="sd">            the baseline subtraction.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Starting SDMDBaseline.prepare&#39;</span><span class="p">)</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
+        <span class="n">reduction_group</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">ms_reduction_group</span>
+        <span class="n">vis_list</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
+        <span class="n">args_spw</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">convert_spw_virtual2real</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">)</span>
+
+        <span class="n">window</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">linewindow</span>
+        <span class="n">windowmode</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">linewindowmode</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">: window=</span><span class="si">{}</span><span class="s1">, windowmode=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">window</span><span class="p">,</span> <span class="n">windowmode</span><span class="p">))</span>
+        <span class="n">edge</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">edge</span>
+        <span class="n">broadline</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">broadline</span>
+        <span class="n">fitorder</span> <span class="o">=</span> <span class="s1">&#39;automatic&#39;</span> <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">fitorder</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">inputs</span><span class="o">.</span><span class="n">fitorder</span>
+        <span class="n">fitfunc</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">fitfunc</span>
+        <span class="n">switchpoly</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">switchpoly</span>
+        <span class="n">clusteringalgorithm</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">clusteringalgorithm</span>
+        <span class="n">deviationmask</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">deviationmask</span>
+        <span class="n">deviationmask_sigma_threshold</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">deviationmask_sigma_threshold</span>
+
+        <span class="c1"># mkdir stage_dir if it doesn&#39;t exist</span>
+        <span class="n">stage_number</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">task_counter</span>
+        <span class="n">stage_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">,</span> <span class="s2">&quot;stage</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">stage_number</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">stage_dir</span><span class="p">)</span>
+
+        <span class="c1"># loop over reduction group</span>
+
+        <span class="c1"># This is a dictionary for deviation mask that will be merged with top-level context</span>
+        <span class="n">deviation_mask</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+
+        <span class="c1"># collection of field, antenna, and spw ids in reduction group per MS</span>
+        <span class="n">registry</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">RGAccumulator</span><span class="p">)</span>
+
+        <span class="c1"># outcome for baseline subtraction</span>
+        <span class="n">baselined</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># dictionay of org_direction</span>
+        <span class="n">org_directions_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Starting per reduction group processing: number of groups is </span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">reduction_group</span><span class="p">))</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">group_id</span><span class="p">,</span> <span class="n">group_desc</span><span class="p">)</span> <span class="ow">in</span> <span class="n">reduction_group</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Processing Reduction Group </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">group_id</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Group Summary:&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">group_desc</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">MS &quot;</span><span class="si">{ms}</span><span class="s1">&quot; Antenna &quot;</span><span class="si">{antenna}</span><span class="s1">&quot; (ID </span><span class="si">{antenna_id}</span><span class="s1">) Spw </span><span class="si">{spw}</span><span class="s1"> Field &quot;</span><span class="si">{field}</span><span class="s1">&quot; (ID </span><span class="si">{field_id}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                         <span class="n">ms</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span>
+                         <span class="n">antenna</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">antenna_name</span><span class="p">,</span>
+                         <span class="n">antenna_id</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">spw_id</span><span class="p">,</span>
+                         <span class="n">field</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span>
+                         <span class="n">field_id</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">field_id</span><span class="p">))</span>
+
+                <span class="c1"># scan for org_direction and find the first one in group</span>
+                <span class="n">msobj</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
+                <span class="n">field_id</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">field_id</span>
+                <span class="n">fields</span> <span class="o">=</span> <span class="n">msobj</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_id</span><span class="o">=</span><span class="n">field_id</span><span class="p">)</span>
+                <span class="n">source_name</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">name</span>
+                <span class="k">if</span> <span class="n">source_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">org_directions_dict</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">is_eph_obj</span> <span class="ow">or</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">is_known_eph_obj</span><span class="p">:</span>
+                        <span class="n">org_direction</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">org_direction</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">org_direction</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">org_directions_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">source_name</span><span class="p">:</span> <span class="n">org_direction</span><span class="p">})</span>
+                    <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;registered org_direction[</span><span class="si">{}</span><span class="s2">]=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">source_name</span><span class="p">,</span> <span class="n">org_direction</span><span class="p">))</span>
+
+            <span class="c1"># skip channel averaged spw</span>
+            <span class="n">nchan</span> <span class="o">=</span> <span class="n">group_desc</span><span class="o">.</span><span class="n">nchan</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;nchan for group </span><span class="si">%s</span><span class="s1"> is </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">nchan</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">nchan</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">first_member</span> <span class="o">=</span> <span class="n">group_desc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">vspw</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">real2virtual_spw_id</span><span class="p">(</span><span class="n">first_member</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">first_member</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Skip channel averaged spw </span><span class="si">%s</span><span class="s1">.&#39;</span><span class="p">,</span> <span class="n">vspw</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;spw=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">args_spw</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;vis_list=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">vis_list</span><span class="p">)</span>
+            <span class="n">member_list</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span>
+                <span class="n">utils</span><span class="o">.</span><span class="n">get_valid_ms_members</span><span class="p">(</span><span class="n">group_desc</span><span class="p">,</span> <span class="n">vis_list</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;antenna&#39;</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">args_spw</span><span class="p">),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+            <span class="c1"># skip this group if valid member list is empty</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;member_list=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">member_list</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">member_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Skip reduction group </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">group_id</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">member_list</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+            <span class="c1"># assume all members have same iteration</span>
+            <span class="n">first_member</span> <span class="o">=</span> <span class="n">group_desc</span><span class="p">[</span><span class="n">member_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="n">iteration</span> <span class="o">=</span> <span class="n">first_member</span><span class="o">.</span><span class="n">iteration</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;iteration for group </span><span class="si">%s</span><span class="s1"> is </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">iteration</span><span class="p">)</span>
+
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Members to be processed:&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">gms</span><span class="p">,</span> <span class="n">gfield</span><span class="p">,</span> <span class="n">gant</span><span class="p">,</span> <span class="n">gspw</span><span class="p">)</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">iterate_group_member</span><span class="p">(</span><span class="n">group_desc</span><span class="p">,</span> <span class="n">member_list</span><span class="p">):</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">MS &quot;</span><span class="si">%s</span><span class="s1">&quot; Field ID </span><span class="si">%s</span><span class="s1"> Antenna ID </span><span class="si">%s</span><span class="s1"> Spw ID </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                         <span class="n">gms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">gfield</span><span class="p">,</span> <span class="n">gant</span><span class="p">,</span> <span class="n">gspw</span><span class="p">)</span>
+
+            <span class="c1"># Deviation Mask</span>
+            <span class="c1"># NOTE: deviation mask is evaluated per ms per field per spw</span>
+            <span class="k">if</span> <span class="n">deviationmask</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Apply deviation mask to baseline fitting&#39;</span><span class="p">)</span>
+                <span class="n">dvtasks</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">dvparams</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">([],</span> <span class="p">[],</span> <span class="p">[]))</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">,</span> <span class="n">antennaid</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">iterate_group_member</span><span class="p">(</span><span class="n">group_desc</span><span class="p">,</span> <span class="n">member_list</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="s1">&#39;deviation_mask&#39;</span><span class="p">))</span> <span class="ow">or</span> <span class="n">ms</span><span class="o">.</span><span class="n">deviation_mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">ms</span><span class="o">.</span><span class="n">deviation_mask</span> <span class="o">=</span> <span class="p">{}</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">fieldid</span><span class="p">,</span> <span class="n">antennaid</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">deviation_mask</span><span class="p">:</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Evaluating deviation mask for </span><span class="si">%s</span><span class="s1"> field </span><span class="si">%s</span><span class="s1"> antenna </span><span class="si">%s</span><span class="s1"> spw </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
+                                  <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">fieldid</span><span class="p">,</span> <span class="n">antennaid</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)</span>
+                        <span class="n">dvparams</span><span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fieldid</span><span class="p">)</span>
+                        <span class="n">dvparams</span><span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">antennaid</span><span class="p">)</span>
+                        <span class="n">dvparams</span><span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spwid</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">deviation_mask</span><span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">][(</span><span class="n">fieldid</span><span class="p">,</span> <span class="n">antennaid</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)]</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">deviation_mask</span><span class="p">[(</span><span class="n">fieldid</span><span class="p">,</span> <span class="n">antennaid</span><span class="p">,</span> <span class="n">spwid</span><span class="p">)]</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dvparams</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">field_list</span><span class="p">,</span> <span class="n">antenna_list</span><span class="p">,</span> <span class="n">spw_list</span> <span class="o">=</span> <span class="n">params</span>
+                    <span class="n">dvtasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">deviation_mask_heuristic</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span>
+                                                            <span class="n">field_list</span><span class="o">=</span><span class="n">field_list</span><span class="p">,</span>
+                                                            <span class="n">antenna_list</span><span class="o">=</span><span class="n">antenna_list</span><span class="p">,</span>
+                                                            <span class="n">spw_list</span><span class="o">=</span><span class="n">spw_list</span><span class="p">,</span>
+                                                            <span class="n">deviationmask_sigma_threshold</span><span class="o">=</span><span class="n">deviationmask_sigma_threshold</span><span class="p">,</span>
+                                                            <span class="n">consider_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                            <span class="n">parallel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">parallel</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">dvtask</span> <span class="ow">in</span> <span class="n">dvtasks</span><span class="p">:</span>
+                    <span class="n">dvmasks</span> <span class="o">=</span> <span class="n">dvtask</span><span class="o">.</span><span class="n">get_result</span><span class="p">()</span>
+                    <span class="n">field_list</span><span class="p">,</span> <span class="n">antenna_list</span><span class="p">,</span> <span class="n">spw_list</span> <span class="o">=</span> <span class="n">dvparams</span><span class="p">[</span><span class="n">vis</span><span class="p">]</span>
+                    <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">mask_list</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">field_list</span><span class="p">,</span> <span class="n">antenna_list</span><span class="p">,</span> <span class="n">spw_list</span><span class="p">,</span> <span class="n">dvmasks</span><span class="p">):</span>
+                        <span class="c1"># key: (fieldid, antennaid, spwid)</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">)</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;deviation mask: key </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> mask </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">,</span> <span class="n">mask_list</span><span class="p">)</span>
+                        <span class="n">ms</span><span class="o">.</span><span class="n">deviation_mask</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">mask_list</span>
+                        <span class="n">deviation_mask</span><span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">deviation_mask</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;evaluated deviation mask is </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ms</span><span class="o">.</span><span class="n">deviation_mask</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Deviation mask is disabled by the user&#39;</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;deviation_mask=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">deviation_mask</span><span class="p">)</span>
+
+            <span class="c1"># Spectral Line Detection and Validation</span>
+            <span class="c1"># MaskLine will update DataTable.MASKLIST column</span>
+            <span class="n">maskline_inputs</span> <span class="o">=</span> <span class="n">maskline</span><span class="o">.</span><span class="n">MaskLine</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">iteration</span><span class="p">,</span> <span class="n">group_id</span><span class="p">,</span> <span class="n">member_list</span><span class="p">,</span>
+                                                       <span class="n">window</span><span class="p">,</span> <span class="n">windowmode</span><span class="p">,</span> <span class="n">edge</span><span class="p">,</span> <span class="n">broadline</span><span class="p">,</span> <span class="n">clusteringalgorithm</span><span class="p">)</span>
+            <span class="n">maskline_task</span> <span class="o">=</span> <span class="n">maskline</span><span class="o">.</span><span class="n">MaskLine</span><span class="p">(</span><span class="n">maskline_inputs</span><span class="p">)</span>
+            <span class="n">maskline_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">maskline_task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">grid_table</span> <span class="o">=</span> <span class="n">maskline_result</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;grid_table&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">grid_table</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Skip reduction group </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">group_id</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">compressed_table</span> <span class="o">=</span> <span class="n">compress</span><span class="o">.</span><span class="n">CompressedObj</span><span class="p">(</span><span class="n">grid_table</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">grid_table</span>
+
+            <span class="n">detected_lines</span> <span class="o">=</span> <span class="n">maskline_result</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;detected_lines&#39;</span><span class="p">]</span>
+            <span class="n">channelmap_range</span> <span class="o">=</span> <span class="n">maskline_result</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;channelmap_range&#39;</span><span class="p">]</span>
+            <span class="n">cluster_info</span> <span class="o">=</span> <span class="n">maskline_result</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;cluster_info&#39;</span><span class="p">]</span>
+            <span class="n">flag_digits</span> <span class="o">=</span> <span class="n">maskline_result</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;flag_digits&#39;</span><span class="p">]</span>
+
+            <span class="c1"># register ids to per MS id collection</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">member_list</span><span class="p">:</span>
+                <span class="n">member</span> <span class="o">=</span> <span class="n">group_desc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">registry</span><span class="p">[</span><span class="n">member</span><span class="o">.</span><span class="n">ms</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">member</span><span class="o">.</span><span class="n">field_id</span><span class="p">,</span> <span class="n">member</span><span class="o">.</span><span class="n">antenna_id</span><span class="p">,</span> <span class="n">member</span><span class="o">.</span><span class="n">spw_id</span><span class="p">,</span>
+                                           <span class="n">grid_table</span><span class="o">=</span><span class="n">compressed_table</span><span class="p">,</span> <span class="n">channelmap_range</span><span class="o">=</span><span class="n">channelmap_range</span><span class="p">)</span>
+
+            <span class="c1"># add entry to outcome</span>
+            <span class="n">baselined</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;group_id&#39;</span><span class="p">:</span> <span class="n">group_id</span><span class="p">,</span> <span class="s1">&#39;iteration&#39;</span><span class="p">:</span> <span class="n">iteration</span><span class="p">,</span>
+                              <span class="s1">&#39;members&#39;</span><span class="p">:</span> <span class="n">member_list</span><span class="p">,</span>
+                              <span class="s1">&#39;lines&#39;</span><span class="p">:</span> <span class="n">detected_lines</span><span class="p">,</span>
+                              <span class="s1">&#39;channelmap_range&#39;</span><span class="p">:</span> <span class="n">channelmap_range</span><span class="p">,</span>
+                              <span class="s1">&#39;clusters&#39;</span><span class="p">:</span> <span class="n">cluster_info</span><span class="p">,</span>
+                              <span class="s1">&#39;flag_digits&#39;</span><span class="p">:</span> <span class="n">flag_digits</span><span class="p">,</span>
+                              <span class="s1">&#39;org_direction&#39;</span><span class="p">:</span> <span class="n">org_direction</span><span class="p">})</span>
+
+        <span class="c1"># - end of the loop over reduction group</span>
+
+        <span class="n">blparam_file</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">ms</span><span class="p">:</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span> \
+            <span class="o">+</span> <span class="s1">&#39;_blparam_stage</span><span class="si">{stage}</span><span class="s1">.txt&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stage</span><span class="o">=</span><span class="n">stage_number</span><span class="p">)</span>
+        <span class="n">vis_map</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># key and value are input and output vis name, respectively</span>
+        <span class="n">plot_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">baseline_quality_stat</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="c1">#         plot_manager = plotter.BaselineSubtractionPlotManager(self.inputs.context, datatable)</span>
+
+        <span class="c1"># Generate and apply baseline fitting solutions</span>
+        <span class="n">vislist</span> <span class="o">=</span> <span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">registry</span><span class="p">]</span>
+        <span class="n">plan</span> <span class="o">=</span> <span class="p">[</span><span class="n">registry</span><span class="p">[</span><span class="n">ms</span><span class="p">]</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">registry</span><span class="p">]</span>
+        <span class="n">blparam</span> <span class="o">=</span> <span class="p">[</span><span class="n">blparam_file</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">registry</span><span class="p">]</span>
+        <span class="n">deviationmask_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">deviation_mask</span><span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">]</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">registry</span><span class="p">]</span>
+        <span class="n">edge_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">edge</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">registry</span><span class="p">]</span>
+        <span class="n">worker_cls</span> <span class="o">=</span> <span class="n">worker</span><span class="o">.</span><span class="n">BaselineSubtractionWorker</span>
+        <span class="n">fitter_inputs</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">InputsContainer</span><span class="p">(</span><span class="n">worker_cls</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span>
+                                            <span class="n">vis</span><span class="o">=</span><span class="n">vislist</span><span class="p">,</span> <span class="n">plan</span><span class="o">=</span><span class="n">plan</span><span class="p">,</span>
+                                            <span class="n">fit_func</span><span class="o">=</span><span class="n">fitfunc</span><span class="p">,</span>
+                                            <span class="n">fit_order</span><span class="o">=</span><span class="n">fitorder</span><span class="p">,</span> <span class="n">switchpoly</span><span class="o">=</span><span class="n">switchpoly</span><span class="p">,</span>
+                                            <span class="n">edge</span><span class="o">=</span><span class="n">edge_list</span><span class="p">,</span> <span class="n">blparam</span><span class="o">=</span><span class="n">blparam</span><span class="p">,</span>
+                                            <span class="n">deviationmask</span><span class="o">=</span><span class="n">deviationmask_list</span><span class="p">,</span>
+                                            <span class="n">org_directions_dict</span><span class="o">=</span><span class="n">org_directions_dict</span><span class="p">,</span>
+                                            <span class="n">parallel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">parallel</span><span class="p">)</span>
+        <span class="n">fitter_task</span> <span class="o">=</span> <span class="n">worker_cls</span><span class="p">(</span><span class="n">fitter_inputs</span><span class="p">)</span>
+        <span class="n">fitter_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">fitter_task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Check if fitting was successful</span>
+        <span class="n">fitting_failed</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fitter_results</span><span class="p">,</span> <span class="n">basetask</span><span class="o">.</span><span class="n">FailedTaskResults</span><span class="p">):</span>
+            <span class="n">fitting_failed</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">failed_results</span> <span class="o">=</span> <span class="n">basetask</span><span class="o">.</span><span class="n">ResultsList</span><span class="p">([</span><span class="n">fitter_results</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fitter_results</span><span class="p">,</span> <span class="n">basetask</span><span class="o">.</span><span class="n">ResultsList</span><span class="p">)</span> <span class="ow">and</span> <span class="n">numpy</span><span class="o">.</span><span class="n">any</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">basetask</span><span class="o">.</span><span class="n">FailedTaskResults</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">fitter_results</span><span class="p">]):</span>
+            <span class="n">fitting_failed</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">failed_results</span> <span class="o">=</span> <span class="n">basetask</span><span class="o">.</span><span class="n">ResultsList</span><span class="p">([</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">fitter_results</span>
+                                                   <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">basetask</span><span class="o">.</span><span class="n">FailedTaskResults</span><span class="p">)])</span>
+        <span class="k">if</span> <span class="n">fitting_failed</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">failed_results</span><span class="p">:</span>
+                <span class="n">r</span><span class="o">.</span><span class="n">origtask_cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span>
+            <span class="k">return</span> <span class="n">failed_results</span>
+
+        <span class="n">results_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;infile&#39;</span><span class="p">]),</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">fitter_results</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ms</span><span class="o">.</span><span class="n">basename</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">results_dict</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">result</span> <span class="o">=</span> <span class="n">results_dict</span><span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">]</span>
+            <span class="n">vis</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;infile&#39;</span><span class="p">]</span>
+
+            <span class="n">outfile</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;outfile&#39;</span><span class="p">]</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;infile: </span><span class="si">{0}</span><span class="s1">, outfile: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">vis</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">outfile</span><span class="p">)))</span>
+            <span class="n">vis_map</span><span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">outfile</span>
+
+            <span class="k">if</span> <span class="s1">&#39;plot_list&#39;</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">outcome</span><span class="p">:</span>
+                <span class="n">plot_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;plot_list&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="s1">&#39;baseline_quality_stat&#39;</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">outcome</span><span class="p">:</span>
+                <span class="n">baseline_quality_stat</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;baseline_quality_stat&#39;</span><span class="p">])</span>
+
+        <span class="n">outcome</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;baselined&#39;</span><span class="p">:</span> <span class="n">baselined</span><span class="p">,</span>
+                   <span class="s1">&#39;vis_map&#39;</span><span class="p">:</span> <span class="n">vis_map</span><span class="p">,</span>
+                   <span class="s1">&#39;edge&#39;</span><span class="p">:</span> <span class="n">edge</span><span class="p">,</span>
+                   <span class="s1">&#39;deviation_mask&#39;</span><span class="p">:</span> <span class="n">deviation_mask</span><span class="p">,</span>
+                   <span class="s1">&#39;plots&#39;</span><span class="p">:</span> <span class="n">plot_list</span><span class="p">,</span>
+                   <span class="s1">&#39;baseline_quality_stat&#39;</span><span class="p">:</span> <span class="n">baseline_quality_stat</span><span class="p">}</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">SDBaselineResults</span><span class="p">(</span><span class="n">task</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span>
+                                    <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                    <span class="n">outcome</span><span class="o">=</span><span class="n">outcome</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">results</span></div>
+
+
+<div class="viewcode-block" id="SDBaseline.analyse">
+<a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDBaseline.html#pipeline.hsd.tasks.SDBaseline.analyse">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">SDBaselineResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDBaselineResults</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate measurementset domain object for output MS.</span>
+
+<span class="sd">        The method generates measumentsets objects from output MSes</span>
+<span class="sd">        of SDBaseline task. Newly created objects are registered to</span>
+<span class="sd">        results instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            result: SDBaselineResults instance</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            SDBaselineResults instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Generate domain object of baselined MS</span>
+        <span class="k">for</span> <span class="n">infile</span><span class="p">,</span> <span class="n">outfile</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;vis_map&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">in_ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
+            <span class="n">new_ms</span> <span class="o">=</span> <span class="n">generate_ms</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">in_ms</span><span class="p">)</span>
+            <span class="n">new_ms</span><span class="o">.</span><span class="n">set_data_column</span><span class="p">(</span><span class="n">DataType</span><span class="o">.</span><span class="n">BASELINED</span><span class="p">,</span> <span class="s1">&#39;DATA&#39;</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">out_mses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_ms</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">HeuristicsTask</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Executor for heuristics class. It is an adaptor to mpihelper framework.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">heuristics_cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">&#39;Heuristic&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct HeuristicsTask instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            heuristics_cls: Heuristic class to run</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heuristics</span> <span class="o">=</span> <span class="n">heuristics_cls</span><span class="p">()</span>
+        <span class="c1"># print(args, kwargs)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="c1"># print(self.args, self.kwargs)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform Heuristics and return its result.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Heuristics result. Actual contents of return value</span>
+<span class="sd">            depends on the Heuristics class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_executable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return function that runs execute method.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Function to run execute method</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DeviationMaskHeuristicsTask</span><span class="p">(</span><span class="n">HeuristicsTask</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Executor class specialized to MaskDeviationHeuristic.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">heuristics_cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">MaskDeviationHeuristic</span><span class="p">],</span>
+                 <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">field_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+                 <span class="n">antenna_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+                 <span class="n">spw_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+                 <span class="n">deviationmask_sigma_threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                 <span class="n">consider_flag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct DeviationMaskHeuristicsTask instance.</span>
+
+<span class="sd">        Executes heuristics to find deviation masks for given set of</span>
+<span class="sd">        field id, antenna id, and spw ids. Those ids are taken from</span>
+<span class="sd">        field_list, antenna_list, and spw_list via zip so that their</span>
+<span class="sd">        length must be identical.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            heuristics_cls: Heuristics class</span>
+<span class="sd">            vis: Name of the MS</span>
+<span class="sd">            field_list: List of field ids to process</span>
+<span class="sd">            antenna_list: List of antenna ids to process</span>
+<span class="sd">            spw_list: List of spectral window ids to process</span>
+<span class="sd">            deviationmask_sigma_threshold: Threshold factor to detect the deviation.</span>
+<span class="sd">                                     (see SDBaselineInputs for details)</span>
+<span class="sd">            consider_flag: Consider flag when perofrming heuristics. Defaults to False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DeviationMaskHeuristicsTask</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">heuristics_cls</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">consider_flag</span><span class="o">=</span><span class="n">consider_flag</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field_list</span> <span class="o">=</span> <span class="n">field_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antenna_list</span> <span class="o">=</span> <span class="n">antenna_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw_list</span> <span class="o">=</span> <span class="n">spw_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deviationmask_sigma_threshold</span> <span class="o">=</span> <span class="n">deviationmask_sigma_threshold</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute heuristics.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Deviation mask for each set of field id, antenna id, and spw id.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw_list</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;field_id&#39;</span><span class="p">:</span> <span class="n">field_id</span><span class="p">,</span>
+                                <span class="s1">&#39;antenna_id&#39;</span><span class="p">:</span> <span class="n">antenna_id</span><span class="p">,</span>
+                                <span class="s1">&#39;spw_id&#39;</span><span class="p">:</span> <span class="n">spw_id</span><span class="p">,</span>
+                                <span class="s1">&#39;detection&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">deviationmask_sigma_threshold</span><span class="p">})</span>
+            <span class="n">mask_list</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">DeviationMaskHeuristicsTask</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mask_list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">deviation_mask_heuristic</span><span class="p">(</span>
+        <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">field_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">antenna_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">spw_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">deviationmask_sigma_threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">consider_flag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">parallel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">mpihelpers</span><span class="o">.</span><span class="n">SyncTask</span><span class="p">,</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">AsyncTask</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Prepare task instance that can be executed in mpihelpers framework.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        vis: Name of MS</span>
+<span class="sd">        field_list: List of field ids to process</span>
+<span class="sd">        antenna_list: List of antenna ids to process</span>
+<span class="sd">        spw_list: List of spectral window ids to process</span>
+<span class="sd">        consider_flag: Consider flag when performing heuristics. Defaults to False.</span>
+<span class="sd">        deviationmask_sigma_threshold: Threshold factor (F) to detect the deviation.</span>
+<span class="sd">                                 (see SDBaselineInputs for detail)</span>
+<span class="sd">        parallel: Parallel execution or not. Currently disabled.</span>
+<span class="sd">                  Task is always executed in serial mode. Defaults to None.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Name of the MS and the task instance for mpihelpers framework.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># parallel_wanted = mpihelpers.parse_mpi_input_parameter(parallel)</span>
+    <span class="n">mytask</span> <span class="o">=</span> <span class="n">DeviationMaskHeuristicsTask</span><span class="p">(</span><span class="n">MaskDeviationHeuristic</span><span class="p">,</span>
+                                         <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span>
+                                         <span class="n">field_list</span><span class="o">=</span><span class="n">field_list</span><span class="p">,</span>
+                                         <span class="n">antenna_list</span><span class="o">=</span><span class="n">antenna_list</span><span class="p">,</span>
+                                         <span class="n">spw_list</span><span class="o">=</span><span class="n">spw_list</span><span class="p">,</span>
+                                         <span class="n">deviationmask_sigma_threshold</span><span class="o">=</span><span class="n">deviationmask_sigma_threshold</span><span class="p">,</span>
+                                         <span class="n">consider_flag</span><span class="o">=</span><span class="n">consider_flag</span><span class="p">)</span>
+    <span class="c1"># if parallel_wanted:</span>
+    <span class="k">if</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">AsyncTask</span><span class="p">(</span><span class="n">mytask</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Deviation Mask Heuristic always runs in serial mode.&#39;</span><span class="p">)</span>
+        <span class="n">task</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">SyncTask</span><span class="p">(</span><span class="n">mytask</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">vis</span><span class="p">,</span> <span class="n">task</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_deviation_mask_heuristic</span><span class="p">(</span><span class="n">spw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test deviation mask heuristic.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        spw: spectral window id to process.</span>
+<span class="sd">             If None is given, spw is set to 17.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
+    <span class="n">vislist</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;uid___A002_X*.ms&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;vislist=</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vislist</span><span class="p">))</span>
+    <span class="n">field_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">antenna_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="n">spw_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">17</span><span class="p">]</span> <span class="k">if</span> <span class="n">spw</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="n">spw</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">spw</span><span class="p">]</span>
+    <span class="n">consider_flag</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">serial_tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">deviation_mask_heuristic</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">field_list</span><span class="o">=</span><span class="n">field_list</span><span class="p">,</span> <span class="n">antenna_list</span><span class="o">=</span><span class="n">antenna_list</span><span class="p">,</span> <span class="n">spw_list</span><span class="o">=</span><span class="n">spw_list</span><span class="p">,</span> <span class="n">consider_flag</span><span class="o">=</span><span class="n">consider_flag</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">]</span>
+    <span class="n">serial_results</span> <span class="o">=</span> <span class="p">[(</span><span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">get_result</span><span class="p">())</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">serial_tasks</span><span class="p">]</span>
+    <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;serial execution duration </span><span class="si">{0}</span><span class="s1">sec&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span><span class="p">))</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">parallel_tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">deviation_mask_heuristic</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">field_list</span><span class="o">=</span><span class="n">field_list</span><span class="p">,</span> <span class="n">antenna_list</span><span class="o">=</span><span class="n">antenna_list</span><span class="p">,</span> <span class="n">spw_list</span><span class="o">=</span><span class="n">spw_list</span><span class="p">,</span> <span class="n">consider_flag</span><span class="o">=</span><span class="n">consider_flag</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">]</span>
+    <span class="n">parallel_results</span> <span class="o">=</span> <span class="p">[(</span><span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">get_result</span><span class="p">())</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">parallel_tasks</span><span class="p">]</span>
+    <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;parallel execution duration </span><span class="si">{0}</span><span class="s1">sec&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">vis</span><span class="p">,</span> <span class="n">smask</span> <span class="ow">in</span> <span class="n">serial_results</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">_vis</span><span class="p">,</span> <span class="n">pmask</span> <span class="ow">in</span> <span class="n">parallel_results</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">vis</span> <span class="o">==</span> <span class="n">_vis</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">field_id</span> <span class="ow">in</span> <span class="n">field_list</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">antenna_id</span> <span class="ow">in</span> <span class="n">antenna_list</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="n">spw_list</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;vis &quot;</span><span class="si">{0}</span><span class="s1">&quot;, field </span><span class="si">{1}</span><span class="s1"> antenna </span><span class="si">{2}</span><span class="s1"> spw </span><span class="si">{3}</span><span class="s1">:&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">))</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;     serial mask: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">smask</span><span class="p">))</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   parallel mask: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pmask</span><span class="p">))</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">smask</span> <span class="o">==</span> <span class="n">pmask</span><span class="p">))</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.52+249-gfad2753373-update-docs-build-and-packaging-setup.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

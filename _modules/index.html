@@ -1,0 +1,744 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview: module code &mdash; Pipeline 
+ (2025.1.1.52) 2025.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=047bd54c" />
+
+  
+    <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=0729d509"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("True" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll(".mermaid svg");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("True" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: gray" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Pipeline 
+ (2025.1.1.52)
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html">Full APIs (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-tasks-autosummary">Pipeline Tasks (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-context-autosummary">Pipeline domain/context (autosummary)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-h-tasks-modules-autmodapi"><code class="docutils literal notranslate"><span class="pre">pipeline.h*.tasks</span></code> modules (autmodapi)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../apisummary.html#inheritance-diagrams-for-pipeline-task-inputs-results-classes">Inheritance Diagrams for Pipeline <code class="docutils literal notranslate"><span class="pre">Task</span></code>/<code class="docutils literal notranslate"><span class="pre">Inputs</span></code>/<code class="docutils literal notranslate"><span class="pre">Results</span></code> Classes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/ALMA-Imaging-Workflow.html">ALMA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLA-Imaging-Workflow.html">VLA interferometry imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CONT-Imaging-Workflow.html">VLASS-SE-CONT imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/VLASS-SE-CUBE-Imaging-Workflow.html">VLASS-SE-CUBE imaging workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/DeveloperDocumentation.html">Pipeline developer documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pipeline 
+ (2025.1.1.52)</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Overview: module code</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>All modules for which code is available</h1>
+<ul><li><a href="enum.html">enum</a></li>
+<li><a href="operator.html">operator</a></li>
+<li><a href="pipeline.html">pipeline</a></li>
+<ul><li><a href="pipeline/domain/antenna.html">pipeline.domain.antenna</a></li>
+<li><a href="pipeline/domain/antennaarray.html">pipeline.domain.antennaarray</a></li>
+<li><a href="pipeline/domain/datadescription.html">pipeline.domain.datadescription</a></li>
+<li><a href="pipeline/domain/datatable.html">pipeline.domain.datatable</a></li>
+<li><a href="pipeline/domain/datatype.html">pipeline.domain.datatype</a></li>
+<li><a href="pipeline/domain/field.html">pipeline.domain.field</a></li>
+<li><a href="pipeline/domain/fluxmeasurement.html">pipeline.domain.fluxmeasurement</a></li>
+<li><a href="pipeline/domain/measurementset.html">pipeline.domain.measurementset</a></li>
+<li><a href="pipeline/domain/measures.html">pipeline.domain.measures</a></li>
+<li><a href="pipeline/domain/observingrun.html">pipeline.domain.observingrun</a></li>
+<li><a href="pipeline/domain/polarization.html">pipeline.domain.polarization</a></li>
+<li><a href="pipeline/domain/scan.html">pipeline.domain.scan</a></li>
+<li><a href="pipeline/domain/singledish.html">pipeline.domain.singledish</a></li>
+<li><a href="pipeline/domain/source.html">pipeline.domain.source</a></li>
+<li><a href="pipeline/domain/spectralwindow.html">pipeline.domain.spectralwindow</a></li>
+<li><a href="pipeline/domain/state.html">pipeline.domain.state</a></li>
+<li><a href="pipeline/domain/unitformat.html">pipeline.domain.unitformat</a></li>
+<li><a href="pipeline/h/cli/h_init.html">pipeline.h.cli.h_init</a></li>
+<li><a href="pipeline/h/cli/h_resume.html">pipeline.h.cli.h_resume</a></li>
+<li><a href="pipeline/h/cli/h_save.html">pipeline.h.cli.h_save</a></li>
+<li><a href="pipeline/h/cli/h_tsyscal.html">pipeline.h.cli.h_tsyscal</a></li>
+<li><a href="pipeline/h/cli/h_weblog.html">pipeline.h.cli.h_weblog</a></li>
+<li><a href="pipeline/h/tasks/applycal/applycal.html">pipeline.h.tasks.applycal.applycal</a></li>
+<li><a href="pipeline/h/tasks/exportdata/exportdata.html">pipeline.h.tasks.exportdata.exportdata</a></li>
+<li><a href="pipeline/h/tasks/importdata/importdata.html">pipeline.h.tasks.importdata.importdata</a></li>
+<li><a href="pipeline/h/tasks/mstransform/mssplit.html">pipeline.h.tasks.mstransform.mssplit</a></li>
+<li><a href="pipeline/h/tasks/restoredata/restoredata.html">pipeline.h.tasks.restoredata.restoredata</a></li>
+<li><a href="pipeline/h/tasks/tsyscal/tsyscal.html">pipeline.h.tasks.tsyscal.tsyscal</a></li>
+<li><a href="pipeline/h/tasks/tsysflag/tsysflag.html">pipeline.h.tasks.tsysflag.tsysflag</a></li>
+<li><a href="pipeline/hif/cli/hif_analyzealpha.html">pipeline.hif.cli.hif_analyzealpha</a></li>
+<li><a href="pipeline/hif/cli/hif_applycal.html">pipeline.hif.cli.hif_applycal</a></li>
+<li><a href="pipeline/hif/cli/hif_checkproductsize.html">pipeline.hif.cli.hif_checkproductsize</a></li>
+<li><a href="pipeline/hif/cli/hif_correctedampflag.html">pipeline.hif.cli.hif_correctedampflag</a></li>
+<li><a href="pipeline/hif/cli/hif_editimlist.html">pipeline.hif.cli.hif_editimlist</a></li>
+<li><a href="pipeline/hif/cli/hif_findcont.html">pipeline.hif.cli.hif_findcont</a></li>
+<li><a href="pipeline/hif/cli/hif_lowgainflag.html">pipeline.hif.cli.hif_lowgainflag</a></li>
+<li><a href="pipeline/hif/cli/hif_makecutoutimages.html">pipeline.hif.cli.hif_makecutoutimages</a></li>
+<li><a href="pipeline/hif/cli/hif_makeimages.html">pipeline.hif.cli.hif_makeimages</a></li>
+<li><a href="pipeline/hif/cli/hif_makeimlist.html">pipeline.hif.cli.hif_makeimlist</a></li>
+<li><a href="pipeline/hif/cli/hif_makermsimages.html">pipeline.hif.cli.hif_makermsimages</a></li>
+<li><a href="pipeline/hif/cli/hif_mstransform.html">pipeline.hif.cli.hif_mstransform</a></li>
+<li><a href="pipeline/hif/cli/hif_rawflagchans.html">pipeline.hif.cli.hif_rawflagchans</a></li>
+<li><a href="pipeline/hif/cli/hif_refant.html">pipeline.hif.cli.hif_refant</a></li>
+<li><a href="pipeline/hif/cli/hif_selfcal.html">pipeline.hif.cli.hif_selfcal</a></li>
+<li><a href="pipeline/hif/cli/hif_setjy.html">pipeline.hif.cli.hif_setjy</a></li>
+<li><a href="pipeline/hif/cli/hif_setmodels.html">pipeline.hif.cli.hif_setmodels</a></li>
+<li><a href="pipeline/hif/cli/hif_transformimagedata.html">pipeline.hif.cli.hif_transformimagedata</a></li>
+<li><a href="pipeline/hif/cli/hif_uvcontsub.html">pipeline.hif.cli.hif_uvcontsub</a></li>
+<li><a href="pipeline/hif/tasks/analyzealpha/analyzealpha.html">pipeline.hif.tasks.analyzealpha.analyzealpha</a></li>
+<li><a href="pipeline/hif/tasks/antpos/antpos.html">pipeline.hif.tasks.antpos.antpos</a></li>
+<li><a href="pipeline/hif/tasks/applycal/ifapplycal.html">pipeline.hif.tasks.applycal.ifapplycal</a></li>
+<li><a href="pipeline/hif/tasks/bandpass/bandpassmode.html">pipeline.hif.tasks.bandpass.bandpassmode</a></li>
+<li><a href="pipeline/hif/tasks/bandpass/channelbandpass.html">pipeline.hif.tasks.bandpass.channelbandpass</a></li>
+<li><a href="pipeline/hif/tasks/bandpass/phcorbandpass.html">pipeline.hif.tasks.bandpass.phcorbandpass</a></li>
+<li><a href="pipeline/hif/tasks/checkproductsize/checkproductsize.html">pipeline.hif.tasks.checkproductsize.checkproductsize</a></li>
+<li><a href="pipeline/hif/tasks/correctedampflag/correctedampflag.html">pipeline.hif.tasks.correctedampflag.correctedampflag</a></li>
+<li><a href="pipeline/hif/tasks/editimlist/editimlist.html">pipeline.hif.tasks.editimlist.editimlist</a></li>
+<li><a href="pipeline/hif/tasks/findcont/findcont.html">pipeline.hif.tasks.findcont.findcont</a></li>
+<li><a href="pipeline/hif/tasks/fluxscale/fluxscale.html">pipeline.hif.tasks.fluxscale.fluxscale</a></li>
+<li><a href="pipeline/hif/tasks/gaincal/gaincalmode.html">pipeline.hif.tasks.gaincal.gaincalmode</a></li>
+<li><a href="pipeline/hif/tasks/gaincal/gsplinegaincal.html">pipeline.hif.tasks.gaincal.gsplinegaincal</a></li>
+<li><a href="pipeline/hif/tasks/gaincal/gtypegaincal.html">pipeline.hif.tasks.gaincal.gtypegaincal</a></li>
+<li><a href="pipeline/hif/tasks/gaincal/ktypegaincal.html">pipeline.hif.tasks.gaincal.ktypegaincal</a></li>
+<li><a href="pipeline/hif/tasks/lowgainflag/lowgainflag.html">pipeline.hif.tasks.lowgainflag.lowgainflag</a></li>
+<li><a href="pipeline/hif/tasks/makecutoutimages/makecutoutimages.html">pipeline.hif.tasks.makecutoutimages.makecutoutimages</a></li>
+<li><a href="pipeline/hif/tasks/makeimages/makeimages.html">pipeline.hif.tasks.makeimages.makeimages</a></li>
+<li><a href="pipeline/hif/tasks/makeimlist/makeimlist.html">pipeline.hif.tasks.makeimlist.makeimlist</a></li>
+<li><a href="pipeline/hif/tasks/makermsimages/makermsimages.html">pipeline.hif.tasks.makermsimages.makermsimages</a></li>
+<li><a href="pipeline/hif/tasks/mstransform/mstransform.html">pipeline.hif.tasks.mstransform.mstransform</a></li>
+<li><a href="pipeline/hif/tasks/polarization/polarization.html">pipeline.hif.tasks.polarization.polarization</a></li>
+<li><a href="pipeline/hif/tasks/polcal/polcalworker.html">pipeline.hif.tasks.polcal.polcalworker</a></li>
+<li><a href="pipeline/hif/tasks/rawflagchans/rawflagchans.html">pipeline.hif.tasks.rawflagchans.rawflagchans</a></li>
+<li><a href="pipeline/hif/tasks/refant/referenceantenna.html">pipeline.hif.tasks.refant.referenceantenna</a></li>
+<li><a href="pipeline/hif/tasks/selfcal/selfcal.html">pipeline.hif.tasks.selfcal.selfcal</a></li>
+<li><a href="pipeline/hif/tasks/setmodel/setjy.html">pipeline.hif.tasks.setmodel.setjy</a></li>
+<li><a href="pipeline/hif/tasks/setmodel/setmodel.html">pipeline.hif.tasks.setmodel.setmodel</a></li>
+<li><a href="pipeline/hif/tasks/tclean/tclean.html">pipeline.hif.tasks.tclean.tclean</a></li>
+<li><a href="pipeline/hif/tasks/transformimagedata/transformimagedata.html">pipeline.hif.tasks.transformimagedata.transformimagedata</a></li>
+<li><a href="pipeline/hif/tasks/uvcontsub/uvcontsub.html">pipeline.hif.tasks.uvcontsub.uvcontsub</a></li>
+<li><a href="pipeline/hifa/cli/hifa_antpos.html">pipeline.hifa.cli.hifa_antpos</a></li>
+<li><a href="pipeline/hifa/cli/hifa_bandpass.html">pipeline.hifa.cli.hifa_bandpass</a></li>
+<li><a href="pipeline/hifa/cli/hifa_bandpassflag.html">pipeline.hifa.cli.hifa_bandpassflag</a></li>
+<li><a href="pipeline/hifa/cli/hifa_bpsolint.html">pipeline.hifa.cli.hifa_bpsolint</a></li>
+<li><a href="pipeline/hifa/cli/hifa_diffgaincal.html">pipeline.hifa.cli.hifa_diffgaincal</a></li>
+<li><a href="pipeline/hifa/cli/hifa_exportdata.html">pipeline.hifa.cli.hifa_exportdata</a></li>
+<li><a href="pipeline/hifa/cli/hifa_flagdata.html">pipeline.hifa.cli.hifa_flagdata</a></li>
+<li><a href="pipeline/hifa/cli/hifa_flagtargets.html">pipeline.hifa.cli.hifa_flagtargets</a></li>
+<li><a href="pipeline/hifa/cli/hifa_fluxcalflag.html">pipeline.hifa.cli.hifa_fluxcalflag</a></li>
+<li><a href="pipeline/hifa/cli/hifa_gaincalsnr.html">pipeline.hifa.cli.hifa_gaincalsnr</a></li>
+<li><a href="pipeline/hifa/cli/hifa_gfluxscale.html">pipeline.hifa.cli.hifa_gfluxscale</a></li>
+<li><a href="pipeline/hifa/cli/hifa_gfluxscaleflag.html">pipeline.hifa.cli.hifa_gfluxscaleflag</a></li>
+<li><a href="pipeline/hifa/cli/hifa_imageprecheck.html">pipeline.hifa.cli.hifa_imageprecheck</a></li>
+<li><a href="pipeline/hifa/cli/hifa_importdata.html">pipeline.hifa.cli.hifa_importdata</a></li>
+<li><a href="pipeline/hifa/cli/hifa_lock_refant.html">pipeline.hifa.cli.hifa_lock_refant</a></li>
+<li><a href="pipeline/hifa/cli/hifa_polcal.html">pipeline.hifa.cli.hifa_polcal</a></li>
+<li><a href="pipeline/hifa/cli/hifa_polcalflag.html">pipeline.hifa.cli.hifa_polcalflag</a></li>
+<li><a href="pipeline/hifa/cli/hifa_renorm.html">pipeline.hifa.cli.hifa_renorm</a></li>
+<li><a href="pipeline/hifa/cli/hifa_restoredata.html">pipeline.hifa.cli.hifa_restoredata</a></li>
+<li><a href="pipeline/hifa/cli/hifa_session_refant.html">pipeline.hifa.cli.hifa_session_refant</a></li>
+<li><a href="pipeline/hifa/cli/hifa_spwphaseup.html">pipeline.hifa.cli.hifa_spwphaseup</a></li>
+<li><a href="pipeline/hifa/cli/hifa_targetflag.html">pipeline.hifa.cli.hifa_targetflag</a></li>
+<li><a href="pipeline/hifa/cli/hifa_timegaincal.html">pipeline.hifa.cli.hifa_timegaincal</a></li>
+<li><a href="pipeline/hifa/cli/hifa_tsysflag.html">pipeline.hifa.cli.hifa_tsysflag</a></li>
+<li><a href="pipeline/hifa/cli/hifa_tsysflagcontamination.html">pipeline.hifa.cli.hifa_tsysflagcontamination</a></li>
+<li><a href="pipeline/hifa/cli/hifa_unlock_refant.html">pipeline.hifa.cli.hifa_unlock_refant</a></li>
+<li><a href="pipeline/hifa/cli/hifa_wvrgcal.html">pipeline.hifa.cli.hifa_wvrgcal</a></li>
+<li><a href="pipeline/hifa/cli/hifa_wvrgcalflag.html">pipeline.hifa.cli.hifa_wvrgcalflag</a></li>
+<li><a href="pipeline/hifa/tasks/antpos/almaantpos.html">pipeline.hifa.tasks.antpos.almaantpos</a></li>
+<li><a href="pipeline/hifa/tasks/bandpass/almaphcorbandpass.html">pipeline.hifa.tasks.bandpass.almaphcorbandpass</a></li>
+<li><a href="pipeline/hifa/tasks/bandpassflag/bandpassflag.html">pipeline.hifa.tasks.bandpassflag.bandpassflag</a></li>
+<li><a href="pipeline/hifa/tasks/bpsolint/bpsolint.html">pipeline.hifa.tasks.bpsolint.bpsolint</a></li>
+<li><a href="pipeline/hifa/tasks/diffgaincal/diffgaincal.html">pipeline.hifa.tasks.diffgaincal.diffgaincal</a></li>
+<li><a href="pipeline/hifa/tasks/exportdata/almaexportdata.html">pipeline.hifa.tasks.exportdata.almaexportdata</a></li>
+<li><a href="pipeline/hifa/tasks/flagging/flagdeteralma.html">pipeline.hifa.tasks.flagging.flagdeteralma</a></li>
+<li><a href="pipeline/hifa/tasks/flagging/flagtargetsalma.html">pipeline.hifa.tasks.flagging.flagtargetsalma</a></li>
+<li><a href="pipeline/hifa/tasks/fluxcalflag/fluxcalflag.html">pipeline.hifa.tasks.fluxcalflag.fluxcalflag</a></li>
+<li><a href="pipeline/hifa/tasks/fluxscale/gcorfluxscale.html">pipeline.hifa.tasks.fluxscale.gcorfluxscale</a></li>
+<li><a href="pipeline/hifa/tasks/gaincal/timegaincal.html">pipeline.hifa.tasks.gaincal.timegaincal</a></li>
+<li><a href="pipeline/hifa/tasks/gaincalsnr/gaincalsnr.html">pipeline.hifa.tasks.gaincalsnr.gaincalsnr</a></li>
+<li><a href="pipeline/hifa/tasks/gfluxscaleflag/gfluxscaleflag.html">pipeline.hifa.tasks.gfluxscaleflag.gfluxscaleflag</a></li>
+<li><a href="pipeline/hifa/tasks/imageprecheck/imageprecheck.html">pipeline.hifa.tasks.imageprecheck.imageprecheck</a></li>
+<li><a href="pipeline/hifa/tasks/importdata/almaimportdata.html">pipeline.hifa.tasks.importdata.almaimportdata</a></li>
+<li><a href="pipeline/hifa/tasks/lock_refant/lock_refant.html">pipeline.hifa.tasks.lock_refant.lock_refant</a></li>
+<li><a href="pipeline/hifa/tasks/polcal/polcal.html">pipeline.hifa.tasks.polcal.polcal</a></li>
+<li><a href="pipeline/hifa/tasks/polcalflag/polcalflag.html">pipeline.hifa.tasks.polcalflag.polcalflag</a></li>
+<li><a href="pipeline/hifa/tasks/renorm/renorm.html">pipeline.hifa.tasks.renorm.renorm</a></li>
+<li><a href="pipeline/hifa/tasks/restoredata/almarestoredata.html">pipeline.hifa.tasks.restoredata.almarestoredata</a></li>
+<li><a href="pipeline/hifa/tasks/sessionrefant/sessionrefant.html">pipeline.hifa.tasks.sessionrefant.sessionrefant</a></li>
+<li><a href="pipeline/hifa/tasks/spwphaseup/spwphaseup.html">pipeline.hifa.tasks.spwphaseup.spwphaseup</a></li>
+<li><a href="pipeline/hifa/tasks/targetflag/targetflag.html">pipeline.hifa.tasks.targetflag.targetflag</a></li>
+<li><a href="pipeline/hifa/tasks/tsysflag/tsysflag.html">pipeline.hifa.tasks.tsysflag.tsysflag</a></li>
+<li><a href="pipeline/hifa/tasks/tsysflag_contamination/tsysflagcontamination.html">pipeline.hifa.tasks.tsysflag_contamination.tsysflagcontamination</a></li>
+<li><a href="pipeline/hifa/tasks/unlock_refant/unlock_refant.html">pipeline.hifa.tasks.unlock_refant.unlock_refant</a></li>
+<li><a href="pipeline/hifa/tasks/wvrgcal/wvrgcal.html">pipeline.hifa.tasks.wvrgcal.wvrgcal</a></li>
+<li><a href="pipeline/hifa/tasks/wvrgcalflag/wvrgcalflag.html">pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag</a></li>
+<li><a href="pipeline/hifv/cli/hifv_analyzestokescubes.html">pipeline.hifv.cli.hifv_analyzestokescubes</a></li>
+<li><a href="pipeline/hifv/cli/hifv_applycals.html">pipeline.hifv.cli.hifv_applycals</a></li>
+<li><a href="pipeline/hifv/cli/hifv_checkflag.html">pipeline.hifv.cli.hifv_checkflag</a></li>
+<li><a href="pipeline/hifv/cli/hifv_circfeedpolcal.html">pipeline.hifv.cli.hifv_circfeedpolcal</a></li>
+<li><a href="pipeline/hifv/cli/hifv_exportdata.html">pipeline.hifv.cli.hifv_exportdata</a></li>
+<li><a href="pipeline/hifv/cli/hifv_exportvlassdata.html">pipeline.hifv.cli.hifv_exportvlassdata</a></li>
+<li><a href="pipeline/hifv/cli/hifv_finalcals.html">pipeline.hifv.cli.hifv_finalcals</a></li>
+<li><a href="pipeline/hifv/cli/hifv_fixpointing.html">pipeline.hifv.cli.hifv_fixpointing</a></li>
+<li><a href="pipeline/hifv/cli/hifv_flagcal.html">pipeline.hifv.cli.hifv_flagcal</a></li>
+<li><a href="pipeline/hifv/cli/hifv_flagdata.html">pipeline.hifv.cli.hifv_flagdata</a></li>
+<li><a href="pipeline/hifv/cli/hifv_flagtargetsdata.html">pipeline.hifv.cli.hifv_flagtargetsdata</a></li>
+<li><a href="pipeline/hifv/cli/hifv_fluxboot.html">pipeline.hifv.cli.hifv_fluxboot</a></li>
+<li><a href="pipeline/hifv/cli/hifv_hanning.html">pipeline.hifv.cli.hifv_hanning</a></li>
+<li><a href="pipeline/hifv/cli/hifv_importdata.html">pipeline.hifv.cli.hifv_importdata</a></li>
+<li><a href="pipeline/hifv/cli/hifv_mstransform.html">pipeline.hifv.cli.hifv_mstransform</a></li>
+<li><a href="pipeline/hifv/cli/hifv_pbcor.html">pipeline.hifv.cli.hifv_pbcor</a></li>
+<li><a href="pipeline/hifv/cli/hifv_plotsummary.html">pipeline.hifv.cli.hifv_plotsummary</a></li>
+<li><a href="pipeline/hifv/cli/hifv_priorcals.html">pipeline.hifv.cli.hifv_priorcals</a></li>
+<li><a href="pipeline/hifv/cli/hifv_restoredata.html">pipeline.hifv.cli.hifv_restoredata</a></li>
+<li><a href="pipeline/hifv/cli/hifv_restorepims.html">pipeline.hifv.cli.hifv_restorepims</a></li>
+<li><a href="pipeline/hifv/cli/hifv_selfcal.html">pipeline.hifv.cli.hifv_selfcal</a></li>
+<li><a href="pipeline/hifv/cli/hifv_semiFinalBPdcals.html">pipeline.hifv.cli.hifv_semiFinalBPdcals</a></li>
+<li><a href="pipeline/hifv/cli/hifv_solint.html">pipeline.hifv.cli.hifv_solint</a></li>
+<li><a href="pipeline/hifv/cli/hifv_statwt.html">pipeline.hifv.cli.hifv_statwt</a></li>
+<li><a href="pipeline/hifv/cli/hifv_syspower.html">pipeline.hifv.cli.hifv_syspower</a></li>
+<li><a href="pipeline/hifv/cli/hifv_testBPdcals.html">pipeline.hifv.cli.hifv_testBPdcals</a></li>
+<li><a href="pipeline/hifv/cli/hifv_vlasetjy.html">pipeline.hifv.cli.hifv_vlasetjy</a></li>
+<li><a href="pipeline/hifv/cli/hifv_vlassmasking.html">pipeline.hifv.cli.hifv_vlassmasking</a></li>
+<li><a href="pipeline/hifv/tasks/analyzestokescubes/analyzestokescubes.html">pipeline.hifv.tasks.analyzestokescubes.analyzestokescubes</a></li>
+<li><a href="pipeline/hifv/tasks/circfeedpolcal/circfeedpolcal.html">pipeline.hifv.tasks.circfeedpolcal.circfeedpolcal</a></li>
+<li><a href="pipeline/hifv/tasks/exportdata/vlaexportdata.html">pipeline.hifv.tasks.exportdata.vlaexportdata</a></li>
+<li><a href="pipeline/hifv/tasks/exportvlassdata/exportvlassdata.html">pipeline.hifv.tasks.exportvlassdata.exportvlassdata</a></li>
+<li><a href="pipeline/hifv/tasks/finalcals/applycals.html">pipeline.hifv.tasks.finalcals.applycals</a></li>
+<li><a href="pipeline/hifv/tasks/finalcals/finalcals.html">pipeline.hifv.tasks.finalcals.finalcals</a></li>
+<li><a href="pipeline/hifv/tasks/fixpointing/fixpointing.html">pipeline.hifv.tasks.fixpointing.fixpointing</a></li>
+<li><a href="pipeline/hifv/tasks/flagging/checkflag.html">pipeline.hifv.tasks.flagging.checkflag</a></li>
+<li><a href="pipeline/hifv/tasks/flagging/flagcal.html">pipeline.hifv.tasks.flagging.flagcal</a></li>
+<li><a href="pipeline/hifv/tasks/flagging/flagdetervla.html">pipeline.hifv.tasks.flagging.flagdetervla</a></li>
+<li><a href="pipeline/hifv/tasks/flagging/targetflag.html">pipeline.hifv.tasks.flagging.targetflag</a></li>
+<li><a href="pipeline/hifv/tasks/fluxscale/fluxboot.html">pipeline.hifv.tasks.fluxscale.fluxboot</a></li>
+<li><a href="pipeline/hifv/tasks/fluxscale/solint.html">pipeline.hifv.tasks.fluxscale.solint</a></li>
+<li><a href="pipeline/hifv/tasks/gaincurves/gaincurves.html">pipeline.hifv.tasks.gaincurves.gaincurves</a></li>
+<li><a href="pipeline/hifv/tasks/hanning/hanning.html">pipeline.hifv.tasks.hanning.hanning</a></li>
+<li><a href="pipeline/hifv/tasks/importdata/importdata.html">pipeline.hifv.tasks.importdata.importdata</a></li>
+<li><a href="pipeline/hifv/tasks/mstransform/mstransform.html">pipeline.hifv.tasks.mstransform.mstransform</a></li>
+<li><a href="pipeline/hifv/tasks/opcal/opcal.html">pipeline.hifv.tasks.opcal.opcal</a></li>
+<li><a href="pipeline/hifv/tasks/pbcor/pbcor.html">pipeline.hifv.tasks.pbcor.pbcor</a></li>
+<li><a href="pipeline/hifv/tasks/plotsummary/plotsummary.html">pipeline.hifv.tasks.plotsummary.plotsummary</a></li>
+<li><a href="pipeline/hifv/tasks/priorcals/priorcals.html">pipeline.hifv.tasks.priorcals.priorcals</a></li>
+<li><a href="pipeline/hifv/tasks/restoredata/vlarestoredata.html">pipeline.hifv.tasks.restoredata.vlarestoredata</a></li>
+<li><a href="pipeline/hifv/tasks/restorepims/restorepims.html">pipeline.hifv.tasks.restorepims.restorepims</a></li>
+<li><a href="pipeline/hifv/tasks/rqcal/rqcal.html">pipeline.hifv.tasks.rqcal.rqcal</a></li>
+<li><a href="pipeline/hifv/tasks/selfcal/selfcal.html">pipeline.hifv.tasks.selfcal.selfcal</a></li>
+<li><a href="pipeline/hifv/tasks/semiFinalBPdcals/semiFinalBPdcals.html">pipeline.hifv.tasks.semiFinalBPdcals.semiFinalBPdcals</a></li>
+<li><a href="pipeline/hifv/tasks/setmodel/vlasetjy.html">pipeline.hifv.tasks.setmodel.vlasetjy</a></li>
+<li><a href="pipeline/hifv/tasks/statwt/statwt.html">pipeline.hifv.tasks.statwt.statwt</a></li>
+<li><a href="pipeline/hifv/tasks/swpowcal/swpowcal.html">pipeline.hifv.tasks.swpowcal.swpowcal</a></li>
+<li><a href="pipeline/hifv/tasks/syspower/syspower.html">pipeline.hifv.tasks.syspower.syspower</a></li>
+<li><a href="pipeline/hifv/tasks/tecmaps/tecmaps.html">pipeline.hifv.tasks.tecmaps.tecmaps</a></li>
+<li><a href="pipeline/hifv/tasks/testBPdcals/testBPdcals.html">pipeline.hifv.tasks.testBPdcals.testBPdcals</a></li>
+<li><a href="pipeline/hifv/tasks/vlassmasking/vlassmasking.html">pipeline.hifv.tasks.vlassmasking.vlassmasking</a></li>
+<li><a href="pipeline/hsd/cli/hsd_applycal.html">pipeline.hsd.cli.hsd_applycal</a></li>
+<li><a href="pipeline/hsd/cli/hsd_atmcor.html">pipeline.hsd.cli.hsd_atmcor</a></li>
+<li><a href="pipeline/hsd/cli/hsd_baseline.html">pipeline.hsd.cli.hsd_baseline</a></li>
+<li><a href="pipeline/hsd/cli/hsd_blflag.html">pipeline.hsd.cli.hsd_blflag</a></li>
+<li><a href="pipeline/hsd/cli/hsd_exportdata.html">pipeline.hsd.cli.hsd_exportdata</a></li>
+<li><a href="pipeline/hsd/cli/hsd_flagdata.html">pipeline.hsd.cli.hsd_flagdata</a></li>
+<li><a href="pipeline/hsd/cli/hsd_imaging.html">pipeline.hsd.cli.hsd_imaging</a></li>
+<li><a href="pipeline/hsd/cli/hsd_importdata.html">pipeline.hsd.cli.hsd_importdata</a></li>
+<li><a href="pipeline/hsd/cli/hsd_k2jycal.html">pipeline.hsd.cli.hsd_k2jycal</a></li>
+<li><a href="pipeline/hsd/cli/hsd_restoredata.html">pipeline.hsd.cli.hsd_restoredata</a></li>
+<li><a href="pipeline/hsd/cli/hsd_skycal.html">pipeline.hsd.cli.hsd_skycal</a></li>
+<li><a href="pipeline/hsd/cli/hsd_tsysflag.html">pipeline.hsd.cli.hsd_tsysflag</a></li>
+<li><a href="pipeline/hsd/tasks/applycal/applycal.html">pipeline.hsd.tasks.applycal.applycal</a></li>
+<li><a href="pipeline/hsd/tasks/atmcor/atmcor.html">pipeline.hsd.tasks.atmcor.atmcor</a></li>
+<li><a href="pipeline/hsd/tasks/baseline/baseline.html">pipeline.hsd.tasks.baseline.baseline</a></li>
+<li><a href="pipeline/hsd/tasks/baselineflag/baselineflag.html">pipeline.hsd.tasks.baselineflag.baselineflag</a></li>
+<li><a href="pipeline/hsd/tasks/exportdata/exportdata.html">pipeline.hsd.tasks.exportdata.exportdata</a></li>
+<li><a href="pipeline/hsd/tasks/flagging/flagdeteralmasd.html">pipeline.hsd.tasks.flagging.flagdeteralmasd</a></li>
+<li><a href="pipeline/hsd/tasks/imaging/imaging.html">pipeline.hsd.tasks.imaging.imaging</a></li>
+<li><a href="pipeline/hsd/tasks/importdata/importdata.html">pipeline.hsd.tasks.importdata.importdata</a></li>
+<li><a href="pipeline/hsd/tasks/k2jycal/k2jycal.html">pipeline.hsd.tasks.k2jycal.k2jycal</a></li>
+<li><a href="pipeline/hsd/tasks/restoredata/restoredata.html">pipeline.hsd.tasks.restoredata.restoredata</a></li>
+<li><a href="pipeline/hsd/tasks/skycal/skycal.html">pipeline.hsd.tasks.skycal.skycal</a></li>
+<li><a href="pipeline/hsdn/cli/hsdn_exportdata.html">pipeline.hsdn.cli.hsdn_exportdata</a></li>
+<li><a href="pipeline/hsdn/cli/hsdn_importdata.html">pipeline.hsdn.cli.hsdn_importdata</a></li>
+<li><a href="pipeline/hsdn/cli/hsdn_restoredata.html">pipeline.hsdn.cli.hsdn_restoredata</a></li>
+<li><a href="pipeline/hsdn/tasks/exportdata/exportdata.html">pipeline.hsdn.tasks.exportdata.exportdata</a></li>
+<li><a href="pipeline/hsdn/tasks/importdata/importdata.html">pipeline.hsdn.tasks.importdata.importdata</a></li>
+<li><a href="pipeline/hsdn/tasks/restoredata/restoredata.html">pipeline.hsdn.tasks.restoredata.restoredata</a></li>
+<li><a href="pipeline/infrastructure/callibrary.html">pipeline.infrastructure.callibrary</a></li>
+<li><a href="pipeline/infrastructure/imagelibrary.html">pipeline.infrastructure.imagelibrary</a></li>
+<li><a href="pipeline/infrastructure/launcher.html">pipeline.infrastructure.launcher</a></li>
+<li><a href="pipeline/infrastructure/project.html">pipeline.infrastructure.project</a></li>
+<li><a href="pipeline/infrastructure/utils/utils.html">pipeline.infrastructure.utils.utils</a></li>
+<li><a href="pipeline/infrastructure/vdp.html">pipeline.infrastructure.vdp</a></li>
+</ul><li><a href="typing.html">typing</a></li>
+</ul>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.52+249-gfad2753373-update-docs-build-and-packaging-setup.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
