@@ -1,7 +1,0 @@
-<map id="inheritanced75835d8d4" name="inheritanced75835d8d4">
-<area shape="rect" id="node1" href="_automodapi/pipeline.h.tasks.ImportData.html#pipeline.h.tasks.ImportData" target="_top" title="h.tasks.importdata.importdata.ImportData" alt="" coords="690,59,1052,88"/>
-<area shape="rect" id="node5" title="Data import execution task of SingleDish." alt="" coords="1133,112,1580,142"/>
-<area shape="rect" id="node2" title="StandardTaskTemplate is a template class for pipeline reduction tasks whose" alt="" coords="252,59,642,88"/>
-<area shape="rect" id="node6" href="_automodapi/pipeline.hsdn.tasks.NROImportData.html#pipeline.hsdn.tasks.NROImportData" target="_top" title="NRO Data import execution task." alt="" coords="1661,112,2087,142"/>
-<area shape="rect" id="node7" title="The Runnable interface should be implemented by any class whose" alt="" coords="5,59,204,88"/>
-</map>
