@@ -2229,14 +2229,16 @@ def compute_zd_telmjd_for_ms(
         ms: MeasurementSet,
         ) -> dict[int, dict[str, list[float] | list[datetime.datetime]]]:
     """
-    Retrieves zenith angle and telescope MJD of the TARGET fields at all timestamps.
+    Retrieve zenith angles (degrees) and times for TARGET fields at all timestamps.
 
     Args:
         ms: The MeasurementSet object.
 
     Returns:
-        A dictionary containing the field IDs with lists of zenith angles and timestamps.
-        Format: {field_id: {'zd': [zd1, zd2, ...], 'telmjd': [time1, time2, ...]}}
+        Dictionary keyed by field ID with lists of zenith angles (degrees) and
+        corresponding UTC datetimes. Times are derived from field.time seconds
+        offset from `mjd_epoch` (1858-11-17).
+        Format: {field_id: {'zd': [zd1, zd2, ...], 'telmjd': [dt1, dt2, ...]}}
     """
 
     data = {}
