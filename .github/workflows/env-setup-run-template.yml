@@ -8,6 +8,16 @@ on:
         required: false
         default: "ubuntu-latest"
         type: string
+      pip_install:
+        description: "pip install command after environment setup"
+        required: false
+        default: "."
+        type: string
+      test_data:
+        description: "Type of test data to checkout (e.g., 'unit')"
+        required: false
+        default: "none"
+        type: string
       run_command:
         description: "Bash commands to run after setup"
         required: true
@@ -65,9 +75,22 @@ jobs:
           brew install --cask xquartz
 
       - name: Install Python Package
+        if: inputs.pip_install != ''
         run: |
-          python -m pip install .
+          python -m pip install ${{ inputs.pip_install }}
           mkdir -p ~/.casa/data
+
+      - name: Checkout test data with Sparse Checkout
+        if: inputs.test_data == 'unit'
+        run: |
+          # This creates the directory 'pipeline-testdata' INSIDE the current workspace ($GITHUB_WORKSPACE)
+          # along with source codes.
+          git clone --filter=blob:none --sparse https://open-bitbucket.nrao.edu/scm/pipe/pipeline-testdata.git pipeline-testdata
+          cd pipeline-testdata
+
+          # Configure sparse checkout & Pull LFS files
+          git sparse-checkout set pl-unittest
+          git lfs pull
 
       - name: Execute Custom Commands
         run: ${{ inputs.run_command }}

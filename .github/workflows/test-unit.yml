@@ -1,9 +1,10 @@
-name: "Docs-Pages"
+name: "Test-Unit"
 
 on:
   push:
     branches:
       - "update-docs-build-and-packaging-setup"
+      - "unit-testing-with-gh-actions"
       - "main"
     paths:
       - "docs/**"
@@ -27,39 +28,24 @@ jobs:
       matrix:
         os: ["ubuntu-latest"]
 
-    name: Build Docs (${{ matrix.os }})
+    name: Unit Testing (${{ matrix.os }})
 
     uses: ./.github/workflows/env-setup-run-template.yml
     with:
       # Pass the specific build logic as a multi-line string
       os: ${{ matrix.os }}
-      pip_install: .[docs]
+      pip_install: .[dev]
+      test_data: unit
       run_command: |
-        # Install LaTeX dependencies for PDF generation (Linux only)
-        if [ "$RUNNER_OS" == "Linux" ]; then
-          sudo apt-get install -y \
-            latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
-        fi
+        # Configure CASA datapath in ~/.casa/config.py
+        # We use double quotes so the shell expands $HOME and $GITHUB_WORKSPACE
+        echo "datapath = [ '$HOME/.casa/data', '$GITHUB_WORKSPACE/pipeline-testdata' ]" >> ~/.casa/config.py
 
-        # Add macOS LaTeX support
-        if [ "$RUNNER_OS" == "macOS" ]; then
-          brew install --cask mactex-no-gui
-        fi  
+        # Run unit tests
+        PYTHONNOUSERSITE=1 python -m pytest -v --cov=pipeline --cov-report=html --pyclean pipeline
 
-        cd docs
-        make html_docs
-
-        # Only build PDF if tools are available
-        if command -v latexmk &> /dev/null; then
-            make latexpdf
-            # Copy PDF to HTML dir so it is accessible via the website
-            cp _build/latex/*.pdf _build/html/ || true
-        else
-            echo "latexmk not found, skipping PDF build."
-        fi
-
-      artifact_name: documentation-${{ matrix.os }}
-      artifact_path: docs/_build/html/
+      artifact_name: coverage-${{ matrix.os }}
+      artifact_path: htmlcov
 
   deploy:
     name: Deploy Pages
@@ -73,11 +59,12 @@ jobs:
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
-          name: documentation-ubuntu-latest
-          path: site_content
+          name: coverage-ubuntu-latest
+          path: coverage_report
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: site_content
+          publish_dir: coverage_report
+          destination_dir: coverage_unit
