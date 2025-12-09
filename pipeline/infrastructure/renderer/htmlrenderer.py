@@ -16,7 +16,6 @@ import shutil
 import sys
 from typing import TYPE_CHECKING, Any
 
-import astropy
 import mako
 import numpy as np
 import pkg_resources
