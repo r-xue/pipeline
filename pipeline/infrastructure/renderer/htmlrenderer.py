@@ -919,14 +919,17 @@ class T2_1DetailsRenderer(object):
         task = summary.ElVsTimeChart(context, ms)
         el_vs_time_plot = task.plot()
 
-        # Get min, max elevation, zenith angle, and telmjd
+        # Get min, max elevation (all fields excluding POINTING, SIDEBAND, ATMOSPHERE)
         observatory = context.project_summary.telescope
         el_min = "%.2f" % compute_az_el_for_ms(ms, observatory, min)[1]
         el_max = "%.2f" % compute_az_el_for_ms(ms, observatory, max)[1]
+
+        # Get zenith angle statistics for TARGET fields only
         data = compute_zd_telmjd_for_ms(ms)
-        zd = [data[s]['zd'] for s in data]
-        telmjd = [data[s]['telmjd'].timestamp() for s in data]
-        # retrieve min, average, and max zenith angle measurements and its telmjd
+        # Flatten all zenith angles and timestamps from all TARGET fields
+        zd = [zd_val for field_data in data.values() for zd_val in field_data['zd']]
+        telmjd = [time.timestamp() for field_data in data.values() for time in field_data['telmjd']]
+        # Retrieve min, average, and max zenith angle measurements and corresponding timestamps
         zd_min, zd_avg, zd_max = np.min(zd), np.average(zd), np.max(zd)
         telmjd_min, telmjd_avg, telmjd_max = telmjd[zd.index(zd_min)], np.average(telmjd), telmjd[zd.index(zd_max)]
 
@@ -2225,27 +2228,45 @@ def compute_az_el_for_ms(ms, observatory, func):
 
 def compute_zd_telmjd_for_ms(
         ms: MeasurementSet,
-        ) -> dict[int, dict[str, float | datetime.datetime]]:
+        ) -> dict[int, dict[str, list[float] | list[datetime.datetime]]]:
     """
-    Retrieves zenith angle and telescope MJD of the TARGET fields.
+    Retrieves zenith angle and telescope MJD of the TARGET fields at all timestamps.
 
     Args:
         ms: The MeasurementSet object.
 
     Returns:
-        A dictionary containing the field names with lists of the zenith angles and telmjd.
+        A dictionary containing the field IDs with lists of zenith angles and timestamps.
+        Format: {field_id: {'zd': [zd1, zd2, ...], 'telmjd': [time1, time2, ...]}}
     """
+
     data = {}
     fields = ms.get_fields(intent='TARGET')
+    observatory = ms.antenna_array.name
+    mjd_epoch = datetime.datetime(1858, 11, 17)
 
     for field in fields:
         if field.id not in data:
             data[field.id] = {
-                'zd': None,
-                'telmjd': None,
+                'zd': [],
+                'telmjd': [],
             }
-        data[field.id]['zd'] = field.zd['value']
-        data[field.id]['telmjd'] = astropy.time.Time(field.telmjd['value'], format='mjd').to_datetime()
+
+        # Calculate zenith distance for each unique timestamp in the field
+        for time_seconds in field.time:
+            obs_time = mjd_epoch + datetime.timedelta(seconds=float(time_seconds))
+            epoch = casa_tools.measures.epoch('utc', obs_time.isoformat())
+
+            # Calculate zenith distance at this timestamp
+            zd_rad = utils.compute_zenith_distance(
+                field_direction=field._mdirection,
+                epoch=epoch,
+                observatory=observatory,
+            )
+            zd_deg = casa_tools.quanta.convert(zd_rad, 'deg')['value']
+
+            data[field.id]['zd'].append(zd_deg)
+            data[field.id]['telmjd'].append(obs_time)
 
     return data
 

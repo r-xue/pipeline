@@ -143,17 +143,27 @@ class Analyzealpha(basetask.StandardTaskTemplate):
             qt = casa_tools.quanta
             ra_head = qt.quantity(header['CRVAL'][0], header['CUNIT1'])
             dec_head = qt.quantity(header['CRVAL'][1], header['CUNIT2'])
-            obs_long, obs_lat = utils.obs_long_lat(observatory)
+
+            # Create DirectionDict measure dictionary for the image center
+            direction: utils.DirectionDict = {
+                'm0': ra_head,
+                'm1': dec_head,
+                'refer': header.get('RADESYS', 'J2000'),
+                'type': 'direction'
+            }
+
             mid_time = utils.obs_midtime(
                 self.inputs.context.observing_run.start_datetime,
                 self.inputs.context.observing_run.end_datetime
                 )
 
-            # retrieve zenith angle to 2 sig figs for reporting to weblog
-            za_rad, _ = utils.positioncorrection.calc_zd_pa(
-                ra=ra_head, dec=dec_head, obs_long=obs_long, obs_lat=obs_lat, date_time=mid_time
-                )
-            zenith_angle = round(qt.convert(za_rad, 'deg')['value'], 2)
+            # Calculate zenith distance using CASA measures
+            zd_rad = utils.compute_zenith_distance(
+                field_direction=direction,
+                epoch=mid_time,
+                observatory=observatory
+            )
+            zenith_angle = round(qt.convert(zd_rad, 'deg')['value'], 2)
             LOG.info('|* Zenith angle of alpha image in degrees {}'.format(zenith_angle))
 
         return AnalyzealphaResults(max_location=max_location, alpha_and_error=alpha_and_error,

@@ -50,6 +50,7 @@ __all__ = [
     'absolute_path',
     'approx_equal',
     'are_equal',
+    'compute_zenith_distance',
     'deduplicate',
     'dict_merge',
     'ensure_products_dir_exists',
@@ -86,7 +87,10 @@ __all__ = [
     'request_omp_threading',
     'shutdown_plotms',
     'string_to_val',
-    'validate_url'
+    'validate_url',
+    'DirectionDict',
+    'EpochDict',
+    'QuantityDict',
 ]
 
 
@@ -1269,6 +1273,49 @@ def obs_midtime(start_time: datetime, end_time: datetime) -> EpochDict:
     """Returns the mid time in a CASA measures dictionary."""
     mid_time = start_time + (end_time - start_time) / 2
     return casa_tools.measures.epoch('utc', mid_time.isoformat())
+
+
+def compute_zenith_distance(
+        field_direction: DirectionDict,
+        epoch: EpochDict,
+        observatory: str,
+        coordinate_frame: str = 'AZELGEO',
+        ) -> QuantityDict:
+    """Calculate zenith distance for a field at a given time and observatory.
+
+    This function uses CASA measures to calculate the zenith distance, similar to
+    how compute_az_el_to_field works in htmlrenderer.py.
+
+    Args:
+        field_direction: CASA direction measure dictionary for the field.
+        epoch: CASA epoch measure dictionary for the observation time.
+        observatory: Name of the observatory (e.g., 'VLA', 'ALMA').
+        coordinate_frame: Coordinate frame for the calculation (e.g., 'AZELGEO', 'AZEL').
+            Defaults to 'AZELGEO'.
+
+    Returns:
+        A CASA quantity dictionary containing the zenith distance in radians.
+
+    Examples:
+        >>> direction = {'m0': {'value': 4.18879, 'unit': 'rad'},
+        ...              'm1': {'value': 0.58534, 'unit': 'rad'},
+        ...              'refer': 'J2000', 'type': 'direction'}
+        >>> epoch = {'m0': {'value': 58089.82, 'unit': 'd'}, 'refer': 'UTC', 'type': 'epoch'}
+        >>> zd = compute_zenith_distance(direction, epoch, 'VLA')
+        >>> print(f"{casa_tools.quanta.convert(zd, 'deg')['value']:.2f} degrees")
+    """
+    me = casa_tools.measures
+
+    # Set the reference frame with the epoch and observatory
+    me.doframe(epoch)
+    me.doframe(me.observatory(observatory))
+
+    # Convert field direction to horizontal coordinates
+    horizontal = me.measure(field_direction, coordinate_frame)
+    elevation_rad = horizontal['m1']['value']
+    zenith_distance_rad = np.pi / 2.0 - elevation_rad
+
+    return casa_tools.quanta.quantity(zenith_distance_rad, 'rad')
 
 
 def get_row_count(table_name: str, taql: str) -> int:

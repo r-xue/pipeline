@@ -199,26 +199,25 @@ class Field(object):
                 self.intents.add(intent)
 
     def set_zd_telmjd(self, observatory: str) -> None:
-        """Return the zenith distance at the observation mid-time in degrees."""
-        # Obtain observatory geographic coordinates
-        obs_long, obs_lat = utils.obs_long_lat(observatory)
+        """Calculate and set the zenith distance at the observation mid-time.
 
-        # retrieve field location
-        ra_head = self.longitude
-        dec_head = self.latitude
-
+        Args:
+            observatory: Name of the observatory (e.g., 'VLA', 'ALMA').
+        """
         # Mean observing time
         mjd_epoch = datetime.datetime(1858, 11, 17)
         start_time = mjd_epoch + datetime.timedelta(seconds=min(self.time))
         end_time = mjd_epoch + datetime.timedelta(seconds=max(self.time))
         mid_time = utils.obs_midtime(start_time, end_time)
 
-        # retrieve zenith angle to 2 sig figs for reporting to weblog
-        za_rad, _ = utils.positioncorrection.calc_zd_pa(
-            ra=ra_head, dec=dec_head, obs_long=obs_long, obs_lat=obs_lat, date_time=mid_time
-            )
+        # Calculate zenith distance using CASA measures
+        zd_rad = utils.compute_zenith_distance(
+            field_direction=self._mdirection,
+            epoch=mid_time,
+            observatory=observatory,
+        )
 
-        self._zd = casa_tools.quanta.convert(za_rad, 'deg')
+        self._zd = casa_tools.quanta.convert(zd_rad, 'deg')
         self._telmjd = mid_time['m0']
 
     def __str__(self) -> str:
