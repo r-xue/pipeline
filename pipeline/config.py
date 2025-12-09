@@ -1,7 +1,14 @@
-"""This module is imported early on for a Pipeline process and first casatask
-impost happens here so we will have a chance to fiddled the casaconfig before
-casatasks configuration get intialized."""
+"""Pipeline configuration management and CASA task initialization.
 
+This module handles the loading of pipeline configuration and the early initialization
+of CASA tasks. It is imported at the start of a pipeline process to ensure that
+`casaconfig` parameters are customized before `casatasks` is imported and its
+configuration is frozen.
+
+The module aggregates configuration from multiple sources, including built-in defaults,
+user-specific cache files, and local configuration files. It also manages the setup
+of CASA logging and environment settings based on the loaded configuration.
+"""
 import copy
 import os
 import pathlib
@@ -35,7 +42,7 @@ def get_config(conf_files, conf_user=None, env=True, verbose=False):
         if conf_filename and os.path.exists(conf_filename):
             file_ext = pathlib.Path(conf_filename).suffix
             if file_ext in ('.yaml', 'yml'):
-                with open(conf_filename, 'r') as file:
+                with open(conf_filename, 'r', encoding='utf-8') as file:
                     conf_per_file = yaml.safe_load(file)
                 if verbose:
                     pprint.pprint(conf_filename)

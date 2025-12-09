@@ -47,18 +47,15 @@ if importlib.util.find_spec('casampi'):
     from mpi4py import MPI
     is_mpi_session = MPIEnvironment.is_mpi_enabled
     is_mpi_worker = MPIEnvironment.is_mpi_enabled and not MPIEnvironment.is_mpi_client
-    comm = MPI.COMM_WORLD
-    mpi_rank = comm.Get_rank()
-    rank = comm.Get_rank()
-    size = comm.Get_size()
+    mpi_rank = MPI.COMM_WORLD.Get_rank()
 else:
     is_mpi_session = False
     is_mpi_worker = False
     mpi_rank = 0
 
 if dask_available and not is_mpi_worker:
-    # We should avoid importing dask in MPI worker processes as some Python libraaries (e.g. signal)
-    # are only allowed in main thread of the main interpreter.
+    # Avoid importing Dask in MPI worker processes because some Python libraries (e.g., signal)
+    # are restricted to the main thread of the main interpreter.
     import dask
     from dask.distributed import Client, LocalCluster
     from dask.distributed.worker import Worker
@@ -68,6 +65,7 @@ else:
     Worker = None
     LocalCluster = None
     SLURMCluster = None
+    HTCondorCluster = None    
 
 
 daskclient: Optional[Client] = None
@@ -148,7 +146,7 @@ def is_worker() -> bool:
         bool: True if the process is a Dask worker, False otherwise.
     """
     is_worker = False
-    if (dask_available and Worker._instances) or is_mpi_session:
+    if (Worker and Worker._instances) or is_mpi_session:
         is_worker = True
     return is_worker
 
@@ -171,18 +169,26 @@ def is_daskclient_allowed() -> bool:
 
     # Disallow starting dask client if there are existing dask worker instances,
     # identified by weak references.
-    return dask_available and not Worker._instances
+    return dask_available and not (Worker and Worker._instances)
 
 
 def is_dask_worker() -> bool:
     """Check if the current process is a Dask worker.
 
+    Since Dask worker processes may not have fully initialized the Worker
+    instance at the time this function is called (e.g. Worker Plugin), we
+    use environment variables and Worker object weak reference to reliably
+    determine if the current process is functioning as a Dask worker.
+
+    Note that get_worker() returns the specific Worker instance only after it is
+    fully initialized and relies on thread-local Context variables. So calling
+    it too early or from a new thread may lead to errors.
+
     Returns:
         True if the current process is a Dask worker, False otherwise.
     """
-    return (
-        any(os.getenv(var) for var in ['DASK_WORKER_NAME', 'DASK_PARENT'])
-        or bool(dask_available and Worker._instances)
+    return any(os.getenv(var) for var in ['DASK_WORKER_NAME', 'DASK_PARENT']) or bool(
+        dask_available and Worker and Worker._instances
     )
 
 
