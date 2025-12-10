@@ -1269,12 +1269,13 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
         
         # PIPE-408: do not continue if there are no unflagged baselines for current spw; this will cause this spw
         # to be absent from the solution interval dictionary that is returned.
-        if nbaselines < 0:
+        # PIPE-2901 changed warning, we are looking at antennas here for solns not baselines 
+        if nEffectiveAntennas < 0:
             LOG.warning("Cannot compute optimal bandpass frequency solution interval for spw {} in MS {}; no (unflagged)"
-                        " baselines were found".format(spwid, ms.basename))
+                        " antennas were found".format(spwid, ms.basename))
             continue
 
-        arraySizeFactor = np.sqrt(ALMA_FIDUCIAL_NUM_ANTENNAS * (ALMA_FIDUCIAL_NUM_ANTENNAS-1) / (2.0 * nbaselines))
+        arraySizeFactor = np.sqrt(ALMA_FIDUCIAL_NUM_ANTENNAS * (ALMA_FIDUCIAL_NUM_ANTENNAS-1) / (2.0 * nEffectiveAntennas))
         
         if spw_dict[spwid]['num_7mantenna'] == 0:
             areaFactor = 1.0
