@@ -113,7 +113,7 @@ class DiffgaincalQAHandler(pqa.QAPlugin):
                     angles_sel_masked = np.ma.masked_array(angles_sel, flags_sel)
 
                     # Compute statistics.
-                    residual_data[(spwid, corr, ant_name, 'max')] = np.abs(np.ma.max(angles_sel_masked))
+                    residual_data[(spwid, corr, ant_name, 'max')] = np.ma.max(np.abs(angles_sel_masked))
                     residual_data[(spwid, corr, ant_name, 'mean')] = np.ma.mean(angles_sel_masked)
                     residual_data[(spwid, corr, ant_name, 'rms')] = np.ma.std(angles_sel_masked)
 

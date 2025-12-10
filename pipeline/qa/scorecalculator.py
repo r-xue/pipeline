@@ -528,10 +528,11 @@ def score_diffgaincal_combine(vis: str, combine: str, qa_message: str, phaseup_t
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
+
 @log_qa
 def score_diffgaincal_residuals(residuals_info: dict, score_type: str) -> pqa.QAScore:
     """
-    Compute QA score for diffgain residual phase offsets for given score type
+    Compute QA score for (1) diffgain residual phase offsets for given score type
     based on pre-computed statistics provided in residual_info dictionary.
 
     The premise is:
@@ -539,13 +540,22 @@ def score_diffgaincal_residuals(residuals_info: dict, score_type: str) -> pqa.QA
         - no outlier values above set limits.
         - RMS at set limits.
 
+    And (2) based on the B2B offset solution diferences.
+
+    The premise is:
+        - B2B offset has two solutions in time, per spw, per pol, per ant
+        - B2B 'band' offset should generally be constant in time
+
     Args:
         residuals_info: Dictionary containing info on diffgain residual phase.
         score_type: Type of statistic to compute QA score for. Valid options:
 
+            RESIDUAL:
             - 'offsets': use mean.
             - 'rms': use RMS
             - 'outliers': use maximum (per antenna)
+            B2B OFFSET
+            - 'B2B offset': used diff between solutions
 
     Returns:
         QA score.
@@ -579,13 +589,21 @@ def score_diffgaincal_residuals(residuals_info: dict, score_type: str) -> pqa.QA
 
     ms_name = residuals_info['ms_name']
 
+    # use a message phrase based on score type
+    messph = 'phase difference for' if score_type == 'B2B offset' else 'residual phase'
+
     # If the diffgain residual phase offsets caltable had overall low SNR, then
     # return a suboptimal (blue) score without scoring variability or outliers.
     if residuals_info['low_snr']:
         score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
-        shortmsg = f"Low SNR in diffgaincal residual phase {score_type}"
-        longmsg = (f"Low SNR in diffgaincal residual phase {score_type} for {ms_name}: not scoring based on"
-                   f" variability or outliers.")
+        shortmsg = f"Low SNR in diffgaincal {messph} {score_type}"
+        longmsg = (f"Low SNR in diffgaincal {messph} {score_type} for {ms_name}: not scoring based on"
+                   f" variability, offsets or outliers.")
+    elif residuals_info['single_diff']:  # only for B2B offset can this be true
+        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
+        shortmsg = f"No {messph} {score_type}"
+        longmsg = (f"No {messph} {score_type}: not scoring based on"
+                   f" only a single solution.")
     else:
         # Get info from residuals statistics dict.
         intent = residuals_info['intent']
@@ -593,7 +611,7 @@ def score_diffgaincal_residuals(residuals_info: dict, score_type: str) -> pqa.QA
         data = residuals_info['data']
 
         # Convert score type to what statistic to score.
-        type_to_param = {'offsets': 'mean', 'rms': 'rms', 'outliers': 'max'}
+        type_to_param = {'offsets': 'mean', 'rms': 'rms', 'outliers': 'max', 'B2B offset': 'diff'}
         param = type_to_param[score_type]
 
         # Identify where the residual phase statistic is poor, elevated, or
@@ -606,29 +624,31 @@ def score_diffgaincal_residuals(residuals_info: dict, score_type: str) -> pqa.QA
         # Poor phase statistics are scored as a red error.
         if poor:
             score = rendererutils.SCORE_THRESHOLD_ERROR
-            shortmsg = f'High Diffgaincal residual phase {score_type}'
-            longmsg = (f'For {ms_name}, field={field} intent={intent} has high residual phase {score_type} >70 deg for'
+            shortmsg = f'High Diffgaincal {messph} {score_type}'
+            longmsg = (f'For {ms_name}, field={field} intent={intent} has high {messph} {score_type} >70 deg for'
                        f' {get_expanded_message(poor)}.')
         # Elevated phase statistics are scored as a yellow warning.
         elif elevated:
             score = rendererutils.SCORE_THRESHOLD_WARNING
-            shortmsg = f'Elevated Diffgaincal residual phase {score_type}'
-            longmsg = (f'For {ms_name}, field={field} intent={intent} has elevated residual phase {score_type} between'
+            shortmsg = f'Elevated Diffgaincal {messph} {score_type}'
+            longmsg = (f'For {ms_name}, field={field} intent={intent} has elevated {messph} {score_type} between'
                        f' 50-70 deg for {get_expanded_message(elevated)}.')
         # Good phase statistics are scored as a blue suboptimal score.
         elif good:
             score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
-            shortmsg = f'Good Diffgaincal residual phase {score_type}'
-            longmsg = f'For {ms_name}, field={field} intent={intent} has good residual phase {score_type} between 30-50 deg.'
+            shortmsg = f'Good Diffgaincal {messph} {score_type}'
+            longmsg = f'For {ms_name}, field={field} intent={intent} has good {messph} {score_type} between 30-50 deg.'
         # Phase statistics better than "good" are excellent with green score of 1.
         else:
             score = 1.0
-            shortmsg = f'Excellent Diffgaincal residual phase {score_type}'
-            longmsg = f'For {ms_name}, field={field} intent={intent} has excellent residual phase {score_type} <30 deg.'
+            shortmsg = f'Excellent Diffgaincal {messph} {score_type}'
+            longmsg = f'For {ms_name}, field={field} intent={intent} has excellent {messph} {score_type} <30 deg.'
 
-    origin = pqa.QAOrigin(metric_name='score_diffgaincal_residual',
+    # change origin message based on score type        
+    originmess = 'b2boffset' if score_type =='B2B offset' else 'residual'
+    origin = pqa.QAOrigin(metric_name=f'score_diffgaincal_{originmess}',
                           metric_score=score,
-                          metric_units='Score based on diffgain residual analysis')
+                          metric_units=f'Score based on diffgain {originmess} analysis')
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
