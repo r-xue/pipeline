@@ -80,14 +80,29 @@ jobs:
           python -m pip install ${{ inputs.pip_install }}
           mkdir -p ~/.casa/data
 
-      - name: Checkout test data with Sparse Checkout
+      - name: Get latest testdata commit hash
+        id: testdata-commit
         if: inputs.test_data == 'unit'
+        shell: bash
+        run: |
+          # Get the latest commit hash from the remote repository's default branch
+          # This will be used as part of the cache key.
+          echo "sha=$(git ls-remote https://open-bitbucket.nrao.edu/scm/pipe/pipeline-testdata.git HEAD | awk '{ print $1 }')" >> "$GITHUB_OUTPUT"
+
+      - name: Cache pipeline-testdata
+        if: inputs.test_data == 'unit'
+        uses: actions/cache@v4
+        id: cache-testdata
+        with:
+          path: pipeline-testdata
+          key: testdata-${{ runner.os }}-${{ steps.testdata-commit.outputs.sha }}
+
+      - name: Checkout and LFS pull test data
+        if: inputs.test_data == 'unit' && steps.cache-testdata.outputs.cache-hit != 'true'
         run: |
           # This creates the directory 'pipeline-testdata' INSIDE the current workspace ($GITHUB_WORKSPACE)
-          # along with source codes.
           git clone --filter=blob:none --sparse https://open-bitbucket.nrao.edu/scm/pipe/pipeline-testdata.git pipeline-testdata
           cd pipeline-testdata
-
           # Configure sparse checkout & Pull LFS files
           git sparse-checkout set pl-unittest
           git lfs pull
