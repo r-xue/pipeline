@@ -34,7 +34,7 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
                 score1 = qacalc.score_total_data_flagged_vla_bandpass(
                     result.bpdgain_touse[bandname], result.flaggedSolnApplycalbandpass[bandname]['antmedian']['fraction'])
                 score2 = qacalc.score_total_data_vla_delay(result.ktypecaltable[bandname], m)
-                score3 = qacalc.score_flagged_ant_spw(result.flaggedSolnApplycaldelay[bandname])
+                score3 = qacalc.score_flagged_ant_spw(result.inputs['vis'], result.flaggedSolnApplycaldelay[bandname])
                 scores.append(score1)
                 scores.append(score2)
                 scores.append(score3)

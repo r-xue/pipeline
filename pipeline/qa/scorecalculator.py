@@ -4686,7 +4686,7 @@ def score_longsolint(context, result) -> List[pqa.QAScore]:
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 @log_qa
-def score_flagged_ant_spw(flag_results:dict) -> pqa.QAScore:
+def score_flagged_ant_spw(vis:str, flag_results:dict) -> pqa.QAScore:
     """
         Calcuates score for testBPdcals
         if > 50% of spws in a baseband on a majority of antennas newly flagged 
@@ -4694,9 +4694,10 @@ def score_flagged_ant_spw(flag_results:dict) -> pqa.QAScore:
     """
     flagged_ants = 0
     total_ants = len(flag_results['antspw'])
+    ants = set()
     for antenna in flag_results['antspw']:
         flagged_spw_count = 0
-
+        ants.add(antenna)
         for spwid in flag_results['antspw'][antenna]:
             spw_flagged = False
             for polid in flag_results['antspw'][antenna][spwid]:
@@ -4717,7 +4718,9 @@ def score_flagged_ant_spw(flag_results:dict) -> pqa.QAScore:
         score = 1
         longmsg = "Less than 50% of spws in a baseband on a majority of antennas newly flagged"
         shortmsg = "< 50% of spws in baseband flagged"
+    applies_to = pqa.TargetDataSelection(vis=vis, ant=ants)
     origin = pqa.QAOrigin(metric_name='score_flagged_ant_spw',
                         metric_score=score,
                         metric_units='')
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to)
