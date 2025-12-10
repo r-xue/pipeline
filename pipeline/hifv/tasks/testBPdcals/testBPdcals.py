@@ -917,11 +917,6 @@ class testBPdcals(basetask.StandardTaskTemplate):
         else:
             doflagdata = True
 
-        # Define the table to run this on
-        # calBPtablename ='testBPcal.b'
-        # Define the REASON given for the flags
-        # flagreason = 'bad_deformatters_amp or RFI'
-
         LOG.info("Will test on quantity: "+testq)
         LOG.info("Will test using statistic: "+tstat)
 
@@ -949,10 +944,10 @@ class testBPdcals(basetask.StandardTaskTemplate):
         flaglist = []
         extflaglist = []
         weblogflagdict = collections.defaultdict(list)
+        badpols = collections.defaultdict(lambda: collections.defaultdict(list))
 
         for iant in calBPstatresult['antband']:
             antName = calBPstatresult['antDict'][iant]
-
             # PIPE-1183, only antenna name provided in ignore list so
             # skip bad deformatter flagging for all bands and spws corresponding to that antenna
             isAntIgnored = True if antName in iglist.keys() else False
@@ -1032,6 +1027,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
                                     if (testunder and testval < testlimit) or (not testunder and testval > testlimit):
                                         nbadspws += 1
                                         badspws.append(ispw)
+                                        badpols[iant][ispw].append(poln)
                                         if doprintall:
                                             LOG.info('  Found Ant %s (%s) %s %s spw=%s %s %s=%6.4f' %
                                                      (str(iant), antName, rrx, bband, str(ispw), testq, tstat, testval))
@@ -1060,20 +1056,23 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
             if len(badspwlist) > 0:
                 spwstr = ''
+                spw_list = []
                 for ispw in badspwlist:
-                    if spwstr == '':
-                        spwstr = str(ispw)
+                    # PIPE-1435: get list of bad polarizations for this spw
+                    pol_list = badpols[iant].get(ispw, [])
+                    if len(pol_list) > 0:
+                        corr_str = ','.join(map(str, pol_list))
+                        flagstr = (
+                            f"mode='manual' antenna='{antName}' "
+                            f"spw='{ispw}' correlation='{corr_str}'"
+                        )
                     else:
-                        spwstr += ','+str(ispw)
-                #
-                # reastr = 'bad_deformatters'
-                reastr = flagreason
-                # Add entry for this antenna
-                # flagstr = "mode='manual' antenna='"+str(iant)+"' spw='"+spwstr+"' reason='"+reastr+"'"
-                # Use name for flagging
-                flagstr = "mode='manual' antenna='"+antName+"' spw='"+spwstr+"'"
-                flaglist.append(flagstr)
-                weblogflagdict[antName].append(spwstr)
+                        flagstr = (
+                            f"mode='manual' antenna='{antName}' spw='{ispw}'"
+                        )
+                    spw_list.append(str(ispw))
+                    flaglist.append(flagstr)
+                weblogflagdict[antName].append(",".join(spw_list))
 
             if doflagemptyspws and len(flaggedspwlist) > 0:
                 spwstr = ''
@@ -1082,10 +1081,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
                         spwstr = str(ispw)
                     else:
                         spwstr += ','+str(ispw)
-                #
-                # Add entry for this antenna
-                reastr = 'no_unflagged_solutions'
-                # flagstr = "mode='manual' antenna='"+str(iant)+"' spw='"+spwstr+"' reason='"+reastr+"'"
+
                 # Use name for flagging
                 flagstr = "mode='manual' antenna='"+antName+"' spw='"+spwstr+"'"
                 extflaglist.append(flagstr)
@@ -1129,19 +1125,6 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
                 job = casa_tasks.flagdata(**task_args)
 
-                # self._executor.execute(job)
-
-                # get the total fraction of data flagged for all antennas
-                # flagging_stats = getCalFlaggedSoln(calBPtablename)
-                # total = 0
-                # flagged = 0
-                # for antenna in flagging_stats['ant']:
-                #     for pol in flagging_stats['ant'][antenna]:
-                #         flagged += flagging_stats['ant'][antenna][pol]['flagged']
-                #         total += flagging_stats['ant'][antenna][pol]['total']
-                # fraction_flagged = flagged / total
-
-                # LOG.info('Flagged ({}) Total ({}) Fraction ({})'.format(flagged, total, fraction_flagged))
                 return flaglist, weblogflagdict, num_antennas, job
 
         # If the flag commands are not executed.
