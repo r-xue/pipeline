@@ -42,6 +42,6 @@ Some sections are highlighted below:
   :target: https://pipe-docs.readthedocs.io/en/latest/?badge=latest
   :alt: Docs: RTD-Status
 
-.. |Test Unit| image:: https://img.shields.io/github/actions/workflow/status/r-xue/pipeline/test-unit.yml?style=plastic&logo=githubactions&label=docs-pages
+.. |Test Unit| image:: https://img.shields.io/github/actions/workflow/status/r-xue/pipeline/test-unit.yml?style=plastic&logo=githubactions&label=test-unit
   :target: https://github.com/r-xue/pipeline/actions/workflows/test-unit.yml
   :alt: Docs: GH-Test-Unit-Status

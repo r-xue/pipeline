@@ -75,11 +75,12 @@ docs/_build/**
 docs/source/_autosummary/**
 docs/source/_automodapi/**
 
-# CASA log files
+# CASA/Pipeline log files
 **/casa-*.log
 docs/casa-*.log
 docs/source/casa-*.log
 *.last
+**/casacalls-*.txt
 
 # Slurm
 **/*.out

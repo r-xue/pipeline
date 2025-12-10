@@ -22,17 +22,16 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
-    # Define the matrix strategy here; only using ubuntu-latest for build-gh-pages)
+  test:
     strategy:
+      fail-fast: false
       matrix:
-        os: ["ubuntu-latest"]
+        os: [ubuntu-latest, macos-latest]
 
     name: Unit Testing (${{ matrix.os }})
 
     uses: ./.github/workflows/env-setup-run-template.yml
     with:
-      # Pass the specific build logic as a multi-line string
       os: ${{ matrix.os }}
       pip_install: .[dev]
       test_data: unit
@@ -40,19 +39,25 @@ jobs:
         # Configure CASA datapath in ~/.casa/config.py
         # We use double quotes so the shell expands $HOME and $GITHUB_WORKSPACE
         echo "datapath = [ '$HOME/.casa/data', '$GITHUB_WORKSPACE/pipeline-testdata' ]" >> ~/.casa/config.py
-
+        
         # Run unit tests
-        PYTHONNOUSERSITE=1 python -m pytest -v --cov=pipeline --cov-report=html --pyclean pipeline
-
-      artifact_name: coverage-${{ matrix.os }}
-      artifact_path: htmlcov
+        if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+          PYTHONNOUSERSITE=1 python -m pytest -v --cov=pipeline --cov-report=html --pyclean pipeline
+        else
+          PYTHONNOUSERSITE=1 python -m pytest -v --pyclean pipeline
+        fi
+      artifact_name: ${{ matrix.os == 'ubuntu-latest' && 'coverage-ubuntu-latest' || '' }}
+      artifact_path: ${{ matrix.os == 'ubuntu-latest' && 'htmlcov' || '' }}
 
   deploy:
     name: Deploy Pages
-    needs: build
+    needs: test
     runs-on: ubuntu-latest
-    # Only deploy if the push came from the specific branch / ubuntu-latest
-    if: github.ref == 'refs/heads/update-docs-build-and-packaging-setup'
+
+    if: |
+      always() &&
+      needs.test.result == 'success' &&
+      github.ref == 'refs/heads/update-docs-build-and-packaging-setup'
     permissions:
       contents: write
     steps:
