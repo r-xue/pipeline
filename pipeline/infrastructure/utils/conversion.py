@@ -183,7 +183,7 @@ def unix_seconds_to_datetime(unix_secs: list[int | float]) -> list[datetime.date
     Returns:
         List of equivalent Python datetime objects.
     """
-    return [datetime.datetime.utcfromtimestamp(s) for s in unix_secs]
+    return [datetime.datetime.fromtimestamp(s, datetime.timezone.utc) for s in unix_secs]
 
 
 def mjd_seconds_to_datetime(mjd_secs: list[int | float]) -> list[datetime.datetime]:
@@ -200,7 +200,7 @@ def mjd_seconds_to_datetime(mjd_secs: list[int | float]) -> list[datetime.dateti
     # 1970-01-01 is JD 40587. 86400 = seconds in a day
     unix_offset = 40587 * 86400
     mjd_secs_with_offsets = [s - unix_offset for s in mjd_secs]
-    return unix_seconds_to_datetime(mjd_secs_with_offsets)
+    return [datetime.datetime.fromtimestamp(s, datetime.timezone.utc) for s in mjd_secs_with_offsets]
 
 
 def get_epoch_as_datetime(epoch: dict) -> datetime.datetime:
@@ -225,7 +225,7 @@ def get_epoch_as_datetime(epoch: dict) -> datetime.datetime:
     t = mt.getvalue(epoch_utc)['m0']
     t = qt.sub(t, base_time)
     t = qt.convert(t, 's')
-    t = datetime.datetime.utcfromtimestamp(qt.getvalue(t)[0])
+    t = datetime.datetime.fromtimestamp(qt.getvalue(t)[0], datetime.timezone.utc)
 
     return t
 
