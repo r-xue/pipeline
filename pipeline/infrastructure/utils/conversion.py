@@ -175,17 +175,6 @@ def flatten(l: Sequence[Any]) -> Iterator[Any]:
             yield el
 
 
-def unix_seconds_to_datetime(unix_secs: list[int | float]) -> list[datetime.datetime]:
-    """Convert list of UNIX epoch times to a list of equivalent datetime objects.
-
-    Args:
-        unix_secs: list of elapsed seconds since 1970-01-01.
-    Returns:
-        List of equivalent Python datetime objects.
-    """
-    return [datetime.datetime.fromtimestamp(s, datetime.timezone.utc) for s in unix_secs]
-
-
 def mjd_seconds_to_datetime(mjd_secs: list[int | float]) -> list[datetime.datetime]:
     """Convert list of MJD seconds to a list of equivalent datetime objects.
 
@@ -197,10 +186,9 @@ def mjd_seconds_to_datetime(mjd_secs: list[int | float]) -> list[datetime.dateti
     Returns:
         List of equivalent Python datetime objects.
     """
-    # 1970-01-01 is JD 40587. 86400 = seconds in a day
-    unix_offset = 40587 * 86400
-    mjd_secs_with_offsets = [s - unix_offset for s in mjd_secs]
-    return [datetime.datetime.fromtimestamp(s, datetime.timezone.utc) for s in mjd_secs_with_offsets]
+    # MJD epoch is 1858-11-17 00:00:00 UTC
+    mjd_epoch = datetime.datetime(1858, 11, 17, tzinfo=datetime.timezone.utc)
+    return [mjd_epoch + datetime.timedelta(seconds=s) for s in mjd_secs]
 
 
 def get_epoch_as_datetime(epoch: dict) -> datetime.datetime:
