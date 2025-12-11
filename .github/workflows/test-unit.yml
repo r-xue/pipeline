@@ -3,9 +3,7 @@ name: "Test-Unit"
 on:
   push:
     branches:
-      - "update-docs-build-and-packaging-setup"
-      - "unit-testing-with-gh-actions"
-      - "main"
+      - "**"
     paths:
       - "docs/**"
       - "pipeline/**"
