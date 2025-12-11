@@ -47,7 +47,7 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
             for spwid in uniquespw:
                 spw = m.get_spectral_window(spwid)
                 if spw.specline_window:
-                    LOG.warning('Antenna {!s}, spw: {!s} has a flagging fraction of 1.0.'.format(antenna, ','.join(spwid)))
+                    LOG.warning(f'Antenna {antenna}, spw: {spwid} has a flagging fraction of 1.0.')
 
             uniquespwlist = [int(spw) for spw in uniquespw]
             uniquespwlist.sort()
