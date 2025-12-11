@@ -1064,12 +1064,12 @@ class testBPdcals(basetask.StandardTaskTemplate):
                         corr_str = ','.join(map(str, pol_list))
                         flagstr = (
                             f"mode='manual' antenna='{antName}' "
-                            f"spw='{ispw}' correlation='{corr_str}'"
-                        )
+                            f"spw='{ispw}' correlation='{corr_str}' "
+                            )
                     else:
                         flagstr = (
-                            f"mode='manual' antenna='{antName}' spw='{ispw}'"
-                        )
+                            f"mode='manual' antenna='{antName}' spw='{ispw}' "
+                            )
                     spw_list.append(str(ispw))
                     flaglist.append(flagstr)
                 weblogflagdict[antName].append(",".join(spw_list))
@@ -1079,12 +1079,24 @@ class testBPdcals(basetask.StandardTaskTemplate):
                 for ispw in flaggedspwlist:
                     if spwstr == '':
                         spwstr = str(ispw)
+                        flagstr = (
+                            f"mode='manual' antenna='{antName}' spw='{ispw}' "
+                            )
                     else:
+                        pol_list = badpols[iant].get(ispw, [])
                         spwstr += ','+str(ispw)
-
-                # Use name for flagging
-                flagstr = "mode='manual' antenna='"+antName+"' spw='"+spwstr+"'"
-                extflaglist.append(flagstr)
+                        if len(pol_list) > 0:
+                            corr_str = ','.join(map(str, pol_list))
+                            flagstr = (
+                                f"mode='manual' antenna='{antName}' "
+                                f"spw='{ispw}' correlation='{corr_str}' "
+                                )
+                        else:
+                            flagstr = (
+                                f"mode='manual' antenna='{antName}' spw='{ispw}' "
+                                )
+                    flaglist.append(flagstr)
+                extflaglist.append(flaglist)
                 weblogflagdict[antName].append(spwstr)
 
         # Get basebands matched with spws.  spws is a single element list with a single csv string
