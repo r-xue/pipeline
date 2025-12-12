@@ -137,7 +137,6 @@ addopts = [
     "--cov-report=lcov",
     "--cov-report=html",
     "--cov-report=xml",
-    "--pyclean",
 ]
 markers = [
     "alma: alma test",
