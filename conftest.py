@@ -11,8 +11,8 @@ from casatasks import casalog
 
 if TYPE_CHECKING:
     from _pytest.config import Config
-    from _pytest.nodes import Item, Session
-    from pytest import FixtureRequest, Parser
+    from _pytest.nodes import Item
+    from pytest import FixtureRequest, Parser, Session
 
 
 def pytest_addoption(parser: Parser) -> None:
@@ -20,7 +20,7 @@ def pytest_addoption(parser: Parser) -> None:
 
     nologfile_help = r"""
         Do not create CASA log files, equivalent to 'casa --nologfile'.
-        Please note that if you're running regression tests, casa logfiles 
+        Please note that if you're using regression_tester.py, casa logfiles 
         will still be generated within individual test "working/" directories and 
         appear in test weblogs. In general, this option is only recommended when 
         manually/frequently running unit tests, to keep your local repo clean.
@@ -74,33 +74,28 @@ def pytest_collection_finish(session: Session) -> None:
         pytest.exit('Tests collection completed.')
 
 
-@pytest.fixture(scope="session", autouse=True)
-def redirect_casalog_for_workers(request: FixtureRequest) -> None:
-    """Remove casalog for each worker, if requested."""
-    
-    if request.config.getoption("--nologfile") and hasattr(request.config, 'workerinput'):
-        redirect_casalog()
+def pytest_collection_modifyitems(config: Config, items: list[Item]) -> None:
+    """Apply auto-marking based on test location and filter slow tests."""
+    # 1) Auto-mark everything based on path and test type
+    for item in items:
+        _auto_mark(item)
 
-
-def redirect_casalog() -> None:
-    """Redirect casalog to /dev/null before executeting tests.
-
-    We clean up the default logfile potentially created from the CASA session initialization,
-    and then redirect logging to `/dev/null`.
-    """
-    last_casalog = casalog.logfile()
-    if last_casalog != '/dev/null':
-        try:
-            os.remove(last_casalog)
-        except OSError as e:
-            pass
-        casalog.setlogfile('/dev/null')
+    # 2) Optionally skip slow unless --longtests
+    if not config.getoption("--longtests"):
+        skip_slow = pytest.mark.skip(reason="need --longtests option to run")
+        for item in items:
+            if "slow" in item.keywords:
+                item.add_marker(skip_slow)
 
 
 def _auto_mark(item: Item) -> None:
-    """
-    Apply marks based on test location (path segments) and node id.
-    Adjust the paths to match your repo layout.
+    """Apply marks based on test location (path segments) and node id.
+    
+    This enhanced marking system categorizes tests by:
+    - Test type (regression, component, unit)
+    - Speed (fast, slow)
+    - Telescope (alma, nobeyama, vla, vlass)
+    - Observing mode (single-dish, interferometry)
     """
     # Robust path-based matching
     parts = tuple(pathlib.Path(getattr(item, "path", "")).parts)
@@ -138,14 +133,25 @@ def _auto_mark(item: Item) -> None:
         item.add_marker(pytest.mark.unit)
 
 
-def pytest_collection_modifyitems(config: Config, items: list[Item]) -> None:
-    # 1) Auto-mark everything
-    for item in items:
-        _auto_mark(item)
+@pytest.fixture(scope="session", autouse=True)
+def redirect_casalog_for_workers(request: FixtureRequest) -> None:
+    """Remove casalog for each worker, if requested."""
+    
+    if request.config.getoption("--nologfile") and hasattr(request.config, 'workerinput'):
+        redirect_casalog()
 
-    # 2) Optionally skip slow unless --longtests
-    if not config.getoption("--longtests"):
-        skip_slow = pytest.mark.skip(reason="need --longtests option to run")
-        for item in items:
-            if "slow" in item.keywords:
-                item.add_marker(skip_slow)
+
+def redirect_casalog() -> None:
+    """Redirect casalog to /dev/null before executeting tests.
+
+    We clean up the default logfile potentially created from the CASA session initialization,
+    and then redirect logging to `/dev/null`.
+    """
+    last_casalog = casalog.logfile()
+    if last_casalog != '/dev/null':
+        try:
+            os.remove(last_casalog)
+        except OSError as e:
+            pass
+        casalog.setlogfile('/dev/null')
+
