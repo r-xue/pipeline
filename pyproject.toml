@@ -135,7 +135,6 @@ addopts = [
     "--junitxml=junit.xml",
     "--cov",                # Just enable coverage, settings from [tool.coverage.run]
     "--cov-report=lcov",
-    "--cov-report=term",
     "--cov-report=html",
     "--cov-report=xml",
     "--pyclean",

@@ -9,10 +9,10 @@ on:
     paths:
       - "docs/**"
       - "pipeline/**"
-      - ".github/workflows/build-gh-pages.yml"
-      - ".github/workflows/env-setup-run-template.yml"
+      - ".github/workflows/**"
       - "environment.yml"
       - "setup.py"
+      - "pyproject.toml"
   pull_request:
     branches:
       - "**"
@@ -42,12 +42,12 @@ jobs:
         # Configure CASA datapath in ~/.casa/config.py
         # We use double quotes so the shell expands $HOME and $GITHUB_WORKSPACE
         echo "datapath = [ '$HOME/.casa/data', '$GITHUB_WORKSPACE/pipeline-testdata' ]" >> ~/.casa/config.py
-        
+
         # Run tests with automatic CPU detection (pyproject.toml handles coverage generation)
         # Current standard GitHub Runner specs (as of Dec 2025):
         #   ubuntu-latest: 4 CPU cores, 16 GB RAM
         #   macos-latest:  3 CPU cores,  7 GB RAM
-        PYTHONNOUSERSITE=1 python -m pytest -n auto --cov=pipeline --cov-append pipeline/
+        PYTHONNOUSERSITE=1 python -m pytest -n logical --cov=pipeline --cov-append pipeline/
 
         # Run unit tests
         if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
@@ -60,26 +60,6 @@ jobs:
         fi
       artifact_name: ${{ matrix.os == 'ubuntu-latest' && 'coverage-ubuntu-latest' || '' }}
       artifact_path: ${{ matrix.os == 'ubuntu-latest' && 'coverage_artifacts' || '' }}
-
-  upload_codecov:
-    name: Upload CodeCov
-    needs: test
-    runs-on: ubuntu-latest
-    if: needs.test.result == 'success'
-    steps:
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: coverage-ubuntu-latest
-          path: coverage_download
-
-      - name: Upload to CodeCov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage_download/coverage.lcov,coverage_download/junit.xml
-          fail_ci_if_error: true
-          verbose: true
 
   deploy:
     name: Deploy Pages
@@ -104,3 +84,29 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: coverage_download/htmlcov
           destination_dir: coverage_unit
+
+  upload_codecov:
+    name: Upload CodeCov
+    needs: test
+    runs-on: ubuntu-latest
+    if: needs.test.result == 'success'
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-ubuntu-latest
+          path: coverage_download
+
+      - name: Upload coverage to CodeCov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage_download/coverage.xml
+          fail_ci_if_error: true
+          verbose: true
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
