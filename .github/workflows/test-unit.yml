@@ -43,18 +43,20 @@ jobs:
         # We use double quotes so the shell expands $HOME and $GITHUB_WORKSPACE
         echo "datapath = [ '$HOME/.casa/data', '$GITHUB_WORKSPACE/pipeline-testdata' ]" >> ~/.casa/config.py
         
+        # Run tests with automatic CPU detection (pyproject.toml handles coverage generation)
+        # Current standard GitHub Runner specs (as of Dec 2025):
+        #   ubuntu-latest: 4 CPU cores, 16 GB RAM
+        #   macos-latest:  3 CPU cores,  7 GB RAM
+        PYTHONNOUSERSITE=1 python -m pytest -n auto --cov=pipeline --cov-append pipeline/
+
         # Run unit tests
         if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-          # Run tests (pyproject.toml handles coverage generation)
-          PYTHONNOUSERSITE=1 python -m pytest pipeline
-          
           # Bundle artifacts into a single directory
           mkdir -p coverage_artifacts
           if [ -f coverage.lcov ]; then mv coverage.lcov coverage_artifacts/; fi
+          if [ -f coverage.xml ]; then mv coverage.xml coverage_artifacts/; fi
           [ -d htmlcov ] && mv htmlcov coverage_artifacts/
           [ -f junit.xml ] && mv junit.xml coverage_artifacts/
-        else
-          PYTHONNOUSERSITE=1 python -m pytest pipeline
         fi
       artifact_name: ${{ matrix.os == 'ubuntu-latest' && 'coverage-ubuntu-latest' || '' }}
       artifact_path: ${{ matrix.os == 'ubuntu-latest' && 'coverage_artifacts' || '' }}
@@ -76,7 +78,8 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage_download/coverage.lcov,coverage_download/junit.xml
-          fail_ci_if_error: false
+          fail_ci_if_error: true
+          verbose: true
 
   deploy:
     name: Deploy Pages
@@ -84,7 +87,6 @@ jobs:
     runs-on: ubuntu-latest
 
     if: |
-      always() &&
       needs.test.result == 'success' &&
       github.ref == 'refs/heads/update-docs-build-and-packaging-setup'
     permissions:

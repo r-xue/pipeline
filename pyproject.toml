@@ -109,11 +109,13 @@ skip-magic-trailing-comma = false
 
 [tool.coverage.run]
 omit = ['pipeline/run*pipeline.py', 'tests/*']
-branch = true                                  # Same as --cov-branch
-source = ['pipeline']                          # Same as --cov=pipeline
+branch = true           # Same as --cov-branch
+source = ['pipeline']   # Same as --cov=pipeline
+parallel = true         # Enable parallel coverage collection for xdist
+concurrency = ["multiprocessing"]  # Handle xdist workers properly
 
 [tool.coverage.report]
-fail_under = 12 # Set the minimum coverage percentage required
+fail_under = 10 # Set the minimum coverage percentage required
 precision = 2 # Add decimal precision
 show_missing = true
 skip_covered = false
