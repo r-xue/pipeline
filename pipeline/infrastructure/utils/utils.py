@@ -43,6 +43,7 @@ __all__ = [
     'absolute_path',
     'approx_equal',
     'are_equal',
+    'clear_time_cache',
     'deduplicate',
     'dict_merge',
     'ensure_products_dir_exists',
@@ -1168,3 +1169,38 @@ def get_valid_url(env_var: str, default: str | list[str]) -> str | list[str]:
 
     LOG.info('Environment variable %s set to list of URLs %s.', env_var, urls)
     return urls
+
+
+def clear_time_cache():
+    """Clear the time cache in the CASA measures tool.
+
+    See details in PIPE-2891/PIPEREQ-402/CAS-13831.
+    A workaround solution provided by T. Nakazato (NAOJ), 2025-10-16.
+    """
+    # Define constants for the dummy conversion.
+    DUMMY_EPOCH_MJD = 37665.0 # MJD corresponds to beginning of IERS data coverage: 1962-01-01
+    DUMMY_AZIMUTH_DEG = 0.0
+    DUMMY_ELEVATION_DEG = 90.0
+    OBSERVATORY = 'ALMA'
+
+    with contextlib.closing(casa_tools.measures) as measures_tool:
+        quanta_tool = casa_tools.quanta
+
+        # Set a time frame well before any real observation.
+        epoch = measures_tool.epoch(rf='UTC', v0=quanta_tool.quantity(DUMMY_EPOCH_MJD, 'd'))
+        measures_tool.doframe(epoch)
+
+        # Set an observatory position frame.
+        position = measures_tool.observatory(OBSERVATORY)
+        measures_tool.doframe(position)
+
+        # Perform the dummy direction conversion that triggers the cache clear.
+        dummy_direction = measures_tool.direction(
+            rf='AZELGEO',
+            v0=quanta_tool.quantity(DUMMY_AZIMUTH_DEG, 'deg'),
+            v1=quanta_tool.quantity(DUMMY_ELEVATION_DEG, 'deg'),
+        )
+
+        measures_tool.measure(rf='ICRS', v=dummy_direction)
+
+    LOG.debug('Successfully cleared the CASA measures tool time cache.')
