@@ -109,10 +109,10 @@ skip-magic-trailing-comma = false
 
 [tool.coverage.run]
 omit = ['pipeline/run*pipeline.py', 'tests/*']
-branch = true           # Same as --cov-branch
-source = ['pipeline']   # Same as --cov=pipeline
-parallel = true         # Enable parallel coverage collection for xdist
-concurrency = ["multiprocessing"]  # Handle xdist workers properly
+branch = true                                  # Same as --cov-branch
+source = ['pipeline']                          # Same as --cov=pipeline
+parallel = true                                # Enable parallel coverage collection for xdist
+concurrency = ["multiprocessing"]              # Handle xdist workers properly
 
 [tool.coverage.report]
 fail_under = 10 # Set the minimum coverage percentage required
@@ -130,13 +130,8 @@ exclude_lines = [
 
 [tool.pytest.ini_options]
 addopts = [
-    "-ra",                  # show extra test summary info for (a)ll except passed
-    "-v",                   # verbose output
-    "--junitxml=junit.xml",
-    "--cov",                # Just enable coverage, settings from [tool.coverage.run]
-    "--cov-report=lcov",
-    "--cov-report=html",
-    "--cov-report=xml",
+    "-ra", # show extra test summary info for (a)ll except passed
+    "-v",  # verbose output
 ]
 markers = [
     "alma: alma test",

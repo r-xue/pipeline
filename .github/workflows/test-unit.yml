@@ -46,11 +46,13 @@ jobs:
         # Current standard GitHub Runner specs (as of Dec 2025):
         #   ubuntu-latest: 4 CPU cores, 16 GB RAM
         #   macos-latest:  3 CPU cores,  7 GB RAM
-        PYTHONNOUSERSITE=1 python -m pytest -n logical --cov=pipeline --cov-append pipeline/
+        PYTHONNOUSERSITE=1 python -m pytest -n logical \
+          --cov --cov=pipeline --cov-append \
+          --cov-report=html --cov-report=xml  \
+          pipeline/
 
       artifact_name: ${{ matrix.os == 'ubuntu-latest' && 'pytest-results-ubuntu-latest' || '' }}
       artifact_path: |
-        coverage.lcov
         coverage.xml
         htmlcov/
         junit.xml
@@ -94,8 +96,11 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
+          flags: unittests
+          name: codecov-ubuntu-latest
           fail_ci_if_error: true
           verbose: true
+          disable_telem: true
 
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
