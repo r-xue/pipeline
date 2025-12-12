@@ -17,12 +17,24 @@ classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Astronomy",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
+license = { text = "LGPL-3.0-or-later" }
+authors = [
+    { name = "Associated Universities, Inc." },
+    { name = "European Southern Observatory" },
+    { name = "National Astronomical Observatory of Japan" },
+]
+keywords = ["astronomy", "pipeline", "ALMA", "VLA", "radio-astronomy"]
 
 [project.urls]
 Documentation = "https://almascience.nrao.edu/processing/science-pipeline"
 Repository = "https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline"
+"Bug Tracker" = "https://open-jira.nrao.edu"                                # Adjust if applicable
+License = "https://www.gnu.org/licenses/lgpl-3.0.html"
 
 [tool.setuptools.packages.find]
 include = ["pipeline*"]
@@ -30,24 +42,24 @@ include = ["pipeline*"]
 [tool.setuptools.package-data]
 "*" = [
     '*.css',
-    '*.egg',
-    '*.eot',
-    '*.gif',
-    '*.html',
-    '*.jpg',
     '*.js',
+    '*.html',
     '*.mak',
-    '*.mako',
-    '*.otf',
+    '*.mako',  # Templates/web
+    '*.gif',
+    '*.jpg',
     '*.png',
-    '*.svg',
+    '*.svg',   # Images
+    '*.eot',
+    '*.otf',
     '*.ttf',
-    '*.txt',
     '*.woff',
-    '*.woff2',
+    '*.woff2', # Fonts
+    '*.txt',
     '*.xml',
-    '*.yaml',
-    'version',
+    '*.yaml',  # Data files
+    '*.egg',
+    'version', # Build/version files
 ]
 
 [tool.setuptools.dynamic]
@@ -59,9 +71,25 @@ optional-dependencies.exp = { file = ["requirements_exp.txt"] }
 [tool.ruff]
 line-length = 120
 indent-width = 4
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    "build",
+    "dist",
+    "*.egg-info",
+]
 
 [tool.ruff.lint]
-select = ["E4", "E7", "E9", "F", "D"]
+select = [
+    "E4",
+    "E7",
+    "E9", # pycodestyle errors
+    "F",  # pyflakes
+    "D",  # pydocstyle
+    "I",  # isort
+]
 preview = true
 
 [tool.ruff.lint.pycodestyle]
@@ -80,12 +108,17 @@ quote-style = "single"
 skip-magic-trailing-comma = false
 
 [tool.coverage.run]
-branch = true
-source = ['pipeline']
 omit = ['pipeline/run*pipeline.py', 'tests/*']
+branch = true                                  # Same as --cov-branch
+source = ['pipeline']                          # Same as --cov=pipeline
+parallel = true                                # Enable parallel coverage collection for xdist
+concurrency = ["multiprocessing"]              # Handle xdist workers properly
 
 [tool.coverage.report]
 fail_under = 10 # Set the minimum coverage percentage required
+precision = 2 # Add decimal precision
+show_missing = true
+skip_covered = false
 exclude_lines = [
     'pragma: no cover',
     'if __name__ == "__main__":',
@@ -94,3 +127,20 @@ exclude_lines = [
     'raise NotImplementedError',
     'pass',
 ]
+
+[tool.pytest.ini_options]
+addopts = [
+    "-ra", # show extra test summary info for (a)ll except passed
+    "-v",  # verbose output
+]
+markers = [
+    "alma: alma test",
+    "vla: vla test (does not include vlass)",
+    "vlass: vlass test",
+    "fast: shorter-running test",
+    "slow: longer-running test",
+    "twelve: 12m ALMA",
+    "seven: 7m ALMA",
+    "sd: single dish",
+]
+junit_family = "legacy"

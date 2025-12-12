@@ -3,20 +3,24 @@ name: "Test-Unit"
 on:
   push:
     branches:
-      - "**"
+      - "main"
     paths:
       - "docs/**"
       - "pipeline/**"
-      - ".github/workflows/build-gh-pages.yml"
-      - ".github/workflows/env-setup-run-template.yml"
+      - "tests/**"
+      - ".github/workflows/**"
       - "environment.yml"
+      - "pyproject.toml"
       - "setup.py"
+  pull_request:
+    branches:
+      - "**"
   # Allow manual triggering
   workflow_dispatch:
 
 # Cancel in-progress runs for the same branch
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -37,23 +41,28 @@ jobs:
         # Configure CASA datapath in ~/.casa/config.py
         # We use double quotes so the shell expands $HOME and $GITHUB_WORKSPACE
         echo "datapath = [ '$HOME/.casa/data', '$GITHUB_WORKSPACE/pipeline-testdata' ]" >> ~/.casa/config.py
-        
-        # Run unit tests
-        if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-          PYTHONNOUSERSITE=1 python -m pytest -v --cov=pipeline --cov-report=html --pyclean pipeline
-        else
-          PYTHONNOUSERSITE=1 python -m pytest -v --pyclean pipeline
-        fi
-      artifact_name: ${{ matrix.os == 'ubuntu-latest' && 'coverage-ubuntu-latest' || '' }}
-      artifact_path: ${{ matrix.os == 'ubuntu-latest' && 'htmlcov' || '' }}
 
-  deploy:
-    name: Deploy Pages
+        # Run tests with automatic CPU detection (pyproject.toml handles coverage generation)
+        # Current standard GitHub Runner specs (as of Dec 2025):
+        #   ubuntu-latest: 4 CPU cores, 16 GB RAM
+        #   macos-latest:  3 CPU cores,  7 GB RAM
+        PYTHONNOUSERSITE=1 python -m pytest -n logical \
+          --cov --cov=pipeline --cov-append \
+          --cov-report=html --cov-report=xml  \
+          pipeline/
+
+      artifact_name: ${{ matrix.os == 'ubuntu-latest' && 'pytest-results-ubuntu-latest' || '' }}
+      artifact_path: |
+        coverage.xml
+        htmlcov/
+        junit.xml
+
+  upload_pages:
+    name: Upload Coverage to Pages
     needs: test
     runs-on: ubuntu-latest
 
     if: |
-      always() &&
       needs.test.result == 'success' &&
       github.ref == 'refs/heads/update-docs-build-and-packaging-setup'
     permissions:
@@ -62,12 +71,44 @@ jobs:
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
-          name: coverage-ubuntu-latest
-          path: coverage_report
+          name: pytest-results-ubuntu-latest
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: coverage_report
+          publish_dir: htmlcov
           destination_dir: coverage_unit
+
+  upload_codecov:
+    name: Upload Coverage to CodeCov
+    needs: test
+    runs-on: ubuntu-latest
+    if: needs.test.result == 'success'
+    steps:
+      - name: Checkout Full History for Codecov
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: pytest-results-ubuntu-latest
+
+      - name: Upload coverage to CodeCov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          flags: unittests
+          name: codecov-ubuntu-latest
+          fail_ci_if_error: true
+          verbose: true
+          disable_telem: true
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

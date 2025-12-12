@@ -2,7 +2,7 @@ Pipeline
 ========
 *The operational data processing pipelines for ALMA, VLA, and the NRO 45m telescope.*
 
-|Docs Pages| |Docs RTD| |Test Unit|
+|Docs Pages| |Docs RTD| |Test Unit| |Codecov Unit|
 
 .. important::
 
@@ -44,4 +44,9 @@ Some sections are highlighted below:
 
 .. |Test Unit| image:: https://img.shields.io/github/actions/workflow/status/r-xue/pipeline/test-unit.yml?style=plastic&logo=githubactions&label=test-unit
   :target: https://github.com/r-xue/pipeline/actions/workflows/test-unit.yml
-  :alt: Docs: GH-Test-Unit-Status
+  :alt: Test: GH-Test-Unit-Status
+
+.. |Codecov Unit| image:: https://img.shields.io/codecov/c/github/r-xue/pipeline?style=plastic&label=codecov-unit
+  :target: https://app.codecov.io/github/r-xue/pipeline
+  :alt: Test: Codecov-Unit-Status
+
