@@ -13,6 +13,9 @@ on:
       - ".github/workflows/env-setup-run-template.yml"
       - "environment.yml"
       - "setup.py"
+  pull_request:
+    branches:
+      - "**"
   # Allow manual triggering
   workflow_dispatch:
 
@@ -42,12 +45,38 @@ jobs:
         
         # Run unit tests
         if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-          PYTHONNOUSERSITE=1 python -m pytest -v --cov=pipeline --cov-report=html --pyclean pipeline
+          # Run tests (pyproject.toml handles coverage generation)
+          PYTHONNOUSERSITE=1 python -m pytest pipeline
+          
+          # Bundle artifacts into a single directory
+          mkdir -p coverage_artifacts
+          if [ -f coverage.lcov ]; then mv coverage.lcov coverage_artifacts/; fi
+          [ -d htmlcov ] && mv htmlcov coverage_artifacts/
+          [ -f junit.xml ] && mv junit.xml coverage_artifacts/
         else
-          PYTHONNOUSERSITE=1 python -m pytest -v --pyclean pipeline
+          PYTHONNOUSERSITE=1 python -m pytest pipeline
         fi
       artifact_name: ${{ matrix.os == 'ubuntu-latest' && 'coverage-ubuntu-latest' || '' }}
-      artifact_path: ${{ matrix.os == 'ubuntu-latest' && 'htmlcov' || '' }}
+      artifact_path: ${{ matrix.os == 'ubuntu-latest' && 'coverage_artifacts' || '' }}
+
+  upload_codecov:
+    name: Upload CodeCov
+    needs: test
+    runs-on: ubuntu-latest
+    if: needs.test.result == 'success'
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-ubuntu-latest
+          path: coverage_download
+
+      - name: Upload to CodeCov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage_download/coverage.lcov,coverage_download/junit.xml
+          fail_ci_if_error: false
 
   deploy:
     name: Deploy Pages
@@ -65,11 +94,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: coverage-ubuntu-latest
-          path: coverage_report
+          path: coverage_download
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: coverage_report
+          publish_dir: coverage_download/htmlcov
           destination_dir: coverage_unit
