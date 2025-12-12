@@ -1055,8 +1055,8 @@ class testBPdcals(basetask.StandardTaskTemplate):
                                  (str(iant), antName, rrx, bband, str(flaggedspws)))
 
             if len(badspwlist) > 0:
-                spwstr = ''
-                spw_list = []
+                spw_info_list = []
+
                 for ispw in badspwlist:
                     # PIPE-1435: get list of bad polarizations for this spw
                     pol_list = badpols[iant].get(ispw, [])
@@ -1070,47 +1070,48 @@ class testBPdcals(basetask.StandardTaskTemplate):
                         flagstr = (
                             f"mode='manual' antenna='{antName}' spw='{ispw}' "
                             )
-                    spw_list.append(str(ispw))
+
                     flaglist.append(flagstr)
-                weblogflagdict[antName].append(",".join(spw_list))
+                    spw_info_list.append({
+                        "spw": str(ispw),
+                        "correlation": corr_str
+                        })
+                weblogflagdict[antName].append(spw_info_list)
 
             if doflagemptyspws and len(flaggedspwlist) > 0:
-                spwstr = ''
+
+                spw_info_list = []
                 for ispw in flaggedspwlist:
-                    if spwstr == '':
-                        spwstr = str(ispw)
+                    pol_list = badpols[iant].get(ispw, [])
+                    if len(pol_list) > 0:
+                        corr_str = ','.join(map(str, pol_list))
+                        flagstr = (
+                            f"mode='manual' antenna='{antName}' "
+                            f"spw='{ispw}' correlation='{corr_str}' "
+                            )
+                    else:
                         flagstr = (
                             f"mode='manual' antenna='{antName}' spw='{ispw}' "
                             )
-                    else:
-                        pol_list = badpols[iant].get(ispw, [])
-                        spwstr += ','+str(ispw)
-                        if len(pol_list) > 0:
-                            corr_str = ','.join(map(str, pol_list))
-                            flagstr = (
-                                f"mode='manual' antenna='{antName}' "
-                                f"spw='{ispw}' correlation='{corr_str}' "
-                                )
-                        else:
-                            flagstr = (
-                                f"mode='manual' antenna='{antName}' spw='{ispw}' "
-                                )
                     flaglist.append(flagstr)
+                    spw_info_list.append({
+                        "spw": str(ispw),
+                        "correlation": corr_str
+                        })
                 extflaglist.append(flaglist)
-                weblogflagdict[antName].append(spwstr)
+                weblogflagdict[antName].append(spw_info_list)
 
         # Get basebands matched with spws.  spws is a single element list with a single csv string
         tempDict = {}
         for antNamekey, spws in weblogflagdict.items():
             basebands = []
-            for spwstr in spws[0].split(','):
-                spw = m.get_spectral_window(spwstr)
+            for spwentry in spws[0]:
+                spw = m.get_spectral_window(spwentry["spw"])
                 basebands.append(spw.name.split('#')[0] + '  ' + spw.name.split('#')[1])
             basebands = list(set(basebands))  # Unique basebands
-            tempDict[antNamekey] = {'spws': spws, 'basebands': basebands}
+            tempDict[antNamekey] = {'spws': spws[0], 'basebands': basebands}
 
         weblogflagdict = tempDict
-
         nflagcmds = len(flaglist) + len(extflaglist)
         if nflagcmds < 1:
             LOG.info("No bad basebands/spws found")
