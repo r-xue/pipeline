@@ -13,9 +13,6 @@ on:
       - "environment.yml"
       - "setup.py"
       - "pyproject.toml"
-  pull_request:
-    branches:
-      - "**"
   # Allow manual triggering
   workflow_dispatch:
 

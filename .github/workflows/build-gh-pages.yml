@@ -8,10 +8,10 @@ on:
     paths:
       - "docs/**"
       - "pipeline/**"
-      - ".github/workflows/build-gh-pages.yml"
-      - ".github/workflows/env-setup-run-template.yml"
+      - ".github/workflows/**"
       - "environment.yml"
       - "setup.py"
+      - "pyproject.toml"
   # Allow manual triggering
   workflow_dispatch:
 
