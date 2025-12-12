@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifv.tasks.exportvlassdata.exportvlassdata &mdash; Pipeline 
- (2025.1.1.56) 2025.1.0 documentation</title>
+ (2025.1.1.61) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
@@ -404,7 +404,7 @@ window.addEventListener("load", load);
           
           <a href="../../../../../index.html" class="icon icon-home">
             Pipeline 
- (2025.1.1.56)
+ (2025.1.1.61)
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
@@ -459,7 +459,7 @@ window.addEventListener("load", load);
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../../index.html">Pipeline 
- (2025.1.1.56)</a>
+ (2025.1.1.61)</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -960,18 +960,15 @@ window.addEventListener("load", load);
             <span class="c1"># Identify self cal table</span>
             <span class="n">selfcal_result</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">selfcal_result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">read</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="s1">&#39;self-cal&#39;</span> <span class="ow">in</span> <span class="n">selfcal_result</span><span class="o">.</span><span class="n">caltable</span><span class="p">:</span>
-                        <span class="k">break</span>
-                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="k">continue</span>
+                <span class="n">task_result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">task_result</span><span class="o">.</span><span class="n">taskname</span> <span class="o">==</span> <span class="s2">&quot;hifv_selfcal&quot;</span><span class="p">:</span>
+                    <span class="n">selfcal_result</span> <span class="o">=</span> <span class="n">task_result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">break</span>
 
-            <span class="k">if</span> <span class="n">selfcal_result</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">selfcal_result</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">selfcal_result</span><span class="o">.</span><span class="n">caltable</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">selfcaltable</span> <span class="o">=</span> <span class="n">selfcal_result</span><span class="o">.</span><span class="n">caltable</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">selfcaltable</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-                <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Unable to locate self-cal table.&#39;</span><span class="p">)</span>
 
             <span class="c1"># Identify flagversion</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">flagversion</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;.flagversions&#39;</span>
@@ -1184,10 +1181,11 @@ window.addEventListener("load", load);
         <span class="k">for</span> <span class="n">final_model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">final_models</span><span class="p">:</span>
             <span class="n">tar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">final_model</span><span class="p">,</span> <span class="n">final_model</span><span class="p">)</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;....Adding </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">final_model</span><span class="p">))</span>
-
-        <span class="n">tar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selfcaltable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selfcaltable</span><span class="p">)</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;....Adding </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selfcaltable</span><span class="p">))</span>
-
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selfcaltable</span><span class="p">):</span>
+            <span class="n">tar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selfcaltable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selfcaltable</span><span class="p">)</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;....Adding </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selfcaltable</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;selfcal table not present.&#39;</span><span class="p">)</span>
         <span class="n">tar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flagversion</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">flagversion</span><span class="p">)</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;....Adding </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flagversion</span><span class="p">))</span>
         <span class="n">tar</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -1396,7 +1394,7 @@ window.addEventListener("load", load);
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.56+250-g1994e22177-update-docs-build-and-packaging-setup.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.61+286-g7c660001a2-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

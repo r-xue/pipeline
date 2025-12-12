@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.infrastructure.utils.utils &mdash; Pipeline 
- (2025.1.1.56) 2025.1.0 documentation</title>
+ (2025.1.1.61) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
@@ -404,7 +404,7 @@ window.addEventListener("load", load);
           
           <a href="../../../../index.html" class="icon icon-home">
             Pipeline 
- (2025.1.1.56)
+ (2025.1.1.61)
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -459,7 +459,7 @@ window.addEventListener("load", load);
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../index.html">Pipeline 
- (2025.1.1.56)</a>
+ (2025.1.1.61)</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -524,6 +524,7 @@ window.addEventListener("load", load);
     <span class="s1">&#39;absolute_path&#39;</span><span class="p">,</span>
     <span class="s1">&#39;approx_equal&#39;</span><span class="p">,</span>
     <span class="s1">&#39;are_equal&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;clear_time_cache&#39;</span><span class="p">,</span>
     <span class="s1">&#39;deduplicate&#39;</span><span class="p">,</span>
     <span class="s1">&#39;dict_merge&#39;</span><span class="p">,</span>
     <span class="s1">&#39;ensure_products_dir_exists&#39;</span><span class="p">,</span>
@@ -1655,6 +1656,41 @@ window.addEventListener("load", load);
 
     <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Environment variable </span><span class="si">%s</span><span class="s1"> set to list of URLs </span><span class="si">%s</span><span class="s1">.&#39;</span><span class="p">,</span> <span class="n">env_var</span><span class="p">,</span> <span class="n">urls</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">urls</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">clear_time_cache</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Clear the time cache in the CASA measures tool.</span>
+
+<span class="sd">    See details in PIPE-2891/PIPEREQ-402/CAS-13831.</span>
+<span class="sd">    A workaround solution provided by T. Nakazato (NAOJ), 2025-10-16.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Define constants for the dummy conversion.</span>
+    <span class="n">DUMMY_EPOCH_MJD</span> <span class="o">=</span> <span class="mf">37665.0</span> <span class="c1"># MJD corresponds to beginning of IERS data coverage: 1962-01-01</span>
+    <span class="n">DUMMY_AZIMUTH_DEG</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">DUMMY_ELEVATION_DEG</span> <span class="o">=</span> <span class="mf">90.0</span>
+    <span class="n">OBSERVATORY</span> <span class="o">=</span> <span class="s1">&#39;ALMA&#39;</span>
+
+    <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">casa_tools</span><span class="o">.</span><span class="n">measures</span><span class="p">)</span> <span class="k">as</span> <span class="n">measures_tool</span><span class="p">:</span>
+        <span class="n">quanta_tool</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span>
+
+        <span class="c1"># Set a time frame well before any real observation.</span>
+        <span class="n">epoch</span> <span class="o">=</span> <span class="n">measures_tool</span><span class="o">.</span><span class="n">epoch</span><span class="p">(</span><span class="n">rf</span><span class="o">=</span><span class="s1">&#39;UTC&#39;</span><span class="p">,</span> <span class="n">v0</span><span class="o">=</span><span class="n">quanta_tool</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">DUMMY_EPOCH_MJD</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">))</span>
+        <span class="n">measures_tool</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span>
+
+        <span class="c1"># Set an observatory position frame.</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">measures_tool</span><span class="o">.</span><span class="n">observatory</span><span class="p">(</span><span class="n">OBSERVATORY</span><span class="p">)</span>
+        <span class="n">measures_tool</span><span class="o">.</span><span class="n">doframe</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+
+        <span class="c1"># Perform the dummy direction conversion that triggers the cache clear.</span>
+        <span class="n">dummy_direction</span> <span class="o">=</span> <span class="n">measures_tool</span><span class="o">.</span><span class="n">direction</span><span class="p">(</span>
+            <span class="n">rf</span><span class="o">=</span><span class="s1">&#39;AZELGEO&#39;</span><span class="p">,</span>
+            <span class="n">v0</span><span class="o">=</span><span class="n">quanta_tool</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">DUMMY_AZIMUTH_DEG</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">),</span>
+            <span class="n">v1</span><span class="o">=</span><span class="n">quanta_tool</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">DUMMY_ELEVATION_DEG</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="n">measures_tool</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">rf</span><span class="o">=</span><span class="s1">&#39;ICRS&#39;</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">dummy_direction</span><span class="p">)</span>
+
+    <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Successfully cleared the CASA measures tool time cache.&#39;</span><span class="p">)</span>
 </pre></div>
 
            </div>
@@ -1664,7 +1700,7 @@ window.addEventListener("load", load);
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.56+250-g1994e22177-update-docs-build-and-packaging-setup.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.61+286-g7c660001a2-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifv.tasks.selfcal.selfcal &mdash; Pipeline 
- (2025.1.1.56) 2025.1.0 documentation</title>
+ (2025.1.1.61) 2025.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
@@ -404,7 +404,7 @@ window.addEventListener("load", load);
           
           <a href="../../../../../index.html" class="icon icon-home">
             Pipeline 
- (2025.1.1.56)
+ (2025.1.1.61)
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
@@ -459,7 +459,7 @@ window.addEventListener("load", load);
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../../../index.html">Pipeline 
- (2025.1.1.56)</a>
+ (2025.1.1.61)</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -582,10 +582,6 @@ window.addEventListener("load", load);
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">stage_number</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">stage_number</span> <span class="o">+</span> <span class="mi">1</span>
 
-        <span class="c1"># context = self.inputs.context</span>
-        <span class="c1"># m = self.inputs.context.observing_run.measurement_sets[0]</span>
-        <span class="c1"># mses = context.evla[&#39;msinfo&#39;].keys()</span>
-        <span class="c1"># refantfield = context.evla[&#39;msinfo&#39;][mses[0]].calibrator_field_select_string</span>
         <span class="n">refantobj</span> <span class="o">=</span> <span class="n">findrefant</span><span class="o">.</span><span class="n">RefAntHeuristics</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
                                                 <span class="n">geometry</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">flagging</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
                                                 <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">refantignore</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">refantignore</span><span class="p">)</span>
@@ -599,7 +595,10 @@ window.addEventListener("load", load);
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Checking for model column&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_for_modelcolumn</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_do_gaincal</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_do_applycal</span><span class="p">()</span>
+        <span class="n">applycal_rtn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_applycal</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">applycal_rtn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">return</span> <span class="n">SelfcalResults</span><span class="p">(</span><span class="n">caltable</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">caltable</span><span class="p">)</span></div>
 
@@ -670,10 +669,14 @@ window.addEventListener("load", load);
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">selfcalmode</span> <span class="o">==</span> <span class="s1">&#39;VLASS-SE&#39;</span><span class="p">:</span>
             <span class="n">applycal_task_args</span><span class="p">[</span><span class="s1">&#39;calwt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="n">applycal_task_args</span><span class="p">[</span><span class="s1">&#39;interp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;nearest&#39;</span><span class="p">]</span>
-
-        <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">applycal</span><span class="p">(</span><span class="o">**</span><span class="n">applycal_task_args</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span></div>
+        <span class="c1"># PIPE-2902: casa task failing in a few corner cases</span>
+        <span class="c1"># when caltable does not exist</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">caltable</span><span class="p">):</span>
+            <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">applycal</span><span class="p">(</span><span class="o">**</span><span class="n">applycal_task_args</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">caltable</span><span class="si">}</span><span class="s1"> does not exist, skipping applycal.&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
 
 </pre></div>
 
@@ -684,7 +687,7 @@ window.addEventListener("load", load);
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.56+250-g1994e22177-update-docs-build-and-packaging-setup.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.61+286-g7c660001a2-update-docs-build-and-packaging-setup.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
