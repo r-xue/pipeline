@@ -239,8 +239,8 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
         # equivalent blc,trc for extracting requested field, in pixels:
         blcx = imsize[0] // 2 - (fld_subim_size_x / 2)
         blcy = imsize[1] // 2 - (fld_subim_size_y / 2)
-        trcx = imsize[0] // 2 + (fld_subim_size_x / 2) - 2
-        trcy = imsize[1] // 2 + (fld_subim_size_y / 2) - 2
+        trcx = imsize[0] // 2 + (fld_subim_size_x / 2) - 1
+        trcy = imsize[1] // 2 + (fld_subim_size_y / 2) - 1
 
         blcx = max(0, blcx)
         blcy = max(0, blcy)
@@ -264,17 +264,13 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
 
             blcx = imsize[0] // 2 - fld_subim_size_x_blc
             blcy = imsize[1] // 2 - fld_subim_size_y_blc
-            trcx = imsize[0] // 2 + fld_subim_size_x_trc + 1
-            trcy = imsize[1] // 2 + fld_subim_size_y_trc + 1
+            trcx = imsize[0] // 2 + fld_subim_size_x_trc - 1
+            trcy = imsize[1] // 2 + fld_subim_size_y_trc - 1
 
-            if blcx < 0.0:
-                blcx = 0
-            if blcy < 0.0:
-                blcy = 0
-            if trcx > imsize[0]:
-                trcx = imsize[0] - 1
-            if trcy > imsize[1]:
-                trcy = imsize[1] - 1
+            blcx = max(0, blcx)
+            blcy = max(0, blcy)
+            trcx = min(imsize[0] - 1, trcx)
+            trcy = min(imsize[1] - 1, trcy)
 
             LOG.info('Using user defined offsets in arcseconds of: blc:(%s), trc:(%s)',
                      ','.join([str(i) for i in offsetblc]),

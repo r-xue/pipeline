@@ -2,7 +2,7 @@ Pipeline
 ========
 *The operational data processing pipelines for ALMA, VLA, and the NRO 45m telescope.*
 
-|Sphinx Build|
+|Docs Pages| |Docs RTD| |Test Unit|
 
 .. important::
 
@@ -34,6 +34,14 @@ Some sections are highlighted below:
 .. _MPIfR: https://www.mpifr-bonn.mpg.de  
 .. _NAOJ: https://www.nao.ac.jp  
 
-.. |Sphinx Build| image:: https://github.com/r-xue/pipeline/actions/workflows/sphinx.yml/badge.svg  
- :target: https://github.com/r-xue/pipeline/actions/workflows/sphinx.yml  
- :alt: Sphinx: Build
+.. |Docs Pages| image:: https://img.shields.io/github/actions/workflow/status/r-xue/pipeline/build-gh-pages.yml?style=plastic&logo=githubactions&label=docs-pages
+  :target: https://github.com/r-xue/pipeline/actions/workflows/build-gh-pages.yml
+  :alt: Docs: GH-Pages-Status
+
+.. |Docs RTD| image:: https://img.shields.io/readthedocs/pipe-docs?style=plastic&logo=readthedocs&label=docs-rtd
+  :target: https://pipe-docs.readthedocs.io/en/latest/?badge=latest
+  :alt: Docs: RTD-Status
+
+.. |Test Unit| image:: https://img.shields.io/github/actions/workflow/status/r-xue/pipeline/test-unit.yml?style=plastic&logo=githubactions&label=test-unit
+  :target: https://github.com/r-xue/pipeline/actions/workflows/test-unit.yml
+  :alt: Docs: GH-Test-Unit-Status

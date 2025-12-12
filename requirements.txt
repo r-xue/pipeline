@@ -8,7 +8,7 @@
 
 # -- Core Runtime Dependencies --
 
-astropy~=7.1; python_version >= '3.11'    # Main astronomy library; version for Python 3.11+
+astropy~=7.2; python_version >= '3.11'    # Main astronomy library; version for Python 3.11+
 astropy~=6.1; python_version == '3.10'    # Last major version compatible with Python 3.10
 cachetools~=6.2                           # Extensible memoizing collections and decorators
 docstring-inheritance~=2.2                # For inheriting docstrings
