@@ -86,6 +86,11 @@ jobs:
     runs-on: ubuntu-latest
     if: needs.test.result == 'success'
     steps:
+      - name: Checkout Full History for Codecov
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
