@@ -186,11 +186,17 @@ class compressionSummary(object):
             q1 = qa.quantity(time, 's')
             time1 = qa.time(q1, form='fits')
             try:
-                datetime_object = datetime.datetime.strptime(time1[0], '%Y-%m-%dT%H:%M:%S')
+                datetime_object = (
+                    datetime.datetime.fromisoformat(time1[0])
+                    .replace(tzinfo=datetime.timezone.utc)
+                )
             except ValueError:
                 timestr = time1[0]
                 timestr = timestr.replace('T24', 'T23')
-                datetime_object = datetime.datetime.strptime(timestr, '%Y-%m-%dT%H:%M:%S')
+                datetime_object = (
+                    datetime.datetime.fromisoformat(timestr)
+                    .replace(tzinfo=datetime.timezone.utc)
+                )
                 datetime_object += datetime.timedelta(hours=1)
             utc_time.append(datetime_object)
 
@@ -328,11 +334,17 @@ class medianSummary(object):
             q1 = qa.quantity(time, 's')
             time1 = qa.time(q1, form='fits')
             try:
-                datetime_object = datetime.datetime.strptime(time1[0], '%Y-%m-%dT%H:%M:%S')
+                datetime_object = (
+                    datetime.datetime.fromisoformat(time1[0])
+                    .replace(tzinfo=datetime.timezone.utc)
+                )
             except ValueError:
                 timestr = time1[0]
                 timestr = timestr.replace('T24', 'T23')
-                datetime_object = datetime.datetime.strptime(timestr, '%Y-%m-%dT%H:%M:%S')
+                datetime_object = (
+                    datetime.datetime.fromisoformat(timestr)
+                    .replace(tzinfo=datetime.timezone.utc)
+                )
                 datetime_object += datetime.timedelta(hours=1)
             utc_time.append(datetime_object)
 
