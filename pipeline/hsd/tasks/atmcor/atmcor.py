@@ -249,10 +249,10 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
     def pol(self) -> str:
         """Return pol selection string.
 
-        By default, polarizatons corresponding to selected spws are selected.
+        By default, polarization corresponding to selected spws are selected.
 
         Returns:
-            pol selecton string
+            pol selection string
         """
         # filters polarization by self.spw
         selected_spwids = [int(spwobj.id) for spwobj in self.ms.get_spectral_windows(self.spw, with_channels=True)]
@@ -570,10 +570,10 @@ class SDATMCorrectionResults(common.SingleDishResults):
         return os.path.basename(self.atmcor_ms_name)
 
 
-@task_registry.set_equivalent_casa_task('hsd_atmcor')
-@task_registry.set_casa_commands_comment(
-    'Apply offline correction of atmospheric transmission model.'
-)
+#@task_registry.set_equivalent_casa_task('hsd_atmcor')
+#@task_registry.set_casa_commands_comment(
+#    'Apply offline correction of atmospheric transmission model.'
+#)
 class SerialSDATMCorrection(basetask.StandardTaskTemplate):
     """Offline ATM correction task."""
 
@@ -730,7 +730,10 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
 
         return atm_heuristics, args, best_model_index, model_list
 
-
+@task_registry.set_equivalent_casa_task('hsd_atmcor')
+@task_registry.set_casa_commands_comment(
+    'Apply offline correction of atmospheric transmission model.'
+)
 class HpcSDATMCorrection(sessionutils.ParallelTemplate):
     """Parallel implementation of offline ATM correction task."""
 
