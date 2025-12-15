@@ -945,6 +945,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         extflaglist = []
         weblogflagdict = collections.defaultdict(list)
         badpols = collections.defaultdict(lambda: collections.defaultdict(list))
+        crosshands = ['RL', 'LR']
 
         for iant in calBPstatresult['antband']:
             antName = calBPstatresult['antDict'][iant]
@@ -1061,7 +1062,12 @@ class testBPdcals(basetask.StandardTaskTemplate):
                     # PIPE-1435: get list of bad polarizations for this spw
                     pol_list = badpols[iant].get(ispw, [])
                     if len(pol_list) > 0:
-                        corr_str = ','.join(map(str, pol_list))
+                        dd = m.get_data_description(ispw)
+                        off_corr = [dd.get_polarization_label(polid) for polid in pol_list]
+                        all_corr = m.get_vla_corrlist_from_spw(str(ispw))
+                        crosshands_in_spw = [c for c in all_corr if c in crosshands]
+                        corr_to_flag = list(set(off_corr + crosshands_in_spw))
+                        corr_str = ','.join(map(str, corr_to_flag))
                         flagstr = (
                             f"mode='manual' antenna='{antName}' "
                             f"spw='{ispw}' correlation='{corr_str}' "
