@@ -5092,9 +5092,9 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
         if str_spwid in flag_spw.keys():
             flag_percentage = flag_spw[str_spwid]['flagged']/flag_spw[str_spwid]['total']
             if flag_percentage > 0.5:
-                ignored_spw_count = ignored_spw_count + 1
+                ignored_spw_count += 1
         else:
-            ignored_spw_count = ignored_spw_count + 1
+            ignored_spw_count += 1
     # PIPE-2584, part-1: If > 50% of science spws are fully flagged
     # or missing from calibrators.ms: QA score < 0.5
     flag_ratio = ignored_spw_count/total_sci_spws
@@ -5106,9 +5106,9 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
     qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin))
 
     # PIPE-2584, part-2: If > 50% of all calibrators.ms data flagged
-    tota_flag_ratio = flagdata_result["flagged"]/flagdata_result["total"]
-    score = 1 - tota_flag_ratio
-    msg = f"{tota_flag_ratio*100}% of data flagged in calibrator.ms"
+    total_flag_ratio = flagdata_result["flagged"]/flagdata_result["total"]
+    score = 1 - total_flag_ratio
+    msg = f"{total_flag_ratio*100:.2f}% of data flagged in calibrator.ms"
     origin = pqa.QAOrigin(metric_name='score_fluxboot',
                           metric_score=score,
                           metric_units='')
@@ -5127,15 +5127,22 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
 
     # PIPE-2584, part-4: Ensure flux density is measured.
     # If not measured, model_data column will be filled up with 1.
-    with casa_tools.TableReader("calibrators.ms") as table:
-        stats = table.statistics(column='MODEL_DATA', complex_value='amp')
-
-    if stats["MODEL_DATA"]["max"] == 1 and stats["MODEL_DATA"]["min"] == 1:
-            score = 0.3
-            msg = "Flux density is not measured"
-            origin = pqa.QAOrigin(metric_name='score_fluxboot',
-                                  metric_score=score,
-                                  metric_units='')
-            qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin))
+    spws = ms.get_spectral_windows()
+    str_spws = [str(spw.id) for spw in spws]
+    for scan in context.evla['msinfo'][result.vis].calibrator_scan_select_string.split(","):
+        for spw in str_spws:
+            # PIPE-2166: setting doquantiles to false
+            job = casa_tasks.visstat(vis='calibrators.ms',scan=scan, useflags=True,
+                                     spw=spw, datacolumn='model',
+                                     correlation='LL,RR', doquantiles=False)
+            vis_stats = job.execute()
+            for desc_id,stats in vis_stats.items():
+                if all(stats[key] == 1 for key in ["min","max","mean","median"]):
+                    score = 0.3
+                    msg = f"Model column is set to one for {spw} and {scan}"
+                    origin = pqa.QAOrigin(metric_name='score_fluxboot',
+                                          metric_score=score,
+                                          metric_units='')
+                    qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin))
 
     return qascores
