@@ -365,7 +365,7 @@ class StateNAOJ(State):
         super(StateNAOJ, self).__init__(state_id, obs_mode)
 
 
-class StateFactory(object):
+class StateFactory:
     """
     Factory class to create State objects based on given observatory and
     observation/measurement set start time.
@@ -380,7 +380,7 @@ class StateFactory(object):
                 to distinguish between Cycle 0 and later ALMA datasets.
         """
         if observatory == 'ALMA':
-            if start and start < datetime.datetime(2013, 1, 21):
+            if start and start < datetime.datetime(2013, 1, 21, tzinfo=datetime.timezone.utc):
                 self._constructor = StateALMACycle0
             else:
                 self._constructor = StateALMA

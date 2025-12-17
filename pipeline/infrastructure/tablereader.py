@@ -1386,7 +1386,9 @@ class StateTable:
 
         epoch_start = me.epoch(time_ref, qa.quantity(scan_start, time_unit))
         str_start = qa.time(epoch_start['m0'], form=['fits'])[0]
-        dt_start = datetime.datetime.strptime(str_start, '%Y-%m-%dT%H:%M:%S')
+        # https://casadocs.readthedocs.io/en/latest/api/tt/casatools.quanta.html#casatools.quanta.quanta.time
+        # The 'fits' specification returns a string in ISO 8601 format with no subsecond precision
+        dt_start = datetime.datetime.fromisoformat(str_start).replace(tzinfo=datetime.timezone.utc)
 
         return domain.state.StateFactory(facility, dt_start)        
 
