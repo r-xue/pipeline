@@ -1,7 +1,7 @@
-# Do not evaluate type annotations at definition time.
 from __future__ import annotations
 
 import ssl
+import traceback
 import urllib
 from typing import TYPE_CHECKING
 
@@ -10,12 +10,12 @@ import certifi
 from pipeline import infrastructure
 from pipeline.h.tasks.importdata import fluxes, importdata
 from pipeline.hifa.tasks.importdata import dbfluxes
-from pipeline.infrastructure import sessionutils, vdp, task_registry
+from pipeline.infrastructure import sessionutils, task_registry, vdp
 
 if TYPE_CHECKING:
     from pipeline.domain import MeasurementSet, ObservingRun
-    from pipeline.infrastructure.launcher import Context
     from pipeline.h.tasks.common.commonfluxresults import FluxCalibrationResults
+    from pipeline.infrastructure.launcher import Context
 
 __all__ = [
     'ALMAImportData',
@@ -195,6 +195,8 @@ class SerialALMAImportData(importdata.ImportData):
             except Exception as e:
                 try:
                     LOG.warning('Unable to execute initial test query with primary flux service.')
+                    traceback_msg = traceback.format_exc()
+                    LOG.debug(traceback_msg)
                     ssl_context = ssl.create_default_context(cafile=certifi.where())
                     url = backup_flux_url + testquery
                     LOG.info('Attempting test query at backup: %s', url)
@@ -204,6 +206,8 @@ class SerialALMAImportData(importdata.ImportData):
                 except Exception as e2:
                     LOG.warning(('Unable to execute backup test query with flux service.\n'
                                  'Proceeding without using the online flux catalog service.'))
+                    traceback_msg = traceback.format_exc()
+                    LOG.debug(traceback_msg)
                     xml_results = fluxes.get_setjy_results(observing_run.measurement_sets)
                     fluxservice = 'FAIL'
                     qastatus = None
