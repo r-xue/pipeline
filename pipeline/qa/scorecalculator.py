@@ -5095,24 +5095,29 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
                 ignored_spw_count += 1
         else:
             ignored_spw_count += 1
+    spwlist = [spw.id for spw in sci_spws]
+    applies_to = pqa.TargetDataSelection(vis={result.vis}, spw=spwlist)
+
     # PIPE-2584, part-1: If > 50% of science spws are fully flagged
     # or missing from calibrators.ms: QA score < 0.5
-    flag_ratio = ignored_spw_count/total_sci_spws
+    flag_ratio = ignored_spw_count / total_sci_spws
     score = 1 - flag_ratio
-    msg = f"{flag_ratio*100}% of science SPWs flagged or not present in calibrator.ms"
-    origin = pqa.QAOrigin(metric_name='score_fluxboot',
-                        metric_score=score,
-                        metric_units='')
-    qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin))
+    if score < 0.5:
+        msg = f"{flag_ratio*100:.2f}% of science SPWs flagged or not present in calibrator.ms"
+        origin = pqa.QAOrigin(metric_name='score_fluxboot',
+                              metric_score=score,
+                              metric_units='')
+        qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin, applies_to=applies_to))
 
     # PIPE-2584, part-2: If > 50% of all calibrators.ms data flagged
-    total_flag_ratio = flagdata_result["flagged"]/flagdata_result["total"]
+    total_flag_ratio = flagdata_result["flagged"] / flagdata_result["total"]
     score = 1 - total_flag_ratio
     msg = f"{total_flag_ratio*100:.2f}% of data flagged in calibrator.ms"
     origin = pqa.QAOrigin(metric_name='score_fluxboot',
                           metric_score=score,
                           metric_units='')
-    qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin))
+    applies_to = pqa.TargetDataSelection(vis={result.vis})
+    qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin, applies_to=applies_to))
 
     # PIPE-2584, part-3: IF spectral index > +/- 5: QA score < 0.5
     for sp_result in result.spindex_results:
@@ -5122,7 +5127,7 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
             origin = pqa.QAOrigin(metric_name='score_fluxboot',
                                   metric_score=score,
                                   metric_units='')
-            qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin))
+            qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin, applies_to=applies_to))
             break
 
     # PIPE-2584, part-4: Ensure flux density is measured.
@@ -5137,12 +5142,13 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
                                      correlation='LL,RR', doquantiles=False)
             vis_stats = job.execute()
             for desc_id,stats in vis_stats.items():
-                if all(stats[key] == 1 for key in ["min","max","mean","median"]):
+                if all(stats.get(key) == 1 for key in ["min","max","mean","median"]):
                     score = 0.3
                     msg = f"Model column is set to one for {spw} and {scan}"
                     origin = pqa.QAOrigin(metric_name='score_fluxboot',
                                           metric_score=score,
                                           metric_units='')
-                    qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin))
+                    applies_to = pqa.TargetDataSelection(vis={result.vis}, scan=scan)
+                    qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin, applies_to=applies_to))
 
     return qascores
