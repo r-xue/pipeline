@@ -1153,7 +1153,7 @@ def score_total_data_vla_delay(filename, m):
     if maxdelay < 15.0:
         score = 1.0
     else:
-        score = round(max(0.0, 0.49 - 0.01 * (maxdelay - 15)), 2)
+        score = round(max(0.3, 0.49 - 0.01 * (maxdelay - 15)), 2)
 
     # Set score message and origin
     longmsg = 'Max delay is {!s} ns'.format(str(maxdelay))
