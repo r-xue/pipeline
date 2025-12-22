@@ -5079,10 +5079,11 @@ def score_longsolint(context, result) -> list[pqa.QAScore]:
 @log_qa
 def score_fluxboot(context, result) -> list[pqa.QAScore]:
     qascores = []
+    calms = "calibrators.ms"
     ms = context.observing_run.get_ms(result.vis)
     sci_spws = ms.get_spectral_windows(science_windows_only=True)
     total_sci_spws = len(sci_spws)
-    flagdata_task = casa_tasks.flagdata(vis="calibrators.ms", mode="summary")
+    flagdata_task = casa_tasks.flagdata(vis=calms, mode="summary")
     flagdata_result = flagdata_task.execute()
     flag_spw = flagdata_result["spw"]
     ignored_spw_count = 0
@@ -5112,6 +5113,7 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
     # PIPE-2584, part-2: If > 50% of all calibrators.ms data flagged
     total_flag_ratio = flagdata_result["flagged"] / flagdata_result["total"]
     score = 1 - total_flag_ratio
+
     msg = f"{total_flag_ratio*100:.2f}% of data flagged in calibrator.ms"
     origin = pqa.QAOrigin(metric_name='score_fluxboot',
                           metric_score=score,
@@ -5132,12 +5134,35 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
 
     # PIPE-2584, part-4: Ensure flux density is measured.
     # If not measured, model_data column will be filled up with 1.
+
+    # checkif the MODEL column is not present.
+    with casa_tools.TableReader(calms) as table:
+        if 'MODEL_DATA' in table.colnames():
+            is_model_present = True
+        else:
+            is_model_present = False
+
+    if not is_model_present:
+        msg = f"Model column is not present"
+        origin = pqa.QAOrigin(metric_name='score_fluxboot',
+                              metric_score=0.3,
+                              metric_units='')
+        applies_to = pqa.TargetDataSelection(vis={result.vis})
+        qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin, applies_to=applies_to))
+
+        return qascores
+
     spws = ms.get_spectral_windows()
     str_spws = [str(spw.id) for spw in spws]
     for scan in context.evla['msinfo'][result.vis].calibrator_scan_select_string.split(","):
         for spw in str_spws:
             # PIPE-2166: setting doquantiles to false
-            job = casa_tasks.visstat(vis='calibrators.ms',scan=scan, useflags=True,
+            taql = f"SCAN_NUMBER={scan} and DATA_DESC_ID =={spw} and FLAG_ROW==False"
+            numrows = utils.get_row_count(calms, taql)
+            if numrows == 0:
+                continue
+
+            job = casa_tasks.visstat(vis=calms,scan=scan, useflags=True,
                                      spw=spw, datacolumn='model',
                                      correlation='LL,RR', doquantiles=False)
             vis_stats = job.execute()
