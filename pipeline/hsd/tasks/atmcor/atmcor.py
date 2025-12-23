@@ -570,10 +570,6 @@ class SDATMCorrectionResults(common.SingleDishResults):
         return os.path.basename(self.atmcor_ms_name)
 
 
-#@task_registry.set_equivalent_casa_task('hsd_atmcor')
-#@task_registry.set_casa_commands_comment(
-#    'Apply offline correction of atmospheric transmission model.'
-#)
 class SerialSDATMCorrection(basetask.StandardTaskTemplate):
     """Offline ATM correction task."""
 
@@ -657,7 +653,7 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
             Four tuple, status of ATM model heuristics, argument list for sdatmcor,
             index of best ATM model, and list of attempted ATM models.
         """
-        # create weblog directry
+        # create weblog directory
         stage_number = self.inputs.context.task_counter
         stage_dir = os.path.join(
             self.inputs.context.report_dir,
