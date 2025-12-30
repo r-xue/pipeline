@@ -118,3 +118,34 @@ def test_OphA_X1__missing_spws_second_EB__component():
         )
 
     pt.run()
+
+
+def test_uid___A001_X375e_X7a__spw_mapping_missing_spws__component():
+    """Run test of spw mapping with missing spws.
+
+    MOUS:                       uid://A001/X375e/X7a
+    Dataset(s):                 uid___A002_X11a51f7_Xcf3_targets.ms
+                                uid___A002_X1290676_X2b8_targets.ms
+                                uid___A002_X1290676_X665_targets.ms
+    Task(s):                    hifa_importdata, hif_makeimlist, hif_makeimages
+    """
+    ref_directory = 'pl-componenttest/spw_mapping_missing_spws'
+    visnames = ['uid___A002_X11a51f7_Xcf3_spws_24_26_28.ms',
+                'uid___A002_X1290676_X2b8_spws_24_26_30.ms',
+                'uid___A002_X1290676_X665_spws_24_28_30.ms']
+    tasks = [
+        ('hifa_importdata', {'vis': [casa_tools.utils.resolve(os.path.join(ref_directory, visname)) for visname in visnames]}),
+        ('hif_selfcal', {}),
+        ('hif_makeimlist', {'specmode': 'cont'}),
+        ('hif_makeimages', {})
+    ]
+
+    pt = PipelineTester(
+        visname=visnames,
+        mode='component',
+        tasks=tasks,
+        output_dir='spw_mapping_missing_spws',
+        expectedoutput_dir=ref_directory,
+        )
+
+    pt.run()
