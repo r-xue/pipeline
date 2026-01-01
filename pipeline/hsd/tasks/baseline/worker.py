@@ -1,15 +1,16 @@
 """Worker task for baseline subtraction."""
-import numpy
-import os
+from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, Union
+import os
+from typing import TYPE_CHECKING, Any
+
+import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.sessionutils as sessionutils
-from pipeline.infrastructure.launcher import Context
-from pipeline.infrastructure.utils import relative_path
 import pipeline.infrastructure.vdp as vdp
+from pipeline.infrastructure.utils import relative_path
 from pipeline.domain import DataTable, DataType, MeasurementSet
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.hsd.heuristics import BaselineFitParamConfig
@@ -19,14 +20,13 @@ from pipeline.infrastructure import casa_tools
 from . import plotter
 from .. import common
 from ..common import utils
-
 from .typing import FitFunc, FitOrder
 
 if TYPE_CHECKING:
-    import numpy as np
     from pipeline.hsd.tasks.common.utils import RGAccumulator
+    from pipeline.infrastructure.launcher import Context
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
@@ -74,7 +74,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         return self.prefix + '_blparam.txt'
 
     @vdp.VisDependentProperty(readonly=True)
-    def field(self) -> List[int]:
+    def field(self) -> list[int]:
         """Return list of field ids to process.
 
         Returned list should conform with the list of MS and
@@ -87,7 +87,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         return self.plan.get_field_id_list()
 
     @vdp.VisDependentProperty(readonly=True)
-    def antenna(self) -> List[int]:
+    def antenna(self) -> list[int]:
         """Return list of antenna ids to process.
 
         Returned list should conform with the list of MS and
@@ -100,7 +100,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         return self.plan.get_antenna_id_list()
 
     @vdp.VisDependentProperty(readonly=True)
-    def spw(self) -> List[int]:
+    def spw(self) -> list[int]:
         """Return list of spectral window (spw) ids to process.
 
         Returned list should conform with the list of MS and
@@ -113,7 +113,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         return self.plan.get_spw_id_list()
 
     @vdp.VisDependentProperty(readonly=True)
-    def grid_table(self) -> List[Union[int, float, 'np.ndarray']]:
+    def grid_table(self) -> list[int | float | np.ndarray]:
         """Return list of grid tables to process.
 
         Returned list should conform with the list of MS and
@@ -126,7 +126,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         return self.plan.get_grid_table_list()
 
     @vdp.VisDependentProperty(readonly=True)
-    def channelmap_range(self) -> List[List[List[Union[int, bool]]]]:
+    def channelmap_range(self) -> list[list[list[int | bool]]]:
         """Return list of line ranges to process.
 
         Returned list should conform with the list of MS and
@@ -171,18 +171,18 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
 
     def __init__(
         self,
-        context: 'Context',
-        vis: Optional[Union[str, List[str]]] = None,
-        plan: Optional[Union['RGAccumulator', List['RGAccumulator']]] = None,
-        fit_func: Optional[FitFunc] = None,
-        fit_order: Optional[FitOrder] = None,
-        switchpoly: Optional[bool] = None,
-        edge: Optional[List[int]] = None,
-        deviationmask: Optional[Union[dict, List[dict]]] = None,
-        blparam: Optional[Union[str, List[str]]] = None,
-        bloutput: Optional[Union[str, List[str]]] = None,
-        org_directions_dict: Optional[dict] = None,
-        parallel: Optional[Union[bool, str]] = None
+        context: Context,
+        vis: str | list[str] | None = None,
+        plan: RGAccumulator | list[RGAccumulator] | None = None,
+        fit_func: FitFunc | None = None,
+        fit_order: FitOrder | None = None,
+        switchpoly: bool | None = None,
+        edge: list[int] | None = None,
+        deviationmask: dict | list[dict] | None = None,
+        blparam: str | list[str] | None = None,
+        bloutput: str | list[str] | None = None,
+        org_directions_dict: dict | None = None,
+        parallel: bool | str | None = None
     ) -> None:
         """Construct BaselineSubtractionWorkerInputs instance.
 
@@ -291,8 +291,8 @@ class BaselineSubtractionResults(common.SingleDishResults):
     """Results class to hold the result of baseline subtraction."""
 
     def __init__(self,
-                 task: Optional[Type[basetask.StandardTaskTemplate]] = None,
-                 success: Optional[bool] = None,
+                 task: type[basetask.StandardTaskTemplate] | None = None,
+                 success: bool | None = None,
                  outcome: Any = None) -> None:
         """Construct BaselineSubtractionResults instance.
 
@@ -303,7 +303,7 @@ class BaselineSubtractionResults(common.SingleDishResults):
         """
         super(BaselineSubtractionResults, self).__init__(task, success, outcome)
 
-    def merge_with_context(self, context: 'Context') -> None:
+    def merge_with_context(self, context: Context) -> None:
         """Merge result instance into context.
 
         No specific merge operation is done.
@@ -456,7 +456,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             virtual_spwid = self.inputs.context.observing_run.real2virtual_spw_id(spw_id, ms)
             data_desc = ms.get_data_description(spw=spw_id)
             num_pol = data_desc.num_polarizations
-            polids = numpy.arange(num_pol, dtype=int)
+            polids = np.arange(num_pol, dtype=int)
             LOG.info('field %s antenna %s spw %s', field_id, antenna_id, spw_id)
             if (field_id, antenna_id, spw_id) in deviationmask_list:
                 deviationmask = deviationmask_list[(field_id, antenna_id, spw_id)]
@@ -483,8 +483,8 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             data_desc = ms.get_data_description(spw=spw)
             npol = data_desc.num_polarizations
             data_manager.resize_storage(num_ra, num_dec, npol, nchan)
-            frequency = numpy.fromiter((spw.channels.chan_freqs[i] * 1.0e-9 for i in range(nchan)),
-                                       dtype=numpy.float64)  # unit in GHz
+            frequency = np.fromiter((spw.channels.chan_freqs[i] * 1.0e-9 for i in range(nchan)),
+                                    dtype=np.float64)  # unit in GHz
             data = data_manager.store_result_get_data(num_ra, num_dec, rowlist, npol, nchan,
                                                       out_rowmap=out_rowmap, in_rowmap=in_rowmap)
             postfit_integrated_data = data[0]
@@ -516,8 +516,8 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         return results
     
 
-    def get_fit_order_dict(fit_order: Optional[Union[int, Dict[Union[int, str], int]]],
-                    spw_id_list: List[int], ms: MeasurementSet = None, context: Context = None) -> Dict[int, Union[int, str]]:
+    def get_fit_order_dict(fit_order: int | dict[int | str, int | None],
+                    spw_id_list: list[int], ms: MeasurementSet = None, context: Context = None) -> dict[int, int | str]:
         """
         Convert the fit_order parameter into a dictionary mapping each SPW ID to its fit order.
         
@@ -565,8 +565,8 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             raise TypeError(f"Value of fit_order has wrong data type: {type(fit_order)}")
 
 
-    def get_fit_func_dict(fit_func: Optional[Union[str, Dict[Union[int, str], str]]],
-                        spw_id_list: List[int], ms: MeasurementSet = None, context: Context = None,  switchpoly=True) -> Dict[int, BaselineFitParamConfig]:
+    def get_fit_func_dict(fit_func: str | dict[int | str, str | None],
+                        spw_id_list: list[int], ms: MeasurementSet = None, context: Context = None,  switchpoly=True) -> dict[int, BaselineFitParamConfig]:
         """
         Convert the fit_func parameter into a dictionary mapping each SPW ID to its BaselineFitParamConfig.
 

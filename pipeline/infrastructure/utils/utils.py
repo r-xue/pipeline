@@ -24,20 +24,20 @@ from collections.abc import Iterable
 from datetime import datetime
 from functools import wraps
 from numbers import Number
-from typing import (TYPE_CHECKING, Any, Callable, Collection, Dict, Iterator,
-                    List, Optional, Sequence, TextIO, Tuple, Union)
+from typing import TYPE_CHECKING, Any, Callable, Collection, Iterator, Sequence, TextIO
 from urllib.parse import urlparse
 
 import numpy as np
 import numpy.typing as npt
 
-from .. import casa_tools, logging
+import pipeline.infrastructure as infrastructure
+from .. import casa_tools
 from .conversion import commafy, dequote, range_to_list
 
 if TYPE_CHECKING:
     from pipeline.domain import MeasurementSet
 
-LOG = logging.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 __all__ = [
     'absolute_path',
@@ -79,7 +79,7 @@ __all__ = [
 ]
 
 
-def find_ranges(data: Union[str, List[int]]) -> str:
+def find_ranges(data: str | list[int]) -> str:
     """Identify numeric ranges in string or list.
 
     This utility function takes a string or a list of integers (e.g. spectral
@@ -116,7 +116,7 @@ def find_ranges(data: Union[str, List[int]]) -> str:
     return ','.join(ranges)
 
 
-def dict_merge(a: Dict, b: Union[Dict, any]) -> Dict:
+def dict_merge(a: dict, b: dict | any) -> dict:
     """Recursively merge dictionaries.
 
     This utility function recursively merges dictionaries. If second argument
@@ -139,7 +139,7 @@ def dict_merge(a: Dict, b: Union[Dict, any]) -> Dict:
     return result
 
 
-def are_equal(a: Union[List, np.ndarray], b: Union[List, np.ndarray]) -> bool:
+def are_equal(a: list | np.ndarray, b: list | np.ndarray) -> bool:
     """Return True if the contents of the given arrays are equal.
 
     This utility function check the equivalence of array like objects. Two arrays
@@ -172,7 +172,7 @@ def approx_equal(x: float, y: float, tol: float = 1e-15) -> bool:
     return (lo + 0.5 * tol) >= (hi - 0.5 * tol)
 
 
-def flagged_intervals(vec: Union[List, np.ndarray]) -> List:
+def flagged_intervals(vec: list | np.ndarray) -> list:
     """Idendity isnads of ones in input array or list.
 
     This utility function finds islands of ones in array or list provided in argument.
@@ -257,7 +257,7 @@ def get_field_accessor(ms, field):
     return accessor
 
 
-def get_field_identifiers(ms) -> Dict:
+def get_field_identifiers(ms) -> dict:
     """Maps numeric field IDs to field names.
 
     Get a dict of numeric field ID to unambiguous field identifier, using the
@@ -268,7 +268,7 @@ def get_field_identifiers(ms) -> Dict:
     return {field.id: field_name_accessors[field.id](field) for field in ms.fields}
 
 
-def get_receiver_type_for_spws(ms, spwids: Sequence) -> Dict:
+def get_receiver_type_for_spws(ms, spwids: Sequence) -> dict:
     """Return dictionary of receiver types for requested spectral window IDs.
 
     If spwid is not found in MeasurementSet instance, then detector type is
@@ -291,7 +291,7 @@ def get_receiver_type_for_spws(ms, spwids: Sequence) -> Dict:
     return rxmap
 
 
-def get_spectralspec_to_spwid_map(spws: Collection) -> Dict:
+def get_spectralspec_to_spwid_map(spws: Collection) -> dict:
     """
     Returns a dictionary of spectral specs mapped to corresponding spectral
     window IDs for requested list of spectral window objects.
@@ -357,7 +357,7 @@ def get_stokes(imagename):
     return stokes_present
 
 
-def get_casa_quantity(value: Union[None, Dict, str, float, int]) -> Dict:
+def get_casa_quantity(value: None | dict | str | float | int) -> dict:
     """Wrapper around quanta.quantity() that handles None input.
 
     Starting with CASA 6, quanta.quantity() no longer accepts None as input. This
@@ -435,7 +435,7 @@ def absolute_path(name: str) -> str:
     return os.path.abspath(os.path.expanduser(os.path.expandvars(name)))
 
 
-def relative_path(name: str, start: Optional[str]=None) -> str:
+def relative_path(name: str, start: str | None=None) -> str:
     """
     Retun a relative path of a given file with respect a given origin.
 
@@ -480,7 +480,7 @@ def get_task_result_count(context, taskname: str = 'hif_makeimages') -> int:
     return count
 
 
-def place_repr_source_first(itemlist: Union[List[str], List[Tuple]], repr_source: str) -> Union[List[str], List[Tuple]]:
+def place_repr_source_first(itemlist: list[str] | list[tuple], repr_source: str) -> list[str] | list[tuple]:
     """
     Place representative source first in a list of source names
     or tuples with source name as first tuple element.
@@ -575,7 +575,7 @@ def get_obj_size(obj: Any, serialize: bool = True) -> int:
         ) from err
 
 
-def glob_ordered(pattern: str, *args, order: Optional[str] = None, **kwargs) -> List[str]:
+def glob_ordered(pattern: str, *args, order: str | None = None, **kwargs) -> list[str]:
     """Return a sorted list of paths matching a pathname pattern."""
     path_list = glob.glob(pattern, *args, **kwargs)
 
@@ -674,7 +674,7 @@ def open_with_lock(filename: str, mode: str = 'r', *args: Any, **kwargs: Any) ->
     This context manager attempts to acquire an exclusive lock on the file upon opening.
     Other processes using `open_with_lock` will wait until the lock is automatically released
     when exiting the context.
-    
+
     Args:
         filename: Path to the file to open and lock.
         mode: File open mode (e.g., 'rt', 'wt', 'a', 'rb').
@@ -694,11 +694,11 @@ def open_with_lock(filename: str, mode: str = 'r', *args: Any, **kwargs: Any) ->
         **Filesystem Support:**
         The Python `fcntl` API's behavior depends on the underlying OS/storage
         implementation: https://docs.python.org/3/library/fcntl.html. Not all
-        OS/file systems fully support file locking.        
+        OS/file systems fully support file locking.
         - **Lustre**: Requires mount option `-o flock`. Check with: `mount -l | grep lustre`
             e.g. : `192.168.1.30@o2ib:/aoclst03 on /.lustre/aoc type lustre (rw,flock,user_xattr,lazystatfs)`
         - **NFS**: Support varies by configuration (see PIPE-2051 for details)
-        - **Local filesystems**: Generally well-supported on Unix-like systems        
+        - **Local filesystems**: Generally well-supported on Unix-like systems
 
         **Testing Lock Behavior:**
         To verify exclusive locking works on your system, run this from multiple processes:
@@ -834,29 +834,29 @@ def remove_trailing_string(s, t):
     else:
         return s
 
-ConditionType = Union[Callable, Dict[str, Dict[str, Dict[str, Any]]]]
+ConditionType = Callable | dict[str, dict[str, dict[str, Any]]]
 
 def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth: int=5,
-                       condition: Optional[ConditionType]=None, timestamp: bool=True):
+                       condition: ConditionType | None=None, timestamp: bool=True):
     """
     Dump arguments and return-objects of a function implement the decolator into pickle files and/or JSON(-like) file.
-    
+
     This function is a helper method for development. It should not be used in production codes.
-    
+
     Usage:
     @function_io_dumper()
     def foobar(self, bar):
         ...
         return ret
-    
+
     When foobar() is executed, the decolator makes a directory 'foobar.[timestamp]', then it dumps
     all objects of arguments and return values of foobar() as pickle files and|or JSON files.
     We can get the same behavior of foobar() with the pickles as when they were dumped:
-    
+
     with open('bar.pickle', 'rb') as f:
         bar = pickle.load(f)
     foobar(bar)
-    
+
     or, understand input/result of the function by JSON-like output. To avoid recursive or tremendous output,
     it sets max depth of recursive (default to 5).
 
@@ -880,13 +880,13 @@ def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            
+
             # create timestamp
             epoch_time = time.time()
             dt = datetime.fromtimestamp(epoch_time)
             ns = int((epoch_time - int(epoch_time)) * 1_000_000_000)
             _timestamp = dt.strftime(f'%Y%m%d-%H%M%S.{ns}')
-            
+
             # make signatures of args
             sig = inspect.signature(func)
             bound_args = sig.bind(*args, **kwargs)
@@ -904,13 +904,13 @@ def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth
             extention = ''
             if timestamp:
                 extention = f'.{_timestamp}'
-                
+
             output_folder_name = f"{func.__name__}{extention}"
 
             json_dict = None
             if to_json:
                 json_dict = object_to_dict(bound_args.arguments, max_depth=json_max_depth)
-            
+
             try:
                 os.makedirs(output_folder_name, exist_ok=True)
 
@@ -946,7 +946,7 @@ def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth
 
 def _dump(obj: object, path: str, name: str, dump_pickle: bool=True, dump_json: bool=False, json_dict={}):
     file_path = os.path.join(path, f'{name}')
-    
+
     if dump_pickle:
         with open(file_path+'.pickle', 'wb') as f:
             pickle.dump(obj, f)
@@ -968,9 +968,9 @@ def _eval_condition(condition, args):
     # {'self', {'spw':10}}, need unittest
     if condition is None:
         return True
-    
+
     LOG.info(f'condition: {condition}')
-    
+
     for key, val in condition:
         arg = args.get(key, False)
         if arg:
@@ -1018,21 +1018,21 @@ def object_to_dict(obj, max_depth=5, current_depth=0):
         return obj
 
 
-def decorate_io_dumper(cls: object, functions: List[str]=[], *args: Any, **kwargs: Any):
+def decorate_io_dumper(cls: object, functions: list[str]=[], *args: Any, **kwargs: Any):
     """Apply function_io_dumper dynamically.
 
     Usage:
     ...
     import pipeline.infrastructure.utils.utils as ut
-    
+
     ut.decorate_io_dumper(SDInspection, ['execute'])
-    
+
     ...
     hsd_importdata()  # -> dump args of SDInspection.execute()
 
     Args:
         cls (object): the class has functions to be decorated.
-        functions (List[str], optional): Function names to decodate. If not specified or
+        functions (list[str], optional): Function names to decodate. If not specified or
             set empty list, then all functions of the class are decorated. Defaults to [].
     """
     if len(functions) == 0:
@@ -1057,7 +1057,7 @@ def _str_to_func(cls: object, _name: str):
     return False
 
 
-def list_to_str(value: Union[List[Union[Number, str]], npt.NDArray]) -> str:
+def list_to_str(value: list[Number | str, npt.NDArray]) -> str:
     """Convert list or numpy.ndarray into string.
 
     The list/ndarray should be 1-dimensional. In that case, the function

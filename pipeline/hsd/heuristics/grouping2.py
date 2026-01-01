@@ -1,6 +1,6 @@
 """Set of heuristics for data grouping."""
 from numbers import Real
-from typing import Dict, List, NewType, Sequence, Tuple, Union
+from typing import Sequence
 
 import numpy as np
 
@@ -8,15 +8,15 @@ import pipeline.infrastructure.api as api
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
-Angle = NewType('Angle', Union[float, int, Dict])
+Angle = float | int | dict
 
 
 class GroupByPosition2(api.Heuristic):
     """Grouping by RA/DEC position."""
 
-    def calculate(self, ra: np.ndarray, dec: np.ndarray, r_combine: Angle, r_allowance: Angle) -> Tuple[Dict, List]:
+    def calculate(self, ra: np.ndarray, dec: np.ndarray, r_combine: Angle, r_allowance: Angle) -> tuple[dict, list]:
         """Group data by RA/DEC position.
 
         Divides data into groups by their positions in two
@@ -133,7 +133,7 @@ class GroupByPosition2(api.Heuristic):
 class GroupByTime2(api.Heuristic):
     """Grouping by time sequence."""
 
-    def calculate(self, timebase: Sequence[Real], time_diff: Sequence[Real]) -> Tuple[List, List]:
+    def calculate(self, timebase: Sequence[Real], time_diff: Sequence[Real]) -> tuple[list, list]:
         """Group data by time sequence.
 
         Divides data into groups by their difference (time_diff).
@@ -227,7 +227,7 @@ class GroupByTime2(api.Heuristic):
 class ThresholdForGroupByTime(api.Heuristic):
     """Estimate thresholds for large and small time gaps."""
 
-    def calculate(self, timebase: Sequence[Real]) -> Tuple[List, List]:
+    def calculate(self, timebase: Sequence[Real]) -> tuple[list, list]:
         """Estimate thresholds for large and small time gaps.
 
         Estimate thresholds for large and small time gaps using
@@ -281,7 +281,7 @@ class ThresholdForGroupByTime(api.Heuristic):
 class MergeGapTables2(api.Heuristic):
     """Merge time gap and position gaps."""
 
-    def calculate(self, TimeGap: List, TimeTable: List, PosGap: List, tBEAM: Sequence[int]) -> Tuple[List, List]:
+    def calculate(self, TimeGap: list, TimeTable: list, PosGap: list, tBEAM: Sequence[int]) -> tuple[list, list]:
         """Merge time gap and position gaps.
 
         Merge time gap list (TimeGap) and position gap list (PosGap).

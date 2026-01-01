@@ -3,7 +3,6 @@ import dataclasses
 import os
 import traceback
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Set, Tuple
 
 import numpy
 
@@ -30,7 +29,7 @@ from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.utils.math import round_half_up
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 __all__ = [
     'SpwPhaseupInputs',
@@ -406,7 +405,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         return result
 
     @staticmethod
-    def _derive_phase_to_target_check_mapping(ms: MeasurementSet) -> Dict[str, Set]:
+    def _derive_phase_to_target_check_mapping(ms: MeasurementSet) -> dict[str, set]:
         """
         Derive mapping between PHASE calibrator fields (by name) and
         corresponding fields (by name) with TARGET / CHECK intent that these
@@ -472,7 +471,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return mapping
 
-    def _derive_spwmaps(self, spwmap_intents: str, exclude_intents: str) -> Dict[IntentField, SpwMapping]:
+    def _derive_spwmaps(self, spwmap_intents: str, exclude_intents: str) -> dict[IntentField, SpwMapping]:
         """
         Compute separate optimal spectral window mapping for each field
         covering one of the intents specified by "spwmap_intents", unless the
@@ -1208,7 +1207,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         return snr_info
 
-    def _do_decoherence_assessment(self) -> Tuple[Optional[Dict], Optional[str], Optional[str], List]:
+    def _do_decoherence_assessment(self) -> tuple[dict | None, str | None, str | None, list]:
         try:
             LOG.info("Starting phase RMS structure function decoherence assessment.")
 
@@ -1885,10 +1884,10 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
 
 class SpwPhaseupResults(basetask.Results):
-    def __init__(self, vis: str = None, phasecal_mapping: Dict = None, phaseup_result: GaincalResults = None,
-                 snr_info: Dict = None, spwmaps: Dict = None, unregister_existing: Optional[bool] = False,
+    def __init__(self, vis: str = None, phasecal_mapping: dict = None, phaseup_result: GaincalResults = None,
+                 snr_info: dict = None, spwmaps: dict = None, unregister_existing: bool | None = False,
                  phaserms_totaltime: str = None, phaserms_cycletime: str = None,
-                 phaserms_results: Optional[Dict] = None, phaserms_antout: Optional[List] = None):
+                 phaserms_results: dict | None = None, phaserms_antout: list | None = None):
         """
         Initialise the phaseup spw mapping results object.
         """

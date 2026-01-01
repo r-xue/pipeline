@@ -26,7 +26,6 @@ import shutil
 import string
 import traceback
 import textwrap
-from typing import List, Optional
 
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
@@ -41,7 +40,7 @@ from pipeline.infrastructure import casa_tasks, casa_tools, filenamer
 from pipeline.infrastructure.displays.plotstyle import matplotlibrc_formal
 from pipeline.infrastructure.utils import get_stokes
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 _valid_chars = "_.%s%s" % (string.ascii_letters, string.digits)
 
@@ -52,14 +51,14 @@ def plotfilename(image, reportdir, collapseFunction=None, stokes=None):
     Args:
         image (str): Path to the image file.
         reportdir (str): Directory where the report will be saved.
-        collapseFunction (Optional[str]): Collapse function used, if any.
-        stokes (Optional[str]): Stokes parameter, if specified.
+        collapseFunction (str | None): Collapse function used, if any.
+        stokes (str | None): Stokes parameter, if specified.
 
     Returns:
-        str: The generated filename for the plot.   
-    
+        str: The generated filename for the plot.
+
     Note:
-        The Stokes suffix is only attached when explicitly specified (PIPE-1410).         
+        The Stokes suffix is only attached when explicitly specified (PIPE-1410).
     """
 
     name_elements = [os.path.basename(image)]
@@ -78,12 +77,12 @@ class SkyDisplay:
         self.figsize = figsize              # class instance default figsize value
         self._dpi = dpi                     # class instance default dpi
 
-    def plot_per_stokes(self, *args, stokes_list: Optional[List[str]] = None, **kwargs) -> List:
+    def plot_per_stokes(self, *args, stokes_list: list[str] | None = None, **kwargs) -> list:
         """Plot sky images from a CASA image file with multiple Stokes planes.
 
         Args:
             *args: Positional arguments to be passed to self.plot().
-            stokes_list (Optional[List[str]]): List of Stokes parameters to plot.
+            stokes_list (list[str] | None): List of Stokes parameters to plot.
                 If None, all available Stokes planes will be plotted.
             **kwargs: Keyword arguments to be passed to self.plot().
 
@@ -181,7 +180,7 @@ class SkyDisplay:
         return ','.join(bands) if bands else None
 
     def plot(self, context, imagename, reportdir, intent=None, collapseFunction='mean',
-             stokes: Optional[str] = None, vmin=None, vmax=None, mom8_fc_peak_snr=None,
+             stokes: str | None = None, vmin=None, vmax=None, mom8_fc_peak_snr=None,
              maskname=None, dpi=None, **imshow_args):
         """Plot sky images from a image file."""
 
@@ -229,7 +228,7 @@ class SkyDisplay:
 
         return plot
 
-    def _collapse_image(self, imagename, collapseFunction='mean', stokes: Optional[str] = None):
+    def _collapse_image(self, imagename, collapseFunction='mean', stokes: str | None = None):
         """Collapse an image along the spectral axis."""
 
         stokes_present = get_stokes(imagename)
@@ -248,7 +247,7 @@ class SkyDisplay:
 
     @matplotlibrc_formal
     def _plot_panel(self, context, reportdir, imagename, collapseFunction='mean',
-                    stokes: Optional[str] = None, mom8_fc_peak_snr=None,
+                    stokes: str | None = None, mom8_fc_peak_snr=None,
                     maskname=None, dpi=None, **imshow_args):
         """Method to plot a map."""
         plotfile = plotfilename(image=os.path.basename(imagename),
@@ -340,7 +339,7 @@ class SkyDisplay:
             collapsed.done()
             cs.done()
             return plotfile, coord_names, field_name, band_name
-        
+
         cs.setunits(type='direction', value='arcsec arcsec')
         coord_units = cs.units()
         coord_refs = cs.referencevalue(format='s')
@@ -520,7 +519,7 @@ class SkyDisplay:
 
         # done with ia.coordsys()
         cs.done()
-        
+
         return plotfile, coord_names, field_name, band_name
 
     def _plot_psf_inset(self, ax, mdata, imshow_args, beam=None, cs=None):

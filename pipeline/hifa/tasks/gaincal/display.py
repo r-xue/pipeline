@@ -1,11 +1,9 @@
-from typing import Union, List, Dict
-
 import pipeline.h.tasks.common.displays.common as common
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class GaincalSummaryChart(object):
@@ -47,7 +45,7 @@ class GaincalDetailChart(object):
     """
     Base class for executing plotms per spw and antenna
     """
-    def __init__(self, context, result, calapps: List[callibrary.CalApplication], intent, xaxis, yaxis, plotrange=None, coloraxis=''):
+    def __init__(self, context, result, calapps: list[callibrary.CalApplication], intent, xaxis, yaxis, plotrange=None, coloraxis=''):
         if plotrange is None:
             plotrange = []
         if yaxis == 'amp':

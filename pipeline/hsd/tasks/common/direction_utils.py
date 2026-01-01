@@ -17,18 +17,19 @@ is centered at 'origin' (or org_direction),
 which is where the epheris source resided on the RA/Dec plane 
 at the time of the first on-source observing point in the dataset. 
 """
+from __future__ import annotations
+
+from typing import NewType
 
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
-from typing import Dict, NewType, Tuple, Union
-
-Quantity  = NewType( 'Quantity',  Dict )
-Direction = NewType( 'Direction', Dict )
-Epoch     = NewType( 'Epoch',     Dict )
-Position  = NewType( 'Position',  Dict )
+Quantity  = NewType( 'Quantity',  dict )
+Direction = NewType( 'Direction', dict )
+Epoch     = NewType( 'Epoch',     dict )
+Position  = NewType( 'Position',  dict )
 
 __all__ = { 'direction_shift', 'direction_offset', 'direction_recover', 'direction_convert' }
 
@@ -102,7 +103,7 @@ def direction_offset( direction:Direction, reference:Direction ) -> Direction:
     return new_direction
 
 
-def direction_recover( ra:float, dec:float, org_direction:Direction ) -> Tuple[float, float]:
+def direction_recover( ra:float, dec:float, org_direction:Direction ) -> tuple[float, float]:
     """
     Recovers the 'Shifted-coordinate' from 'Offset-coordinate'.
 
@@ -131,7 +132,7 @@ def direction_recover( ra:float, dec:float, org_direction:Direction ) -> Tuple[f
     return new_ra, new_dec
 
 
-def direction_convert(direction:Direction, mepoch:Epoch, mposition:Position, outframe:str) -> Tuple[Quantity, Quantity]:
+def direction_convert(direction:Direction, mepoch:Epoch, mposition:Position, outframe:str) -> tuple[Quantity, Quantity]:
     """
     Convert the frame of the 'direction' to 'outframe'.
 

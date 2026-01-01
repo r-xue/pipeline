@@ -1,8 +1,7 @@
 import collections
 import os
-from typing import List, Union
 
-import pipeline.infrastructure.logging as logging
+import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.hifa.tasks.common.common_renderer_utils import get_spwmaps
@@ -12,7 +11,7 @@ from pipeline.infrastructure import generate_detail_plots
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.basetask import ResultsList
 
-LOG = logging.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 DiffGainApplication = collections.namedtuple('DiffGainApplication', 'ms gaintable calmode solint intent spw')
 
@@ -56,7 +55,7 @@ class T2_4MDetailsDiffgaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         })
 
 
-def get_diffgain_applications(context: Context, results: ResultsList) -> List[DiffGainApplication]:
+def get_diffgain_applications(context: Context, results: ResultsList) -> list[DiffGainApplication]:
     calmode_map = {
         'p': 'Phase only',
         'a': 'Amplitude only',
@@ -89,7 +88,7 @@ def get_diffgain_applications(context: Context, results: ResultsList) -> List[Di
     return applications
 
 
-def get_plots(context: Context, results: Union[List, ResultsList], summary_plot_cls, detail_plot_cls, renderer_cls):
+def get_plots(context: Context, results: list | ResultsList, summary_plot_cls, detail_plot_cls, renderer_cls):
     summaries = {}
     subpages = {}
     details = {}

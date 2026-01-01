@@ -1,7 +1,7 @@
 import collections
 import copy
 import os
-from typing import Callable, Dict, Optional
+from typing import Callable
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -23,7 +23,7 @@ __all__ = [
     'ApplycalResults',
 ]
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class ApplycalInputs(vdp.StandardInputs):
@@ -163,8 +163,8 @@ class ApplycalResults(basetask.Results):
     ApplycalResults is the results class for the pipeline Applycal task.
     """
 
-    def __init__(self, applied=None, callib_map: Dict[str, str]=None,
-                 data_type: Optional[DataType]=None):
+    def __init__(self, applied=None, callib_map: dict[str, str]=None,
+                 data_type: DataType | None=None):
         """
         Construct and return a new ApplycalResults.
 
@@ -172,7 +172,7 @@ class ApplycalResults(basetask.Results):
         CalibrationTables corresponding to the caltables applied by this task.
 
         :param applied: caltables applied by this task
-        :type applied: list of :class:`~pipeline.domain.caltable.CalibrationTable`
+        :type applied: List of :class:`~pipeline.domain.caltable.CalibrationTable`
         """
         if applied is None:
             applied = []

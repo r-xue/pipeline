@@ -7,7 +7,6 @@ import time
 import types
 from contextlib import contextmanager
 from logging import CRITICAL, DEBUG, ERROR, INFO, WARNING
-from typing import List, Optional, Union
 
 import logutils
 import logutils.colorize as colorize
@@ -435,7 +434,7 @@ def log_level(name, level=logging.WARNING, filter=None):
 
 
 @contextmanager
-def log_filtermsg(msglist: Union[str, List[str]]):
+def log_filtermsg(msglist: str | list[str]):
     """Context manager to temporarily filter out specific messages from the CASA global logger.
     
     Note (as of CASA ver6.6.1):

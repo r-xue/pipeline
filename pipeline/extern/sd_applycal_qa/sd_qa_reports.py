@@ -1,5 +1,4 @@
 import sys
-from typing import List, Tuple, Union
 import numpy as np
 import re
 import glob
@@ -18,7 +17,7 @@ from . import mswrapper_sd
 
 def show_heat_XYdiff(msw: mswrapper_sd.MSWrapperSD, nchanbin: int = 1, nvisbin: int = 1,
                      zrange: str = '0.9', remove_skylines: bool = False, nchanstdblock: int = 20,
-                     plot_output_path: str = '.', colorlist: Union[list, str] = 'auto'):
+                     plot_output_path: str = '.', colorlist: list | str = 'auto'):
     """ Show heat map of TP data for Antenna/Spw for a MSWrapperSD object. Object must have the "data"
         and "spw_setup" attributes.
     param:
@@ -297,8 +296,8 @@ def show_heat_XYdiff(msw: mswrapper_sd.MSWrapperSD, nchanbin: int = 1, nvisbin: 
 
     return filename1
 
-def plot_data_trec(msw: mswrapper_sd.MSWrapperSD, thresholds: Union[dict, None] = None, plot_output_path: str = '.',
-                  colorlist: Union[list, str] = 'auto', detmsg: str = '') -> str:
+def plot_data_trec(msw: mswrapper_sd.MSWrapperSD, thresholds: dict | None = None, plot_output_path: str = '.',
+                  colorlist: list | str = 'auto', detmsg: str = '') -> str:
     '''Task used to 3-panel diagnostic plots of ON-source data and Trec tables (if available).
     param:
         msw: MSWrapperSD object with the data to be plotted
@@ -427,8 +426,8 @@ def plot_data_trec(msw: mswrapper_sd.MSWrapperSD, thresholds: Union[dict, None] 
 
     return filename
 
-def plot_data(msw: mswrapper_sd.MSWrapperSD, thresholds: Union[dict, None] = None, plot_output_path: str = '.',
-                  colorlist: Union[list, str] = 'auto', detmsg: str = '') -> str:
+def plot_data(msw: mswrapper_sd.MSWrapperSD, thresholds: dict | None = None, plot_output_path: str = '.',
+                  colorlist: list | str = 'auto', detmsg: str = '') -> str:
     '''Task used the diagnostic plot of ON-source XX-YY data for pipeline weblog.
     param:
         msw: MSWrapperSD object with the data to be plotted
@@ -511,7 +510,7 @@ def plot_data(msw: mswrapper_sd.MSWrapperSD, thresholds: Union[dict, None] = Non
 
     return filename
 
-def plot_science_det(msw: mswrapper_sd.MSWrapperSD, thresholds: Union[dict, None] = None,
+def plot_science_det(msw: mswrapper_sd.MSWrapperSD, thresholds: dict | None = None,
                     plot_output_path: str = '.') -> str:
     '''Task used to 3-panel diagnostic plots of ON-source time-averaged data, peak of FFT spectrum and
     XX-YY cross-correlation spectrum used for science line detection.

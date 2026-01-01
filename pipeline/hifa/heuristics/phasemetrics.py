@@ -1,6 +1,5 @@
-from typing import Dict, List, Optional, Tuple
-
 import copy
+
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
@@ -8,11 +7,11 @@ from pipeline.infrastructure import casa_tools
 from pipeline.hifa.heuristics import atm as atm_heuristic
 from pipeline.hifa.heuristics import phasespwmap
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 #################
 # Adapted from PIPE692.py::SSFanalyis. Original history:
-# L T Maud - ESO 
+# L T Maud - ESO
 #          - April 2020 0RIG
 #          - May 2021 full CASA 6 version mockup
 #          - March 2022 CASA 6.4 'class' version for PL
@@ -43,7 +42,7 @@ class PhaseStabilityHeuristics(object):
         self.scan = None
         self.refantid = None
         self.caltable = []
-       
+
         context = inputsin.context
         ms = context.observing_run.get_ms(self.vis)
         self.caltable = sorted(ms.phaseup_caltable_for_phase_rms)
@@ -55,7 +54,7 @@ class PhaseStabilityHeuristics(object):
             msg = "For {}, missing bandpass phaseup caltable and cannot perform decoherence assessment.".format(self.vis)
             LOG.error(msg)
             raise Exception(msg)
-        
+
         self.refant = inputsin.refant.split(',')[0]  # this is the NAME not the index
         self.antlist = []
         # loop ant list for id of refant
@@ -78,9 +77,9 @@ class PhaseStabilityHeuristics(object):
         # future note, if we have multiple phase calibrators and these have
         # a different spectral spec, should we do this as per the bandpass
         # i.e. get the scans, then find the id of the field for that scan?
-        # we can loop the first scan of a scan list and find the associated 
-        # field id - as below. 
-        # bnot expected to be used in standard observing practice 
+        # we can loop the first scan of a scan list and find the associated
+        # field id - as below.
+        # bnot expected to be used in standard observing practice
         ####################
 
         # Get the bandpass, using the first of the SpW candidates.
@@ -94,9 +93,9 @@ class PhaseStabilityHeuristics(object):
                 bp_field.append(elms.name)  # fields is a dict again...
                 bp_id.append(elms.id)  # PIPE-1661
 
-        self.scan = bp_scan[0]  # we only want the first scan, in case there are multiple for the BP (e.g. spectral scan data - NEEDS TESTING ON) - might want to do a sorted just to be sure. 
+        self.scan = bp_scan[0]  # we only want the first scan, in case there are multiple for the BP (e.g. spectral scan data - NEEDS TESTING ON) - might want to do a sorted just to be sure.
         self.field = bp_field[0]
-        self.fieldId = bp_id[0]  # PIPE-1661 needs ID not a name 
+        self.fieldId = bp_id[0]  # PIPE-1661 needs ID not a name
 
         # Select which SpW to use for phase stability analysis, and retrieve
         # corresponding baseline flagging information.
@@ -106,10 +105,10 @@ class PhaseStabilityHeuristics(object):
         self.PMinACA = self._pm_in_aca()
 
         # for BP scan only values from function for given scan/field/spw only
-        # this is keyed by blname, e.g.  self.baselines['DA42-DA42'] 
+        # this is keyed by blname, e.g.  self.baselines['DA42-DA42']
         self.baselines = self._getbaselinesproj()
 
-        # Get time/length of the bandpass scan 
+        # Get time/length of the bandpass scan
         self.totaltime, self.difftime = self._get_bandpass_scan_time()
 
         # getcycletime will use a lookup if there is 1 or less phase cal scans (PIPE-1848)
@@ -139,7 +138,7 @@ class PhaseStabilityHeuristics(object):
         # Write the seutp info to the log
         self._log_setup_info()
 
-    def analysis(self) -> Tuple[Dict, float, float, List]:
+    def analysis(self) -> tuple[dict, float, float, list]:
         """
         Do the phase RMS calculation, outlier analysis,
         and return everything required for qa scores, plotting, weblog
@@ -150,12 +149,12 @@ class PhaseStabilityHeuristics(object):
     def _do_analysis(self):
         """
         Do the phase RMS calculation, outlier analysis,
-        and fill the dictionary with everything required for later scoring and 
+        and fill the dictionary with everything required for later scoring and
         plotting
 
         inputs used are:
                   self.cycletime, self.totaltime, self.PMinACA,
-                  self.outlierlimit, self.outlier_antennas, self.maxpoorant 
+                  self.outlierlimit, self.outlier_antennas, self.maxpoorant
 
         uses functions:
                   self._phase_rms_caltab, self.mad
@@ -169,10 +168,10 @@ class PhaseStabilityHeuristics(object):
                   antphaserms, antphasermscycle, antname,
                   phasermsP80, phasermscycleP80, blP80, blP80orig
         """
-        
+
         # Call to phase_rms_caltab
         # gets baseline based phase RMS and antenna based phase RMS for
-        # the total time (i.e. length of BP scan) and 
+        # the total time (i.e. length of BP scan) and
         # the cycle time (time it takes to cycle the start of a phase cal scan to the next - ties with a 'decohernce time' over the target)
         if self.cycletime < self.totaltime:
             self.allResult = self._phase_rms_caltab(timeScale=self.cycletime)  # if cycle time is shorter we pass the option so it gets assessed
@@ -189,11 +188,11 @@ class PhaseStabilityHeuristics(object):
 
         if self.PMinACA:
             # we need to exclude PM antennas from the calculation as they 'can' be too 'long' baselines
-            # and not really useful for the understanding of the target likely phase RMS 
+            # and not really useful for the understanding of the target likely phase RMS
             # where only CM used in the images. Thus cut the PM from the upper 80 cut
             blACAid = np.array([blid for blid in range(len(self.allResult['blname'])) if 'PM' not in self.allResult['blname'][blid]])
             antACAid = np.array([antid for antid in range(len(self.allResult['antname'])) if 'PM' not in self.allResult['antname'][antid]])
- 
+
             # Reset allResult to exclude the PM baselines, and PM ants only
             bl_keys = ['blphaserms', 'blphasermscycle', 'bllen', 'blname'] # PIPE-1633
             ant_keys = ['antphaserms', 'antphasermscycle', 'antname'] # PIPE-1633
@@ -201,7 +200,7 @@ class PhaseStabilityHeuristics(object):
                 self.allResult[bl_key] = np.array(self.allResult[bl_key])[blACAid]
             for ant_key in ant_keys:
                 self.allResult[ant_key] = np.array(self.allResult[ant_key])[antACAid]
-            
+
         # Get 80th percentile baseline length and ID of all baselines above it
         self.allResult['blP80orig'] = np.percentile(self.allResult['bllen'], 80)  # was xy
 
@@ -215,12 +214,12 @@ class PhaseStabilityHeuristics(object):
         self.allResult['phasermsP80'] = np.median(np.array(self.allResult['blphaserms'])[ID_all80[np.isfinite(np.array(self.allResult['blphaserms'])[ID_all80])]])
         self.allResult['phasermscycleP80'] = np.median(np.array(self.allResult['blphasermscycle'])[ID_all80[np.isfinite(np.array(self.allResult['blphasermscycle'])[ID_all80])]])
         phaseRMScycleP80mad = self.mad(np.array(self.allResult['blphasermscycle'])[ID_all80[np.isfinite(np.array(self.allResult['blphasermscycle'])[ID_all80])]])
-        
+
         # Begin the outlier checks
         # first check if any antennas are just above 100 deg phase RMS (this means ~pure phase noise for phases between -180 to +180 deg)
         # so sensible to identify these antennas - over total time
         ID_poorant = np.where(np.array(self.allResult['antphaserms'])[np.isfinite(self.allResult['antphaserms'])]>self.outlierlimit)[0]
-        
+
         if len(ID_poorant) > 0:
             for antout in ID_poorant:
                 self.outlier_antennas.append(np.array(self.allResult['antname'])[np.isfinite(self.allResult['antphaserms'])][antout])
@@ -236,7 +235,7 @@ class PhaseStabilityHeuristics(object):
             if len(ID_poorant)>0:
                 for antout in ID_poorant:
                     self.outlier_antennas.append(np.array(self.allResult['antname'])[np.isfinite(self.allResult['antphaserms'])][antout])
-        
+
             # max limit on number of 'bad' antennas to be allowed to exclude from calculations (set at 11 good as tested in PIPE692)
             # we clip them out and recalculate - score function also tracks and gives a warning
             # if >11, basically the data is rubbish, so don't clip and let scores be low
@@ -264,7 +263,7 @@ class PhaseStabilityHeuristics(object):
                 self.allResult['blphasermscyclebad'] = np.array(self.allResult['blphasermscycle'])[np.array(ID_badbl)]
                 self.allResult['bllenbad'] = np.array(self.allResult['bllen'])[np.array(ID_badbl)]
             else:
-                # none the 'bad' entires in dict 
+                # none the 'bad' entires in dict
                 self.allResult['blphasermsbad'] = None
                 self.allResult['blphasermscyclebad'] = None
                 self.allResult['bllenbad'] = None
@@ -272,14 +271,14 @@ class PhaseStabilityHeuristics(object):
             # this else is for <50deg phase RMS where we do not recalcualte the phase RMS as its low already
             # but we still want to identify any outliers to notify in the messages
             statsoutlierlimit = np.max([self.allResult['phasermscycleP80'] + 6.0 * phaseRMScycleP80mad, 2.0 * self.allResult['phasermscycleP80']])
-            # outlier on cycle time 
+            # outlier on cycle time
             ID_poorant = np.where(np.array(self.allResult['antphasermscycle'])[np.isfinite(self.allResult['antphasermscycle'])]>statsoutlierlimit)[0]
             # add them to the list so score code picks them up if required and changes the messages
             if len(ID_poorant)>0:
                 for antout in ID_poorant:
                     self.outlier_antennas.append(np.array(self.allResult['antname'])[np.isfinite(self.allResult['antphaserms'])][antout])
 
-            # none the 'bad' entires in dict 
+            # none the 'bad' entires in dict
             self.allResult['blphasermsbad'] =  None
             self.allResult['blphasermscyclebad'] = None
             self.allResult['bllenbad'] = None
@@ -315,7 +314,7 @@ class PhaseStabilityHeuristics(object):
         input used:
                  self.antlist
 
-        returns: 
+        returns:
                 Bool based on PM with CM antennas
         """
         antUse = self.antlist
@@ -328,10 +327,10 @@ class PhaseStabilityHeuristics(object):
 
         return PMincACA
 
-    def _getbaselinesproj(self, field_id: Optional[int] = None) -> Dict[str, float]:
+    def _getbaselinesproj(self, field_id: int | None = None) -> dict[str, float]:
         """
-        Code to get the projected baseline from the openend 
-        visibilitiy file already - these are ordered in 
+        Code to get the projected baseline from the openend
+        visibilitiy file already - these are ordered in
         terms of antennas. This is a modified stand alone version
         similar to the getProjectedBaselines from Todd Hunter's AUs.
 
@@ -341,7 +340,7 @@ class PhaseStabilityHeuristics(object):
         with casa_tools.MSMDReader(self.vis) as msmd:
             spwchan = msmd.nchan(self.spw)
             datadescid = msmd.datadescids(spw=self.spw)[0]
-        
+
         with casa_tools.MSReader(self.vis) as ms:
             ms.selectinit(datadescid=datadescid)
             ms.select({'uvdist': [1e-9, 1e12]})  # avoid auto corr
@@ -351,7 +350,7 @@ class PhaseStabilityHeuristics(object):
                 ms.select({'field_id': int(field_id)})
             alldata = ms.getdata(['uvdist', 'antenna1', 'antenna2'])
 
-        # The length of e.g. alldata['uvdist'] is > total no. of Bls - it loops over all time stamps of the BP 
+        # The length of e.g. alldata['uvdist'] is > total no. of Bls - it loops over all time stamps of the BP
         # we need a mean of the unique values (as Todd's aU) otherwise we just get the first time entry in the below
         bldict = {}
         uniBl = []
@@ -368,7 +367,7 @@ class PhaseStabilityHeuristics(object):
 
         for myBl in uniBl:
             baselineLen[myBl] = np.mean(bldict[myBl])  # this has a list for each
-        
+
         # order irrelavant as keyed here with BL Name
         return baselineLen
 
@@ -385,7 +384,7 @@ class PhaseStabilityHeuristics(object):
 
         return {str(spwid) for spwid in spwids}
 
-    def _get_bandpass_scan_time(self) -> Tuple[float, float]:
+    def _get_bandpass_scan_time(self) -> tuple[float, float]:
         """
         Read a caltable file and return time
         shifted to start at zero seconds starting time.
@@ -393,8 +392,8 @@ class PhaseStabilityHeuristics(object):
 
         uses inputs:
                self.caltable, self.spw, self.scan, self.antlist
-        
-        :returns: total time of baseline scan, average integration time 
+
+        :returns: total time of baseline scan, average integration time
         :rtype: float, float
         """
         with casa_tools.TableReader(self.caltable) as tb:
@@ -422,13 +421,13 @@ class PhaseStabilityHeuristics(object):
     def _getcycletime(self) -> float:
         """
         Computes the median time (in seconds) between visits to the specified intent.
-        Note that other parts of the ALMA project consider the "cycleTime" to be the 
+        Note that other parts of the ALMA project consider the "cycleTime" to be the
         scan duration on the science target before going back to the phase calibrator,
-        i.e. ignoring the duration of the phasecal scan, the ATM cal scans, the 
+        i.e. ignoring the duration of the phasecal scan, the ATM cal scans, the
         checksource, and all the slewing and overhead.
 
         If the cycle time is not found, diverts to a lookup table (See: PIPE-1848)
-       
+
         This method is adapted from:
         - Todd Hunter ORIG in analysis Utils (cycleTime)
         - LM edited for this code
@@ -455,7 +454,7 @@ class PhaseStabilityHeuristics(object):
                 return usecycle
 
             # all correctly formed data should go here
-            # now get the times for the scans and work out the cycle time 
+            # now get the times for the scans and work out the cycle time
             times = []
 
             for scan in scans:
@@ -508,9 +507,9 @@ class PhaseStabilityHeuristics(object):
             raise Exception(msg)
 
         return float(cycletime)
-    
+
     def _getfreq(self) -> float:
-        """ 
+        """
         Get the median frequency for the spw.
 
         The return is in Hz used for getting the band.
@@ -519,10 +518,10 @@ class PhaseStabilityHeuristics(object):
         """
         # TODO: update to fetch from context
         with casa_tools.MSMDReader(self.vis) as msmd:
-            freqval = np.median(msmd.chanfreqs(self.spw))  # otherwise all channels 
-    
+            freqval = np.median(msmd.chanfreqs(self.spw))  # otherwise all channels
+
         return freqval
-    
+
     def _getband(self) -> int:
         """
         Identify the Band for specific frequency (in GHz)
@@ -530,7 +529,7 @@ class PhaseStabilityHeuristics(object):
         """
 
         freq = self._getfreq()
-        
+
         lo = np.array([35, 67, 84, 125, 157, 211, 275, 385, 602, 787])*1e9
         hi = np.array([51, 85, 116, 163, 212, 275, 373, 500, 720, 950])*1e9
         # Set Band 2 to stop at current B3
@@ -540,26 +539,26 @@ class PhaseStabilityHeuristics(object):
         return bandsel
 
     def _getconfig(self) -> int:
-        ''' Identify the configuration based on 
-        baseline length - returns as an int to 
+        ''' Identify the configuration based on
+        baseline length - returns as an int to
         allow a table search for cycle time
         PIPE-1848
         '''
 
         # self.baselines is a dict, rule is max on a dict returns a
-        # key for the max so this is max baseline to use 
+        # key for the max so this is max baseline to use
         maxbl = self.baselines[max(self.baselines)]
         shortbl = np.array([0, 44, 160, 313, 499, 783, 1399, 2499, 3599, 8499, 13899])
-        longbl = np.array([45, 161, 314, 500, 784, 1400, 2500, 3600, 8500, 13900, 20000])  # upper limit greater than baseline len 
-            
+        longbl = np.array([45, 161, 314, 500, 784, 1400, 2500, 3600, 8500, 13900, 20000])  # upper limit greater than baseline len
+
         config = np.arange(0, len(longbl))[(maxbl > shortbl) & (maxbl < longbl)][0]
 
         return config
-    
-    def _getblflags(self, spw: int, ant1: Optional[str] = None, ant2: Optional[str] = None) \
-            -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+
+    def _getblflags(self, spw: int, ant1: str | None = None, ant2: str | None = None) \
+            -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         """
-        Code to open and close the table for the MS 
+        Code to open and close the table for the MS
         and get the baseline based flags in one lump
 
         we only pass the spw as previously established
@@ -595,13 +594,13 @@ class PhaseStabilityHeuristics(object):
 
             flags = tb1.getcol('FLAG')  # index is [pol][chan][integration]
             a1s = tb1.getcol('ANTENNA1')
-            a2s = tb1.getcol('ANTENNA2') 
+            a2s = tb1.getcol('ANTENNA2')
             field = tb1.getcol('FIELD_ID')
             tb1.close()
 
-        return flags, a1s, a2s, field  
+        return flags, a1s, a2s, field
 
-    def _log_setup_info(self): 
+    def _log_setup_info(self):
         """
         Prints information about the setup of the SSF analysis to the log at the "info" level
         """
@@ -624,15 +623,15 @@ class PhaseStabilityHeuristics(object):
         phases from one pol (tested in PIPE692 as sufficient).
         If those phase data have a flag, the phase
         value is set to nan, which is dealt with in the correct
-        way during the rest of the calulation. The phases 
-        are unwrapped, i.e. solved for the 2PI ambiguitiy 
+        way during the rest of the calulation. The phases
+        are unwrapped, i.e. solved for the 2PI ambiguitiy
 
         input required:
-                 ant (int)  - the antenna to get the phases for 
+                 ant (int)  - the antenna to get the phases for
 
         uses inputs:
                  self.caltable, self.refantid, self.spw, self.scan
-  
+
 
         returns: float array of the phases of an antenna
         """
@@ -646,7 +645,7 @@ class PhaseStabilityHeuristics(object):
             # single and full-pol to check, this single pull will work, but with more then the order differs (c.f. renorm pol code)
 
             # Exclude flagged data as it is extracted from the gaintable
-            # this is antenna based only   
+            # this is antenna based only
             flags = tb1.getcol('FLAG')  # [0][0]
             tb1.close()
 
@@ -658,18 +657,18 @@ class PhaseStabilityHeuristics(object):
         cal_phases = self.phase_unwrap(cal_phases)
         return cal_phases
 
-    def _phase_rms_caltab(self, antout: list=[], timeScale: float=None) -> Dict[str, str]:
+    def _phase_rms_caltab(self, antout: list=[], timeScale: float=None) -> dict[str, str]:
         """
         Run the loop over the caltable, work out the baseline based phases,
         and calculate the phase RMS. Also get the Phase RMS per antenna (with
         respect to the refant - i.e. ant based phase RMS).
-        
+
         inputs used:
               self.antlist, self.flag_tolerance, self.difftime, self.baselines
 
         calls functions:
               self._get_cal_phase, self.ave_phase, self.std_overlapping_avg
- 
+
         returns:  rms_results{}
         dict keys: blphaserms, bphasermscycle, bllen, blname,
                    antphaserms, antphasermscycle, antname
@@ -685,7 +684,7 @@ class PhaseStabilityHeuristics(object):
         rms_results['antphasermscycle'] = []
         rms_results['antname'] = []
 
-        # PIPE-1661 baseline based flag awareness - these store flags 
+        # PIPE-1661 baseline based flag awareness - these store flags
         # that we read in - just in case we 'need' this information
         rms_results['blflags'] = []
 
@@ -732,8 +731,8 @@ class PhaseStabilityHeuristics(object):
 
             jloop = np.arange(i+1, nant)  # baseline loop
             for j in jloop:
-                # Get the phases - needs to be the single read in table 
-                
+                # Get the phases - needs to be the single read in table
+
                 # pHant1 is read in above already
                 pHant2 = self._get_cal_phase(j)
                 # phases from cal table come in an order, baseline then is simply the subtraction
@@ -744,7 +743,7 @@ class PhaseStabilityHeuristics(object):
                 # OLD (new) WAY from context - average all as overview
                 # not direcrtly the BP only
                 # rms_results['bllen'].append(float(self.baselines.get_baseline(i,j).length.value)) # from context input
-                
+
                 rms_results['bllen'].append(float(self.baselines[self.antlist[i]+'-'+self.antlist[j]])) # from function
 
                 # PIPE-1661 - get baseline based flags
@@ -763,7 +762,7 @@ class PhaseStabilityHeuristics(object):
                     rms_results['blphaserms'].append(np.nan)
                     rms_results['blphasermscycle'].append(np.nan)
                 ###############
-              
+
                 # make an assessment of flagged data
                 elif len(pH[np.isnan(pH)]) > self.flag_tolerance*len(pH):
                     rms_results['blphaserms'].append(np.nan)
@@ -773,7 +772,7 @@ class PhaseStabilityHeuristics(object):
                     # do averaing -> 10s
                     # need to get time and then rebin
                     pH_ave = self.ave_phase(pH, self.difftime, over=10.0)  # for thermal/short term noise
-                    rmspH_ave = np.std(np.array(pH_ave)[np.isfinite(pH_ave)])  
+                    rmspH_ave = np.std(np.array(pH_ave)[np.isfinite(pH_ave)])
                     rms_results['blphaserms'].append(rmspH_ave)
                     if timeScale:
                         rmspH_ave_cycle = self.std_overlapping_avg(pH_ave, self.difftime, over=timeScale)
@@ -784,25 +783,25 @@ class PhaseStabilityHeuristics(object):
         # set RMS output in degrees as we want
         for key_res in ['blphaserms', 'blphasermscycle', 'antphaserms', 'antphasermscycle']:
             rms_results[key_res] = np.degrees(rms_results[key_res])
-        
+
         return rms_results
-    
+
     def _isblflagged(self, ant1: int, ant2: int):
         """
-        function to make the assessment of 
+        function to make the assessment of
         the flags that are saved and return if the
         full baseline is flagged or not
-       
+
         requires the self.blflags
         """
 
         # in checking the order of data read associated with each antenna
         # the ordering system is not 100% preordained it seems,
-        # i.e. we have to select each time the index of bls in agreement with 
+        # i.e. we have to select each time the index of bls in agreement with
         # the antenna pair and antenna list - then check the flags
- 
+
         # simply need to select the correct cut for the baseline in question
-        # start with the bandpass, if totally flagged assume all data flagged 
+        # start with the bandpass, if totally flagged assume all data flagged
         # for that baseline
 
         # speed assumption is we will hit a false before a true
@@ -810,7 +809,7 @@ class PhaseStabilityHeuristics(object):
         flaggedbl = True
 
         idbl = np.where((self.blflags[1]==ant1) & (self.blflags[2]==ant2) & (self.blflags[3]==self.fieldId))[0]
-        # loop over correct ant, integration time index 
+        # loop over correct ant, integration time index
         for iduse in idbl:
 
             if self.blflags[0].shape[0]*self.blflags[0].shape[1]!= np.sum(self.blflags[0][:,:,iduse]):
@@ -832,7 +831,7 @@ class PhaseStabilityHeuristics(object):
         return flaggedbl
 
     def _get_final_spw_and_blflags(self, inputsin, qa_spw_candidates) \
-            -> Tuple[int, Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:
+            -> tuple[int, tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:
         """
         Select the best candidate SpW for the phase decoherence analysis based
         on ranked list and baseline flagging information.
@@ -931,7 +930,7 @@ class PhaseStabilityHeuristics(object):
     def phase_unwrap(phase: np.ndarray) -> np.ndarray:
         """
         Unwraps the phases to solve for 2PI ambiguities
-        Input phases may contain np.nan. 
+        Input phases may contain np.nan.
 
         :param phase: phase in radians
         :type phase: float array
@@ -941,16 +940,16 @@ class PhaseStabilityHeuristics(object):
         working_phase = phase.copy()
         working_phase[~np.isnan(working_phase)] = np.unwrap(working_phase[~np.isnan(working_phase)])
         return working_phase
-    
+
     @staticmethod
-    def mad(data: np.ndarray, axis: Optional[int] = None) -> float:
+    def mad(data: np.ndarray, axis: int | None = None) -> float:
         """
         This calculates the MAD - median absolute deviation from the median
         The input must be nan free, i.e. finite data
-        
+
         :param data: input data stream
         :type data: list or array
-        
+
         :returns: median absolute deviation (from the median)
         :rtyep: float
         """
@@ -961,10 +960,10 @@ class PhaseStabilityHeuristics(object):
         """
         Calculate STD over a set time and return the average of all overlapping
         values of the standard deviation - overlapping estimator. This acts
-        upon a phase-time stream of data. Will consider only finite values in 
-        the phase-time stream (i.e. phase array). The phase array must be 
+        upon a phase-time stream of data. Will consider only finite values in
+        the phase-time stream (i.e. phase array). The phase array must be
         unwrapped, i.e. continous, no breaks or 2PI ambiguities
-    
+
         This is the standard deviation, so it takes out the
         mean value. RMS with mean or fit removed provides
         the same value for zero-centered phases.
@@ -975,13 +974,13 @@ class PhaseStabilityHeuristics(object):
         :type diffTime: float
         :param over: time in seconds to calculate the SD over
         :type over: float
-        :returns: average standard deviation for the dataset calcualted over the input timescale 
+        :returns: average standard deviation for the dataset calculated over the input timescale
         :rtype: float
         """
 
         # Overlap in elements
         over = int(np.round(over / diffTime))
-        
+
         # Use nan versions of numpy functions as some elements of 'phase' might be np.nan to indicate that it was flagged
         std_hold = []
 
@@ -1025,5 +1024,5 @@ class PhaseStabilityHeuristics(object):
                     )
         else:
             mean_hold = phase
-            
+
         return mean_hold

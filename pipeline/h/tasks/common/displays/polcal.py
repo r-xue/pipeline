@@ -1,5 +1,4 @@
 import os
-from typing import List
 
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
@@ -13,7 +12,7 @@ from pipeline.infrastructure.launcher import Context
 from . import applycal
 from . import common
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class AmpVsAntennaChart(object):
@@ -21,7 +20,7 @@ class AmpVsAntennaChart(object):
     Plotting class that creates a gain amplitude (ratio) vs. antenna plot
     per SpW for a caltable.
     """
-    def __init__(self, context: Context, result: polcal.PolcalResults, calapps: List[callibrary.CalApplication],
+    def __init__(self, context: Context, result: polcal.PolcalResults, calapps: list[callibrary.CalApplication],
                  correlation: str = ''):
         plot_args = {
             'xaxis': 'antenna1',
@@ -31,7 +30,7 @@ class AmpVsAntennaChart(object):
         }
         self.plotters = common.PlotmsCalSpwComposite(context, result, calapps, **plot_args)
 
-    def plot(self) -> List[logger.Plot]:
+    def plot(self) -> list[logger.Plot]:
         plot_wrappers = []
         plot_wrappers.extend(self.plotters.plot())
         return plot_wrappers
@@ -65,7 +64,7 @@ class AmpVsScanChart(object):
     Plotting class that creates a polarisation ratio amplitude vs. scan plot
     for a caltable.
     """
-    def __init__(self, context: Context, result: polcal.PolcalResults, calapps: List[callibrary.CalApplication]):
+    def __init__(self, context: Context, result: polcal.PolcalResults, calapps: list[callibrary.CalApplication]):
         plot_args = {
             'xaxis': 'scan',
             'yaxis': 'amp',
@@ -74,7 +73,7 @@ class AmpVsScanChart(object):
         }
         self.plotters = common.PlotmsCalLeaf(context, result, calapps, **plot_args)
 
-    def plot(self) -> List[logger.Plot]:
+    def plot(self) -> list[logger.Plot]:
         plot_wrappers = []
         plot_wrappers.extend(self.plotters.plot())
         return plot_wrappers
@@ -90,7 +89,7 @@ class GainRatioRMSVsScanChart(object):
         self.output_dir = output_dir
         self.result = result
 
-    def plot(self) -> List[logger.Plot]:
+    def plot(self) -> list[logger.Plot]:
         # Set plot file name.
         figfile = self._get_figfile()
 
@@ -142,7 +141,7 @@ class PhaseVsChannelChart(object):
     Plotting class that creates a polarisation ratio phase vs. channel plot
     for a caltable.
     """
-    def __init__(self, context: Context, result: polcal.PolcalResults, calapps: List[callibrary.CalApplication]):
+    def __init__(self, context: Context, result: polcal.PolcalResults, calapps: list[callibrary.CalApplication]):
         plot_args = {
             'xaxis': 'chan',
             'yaxis': 'phase',
@@ -150,7 +149,7 @@ class PhaseVsChannelChart(object):
         }
         self.plotters = common.PlotmsCalLeaf(context, result, calapps, **plot_args)
 
-    def plot(self) -> List[logger.Plot]:
+    def plot(self) -> list[logger.Plot]:
         plot_wrappers = []
         plot_wrappers.extend(self.plotters.plot())
         return plot_wrappers
@@ -179,7 +178,7 @@ class RealVsImagChart(applycal.PlotmsLeaf):
 
         super().__init__(context, output_dir, calto, **plot_args)
 
-    def plot(self) -> List[logger.Plot]:
+    def plot(self) -> list[logger.Plot]:
         jobs_and_wrappers = super().plot()
         successful_wrappers = utils.plotms_iterate(jobs_and_wrappers)
         return successful_wrappers
@@ -190,7 +189,7 @@ class XVsChannelSummaryChart(object):
     Plotting class that creates an "X" vs. channel summary chart per SpW for
     all antennas, for a caltable.
     """
-    def __init__(self, context: Context, result: polcal.PolcalResults, calapps: List[callibrary.CalApplication],
+    def __init__(self, context: Context, result: polcal.PolcalResults, calapps: list[callibrary.CalApplication],
                  yaxis: str):
         plot_args = {
             'xaxis': 'chan',
@@ -199,7 +198,7 @@ class XVsChannelSummaryChart(object):
         }
         self.plotters = common.PlotmsCalSpwComposite(context, result, calapps, **plot_args)
 
-    def plot(self) -> List[logger.Plot]:
+    def plot(self) -> list[logger.Plot]:
         plot_wrappers = []
         plot_wrappers.extend(self.plotters.plot())
         return plot_wrappers
@@ -210,7 +209,7 @@ class XVsChannelDetailChart(object):
     Plotting class that creates an "X" vs. channel detail chart per SpW and per
     antenna for a caltable.
     """
-    def __init__(self, context: Context, result: polcal.PolcalResults, calapps: List[callibrary.CalApplication],
+    def __init__(self, context: Context, result: polcal.PolcalResults, calapps: list[callibrary.CalApplication],
                  yaxis: str):
         plot_args = {
             'xaxis': 'chan',
@@ -218,7 +217,7 @@ class XVsChannelDetailChart(object):
         }
         self.plotters = common.PlotmsCalSpwAntComposite(context, result, calapps, **plot_args)
 
-    def plot(self) -> List[logger.Plot]:
+    def plot(self) -> list[logger.Plot]:
         plot_wrappers = []
         plot_wrappers.extend(self.plotters.plot())
         return plot_wrappers

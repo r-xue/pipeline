@@ -1,6 +1,5 @@
 import collections
 import os
-from typing import Dict, Optional
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.filenamer as filenamer
@@ -11,7 +10,7 @@ from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.callibrary import CalTo
 from . import common
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class PlotmsLeaf(object):
@@ -1176,8 +1175,8 @@ class RealVsFrequencyDetailChart(SpwAntDetailChart):
                  output_dir: str,
                  calto: CalTo,
                  intent: str='',
-                 ydatacolumn: Optional[str]='corrected',
-                 **kwargs: Optional[Dict]
+                 ydatacolumn: str | None = 'corrected',
+                 **kwargs: dict | None
     ) -> None:
         """
         Construct RealVsFrequencyDetailChart instance

@@ -3,7 +3,6 @@ import itertools
 import operator
 import os
 import re
-from typing import Union, List, Dict
 
 import cachetools
 import matplotlib.dates
@@ -18,7 +17,7 @@ from pipeline.domain import MeasurementSet
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 COLSHAPE_FORMAT = re.compile(r'\[(?P<num_pols>\d+), (?P<num_rows>\d+)\]')
 
@@ -146,7 +145,7 @@ class PlotmsCalLeaf(object):
     will be overplotted on the same plot.
     """
 
-    def __init__(self, context, result, calapp: Union[List[callibrary.CalApplication], callibrary.CalApplication],
+    def __init__(self, context, result, calapp: list[callibrary.CalApplication] | callibrary.CalApplication,
                  xaxis, yaxis, spw='', ant='', pol='', correlation='', plotrange=[], coloraxis=''):
         self._context = context
         self._result = result
@@ -420,7 +419,7 @@ class LeafComposite(object):
             plots.extend(child.plot())
         return [p for p in plots if p is not None]
 
-    def _create_calapp_contents_dict(self, calapps: List[callibrary.CalApplication], column_name: str) -> Dict[int, List[callibrary.CalApplication]]:
+    def _create_calapp_contents_dict(self, calapps: list[callibrary.CalApplication], column_name: str) -> dict[int, list[callibrary.CalApplication]]:
         """
         Creates and returns a dictionary mapping some element (e.g. spw, ant) specified by the input
         column_name to lists of the input calapps that have that element present in their caltables.
@@ -474,7 +473,7 @@ class SpwComposite(LeafComposite):
     # reference to the PlotLeaf class to call
     leaf_class = None
 
-    def __init__(self, context, result, calapp: Union[List[callibrary.CalApplication], callibrary.CalApplication],
+    def __init__(self, context, result, calapp: list[callibrary.CalApplication] | callibrary.CalApplication,
                  xaxis, yaxis, ant='', pol='', **kwargs):
 
         if isinstance(calapp, list):
@@ -505,7 +504,7 @@ class SpwAntComposite(LeafComposite):
     # reference to the PlotLeaf class to call
     leaf_class = None
 
-    def __init__(self, context, result, calapp: Union[List[callibrary.CalApplication], callibrary.CalApplication],
+    def __init__(self, context, result, calapp: list[callibrary.CalApplication] | callibrary.CalApplication,
                  xaxis, yaxis, pol='', ysamescale=False, **kwargs):
         # Support for lists of calapps was added for PIPE-1409 and PIPE-1377.
         if isinstance(calapp, list):
@@ -588,7 +587,7 @@ class AntComposite(LeafComposite):
     # reference to the PlotLeaf class to call
     leaf_class = None
 
-    def __init__(self, context, result, calapp: Union[List[callibrary.CalApplication], callibrary.CalApplication],
+    def __init__(self, context, result, calapp: list[callibrary.CalApplication] | callibrary.CalApplication,
                  xaxis, yaxis, spw='', pol='', **kwargs):
         if isinstance(calapp, list):
             # Create a dictionary to keep track of which caltables have which ants.

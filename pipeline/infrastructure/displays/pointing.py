@@ -1,25 +1,31 @@
 """Pointing methods and classes."""
+from __future__ import annotations
+
 import gc
 import math
-from numbers import Integral
 import os
-from typing import List, Optional, Tuple, Union
+from typing import TYPE_CHECKING
 
-from matplotlib.axes._axes import Axes
 import matplotlib.figure as figure
+import numpy as np
 from matplotlib.ticker import (AutoLocator, Formatter, FuncFormatter, Locator,
                                MultipleLocator)
-import numpy as np
 
-from pipeline.domain import Antenna, MeasurementSet
+import pipeline.infrastructure as infrastructure
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import OnlineFlagIndex
-import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from pipeline.infrastructure.renderer.logger import Plot
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
+
+if TYPE_CHECKING:
+    from numbers import Integral
+
+    from matplotlib.axes._axes import Axes
+
+    from pipeline.domain import Antenna, MeasurementSet
 
 RArotation = 90
 DECrotation = 0
@@ -31,7 +37,7 @@ hsyb = ':'
 msyb = ':'
 
 
-def Deg2HMS(x: float, prec: int=0) -> List[str]:
+def Deg2HMS(x: float, prec: int=0) -> list[str]:
     """
     Convert an angle in degree to hour angle.
 
@@ -228,7 +234,7 @@ def HHMMSSsss(x: float, pos=None) -> str:
     return __format_hms(x, prec=9)
 
 
-def Deg2DMS(x: float, prec: int=0) -> List[str]:
+def Deg2DMS(x: float, prec: int=0) -> list[str]:
     r"""
     Convert an angle in degree to dms angle (ddmmss.s).
 
@@ -403,7 +409,7 @@ def DDMMSSss(x: float, pos=None) -> str:
 
 
 def GLGBlabel(span: float
-    ) -> Tuple[MultipleLocator, MultipleLocator, FuncFormatter, FuncFormatter]:
+    ) -> tuple[MultipleLocator, MultipleLocator, FuncFormatter, FuncFormatter]:
     """
     Create x- and y-axis formatters of plots suitable for a map in galactic coordinate.
 
@@ -456,7 +462,7 @@ def GLGBlabel(span: float
 
 def RADEClabel(span: float,
         ofs_coord: bool
-    ) -> Tuple[MultipleLocator, MultipleLocator, FuncFormatter, FuncFormatter]:
+    ) -> tuple[MultipleLocator, MultipleLocator, FuncFormatter, FuncFormatter]:
     """
     Create x- and y-axis formatters of plots suitable for a map in general R.A. and Dec. coordinate.
 
@@ -522,7 +528,7 @@ def RADEClabel(span: float,
 
 
 def XYlabel(span: float, direction_reference: str, ofs_coord: bool=False
-            ) -> Tuple[Union[GLGBlabel, RADEClabel]]:
+            ) -> tuple[GLGBlabel | RADEClabel]:
     """
     Create labels for the x- and y-axes in plot.
 
@@ -602,7 +608,7 @@ class MapAxesManagerBase(object):
         self._direction_reference = None
         self._ofs_coord = None
 
-    def get_axes_labels(self) -> Tuple[str, str]:
+    def get_axes_labels(self) -> tuple[str, str]:
         """
         Get direction coordinate axes labels.
 
@@ -655,9 +661,9 @@ class PointingAxesManager(MapAxesManagerBase):
                   xlocator: Locator, ylocator: Locator,
                   xformatter: Formatter, yformatter: Formatter,
                   xrotation: Integral, yrotation: Integral,
-                  aspect: Union[Integral, str],
-                  xlim: Optional[Tuple[Integral, Integral]]=None,
-                  ylim: Optional[Tuple[Integral, Integral]]=None,
+                  aspect: Integral | str,
+                  xlim: tuple[Integral, Integral] | None=None,
+                  ylim: tuple[Integral, Integral] | None=None,
                   reset: bool=False) -> None:
         """
         Initialize matplotlib.axes.Axes instance.
@@ -754,11 +760,11 @@ def draw_beam(axes, r: float, aspect: float, x_base: float, y_base: float,
 def draw_pointing(axes_manager: PointingAxesManager,
                   RA: np.ndarray,
                   DEC: np.ndarray,
-                  FLAG: Optional[np.ndarray]=None,
-                  plotfile: Optional[str]=None,
+                  FLAG: np.ndarray | None=None,
+                  plotfile: str | None=None,
                   connect: bool=True,
-                  circle: List[Optional[float]]=[],
-                  ObsPattern: Optional[str]=None,
+                  circle: list[float | None]=[],
+                  ObsPattern: str | None=None,
                   plotpolicy: str='ignore'
                   ) -> None:
     """
@@ -876,7 +882,7 @@ class SingleDishPointingChart(object):
     def __del__(self):
         del self.datatable
 
-    def __get_field(self, field_id: Optional[int], intent: Optional[str] = None):
+    def __get_field(self, field_id: int | None, intent: str | None = None):
         """Get field domain object.
 
         If field_id is not given, None is returned.
@@ -901,8 +907,8 @@ class SingleDishPointingChart(object):
             return None
 
     @casa5style_plot
-    def plot(self, revise_plot: bool=False, antenna: Antenna=None, target_field_id: Optional[int]=None,
-             reference_field_id: Optional[int]=None, target_only: bool=True, ofs_coord: bool=False) -> Optional[Plot]:
+    def plot(self, revise_plot: bool=False, antenna: Antenna=None, target_field_id: int | None=None,
+             reference_field_id: int | None=None, target_only: bool=True, ofs_coord: bool=False) -> Plot | None:
         """Generate a plot object.
 
         If plot file exists and revise_plot is False, Plot object
@@ -911,13 +917,13 @@ class SingleDishPointingChart(object):
         Args:
             revise_plot (bool): Overwrite existing plot or not. Defaults to False.
             antenna (Antenna): Antenna domain object. Defaults to None.
-            target_field_id (Optional[int]): ID for target (ON_SOURCE) field. Defaults to None.
-            reference_field_id (Optional[int]): ID for reference (OFF_SOURCE) field. Defaults to None.
+            target_field_id (int | None): ID for target (ON_SOURCE) field. Defaults to None.
+            reference_field_id (int | None): ID for reference (OFF_SOURCE) field. Defaults to None.
             target_only (bool): Whether plot ON_SOURCE only (True) or both ON_SOURCE and OFF_SOURCE. Defaults to True.
             ofs_coord (bool): Use offset coordinate or not. Defaults to False.
 
         Returns:
-            Optional[Plot]: A Plot object.
+            Plot | None: A Plot object.
         """
         self.antenna = antenna
         self.target_only = target_only

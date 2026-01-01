@@ -7,7 +7,6 @@ Examples:
 """
 import math
 import os
-from typing import Union, Tuple, Optional
 
 import casatools
 import matplotlib.pyplot as plt
@@ -127,8 +126,8 @@ def calc_airmass(elevation: float = 45.0) -> float:
     return 1.0 / math.cos(math.radians(90.0 - elevation))
 
 
-def calc_transmission(airmass: float, dry_opacity: Union[float, np.ndarray],
-                      wet_opacity: Union[float, np.ndarray]) -> Union[float, np.ndarray]:
+def calc_transmission(airmass: float, dry_opacity: float | np.ndarray,
+                      wet_opacity: float | np.ndarray) -> float | np.ndarray:
     """
     Calculate total atmospheric transmission.
 
@@ -246,7 +245,7 @@ def plot(frequency: np.ndarray, dry_opacity: np.ndarray,
     plt.ylim([ymin, ymax])
 
 
-def get_spw_spec(vis: str, spw_id: int) -> Tuple[float, int, float]:
+def get_spw_spec(vis: str, spw_id: int) -> tuple[float, int, float]:
     """
     Calculate spectral setting of a spectral window.
 
@@ -413,7 +412,7 @@ def get_altitude(vis: str) -> float:
 
 
 def get_transmission(vis: str, antenna_id: int = 0, spw_id: int = 0,
-                     doplot: bool = False) -> Tuple[np.ndarray, np.ndarray]:
+                     doplot: bool = False) -> tuple[np.ndarray, np.ndarray]:
     """
     Calculate atmospheric transmission of an antenna and spectral window.
 
@@ -437,7 +436,7 @@ def get_transmission(vis: str, antenna_id: int = 0, spw_id: int = 0,
     return get_transmission_for_range(vis, center_freq, nchan, resolution, antenna_id, doplot)
 
 
-def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolution: float, antenna_id: int = 0, doplot: bool = False) -> Tuple[np.ndarray, np.ndarray]:
+def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolution: float, antenna_id: int = 0, doplot: bool = False) -> tuple[np.ndarray, np.ndarray]:
     """
     Calculate atmospheric transmission covering a range of frequency.
 
@@ -499,7 +498,7 @@ def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolut
     return frequency, transmission
 
 
-def get_table_nrow(table_name: str) -> Optional[int]:
+def get_table_nrow(table_name: str) -> int | None:
     """Get the number of rows in a specified table.
 
     This function checks if the table exists, logs a debug message if it does not, and returns None.
@@ -509,7 +508,7 @@ def get_table_nrow(table_name: str) -> Optional[int]:
         table_name (str): The name of the table to check.
 
     Returns:
-        Optional[int]: The number of rows in the table, or None if the table does not exist.
+        int | None: The number of rows in the table, or None if the table does not exist.
     """
     if not os.path.exists(table_name):
         LOG.debug('%s does not exist.', table_name)

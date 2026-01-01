@@ -27,7 +27,6 @@ import collections
 import os
 import re
 import time
-from typing import Tuple
 
 # import memory_profiler
 import numpy as np
@@ -36,7 +35,7 @@ import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils import absolute_path, list_to_str
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 def __coldesc(vtype, option, maxlen, ndim, comment, unit=None):
@@ -184,7 +183,7 @@ class DataTableIndexer(object):
                 self.nrow_per_ms.append(tb.nrows())
         self.num_mses = len(self.nrow_per_ms)
 
-    def serial2perms(self, i: int) -> Tuple[str, int]:
+    def serial2perms(self, i: int) -> tuple[str, int]:
         """
         Return basename of origin MS and per-MS row id of a given serial index.
 

@@ -1,7 +1,7 @@
 import collections
 import os
 import shutil
-from typing import Callable, Dict, List
+from typing import Callable
 
 import numpy as np
 
@@ -27,7 +27,7 @@ __all__ = [
     'WvrgcalInputs'
 ]
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 WVRInfo = collections.namedtuple('WVRInfo',
                                  'antenna wvr flag rms disc')
@@ -741,7 +741,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         return caltable_namer
 
     @staticmethod
-    def _get_wvrinfos(result: Dict) -> List[WVRInfo]:
+    def _get_wvrinfos(result: dict) -> list[WVRInfo]:
         """
         Retrieve necessary information from the result returned by the CASA
         'wvrgcal' task.

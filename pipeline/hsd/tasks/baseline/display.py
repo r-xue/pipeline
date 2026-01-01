@@ -1,11 +1,13 @@
 """Set of plotting classes for hsd_baseline task."""
+from __future__ import annotations
+
 import abc
 import math
 import os
 import string
 import time
 
-from typing import TYPE_CHECKING, Generator, List, Tuple, Union
+from typing import TYPE_CHECKING, Generator
 
 import matplotlib.pyplot as plt
 
@@ -13,12 +15,11 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.displays.pointing as pointing
 from pipeline.domain.datatable import DataTableImpl as DataTable
-from pipeline.hsd.tasks.common.display import DPISummary, DPIDetail, SingleDishDisplayInputs, LightSpeed
+from pipeline.hsd.tasks.common.display import DPISummary, LightSpeed, SingleDishDisplayInputs
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from ..common import direction_utils as dirutil
-
 from .typing import LineProperty
 
 if TYPE_CHECKING:
@@ -28,7 +29,7 @@ if TYPE_CHECKING:
 
     from pipeline.infrastructure.launcher import Context
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 # ShowPlot = True
 ShowPlot = False
@@ -48,23 +49,23 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
     NUM_CLUSTER_MAX = 36
 
     def __init__(self,
-                 clusters_to_plot: List[LineProperty],
+                 clusters_to_plot: list[LineProperty],
                  nh: int,
                  nv: int,
                  aspect_ratio: float,
-                 xformatter: 'Formatter',
-                 yformatter: 'Formatter',
-                 xlocator: 'Locator',
-                 ylocator: 'Locator',
+                 xformatter: Formatter,
+                 yformatter: Formatter,
+                 xlocator: Locator,
+                 ylocator: Locator,
                  xrotation: float,
                  yrotation: float,
-                 ticksize: Union[float, str],
-                 labelsize: Union[float, str],
-                 titlesize: Union[float, str]) -> None:
+                 ticksize: float | str,
+                 labelsize: float | str,
+                 titlesize: float | str) -> None:
         """Construct ClusterValidationAxesManager instance.
 
         Args:
-            clusters_to_plot: List of detected lines.
+            clusters_to_plot: list of detected lines.
                               Its length must not exceed NUM_CLUSTER_MAX.
             nh: Number of plots along horizontal direction
             nv: Number of plots along vertical axis
@@ -103,7 +104,7 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         self.legend_y = 0.85
 
     @property
-    def axes_legend(self) -> 'Axes':
+    def axes_legend(self) -> Axes:
         """Return Axes for legend.
 
         Returns:
@@ -117,7 +118,7 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         return self._legend
 
     @property
-    def axes_list(self) -> List[Tuple[LineProperty, 'Axes', float, float]]:
+    def axes_list(self) -> list[tuple[LineProperty, Axes, float, float]]:
         """Return list of necessary resources to generate cluster validation plots.
 
         Returns:
@@ -129,7 +130,7 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
 
         return self._axes
 
-    def __axes_list(self) -> Generator[Tuple[LineProperty, 'Axes', float, float], None, None]:
+    def __axes_list(self) -> Generator[tuple[LineProperty, Axes, float, float], None, None]:
         """Yield resources to generate cluster validation plot.
 
         Yields:
@@ -164,7 +165,7 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
 
             yield icluster, axes, tpos_x, tpos_y
 
-    def __calc_axes(self, fig: 'Figure', ix: int, iy: int) -> Tuple[float, float, float, float, float, float]:
+    def __calc_axes(self, fig: Figure, ix: int, iy: int) -> tuple[float, float, float, float, float, float]:
         """Calculate parameters for Axes.
 
         Args:
@@ -268,7 +269,7 @@ class ClusterDisplay(object):
         self.inputs = inputs
 
     @property
-    def context(self) -> 'Context':
+    def context(self) -> Context:
         """Return Pipeline context.
 
         Returns:
@@ -287,7 +288,7 @@ class ClusterDisplay(object):
                 yield group
 
     @casa5style_plot
-    def plot(self) -> List[logger.Plot]:
+    def plot(self) -> list[logger.Plot]:
         """Create list of plots for clustering analysis result.
 
         Returns:
@@ -389,7 +390,7 @@ class ClusterDisplayWorker(object, metaclass=abc.ABCMeta):
         self.field = field
         self.stage_dir = stage_dir
 
-    def plot(self) -> List[logger.Plot]:
+    def plot(self) -> list[logger.Plot]:
         """Create plots.
 
         Returns:
@@ -511,7 +512,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
     }
 
     def __init__(self,
-                 context: 'Context',
+                 context: Context,
                  group_id: int,
                  iteration: int,
                  cluster: dict,
@@ -520,7 +521,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                  spw: int,
                  field: str,
                  antenna: int,
-                 lines: List[LineProperty],
+                 lines: list[LineProperty],
                  stage_dir: str,
                  org_direction: dirutil.Direction) -> None:
         """Construct ClusterValidationDisplay instance.
@@ -738,7 +739,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                                      'R.A.', 'Dec.')
             yield plot
 
-    def __set_size(self, num_panel_h: int, num_panel_v: int) -> Tuple[int, int, int]:
+    def __set_size(self, num_panel_h: int, num_panel_v: int) -> tuple[int, int, int]:
         """Calculate font sizes for tick label, axis label, and title.
 
         Args:
@@ -760,7 +761,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
             title_size = tick_size + 1
         return tick_size, label_size, title_size
 
-    def __marker_size(self, axes: 'Axes', nx: int, ny: int, tile_gap: float = 0.0) -> float:
+    def __marker_size(self, axes: Axes, nx: int, ny: int, tile_gap: float = 0.0) -> float:
         """Calculate marker size.
 
         Args:
@@ -787,7 +788,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
 
         return marker_size
 
-    def __stages(self) -> Generator[Tuple[str, int, float, str, str], None, None]:
+    def __stages(self) -> Generator[tuple[str, int, float, str, str], None, None]:
         """Yield base data for validation plot.
 
         Yields:
@@ -814,7 +815,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
                                                     questionable=questionable)
                 yield (key, flag, threshold, desc1, desc2)
 
-    def __line_property(self, icluster: int) -> Tuple[float, float]:
+    def __line_property(self, icluster: int) -> tuple[float, float]:
         """Compute property of cluster.
 
         Compute property of cluster: line center frequency [GHz] and

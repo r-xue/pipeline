@@ -1,11 +1,12 @@
 """Imaging stage."""
+from __future__ import annotations
 
 import collections
 import functools
 import math
 import os
 from numbers import Number
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING
 
 import numpy
 from scipy import interpolate
@@ -30,14 +31,14 @@ from pipeline.hsd.tasks.imaging import (detect_missed_lines,
                                         detectcontamination, gridding,
                                         imaging_params, resultobjects,
                                         sdcombine, weighting, worker)
-from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
+from pipeline.infrastructure import casa_tools, task_registry
 
 if TYPE_CHECKING:
     from casatools import coordsys
     from pipeline.infrastructure import Context
     from resultobjects import SDImagingResults
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 # SensitivityInfo:
 #     sensitivity: Sensitivity of an image
@@ -57,6 +58,7 @@ REF_MS_ID = 0
 # Adjust the value when Pipeline supports observation modes/instruments with smaller integration time.
 MIN_INTEGRATION_SEC = 9.9e-4
 
+
 class SDImagingInputs(vdp.StandardInputs):
     """Inputs for imaging task class."""
 
@@ -71,7 +73,7 @@ class SDImagingInputs(vdp.StandardInputs):
     mode = vdp.VisDependentProperty(default='line')
 
     @field.postprocess
-    def field(self, unprocessed: Optional[str]) -> Optional[str]:
+    def field(self, unprocessed: str | None) -> str | None:
         """Get fields as a string.
 
         Args:
@@ -109,7 +111,7 @@ class SDImagingInputs(vdp.StandardInputs):
 
     # Synchronization between infiles and vis is still necessary
     @vdp.VisDependentProperty
-    def vis(self) -> List[str]:
+    def vis(self) -> list[str]:
         return self.infiles
 
     @property
@@ -132,9 +134,9 @@ class SDImagingInputs(vdp.StandardInputs):
         return _datatype
 
     # docstring and type hints: supplements hsd_imaging
-    def __init__(self, context: 'Context', mode: Optional[str]=None, restfreq: Optional[str]=None,
-                 infiles: Optional[List[str]]=None, field: Optional[str]=None, spw: Optional[str]=None,
-                 org_direction: Optional['sdtyping.Direction']=None):
+    def __init__(self, context: Context, mode: str | None=None, restfreq: str | None=None,
+                 infiles: list[str] | None=None, field: str | None=None, spw: str | None=None,
+                 org_direction: sdtyping.Direction | None=None):
         """Initialize an object.
 
         Args:
@@ -290,30 +292,30 @@ class SDImaging(basetask.StandardTaskTemplate):
 
     @classmethod
     def _finalize_worker_result(cls,
-                                context: 'Context',
-                                result: 'SDImagingResults',
+                                context: Context,
+                                result: SDImagingResults,
                                 session: str,
                                 sourcename: str,
-                                spwlist: List[int],
+                                spwlist: list[int],
                                 antenna: str,
                                 specmode: str,
                                 imagemode: str,
                                 stokes: str,
                                 datatype: DataType,
-                                datamin: Optional[float],
-                                datamax: Optional[float],
-                                datarms: Optional[float],
-                                validsp: List[List[int]],
-                                rms: List[List[float]],
-                                edge: List[int],
+                                datamin: float | None,
+                                datamax: float | None,
+                                datarms: float | None,
+                                validsp: list[list[int]],
+                                rms: list[list[float]],
+                                edge: list[int],
                                 reduction_group_id: int,
-                                file_index: List[int],
-                                assoc_antennas: List[int],
-                                assoc_fields: List[int],
-                                assoc_spws: List[int],
-                                sensitivity_info: Optional[SensitivityInfo]=None,
-                                theoretical_rms: Optional[Dict]=None,
-                                effbw: Optional[float]=None):
+                                file_index: list[int],
+                                assoc_antennas: list[int],
+                                assoc_fields: list[int],
+                                assoc_spws: list[int],
+                                sensitivity_info: SensitivityInfo | None=None,
+                                theoretical_rms: dict | None=None,
+                                effbw: float | None=None):
         """
         Fanalize the worker result.
 
@@ -427,7 +429,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         # finally replace task attribute with the top-level one
         result.task = cls
 
-    def _get_edge(self) -> List[int]:
+    def _get_edge(self) -> list[int]:
         """
         Search results and retrieve edge parameter from the most recent SDBaselineResults if it exists.
 
@@ -472,7 +474,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         )
 
     def _get_correlations_if_nro(self, cp: imaging_params.CommonParameters,
-                                 rgp: imaging_params.ReductionGroupParameters) -> Optional[str]:
+                                 rgp: imaging_params.ReductionGroupParameters) -> str | None:
         """If data is from NRO, then get correlations.
 
         Args:
@@ -494,7 +496,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             return None
 
     def _get_rgp_image_group(self, cp: imaging_params.CommonParameters,
-                             rgp: imaging_params.ReductionGroupParameters) -> Dict[str, List[List[str]]]:
+                             rgp: imaging_params.ReductionGroupParameters) -> dict[str, list[list[str]]]:
         """Get image group of reduction group.
 
         Args:
@@ -1311,7 +1313,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """
         cp.results.append(rgp.imager_result)
 
-    def analyse(self, result: 'SDImagingResults') -> 'SDImagingResults':
+    def analyse(self, result: SDImagingResults) -> SDImagingResults:
         """Override method of basetask.
 
         Args:
@@ -1323,7 +1325,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         return result
 
     def _get_rms_exclude_freq_range_image(self, to_frame: str, cp: imaging_params.CommonParameters,
-                                          rgp: imaging_params.ReductionGroupParameters) -> List[Tuple[Number, Number]]:
+                                          rgp: imaging_params.ReductionGroupParameters) -> list[tuple[Number, Number]]:
         """
         Return a combined list of frequency ranges.
 
@@ -1430,7 +1432,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
         return merge_ranges(numpy.reshape(image_rms_freq_range, (len(image_rms_freq_range) // 2, 2), 'C'))
 
-    def get_imagename(self, source: str, spwids: List[int],
+    def get_imagename(self, source: str, spwids: list[int],
                       antenna: str=None, asdm: str=None, stokes: str=None, specmode: str='cube') -> str:
         """Generate a filename of the image.
 
@@ -1495,8 +1497,8 @@ class SDImaging(basetask.StandardTaskTemplate):
         return imagename
 
     def _get_stat_chans(self, imagename: str,
-                        combined_rms_exclude: List[Tuple[float, float]],
-                        edge: Tuple[int, int]=(0, 0)) -> List[int]:
+                        combined_rms_exclude: list[tuple[float, float]],
+                        edge: tuple[int, int]=(0, 0)) -> list[int]:
         """Return a list of channel ranges to calculate image statistics.
 
         Args:
@@ -1520,7 +1522,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         LOG.info("Line free channel ranges of image to calculate RMS = {}".format(str(include_chan_ranges)))
         return include_chan_ranges
 
-    def _get_stat_region(self, pp: imaging_params.PostProcessParameters) -> Optional[str]:
+    def _get_stat_region(self, pp: imaging_params.PostProcessParameters) -> str | None:
         """
         Retrun region to calculate statistics.
 
@@ -1581,7 +1583,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         return region
 
     def get_raster_info_list(self, cp: imaging_params.CommonParameters,
-                             rgp: imaging_params.ReductionGroupParameters) -> List[RasterInfo]:
+                             rgp: imaging_params.ReductionGroupParameters) -> list[RasterInfo]:
         """
         Retrun a list of raster information.
 
@@ -1622,7 +1624,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
     def calculate_theoretical_image_rms(self, cp: imaging_params.CommonParameters,
                                         rgp: imaging_params.ReductionGroupParameters,
-                                        pp: imaging_params.PostProcessParameters) -> Dict[str, float]:
+                                        pp: imaging_params.PostProcessParameters) -> dict[str, float]:
         """Calculate theoretical RMS of an image (PIPE-657).
 
         Args:
@@ -1744,7 +1746,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         return True
 
     def _obtain_jy_per_k(self, pp: imaging_params.PostProcessParameters,
-                         tirp: imaging_params.TheoreticalImageRmsParameters) -> Union[float, bool]:
+                         tirp: imaging_params.TheoreticalImageRmsParameters) -> float | bool:
         """Obtain Jy/K. A sub method of calculate_theoretical_image_rms().
 
         Args:
@@ -1886,7 +1888,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
     def _loop_initializer_of_theoretical_image_rms(self, cp: imaging_params.CommonParameters,
                                                    rgp: imaging_params.ReductionGroupParameters,
-                                                   tirp: imaging_params.TheoreticalImageRmsParameters) -> Tuple[bool]:
+                                                   tirp: imaging_params.TheoreticalImageRmsParameters) -> tuple[bool]:
         """Initialize imaging_params.TheoreticalImageRmsParameters for the loop of calculate_theoretical_image_rms().
 
         Args:
@@ -1938,7 +1940,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
 
 def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
-                            fieldid: int, spwid: int, antid: int, rgp: 'imaging_params.ReductionGroupParameters') -> RasterInfo:
+                            fieldid: int, spwid: int, antid: int, rgp: imaging_params.ReductionGroupParameters) -> RasterInfo:
     """Analyze raster scan pattern from pointing in DataTable.
 
     Args:
@@ -2111,8 +2113,8 @@ def calc_image_statistics(imagename: str, chans: str, region: str) -> dict:
 
 
 # Utility methods to calcluate channel ranges
-def convert_frequency_ranges_to_channels(range_list: List[Tuple[float, float]],
-                                         cs: 'coordsys', num_chan: int) -> List[Tuple[int, int]]:
+def convert_frequency_ranges_to_channels(range_list: list[tuple[float, float]],
+                                         cs: coordsys, num_chan: int) -> list[tuple[int, int]]:
     """Convert frequency ranges to channel ones.
 
     Args:
@@ -2146,7 +2148,7 @@ def convert_frequency_ranges_to_channels(range_list: List[Tuple[float, float]],
     return merge_ranges(channel_ranges)
 
 
-def convert_range_list_to_string(range_list: List[int]) -> str:
+def convert_range_list_to_string(range_list: list[int]) -> str:
     """Convert a list of index ranges to string.
 
     Args:
@@ -2164,7 +2166,7 @@ def convert_range_list_to_string(range_list: List[int]) -> str:
     return stat_chans
 
 
-def convert_range_list_to_ranges(range_list: List[int]) -> List[List[int]]:
+def convert_range_list_to_ranges(range_list: list[int]) -> list[list[int]]:
     """
     Convert a list of index ranges to list of signle ranges
 
@@ -2183,7 +2185,7 @@ def convert_range_list_to_ranges(range_list: List[int]) -> List[List[int]]:
     return ranges
 
 
-def merge_ranges(range_list: List[Tuple[Number, Number]]) -> List[Tuple[Number, Number]]:
+def merge_ranges(range_list: list[tuple[Number, Number]]) -> list[tuple[Number, Number]]:
     """Merge overlapping ranges in range_list.
 
     Args:
@@ -2227,8 +2229,8 @@ def merge_ranges(range_list: List[Tuple[Number, Number]]) -> List[Tuple[Number, 
     return merged
 
 
-def invert_ranges(id_range_list: List[Tuple[int, int]],
-                  num_ids: int, edge: Tuple[int, int]) -> List[int]:
+def invert_ranges(id_range_list: list[tuple[int, int]],
+                  num_ids: int, edge: tuple[int, int]) -> list[int]:
     """Return inverted ID ranges.
 
     Args:

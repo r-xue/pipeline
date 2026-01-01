@@ -1,7 +1,6 @@
 """Test module for atmutil.py."""
 import math
 import pytest
-from typing import Tuple, Union
 
 import numpy as np
 
@@ -113,9 +112,9 @@ def test_calc_airmass(elevation: float, expected_airmass: float):
                            np.array([0.05, 0.15])),
                            np.array([0.7788007830714049, 0.6065306597126334]))
                           ))
-def test_calc_transmission(in_param: Tuple[float, Union[float, np.ndarray],
-                                           Union[float, np.ndarray]],
-                           expected: Union[float, np.ndarray]):
+def test_calc_transmission(in_param: tuple[float, float | np.ndarray,
+                                           float | np.ndarray],
+                           expected: float | np.ndarray):
     """
     Test calc_transmission.
 
@@ -197,7 +196,7 @@ def test_get_wet_opacity(in_param: dict, expected: float):
                           ((1.0, 30.0), 0.9631266292255092),
                           ((1.5, 90.0), 0.9779208925243648),
                           ))
-def test_test(in_param: Tuple[float, float], expected: float):
+def test_test(in_param: tuple[float, float], expected: float):
     """
     Test method, test.
 
@@ -215,7 +214,7 @@ def test_test(in_param: Tuple[float, float], expected: float):
                          ((15, (114.68215, 128, 0.015625)),
                           (17, (100.95000, 4080, -0.000488281))
                           ))
-def test_get_spw_spec(spwid: int, expected: Tuple[float, int, float]):
+def test_get_spw_spec(spwid: int, expected: tuple[float, int, float]):
     """
     Test get_spw_spec.
 

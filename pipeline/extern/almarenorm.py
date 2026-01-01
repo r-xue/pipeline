@@ -76,7 +76,6 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 
 import os
 from math import *
-from typing import List, Union, Dict
 from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
@@ -102,8 +101,8 @@ mycb=cbtool()
 
 
 # Interface function for use by ALMA Pipeline renormalization task (PIPE-1687).
-def alma_renorm(vis: str, spw: List[int], create_cal_table: bool, threshold: Union[None, float], excludechan: Dict,
-        atm_auto_exclude: bool, bwthreshspw: Dict, caltable: str) -> tuple:   ## PIPE-1469 for bwthreshspw
+def alma_renorm(vis: str, spw: list[int], create_cal_table: bool, threshold: None | float, excludechan: dict,
+        atm_auto_exclude: bool, bwthreshspw: dict, caltable: str) -> tuple:   ## PIPE-1469 for bwthreshspw
     """
     Interface function for ALMA Pipeline: this runs the ALMA renormalization
     heuristic for input vis, and returns statistics and metadata required by

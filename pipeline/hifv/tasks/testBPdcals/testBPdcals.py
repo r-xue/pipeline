@@ -1,8 +1,8 @@
-import os
 import collections
+import os
 import shutil
-from typing import List, Dict
 from collections import defaultdict
+
 import numpy as np
 
 import pipeline.hif.heuristics.findrefant as findrefant
@@ -18,7 +18,7 @@ from pipeline.infrastructure import utils
 from pipeline.hifv.heuristics import getBCalStatistics
 
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class testBPdcalsInputs(vdp.StandardInputs):
@@ -307,7 +307,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         """
         return results
 
-    def _do_testBPdcals(self, band: str, spwlist: List[str]):
+    def _do_testBPdcals(self, band: str, spwlist: list[str]):
         """Execute testBPdcals heuristics per band and spwlist
 
         Args:
@@ -528,7 +528,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         return gain_solint1, shortsol1, self.inputs.vis, bpdgain_touse, gtypecaltable,\
                ktypecaltable, bpcaltable, flaggedSolnApplycalbandpass, flaggedSolnApplycaldelay, RefAntOutput[0]
 
-    def _do_gtype_delaycal(self, caltable: str = None, RefAntOutput: List[str] = None, spwlist: List[str] = []) -> bool:
+    def _do_gtype_delaycal(self, caltable: str = None, RefAntOutput: list[str] = None, spwlist: list[str] = []) -> bool:
         """Perform a G-Type delay calibration with CASA task gaincal
 
         Args:
@@ -589,7 +589,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         return True
 
     def _do_ktype_delaycal(self, caltable: str = None, addcaltable: str = None,
-                           RefAntOutput: List[str] = None, spw: str = '') -> bool:
+                           RefAntOutput: list[str] = None, spw: str = '') -> bool:
         """Perform a K-Type delay calibration with CASA task gaincal
 
         Args:
@@ -651,7 +651,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         return True
 
-    def _check_flagSolns(self, flaggedSolnResult: Dict, RefAntOutput: List[str] = None) -> (float, List[str]):
+    def _check_flagSolns(self, flaggedSolnResult: dict, RefAntOutput: list[str] = None) -> tuple[float, list[str]]:
         """Change reference antenna list based on a critical fraction of flagged solutions
             (defined in the domain ms object)
 
@@ -683,7 +683,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         return fracFlaggedSolns, RefAntOutput
 
     def _do_gtype_bpdgains(self, caltable: str, addcaltable: str = None, solint: str = 'int',
-                           RefAntOutput: List[str] = None, spwlist: List[str] = []) -> bool:
+                           RefAntOutput: list[str] = None, spwlist: list[str] = []) -> bool:
         """Perform a G-Type cal with CASA task gaincal on the bp'd gaintable
 
         Args:

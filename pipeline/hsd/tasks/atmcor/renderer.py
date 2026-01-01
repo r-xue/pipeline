@@ -3,11 +3,11 @@ import collections
 import glob
 import os
 import re
-from typing import TYPE_CHECKING, Generator, List, Tuple
+from typing import TYPE_CHECKING, Generator
 
 import pipeline.infrastructure.casa_tools as casa_tools
 import pipeline.infrastructure.filenamer as filenamer
-import pipeline.infrastructure.logging as logging
+import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
@@ -19,8 +19,7 @@ from .display import PlotmsRealVsFreqPlotter
 if TYPE_CHECKING:
     from .atmcor import SDATMCorrectionResults
 
-LOG = logging.get_logger(__name__)
-
+LOG = infrastructure.logging.get_logger(__name__)
 
 ATMHeuristicsTR = collections.namedtuple(
     'ATMHeuristicsTR',
@@ -76,7 +75,7 @@ def construct_heuristics_table_row(results: 'SDATMCorrectionResults', detail_pag
     return row
 
 
-def identify_heuristics_plots(stage_dir: str, results: 'SDATMCorrectionResults') -> List[logger.Plot]:
+def identify_heuristics_plots(stage_dir: str, results: 'SDATMCorrectionResults') -> list[logger.Plot]:
     """Identify ATM heuristics plots created by SDcalatmcor module.
 
     Args:
@@ -137,7 +136,7 @@ def identify_heuristics_plots(stage_dir: str, results: 'SDATMCorrectionResults')
     return sorted_heuristics_plots
 
 
-def iterate_field_spw(vis: str, field_id_list: List[int], spw_id_list: List[int]) -> Generator[Tuple[int, int], None, None]:
+def iterate_field_spw(vis: str, field_id_list: list[int], spw_id_list: list[int]) -> Generator[tuple[int, int], None, None]:
     """Yields valid pair of field_id and spw_id.
 
     Args:
@@ -158,7 +157,7 @@ def iterate_field_spw(vis: str, field_id_list: List[int], spw_id_list: List[int]
 class SDATMCorrHeuristicsDetailPlotRenderer(basetemplates.JsonPlotRenderer):
     """Renderer class for ATM heuristics detail plots."""
 
-    def __init__(self, context: Context, result: 'SDATMCorrectionResults', plots: List[logger.Plot]) -> None:
+    def __init__(self, context: Context, result: 'SDATMCorrectionResults', plots: list[logger.Plot]) -> None:
         """
         Construct SDATMCorrHeuristicsDetailPlotRenderer instance.
 

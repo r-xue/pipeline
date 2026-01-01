@@ -1,9 +1,10 @@
 """Module to read Jy/K factor file."""
+from __future__ import annotations
+
 import contextlib
 import csv
 import io
-
-from typing import TYPE_CHECKING, Generator, List, Optional, TextIO, Tuple, Union
+from typing import TYPE_CHECKING, Generator, TextIO
 
 import numpy
 
@@ -15,10 +16,10 @@ if TYPE_CHECKING:
 
     from pipeline.infrastructure.launcher import Context
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
-def read(context: 'Context', filename: str) -> List[List[str]]:
+def read(context: Context, filename: str) -> list[list[str]]:
     """Read jyperk factors from a file.
 
     Args:
@@ -56,7 +57,7 @@ def inspect_type(filename: str) -> str:
         return 'MS-Based'
 
 
-def read_ms_based(reffile: str) -> List[List[str]]:
+def read_ms_based(reffile: str) -> list[list[str]]:
     """Read "MS-Based" jyperk factor file.
 
     Args:
@@ -70,7 +71,7 @@ def read_ms_based(reffile: str) -> List[List[str]]:
         return list(_read_stream(f))
 
 
-def read_session_based(context: 'Context', reffile: str) -> List[List[str]]:
+def read_session_based(context: Context, reffile: str) -> list[list[str]]:
     """Read "Session-Based" jyperk factor file.
 
     Args:
@@ -97,7 +98,7 @@ def read_session_based(context: 'Context', reffile: str) -> List[List[str]]:
         return list(_read_stream(f))
 
 
-def _read_stream(stream: TextIO) -> Generator[List[str], None, None]:
+def _read_stream(stream: TextIO) -> Generator[list[str], None, None]:
     """Read CSV data.
 
     Args:
@@ -147,7 +148,7 @@ class JyPerKDataParser(object):
         return line.strip('# \n\t')
 
     @classmethod
-    def parse_header(cls, line: str) -> Optional[Union[Tuple[str, str], List[str]]]:
+    def parse_header(cls, line: str) -> tuple[str, str] | list[str] | None:
         """Parse single header string.
 
         Header string may contain,
@@ -174,7 +175,7 @@ class JyPerKDataParser(object):
             return None
 
     @classmethod
-    def parse_data(cls, line: str) -> Optional[List[str]]:
+    def parse_data(cls, line: str) -> list[str] | None:
         """Parse comma-separated data string.
 
         Args:
@@ -209,7 +210,7 @@ class JyPerK(object):
         self.header = []
         self.data = []
 
-    def register_meta(self, content: Union[List[str], Tuple[str, str]]) -> None:
+    def register_meta(self, content: list[str] | tuple[str, str]) -> None:
         """Register meta data for the contents.
 
         Args:
@@ -224,7 +225,7 @@ class JyPerK(object):
         elif isinstance(content, tuple):
             self.meta[content[0]] = content[1]
 
-    def register_data(self, content: List[str]) -> None:
+    def register_data(self, content: list[str]) -> None:
         """Register data.
 
         Args:
@@ -238,7 +239,7 @@ class JyPerK(object):
 
 
 @contextlib.contextmanager
-def associate(context: 'Context', factors: JyPerK) -> Generator[TextIO, None, None]:
+def associate(context: Context, factors: JyPerK) -> Generator[TextIO, None, None]:
     """Provide an interface to access "Session-Based" data like "MS-Based" one.
 
     Convert data collected from session based jyperk csv as JyPerK object
@@ -325,7 +326,7 @@ def associate(context: 'Context', factors: JyPerK) -> Generator[TextIO, None, No
         stream.close()
 
 
-def inspect_coverage(minval: 'Number', maxval: 'Number', minref: 'Number', maxref: 'Number') -> 'Number':
+def inspect_coverage(minval: Number, maxval: Number, minref: Number, maxref: Number) -> Number:
     """Inspect overlapped region of given two ranges.
 
     Compute a fraction of the overlapped region of given two ranges

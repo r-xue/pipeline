@@ -3,7 +3,7 @@ import copy
 import math
 import os
 import time
-from typing import Dict, Generator, List, Optional, Tuple
+from typing import TYPE_CHECKING, Generator
 
 import numpy
 
@@ -11,7 +11,6 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain import DataTable, DataType, MeasurementSet
 from pipeline.domain.datatable import OnlineFlagIndex, TsysFlagIndex
 from pipeline.hsd.tasks.common import utils as sdutils
 from pipeline.infrastructure import casa_tasks
@@ -19,7 +18,10 @@ from pipeline.infrastructure import casa_tools
 from .. import common
 from .SDFlagRule import INVALID_STAT
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
+
+if TYPE_CHECKING:
+    from pipeline.domain import DataTable, DataType, MeasurementSet
 
 
 class SDBLFlagWorkerInputs(vdp.StandardInputs):
@@ -93,7 +95,7 @@ class BLFlagTableContainer(object):
         return self.tb1.name()
 
     @property
-    def blvis(self)-> Optional[str]:
+    def blvis(self)-> str | None:
         """Return a name of baselined MS."""
         if self.tb2 is None:
             return None
@@ -102,7 +104,7 @@ class BLFlagTableContainer(object):
 
 @contextlib.contextmanager
 def open_cal_bl_tables(
-        ms: MeasurementSet,bl_ms: Optional[MeasurementSet]=None
+        ms: MeasurementSet,bl_ms: MeasurementSet | None=None
 ) -> Generator[BLFlagTableContainer, None, None]:
     """
     Yield BLFlagTableContainer.
@@ -335,13 +337,13 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         return sdutils.make_row_map_between_ms(origin_ms, ms.name)
 
     def calcStatistics(self, DataTable: DataTable, container: BLFlagTableContainer,
-                       NCHAN: int, Nmean: int, TimeTable: List[List[List[int]]],
-                       polids: List[int], edge: List[int], is_baselined: bool,
-                       deviation_mask: Optional[List[Tuple[int, int]]]=None,
-                       rowmapIn: Optional[Dict[int,int]] = None,
-                       rowmapOut: Optional[Dict[int,int]] = None
-                       ) -> Tuple[numpy.ndarray, Dict[int, numpy.ndarray],
-                                  Dict[int, numpy.ndarray]]:
+                       NCHAN: int, Nmean: int, TimeTable: list[list[list[int]]],
+                       polids: list[int], edge: list[int], is_baselined: bool,
+                       deviation_mask: list[tuple[int, int] | None]=None,
+                       rowmapIn: dict[int,int] | None = None,
+                       rowmapOut: dict[int,int] | None = None
+                       ) -> tuple[numpy.ndarray, dict[int, numpy.ndarray],
+                                  dict[int, numpy.ndarray]]:
         """
         Calculate statistics of spectra before and after baseline subtaction.
 
@@ -948,7 +950,7 @@ class SDBLFlagWorker(basetask.StandardTaskTemplate):
         return valid_flag_commands
 
 
-def _get_permanent_flag_summary( pflag:List[int], FlagRule:Dict ) -> int:
+def _get_permanent_flag_summary( pflag:list[int], FlagRule:dict ) -> int:
     """
     get permanent flag summary
 
@@ -974,7 +976,7 @@ def _get_permanent_flag_summary( pflag:List[int], FlagRule:Dict ) -> int:
     return mask
 
 
-def _get_stat_flag_summary( tflag:List[int], FlagRule:Dict ) -> int:
+def _get_stat_flag_summary( tflag:list[int], FlagRule:dict ) -> int:
     """
     get stat flag summary
 
@@ -1003,7 +1005,7 @@ def _get_stat_flag_summary( tflag:List[int], FlagRule:Dict ) -> int:
 
 # validity check in _get_iteration is not necessary since group_member
 # has already been validated at upper level (baselineflag.py)
-def _get_iteration(reduction_group:Dict, msobj:MeasurementSet, antid:int, fieldid:int, spwid:int) -> int:
+def _get_iteration(reduction_group:dict, msobj:MeasurementSet, antid:int, fieldid:int, spwid:int) -> int:
     """
     Get iteration 
 

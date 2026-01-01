@@ -1,15 +1,18 @@
 """Renderer module for importdata."""
+from __future__ import annotations
 
 import collections
-from typing import Any, Dict
+from typing import TYPE_CHECKING, Any
 
 import pipeline.h.tasks.importdata.renderer as super_renderer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure.basetask import Results
-from pipeline.infrastructure.launcher import Context
 
 LOG = logging.get_logger(__name__)
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure.basetask import Results
+    from pipeline.infrastructure.launcher import Context
 
 DeductionGroupTR = collections.namedtuple('ReductionGroupTR', 'id fmin fmax field msname antenna spw nchan')
 
@@ -32,7 +35,7 @@ class T2_4MDetailsSingleDishImportDataRenderer(super_renderer.T2_4MDetailsImport
         """
         super(T2_4MDetailsSingleDishImportDataRenderer, self).__init__(uri, description, always_rerender)
 
-    def update_mako_context(self, mako_context: Dict[str, Any], pipeline_context: Context, result: Results):
+    def update_mako_context(self, mako_context: dict[str, Any], pipeline_context: Context, result: Results):
         """Update mako context.
 
         Args:

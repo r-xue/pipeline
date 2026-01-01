@@ -1,6 +1,5 @@
 """AQUA pipeline report generator for Single Dish."""
 
-from typing import List
 from xml.etree.ElementTree import Element
 import xml.etree.ElementTree as ElementTree
 
@@ -44,12 +43,12 @@ class AlmaAquaXmlGenerator(aqua.AquaXmlGenerator):
         return root
 
     def get_imaging_topic(self, context: Context,
-                          topic_results: List[Results]) -> Element:
+                          topic_results: list[Results]) -> Element:
         """Get the XML for the imaging topic.
 
         Args:
             context : pipeline context
-            topic_results : list of Results for this topic
+            topic_results : List of Results for this topic
 
         Returns:
             XML for imaging topic
@@ -69,7 +68,7 @@ class AlmaAquaXmlGenerator(aqua.AquaXmlGenerator):
 
 
 def _hsd_imaging_sensitivity_exporter(stage_results: ResultsList) \
-        -> List[Sensitivity]:
+        -> list[Sensitivity]:
     """XML exporter expects this function to return a list of dictionaries.
 
     This function is used only once for now, with no arguments
@@ -79,7 +78,7 @@ def _hsd_imaging_sensitivity_exporter(stage_results: ResultsList) \
         stage_results: ResultsList of stages
 
     Returns:
-        list of Sensitivity
+        List of Sensitivity
     """
     # XML exporter expects this function to return a list of dictionaries
     sensitivities = []

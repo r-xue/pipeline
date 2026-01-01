@@ -2,24 +2,24 @@
 Utilities used for correcting image center coordinates.
 """
 import os
-from typing import Dict, Union
 
 import astropy.io.fits as apfits
 import astropy.units as u
 import numpy as np
 from astropy.coordinates import offset_by
 
-from .. import casa_tools, logging
+import pipeline.infrastructure as infrastructure
+from .. import casa_tools
 from . import record_to_quantity as rtq
 
-LOG = logging.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 __all__ = ['do_wide_field_pos_cor']
 
 
-def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
-                          obs_long: Union[Dict[str, Union[str, float]], None] = None,
-                          obs_lat: Union[Dict[str, Union[str, float]], None] = None) -> None:
+def do_wide_field_pos_cor(fitsname: str, date_time: dict | None = None,
+                          obs_long: dict[str, str | float, None] = None,
+                          obs_lat: dict[str, str | float, None] = None) -> None:
     """Applies mean wide field position correction to FITS WCS in place.
 
     Apply a mean correction to the FITS WCS reference position as a function
@@ -132,7 +132,7 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
     return
 
 
-def calc_zd_pa(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict, date_time: Dict):
+def calc_zd_pa(ra: dict, dec: dict, obs_long: dict, obs_lat: dict, date_time: dict) -> tuple[float, float]:
     """Computes the zenith distance and parallactic angle chi.
 
     Args:

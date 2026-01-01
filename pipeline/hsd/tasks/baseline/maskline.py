@@ -1,8 +1,9 @@
 """Task to create channel mask for baseline subtraction."""
+from __future__ import annotations
+
 import os
 import time
-
-from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Type
+from typing import TYPE_CHECKING, Any
 
 import numpy
 
@@ -18,14 +19,13 @@ from . import detection
 from . import validation
 from .. import common
 from ..common import utils
-
 from .typing import LineWindow
 
 if TYPE_CHECKING:
     from pipeline.infrastructure.launcher import Context
     from pipeline.domain.singledish import MSReductionGroupDesc, MSReductionGroupMember
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 NoData = common.NoData
 
@@ -43,12 +43,12 @@ class MaskLineInputs(vdp.StandardInputs):
     clusteringalgorithm = vdp.VisDependentProperty(default='hierarchy')
 
     @property
-    def group_desc(self) -> 'MSReductionGroupDesc':
+    def group_desc(self) -> MSReductionGroupDesc:
         """Return reduction group description."""
         return self.context.observing_run.ms_reduction_group[self.group_id]
 
     @property
-    def reference_member(self) -> 'MSReductionGroupMember':
+    def reference_member(self) -> MSReductionGroupMember:
         """Return reference member of reduction group.
 
         The first member in the list is returned.
@@ -56,15 +56,15 @@ class MaskLineInputs(vdp.StandardInputs):
         return self.group_desc[self.member_list[0]]
 
     def __init__(self,
-                 context: 'Context',
+                 context: Context,
                  iteration: int,
                  group_id: int,
-                 member_list: List[int],
-                 window: Optional[LineWindow] = None,
-                 windowmode: Optional[str] = None,
-                 edge: Optional[Tuple[int, int]] = None,
-                 broadline: Optional[bool] = None,
-                 clusteringalgorithm: Optional[str] = None) -> None:
+                 member_list: list[int],
+                 window: LineWindow | None = None,
+                 windowmode: str | None = None,
+                 edge: tuple[int, int] | None = None,
+                 broadline: bool | None = None,
+                 clusteringalgorithm: str | None = None) -> None:
         """Construct MaskLineInputs instance.
 
         Args:
@@ -100,8 +100,8 @@ class MaskLineResults(common.SingleDishResults):
     """Results class to hold the result of mask creation task."""
 
     def __init__(self,
-                 task: Optional[Type[basetask.StandardTaskTemplate]] = None,
-                 success: Optional[bool] = None,
+                 task: type[basetask.StandardTaskTemplate] | None = None,
+                 success: bool | None = None,
                  outcome: Any = None) -> None:
         """Construct MaskLineResults instance.
 
@@ -112,7 +112,7 @@ class MaskLineResults(common.SingleDishResults):
         """
         super(MaskLineResults, self).__init__(task, success, outcome)
 
-    def merge_with_context(self, context: 'Context') -> None:
+    def merge_with_context(self, context: Context) -> None:
         """Merge result instance into context.
 
         No specific merge operation is done.

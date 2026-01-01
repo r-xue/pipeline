@@ -5,7 +5,7 @@ import operator
 import re
 from decimal import Decimal
 from math import sqrt
-from typing import Iterable, List, Optional, Tuple
+from typing import Iterable
 
 import numpy
 
@@ -23,7 +23,7 @@ from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.launcher import Context
 from . import gcorfluxscale
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 COLSHAPE_FORMAT = re.compile(r'\[(?P<num_pols>\d+), (?P<num_rows>\d+)\]')
 
@@ -268,7 +268,7 @@ def _compute_snr_info_for_intent(context: Context, ms: MeasurementSet, caltable_
 
 
 def _compute_k_spws_for_flux_measurements(field: Field, flux_measurements: Iterable[FluxMeasurement], r_snr: float,
-                                          msg_fieldname: str, msg_intents: str) -> Optional[list]:
+                                          msg_fieldname: str, msg_intents: str) -> list | None:
     """
     Compute the "k_spw" metric for given list of flux measurements and given
     flux ratio for highest SNR SpW.
@@ -334,7 +334,7 @@ def _get_field_to_analyse(ms: MeasurementSet, intent: str) -> Field:
     return field
 
 
-def _get_fluxes_for_field(ms: MeasurementSet, field: Field) -> List[Tuple[int, float, float]]:
+def _get_fluxes_for_field(ms: MeasurementSet, field: Field) -> list[tuple[int, float, float]]:
     """
     Return flux information for given measurement set and field.
 
@@ -361,7 +361,7 @@ def _get_fluxes_for_field(ms: MeasurementSet, field: Field) -> List[Tuple[int, f
 
 def _get_highest_snr_measurement_and_flux_ratio(field: Field, highest_snr_spw: SpectralWindow,
                                                 measurements: Iterable[FluxMeasurement], msg_fieldname: str,
-                                                msg_intents: str) -> Tuple[FluxMeasurement, Optional[float]]:
+                                                msg_intents: str) -> tuple[FluxMeasurement, float | None]:
     """
     Retrieve flux measurement for given "highest SNR" SpW, compute ratio of
     derived over catalog flux, and return both flux measurement and flux ratio.
@@ -402,7 +402,7 @@ def _get_highest_snr_measurement_and_flux_ratio(field: Field, highest_snr_spw: S
 
 
 def _get_highest_snr_spw(snr_info: dict, flux_measurements: Iterable[FluxMeasurement], ms: MeasurementSet,
-                         msg_fieldname: str, msg_intents: str) -> Optional[SpectralWindow]:
+                         msg_fieldname: str, msg_intents: str) -> SpectralWindow | None:
     """
     Return the highest SNR SpW for flux measurements based on SNR information.
 
@@ -485,7 +485,7 @@ def _get_tsys_caltable_path(context: Context, vis: str) -> str:
     return caltable_path
 
 
-def gaincalSNR(context: Context, ms: MeasurementSet, tsysTable: str, flux: Iterable[Tuple[int, float, float]],
+def gaincalSNR(context: Context, ms: MeasurementSet, tsysTable: str, flux: Iterable[tuple[int, float, float]],
                field: Field, spws: Iterable[SpectralWindow], intent='PHASE', required_snr: float = 25,
                edge_fraction: float = 0.03125, min_snr: float = 10) -> dict:
     """

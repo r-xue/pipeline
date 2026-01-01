@@ -1,7 +1,6 @@
 import collections
 import copy
 import os
-from typing import Dict, List
 
 import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.tsysflag.renderer import T2_4MDetailsTsysflagRenderer
@@ -76,7 +75,7 @@ class T2_4MDetailsTsysflagContaminationRenderer(T2_4MDetailsTsysflagRenderer):
 
         return tsys_map
 
-    def post_process_plots(self, pcontext: Context, spw_map: Dict[int, List[int]], plots: List[Plot]) -> List[Plot]:
+    def post_process_plots(self, pcontext: Context, spw_map: dict[int, list[int]], plots: list[Plot]) -> list[Plot]:
         """
         Transform the 'foreign' plot wrappers coming from extern code into
         native wrappers more aligned with the pipeline and standard pipeline

@@ -5,18 +5,18 @@ import os
 import warnings
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable, Tuple
+from typing import Callable
 
 import numpy as np
 import scipy.optimize
 
-import pipeline.infrastructure.logging as logging
+import pipeline.infrastructure as infrastructure
 from pipeline.domain import MeasurementSet
 from pipeline.domain.measures import FrequencyUnits
 from . import mswrapper, qa_utils
 from .qa_utils import UnitFactorType
 
-LOG = logging.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 @dataclass
@@ -730,8 +730,8 @@ def _create_masked_entry():
 
 
 def to_linear_fit_parameters(
-        fit: Tuple[float, float],
-        err: Tuple[float, float]
+        fit: tuple[float, float],
+        err: tuple[float, float]
 ) -> LinearFitParameters:
     """
     Convert tuples from the best fit evaluation into a LinearFitParameters
@@ -750,7 +750,7 @@ def get_amp_fit(
         frequencies: np.ndarray,
         visibilities: np.ndarray,
         sigma: np.ndarray
-) -> Tuple[np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray]:
     """
     Fit a linear amplitude vs frequency model to a set of time-averaged
     visibilities.
@@ -791,7 +791,7 @@ def get_phase_fit(
         frequencies: np.ndarray,
         visibilities: np.ndarray,
         sigma: np.ndarray
-) -> Tuple[np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray]:
     """
     Fit a linear model for phase vs frequency to a set of time-averaged
     visibilities.
@@ -924,7 +924,7 @@ def fit_angular_model(angular_model: Callable, nu: np.ndarray, angdata: np.ndarr
     return fitres
 
 
-def robust_stats(a: np.ndarray) -> Tuple[float, float]:
+def robust_stats(a: np.ndarray) -> tuple[float, float]:
     """
     Return median and estimate standard deviation of numpy array A using median statistics
 

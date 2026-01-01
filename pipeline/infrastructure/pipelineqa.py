@@ -26,11 +26,11 @@ import collections
 import enum
 import operator
 import traceback
-from typing import List, NamedTuple, Optional, Set
+from typing import NamedTuple
 
-from . import logging
+import pipeline.infrastructure as infrastructure
 
-LOG = logging.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class QAOrigin(NamedTuple):
@@ -79,9 +79,9 @@ class TargetDataSelection:
     properties (vis, scan, spw, etc.) should be set to specify to which subset of
     data something applies.
     """
-    def __init__(self, session: Set[str] = None, vis: Set[str] = None, scan: Set[int] = None,
-                 spw: Set[int] = None, field: Set[int] = None, intent: Set[str] = None,
-                 ant: Set[int] = None, pol: Set[str] = None):
+    def __init__(self, session: set[str] = None, vis: set[str] = None, scan: set[int] = None,
+                 spw: set[int] = None, field: set[int] = None, intent: set[str] = None,
+                 ant: set[int] = None, pol: set[str] = None):
         if session is None:
             session = set()
         if vis is None:
@@ -124,7 +124,7 @@ class TargetDataSelection:
 class QAScore(object):
     def __init__(self, score, longmsg='', shortmsg='', vis=None, origin=NULL_ORIGIN,
                  weblog_location=WebLogLocation.UNSET, hierarchy='',
-                 applies_to: Optional[TargetDataSelection]=None):
+                 applies_to: TargetDataSelection | None=None):
         """
         QAScore represent a normalised assessment of data quality.
 
@@ -197,8 +197,8 @@ class QAScorePool(object):
     all_unity_shortmsg = 'QA pass'
 
     def __init__(self):
-        self.pool: List[QAScore] = []
-        self._representative: Optional[QAScore] = None
+        self.pool: list[QAScore] = []
+        self._representative: QAScore | None = None
 
     @property
     def representative(self):
@@ -366,8 +366,8 @@ class QARegistry(object):
 
         # register the capturing log handler, buffering all messages so that
         # we can add them to the result - and subsequently, the weblog
-        logging_handler = logging.CapturingHandler(logging.ATTENTION)
-        logging.add_handler(logging_handler)
+        logging_handler = infrastructure.logging.CapturingHandler(infrastructure.logging.ATTENTION)
+        infrastructure.logging.add_handler(logging_handler)
 
         try:
             # with the leaf results processed, the containing handler can now
@@ -384,11 +384,11 @@ class QARegistry(object):
         finally:
             # now that the messages from the QA stage have been attached to
             # the result, remove the capturing logging handler from all loggers
-            logging.remove_handler(logging_handler)
+            infrastructure.logging.remove_handler(logging_handler)
 
 
-def scores_with_location(pool: List[QAScore],
-                         locations: Optional[List[WebLogLocation]] = None) -> List[QAScore]:
+def scores_with_location(pool: list[QAScore],
+                         locations: list[WebLogLocation] | None = None) -> list[QAScore]:
     """
     Filter QA scores by web log location.
     """

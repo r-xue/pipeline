@@ -1,4 +1,6 @@
 """Extract various informations of raster."""
+from __future__ import annotations
+
 import argparse
 import collections
 import glob
@@ -7,21 +9,22 @@ import math
 import os
 import sys
 from operator import sub
+from typing import TYPE_CHECKING, Generator
+
 from matplotlib.animation import FuncAnimation, ImageMagickWriter
 from matplotlib.lines import Line2D
 import matplotlib.pyplot as plt
 import numpy as np
+
 import pipeline.domain.datatable as datatable
 from pipeline.domain.datatable import DataTableImpl
 import pipeline.infrastructure.logging as logging
 from pipeline.infrastructure import casa_tools
-from typing import TYPE_CHECKING, Generator, List, Optional, Tuple
 
 from ...heuristics import rasterscan
 
 if TYPE_CHECKING:
     from pipeline.domain.measurementset import MeasurementSet
-
 
 LOG = logging.get_logger(__name__)
 
@@ -61,13 +64,13 @@ def is_multi_beam(datatable: DataTableImpl) -> bool:
     return len(np.unique(datatable.getcol('BEAM'))) != 1
 
 
-def extract_dtrow_list(timetable: List[List[List[int]]], for_small_gap: bool = True) -> List[np.ndarray]:
+def extract_dtrow_list(timetable: list[list[list[int]]], for_small_gap: bool = True) -> list[np.ndarray]:
     """Convert timetable into datatable row id list."""
     tt_idx = 0 if for_small_gap else 1
     return [np.asarray(x[1]) for x in timetable[tt_idx]]
 
 
-def read_readonly_data(table: DataTableImpl) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def read_readonly_data(table: DataTableImpl) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """
     Extract necerrary data from datatable instance.
 
@@ -203,7 +206,7 @@ def get_science_spectral_windows(metadata: MetaDataSet) -> np.ndarray:
     return np.unique(metadata.spw[metadata.srctype == 0])
 
 
-def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[List[int]]) -> np.ndarray:
+def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: list[list[int]]) -> np.ndarray:
     """
     Compute distances between raster rows and the first row.
 
@@ -231,7 +234,7 @@ def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[List[i
     return distance_list
 
 
-def flag_incomplete_raster(raster_index_list: List[np.ndarray], nd_raster: int, nd_row: int) -> np.ndarray:
+def flag_incomplete_raster(raster_index_list: list[np.ndarray], nd_raster: int, nd_row: int) -> np.ndarray:
     """
     Return IDs of incomplete raster map.
 
@@ -274,7 +277,7 @@ def flag_incomplete_raster(raster_index_list: List[np.ndarray], nd_raster: int, 
     return idx
 
 
-def flag_worm_eaten_raster(meta: MetaDataSet, raster_index_list: List[np.ndarray], nd_row: int) -> np.ndarray:
+def flag_worm_eaten_raster(meta: MetaDataSet, raster_index_list: list[np.ndarray], nd_row: int) -> np.ndarray:
     """
     Return IDs of raster map where number of continuous flagged data exceeds upper limit given by nd_row.
 
@@ -319,7 +322,7 @@ def flag_worm_eaten_raster(meta: MetaDataSet, raster_index_list: List[np.ndarray
     return idx
 
 
-def get_raster_flag_list(flagged1: List[int], flagged2: List[int], raster_index_list: List[np.ndarray]) -> np.ndarray:
+def get_raster_flag_list(flagged1: list[int], flagged2: list[int], raster_index_list: list[np.ndarray]) -> np.ndarray:
     """
     Merge flag result and convert raster id to list of data index.
 
@@ -337,7 +340,7 @@ def get_raster_flag_list(flagged1: List[int], flagged2: List[int], raster_index_
     return data_ids
 
 
-def flag_raster_map(datatable: DataTableImpl, ms: 'MeasurementSet', rasterscan_heuristics_result: rasterscan.RasterScanHeuristicsResult) -> List[int]:
+def flag_raster_map(datatable: DataTableImpl, ms: MeasurementSet, rasterscan_heuristics_result: rasterscan.RasterScanHeuristicsResult) -> list[int]:
     """
     Return list of index to be flagged by flagging heuristics for raster scan.
 
@@ -530,7 +533,7 @@ def get_angle(dx: float, dy: float, aspect_ratio: float=1) -> float:
     return offset + theta
 
 
-def anim_gen(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray], dist_list: np.ndarray, cmap: Tuple[float, float, float, float]) -> Generator[Tuple[Optional[np.ndarray], Optional[np.ndarray], Tuple[float, float, float, float], bool], None, None]:
+def anim_gen(ra: np.ndarray, dec: np.ndarray, dtrow_list: list[np.ndarray], dist_list: np.ndarray, cmap: tuple[float, float, float, float]) -> Generator[tuple[np.ndarray | None, np.ndarray | None, tuple[float, float, float, float], bool], None, None]:
     """
     Generate position, color and boolean flag for generate_animation.
 
@@ -565,7 +568,7 @@ def anim_gen(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray], dist
     yield None, None, color, raster_flag
 
 
-def animate(i: Tuple[np.ndarray, np.ndarray, Tuple[float, float, float, float], bool]) -> List[Line2D]:
+def animate(i: tuple[np.ndarray, np.ndarray, tuple[float, float, float, float], bool]) -> list[Line2D]:
     """
     Generate plot corresponding to single frame.
 
@@ -592,7 +595,7 @@ def animate(i: Tuple[np.ndarray, np.ndarray, Tuple[float, float, float, float], 
     return lines
 
 
-def generate_animation(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray], figfile: str = 'movie.gif') -> None:
+def generate_animation(ra: np.ndarray, dec: np.ndarray, dtrow_list: list[np.ndarray], figfile: str = 'movie.gif') -> None:
     """
     Generate animation GIF file to illustrate observing pattern.
 

@@ -36,21 +36,25 @@ Example #5: process uid123.tar.gz with a log level of TRACE
     pipeline.recipereducer.reduce(vis=['uid123.tar.gz'], loglevel='trace')
 
 """
+from __future__ import annotations
+
 import collections
 import os
 import tempfile
 import traceback
 import xml.etree.ElementTree as ElementTree
-from typing import Any, Callable, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Callable
 
 import pipeline.cli as cli
 import pipeline.h.cli.cli as h_cli
+import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.launcher as launcher
-import pipeline.infrastructure.logging as logging
 from pipeline.infrastructure import exceptions, utils
 
-LOG = logging.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
 
 RECIPES_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), 'recipes'))
 
@@ -58,7 +62,7 @@ RECIPES_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), 'recipes'
 TaskArgs = collections.namedtuple('TaskArgs', 'vis infiles session')
 
 
-def _create_context(loglevel: str, plotlevel: str, name: str) -> launcher.Context:
+def _create_context(loglevel: str, plotlevel: str, name: str) -> Context:
     """Create Pipeline context.
 
     Args:
@@ -74,7 +78,7 @@ def _create_context(loglevel: str, plotlevel: str, name: str) -> launcher.Contex
     return pipeline.context
 
 
-def _register_context(loglevel: str, plotlevel: str, context: launcher.Context) -> None:
+def _register_context(loglevel: str, plotlevel: str, context: Context) -> None:
     """Register given context to global scope.
 
     If pipeline context already exists in global scope, it is saved on
@@ -122,7 +126,7 @@ def _register_context(loglevel: str, plotlevel: str, context: launcher.Context) 
         try:
             # to disable some log messages during registration
             temp_loglevel = 'error'
-            logging.set_logging_level(level=temp_loglevel)
+            infrastructure.logging.set_logging_level(level=temp_loglevel)
             context.save(context_name)
             # create pipeline instance using temporary context
             pipeline_instance = launcher.Pipeline(
@@ -134,7 +138,7 @@ def _register_context(loglevel: str, plotlevel: str, context: launcher.Context) 
             h_cli.stack[h_cli.PIPELINE_NAME] = pipeline_instance
         finally:
             # set user-specified loglevel
-            logging.set_logging_level(level=loglevel)
+            infrastructure.logging.set_logging_level(level=loglevel)
 
 
 def _get_context_name(procedure: str) -> str:
@@ -170,7 +174,7 @@ def _get_procedure_title(procedure: str) -> str:
     return procedure_title
 
 
-def _get_tasks(context: launcher.Context, args: TaskArgs, procedure: str):
+def _get_tasks(context: Context, args: TaskArgs, procedure: str):
     procedure_xml = _get_processing_procedure(procedure)
 
     commands_seen = []
@@ -218,7 +222,7 @@ def _get_tasks(context: launcher.Context, args: TaskArgs, procedure: str):
         yield task, task_args
 
 
-def _format_arg_value(arg_val: Tuple[Any, Any]) -> str:
+def _format_arg_value(arg_val: tuple[Any, Any]) -> str:
     arg, val = arg_val
     return '%s=%r' % (arg, val)
 
@@ -228,31 +232,31 @@ def _as_task_call(task_func: Callable, task_args: dict) -> str:
     return '%s(%s)' % (task_func.__name__, ', '.join(kw_args))
 
 
-def reduce(vis: Optional[List[str]] = None, infiles: Optional[List[str]] = None,
+def reduce(vis: list[str] | None = None, infiles: list[str] | None = None,
            procedure: str = 'procedure_hifa_calimage.xml',
-           context: Optional[launcher.Context] = None, name: Optional[str] = None,
+           context: Context | None = None, name: str | None = None,
            loglevel: str = 'info', plotlevel: str = 'default',
-           session: Optional[List[str]] = None, exitstage: Optional[int] = None,
-           startstage: Optional[int] = None) -> launcher.Context:
+           session: list[str] | None = None, exitstage: int | None = None,
+           startstage: int | None = None) -> Context:
     """Executes a CASA Pipeline data reduction procedure.
 
     This function triggers the execution of pipeline tasks defined in a
     given XML precipe procedure, managing context creation and task sequencing.
 
     Args:
-        vis (Optional[List[str]]): List of measurement sets to process.
-        infiles (Optional[List[str]]): Supplementary input files for the pipeline executation.
+        vis (list[str] | None): List of measurement sets to process.
+        infiles (list[str] | None): Supplementary input files for the pipeline executation.
         procedure (str): XML procedure file defining the pipeline workflow.
-        context (Optional[launcher.Context]): Existing context object. A new context is created if None.
-        name (Optional[str]): Context name, used only if `context` is None.
+        context (Context | None): Existing context object. A new context is created if None.
+        name (str | None): Context name, used only if `context` is None.
         loglevel (str): Logging level (e.g., 'info', 'debug').
         plotlevel (str): Plotting verbosity level used during task execution.
-        session (Optional[List[str]]): List of session names corresponding to each vis. Defaults to "default".
-        exitstage (Optional[int]): If provided, stops execution after this stage number.
-        startstage (Optional[int]): If provided, begins execution from this stage number.
+        session (list[str] | None): List of session names corresponding to each vis. Defaults to "default".
+        exitstage (int | None): If provided, stops execution after this stage number.
+        startstage (int | None): If provided, begins execution from this stage number.
 
     Returns:
-        launcher.Context: The pipeline context object with updated state.
+        Context: The pipeline context object with updated state.
 
     Raises:
         exceptions.PipelineException: Raised if a pipeline task fails with tracebacks.

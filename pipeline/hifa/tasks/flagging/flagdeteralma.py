@@ -1,5 +1,3 @@
-from typing import List
-
 import numpy as np
 from astropy.coordinates import AltAz, EarthLocation, SkyCoord
 from astropy.time import Time
@@ -22,7 +20,7 @@ __all__ = [
     'FlagDeterALMAResults',
 ]
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class FlagDeterALMAResults(flagdeterbase.FlagDeterBaseResults):
@@ -270,7 +268,7 @@ class SerialFlagDeterALMA(flagdeterbase.FlagDeterBase):
         """
         return load_partialpols_alma(self.inputs.ms)
 
-    def _get_lowtrans_cmds(self) -> List:
+    def _get_lowtrans_cmds(self) -> list:
         """
         ALMA specific step to identify and flag data with low atmospheric
         transmission.
@@ -631,7 +629,7 @@ def convert_params_to_commands(ms, params, ant_id_map=None):
 
 
 def lowtrans_alma(ms: MeasurementSet, mintransrepspw: float, mintransnonrepspws: float,
-                  max_frac_low_trans: float) -> List[str]:
+                  max_frac_low_trans: float) -> list[str]:
     """
     Create flagging commands to flag science spectral windows with low
     atmospheric transmission (PIPE-624).

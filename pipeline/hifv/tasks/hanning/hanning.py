@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import os
 import shutil
-from typing import TYPE_CHECKING, Callable, Dict
+from typing import TYPE_CHECKING, Callable
 
 from pipeline import infrastructure
 from pipeline.domain.measures import FrequencyUnits
@@ -295,7 +295,7 @@ class Hanning(basetask.StandardTaskTemplate):
                 return True
         return False
 
-    def _track_hsmooth(self, hs_dict: Dict[int, bool]) -> None:
+    def _track_hsmooth(self, hs_dict: dict[int, bool]) -> None:
         """Modify SPECTRAL_WINDOW table to track hanning smoothing
 
         Args:
