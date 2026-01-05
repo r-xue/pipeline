@@ -5,7 +5,7 @@ import pipeline.infrastructure as infrastructure
 LOG = infrastructure.get_logger(__name__)
 
 
-class State(object):
+class State:
     """
     State is a logical representation of (part of) rows in the STATE table
     relating STATE_ID (in the MAIN table) to the observing mode(s) and
@@ -143,7 +143,7 @@ class StateALMA(State):
             state_id: Numerical identifier of this State.
             obs_mode: Unique obs_mode values associated with this State.
         """
-        super(StateALMA, self).__init__(state_id, obs_mode)
+        super().__init__(state_id, obs_mode)
 
         if 'CALIBRATE_FLUX' in obs_mode:
             LOG.trace('Translating %s intent to AMPLITUDE for state #%s'
@@ -172,7 +172,7 @@ class StateALMACycle0(StateALMA):
             state_id: Numerical identifier of this State.
             obs_mode: Unique obs_mode values associated with this State.
         """
-        super(StateALMACycle0, self).__init__(state_id, obs_mode)
+        super().__init__(state_id, obs_mode)
 
         # For Cycle 0, check whether this state has PHASE and another cal
         # intent. If so, the PHASE obsmode will be removed.
@@ -280,7 +280,7 @@ class StateVLA(State):
             state_id: Numerical identifier of this State.
             obs_mode: Unique obs_mode values associated with this State.
         """
-        super(StateVLA, self).__init__(state_id, obs_mode)
+        super().__init__(state_id, obs_mode)
 
 
 class StateAPEX(State):
@@ -306,7 +306,7 @@ class StateAPEX(State):
             state_id: Numerical identifier of this State.
             obs_mode: Unique obs_mode values associated with this State.
         """
-        super(StateAPEX, self).__init__(state_id, obs_mode)
+        super().__init__(state_id, obs_mode)
 
 
 class StateSMT(State):
@@ -332,7 +332,7 @@ class StateSMT(State):
             state_id: Numerical identifier of this State.
             obs_mode: Unique obs_mode values associated with this State.
         """
-        super(StateSMT, self).__init__(state_id, obs_mode)
+        super().__init__(state_id, obs_mode)
 
 
 class StateNAOJ(State):
@@ -362,10 +362,10 @@ class StateNAOJ(State):
             state_id: Numerical identifier of this State.
             obs_mode: Unique obs_mode values associated with this State.
         """
-        super(StateNAOJ, self).__init__(state_id, obs_mode)
+        super().__init__(state_id, obs_mode)
 
 
-class StateFactory(object):
+class StateFactory:
     """
     Factory class to create State objects based on given observatory and
     observation/measurement set start time.

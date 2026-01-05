@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import collections
 import functools
 import operator
@@ -5,16 +7,18 @@ import os
 import warnings
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
+from typing import TYPE_CHECKING, Callable
 
 import numpy as np
 import scipy.optimize
 
 import pipeline.infrastructure as infrastructure
-from pipeline.domain import MeasurementSet
 from pipeline.domain.measures import FrequencyUnits
 from . import mswrapper, qa_utils
 from .qa_utils import UnitFactorType
+
+if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet
 
 LOG = infrastructure.logging.get_logger(__name__)
 

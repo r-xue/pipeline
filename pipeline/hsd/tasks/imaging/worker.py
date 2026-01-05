@@ -323,7 +323,7 @@ class SDImagingWorkerInputs(vdp.StandardInputs):
         """
         # NOTE: spwids and pols are list of numeric id list while scans
         #       is string (mssel) list
-        super(SDImagingWorkerInputs, self).__init__()
+        super().__init__()
 
         self.context = context
         self.infiles = infiles  # input MS names

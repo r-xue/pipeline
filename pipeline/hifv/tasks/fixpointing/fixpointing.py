@@ -435,7 +435,7 @@ def fixpointing_offset_vlass(vis, intable='POINTING', antlist=[], timeoffset=[0.
 
 class FixpointingResults(basetask.Results):
     def __init__(self):
-        super(FixpointingResults, self).__init__()
+        super().__init__()
         self.pipeline_casa_task = 'Fixpointing'
 
     def merge_with_context(self, context):

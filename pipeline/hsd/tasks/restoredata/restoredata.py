@@ -136,7 +136,7 @@ class SDRestoreDataResults(restoredata.RestoreDataResults):
             applycal_results: results of applycal
             flagging_summaries: summaries of flagdata
         """
-        super(SDRestoreDataResults, self).__init__(importdata_results, applycal_results, flagging_summaries)
+        super().__init__(importdata_results, applycal_results, flagging_summaries)
 
     def merge_with_context(self, context: Context):
         """
@@ -145,7 +145,7 @@ class SDRestoreDataResults(restoredata.RestoreDataResults):
         Args:
             context: the pipeline Context state object
         """
-        super(SDRestoreDataResults, self).merge_with_context(context)
+        super().merge_with_context(context)
 
         # set k2jy factor to ms domain objects
         if isinstance(self.applycal_results, basetask.ResultsList):
@@ -204,7 +204,7 @@ class SDRestoreData(restoredata.RestoreData):
     def prepare(self):
         """Call prepare method of superclass, create Results ofject."""
         # run prepare method in the parent class
-        results = super(SDRestoreData, self).prepare()
+        results = super().prepare()
 
         # apply baseline table and produce baseline-subtracted MSs
 

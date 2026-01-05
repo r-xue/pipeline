@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from pipeline.infrastructure.launcher import Context
 
 
-class SDInspection(object):
+class SDInspection:
     """Inspection class for hsd_importdata."""
 
     def __init__(self, context: Context, table_name: str, ms: MeasurementSet | None=None, hm_rasterscan: str = 'time'):

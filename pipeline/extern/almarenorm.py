@@ -190,7 +190,7 @@ def alma_renorm(vis: str, spw: list[int], create_cal_table: bool, threshold: Non
 
 
 
-class ACreNorm(object):
+class ACreNorm:
 
 
     def __init__(self,msname, caltable=None):

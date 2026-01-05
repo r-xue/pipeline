@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 import collections
 import itertools
 import operator
 import os
 import re
+from typing import TYPE_CHECKING
 
 import cachetools
 import matplotlib.dates
@@ -13,16 +16,18 @@ import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure.utils import caltable_tools
-from pipeline.domain import MeasurementSet
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
+
+if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet
 
 LOG = infrastructure.logging.get_logger(__name__)
 
 COLSHAPE_FORMAT = re.compile(r'\[(?P<num_pols>\d+), (?P<num_rows>\d+)\]')
 
 
-class PlotbandpassDetailBase(object):
+class PlotbandpassDetailBase:
     def __init__(self, context, result, xaxis, yaxis, **kwargs):
         # identify the bandpass solution for the target
         calapps = [c for c in result.final
@@ -135,7 +140,7 @@ class PlotbandpassDetailBase(object):
         pass
 
 
-class PlotmsCalLeaf(object):
+class PlotmsCalLeaf:
     """
     Class to execute plotms and return a plot wrapper. It passes the spw and
     ant arguments through to plotms without further manipulation, creating
@@ -283,7 +288,7 @@ class PlotmsCalLeaf(object):
         return task_list
 
 
-class PlotbandpassLeaf(object):
+class PlotbandpassLeaf:
     """
     Class to execute plotbandpass and return a plot wrapper. It passes the spw
     and ant arguments through to plotbandpass without further manipulation. More
@@ -404,7 +409,7 @@ class PlotbandpassLeaf(object):
         return casa_tasks.plotbandpass(**task_args)
 
 
-class LeafComposite(object):
+class LeafComposite:
     """
     Base class to hold multiple PlotLeafs, thus generating multiple plots when
     plot() is called.
@@ -463,7 +468,7 @@ class PolComposite(LeafComposite):
         children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
                                     spw=spw, ant=ant, pol=pol, **kwargs)
                     for pol in range(num_pols)]
-        super(PolComposite, self).__init__(children)
+        super().__init__(children)
 
 
 class SpwComposite(LeafComposite):
@@ -623,7 +628,7 @@ class AntSpwComposite(LeafComposite):
         children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
                                     ant=ant, pol=pol, **kwargs)
                     for ant in caltable_antennas]
-        super(AntSpwComposite, self).__init__(children)
+        super().__init__(children)
 
 
 class SpwPolComposite(LeafComposite):
@@ -640,7 +645,7 @@ class SpwPolComposite(LeafComposite):
         children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
                                     spw=spw, ant=ant, **kwargs)
                     for spw in caltable_spws]
-        super(SpwPolComposite, self).__init__(children)
+        super().__init__(children)
 
 
 class AntSpwPolComposite(LeafComposite):
@@ -657,7 +662,7 @@ class AntSpwPolComposite(LeafComposite):
         children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
                                     ant=ant, **kwargs)
                     for ant in caltable_antennas]
-        super(AntSpwPolComposite, self).__init__(children)
+        super().__init__(children)
 
 
 class PlotmsCalAntComposite(AntComposite):
@@ -700,7 +705,7 @@ class PlotbandpassAntSpwPolComposite(AntSpwPolComposite):
     leaf_class = PlotbandpassSpwPolComposite
 
 
-class CaltableWrapperFactory(object):
+class CaltableWrapperFactory:
     @staticmethod
     def from_caltable(filename, gaincalamp=False):
         LOG.trace('CaltableWrapperFactory.from_caltable(%r)', filename)
@@ -775,7 +780,7 @@ class CaltableWrapperFactory(object):
                                    scan)
 
 
-class CaltableWrapper(object):
+class CaltableWrapper:
     @staticmethod
     def from_caltable(filename):
         return CaltableWrapperFactory.from_caltable(filename)
@@ -830,7 +835,7 @@ class CaltableWrapper(object):
         return CaltableWrapper(self.filename, data, time, antenna, spw, scan)
 
 
-class PhaseVsBaselineData(object):
+class PhaseVsBaselineData:
     def __init__(self, data, ms: MeasurementSet, corr_id, refant_id):
         # While it is possible to do so, we shouldn't calculate statistics for
         # mixed antennas/spws/scans.
@@ -958,7 +963,7 @@ class PhaseVsBaselineData(object):
         return self._median_offset
 
 
-class XYData(object):
+class XYData:
     def __init__(self, delegate, x_axis, y_axis):
         self.__delegate = delegate
         self.__x_axis = x_axis
@@ -997,7 +1002,7 @@ class XYData(object):
         return getattr(self.__delegate, self.__y_axis)
 
 
-class DataRatio(object):
+class DataRatio:
     def __init__(self, before, after):
         # test symmetric differences to find data selection errors
         if set(before.antenna) ^ set(after.antenna):
@@ -1068,6 +1073,6 @@ class DataRatio(object):
         return before / after
 
 
-class NullScoreFinder(object):
+class NullScoreFinder:
     def get_score(self, *args, **kwargs):
         return None

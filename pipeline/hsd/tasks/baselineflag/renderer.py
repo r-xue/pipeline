@@ -36,7 +36,7 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         Returns:
             (none)
         """
-        super(T2_4MDetailsBLFlagRenderer, self).__init__(
+        super().__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, ctx: dict, context: Context, results: SDBLFlagResults):

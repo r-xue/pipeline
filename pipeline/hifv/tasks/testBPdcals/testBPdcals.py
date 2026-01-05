@@ -64,7 +64,7 @@ class testBPdcalsInputs(vdp.StandardInputs):
                 Example: refant = 'ea01, ea02'
 
         """
-        super(testBPdcalsInputs, self).__init__()
+        super().__init__()
         self.context = context
         self.vis = vis
         self._weakbp = weakbp
@@ -128,7 +128,7 @@ class testBPdcalsResults(basetask.Results):
         if ignorerefant is None:
             ignorerefant = []
 
-        super(testBPdcalsResults, self).__init__()
+        super().__init__()
 
         self.vis = vis
         self.pool = pool[:]

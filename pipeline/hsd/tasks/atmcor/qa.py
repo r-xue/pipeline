@@ -1,12 +1,17 @@
 """QA handling for hsd_atmcor stage."""
+from __future__ import annotations
+
 import collections
 import os
+from typing import TYPE_CHECKING
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 from . import atmcor
-from pipeline.infrastructure.launcher import Context
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
 
 LOG = logging.get_logger(__name__)
 

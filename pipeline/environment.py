@@ -656,7 +656,7 @@ class MacOSEnvironment(CommonEnvironment):
     """
 
     def __init__(self):
-        super(MacOSEnvironment, self).__init__()
+        super().__init__()
 
         self.cpu_type = self._from_sysctl('machdep.cpu.brand_string')
         self.logical_cpu_cores = self._from_sysctl('hw.logicalcpu')

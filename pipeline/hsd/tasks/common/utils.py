@@ -14,7 +14,6 @@ from astropy.time import Time
 import numpy
 
 import pipeline.infrastructure as infrastructure
-from pipeline.domain import DataTable, Field, MeasurementSet, ObservingRun
 from pipeline.domain.datatable import OnlineFlagIndex
 from pipeline.domain.spectralwindow import match_spw_basename
 from pipeline.infrastructure import casa_tools
@@ -23,6 +22,7 @@ from . import compress
 
 if TYPE_CHECKING:
     from casatools import table as casa_table
+    from pipeline.domain import DataTable, Field, MeasurementSet, ObservingRun
     from pipeline.infrastructure import Context
 
 LOG = infrastructure.logging.get_logger(__name__)
@@ -193,7 +193,7 @@ def match_origin_ms(ms_list: list[MeasurementSet], origin_name: str) -> Measurem
     return None
 
 
-class ProgressTimer(object):
+class ProgressTimer:
     """
     Show the progress bar on the console.
 
@@ -975,7 +975,7 @@ def make_row_map(src_ms: MeasurementSet, derived_vis: str,
     return rowmap
 
 
-class SpwSimpleView(object):
+class SpwSimpleView:
     """
     A simple class that holds an spectral windpw (SpW) ID and Name pair.
 
@@ -990,7 +990,7 @@ class SpwSimpleView(object):
         self.name = name
 
 
-class SpwDetailedView(object):
+class SpwDetailedView:
     """
     A class to store Spestral Window (SpW) settings.
 
@@ -1262,7 +1262,7 @@ def get_restfrequency(vis: str, spwid: int,
             tsel.close()
 
 
-class RGAccumulator(object):
+class RGAccumulator:
     """
     Accumulate metadata information of a reduction group.
 

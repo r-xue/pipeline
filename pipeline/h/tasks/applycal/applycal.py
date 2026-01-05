@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import collections
 import copy
 import os
-from typing import Callable
+from typing import TYPE_CHECKING, Callable
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -12,9 +14,11 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
-from pipeline.infrastructure.callibrary import IntervalCalState
 
 from ...heuristics.fieldnames import IntentFieldnames
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure.callibrary import IntervalCalState
 
 __all__ = [
     'Applycal',

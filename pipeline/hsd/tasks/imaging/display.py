@@ -60,7 +60,7 @@ class ImageAxesManager(MapAxesManagerBase):
             ticksize: tick label size
             colormap: colormap to use. 'gray' for gray scale. Otherwise, 'jet' is used.
         """
-        super(ImageAxesManager, self).__init__()
+        super().__init__()
         self.figure = fig
         self.xformatter = xformatter
         self.yformatter = yformatter
@@ -129,7 +129,7 @@ class SingleImageAxesManager(ImageAxesManager):
             ticksize: tick label size
             colormap: colormap to use. 'gray' for gray scale. Otherwise, 'jet' is used.
         """
-        super(SingleImageAxesManager, self).__init__(fig, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap)
+        super().__init__(fig, xformatter, yformatter, xlocator, ylocator, xrotation, yrotation, ticksize, colormap)
         self._image_axes = None
 
     @property
@@ -474,7 +474,7 @@ class ChannelMapAxesManager(ImageAxesManager):
             brightnessunit: unit of the data to be displayed
             freq_frame: frequency reference frame
         """
-        super(ChannelMapAxesManager, self).__init__(fig, xformatter, yformatter,
+        super().__init__(fig, xformatter, yformatter,
                                                     xlocator, ylocator,
                                                     xrotation, yrotation,
                                                     ticksize, colormap)
@@ -1543,7 +1543,7 @@ class SpectralMapAxesManager(MapAxesManagerBase):
             locator: locator for x-axis
             ticksize: tick label size
         """
-        super(SpectralMapAxesManager, self).__init__()
+        super().__init__()
         self.figure = fig
         self.nh = nh
         self.nv = nv

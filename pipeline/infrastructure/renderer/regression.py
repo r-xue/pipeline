@@ -23,12 +23,15 @@ given the Result for processing. In this step, the QA framework calls
 QAPlugin.handle(context, result), the method overridden by the task-specific
 QAPlugin.
 """
+from __future__ import annotations
+
 import abc
 import collections
 import glob
 import os.path
 import re
 from collections import OrderedDict
+from typing import TYPE_CHECKING
 
 from pipeline.domain.measures import FluxDensityUnits
 from pipeline.h.tasks.applycal.applycal import ApplycalResults
@@ -58,9 +61,11 @@ from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResults
 from pipeline.hsd.tasks.restoredata.restoredata import SDRestoreData, SDRestoreDataResults
 from pipeline.hsdn.tasks.restoredata.restoredata import NRORestoreData, NRORestoreDataResults
 from pipeline.infrastructure import logging
-from pipeline.infrastructure.basetask import Results, ResultsList, StandardTaskTemplate
-from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.taskregistry import task_registry
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure.basetask import Results, ResultsList, StandardTaskTemplate
+    from pipeline.infrastructure.launcher import Context
 
 LOG = logging.get_logger(__name__)
 
@@ -121,7 +126,7 @@ class RegressionExtractor(object, metaclass=abc.ABCMeta):
         raise NotImplemented
 
 
-class RegressionExtractorRegistry(object):
+class RegressionExtractorRegistry:
     """
     The registry and manager of the regression result extractor framework.
 

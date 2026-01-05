@@ -1,4 +1,9 @@
-from .spectralwindow import SpectralWindow
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from pipeline.domain import SpectralWindow
 
 polarization_map = { 'linear': { 0: ['XX',  9],
                                  1: ['YY', 12],
@@ -23,7 +28,7 @@ to_polid = {'XX': 0, 'YY': 1, 'XY': 2, 'YX': 3,
             'I' : 0,  'Q': 1, 'U' : 2, 'V' : 3} 
 
 
-class DataDescription(object):
+class DataDescription:
     """
     A DataDescription is a logical representation of an entry in the
     DATA_DESCRIPTION table in the measurement set, where the latter is used to

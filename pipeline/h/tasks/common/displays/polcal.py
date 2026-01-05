@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import os
+from typing import TYPE_CHECKING
 
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
@@ -8,14 +11,16 @@ import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
 from pipeline.hifa.tasks.polcal import polcal
-from pipeline.infrastructure.launcher import Context
 from . import applycal
 from . import common
 
 LOG = infrastructure.logging.get_logger(__name__)
 
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
 
-class AmpVsAntennaChart(object):
+
+class AmpVsAntennaChart:
     """
     Plotting class that creates a gain amplitude (ratio) vs. antenna plot
     per SpW for a caltable.
@@ -59,7 +64,7 @@ class AmpVsParangSummaryChart(applycal.SpwSummaryChart):
                          intent='POLARIZATION,POLANGLE,POLLEAKAGE', **plot_args)
 
 
-class AmpVsScanChart(object):
+class AmpVsScanChart:
     """
     Plotting class that creates a polarisation ratio amplitude vs. scan plot
     for a caltable.
@@ -79,7 +84,7 @@ class AmpVsScanChart(object):
         return plot_wrappers
 
 
-class GainRatioRMSVsScanChart(object):
+class GainRatioRMSVsScanChart:
     """
     Plotting class that creates a gain ratio RMS vs. scan plot for a
     measurement set, using Matplotlib.
@@ -136,7 +141,7 @@ class GainRatioRMSVsScanChart(object):
         plt.close()
 
 
-class PhaseVsChannelChart(object):
+class PhaseVsChannelChart:
     """
     Plotting class that creates a polarisation ratio phase vs. channel plot
     for a caltable.
@@ -184,7 +189,7 @@ class RealVsImagChart(applycal.PlotmsLeaf):
         return successful_wrappers
 
 
-class XVsChannelSummaryChart(object):
+class XVsChannelSummaryChart:
     """
     Plotting class that creates an "X" vs. channel summary chart per SpW for
     all antennas, for a caltable.
@@ -204,7 +209,7 @@ class XVsChannelSummaryChart(object):
         return plot_wrappers
 
 
-class XVsChannelDetailChart(object):
+class XVsChannelDetailChart:
     """
     Plotting class that creates an "X" vs. channel detail chart per SpW and per
     antenna for a caltable.

@@ -1,16 +1,21 @@
 """A utility module to handle newly generated MeasurementSets."""
+from __future__ import annotations
+
 import os
+from typing import TYPE_CHECKING
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.tablereader as tablereader
-from pipeline.domain import MeasurementSet, ObservingRun
 from pipeline.domain.singledish import MSReductionGroupDesc
 from pipeline.domain.spectralwindow import match_spw_basename
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils import relative_path
 
 from ... import heuristics
+
+if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet, ObservingRun
 
 LOG = infrastructure.logging.get_logger(__name__)
 

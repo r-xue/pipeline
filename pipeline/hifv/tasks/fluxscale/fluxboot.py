@@ -68,7 +68,7 @@ class FluxbootInputs(vdp.StandardInputs):
         if fitorder is None:
             fitorder = -1
 
-        super(FluxbootInputs, self).__init__()
+        super().__init__()
         self.context = context
         self.vis = vis
         self.caltable = caltable
@@ -124,7 +124,7 @@ class FluxbootResults(basetask.Results):
         if fluxscale_result is None:
             fluxscale_result = []
 
-        super(FluxbootResults, self).__init__()
+        super().__init__()
         self.vis = vis
         self.pool = pool[:]
         self.final = final[:]

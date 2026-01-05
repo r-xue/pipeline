@@ -483,7 +483,7 @@ def chanfreq_records_to_functions(chan_records):
     return freqMHz, chan, numchannels
 
 
-class TsysData(object):
+class TsysData:
     def __init__(
         self,
         tsystable=None,

@@ -217,7 +217,7 @@ def scan_has_intent(scans, intent):
     return False
 
 
-class Session(object):
+class Session:
     def __init__(self, mses=None, name='Unnamed Session'):
         self.mses = [] if mses is None else mses
         self.name = name
@@ -250,7 +250,7 @@ class Session(object):
         return [Session(mses, name) for _, name, mses in sorted(session_names, key=functools.cmp_to_key(mycmp))]
 
 
-class RendererBase(object):
+class RendererBase:
     """
     Base renderer class.
     """
@@ -826,7 +826,7 @@ class T2_1Renderer(RendererBase):
                 'sessions' : sessions}
 
 
-class T2_1DetailsRenderer(object):
+class T2_1DetailsRenderer:
     """
     T2-1Details renderer - Session Details
     """
@@ -1024,7 +1024,7 @@ class T2_1DetailsRenderer(object):
 #         return False
 
 
-class T2_2_XRendererBase(object):
+class T2_2_XRendererBase:
     """
     Base renderer for T2-2-X series of pages.
     """
@@ -1521,7 +1521,7 @@ class T2_4MRenderer(RendererBase):
 #             fileobj.write(template.render(**mako_context))
 
 
-class T2_4MDetailsDefaultRenderer(object):
+class T2_4MDetailsDefaultRenderer:
     def __init__(self, template='t2-4m_details-generic.mako',
                  always_rerender=False):
         self.template = template
@@ -1611,7 +1611,7 @@ class T2_4MDetailsContainerRenderer(RendererBase):
             fileobj.write(template.render(**mako_context))
 
 
-class T2_4MDetailsRenderer(object):
+class T2_4MDetailsRenderer:
     # the filename component of the output file. While this is the same for
     # all results, the directory is stage-specific, so there's no risk of
     # collisions  
@@ -1904,7 +1904,7 @@ def group_by_root(context, task_results):
     return d
 
 
-class WebLogGenerator(object):
+class WebLogGenerator:
     renderers = [T1_1Renderer,         # OUS splash page
                  T1_2Renderer,         # observation summary
                  T1_3MRenderer,        # by topic page
@@ -1974,7 +1974,7 @@ class WebLogGenerator(object):
             context.results = proxies
 
 
-class LogCopier(object):
+class LogCopier:
     """
     LogCopier copies and handles the CASA logs so that they may be referenced
     by the pipeline web logs. 

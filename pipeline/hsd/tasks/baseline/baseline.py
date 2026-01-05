@@ -326,7 +326,7 @@ class SDBaselineInputs(vdp.StandardInputs):
         infiles = self.infiles
         if isinstance(self.infiles, list):
             self.infiles = infiles[0]
-        args = super(SDBaselineInputs, self).to_casa_args()
+        args = super().to_casa_args()
         self.infiles = infiles
 
         if 'antenna' not in args:
@@ -348,7 +348,7 @@ class SDBaselineResults(common.SingleDishResults):
             success: Whether task execution is successful or not.
             outcome: Outcome of the task execution.
         """
-        super(SDBaselineResults, self).__init__(task, success, outcome)
+        super().__init__(task, success, outcome)
         self.out_mses = []
 
     # @utils.profiler
@@ -367,7 +367,7 @@ class SDBaselineResults(common.SingleDishResults):
         Args:
             context: Pipeline context object containing state information.
         """
-        super(SDBaselineResults, self).merge_with_context(context)
+        super().merge_with_context(context)
 
         # register output MS domain object and reduction_group to context
         target = context.observing_run
@@ -726,7 +726,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
         return result
 
 
-class HeuristicsTask(object):
+class HeuristicsTask:
     """Executor for heuristics class. It is an adaptor to mpihelper framework."""
 
     def __init__(self, heuristics_cls: type[Heuristic], *args: Any, **kwargs: Any) -> None:
@@ -787,7 +787,7 @@ class DeviationMaskHeuristicsTask(HeuristicsTask):
                                      (see SDBaselineInputs for details)
             consider_flag: Consider flag when perofrming heuristics. Defaults to False.
         """
-        super(DeviationMaskHeuristicsTask, self).__init__(heuristics_cls, vis=vis, consider_flag=consider_flag)
+        super().__init__(heuristics_cls, vis=vis, consider_flag=consider_flag)
         self.vis = vis
         self.field_list = field_list
         self.antenna_list = antenna_list
@@ -808,7 +808,7 @@ class DeviationMaskHeuristicsTask(HeuristicsTask):
                                 'antenna_id': antenna_id,
                                 'spw_id': spw_id,
                                 'detection': self.deviationmask_sigma_threshold})
-            mask_list = super(DeviationMaskHeuristicsTask, self).execute()
+            mask_list = super().execute()
             result.append(mask_list)
         return result
 

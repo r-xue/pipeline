@@ -24,7 +24,7 @@ class RasterScanHeuristicsFailure(Exception):
     """Indicates failure of RasterScanHeuristics."""
 
 
-class HeuristicsParameter(object):
+class HeuristicsParameter:
     """Holds tunable parameters for RasterScanHeuristic."""
 
     # Threshold for contiguous sequence

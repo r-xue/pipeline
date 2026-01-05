@@ -2,16 +2,19 @@
 from __future__ import annotations
 
 import abc
+from typing import TYPE_CHECKING
 
 import numpy as np
 
 import casatasks.private.sdbeamutil as sdbeamutil
 
-from pipeline.domain import MeasurementSet
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casa_tools as casa_tools
-from pipeline.infrastructure.launcher import Context
 from . import utils as sdutils
+
+if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet
+    from pipeline.infrastructure.launcher import Context
 
 LOG = infrastructure.logging.get_logger(__name__)
 

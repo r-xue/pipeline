@@ -18,7 +18,7 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.imageheader as imageheader
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain import DataTable, DataType, MeasurementSet
+from pipeline.domain import DataTable, DataType
 from pipeline.h.heuristics import fieldnames
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.hsd.heuristics import rasterscan
@@ -35,6 +35,7 @@ from pipeline.infrastructure import casa_tools, task_registry
 
 if TYPE_CHECKING:
     from casatools import coordsys
+    from pipeline.domain import MeasurementSet
     from pipeline.infrastructure import Context
     from resultobjects import SDImagingResults
 

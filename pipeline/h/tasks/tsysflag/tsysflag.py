@@ -120,7 +120,7 @@ class TsysflagInputs(vdp.StandardInputs):
                  flag_birdies=None, fb_sharps_limit=None,
                  flag_toomany=None, tmf1_limit=None, tmef1_limit=None,
                  metric_order=None, normalize_tsys=None, filetemplate=None):
-        super(TsysflagInputs, self).__init__()
+        super().__init__()
 
         # pipeline inputs
         self.context = context
@@ -616,7 +616,7 @@ class TsysflagDataInputs(vdp.StandardInputs):
     TsysflagDataInputs defines the inputs for the TsysflagData pipeline task.
     """
     def __init__(self, context, vis=None, caltable=None):
-        super(TsysflagDataInputs, self).__init__()
+        super().__init__()
 
         # pipeline inputs
         self.context = context
@@ -631,7 +631,7 @@ class TsysflagData(basetask.StandardTaskTemplate):
     Inputs = TsysflagDataInputs
 
     def __init__(self, inputs):
-        super(TsysflagData, self).__init__(inputs)
+        super().__init__(inputs)
 
     def prepare(self):
         result = TsysflagDataResults()
@@ -642,7 +642,7 @@ class TsysflagData(basetask.StandardTaskTemplate):
         return result
 
 
-class TsysflagView(object):
+class TsysflagView:
 
     def __init__(self, context, vis=None, metric=None, refintent=None,
                  split_by_field=False):

@@ -155,7 +155,7 @@ def get_vislist_for_session(context, session):
     return [ms.name for ms in context.observing_run.get_measurement_sets() if ms.session == session]
 
 
-class VDPTaskFactory(object):
+class VDPTaskFactory:
     """
     VDPTaskFactory is a class that implements the Factory design
     pattern, returning tasks that execute on an MPI client or locally
@@ -396,7 +396,7 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
         raise NotImplementedError
 
     def __init__(self, inputs):
-        super(ParallelTemplate, self).__init__(inputs)
+        super().__init__(inputs)
 
     @basetask.result_finaliser
     def get_result_for_exception(self, vis: str, exception: Exception) -> basetask.FailedTaskResults:

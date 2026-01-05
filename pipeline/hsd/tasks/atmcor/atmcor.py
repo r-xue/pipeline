@@ -1,7 +1,11 @@
 """Offline ATM correction stage."""
+from __future__ import annotations
+
 import collections
 import os
+from typing import TYPE_CHECKING
 
+import pipeline.hsd.heuristics.SDcalatmcorr as SDcalatmcorr
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.casa_tasks as casa_tasks
@@ -10,14 +14,15 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-import pipeline.hsd.heuristics.SDcalatmcorr as SDcalatmcorr
 from pipeline.domain import DataType
 from pipeline.h.heuristics import fieldnames
 from pipeline.hsd.tasks.common.inspection_util import generate_ms, inspect_reduction_group, merge_reduction_group
 from pipeline.infrastructure import task_registry
-from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.utils import relative_path
 from .. import common
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
 
 LOG = infrastructure.logging.get_logger(__name__)
 

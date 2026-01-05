@@ -115,7 +115,7 @@ class ValidateLineInputs(vdp.StandardInputs):
             clusteringalgorithm: Clustering algorithm to use. Allowed values are 'kmean',
                                  'hierarchy', or 'both'. Defaults to 'hierarchy' if None is given.
         """
-        super(ValidateLineInputs, self).__init__()
+        super().__init__()
 
         self.context = context
         self.group_id = group_id
@@ -147,7 +147,7 @@ class ValidateLineResults(common.SingleDishResults):
             success: Whether task execution is successful or not.
             outcome: Outcome of the task execution.
         """
-        super(ValidateLineResults, self).__init__(task, success, outcome)
+        super().__init__(task, success, outcome)
 
     def merge_with_context(self, context: Context) -> None:
         """Merge result instance into context.
@@ -157,7 +157,7 @@ class ValidateLineResults(common.SingleDishResults):
         Args:
             context: Pipeline context object containing state information.
         """
-        super(ValidateLineResults, self).merge_with_context(context)
+        super().merge_with_context(context)
 
     def _outcome_name(self) -> str:
         """Return string representing the outcome.
@@ -2566,7 +2566,7 @@ def _to_validated_lines(detect_lines: dict) -> list[list[float | bool]]:
     return lines_withflag
 
 
-class SVDSolver2D(object):
+class SVDSolver2D:
     """Least-square solver based on singular value decomposition (SVD).
 
     The singular value decomposition (SVD) is a factorization of a

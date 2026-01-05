@@ -139,7 +139,7 @@ class NRORestoreDataResults(restoredata.RestoreDataResults):
             ampcal_results: results of ampcal
             flagging_summaries: summaries of flagdata
         """
-        super(NRORestoreDataResults, self).__init__(importdata_results, applycal_results, flagging_summaries)
+        super().__init__(importdata_results, applycal_results, flagging_summaries)
         self.ampcal_results = ampcal_results
 
     def merge_with_context(self, context: Context):
@@ -149,7 +149,7 @@ class NRORestoreDataResults(restoredata.RestoreDataResults):
         Args:
             context: Context object
         """
-        super(NRORestoreDataResults, self).merge_with_context(context)
+        super().merge_with_context(context)
 
         # set amplitude scaling factor to ms domain objects
         if isinstance(self.applycal_results, ResultsList):
@@ -208,7 +208,7 @@ class NRORestoreData(restoredata.RestoreData):
         LOG.debug('prepare inputs = {0}'.format(inputs))
 
         # run prepare method in the parent class
-        results = super(NRORestoreData, self).prepare()
+        results = super().prepare()
         ampcal_results = self.ampcal_results
 
         # apply baseline table and produce baseline-subtracted MSs

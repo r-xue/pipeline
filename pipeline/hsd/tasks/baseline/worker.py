@@ -11,7 +11,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure.utils import relative_path
-from pipeline.domain import DataTable, DataType, MeasurementSet
+from pipeline.domain import DataTable, DataType
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.hsd.heuristics import BaselineFitParamConfig
 from pipeline.hsd.tasks.common import utils as sdutils
@@ -23,6 +23,7 @@ from ..common import utils
 from .typing import FitFunc, FitOrder
 
 if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet
     from pipeline.hsd.tasks.common.utils import RGAccumulator
     from pipeline.infrastructure.launcher import Context
 
@@ -233,7 +234,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
                       Default is None, which intends to turn on parallel
                       processing if possible.
         """
-        super(BaselineSubtractionWorkerInputs, self).__init__()
+        super().__init__()
 
         self.context = context
         self.vis = vis
@@ -301,7 +302,7 @@ class BaselineSubtractionResults(common.SingleDishResults):
             success: Whether task execution is successful or not.
             outcome: Outcome of the task execution.
         """
-        super(BaselineSubtractionResults, self).__init__(task, success, outcome)
+        super().__init__(task, success, outcome)
 
     def merge_with_context(self, context: Context) -> None:
         """Merge result instance into context.
@@ -311,7 +312,7 @@ class BaselineSubtractionResults(common.SingleDishResults):
         Args:
             context: Pipeline context object containing state information.
         """
-        super(BaselineSubtractionResults, self).merge_with_context(context)
+        super().merge_with_context(context)
 
     def _outcome_name(self) -> str:
         """Return string representation of outcome.

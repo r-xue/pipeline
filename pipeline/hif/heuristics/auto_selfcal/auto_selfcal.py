@@ -33,7 +33,7 @@ from .selfcal_helpers import (analyze_inf_EB_flagging, checkmask,
 LOG = infrastructure.get_logger(__name__)
 
 
-class SelfcalHeuristics(object):
+class SelfcalHeuristics:
     """Class to hold the heuristics for selfcal."""
 
     def __init__(

@@ -149,7 +149,7 @@ def timetable_key(table_type, antenna, spw, polarization=None, ms=None, field_id
     return key
 
 
-class DataTableIndexer(object):
+class DataTableIndexer:
     """
     Map between serial indices and per-MS row indices.
 
@@ -232,7 +232,7 @@ class DataTableIndexer(object):
         return perms_list - base
 
 
-class DataTableImpl(object):
+class DataTableImpl:
     """
     DataTable is an object to hold meta data of scantable on memory.
 
@@ -960,7 +960,7 @@ class DataTableImpl(object):
                 self.putcell('FLAG_SUMMARY', int(dt_row), flag_summary)
 
 
-class RODataTableColumn(object):
+class RODataTableColumn:
     def __init__(self, table, name, dtype):
         self.tb = table
         self.name = name
@@ -999,7 +999,7 @@ class RODataTableColumn(object):
 
 class RWDataTableColumn(RODataTableColumn):
     def __init__(self, table, name, dtype):
-        super(RWDataTableColumn, self).__init__(table, name, dtype)
+        super().__init__(table, name, dtype)
         if dtype == list:
             self.caster_put = np.asarray
         else:
@@ -1020,7 +1020,7 @@ class RWDataTableColumn(RODataTableColumn):
 
 class DataTableColumnNoChange(RWDataTableColumn):
     def __init__(self, table):
-        super(RWDataTableColumn, self).__init__(table, "NOCHANGE", int)
+        super().__init__(table, "NOCHANGE", int)
 
     def putcell(self, idx, val):
         if isinstance(val, bool):
@@ -1034,7 +1034,7 @@ class DataTableColumnMaskList(RWDataTableColumn):
     NoMask = np.zeros((1, 2), dtype=np.int32) - 1  # [[-1,-1]]
 
     def __init__(self, table):
-        super(RWDataTableColumn, self).__init__(table, "MASKLIST", list)
+        super().__init__(table, "MASKLIST", list)
 
     def getcell(self, idx):
         v = self.tb.getcell(self.name, int(idx))

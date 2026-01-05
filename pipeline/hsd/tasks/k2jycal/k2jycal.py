@@ -168,7 +168,7 @@ class SDK2JyCalInputs(vdp.StandardInputs):
                 Default: None (equivalent to 'asdm')
 
         """
-        super(SDK2JyCalInputs, self).__init__()
+        super().__init__()
 
         # context and vis/infiles must be set first so that properties that require
         # domain objects can be function
@@ -207,7 +207,7 @@ class SDK2JyCalResults(basetask.Results):
             all_ok: Boolean flag for availability of factors. Defaults to False.
             dbstatus: Status of DB access. Defaults to None.
         """
-        super(SDK2JyCalResults, self).__init__()
+        super().__init__()
 
         self.vis = vis
         self.pool = pool[:]

@@ -1,9 +1,12 @@
+from __future__ import annotations
+
 import collections
 import contextlib
 import operator
 import os
 import uuid
 from functools import reduce
+from typing import TYPE_CHECKING
 
 import numpy as np
 import scipy.stats as stats
@@ -16,7 +19,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain import FluxMeasurement, MeasurementSet
+from pipeline.domain import FluxMeasurement
 from pipeline.h.tasks.common import commonfluxresults, mstools
 from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
 from pipeline.hif.tasks import applycal, gaincal
@@ -28,6 +31,9 @@ from pipeline.infrastructure import (casa_tasks, casa_tools, exceptions,
 
 from ... import heuristics
 from . import fluxes
+
+if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet
 
 __all__ = [
     'GcorFluxscale',

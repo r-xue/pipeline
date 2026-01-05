@@ -14,7 +14,7 @@ class T2_4MDetailsUVcontSubRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='uvcontsub.mako',
                  description='UV continuum fit and subtraction',
                  always_rerender=False):
-        super(T2_4MDetailsUVcontSubRenderer, self).__init__(uri=uri,
+        super().__init__(uri=uri,
                 description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, ctx, context, results):

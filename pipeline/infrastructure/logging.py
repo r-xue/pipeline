@@ -300,7 +300,7 @@ def suspend_handler(handler_class):
     return to_remove
 
 
-class SuspendCapturingLogger(object):
+class SuspendCapturingLogger:
     def __enter__(self):
         self.__removed = suspend_handler(CapturingHandler)
 
@@ -323,7 +323,7 @@ class CapturingHandler(logging.Handler):
         """
         Initialize the handler.
         """
-        super(CapturingHandler, self).__init__(level)
+        super().__init__(level)
         self.buffer = []
 
     def emit(self, record):
@@ -372,19 +372,19 @@ class UTCFormatter(logging.Formatter):
 
 # Code, Frame and Traceback are serializable substitutes for the Traceback
 # logged with exceptions
-class Code(object):
+class Code:
     def __init__(self, code):
         self.co_filename = code.co_filename
         self.co_name = code.co_name
 
 
-class Frame(object):
+class Frame:
     def __init__(self, frame):
         self.f_globals = {"__file__": frame.f_globals["__file__"]}
         self.f_code = Code(frame.f_code)
 
 
-class Traceback(object):
+class Traceback:
     def __init__(self, tb):
         self.tb_frame = Frame(tb.tb_frame)
         self.tb_lineno = tb.tb_lineno

@@ -78,7 +78,7 @@ class MsSplitInputs(vdp.StandardInputs):
 
             replace: If a split was performed delete the parent MS and remove it from the context.
         """
-        super(MsSplitInputs, self).__init__()
+        super().__init__()
 
         self.context = context
         self.vis = vis
@@ -94,7 +94,7 @@ class MsSplitInputs(vdp.StandardInputs):
         self.replace = replace
 
     def to_casa_args(self):
-        d = super(MsSplitInputs, self).to_casa_args()
+        d = super().to_casa_args()
 
         if d['chanbin'] > 1:
             d['chanaverage'] = True
@@ -204,7 +204,7 @@ class MsSplit(basetask.StandardTaskTemplate):
 
 class MsSplitResults(basetask.Results):
     def __init__(self, vis, outputvis):
-        super(MsSplitResults, self).__init__()
+        super().__init__()
         self.vis = vis
         self.outputvis = outputvis
         self.ms = None

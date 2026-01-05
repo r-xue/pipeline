@@ -731,7 +731,7 @@ class ResultsStatsExtractor(object, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
 
-class StatsExtractorRegistry(object):
+class StatsExtractorRegistry:
     """
     The registry and manager of the stats result extractor framework.
 

@@ -27,7 +27,7 @@ __all__ = ['time_tracker']
 ExecutionState = collections.namedtuple('ExecutionState', ['stage', 'start', 'end', 'state'])
 
 
-class TaskTimeTracker(object):
+class TaskTimeTracker:
     """
     TaskTimeTracker listens for pipeline lifecycle events, recording the start
     and end times on event reception so that the duration of the corresponding
@@ -140,7 +140,7 @@ class TaskTimeTracker(object):
             json.dump(r, json_file, sort_keys=True, indent=4, separators=(',', ': '))
 
 
-class ContextTimeTracker(object):
+class ContextTimeTracker:
     """
     ContextTimeTracker listens for events related to the creation/resumption
     of a pipeline Context. As a Context is created or resumed, this class

@@ -121,7 +121,7 @@ class TargetDataSelection:
         return f'TargetDataSelection({all_attrs})'
 
 
-class QAScore(object):
+class QAScore:
     def __init__(self, score, longmsg='', shortmsg='', vis=None, origin=NULL_ORIGIN,
                  weblog_location=WebLogLocation.UNSET, hierarchy='',
                  applies_to: TargetDataSelection | None=None):
@@ -192,7 +192,7 @@ class QAScore(object):
             self.score, self.longmsg, self.shortmsg, origin, self.applies_to)
 
 
-class QAScorePool(object):
+class QAScorePool:
     all_unity_longmsg = 'All QA completed successfully'
     all_unity_shortmsg = 'QA pass'
 
@@ -329,7 +329,7 @@ class QAPlugin(object, metaclass=abc.ABCMeta):
             LOG.info(traceback_msg)
 
 
-class QARegistry(object):
+class QARegistry:
     """
     The registry and manager of the pipeline QA framework.
 

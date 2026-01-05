@@ -20,7 +20,7 @@ class TsysflagResults(resultobjects.TsyscalResults):
         Construct and return a new TsysflagResults.
         """
         # the results to be merged back into the context
-        super(TsysflagResults, self).__init__()
+        super().__init__()
 
         # component results
         self.components = collections.OrderedDict()
@@ -48,7 +48,7 @@ class TsysflagResults(resultobjects.TsyscalResults):
         self.components[name] = result
 
     def __repr__(self):
-        s = super(TsysflagResults, self).__repr__()
+        s = super().__repr__()
         s = 'TsysflagResults incorporating %s' % s
         components = list(self.components.keys())
         if not components:
@@ -76,7 +76,7 @@ class TsysflagspectraResults(resultobjects.TsyscalResults,
         pass
 
     def __repr__(self):
-        s = super(TsysflagspectraResults, self).__repr__()
+        s = super().__repr__()
         s = 'TsysflagspectraResults incorporating %s' % s
         return s
 

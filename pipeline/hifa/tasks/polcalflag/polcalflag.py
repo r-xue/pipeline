@@ -20,7 +20,7 @@ LOG = infrastructure.logging.get_logger(__name__)
 
 class PolcalflagResults(basetask.Results):
     def __init__(self):
-        super(PolcalflagResults, self).__init__()
+        super().__init__()
 
         self.vis = None
         self.cafresult = None
@@ -441,5 +441,5 @@ class AmpVsXChart(applycal_displays.SpwSummaryChart):
         }
         plot_args.update(**overrides)
 
-        super(AmpVsXChart, self).__init__(context, output_dir, calto, xaxis=xaxis, yaxis='amp',
+        super().__init__(context, output_dir, calto, xaxis=xaxis, yaxis='amp',
                                           intent='POLARIZATION,POLANGLE,POLLEAKAGE', **plot_args)

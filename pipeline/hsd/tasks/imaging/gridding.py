@@ -53,7 +53,7 @@ class GriddingInputs(vdp.StandardInputs):
         return self.infiles
 
     def __init__(self, context, infiles, antennaids, fieldids, spwids, poltypes, nx=None, ny=None):
-        super(GriddingInputs, self).__init__()
+        super().__init__()
 
         self.context = context
         self.infiles = infiles
@@ -67,10 +67,10 @@ class GriddingInputs(vdp.StandardInputs):
 
 class GriddingResults(common.SingleDishResults):
     def __init__(self, task=None, success=None, outcome=None):
-        super(GriddingResults, self).__init__(task, success, outcome)
+        super().__init__(task, success, outcome)
 
     def merge_with_context(self, context):
-        super(GriddingResults, self).merge_with_context(context)
+        super().merge_with_context(context)
 
     def _outcome_name(self):
         # return [image.imagename for image in self.outcome]

@@ -10,7 +10,7 @@ from pipeline.infrastructure import casa_tasks
 LOG = infrastructure.get_logger(__name__)
 
 
-class TsysSummaryChart(object):
+class TsysSummaryChart:
     def __init__(self, context, result, calapp, xaxis='freq', yaxis='tsys'):
         self._context = context
         self._result = result
@@ -117,7 +117,7 @@ class TsysSummaryChart(object):
 
 class TsysPerAntennaChart(common.PlotbandpassDetailBase):
     def __init__(self, context, result, **kwargs):
-        super(TsysPerAntennaChart, self).__init__(context, result, 'freq', 'tsys', overlay='time', showatm=True,
+        super().__init__(context, result, 'freq', 'tsys', overlay='time', showatm=True,
                                                   showfdm=True, chanrange='90%', **kwargs)
 
         # Get MS and bandpass solution.

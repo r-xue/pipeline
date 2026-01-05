@@ -18,7 +18,7 @@ from pipeline.infrastructure import casa_tools, get_logger
 LOG = get_logger(__name__)
 
 
-class AtmType(object):
+class AtmType:
     """Atmosphere type enum class."""
 
     tropical = 1

@@ -19,7 +19,7 @@ from ..common.display import DPISummary
 LOG = infrastructure.logging.get_logger(__name__)
 
 
-class K2JyBoxScatterDisplay(object):
+class K2JyBoxScatterDisplay:
     """A display class to generate a mixed box and scatter plot of Jy/K factors across all SPWs."""
 
     def __init__(

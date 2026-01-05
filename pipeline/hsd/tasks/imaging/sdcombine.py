@@ -56,7 +56,7 @@ class SDImageCombineInputs(vdp.StandardInputs):
             org_directions : List of direction of origin for ephemeris objects
             specmodes      : List of specmodes
         """
-        super(SDImageCombineInputs, self).__init__()
+        super().__init__()
 
         self.context = context
         self.inimages = inimages

@@ -88,7 +88,7 @@ class Heuristic(object, metaclass=abc.ABCMeta):
         return self.__class__.__name__
 
 
-class Inputs(object):
+class Inputs:
     """
     Inputs defines the interface used to create a constructor argument for a
     :class:`Task`.
@@ -113,30 +113,12 @@ class Results(object, metaclass=abc.ABCMeta):
     Refer to the sub-class for details on the structure expected by the
     task-specific weblog template.
 
-    .. py:attribute:: task_class
-
-        the Class of the |Task| that generated this Results object.
-
-    .. py:attribute:: inputs
-
-        the |Inputs| used by the |Task| that generated this |Results|
-
-    .. py:attribute:: timestamps
-
-        the (:class:`~pipeline.infrastructure.basetask.Timestamps`) named
-        tuple holding the start and end timestamps for the |Task|
-
-    .. py:attribute:: stage_number
-
-        the stage number of the task that generated this |Results|
-
-    .. py:attribute:: metadata
-
-        the dict holding metadata describing this result and the generating |Task|
-
-.. |Inputs| replace:: :class:`Inputs`
-.. |Task| replace:: :class:`Task`
-.. |Results| replace:: :class:`Results`
+    Attributes:
+        task_class: The Class of the Task that generated this Results object.
+        inputs: The Inputs used by the Task that generated this Results object.
+        timestamps: Named tuple holding the start and end timestamps for the Task.
+        stage_number: The stage number of the task that generated this Results object.
+        metadata: Dictionary holding metadata describing this result and the generating Task.
 
     """
 

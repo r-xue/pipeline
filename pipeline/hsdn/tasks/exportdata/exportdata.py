@@ -117,7 +117,7 @@ class NROExportData(sdexportdata.SDExportData):
         Returns:
             object of exportdata.ExportDataResults
         """
-        results = super(NROExportData, self).prepare()
+        results = super().prepare()
 
         # manifest file
         manifest_file = os.path.join(self.inputs.context.products_dir,

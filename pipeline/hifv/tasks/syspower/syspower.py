@@ -112,7 +112,7 @@ class SyspowerResults(basetask.Results):
         if plotrq is None:
             plotrq = ''
 
-        super(SyspowerResults, self).__init__()
+        super().__init__()
 
         self.pipeline_casa_task = 'Syspower'
         self.gaintable = gaintable

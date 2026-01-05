@@ -30,7 +30,7 @@ DISABLE_PLOTMS = False
 ticker.TickHelper.MAXTICKS = 10000
 
 
-class AzElChart(object):
+class AzElChart:
     def __init__(self, context, ms):
         self.context = context
         self.ms = ms
@@ -89,7 +89,7 @@ class AzElChart(object):
                            command=str(task))
 
 
-class SunTrackChart(object):
+class SunTrackChart:
     def __init__(self, context, ms):
         self.context = context
         self.ms = ms
@@ -130,7 +130,7 @@ class SunTrackChart(object):
                            parameters={'vis': self.ms.basename})
 
 
-class WeatherChart(object):
+class WeatherChart:
     def __init__(self, context, ms):
         self.context = context
         self.ms = ms
@@ -171,7 +171,7 @@ class WeatherChart(object):
                            parameters={'vis': self.ms.basename})
 
 
-class ElVsTimeChart(object):
+class ElVsTimeChart:
     def __init__(self, context, ms):
         self.context = context
         self.ms = ms
@@ -227,7 +227,7 @@ class ElVsTimeChart(object):
                            command=str(task))
 
 
-class ParameterVsTimeChart(object):
+class ParameterVsTimeChart:
     """
     Base class for FieldVsTimeChart and IntentVsTimeChart, sharing common logic such as the colour scheme for intents
     """
@@ -313,7 +313,7 @@ class FieldVsTimeChartInputs(vdp.StandardInputs):
         return output
 
     def __init__(self, context, vis=None, output=None):
-        super(FieldVsTimeChartInputs, self).__init__()
+        super().__init__()
 
         self.context = context
         self.vis = vis
@@ -453,7 +453,7 @@ class IntentVsTimeChartInputs(vdp.StandardInputs):
         return output
 
     def __init__(self, context, vis=None, output=None):
-        super(IntentVsTimeChartInputs, self).__init__()
+        super().__init__()
 
         self.context = context
         self.vis = vis
@@ -539,7 +539,7 @@ class IntentVsTimeChart(ParameterVsTimeChart):
                            parameters={'vis': self.inputs.ms.basename})
 
 
-class PWVChart(object):
+class PWVChart:
     def __init__(self, context, ms):
         self.context = context
         self.ms = ms
@@ -571,7 +571,7 @@ class PWVChart(object):
                            parameters={'vis': self.ms.basename})
 
 
-class PointingsChart(object):
+class PointingsChart:
     """Base class for generating a pointings chart.
 
     This class provides a framework for creating and managing pointings plots for a
@@ -735,7 +735,7 @@ class TsysScansChart(PointingsChart):
         )
 
 
-class PlotAntsChart(object):
+class PlotAntsChart:
     def __init__(self, context, ms, polarlog=False):
         self.context = context
         self.ms = ms
@@ -982,7 +982,7 @@ class PlotAntsChart(object):
         subpl.set_rmin(rmin)
 
 
-class UVChart(object):
+class UVChart:
     # CAS-11793: calsurveys do not have TARGET sources, so we must also
     # search for sources with other intents
     preferred_intent_order = ['TARGET', 'AMPLITUDE', 'BANDPASS', 'PHASE']
@@ -1231,7 +1231,7 @@ class SpwIdVsFreqChartInputs(vdp.StandardInputs):
         self.vis = vis
 
 
-class SpwIdVsFreqChart(object):
+class SpwIdVsFreqChart:
     """Generate a plot of SPW ID Versus Frequency coverage."""
 
     Inputs = SpwIdVsFreqChartInputs

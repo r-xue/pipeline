@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 import copy
 import dataclasses
 import os
 import traceback
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 import numpy
 
@@ -11,11 +14,8 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain import SpectralWindow
-from pipeline.domain.measurementset import MeasurementSet
 from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.hif.tasks.gaincal import gtypegaincal
-from pipeline.hif.tasks.gaincal.common import GaincalResults
 from pipeline.hif.tasks.gaincal.gtypegaincal import GTypeGaincalInputs, GTypeGaincal
 from pipeline.hifa.heuristics.phasemetrics import PhaseStabilityHeuristics
 from pipeline.hifa.heuristics.phasespwmap import IntentField, SpwMapping
@@ -28,6 +28,10 @@ from pipeline.hifa.tasks.gaincalsnr import gaincalsnr
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.utils.math import round_half_up
+
+if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet, SpectralWindow
+    from pipeline.hif.tasks.gaincal.common import GaincalResults
 
 LOG = infrastructure.logging.get_logger(__name__)
 

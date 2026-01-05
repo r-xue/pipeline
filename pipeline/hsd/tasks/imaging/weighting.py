@@ -42,7 +42,7 @@ class WeightMSInputs(vdp.StandardInputs):
 
     def __init__(self, context, infiles=None, outfiles=None,
                  antenna=None, spwid=None, fieldid=None):
-        super(WeightMSInputs, self).__init__()
+        super().__init__()
 
         self.context = context
         self.infiles = infiles
@@ -54,10 +54,10 @@ class WeightMSInputs(vdp.StandardInputs):
 
 class WeightMSResults(common.SingleDishResults):
     def __init__(self, task=None, success=None, outcome=None):
-        super(WeightMSResults, self).__init__(task, success, outcome)
+        super().__init__(task, success, outcome)
 
     def merge_with_context(self, context):
-        super(WeightMSResults, self).merge_with_context(context)
+        super().merge_with_context(context)
 
     def _outcome_name(self):
         # return [image.imagename for image in self.outcome]

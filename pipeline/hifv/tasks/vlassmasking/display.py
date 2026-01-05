@@ -13,7 +13,7 @@ LOG = infrastructure.get_logger(__name__)
 ImageStats = collections.namedtuple('ImageStats', 'rms max')
 
 
-class MaskSummary(object):
+class MaskSummary:
     def __init__(self, context, result):
         self.context = context
         self.result = result

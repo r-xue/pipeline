@@ -40,7 +40,7 @@ class CircfeedpolcalResults(polarization.PolarizationResults):
         if caldictionary is None:
             caldictionary = {}
 
-        super(CircfeedpolcalResults, self).__init__()
+        super().__init__()
         self.vis = vis
         self.pool = pool[:]
         self.final = final[:]
@@ -107,7 +107,7 @@ class CircfeedpolcalInputs(vdp.StandardInputs):
             run_setjy: Run setjy for amplitude/flux calibrator, default set to True.
 
         """
-        super(CircfeedpolcalInputs, self).__init__()
+        super().__init__()
         self.context = context
         self.vis = vis
         self.Dterm_solint = Dterm_solint

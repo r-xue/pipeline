@@ -38,7 +38,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
                          Defaults to 'Generate Baseline tables and subtract spectral baseline'.
             always_rerender: Always rerender the page if True. Defaults to False.
         """
-        super(T2_4MDetailsSingleDishBaselineRenderer, self).__init__(template,
+        super().__init__(template,
                                                                      description,
                                                                      always_rerender)
 
@@ -338,7 +338,7 @@ class SingleDishClusterPlotsRenderer(basetemplates.JsonPlotRenderer):
         outfile = filenamer.sanitize('%s.html' % (xytitle.lower().replace(" ", "_")))
         new_title = "Clustering: %s" % xytitle
 
-        super(SingleDishClusterPlotsRenderer, self).__init__(
+        super().__init__(
             'hsd_cluster_plots.mako', context, result, plots, new_title, outfile)
 
     def update_json_dict(self, d: dict, plot: Plot) -> None:

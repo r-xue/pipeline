@@ -1,4 +1,6 @@
 """Renderer for hsd_atmcor stage."""
+from __future__ import annotations
+
 import collections
 import glob
 import os
@@ -11,12 +13,12 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure.basetask import ResultsList
-from pipeline.infrastructure.launcher import Context
 
 from .display import PlotmsRealVsFreqPlotter
 
 if TYPE_CHECKING:
+    from pipeline.infrastructure.basetask import ResultsList
+    from pipeline.infrastructure.launcher import Context
     from .atmcor import SDATMCorrectionResults
 
 LOG = infrastructure.logging.get_logger(__name__)
@@ -27,7 +29,7 @@ ATMHeuristicsTR = collections.namedtuple(
 )
 
 
-def construct_heuristics_table_row(results: 'SDATMCorrectionResults', detail_page: str) -> ATMHeuristicsTR:
+def construct_heuristics_table_row(results: SDATMCorrectionResults, detail_page: str) -> ATMHeuristicsTR:
     """Construct table row for ATM heuristics summary table.
 
     Args:
@@ -75,7 +77,7 @@ def construct_heuristics_table_row(results: 'SDATMCorrectionResults', detail_pag
     return row
 
 
-def identify_heuristics_plots(stage_dir: str, results: 'SDATMCorrectionResults') -> list[logger.Plot]:
+def identify_heuristics_plots(stage_dir: str, results: SDATMCorrectionResults) -> list[logger.Plot]:
     """Identify ATM heuristics plots created by SDcalatmcor module.
 
     Args:
@@ -157,7 +159,7 @@ def iterate_field_spw(vis: str, field_id_list: list[int], spw_id_list: list[int]
 class SDATMCorrHeuristicsDetailPlotRenderer(basetemplates.JsonPlotRenderer):
     """Renderer class for ATM heuristics detail plots."""
 
-    def __init__(self, context: Context, result: 'SDATMCorrectionResults', plots: list[logger.Plot]) -> None:
+    def __init__(self, context: Context, result: SDATMCorrectionResults, plots: list[logger.Plot]) -> None:
         """
         Construct SDATMCorrHeuristicsDetailPlotRenderer instance.
 

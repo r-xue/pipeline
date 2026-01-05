@@ -6,7 +6,7 @@ import pipeline.infrastructure.utils as utils
 LOG = infrastructure.logging.get_logger(__name__)
 
 
-class GaincalSummaryChart(object):
+class GaincalSummaryChart:
     """
     Base class for executing plotms per spw
     """
@@ -41,7 +41,7 @@ class GaincalSummaryChart(object):
         return plot_wrappers
 
 
-class GaincalDetailChart(object):
+class GaincalDetailChart:
     """
     Base class for executing plotms per spw and antenna
     """
@@ -83,7 +83,7 @@ class GaincalAmpVsTimeSummaryChart(GaincalSummaryChart):
     and setting the colors of the points by antenna. 
     """
     def __init__(self, context, result, calapps, intent, ant : str=''):
-        super(GaincalAmpVsTimeSummaryChart, self).__init__(
+        super().__init__(
             context, result, calapps, intent, xaxis='time', yaxis='amp', coloraxis='antenna1', ant=ant)
 
 
@@ -92,7 +92,7 @@ class GaincalAmpVsTimeDetailChart(GaincalDetailChart):
     Create a phase vs time plot for each spw/antenna combination.
     """
     def __init__(self, context, result, calapps, intent):
-        super(GaincalAmpVsTimeDetailChart, self).__init__(
+        super().__init__(
             context, result, calapps, intent, xaxis='time', yaxis='amp', coloraxis='corr')
 
 
@@ -113,6 +113,6 @@ class GaincalPhaseVsTimeDetailChart(GaincalDetailChart):
     Create a phase vs time plot for each spw/antenna combination.
     """
     def __init__(self, context, result, calapps, intent):
-        super(GaincalPhaseVsTimeDetailChart, self).__init__(
+        super().__init__(
             context, result, calapps, intent, xaxis='time', yaxis='phase', plotrange=[0, 0, -180, 180],
             coloraxis='corr')

@@ -204,7 +204,7 @@ class SDImportDataResults(basetask.Results):
             setjy_results: the flux results generated from Source.xml
             org_directions: Dict of Direction objects of the origin
         """
-        super(SDImportDataResults, self).__init__()
+        super().__init__()
         self.mses = [] if mses is None else mses
         self.reduction_group_list = reduction_group_list
         self.datatable_prefix = datatable_prefix
@@ -262,7 +262,7 @@ class SerialSDImportData(importdata.ImportData):
             SDImportDataResults : result object
         """
         # get results object by running super.prepare()
-        results = super(SerialSDImportData, self).prepare()
+        results = super().prepare()
 
         # per MS inspection
         table_prefix = relative_path(os.path.join(self.inputs.context.name, 'MSDataTable.tbl'),

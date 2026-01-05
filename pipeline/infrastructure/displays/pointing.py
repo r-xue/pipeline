@@ -550,7 +550,7 @@ def XYlabel(span: float, direction_reference: str, ofs_coord: bool=False
         return RADEClabel(span, ofs_coord)
 
 
-class MapAxesManagerBase(object):
+class MapAxesManagerBase:
     """Base class for MapAxesManager classes.
 
     Holds information to construct direction coordinates.
@@ -857,7 +857,7 @@ def draw_pointing(axes_manager: PointingAxesManager,
     fig.clf()
 
 
-class SingleDishPointingChart(object):
+class SingleDishPointingChart:
     """Generate pointing plots.
 
     Generate pointing plot for given data, antenna, and field.

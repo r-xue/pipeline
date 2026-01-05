@@ -36,7 +36,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                          Defaults to 'Single-Dish Sky Calibration'.
             always_rerender: Always rerender the page if True. Defaults to False.
         """
-        super(T2_4MDetailsSingleDishSkyCalRenderer, self).__init__(
+        super().__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self,

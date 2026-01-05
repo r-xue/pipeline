@@ -26,7 +26,7 @@ if TYPE_CHECKING:
     from pipeline.domain import MeasurementSet
 
 
-class SDBLFlagSummary(object):
+class SDBLFlagSummary:
     """
     A class of single dish flagging task.
 

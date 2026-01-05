@@ -92,7 +92,7 @@ class SDSimpleGriddingInputs(vdp.StandardInputs):
             windowmode: Line window mode. Either 'replace' or 'merge'
             nplane: Number of gridding planes. Defaults to 3 if None is given.
         """
-        super(SDSimpleGriddingInputs, self).__init__()
+        super().__init__()
 
         self.context = context
         self.group_id = group_id
@@ -116,7 +116,7 @@ class SDSimpleGriddingResults(common.SingleDishResults):
             success: Whether task execution is successful or not.
             outcome: Outcome of the task execution.
         """
-        super(SDSimpleGriddingResults, self).__init__(task, success, outcome)
+        super().__init__(task, success, outcome)
 
     def merge_with_context(self, context: Context) -> None:
         """Merge result instance into context.
@@ -126,7 +126,7 @@ class SDSimpleGriddingResults(common.SingleDishResults):
         Args:
             context: Pipeline context object containing state information.
         """
-        super(SDSimpleGriddingResults, self).merge_with_context(context)
+        super().merge_with_context(context)
 
     def _outcome_name(self) -> str:
         """Return string representing the outcome.

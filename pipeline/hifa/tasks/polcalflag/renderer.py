@@ -22,7 +22,7 @@ class T2_4MDetailsPolcalflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='polcalflag.mako',
                  description='Polcal outlier flagging',
                  always_rerender=False):
-        super(T2_4MDetailsPolcalflagRenderer, self).__init__(uri=uri, description=description,
+        super().__init__(uri=uri, description=description,
                                                              always_rerender=always_rerender)
 
         # Attach correctedampflag renderer.

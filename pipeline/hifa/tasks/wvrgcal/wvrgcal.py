@@ -285,7 +285,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
     Inputs = WvrgcalInputs
 
     def __init__(self, inputs):
-        super(Wvrgcal, self).__init__(inputs)
+        super().__init__(inputs)
 
     def prepare(self):
         inputs = self.inputs

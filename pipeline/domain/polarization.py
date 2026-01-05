@@ -1,7 +1,7 @@
 import numpy
 
 
-class Polarization(object):
+class Polarization:
     """
     Polarization is a logical representation of a polarization.
 

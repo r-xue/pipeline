@@ -420,10 +420,10 @@ class SDBLFlagResults(common.SingleDishResults):
     The results of SDFalgData
     """
     def __init__(self, task=None, success=None, outcome=None):
-        super(SDBLFlagResults, self).__init__(task, success, outcome)
+        super().__init__(task, success, outcome)
 
     def merge_with_context(self, context):
-        super(SDBLFlagResults, self).merge_with_context(context)
+        super().merge_with_context(context)
 
     def _outcome_name(self):
         return 'none'

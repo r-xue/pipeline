@@ -19,7 +19,7 @@ from . import casa_tools, utils
 LOG = infrastructure.logging.get_logger(__name__)
 
 
-class ContFileHandler(object):
+class ContFileHandler:
 
     def __init__(self, filename, warn_nonexist=False):
         self.filename = filename

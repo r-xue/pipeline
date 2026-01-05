@@ -410,7 +410,7 @@ def buildscans(msfile, scd):
     return scandict
 
 
-class VLAScanHeuristics(object):
+class VLAScanHeuristics:
     def __init__(self, vis):
         self.vis = vis
 

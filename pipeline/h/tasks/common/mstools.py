@@ -1,11 +1,17 @@
-import numpy
+from __future__ import annotations
+
 import os
+from typing import TYPE_CHECKING
+
+import numpy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.common.commonhelpermethods import get_corr_products
-from pipeline.domain.measurementset import MeasurementSet
 from pipeline.infrastructure import casa_tools
+
+if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet
 
 LOG = infrastructure.logging.get_logger(__name__)
 

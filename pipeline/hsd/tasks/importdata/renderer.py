@@ -33,7 +33,7 @@ class T2_4MDetailsSingleDishImportDataRenderer(super_renderer.T2_4MDetailsImport
                                e.g., by creating weblog of other stages.
                              If False, weblog of this stage is generated only once when the stage is initially invoked.
         """
-        super(T2_4MDetailsSingleDishImportDataRenderer, self).__init__(uri, description, always_rerender)
+        super().__init__(uri, description, always_rerender)
 
     def update_mako_context(self, mako_context: dict[str, Any], pipeline_context: Context, result: Results):
         """Update mako context.
@@ -43,7 +43,7 @@ class T2_4MDetailsSingleDishImportDataRenderer(super_renderer.T2_4MDetailsImport
             pipeline_context: Pipeline context
             result: Result object
         """
-        super(T2_4MDetailsSingleDishImportDataRenderer, self).update_mako_context(mako_context, pipeline_context, result)
+        super().update_mako_context(mako_context, pipeline_context, result)
 
         msg_list = []
         for r in result:

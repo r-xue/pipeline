@@ -31,7 +31,7 @@ CalAppOrigin = collections.namedtuple('CalAppOrigin', ['task', 'inputs'])
 CYCLE_0_END_DATE = datetime.datetime(2013, 1, 21)
 
 
-class CalApplication(object):
+class CalApplication:
     """
     CalApplication maps calibration tables and their application arguments to
     a target data selection, encapsulated as CalFrom and CalTo objects
@@ -302,7 +302,7 @@ class CalApplication(object):
         return 'CalApplication(%s, %s)' % (self.calto, self.calfrom)
 
 
-class CalTo(object):
+class CalTo:
     """
     CalTo represents a target data selection to which a calibration can be
     applied.
@@ -449,7 +449,7 @@ class CalTo(object):
                                     self.intent))
 
 
-class CalFrom(object):
+class CalFrom:
     """
     CalFrom represents a calibration table and the CASA arguments that should
     be used when applying that calibration table.
@@ -729,7 +729,7 @@ class CalFrom(object):
                  self.caltype, self.calwt))
 
 
-class CalToIdAdapter(object):
+class CalToIdAdapter:
     """
     CalToIdAdapter is an adapter class for CalTo that return some of its
     attributes as lists of IDs/names, instead of as the CASA-style string argument.
@@ -864,7 +864,7 @@ def sequence_to_casa_range(seq):
     return (as_casa_range(seq) for seq in contiguous_sequences(seq))
 
 
-class CalToIntervalAdapter(object):
+class CalToIntervalAdapter:
     def __init__(self, context, calto):
         self._context = context
         self._calto = calto
@@ -1576,7 +1576,7 @@ def get_intent_id_map(ms: MeasurementSet) -> dict[int, str]:
     return dict(enumerate(sorted(ms.intents)))
 
 
-class IntervalCalState(object):
+class IntervalCalState:
     """
     IntervalCalState is a data structure used to map calibrations for all data
     registered with the pipeline.
@@ -1906,7 +1906,7 @@ def fix_cycle0_data_selection(context: launcher.Context, calstate: IntervalCalSt
     return final_calstate
 
 
-class IntervalCalLibrary(object):
+class IntervalCalLibrary:
     """
     IntervalCalLibrary is the root object for the pipeline calibration state.
 

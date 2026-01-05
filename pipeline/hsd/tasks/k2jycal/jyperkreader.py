@@ -130,7 +130,7 @@ def _read_stream(stream: TextIO) -> Generator[list[str], None, None]:
 
 # Utility classes/functions to convert session based factors file
 # to MS based one are defined below
-class JyPerKDataParser(object):
+class JyPerKDataParser:
     """Utility class to convert session based factors file into MS based one."""
 
     @classmethod
@@ -193,7 +193,7 @@ class JyPerKDataParser(object):
             return None
 
 
-class JyPerK(object):
+class JyPerK:
     """Parse session based jyperk csv and store.
 
     * meta stores meta data information from the lines in the form, '#name=value',

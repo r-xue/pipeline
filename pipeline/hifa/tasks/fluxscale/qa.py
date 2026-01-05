@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import ast
 import collections
 import functools
@@ -5,7 +7,7 @@ import operator
 import re
 from decimal import Decimal
 from math import sqrt
-from typing import Iterable
+from typing import TYPE_CHECKING, Iterable
 
 import numpy
 
@@ -13,15 +15,17 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
-from pipeline.domain import Field, FluxMeasurement, MeasurementSet, SpectralWindow
 from pipeline.domain.measures import FluxDensity, FluxDensityUnits, Frequency, FrequencyUnits
 from pipeline.h.tasks.common import commonfluxresults
 from pipeline.h.tasks.importdata.fluxes import ORIGIN_ANALYSIS_UTILS, ORIGIN_XML
 from pipeline.hifa.heuristics.snr import ALMA_BANDS, ALMA_SENSITIVITIES, ALMA_TSYS
 from pipeline.hifa.tasks.importdata.dbfluxes import ORIGIN_DB
 from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.launcher import Context
 from . import gcorfluxscale
+
+if TYPE_CHECKING:
+    from pipeline.domain import Field, FluxMeasurement, MeasurementSet, SpectralWindow
+    from pipeline.infrastructure.launcher import Context
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -765,7 +769,7 @@ def frequency_min_max_after_aliasing(spw):
         return spw.min_frequency, spw.max_frequency
 
 
-class CaltableWrapperFactory(object):
+class CaltableWrapperFactory:
     @staticmethod
     def from_caltable(filename):
         LOG.trace('CaltableWrapperFactory.from_caltable(%r)', filename)
@@ -877,7 +881,7 @@ def get_dtype(tb, col):
             return col, CASA_DATA_TYPES[col_dtype], max_row_shape
 
 
-class CaltableWrapper(object):
+class CaltableWrapper:
     def __init__(self, filename, data, table_keywords, column_keywords):
         self.filename = filename
         self.data = data

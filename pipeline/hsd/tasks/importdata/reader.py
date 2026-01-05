@@ -221,7 +221,7 @@ def set_nominal_direction(ant: numpy.ndarray, srctype: numpy.ndarray, az: numpy.
         offset_dec[nanmask] = _offset_dec
 
 
-class MetaDataReader(object):
+class MetaDataReader:
     """MetaData reading class."""
 
     def __init__(self, context: Context, ms: MeasurementSet, table_name: str):

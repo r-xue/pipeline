@@ -1,17 +1,21 @@
+from __future__ import annotations
+
 import abc
 import collections
 import enum
 import os
-from typing import Sequence
+from typing import TYPE_CHECKING, Sequence
 
 import numpy
 
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
-from pipeline.domain import DataTable, MeasurementSet
 from pipeline.infrastructure import casa_tools
 from pipeline.hsd.heuristics import fitorder
+
+if TYPE_CHECKING:
+    from pipeline.domain import DataTable, MeasurementSet
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -88,7 +92,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         Raises:
             RuntimeError: Invalid fitting function was specified.
         """
-        super(BaselineFitParamConfig, self).__init__()
+        super().__init__()
         self.fitfunc = fitorder.get_fitting_function(fitfunc)
         LOG.info(f'Baseline parameter is optimized for {self.fitfunc.description} fitting')
 

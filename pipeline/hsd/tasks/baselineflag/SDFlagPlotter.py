@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 DPIDetail = 130
 FIGSIZE_INCHES = (7.0, 2.9)
 
-class SDFlagPlotter(object):
+class SDFlagPlotter:
     """Class to create Flag Plots for hsd_blflag weblog."""
 
     def __init__( self, msobj:MeasurementSet, datatable:DataTable, antid:int, spwid:int,

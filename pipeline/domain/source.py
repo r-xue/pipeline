@@ -9,7 +9,7 @@ from pipeline.infrastructure import casa_tools
 _pprinter = pprint.PrettyPrinter()
 
 
-class Source(object):
+class Source:
     """
     Source is a logical representation of an astronomical source.
 

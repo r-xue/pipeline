@@ -38,7 +38,7 @@ if TYPE_CHECKING:
 LOG = infrastructure.logging.get_logger(__name__)
 
 
-class ImageParamsHeuristics(object):
+class ImageParamsHeuristics:
     """
     Image parameters heuristics base class. One instance is made per make/editimlist
     call. There are subclasses for different imaging modes such as ALMA

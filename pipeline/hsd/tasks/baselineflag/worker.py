@@ -37,7 +37,7 @@ class SDBLFlagWorkerInputs(vdp.StandardInputs):
 
     def __init__(self, context, clip_niteration, vis, antenna_list, fieldid_list, spwid_list, pols_list, nchan,
                  flagRule, edge=None):
-        super(SDBLFlagWorkerInputs, self).__init__()
+        super().__init__()
 
         self.context = context
         self.clip_niteration = clip_niteration
@@ -60,16 +60,16 @@ class SDBLFlagWorkerInputs(vdp.StandardInputs):
 
 class SDBLFlagWorkerResults(common.SingleDishResults):
     def __init__(self, task=None, success=None, outcome=None):
-        super(SDBLFlagWorkerResults, self).__init__(task, success, outcome)
+        super().__init__(task, success, outcome)
 
     def merge_with_context(self, context):
-        super(SDBLFlagWorkerResults, self).merge_with_context(context)
+        super().merge_with_context(context)
 
     def _outcome_name(self):
         return ''
 
 
-class BLFlagTableContainer(object):
+class BLFlagTableContainer:
     """
     Container class to store table tools of two MSes.
 

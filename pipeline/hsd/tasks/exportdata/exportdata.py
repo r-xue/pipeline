@@ -17,6 +17,7 @@ inputs = pipeline.tasks.singledish.SDExportData.Inputs(context, output_dir,
 task = pipeline.tasks.singledish.SDExportData (inputs)
 results = task.execute ()
 """
+from __future__ import annotations
 
 import collections
 import glob
@@ -25,19 +26,22 @@ import shutil
 import string
 import tarfile
 import traceback
-from typing import Generator
+from typing import TYPE_CHECKING, Generator
 
 import pipeline.h.tasks.exportdata.exportdata as exportdata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-from pipeline.infrastructure.launcher import Context
-from pipeline.infrastructure.utils import absolute_path
 import pipeline.infrastructure.project as project
-from pipeline.infrastructure import task_registry
 from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
 from pipeline.hsd.tasks.restoredata.restoredata import SDRestoreDataResults
 from pipeline.hsd.tasks.common.utils import is_nro
+from pipeline.infrastructure import task_registry
+from pipeline.infrastructure.utils import absolute_path
+
 from . import almasdaqua
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
 
 # the logger for this module
 LOG = infrastructure.logging.get_logger(__name__)
@@ -77,7 +81,7 @@ class SDExportData(exportdata.ExportData):
         Returns:
             ExportDataResults object
         """
-        results = super(SDExportData, self).prepare()
+        results = super().prepare()
 
         oussid = self.inputs.context.get_oussid()
 

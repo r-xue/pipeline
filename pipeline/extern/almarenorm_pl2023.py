@@ -200,7 +200,7 @@ def alma_renorm(vis: str, spw: list[int], apply: bool, threshold: None | float, 
 
 
 
-class ACreNorm(object):
+class ACreNorm:
 
 
     def __init__(self,msname):

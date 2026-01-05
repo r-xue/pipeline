@@ -154,7 +154,7 @@ def utc_locator(start_time: float | None = None,
         return MinuteLocator(byminute=list(range(0, 60, tick_interval)))
 
 
-class SingleDishDisplayInputs(object):
+class SingleDishDisplayInputs:
     """Represents inputs to Display classes."""
 
     def __init__(self,
@@ -186,7 +186,7 @@ class SingleDishDisplayInputs(object):
         return 'NRO' in arrays
 
 
-class SpectralImage(object):
+class SpectralImage:
     """Representation of four-dimensional spectral image."""
 
     @property
@@ -409,7 +409,7 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
             context: Pipeline context object containing state information.
             result: Pipeline task execution result.
         """
-        super(SDImageDisplayInputs, self).__init__(context, result)
+        super().__init__(context, result)
         self.image = SpectralImage(self.imagename)
 
     @property
@@ -983,7 +983,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             ticksize: Size of tick label.
             clearpanel: Clear existing Axes. Defaults to True.
         """
-        super(SparseMapAxesManager, self).__init__()
+        super().__init__()
         self.figure = fig
         self.nh = nh
         self.nv = nv
@@ -1202,7 +1202,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
                 obj.remove()
 
 
-class SDSparseMapPlotter(object):
+class SDSparseMapPlotter:
     """Plotter for sparse spectral map."""
 
     def __init__(self, fig: figure.Figure, nh: int, nv: int, step: int, brightnessunit: str,

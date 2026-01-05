@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 import collections
 import os
+from typing import TYPE_CHECKING
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
@@ -8,8 +11,10 @@ from pipeline.hifa.tasks.common.common_renderer_utils import get_spwmaps
 from pipeline.hifa.tasks.gaincal import display as gaincal_displays
 from pipeline.hifa.tasks.gaincal import renderer as gaincal_renderer
 from pipeline.infrastructure import generate_detail_plots
-from pipeline.infrastructure.launcher import Context
-from pipeline.infrastructure.basetask import ResultsList
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure.basetask import ResultsList
+    from pipeline.infrastructure.launcher import Context
 
 LOG = infrastructure.logging.get_logger(__name__)
 

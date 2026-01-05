@@ -3,15 +3,17 @@ Created on 01 Jun 2017
 
 @author: Vincent Geers (UKATC)
 """
+from __future__ import annotations
+
 import functools
 import os.path
+from typing import TYPE_CHECKING
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain import MeasurementSet
 from pipeline.h.tasks.common.displays import applycal as applycal_displays
 from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
 from pipeline.hif.tasks import applycal
@@ -20,9 +22,12 @@ from pipeline.hif.tasks import gaincal
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.callibrary import CalTo
-from pipeline.infrastructure.launcher import Context
 from .resultobjects import GfluxscaleflagResults
 import pipeline.infrastructure.sessionutils as sessionutils
+
+if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet
+    from pipeline.infrastructure.launcher import Context
 
 __all__ = [
     'GfluxscaleflagInputs',

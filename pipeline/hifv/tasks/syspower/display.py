@@ -13,7 +13,7 @@ import pipeline.infrastructure.casa_tools as casa_tools
 LOG = infrastructure.get_logger(__name__)
 
 
-class syspowerBoxChart(object):
+class syspowerBoxChart:
     def __init__(self, context, result, dat_common, band):
         self.context = context
         self.result = result
@@ -82,7 +82,7 @@ class syspowerBoxChart(object):
         return wrapper
 
 
-class syspowerBarChart(object):
+class syspowerBarChart:
     def __init__(self, context, result,  dat_common, band):
         self.context = context
         self.result = result
@@ -149,7 +149,7 @@ class syspowerBarChart(object):
         return wrapper
 
 
-class compressionSummary(object):
+class compressionSummary:
     def __init__(self, context, result, spowerdict, band):
         self.context = context
         self.result = result
@@ -285,7 +285,7 @@ class compressionSummary(object):
         return wrapper
 
 
-class medianSummary(object):
+class medianSummary:
     def __init__(self, context, result, spowerdict, band):
         self.context = context
         self.result = result
@@ -433,7 +433,7 @@ class medianSummary(object):
         return wrapper
 
 
-class syspowerPerAntennaChart(object):
+class syspowerPerAntennaChart:
     def __init__(self, context, result, yaxis, caltable, fileprefix, tabletype, band, spw, selectbasebands, science_scan_ids):
         self.context = context
         self.result = result

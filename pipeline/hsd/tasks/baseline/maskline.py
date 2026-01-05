@@ -83,7 +83,7 @@ class MaskLineInputs(vdp.StandardInputs):
             clusteringalgorithm: Clustering algorithm to use. Allowed values are 'kmean',
                                  'hierarchy', or 'both'. Defaults to 'hierarchy' if None is given.
         """
-        super(MaskLineInputs, self).__init__()
+        super().__init__()
 
         self.context = context
         self.iteration = iteration
@@ -110,7 +110,7 @@ class MaskLineResults(common.SingleDishResults):
             success: Whether task execution is successful or not.
             outcome: Outcome of the task execution.
         """
-        super(MaskLineResults, self).__init__(task, success, outcome)
+        super().__init__(task, success, outcome)
 
     def merge_with_context(self, context: Context) -> None:
         """Merge result instance into context.
@@ -120,7 +120,7 @@ class MaskLineResults(common.SingleDishResults):
         Args:
             context: Pipeline context object containing state information.
         """
-        super(MaskLineResults, self).merge_with_context(context)
+        super().merge_with_context(context)
 
     def _outcome_name(self) -> str:
         """Return string representing the outcome.

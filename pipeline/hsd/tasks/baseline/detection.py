@@ -84,7 +84,7 @@ class DetectLineInputs(vdp.StandardInputs):
                   are processed.
             broadline: Detect broadline component or not. Defaults to True if None is given.
         """
-        super(DetectLineInputs, self).__init__()
+        super().__init__()
 
         self.context = context
         self.group_id = group_id
@@ -108,7 +108,7 @@ class DetectLineResults(common.SingleDishResults):
             success: Whether task execution is successful or not.
             outcome: Outcome of the task execution.
         """
-        super(DetectLineResults, self).__init__(task, success, outcome)
+        super().__init__(task, success, outcome)
 
     def merge_with_context(self, context: Context) -> None:
         """Merge result instance into context.
@@ -119,7 +119,7 @@ class DetectLineResults(common.SingleDishResults):
             context: Pipeline context object containing state information.
         """
         LOG.debug('DetectLineResults.merge_with_context')
-        super(DetectLineResults, self).merge_with_context(context)
+        super().merge_with_context(context)
 
     @property
     def signals(self) -> collections.OrderedDict:
@@ -155,7 +155,7 @@ class DetectLine(basetask.StandardTaskTemplate):
         Args:
             inputs: DetectLineInputs instance.
         """
-        super(DetectLine, self).__init__(inputs)
+        super().__init__(inputs)
         self.line_finder = self.LineFinder()
 
     def prepare(self,
@@ -472,7 +472,7 @@ class DetectLine(basetask.StandardTaskTemplate):
         return protected
 
 
-class LineWindowParser(object):
+class LineWindowParser:
     """LineWindowParser is a parser for line window parameter.
 
     Supported format is as follows:

@@ -39,7 +39,7 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
                          Defaults to 'Generate Kelvin to Jy calibration table.'.
             always_rerender: Always rerender the page if True. Defaults to False.
         """
-        super(T2_4MDetailsSingleDishK2JyCalRenderer, self).__init__(
+        super().__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, ctx: dict[str, Any], context: Context, results: ResultsList) -> None:

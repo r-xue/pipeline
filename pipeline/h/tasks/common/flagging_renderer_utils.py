@@ -3,16 +3,20 @@ Created on 25 Nov 2014
 
 @author: sjw
 """
+from __future__ import annotations
+
 import collections
 import functools
-from typing import Sequence
+from typing import TYPE_CHECKING, Sequence
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure.launcher import Context
-from pipeline.domain.measurementset import MeasurementSet
 
 LOG = infrastructure.logging.get_logger(__name__)
+
+if TYPE_CHECKING:
+    from pipeline.domain.measurementset import MeasurementSet
+    from pipeline.infrastructure.launcher import Context
 
 FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
 

@@ -12,7 +12,7 @@ import pipeline.infrastructure.renderer.logger as logger
 LOG = infrastructure.logging.get_logger(__name__)
 
 
-class weightboxChart(object):
+class weightboxChart:
     whis = 3.944
 
     def __init__(self, context, result):

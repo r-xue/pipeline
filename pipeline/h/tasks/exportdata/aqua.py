@@ -85,7 +85,7 @@ def register_aqua_metric(fn):
     return fn
 
 
-class AquaXmlGenerator(object):
+class AquaXmlGenerator:
     """
     Class to create the XML for an AQUA pipeline report.
     """
@@ -457,7 +457,7 @@ def xml_generator_for_metric(qa_label, value_spec):
     return MetricXmlGenerator(qa_label, formatters={'Value': value_formatter})
 
 
-class MetricXmlGenerator(object):
+class MetricXmlGenerator:
     """
     Creates a AQUA report XML element for QA scores.
     """
@@ -540,7 +540,7 @@ class LowestScoreMetricXmlGenerator(MetricXmlGenerator):
     """
 
     def __init__(self, metric_name, formatters=None):
-        super(LowestScoreMetricXmlGenerator, self).__init__(metric_name, formatters)
+        super().__init__(metric_name, formatters)
 
     def filter(self, qa_scores):
         handled = [(vis, qa_score) for vis, qa_score in qa_scores
@@ -562,7 +562,7 @@ class GenericMetricXmlGenerator(MetricXmlGenerator):
     def __init__(self):
         # format all processed entries to 3dp
         formatters = {'Value': _create_value_formatter('{:0.3f}')}
-        super(GenericMetricXmlGenerator, self).__init__('Generic metric', formatters)
+        super().__init__('Generic metric', formatters)
 
     def handles(self, _):
         return True

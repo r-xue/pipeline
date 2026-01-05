@@ -151,7 +151,7 @@ class FitOrderHeuristics(api.Heuristic):
         return poly_order
 
 
-class MaskMakerNoLine(object):
+class MaskMakerNoLine:
     """Generate mask array."""
 
     def __init__(self, nchan: int, edge: EdgeChannels):
@@ -192,7 +192,7 @@ class MaskMaker(MaskMakerNoLine):
                   [[-1,-1]] indicates no mask.
             edge: number of edge channels to be dropped.
         """
-        super(MaskMaker, self).__init__(nchan, edge)
+        super().__init__(nchan, edge)
         self.lines = lines
 
     def get_mask(self, row):

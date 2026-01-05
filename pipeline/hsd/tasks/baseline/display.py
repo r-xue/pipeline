@@ -83,7 +83,7 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         Raises:
             RuntimeError: len(clusters_to_plot) > self.NUM_CLUSTER_MAX
         """
-        super(ClusterValidationAxesManager, self).__init__()
+        super().__init__()
         self.clusters_to_plot = clusters_to_plot
         if len(self.clusters_to_plot) > self.NUM_CLUSTER_MAX:
             raise RuntimeError(f'Length of cluster must not exceed {self.NUM_CLUSTER_MAX}.')
@@ -242,7 +242,7 @@ class ClusterValidationAxesManager(MapAxesManagerBase):
         return x0, y0, x1, y1, tpos_x, tpos_y
 
 
-class ClusterDisplay(object):
+class ClusterDisplay:
     """Plotter to create plots that visualize clustering analysis.
 
     For each detected cluster, this class creates two types of
@@ -539,7 +539,7 @@ class ClusterValidationDisplay(ClusterDisplayWorker):
             stage_dir: Weblog directory
             org_direction: direction of the origin
         """
-        super(ClusterValidationDisplay, self).__init__(group_id, iteration, cluster, spw, field, stage_dir)
+        super().__init__(group_id, iteration, cluster, spw, field, stage_dir)
         self.context = context
         self.antenna = antenna
         self.lines = lines

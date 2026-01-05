@@ -9,7 +9,7 @@ from pipeline.infrastructure.utils import utils
 _pprinter = pprint.PrettyPrinter(width=1e99)
 
 
-class Field(object):
+class Field:
     """
     A class to store logical representation of a field.
 

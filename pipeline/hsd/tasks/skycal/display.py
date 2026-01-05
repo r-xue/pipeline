@@ -60,7 +60,7 @@ def get_field_from_ms(ms: MeasurementSet, field: str) -> list[Field]:
     return field_list
 
 
-class SingleDishSkyCalDisplayBase(object):
+class SingleDishSkyCalDisplayBase:
     """Base display class for skycal stage."""
 
     def init_with_field(self, context: Context, result: SDSkyCalResults, field: str) -> None:
@@ -130,7 +130,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(PlotbandpassDetailBase, SingleDishSk
             result: SDSkyCalResults instance
             field: Field string. Either field id or field name.
         """
-        super(SingleDishSkyCalAmpVsFreqSummaryChart, self).__init__(context, result,
+        super().__init__(context, result,
                                                                     'freq', 'amp',
                                                                     showatm=True,
                                                                     overlay='antenna',
@@ -408,7 +408,7 @@ class SingleDishSkyCalAmpVsFreqDetailChart(BandpassDetailChart, SingleDishSkyCal
         if solution_interval is not None:
             extra_options['solutionTimeThresholdSeconds'] = solution_interval
 
-        super(SingleDishSkyCalAmpVsFreqDetailChart, self).__init__(
+        super().__init__(
             context, result, xaxis='freq', yaxis='amp',
             showatm=True, overlay='time',
             **extra_options)
@@ -421,7 +421,7 @@ class SingleDishSkyCalAmpVsFreqDetailChart(BandpassDetailChart, SingleDishSkyCal
         Return:
             List of plot object.
         """
-        wrappers = super(SingleDishSkyCalAmpVsFreqDetailChart, self).plot()
+        wrappers = super().plot()
 
         self.add_field_identifier(wrappers)
 
@@ -440,7 +440,7 @@ class SingleDishSkyCalAmpVsFreqDetailChart(BandpassDetailChart, SingleDishSkyCal
                 self._figfile[spw_id][antenna_id] = new_figfile
 
 
-class SingleDishPlotmsLeaf(object):
+class SingleDishPlotmsLeaf:
     """Class to execute plotms and return a plot wrapper.
 
     Task arguments for plotms are customized for single dish usecase.
@@ -632,7 +632,7 @@ class SingleDishPlotmsAntSpwComposite(LeafComposite):
         children = [self.leaf_class(context, result, dict_calapp_ants[ant], xaxis, yaxis,
                     ant=int(ant), pol=pol, **kwargs)
                     for ant in table_ants]
-        super(SingleDishPlotmsAntSpwComposite, self).__init__(children)
+        super().__init__(children)
 
 
 class SingleDishPlotmsAntComposite(AntComposite):
@@ -656,7 +656,7 @@ class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
             result: SDSkyCalResults instance.
             calapp: List of CalApplication instances.
         """
-        super(SingleDishSkyCalAmpVsTimeSummaryChart, self).__init__(context, result, calapp,
+        super().__init__(context, result, calapp,
                                                                     xaxis='time', yaxis='amp',
                                                                     coloraxis='field')
 
@@ -677,7 +677,7 @@ class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
             result: SDSkyCalResults instance.
             calapp: List of CalApplication instances.
         """
-        super(SingleDishSkyCalAmpVsTimeDetailChart, self).__init__(context, result, calapp,
+        super().__init__(context, result, calapp,
                                                                    xaxis='time', yaxis='amp',
                                                                    coloraxis='field')
 

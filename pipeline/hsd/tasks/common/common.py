@@ -41,7 +41,7 @@ class SingleDishResults(basetask.Results):
             success: True if the task completes successfully. Otherwise, False.
             outcome: Outcome of the task.
         """
-        super(SingleDishResults, self).__init__()
+        super().__init__()
         self.task = task
         self.success = success
         self.outcome = outcome

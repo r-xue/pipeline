@@ -28,7 +28,7 @@ PREHOOKS = []
 POSTHOOKS = []
 
 
-class FunctionArg(object):
+class FunctionArg:
     """
     Class to hold named function or method arguments
     """
@@ -43,7 +43,7 @@ class FunctionArg(object):
         return 'FunctionArg({!r}, {!r})'.format(self.name, self.value)
 
 
-class NamelessArg(object):
+class NamelessArg:
     """
     Class to hold unnamed arguments
     """

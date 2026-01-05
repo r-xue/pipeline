@@ -72,7 +72,7 @@ class CheckflagInputs(vdp.StandardInputs):
                 - default=False, for '' and 'semi'
 
         """
-        super(CheckflagInputs, self).__init__()
+        super().__init__()
         self.context = context
         self.vis = vis
         self.checkflagmode = checkflagmode
@@ -97,7 +97,7 @@ class CheckflagResults(basetask.Results):
         if dataselect is None:
             dataselect = {}
 
-        super(CheckflagResults, self).__init__()
+        super().__init__()
 
         self.jobs = jobs
         self.results = results

@@ -40,7 +40,7 @@ BinnedStat = collections.namedtuple(
 QualityStat = collections.namedtuple('QualityStat', 'vis field spw ant pol stat')
 
 
-class PlotterPool(object):
+class PlotterPool:
     """Pool class to hold resources for plotting.
 
     TODO: this class is not useful. Should be removed in future.
@@ -87,7 +87,7 @@ class PlotterPool(object):
             plotter.done()
 
 
-class PlotDataStorage(object):
+class PlotDataStorage:
     """Storage class to hold array data for plotting."""
 
     def __init__(self) -> None:
@@ -152,7 +152,7 @@ class PlotDataStorage(object):
         self.integrated_data = numpy.reshape(self.integrated_data_storage[:num_integrated], (num_pol, num_chan))
 
 
-class BaselineSubtractionDataManager(object):
+class BaselineSubtractionDataManager:
     """Class to produce data of baseline subtraction plot and quality statistics."""
 
     def __init__(self, ms: MeasurementSet, blvis: str, context: Context, datatable: DataTable) -> None:

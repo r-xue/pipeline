@@ -1,20 +1,25 @@
+from __future__ import annotations
+
 import os
+from typing import TYPE_CHECKING
 
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
 from pipeline.domain import measures
-from pipeline.domain import SpectralWindow
 from pipeline.h.heuristics import tsysspwmap
 from pipeline.h.tasks.common import calibrationtableaccess as caltableaccess
 from pipeline.h.tasks.common import commonresultobjects
 from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.launcher import Context
+
+if TYPE_CHECKING:
+    from pipeline.domain import SpectralWindow
+    from pipeline.infrastructure.launcher import Context
 
 LOG = infrastructure.logging.get_logger(__name__)
 
 
-class AtmHeuristics(object):
+class AtmHeuristics:
     def __init__(self, context: Context, vis: str, spw: list[SpectralWindow]):
         self.context = context
         self.vis = vis
