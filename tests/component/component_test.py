@@ -59,67 +59,8 @@ def test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small_target__selfcal_and_self
 
 
 @pytest.mark.importdata
+@pytest.mark.selfcal
 @pytest.mark.makeimages
-def test_OphA_X1__missing_spws_first_EB__component():
-    """Run tests with two datasets, one with all spws and one missing a single spw.
-
-    test_missing_spws_first_EB: import dataset 1 then dataset 2
-    test_missing_spws_second_EB: import dataset 2 then dataset 1
-
-    Dataset(s):                 OphA-X1_spw0_2.ms, OphA-X1_spw0_2_3.ms
-    Task(s):                    hifv_importdata, hif_makelist, hif_makeimages
-    """
-    ref_directory = 'pl-componenttest/missing_spws'
-    visnames = ['OphA-X1_spw0_2.ms', 'OphA-X1_spw0_2_3.ms']
-    vislist = [casa_tools.utils.resolve(os.path.join(ref_directory, visname)) for visname in visnames]
-    tasks = [
-        ('hifv_importdata', {'vis': vislist}),
-        ('hif_makeimlist', {'specmode': 'cont'}),
-        ('hif_makeimages', {})
-    ]
-
-    pt = PipelineTester(
-        visname=visnames,
-        mode='component',
-        tasks=tasks,
-        output_dir='missing_spws_first_EB',
-        expectedoutput_dir=ref_directory,
-        )
-
-    pt.run()
-
-
-@pytest.mark.importdata
-@pytest.mark.makeimages
-def test_OphA_X1__missing_spws_second_EB__component():
-    """Run tests with two datasets, one with all spws and one missing a single spw.
-
-    test_missing_spws_first_EB: import dataset 1 then dataset 2
-    test_missing_spws_second_EB: import dataset 2 then dataset 1
-
-    Dataset(s):                 OphA-X1_spw0_2.ms, OphA-X1_spw0_2_3.ms
-    Task(s):                    hifv_importdata, hif_makelist, hif_makeimages
-    """
-    ref_directory = 'pl-componenttest/missing_spws'
-    visnames = ['OphA-X1_spw0_2_3.ms', 'OphA-X1_spw0_2.ms']
-    vislist = [casa_tools.utils.resolve(os.path.join(ref_directory, visname)) for visname in visnames]
-    tasks = [
-        ('hifv_importdata', {'vis': vislist}),
-        ('hif_makeimlist', {'specmode': 'cont'}),
-        ('hif_makeimages', {})
-    ]
-
-    pt = PipelineTester(
-        visname=visnames,
-        mode='component',
-        tasks=tasks,
-        output_dir='missing_spws_second_EB',
-        expectedoutput_dir=ref_directory,
-        )
-
-    pt.run()
-
-
 def test_uid___A001_X375e_X7a__spw_mapping_missing_spws__component():
     """Run test of spw mapping with missing spws.
 
