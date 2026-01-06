@@ -5077,12 +5077,13 @@ def score_longsolint(context, result) -> list[pqa.QAScore]:
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 @log_qa
-def score_testBPdcals(caltable, amp_collection, phase_collection, has_bad_refant, bandname) -> [pqa.QAScore]:
+def score_testBPdcals(vis:str, caltable:str, amp_collection:dict, phase_collection:dict, has_bad_refant:bool, bandname:str) -> [pqa.QAScore]:
     scores = []
     bad_ants = []
     bad_ants.extend([str(a) for a in amp_collection.keys()])
     bad_ants.extend([str(p) for p in phase_collection.keys()])
     num_bad_ants = len(set(bad_ants))
+    applies_to = pqa.TargetDataSelection(vis=vis)
     # PIPE-2580: if > 4 antennas have DTS issue, QA score < 0.5
     if num_bad_ants > 4:
         score = rendererutils.SCORE_THRESHOLD_ERROR
@@ -5095,7 +5096,7 @@ def score_testBPdcals(caltable, amp_collection, phase_collection, has_bad_refant
     origin = pqa.QAOrigin(metric_name='score_testBPdcals',
                           metric_score=score,
                           metric_units='')
-    scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+    scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to))
 
     # PIPE-2580: if bad reference antenna found, QA score <0.5
     if has_bad_refant:
@@ -5109,7 +5110,7 @@ def score_testBPdcals(caltable, amp_collection, phase_collection, has_bad_refant
     origin = pqa.QAOrigin(metric_name='score_testBPdcals',
                           metric_score=score,
                           metric_units='')
-    scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+    scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to))
 
     # PIPE-2580: if median delay per baseband > 15 ms, QA score < 0.5
     with casa_tools.TableReader(caltable) as tb:
@@ -5131,6 +5132,6 @@ def score_testBPdcals(caltable, amp_collection, phase_collection, has_bad_refant
     origin = pqa.QAOrigin(metric_name='score_testBPdcals',
                           metric_score=score,
                           metric_units='')
-    scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+    scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to))
 
     return scores

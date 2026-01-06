@@ -53,7 +53,7 @@ class testBPdcalsQAHandler(pqa.QAPlugin):
                                                      result.num_antennas[bandname])
             scores.append(score3)
 
-            bandwise_scores = qacalc.score_testBPdcals(result.ktypecaltable[bandname], result.amp_collection[bandname], result.phase_collection[bandname],
+            bandwise_scores = qacalc.score_testBPdcals(result.inputs['vis'], result.ktypecaltable[bandname], result.amp_collection[bandname], result.phase_collection[bandname],
                                                        result.has_bad_refant[bandname], bandname)
             if bandwise_scores:
                 scores.append(bandwise_scores)
