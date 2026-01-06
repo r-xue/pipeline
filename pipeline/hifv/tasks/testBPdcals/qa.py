@@ -54,7 +54,7 @@ class testBPdcalsQAHandler(pqa.QAPlugin):
             scores.append(score3)
 
             bandwise_scores = qacalc.score_testBPdcals(result.ktypecaltable[bandname], result.amp_collection[bandname], result.phase_collection[bandname],
-                                                       result.has_bad_ref_ant[bandname], bandname)
+                                                       result.has_bad_refant[bandname], bandname)
             if bandwise_scores:
                 scores.append(bandwise_scores)
         for antenna, spwlist in self.antspw.items():

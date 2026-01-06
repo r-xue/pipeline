@@ -87,7 +87,7 @@ class testBPdcalsResults(basetask.Results):
                  shortsol1=None, vis=None, bpdgain_touse=None, gtypecaltable=None,
                  ktypecaltable=None, bpcaltable=None, flaggedSolnApplycalbandpass=None,
                  flaggedSolnApplycaldelay=None, result_amp=None, result_phase=None,
-                 amp_collection=None, phase_collection=None, num_antennas=None, ignorerefant=None, has_bad_ref_ant=None):
+                 amp_collection=None, phase_collection=None, num_antennas=None, ignorerefant=None, has_bad_refant=None):
         """
         Args:
             vis(str): String name of the measurement set
@@ -150,7 +150,7 @@ class testBPdcalsResults(basetask.Results):
         self.amp_collection = amp_collection
         self.phase_collection = phase_collection
         self.num_antennas = num_antennas
-        self.has_bad_ref_ant = has_bad_ref_ant
+        self.has_bad_refant = has_bad_refant
 
     def merge_with_context(self, context):
         m = context.observing_run.get_ms(self.vis)
@@ -209,9 +209,9 @@ class testBPdcals(basetask.StandardTaskTemplate):
         amp_collection_perband = defaultdict(list)
         phase_collection_perband = defaultdict(list)
         num_antennas_perband = len(m.antennas)
-        has_bad_ref_ant = {}  # PIPE-2580: used for QA score
+        has_bad_refant = {}  # PIPE-2580: used for QA score
         for band, spwlist in band2spw.items():
-            has_bad_ref_ant[band] = False
+            has_bad_refant[band] = False
             for i in [0, 1, 2]:
                 # PIPE-1554: backing up the flags before applycal with version name.
                 # The given version name is used to restore the flags when required.
@@ -259,7 +259,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
                         self.ignorerefant.append(refant)
                         LOG.warning("A baseband is determined to be bad for >50% of antennas.  "
                                     "Removing reference antenna(s) {!s} and rerunning the test calibration.".format(','.join(self.ignorerefant)))
-                        has_bad_ref_ant[band] = True
+                        has_bad_refant[band] = True
                 else:
                     LOG.info("Skipping bad deformatter flagging")
 
@@ -294,7 +294,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
                                   flaggedSolnApplycaldelay=flaggedSolnApplycaldelay, result_amp=result_amp,
                                   result_phase=result_phase, amp_collection=amp_collection,
                                   phase_collection=phase_collection,
-                                  num_antennas=num_antennas, ignorerefant=self.ignorerefant, has_bad_ref_ant=has_bad_ref_ant)
+                                  num_antennas=num_antennas, ignorerefant=self.ignorerefant, has_bad_refant=has_bad_refant)
 
     def analyse(self, results):
         """Determine the best parameters by analysing the given jobs before returning any final jobs to execute.
