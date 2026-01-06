@@ -6,7 +6,7 @@ import os
 import re
 import shutil
 import string
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -25,6 +25,8 @@ from pipeline.hsd.heuristics.pointing_outlier import PointingOutlierHeuristics
 from pipeline.hsd.tasks.common.flagcmd_util import datatable_rowid_to_timerange
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+
     from pipeline.domain import SpectralWindow
     from pipeline.infrastructure import Context
 

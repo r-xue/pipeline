@@ -5,7 +5,7 @@ import collections
 import glob
 import os
 import re
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING
 
 import pipeline.infrastructure.casa_tools as casa_tools
 import pipeline.infrastructure.filenamer as filenamer
@@ -17,6 +17,8 @@ import pipeline.infrastructure.utils as utils
 from .display import PlotmsRealVsFreqPlotter
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+
     from pipeline.infrastructure.basetask import ResultsList
     from pipeline.infrastructure.launcher import Context
     from .atmcor import SDATMCorrectionResults

@@ -11,7 +11,7 @@ import glob
 import itertools
 import os
 import string
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING
 
 import pipeline.hsd.tasks.common.observatory_policy as observatory_policy
 import pipeline.infrastructure as infrastructure
@@ -21,6 +21,8 @@ from pipeline.infrastructure import casa_tools
 LOG = infrastructure.logging.get_logger(__name__)
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+
     from pipeline.domain import MeasurementSet
     from pipeline.domain.singledish import MSReductionGroupMember
     from pipeline.infrastructure.launcher import Context

@@ -26,7 +26,7 @@ import shutil
 import string
 import tarfile
 import traceback
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING
 
 import pipeline.h.tasks.exportdata.exportdata as exportdata
 import pipeline.infrastructure as infrastructure
@@ -41,6 +41,8 @@ from pipeline.infrastructure.utils import absolute_path
 from . import almasdaqua
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+
     from pipeline.infrastructure.launcher import Context
 
 # the logger for this module

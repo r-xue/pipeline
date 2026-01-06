@@ -24,7 +24,7 @@ from collections.abc import Iterable
 from datetime import datetime
 from functools import wraps
 from numbers import Number
-from typing import TYPE_CHECKING, Any, Callable, Collection, Iterator, Sequence, TextIO
+from typing import TYPE_CHECKING, Any, Callable
 from urllib.parse import urlparse
 
 import numpy as np
@@ -35,6 +35,9 @@ from .. import casa_tools
 from .conversion import commafy, dequote, range_to_list
 
 if TYPE_CHECKING:
+    from collections.abc import Collection, Iterator, Sequence
+    from typing import TextIO
+
     from pipeline.domain import MeasurementSet
 
 LOG = infrastructure.logging.get_logger(__name__)

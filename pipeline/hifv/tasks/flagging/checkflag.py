@@ -191,7 +191,7 @@ class Checkflag(basetask.StandardTaskTemplate):
             # plots['before'] = self._create_summaryplots(suffix='before', plotms_args=plot_selectdata)
 
         # PIPE-987: backup flagversion before rfi flagging
-        now_str = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
+        now_str = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")
         job = casa_tasks.flagmanager(vis=self.inputs.vis, mode='save',
                                      versionname='hifv_checkflag_{}_stage{}_{}'.format(
                                          self.inputs.checkflagmode, self.inputs.context.task_counter, now_str),

@@ -1216,6 +1216,6 @@ class TimeInterval:
         Returns an open-ended TimeInterval starting from now.
 
         Returns:
-            TimeInterval object from "utcnow()" until 31-12-9999.
+            TimeInterval object.
         """
-        return cls(datetime.datetime.utcnow(), cls.FOREVER)
+        return cls(datetime.datetime.now(datetime.timezone.utc), cls.FOREVER)

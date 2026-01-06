@@ -270,7 +270,7 @@ def stage_duration(context) -> list:
     timestamps = [r.read().timestamps.start for r in context.results]
 
     # tentative task end time stamp for the last stage
-    timestamps.append(datetime.datetime.utcnow())
+    timestamps.append(datetime.datetime.now(datetime.timezone.utc))
     task_duration = []
     for i in range(len(context.results)):
         # task execution duration
@@ -675,7 +675,7 @@ def get_stats_from_context(context) -> PipelineStatsCollection:
 
 
 # Used to be in stats_extractor.py
-class ResultsStatsExtractor(object, metaclass=abc.ABCMeta):
+class ResultsStatsExtractor(abc.ABC):
     """
     Adapted from the RegressisonExtractor,
     this class is the base class for a pipeline statistics extractor

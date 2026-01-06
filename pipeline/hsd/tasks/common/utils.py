@@ -8,10 +8,10 @@ import functools
 import os
 import sys
 import time
-from typing import TYPE_CHECKING, Any, Callable, Generator, Iterable, Sequence, TypeAlias
+from typing import TYPE_CHECKING, TypeAlias
 
-from astropy.time import Time
 import numpy
+from astropy.time import Time
 
 import pipeline.infrastructure as infrastructure
 from pipeline.domain.datatable import OnlineFlagIndex
@@ -21,7 +21,11 @@ from pipeline.infrastructure.utils import absolute_path, relative_path, list_to_
 from . import compress
 
 if TYPE_CHECKING:
+    from collections.abc import Generator, Iterable, Sequence
+    from typing import Any, Callable
+
     from casatools import table as casa_table
+
     from pipeline.domain import DataTable, Field, MeasurementSet, ObservingRun
     from pipeline.infrastructure import Context
 

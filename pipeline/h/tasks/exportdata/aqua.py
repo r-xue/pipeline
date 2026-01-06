@@ -44,21 +44,26 @@ Future Technical Solutions
     Add the euivalent of a  toAqua registration method similar to what is
     done with QA handlers already
 """
+from __future__ import annotations
+
 import datetime
 import itertools
 import operator
 import os
 import copy
 import xml.etree.ElementTree as ElementTree
+from typing import TYPE_CHECKING
 from xml.dom import minidom
 
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.renderer.qaadapter as qaadapter
 import pipeline.infrastructure.utils as utils
-import pipeline.infrastructure.pipelineqa as pqa
 from pipeline import environment
 from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.pipelineqa import QAScore
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure.pipelineqa import QAScore
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -166,7 +171,7 @@ class AquaXmlGenerator:
         root = ElementTree.Element('QaSummary')
 
         # Generate the report date
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(datetime.timezone.utc)
         ElementTree.SubElement(root, 'ReportDate').text = now.strftime('%Y-%m-%d %H:%M:%S')
 
         # Processing time

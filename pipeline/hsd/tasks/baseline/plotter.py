@@ -4,12 +4,11 @@ from __future__ import annotations
 import collections
 import itertools
 import os
-from typing import TYPE_CHECKING, Any, Generator
+from typing import TYPE_CHECKING
 
 import matplotlib.figure as figure
 import matplotlib.pyplot as plt
 import numpy
-from numpy.ma.core import MaskedArray
 import statistics
 
 import pipeline.infrastructure as infrastructure
@@ -26,6 +25,11 @@ from ..common.display import DPIDetail, ch_to_freq, sd_polmap
 from ..common import direction_utils as dirutil
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+    from typing import Any
+
+    from numpy.ma.core import MaskedArray
+
     from pipeline.infrastructure.launcher import Context
     from pipeline.domain.datatable import DataTableImpl as DataTable
     from pipeline.domain.measurementset import MeasurementSet

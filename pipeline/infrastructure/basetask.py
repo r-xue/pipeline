@@ -38,9 +38,9 @@ VISLIST_RESET_KEY = '_do_not_reset_vislist'
 def timestamp(method):
     @functools.wraps(method)
     def attach_timestamp_to_results(self, *args, **kw):
-        start = datetime.datetime.utcnow()
+        start = datetime.datetime.now(datetime.timezone.utc)
         result = method(self, *args, **kw)
-        end = datetime.datetime.utcnow()
+        end = datetime.datetime.now(datetime.timezone.utc)
 
         if result is not None:
             result.timestamps = Timestamps(start, end)
@@ -525,7 +525,7 @@ class ResultsList(Results, Generic[T]):
             return None
 
 
-class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
+class StandardTaskTemplate(api.Task, abc.ABC):
     """
     StandardTaskTemplate is a template class for pipeline reduction tasks whose
     execution can be described by a common four-step process:

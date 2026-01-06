@@ -3,13 +3,19 @@ The imaging module contains utility functions used by the imaging tasks.
 
 TODO These utility functions should migrate to hif.tasks.common
 """
+from __future__ import annotations
+
 import re
-from typing import Any, Generator
+from typing import TYPE_CHECKING
 
 import numpy
 
 import pipeline.infrastructure as infrastructure
 from .. import casa_tools, utils
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
+    from typing import Any
 
 LOG = infrastructure.logging.get_logger(__name__)
 

@@ -7,7 +7,7 @@ import operator
 import re
 from decimal import Decimal
 from math import sqrt
-from typing import TYPE_CHECKING, Iterable
+from typing import TYPE_CHECKING
 
 import numpy
 
@@ -24,6 +24,8 @@ from pipeline.infrastructure import casa_tools
 from . import gcorfluxscale
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+
     from pipeline.domain import Field, FluxMeasurement, MeasurementSet, SpectralWindow
     from pipeline.infrastructure.launcher import Context
 

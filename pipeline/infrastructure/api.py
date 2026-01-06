@@ -45,7 +45,7 @@ partner class directly, eg.::
 import abc
 
 
-class Heuristic(object, metaclass=abc.ABCMeta):
+class Heuristic(abc.ABC):
     """
     Heuristic is the superclass of all user-accessible heuristics code in the
     pipeline.
@@ -105,7 +105,7 @@ class Inputs:
         raise NotImplementedError
 
 
-class Results(object, metaclass=abc.ABCMeta):
+class Results(abc.ABC):
     """
     Results defines the interface used to hold the output of a |Task| plus
     some common parameters used by all weblog templates. This class is
@@ -152,7 +152,7 @@ class Results(object, metaclass=abc.ABCMeta):
         """
 
 
-class ResultRenderer(object, metaclass=abc.ABCMeta):
+class ResultRenderer(abc.ABC):
     """
     ResultRenderer is the interface for task-specific weblog renderers
     (T2-4M details pages in weblog nomenclature).
@@ -180,7 +180,7 @@ class ResultRenderer(object, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
 
-class Task(object, metaclass=abc.ABCMeta):
+class Task(abc.ABC):
     """
     The Runnable interface should be implemented by any class whose
     instances are intended to be executed by an Executor.
@@ -217,7 +217,7 @@ class Task(object, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
 
-# class ImagingMeasurementSetsPreferred(object, metaclass=abc.ABCMeta):
+# class ImagingMeasurementSetsPreferred(abc.ABC):
 #     """
 #     Class used to register Inputs classes that prefer to see post-mstransform
 #     data when available.

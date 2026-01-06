@@ -70,7 +70,7 @@ if TYPE_CHECKING:
 LOG = logging.get_logger(__name__)
 
 
-class RegressionExtractor(object, metaclass=abc.ABCMeta):
+class RegressionExtractor(abc.ABC):
     """The mandatory base class for all regression test result extractors."""
 
     # the Results class this handler is expected to handle

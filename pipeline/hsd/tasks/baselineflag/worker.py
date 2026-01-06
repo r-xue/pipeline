@@ -3,7 +3,7 @@ import copy
 import math
 import os
 import time
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING
 
 import numpy
 
@@ -21,6 +21,8 @@ from .SDFlagRule import INVALID_STAT
 LOG = infrastructure.logging.get_logger(__name__)
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+
     from pipeline.domain import DataTable, DataType, MeasurementSet
 
 

@@ -10,7 +10,7 @@ import itertools
 import operator
 import os
 import shutil
-from typing import TYPE_CHECKING, Iterable
+from typing import TYPE_CHECKING
 
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
@@ -25,6 +25,8 @@ from ..common.displays import applycal as applycal
 LOG = infrastructure.logging.get_logger(__name__)
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+
     from pipeline.domain.measurementset import MeasurementSet
     from pipeline.h.tasks.applycal.applycal import ApplycalResults
     from pipeline.infrastructure.basetask import ResultsList

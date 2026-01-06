@@ -25,7 +25,7 @@ import importlib
 import os
 import shutil
 import time
-from typing import TYPE_CHECKING, Any, Generator
+from typing import TYPE_CHECKING
 
 import numpy as np
 import pytest
@@ -36,6 +36,9 @@ from pipeline.infrastructure.daskhelpers import start_daskcluster, stop_daskclus
 skip_if_no_dask = pytest.mark.skipif(importlib.util.find_spec('dask') is None, reason='dask not installed')
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+    from typing import Any
+
     from dask.distributed import Client
 
 

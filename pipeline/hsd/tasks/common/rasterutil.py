@@ -9,7 +9,7 @@ import math
 import os
 import sys
 from operator import sub
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING
 
 from matplotlib.animation import FuncAnimation, ImageMagickWriter
 from matplotlib.lines import Line2D
@@ -24,6 +24,8 @@ from pipeline.infrastructure import casa_tools
 from ...heuristics import rasterscan
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+
     from pipeline.domain.measurementset import MeasurementSet
 
 LOG = logging.get_logger(__name__)

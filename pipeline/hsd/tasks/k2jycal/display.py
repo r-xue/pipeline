@@ -3,18 +3,22 @@ from __future__ import annotations
 
 import itertools
 import os
-from typing import Any, Generator
+from typing import TYPE_CHECKING
 
 import matplotlib.cm as cm
 import numpy as np
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
-from pipeline.domain.measures import FrequencyUnits
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
+from pipeline.domain.measures import FrequencyUnits
 
 from ..common.display import DPISummary
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
+    from typing import Any
 
 LOG = infrastructure.logging.get_logger(__name__)
 

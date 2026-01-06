@@ -11,13 +11,16 @@ from __future__ import annotations
 import decimal
 import itertools
 import operator
-from typing import Iterable, Iterator, Sequence
+from typing import TYPE_CHECKING
 
 import numpy
 
 from pipeline.infrastructure import casa_tools
 
 from . import measures
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Iterator, Sequence
 
 
 class ArithmeticProgression:

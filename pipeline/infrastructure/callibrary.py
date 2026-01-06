@@ -10,14 +10,18 @@ import operator
 import os
 import uuid
 import weakref
-from typing import Callable, Generator, Iterable, TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 import cachetools
 import intervaltree
+
 from casatasks.private.callibrary import applycaltocallib
 
 from . import casa_tools, launcher, logging, utils
+
 if TYPE_CHECKING:
+    from collections.abc import Generator, Iterable
+
     from pipeline.domain import Field, MeasurementSet, SpectralWindow
 
 LOG = logging.get_logger(__name__)

@@ -6,8 +6,7 @@ import math
 import os
 import string
 import time
-
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING
 
 import matplotlib.pyplot as plt
 
@@ -20,14 +19,16 @@ from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from ..common import direction_utils as dirutil
-from .typing import LineProperty
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+
     from matplotlib.axes import Axes
     from matplotlib.figure import Figure
     from matplotlib.ticker import Formatter, Locator
 
     from pipeline.infrastructure.launcher import Context
+    from .typing import LineProperty
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -365,7 +366,7 @@ class ClusterDisplay:
         return plot_list
 
 
-class ClusterDisplayWorker(object, metaclass=abc.ABCMeta):
+class ClusterDisplayWorker(abc.ABC):
     """Base class for plotter class."""
 
     MATPLOTLIB_FIGURE_ID = 8907

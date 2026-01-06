@@ -4,7 +4,7 @@ import abc
 import collections
 import enum
 import os
-from typing import TYPE_CHECKING, Sequence
+from typing import TYPE_CHECKING
 
 import numpy
 
@@ -15,6 +15,8 @@ from pipeline.infrastructure import casa_tools
 from pipeline.hsd.heuristics import fitorder
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from pipeline.domain import DataTable, MeasurementSet
 
 LOG = infrastructure.logging.get_logger(__name__)
@@ -69,7 +71,7 @@ def do_switching(engine, nchan, edge, num_pieces, masklist):
     return engine(nchan, edge, num_pieces, masklist)
 
 
-class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
+class BaselineFitParamConfig(api.Heuristic, abc.ABC):
     """
     Generate/update BLParam file according to the input parameters.
     """

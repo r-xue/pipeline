@@ -1,35 +1,43 @@
 """Set of plotting classes for hsd_imaging task."""
+from __future__ import annotations
+
 import datetime
 import functools
 import itertools
 import math
-from math import ceil, floor
 import os
 import time
-from typing import Callable, Generator
+from math import ceil, floor
+from typing import TYPE_CHECKING
 
-import numpy
-from scipy import interpolate
 import matplotlib
 import matplotlib.axes as axes
 import matplotlib.figure as figure
 import matplotlib.ticker as ticker
+import numpy
 from matplotlib.ticker import MultipleLocator
+from scipy import interpolate
 
-from pipeline.environment import casa_version_string, pipeline_revision
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.displays.pointing as pointing
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.domain import DataType
+from pipeline.environment import casa_version_string, pipeline_revision
 from pipeline.h.tasks.common import atmutil
-from pipeline.hsd.tasks.common.display import DPIDetail, SDImageDisplay, SDImageDisplayInputs
-from pipeline.hsd.tasks.common.display import sd_polmap as polmap, SpectralImage
-from pipeline.hsd.tasks.common.display import SDSparseMapPlotter
-from pipeline.hsd.tasks.common.display import NoData
+from pipeline.hsd.tasks.common.display import (
+    DPIDetail, NoData, SDImageDisplay, SDSparseMapPlotter, SpectralImage,
+    sd_polmap as polmap
+)
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
+from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
+    from typing import Callable
+
+    from pipeline.hsd.tasks.common.display import SDImageDisplayInputs
 
 RArotation = pointing.RArotation
 DECrotation = pointing.DECrotation

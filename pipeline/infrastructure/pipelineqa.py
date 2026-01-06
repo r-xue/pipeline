@@ -225,7 +225,7 @@ class QAScorePool:
         self._representative = value
 
 
-class QAPlugin(object, metaclass=abc.ABCMeta):
+class QAPlugin(abc.ABC):
     """
     QAPlugin is the mandatory base class for all pipeline QA handlers.
 

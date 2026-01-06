@@ -6,7 +6,7 @@ import math
 import operator
 import os
 import shutil
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -21,6 +21,8 @@ from pipeline.infrastructure.displays import plotpointings, plotpwv, plotstyle, 
 from pipeline.infrastructure.renderer import logger
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+
     from pipeline.domain import MeasurementSet, Source
     from pipeline.infrastructure.launcher import Context
 

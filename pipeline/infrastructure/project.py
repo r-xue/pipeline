@@ -98,7 +98,7 @@ def get_state(o):
     return [(cls_name, k, v) for k, v in modified.items()]
 
 
-class ModificationListener(object, metaclass=abc.ABCMeta):
+class ModificationListener(abc.ABC):
     """
     Interface for listener classes that want to be notified when an object
     property changes.

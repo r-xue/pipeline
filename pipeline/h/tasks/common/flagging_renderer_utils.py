@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import collections
 import functools
-from typing import TYPE_CHECKING, Sequence
+from typing import TYPE_CHECKING
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
@@ -15,6 +15,8 @@ import pipeline.infrastructure.utils as utils
 LOG = infrastructure.logging.get_logger(__name__)
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from pipeline.domain.measurementset import MeasurementSet
     from pipeline.infrastructure.launcher import Context
 

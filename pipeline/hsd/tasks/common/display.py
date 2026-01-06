@@ -1,4 +1,6 @@
 """Set of base classes and utility functions for display modules."""
+from __future__ import annotations
+
 import abc
 import collections
 import copy
@@ -7,24 +9,30 @@ import itertools
 import math
 import os
 import scipy
-from typing import Generator, NoReturn
-
-from casatools import coordsys as casa_coordsys  # Used for annotation purpose.
+from typing import TYPE_CHECKING
 
 import matplotlib
 import matplotlib.figure as figure
-from matplotlib.axes import Axes
-from matplotlib.dates import date2num, DateFormatter, MinuteLocator
 import matplotlib.gridspec as gridspec
 import numpy as np
+from matplotlib.dates import date2num, DateFormatter, MinuteLocator
+
+from casatools import coordsys as casa_coordsys  # Used for annotation purpose.
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.displays.pointing as pointing
 from pipeline.infrastructure import casa_tools
-from pipeline.domain.singledish import MSReductionGroupDesc
-from pipeline.infrastructure.renderer.logger import Plot
 from pipeline.infrastructure.utils import absolute_path
 from .utils import mjd_to_datetime
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
+    from typing import NoReturn
+
+    from matplotlib.axes import Axes
+
+    from pipeline.domain.singledish import MSReductionGroupDesc
+    from pipeline.infrastructure.renderer.logger import Plot
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -702,7 +710,7 @@ def invert_range_list(range_list: list[list[int]], nchan: int) -> list[list[int]
     return inverted
 
 
-class SDCalibrationDisplay(object, metaclass=abc.ABCMeta):
+class SDCalibrationDisplay(abc.ABC):
     """Base plotter class for single-dish calibration tasks."""
 
     Inputs = SingleDishDisplayInputs
@@ -752,7 +760,7 @@ class SDCalibrationDisplay(object, metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
 
-class SDImageDisplay(object, metaclass=abc.ABCMeta):
+class SDImageDisplay(abc.ABC):
     """Base plotter class for imaging tasks."""
 
     Inputs = SDImageDisplayInputs

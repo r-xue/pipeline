@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import collections
+from typing import TYPE_CHECKING, NamedTuple
+
 import numpy
-from typing import TYPE_CHECKING, Any, Iterable, NamedTuple
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
@@ -10,6 +11,9 @@ import pipeline.infrastructure.utils as utils
 LOG = infrastructure.logging.get_logger(__name__)
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+    from typing import Any
+
     from pipeline.domain import MeasurementSet
     from pipeline.h.tasks.common.arrayflaggerbase import FlagCmd
     from pipeline.h.tasks.common.flaggableviewresults import FlaggableViewResults

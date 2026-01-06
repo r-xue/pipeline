@@ -4,6 +4,8 @@ QA plugins for the ALMA applycal task.
 This module demonstrates how to target QAScore messages at particular sections
 of the web log.
 """
+from __future__ import annotations
+
 import collections
 import copy
 import dataclasses
@@ -13,7 +15,7 @@ import operator
 import os
 import re
 from pathlib import Path
-from typing import Iterable, Reversible, overload
+from typing import TYPE_CHECKING, overload
 
 import numpy as np
 import numpy.typing as npt
@@ -23,10 +25,14 @@ import pipeline.hif.tasks.applycal.ifapplycal as hif_applycal
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
-from pipeline.domain.measurementset import MeasurementSet
-from pipeline.infrastructure.pipelineqa import WebLogLocation, QAScore
 from . import ampphase_vs_freq_qa, qa_utils
 from .ampphase_vs_freq_qa import Outlier, score_all_scans
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Reversible
+
+    from pipeline.domain.measurementset import MeasurementSet
+    from pipeline.infrastructure.pipelineqa import QAScore, WebLogLocation
 
 LOG = infrastructure.logging.get_logger(__name__)
 

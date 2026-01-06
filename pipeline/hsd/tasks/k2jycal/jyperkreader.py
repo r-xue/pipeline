@@ -4,7 +4,7 @@ from __future__ import annotations
 import contextlib
 import csv
 import io
-from typing import TYPE_CHECKING, Generator, TextIO
+from typing import TYPE_CHECKING
 
 import numpy
 
@@ -12,7 +12,9 @@ import pipeline.infrastructure as infrastructure
 from pipeline.domain import DataType
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
     from numbers import Number
+    from typing import TextIO
 
     from pipeline.infrastructure.launcher import Context
 

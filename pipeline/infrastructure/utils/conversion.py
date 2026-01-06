@@ -14,7 +14,7 @@ import os
 import re
 import string
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Iterable, Iterator, Sequence
+from typing import TYPE_CHECKING
 
 import astropy.units as u
 import cachetools
@@ -26,6 +26,9 @@ from pipeline import infrastructure
 from pipeline.infrastructure import casa_tools
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable, Iterator, Sequence
+    from typing import Any
+
     from pipeline.domain import Field, MeasurementSet
 
 LOG = infrastructure.logging.get_logger(__name__)

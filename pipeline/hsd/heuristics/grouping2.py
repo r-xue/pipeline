@@ -1,12 +1,17 @@
 """Set of heuristics for data grouping."""
-from numbers import Real
-from typing import Sequence
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 import numpy as np
 
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+    from numbers import Real
 
 LOG = infrastructure.logging.get_logger(__name__)
 
