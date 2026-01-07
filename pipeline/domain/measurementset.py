@@ -5,7 +5,6 @@ from __future__ import annotations
 import collections
 import contextlib
 import datetime
-import inspect
 import itertools
 import operator
 import os
@@ -17,17 +16,17 @@ import numpy as np
 from pipeline import infrastructure
 from pipeline.domain import measures, spectralwindow
 from pipeline.infrastructure import casa_tools, tablereader, utils
+from pipeline.infrastructure.launcher import current_task_name
 
 if TYPE_CHECKING:
-    from pipeline.domain import AntennaArray, Antenna, DataDescription, DataType, Field, Polarization, Scan, State
+    from pipeline.domain import Antenna, AntennaArray, DataDescription, DataType, Field, Polarization, Scan, State
     from pipeline.infrastructure.tablereader import RetrieveByIndexContainer
 
 LOG = infrastructure.logging.get_logger(__name__)
 
 
 class MeasurementSet:
-    """
-    A class to store logical representation of a MeasurementSet (MS).
+    """A class to store logical representation of a MeasurementSet (MS).
 
     The MeasurementSet class represents the metadata and relationships held in a
     measurement set on disk, acting as an in-memory representation so that
@@ -369,8 +368,7 @@ class MeasurementSet:
             source_name: str | None = None,
             source_spwid: int | None = None,
             ) -> tuple[str | None, int | None]:
-        """
-        Get the representative target source object:
+        """Get the representative target source object.
 
         * Use user name if ``source_name`` is supplied by user and it has TARGET intent.
         * Otherwise, use the source defined in the ASDM SBSummary table if it has TARGET intent.
@@ -388,8 +386,9 @@ class MeasurementSet:
         qa = casa_tools.quanta
         cme = casa_tools.measures
 
-        # PIPE-1504: only issue certain messages at the WARNING level if they are executed by hifa_imageprecheck
-        if 'hifa_imageprecheck' in [fn_name for (_, _, _, fn_name, _, _) in inspect.stack()]:
+        # PIPE-1504/PIPE-2859: only issue certain messages at the WARNING level if they are executed by hifa_imageprecheck
+        if current_task_name.get() == 'hifa_imageprecheck':
+            # Only issue messages at the WARNING level if they are executed by hifa_imageprecheck
             log_level = infrastructure.logging.WARNING
         else:
             log_level = infrastructure.logging.INFO
