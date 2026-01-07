@@ -1,4 +1,6 @@
 """Pipeline software package."""
+from __future__ import annotations
+
 import atexit
 import decimal
 import http.server
@@ -9,10 +11,13 @@ import os
 import pathlib
 import threading
 import webbrowser
-from typing import Any
+from typing import TYPE_CHECKING
 
 import matplotlib
 from astropy.utils.iers import conf as iers_conf
+
+if TYPE_CHECKING:
+    from typing import Any
 
 # import `pipeline.config` early to allow modifications of
 # `casaconfig.config` attributes before importing casatasks/casatools

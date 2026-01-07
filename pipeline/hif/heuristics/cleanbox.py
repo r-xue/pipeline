@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os.path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -10,7 +10,10 @@ import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
 
 if TYPE_CHECKING:
+    from typing import Any
+
     import casatools.image
+
     from pipeline.infrastructure.casa_tools import _logging_image_cls as LoggingImage
 
 

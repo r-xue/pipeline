@@ -23,9 +23,9 @@ import subprocess
 import sys
 from importlib.metadata import (PackageNotFoundError, distribution, metadata,
                                 version)
-from io import StringIO
+from io import StringIO, TextIOWrapper
 from pathlib import Path
-from typing import AnyStr, Protocol, TextIO
+from typing import AnyStr, Protocol
 
 import casatasks
 
@@ -44,8 +44,8 @@ LOG = logging.get_logger(__name__)
 
 def _run(
     command: str,
-    stdout: TextIO | StringIO | None = None,
-    stderr: TextIO | StringIO | None = None,
+    stdout: TextIOWrapper | StringIO | None = None,
+    stderr: TextIOWrapper | StringIO | None = None,
     cwd: str | None = None,
     shell: bool = True
 ) -> int:

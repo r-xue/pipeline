@@ -13,8 +13,8 @@ from pipeline.domain import DataType
 
 if TYPE_CHECKING:
     from collections.abc import Generator
+    from io import TextIOWrapper
     from numbers import Number
-    from typing import TextIO
 
     from pipeline.infrastructure.launcher import Context
 
@@ -100,7 +100,7 @@ def read_session_based(context: Context, reffile: str) -> list[list[str]]:
         return list(_read_stream(f))
 
 
-def _read_stream(stream: TextIO) -> Generator[list[str], None, None]:
+def _read_stream(stream: TextIOWrapper) -> Generator[list[str], None, None]:
     """Read CSV data.
 
     Args:
@@ -241,7 +241,7 @@ class JyPerK:
 
 
 @contextlib.contextmanager
-def associate(context: Context, factors: JyPerK) -> Generator[TextIO, None, None]:
+def associate(context: Context, factors: JyPerK) -> Generator[TextIOWrapper, None, None]:
     """Provide an interface to access "Session-Based" data like "MS-Based" one.
 
     Convert data collected from session based jyperk csv as JyPerK object

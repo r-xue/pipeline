@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import os
 import traceback
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -13,6 +13,8 @@ from pipeline.hif.tasks.antpos.antpos import AntposResults
 from pipeline.infrastructure import casa_tasks, casa_tools, exceptions, task_registry, utils, vdp
 
 if TYPE_CHECKING:
+    from typing import Literal
+
     from pipeline.infrastructure.launcher import Context
 
 __all__ = [

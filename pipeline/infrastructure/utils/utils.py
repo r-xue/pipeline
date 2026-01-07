@@ -36,7 +36,7 @@ from .conversion import commafy, dequote, range_to_list
 
 if TYPE_CHECKING:
     from collections.abc import Collection, Iterator, Sequence
-    from typing import TextIO
+    from io import TextIOWrapper
 
     from pipeline.domain import MeasurementSet
 
@@ -671,7 +671,7 @@ def ignore_pointing(vis):
 
 
 @contextlib.contextmanager
-def open_with_lock(filename: str, mode: str = 'r', *args: Any, **kwargs: Any) -> Iterator[TextIO]:
+def open_with_lock(filename: str, mode: str = 'r', *args: Any, **kwargs: Any) -> Iterator[TextIOWrapper]:
     """Open a file with an exclusive lock.
 
     This context manager attempts to acquire an exclusive lock on the file upon opening.

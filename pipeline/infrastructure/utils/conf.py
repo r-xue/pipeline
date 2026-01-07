@@ -19,7 +19,7 @@ from .. import logging as pipeline_logging
 
 if TYPE_CHECKING:
     from collections.abc import Generator
-    from typing import IO
+    from io import IOBase
 
 old_stdout, old_stderr = sys.stdout, sys.stderr
 
@@ -38,7 +38,7 @@ __all__ = [
 LOG = pipeline_logging.get_logger(__name__)
 
 
-def change_stream_for_all_streamhandlers(new_stream: IO, package_prefix: str | None = None) -> None:
+def change_stream_for_all_streamhandlers(new_stream: IOBase, package_prefix: str | None = None) -> None:
     """Iterates over existing loggers and updates the stream of their StreamHandlers to the given new_stream.
 
     If package_prefix is provided, only loggers whose names start with the specified prefix will be modified.
