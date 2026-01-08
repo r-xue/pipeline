@@ -23,7 +23,7 @@ class testBPdcalsQAHandler(pqa.QAPlugin):
         # > 60%  of data flagged  --> 0
 
         m = context.observing_run.get_ms(result.inputs['vis'])
-
+        vis = result.inputs['vis']
         scores = []
 
         self.antspw = collections.defaultdict(list)
@@ -53,10 +53,15 @@ class testBPdcalsQAHandler(pqa.QAPlugin):
                                                      result.num_antennas[bandname])
             scores.append(score3)
 
-            bandwise_scores = qacalc.score_testBPdcals(result.inputs['vis'], result.ktypecaltable[bandname], result.amp_collection[bandname], result.phase_collection[bandname],
-                                                       result.has_bad_refant[bandname], bandname)
-            if bandwise_scores:
-                scores.append(bandwise_scores)
+            score_dts_ant = qacalc.score_testBPdcals_dts_ants(vis, result.amp_collection[bandname], result.phase_collection[bandname], bandname)
+            scores.append(score_dts_ant)
+
+            score_refant = qacalc.score_testBPdcals_refant(vis, result.has_bad_refant[bandname], bandname)
+            scores.append(score_refant)
+
+            score_median_delay = qacalc.score_testBPdcals_delay(vis, result.ktypecaltable[bandname], bandname)
+            scores.append(score_median_delay)
+
         for antenna, spwlist in self.antspw.items():
             uniquespw = list(set(spwlist))
             uniquespwlist = [int(spw) for spw in uniquespw]

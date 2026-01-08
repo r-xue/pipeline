@@ -106,7 +106,9 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_syspowerdata',
            'score_solint',
            'score_longsolint',
-           'score_testBPdcals']
+           'score_testBPdcals_dts_ants',
+           'score_testBPdcals_refant',
+           'score_testBPdcals_delay']
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -5077,27 +5079,36 @@ def score_longsolint(context, result) -> list[pqa.QAScore]:
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 @log_qa
-def score_testBPdcals(vis:str, caltable:str, amp_collection:dict, phase_collection:dict, has_bad_refant:bool, bandname:str) -> [pqa.QAScore]:
-    scores = []
+def score_testBPdcals_dts_ants(vis:str, amp_collection:dict, phase_collection:dict, bandname:str) -> pqa.QAScore:
+    """Evaluate QA score based on the number of antennas affected by DTS issues."""
+
     bad_ants = []
     bad_ants.extend([str(a) for a in amp_collection.keys()])
     bad_ants.extend([str(p) for p in phase_collection.keys()])
     num_bad_ants = len(set(bad_ants))
     applies_to = pqa.TargetDataSelection(vis=vis)
+
     # PIPE-2580: if > 4 antennas have DTS issue, QA score < 0.5
     if num_bad_ants > 4:
         score = rendererutils.SCORE_THRESHOLD_ERROR
-        longmsg = f"{num_bad_ants}  have DTS issue in {bandname} band"
-        shortmsg = f"{num_bad_ants}  have DTS issue in {bandname} band"
+        longmsg = f"{num_bad_ants} antennas have DTS issue in {bandname} band"
+        shortmsg = f"{num_bad_ants} antennas have DTS issue in {bandname} band"
     else:
         score = 1.0
         longmsg = f"Fewer than four antennas have DTS issue in {bandname} band"
         shortmsg = f"Fewer than four antennas have DTS issue in {bandname} band"
-    origin = pqa.QAOrigin(metric_name='score_testBPdcals',
+    origin = pqa.QAOrigin(metric_name='score_testBPdcals_dts_ants',
                           metric_score=score,
                           metric_units='')
-    scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to))
+    qa_score = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to)
 
+    return qa_score
+
+@log_qa
+def score_testBPdcals_refant(vis:str, has_bad_refant:bool, bandname:str) -> pqa.QAScore:
+    """Evaluate QA score based on reference antenna validity."""
+
+    applies_to = pqa.TargetDataSelection(vis=vis)
     # PIPE-2580: if bad reference antenna found, QA score <0.5
     if has_bad_refant:
         score = rendererutils.SCORE_THRESHOLD_ERROR
@@ -5107,11 +5118,18 @@ def score_testBPdcals(vis:str, caltable:str, amp_collection:dict, phase_collecti
         score = 1.0
         longmsg = f"No bad reference antenna found in {bandname} band"
         shortmsg = f"No bad reference antenna found in {bandname} band"
-    origin = pqa.QAOrigin(metric_name='score_testBPdcals',
+    origin = pqa.QAOrigin(metric_name='score_testBPdcals_refant',
                           metric_score=score,
                           metric_units='')
-    scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to))
+    qa_score = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to)
 
+    return qa_score
+
+@log_qa
+def score_testBPdcals_delay(vis:str, caltable:str, bandname:str) -> pqa.QAScore:
+    """Evaluate QA score based on median delay per baseband."""
+
+    applies_to = pqa.TargetDataSelection(vis=vis)
     # PIPE-2580: if median delay per baseband > 15 ms, QA score < 0.5
     with casa_tools.TableReader(caltable) as tb:
         fpar = tb.getcol('FPARAM')
@@ -5129,9 +5147,9 @@ def score_testBPdcals(vis:str, caltable:str, amp_collection:dict, phase_collecti
         longmsg = f"Median delay < 15 ms for {bandname} band"
         shortmsg = f"Median delay < 15 ms for {bandname} band"
 
-    origin = pqa.QAOrigin(metric_name='score_testBPdcals',
+    origin = pqa.QAOrigin(metric_name='score_testBPdcals_delay',
                           metric_score=score,
                           metric_units='')
-    scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to))
+    qa_score = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to)
 
-    return scores
+    return qa_score
