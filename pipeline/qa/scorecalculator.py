@@ -4722,7 +4722,7 @@ def score_flagged_ant_spw(vis:str, flaggedSolnApplycaldelay:dict) -> [pqa.QAScor
             goodbandlist.append(bandname)
     if len(badbandlist)>0:
         score = rendererutils.SCORE_THRESHOLD_ERROR
-        longmsg = f"More than 50% of SPWs are newly flagged on the majority of antennas in {",".join(badbandlist)} band"
+        longmsg = f"More than 50% of SPWs are newly flagged on the majority of antennas in {','.join(badbandlist)} band"
         shortmsg = longmsg
         origin = pqa.QAOrigin(metric_name='score_flagged_ant_spw', metric_score=score, metric_units='')
         score = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to)
@@ -4730,7 +4730,7 @@ def score_flagged_ant_spw(vis:str, flaggedSolnApplycaldelay:dict) -> [pqa.QAScor
 
     if len(goodbandlist)>0:
         score = 1
-        longmsg = f"Less than 50% of SPWs are newly flagged on the majority of antennas in {",".join(goodbandlist)} band"
+        longmsg = f"Less than 50% of SPWs are newly flagged on the majority of antennas in {','.join(goodbandlist)} band"
         shortmsg = longmsg
         origin = pqa.QAOrigin(metric_name='score_flagged_ant_spw', metric_score=score, metric_units='')
         score = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to)
