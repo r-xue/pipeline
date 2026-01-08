@@ -1138,7 +1138,7 @@ def countbaddelays(m, delaytable, delaymax):
 
 
 @log_qa
-def score_total_data_vla_delay(filename, m):
+def score_total_data_vla_delay(filename, vis, bandname=None):
     """
     Use a filename of a delay (K-type) calibration table
     Calculate a score for antennas with a delay > 200 ns
@@ -1154,9 +1154,12 @@ def score_total_data_vla_delay(filename, m):
         score = 1.0
     else:
         score = round(max(0.3, 0.49 - 0.01 * (maxdelay - 15)), 2)
-
+    longmsg = "Max delay"
+    if bandname is not None:
+        longmsg = longmsg + f' for band {bandname}'
     # Set score message and origin
-    longmsg = 'Max delay is {!s} ns'.format(str(maxdelay))
+    longmsg = longmsg + f' is {maxdelay:.2f} ns'
+
     shortmsg = longmsg
 
     origin = pqa.QAOrigin(metric_name='score_total_data_vla_delay',
@@ -4686,41 +4689,51 @@ def score_longsolint(context, result) -> List[pqa.QAScore]:
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 @log_qa
-def score_flagged_ant_spw(vis:str, flag_results:dict) -> pqa.QAScore:
+def score_flagged_ant_spw(vis:str, flaggedSolnApplycaldelay:dict) -> [pqa.QAScore]:
     """
         Calcuates score for testBPdcals
         if > 50% of spws in a baseband on a majority of antennas newly flagged 
         then score < 0.5
     """
-    flagged_ants = 0
-    total_ants = len(flag_results['antspw'])
-    ants = set()
-    for antenna in flag_results['antspw']:
-        flagged_spw_count = 0
-        ants.add(antenna)
-        for spwid in flag_results['antspw'][antenna]:
-            spw_flagged = False
-            for polid in flag_results['antspw'][antenna][spwid]:
-                if flag_results['antspw'][antenna][spwid][polid]['flagged'] > 0:
-                    spw_flagged = True
-            if spw_flagged:
-                flagged_spw_count += 1
+    badbandlist = []
+    goodbandlist = []
+    applies_to = pqa.TargetDataSelection(vis=vis)
+    scorelist = []
+    for bandname, flag_results in flaggedSolnApplycaldelay.items():
+        flagged_ants = 0
+        total_ants = len(flag_results['antspw'])
 
-        # If >50% of SPWs flagged on this antenna
-        if flagged_spw_count > len(flag_results['antspw'][antenna]):
-            flagged_ants += 1
+        for antenna in flag_results['antspw']:
+            flagged_spw_count = 0
+            for spwid in flag_results['antspw'][antenna]:
+                spw_flagged = False
+                for polid in flag_results['antspw'][antenna][spwid]:
+                    if flag_results['antspw'][antenna][spwid][polid]['flagged'] > 0:
+                        spw_flagged = True
+                if spw_flagged:
+                    flagged_spw_count += 1
+            # If >50% of SPWs flagged on this antenna
+            if flagged_spw_count > len(flag_results['antspw'][antenna]):
+                flagged_ants += 1
 
-    if flagged_ants > total_ants / 2:
-        score = 0.3
-        longmsg = "More than 50% of spws in a baseband on a majority of antennas newly flagged"
-        shortmsg = "> 50% of spws in baseband flagged"
-    else:
+        if flagged_ants > total_ants / 2:
+            badbandlist.append(bandname)
+        else:
+            goodbandlist.append(bandname)
+    if len(badbandlist)>0:
+        score = rendererutils.SCORE_THRESHOLD_ERROR
+        longmsg = f"More than 50% of SPWs are newly flagged on the majority of antennas in {",".join(badbandlist)} band"
+        shortmsg = longmsg
+        origin = pqa.QAOrigin(metric_name='score_flagged_ant_spw', metric_score=score, metric_units='')
+        score = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to)
+        scorelist.append(score)
+
+    if len(goodbandlist)>0:
         score = 1
-        longmsg = "Less than 50% of spws in a baseband on a majority of antennas newly flagged"
-        shortmsg = "< 50% of spws in baseband flagged"
-    applies_to = pqa.TargetDataSelection(vis=vis, ant=ants)
-    origin = pqa.QAOrigin(metric_name='score_flagged_ant_spw',
-                        metric_score=score,
-                        metric_units='')
+        longmsg = f"Less than 50% of SPWs are newly flagged on the majority of antennas in {",".join(goodbandlist)} band"
+        shortmsg = longmsg
+        origin = pqa.QAOrigin(metric_name='score_flagged_ant_spw', metric_score=score, metric_units='')
+        score = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to)
+        scorelist.append(score)
 
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to)
+    return scorelist

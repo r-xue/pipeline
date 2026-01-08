@@ -33,15 +33,18 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
                 self._checkKandBsolution(result.flaggedSolnApplycalbandpass[bandname], m)
                 score1 = qacalc.score_total_data_flagged_vla_bandpass(
                     result.bpdgain_touse[bandname], result.flaggedSolnApplycalbandpass[bandname]['antmedian']['fraction'])
-                score2 = qacalc.score_total_data_vla_delay(result.ktypecaltable[bandname], m)
-                score3 = qacalc.score_flagged_ant_spw(result.inputs['vis'], result.flaggedSolnApplycaldelay[bandname])
+                score2 = qacalc.score_total_data_vla_delay(result.ktypecaltable[bandname], m, bandname)
                 scores.append(score1)
                 scores.append(score2)
-                scores.append(score3)
             else:
                 LOG.error('Error with bandpass and/or delay table for band {!s}.'.format(bandname))
                 scores = [pqa.QAScore(0.0, longmsg='No flagging stats about the bandpass table or info in delay table.',
                                       shortmsg='Bandpass or delay table problem.')]
+        if result.bpdgain_touse:
+            score3 = qacalc.score_flagged_ant_spw(result.inputs['vis'], result.flaggedSolnApplycaldelay)
+            if len(score3) > 0:
+                scores.extend(score3)
+
         for antenna, spwlist in self.antspw.items():
             uniquespw = list(set(spwlist))
             for spwid in uniquespw:
