@@ -322,7 +322,7 @@ class MakeImages(basetask.StandardTaskTemplate):
                 target = result.targets[idx]
                 tclean_result.imaging_metadata['cutout_imsize'] = (target['misc_vlass'] or {}).get('cutout_imsize')
                 # PIPE-2461: add VLASS header keywords to images
-                self._vlass_cube_set_miscinfo(tclean_result)
+                self._vlass_set_miscinfo(tclean_result)
             return result
 
         vlass_plane_reject_keys_allowed = [
@@ -412,7 +412,7 @@ class MakeImages(basetask.StandardTaskTemplate):
                 target_spw = result.targets[idx]['spw']
                 if target_spw in plane_keep_dict:
                     tclean_result.imaging_metadata['keep'] = plane_keep_dict[target_spw]
-                self._vlass_cube_set_miscinfo(tclean_result)
+                self._vlass_set_miscinfo(tclean_result)
 
         # attched the metadata w.r.t the plane rejection for the plane rejection plot.
         result.metadata['vlass_cube_metadata'] = {'bmajor_list': np.array(bmajor_list),
@@ -428,7 +428,7 @@ class MakeImages(basetask.StandardTaskTemplate):
 
         return result
 
-    def _vlass_cube_set_miscinfo(self, tclean_result):
+    def _vlass_set_miscinfo(self, tclean_result):
         """Add the VLASS cube plane rejection header keyword."""
         imagename = tclean_result.image
 
@@ -464,6 +464,7 @@ class MakeImages(basetask.StandardTaskTemplate):
             vlass_bw += flagged_by_spw * chan_width
         if spwobj:
             nominal_bw = spwobj.bandwidth
+        epoch, tile, version = self._get_vlass_epoch_tile_version(imagename)
         for name in imlist:
             with casa_tools.ImageReader(name) as image:
                 info = image.miscinfo()
@@ -483,7 +484,6 @@ class MakeImages(basetask.StandardTaskTemplate):
                 info['VLASSPK'] = tclean_result.image_max
                 info['VLASSBW'] = vlass_bw
                 info['VLASSITY'] = self._get_vlass_image_type(name)
-                epoch, tile, version = self._get_vlass_epoch_tile_version(name)
                 info['VLASSTN'] = tile
                 info['VLASSEP'] = epoch
                 info['VLASSVR'] = version
