@@ -431,6 +431,10 @@ class MakeImages(basetask.StandardTaskTemplate):
     def _vlass_cube_set_miscinfo(self, tclean_result):
         """Add the VLASS cube plane rejection header keyword."""
         imagename = tclean_result.image
+
+        if imagename is None:
+            return
+
         reject = None
         if 'keep' in tclean_result.imaging_metadata:
             reject = not tclean_result.imaging_metadata['keep']
