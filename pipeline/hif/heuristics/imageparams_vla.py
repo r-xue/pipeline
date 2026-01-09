@@ -116,7 +116,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         # Get max baseline
         mean_wave_m = light_speed / max_mean_freq_Hz  # in meter
         job = casa_tasks.visstat(vis=vis, field=field, spw=str(max_freq_spw),
-                                 axis='uvrange', useflags=False, doquantiles= False)
+                                 axis='uvrange', useflags=False, doquantiles=False)
         uv_stat = job.execute() # returns stat in meter
         max_bl = uv_stat['DATA_DESC_ID=%s' % max_freq_spw]['max'] / mean_wave_m
 
