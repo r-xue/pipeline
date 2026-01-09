@@ -20,25 +20,28 @@ import shutil
 import string
 import tarfile
 import time
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from datetime import datetime
 from functools import wraps
 from numbers import Number
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any, TypedDict
 from urllib.parse import urlparse
 
 import numpy as np
 import numpy.typing as npt
 
-import pipeline.infrastructure as infrastructure
-from .. import casa_tools
+from pipeline import infrastructure
+from pipeline.infrastructure import casa_tools
 from .conversion import commafy, dequote, range_to_list
 
 if TYPE_CHECKING:
     from collections.abc import Collection, Iterator, Sequence
     from io import TextIOWrapper
+    from typing import DefaultDict, OrderedDict
 
-    from pipeline.domain import MeasurementSet
+    from pipeline.domain import Field, MeasurementSet
+    from pipeline.infrastructure.filenamer import PipelineProductNameBuilder
+    from pipeline.infrastructure.launcher import Context
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -47,6 +50,7 @@ __all__ = [
     'approx_equal',
     'are_equal',
     'clear_time_cache',
+    'compute_zenith_distance',
     'deduplicate',
     'dict_merge',
     'ensure_products_dir_exists',
@@ -73,13 +77,36 @@ __all__ = [
     'imstat_items',
     'list_to_str',
     'nested_dict',
+    'obs_long_lat',
+    'obs_midtime',
     'open_with_lock',
     'place_repr_source_first',
     'relative_path',
     'remove_trailing_string',
     'string_to_val',
-    'validate_url'
+    'validate_url',
+    'DirectionDict',
+    'EpochDict',
+    'QuantityDict',
 ]
+
+
+class QuantityDict(TypedDict):
+    unit: str
+    value: float
+
+
+class DirectionDict(TypedDict):
+    m0: QuantityDict
+    m1: QuantityDict
+    refer: str
+    type: str
+
+
+class EpochDict(TypedDict):
+    m0: QuantityDict
+    refer: str
+    type: str
 
 
 def find_ranges(data: str | list[int]) -> str:
@@ -119,7 +146,7 @@ def find_ranges(data: str | list[int]) -> str:
     return ','.join(ranges)
 
 
-def dict_merge(a: dict, b: dict | any) -> dict:
+def dict_merge(a: dict, b: dict | Any) -> dict:
     """Recursively merge dictionaries.
 
     This utility function recursively merges dictionaries. If second argument
@@ -248,7 +275,7 @@ def filter_intents_for_ms(ms: MeasurementSet, intents: str) -> str:
     return ','.join(sorted(intents))
 
 
-def get_field_accessor(ms, field):
+def get_field_accessor(ms: MeasurementSet, field: Field) -> operator.attrgetter:
     """Returns accessor to field name or field ID, if field name is ambiguous.
     """
     fields = ms.get_fields(name=field.name)
@@ -260,7 +287,7 @@ def get_field_accessor(ms, field):
     return accessor
 
 
-def get_field_identifiers(ms) -> dict:
+def get_field_identifiers(ms: MeasurementSet) -> dict[int, str | int]:
     """Maps numeric field IDs to field names.
 
     Get a dict of numeric field ID to unambiguous field identifier, using the
@@ -271,7 +298,7 @@ def get_field_identifiers(ms) -> dict:
     return {field.id: field_name_accessors[field.id](field) for field in ms.fields}
 
 
-def get_receiver_type_for_spws(ms, spwids: Sequence) -> dict:
+def get_receiver_type_for_spws(ms: MeasurementSet, spwids: Sequence) -> dict[int, str]:
     """Return dictionary of receiver types for requested spectral window IDs.
 
     If spwid is not found in MeasurementSet instance, then detector type is
@@ -294,7 +321,7 @@ def get_receiver_type_for_spws(ms, spwids: Sequence) -> dict:
     return rxmap
 
 
-def get_spectralspec_to_spwid_map(spws: Collection) -> dict:
+def get_spectralspec_to_spwid_map(spws: Collection) -> DefaultDict[str | None, list[int]]:
     """
     Returns a dictionary of spectral specs mapped to corresponding spectral
     window IDs for requested list of spectral window objects.
@@ -309,7 +336,11 @@ def get_spectralspec_to_spwid_map(spws: Collection) -> dict:
     return spwmap
 
 
-def imstat_items(image, items=['min', 'max'], mask=None):
+def imstat_items(
+        image: Any,
+        items: list[str] = ['min', 'max'],
+        mask: str | None = None,
+        ) -> OrderedDict[str, Any]:
     """Extract desired stats properties (per Stokes) using ia.statistics().
 
     Beside the standard output, some additional stats property keys are supported.
@@ -348,7 +379,7 @@ def imstat_items(image, items=['min', 'max'], mask=None):
     return stats
 
 
-def get_stokes(imagename):
+def get_stokes(imagename: str) -> list[str]:
     """Get the labels of all stokes planes present in a CASA image."""
 
     with casa_tools.ImageReader(imagename) as image:
@@ -360,7 +391,7 @@ def get_stokes(imagename):
     return stokes_present
 
 
-def get_casa_quantity(value: None | dict | str | float | int) -> dict:
+def get_casa_quantity(value: None | dict | str | float | int) -> QuantityDict:
     """Wrapper around quanta.quantity() that handles None input.
 
     Starting with CASA 6, quanta.quantity() no longer accepts None as input. This
@@ -382,7 +413,7 @@ def get_casa_quantity(value: None | dict | str | float | int) -> dict:
         return casa_tools.quanta.quantity(0.0)
 
 
-def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple:
+def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple[str, float]:
     """Obtain the best SI unit prefix option for a numeric value.
 
     A "best" SI prefix from a specified prefix collection is defined by minimizing :
@@ -438,7 +469,7 @@ def absolute_path(name: str) -> str:
     return os.path.abspath(os.path.expanduser(os.path.expandvars(name)))
 
 
-def relative_path(name: str, start: str | None=None) -> str:
+def relative_path(name: str, start: str | None = None) -> str:
     """
     Retun a relative path of a given file with respect a given origin.
 
@@ -458,7 +489,7 @@ def relative_path(name: str, start: str | None=None) -> str:
     return os.path.relpath(absolute_path(name), start)
 
 
-def get_task_result_count(context, taskname: str = 'hif_makeimages') -> int:
+def get_task_result_count(context: Context, taskname: str = 'hif_makeimages') -> int:
     """Count occurrences of a task result in the context.results list.
 
     Loop over the content of the context.results list and compare taskname to the pipeline_casa_task
@@ -595,7 +626,7 @@ def glob_ordered(pattern: str, *args, order: str | None = None, **kwargs) -> lis
     return path_list
 
 
-def deduplicate(items):
+def deduplicate(items: list) -> list:
     """Remove duplicate entries from a list, but preserve the order.
 
     Note that the use of list(set(x)) can cause random order in the output.
@@ -610,7 +641,7 @@ def deduplicate(items):
 
 
 @contextlib.contextmanager
-def ignore_pointing(vis):
+def ignore_pointing(vis: str | list[str] | set[str]):
     """A context manager to ignore pointing tables of MSes during I/O operations.
 
     The original pointing table will be temperarily renamed to POINTING_ORIGIN, and a new empty pointing table
@@ -754,7 +785,8 @@ def open_with_lock(filename: str, mode: str = 'r', *args: Any, **kwargs: Any) ->
         fd.close()
 
 
-def ensure_products_dir_exists(products_dir):
+
+def ensure_products_dir_exists(products_dir: str) -> None:
     try:
         LOG.trace(f"Creating products directory: {products_dir}")
         os.makedirs(products_dir)
@@ -763,7 +795,7 @@ def ensure_products_dir_exists(products_dir):
             raise
 
 
-def export_weblog_as_tar(context, products_dir, name_builder):
+def export_weblog_as_tar(context: Context, products_dir: str, name_builder: PipelineProductNameBuilder) -> str:
     # Construct filename prefix from oussid and recipe name if available.
     prefix = context.get_oussid()
     recipe_name = context.get_recipe_name()
@@ -782,7 +814,7 @@ def export_weblog_as_tar(context, products_dir, name_builder):
     return tarfilename
 
 
-def get_products_dir(context):
+def get_products_dir(context: Context) -> str:
     if context.products_dir is None:
         return os.path.abspath('./')
     else:
@@ -790,18 +822,18 @@ def get_products_dir(context):
 
 
 class pl_defaultdict(collections.defaultdict):
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(dict(self))
 
-    def as_plain_dict(self):
+    def as_plain_dict(self) -> dict:
         return to_plain_dict(self)
 
 
-def nested_dict():
+def nested_dict() -> dict:
     return pl_defaultdict(nested_dict)
 
 
-def to_plain_dict(default_dict):
+def to_plain_dict(default_dict: dict) -> dict:
     plain_dict = dict()
     for k, v in default_dict.items():
         if isinstance(v, collections.defaultdict):
@@ -812,7 +844,7 @@ def to_plain_dict(default_dict):
     return plain_dict
 
 
-def string_to_val(s):
+def string_to_val(s: str) -> Any:
     """
     Convert a string to a Python data type.
     """
@@ -828,7 +860,7 @@ def string_to_val(s):
         return s
 
 
-def remove_trailing_string(s, t):
+def remove_trailing_string(s: str, t: str) -> str:
     """
     Remove a trailing string if it exists.
     """
@@ -837,10 +869,12 @@ def remove_trailing_string(s, t):
     else:
         return s
 
+
 ConditionType = Callable | dict[str, dict[str, dict[str, Any]]]
 
+
 def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth: int=5,
-                       condition: ConditionType | None=None, timestamp: bool=True):
+                       condition: ConditionType | None = None, timestamp: bool=True):
     """
     Dump arguments and return-objects of a function implement the decolator into pickle files and/or JSON(-like) file.
 
@@ -947,7 +981,7 @@ def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth
     return decorator
 
 
-def _dump(obj: object, path: str, name: str, dump_pickle: bool=True, dump_json: bool=False, json_dict={}):
+def _dump(obj: object, path: str, name: str, dump_pickle: bool=True, dump_json: bool=False, json_dict={}) -> None:
     file_path = os.path.join(path, f'{name}')
 
     if dump_pickle:
@@ -958,7 +992,7 @@ def _dump(obj: object, path: str, name: str, dump_pickle: bool=True, dump_json: 
             f.write(json.dumps(json_dict[name], default=str))
 
 
-def _get_full_method_path(func):
+def _get_full_method_path(func: Callable) -> str:
     module_name = func.__module__
     if hasattr(func, '__qualname__'):
         qualname = func.__qualname__
@@ -967,7 +1001,7 @@ def _get_full_method_path(func):
     return f'{module_name}.{qualname}'
 
 
-def _eval_condition(condition, args):
+def _eval_condition(condition: dict | None, args: dict) -> bool:
     # {'self', {'spw':10}}, need unittest
     if condition is None:
         return True
@@ -985,7 +1019,7 @@ def _eval_condition(condition, args):
     return False
 
 
-def object_to_dict(obj, max_depth=5, current_depth=0):
+def object_to_dict(obj: object, max_depth: int = 5, current_depth: int = 0) -> object | dict | None:
 
     if current_depth > max_depth:
         return None
@@ -1021,7 +1055,7 @@ def object_to_dict(obj, max_depth=5, current_depth=0):
         return obj
 
 
-def decorate_io_dumper(cls: object, functions: list[str]=[], *args: Any, **kwargs: Any):
+def decorate_io_dumper(cls: object, functions: list[str | None] = [], *args: Any, **kwargs: Any) -> None:
     """Apply function_io_dumper dynamically.
 
     Usage:
@@ -1052,7 +1086,7 @@ def decorate_io_dumper(cls: object, functions: list[str]=[], *args: Any, **kwarg
         setattr(cls, _name, decorated_func)
 
 
-def _str_to_func(cls: object, _name: str):
+def _str_to_func(cls: object, _name: str) -> Callable | bool:
     if hasattr(cls, _name):
         _c = getattr(cls, _name)
         if callable(_c):
@@ -1060,7 +1094,7 @@ def _str_to_func(cls: object, _name: str):
     return False
 
 
-def list_to_str(value: list[Number | str, npt.NDArray]) -> str:
+def list_to_str(value: list[Number | str] | npt.NDArray) -> str:
     """Convert list or numpy.ndarray into string.
 
     The list/ndarray should be 1-dimensional. In that case, the function
@@ -1112,6 +1146,61 @@ def validate_url(url: str) -> bool:
     parsed = urlparse(url)
 
     return all([parsed.scheme, parsed.netloc])
+
+
+def obs_long_lat(observatory: str) -> tuple[QuantityDict, QuantityDict]:
+    """Return longitude and latitude values of the given observatory."""
+    observatory = casa_tools.measures.observatory(observatory)
+    return observatory['m0'], observatory['m1']
+
+
+def obs_midtime(start_time: datetime, end_time: datetime) -> EpochDict:
+    """Returns the mid time in a CASA measures dictionary."""
+    mid_time = start_time + (end_time - start_time) / 2
+    return casa_tools.measures.epoch('utc', mid_time.isoformat())
+
+
+def compute_zenith_distance(
+        field_direction: DirectionDict,
+        epoch: EpochDict,
+        observatory: str,
+        coordinate_frame: str = 'AZELGEO',
+        ) -> QuantityDict:
+    """Calculate zenith distance for a field at a given time and observatory.
+
+    This function uses CASA measures to calculate the zenith distance, similar to
+    how compute_az_el_to_field works in htmlrenderer.py.
+
+    Args:
+        field_direction: CASA direction measure dictionary for the field.
+        epoch: CASA epoch measure dictionary for the observation time.
+        observatory: Name of the observatory (e.g., 'VLA', 'ALMA').
+        coordinate_frame: Coordinate frame for the calculation (e.g., 'AZELGEO', 'AZEL').
+            Defaults to 'AZELGEO'.
+
+    Returns:
+        A CASA quantity dictionary containing the zenith distance in radians.
+
+    Examples:
+        >>> direction = {'m0': {'value': 4.18879, 'unit': 'rad'},
+        ...              'm1': {'value': 0.58534, 'unit': 'rad'},
+        ...              'refer': 'J2000', 'type': 'direction'}
+        >>> epoch = {'m0': {'value': 58089.82, 'unit': 'd'}, 'refer': 'UTC', 'type': 'epoch'}
+        >>> zd = compute_zenith_distance(direction, epoch, 'VLA')
+        >>> print(f"{casa_tools.quanta.convert(zd, 'deg')['value']:.2f} degrees")
+    """
+    me = casa_tools.measures
+
+    # Set the reference frame with the epoch and observatory
+    me.doframe(epoch)
+    me.doframe(me.observatory(observatory))
+
+    # Convert field direction to horizontal coordinates
+    horizontal = me.measure(field_direction, coordinate_frame)
+    elevation_rad = horizontal['m1']['value']
+    zenith_distance_rad = np.pi / 2.0 - elevation_rad
+
+    return casa_tools.quanta.quantity(zenith_distance_rad, 'rad')
 
 
 def get_row_count(table_name: str, taql: str) -> int:
