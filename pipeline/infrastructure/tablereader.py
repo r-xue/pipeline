@@ -11,8 +11,7 @@ import os
 import re
 import traceback
 import xml
-from collections.abc import Callable, Iterator
-from typing import TYPE_CHECKING, Any, Generic, TypedDict, TypeVar
+from typing import TYPE_CHECKING, Generic, TypedDict, TypeVar
 
 import cachetools
 import numpy as np
@@ -22,7 +21,11 @@ from pipeline.domain import measures
 from pipeline.infrastructure import casa_tools, utils
 
 if TYPE_CHECKING:
+    from collections.abc import Callable, Iterator
+    from typing import Any
+
     from numpy.typing import NDArray
+
     from pipeline.domain import Antenna, AntennaArray, DataDescription, Field, MeasurementSet, \
         ObservingRun, Polarization, Scan, Source, SpectralWindow, State
     from pipeline.domain.measures import Frequency, FrequencyRange

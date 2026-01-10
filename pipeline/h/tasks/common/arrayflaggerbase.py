@@ -103,7 +103,7 @@ def median_and_mad(data):
     return data_median, data_mad
 
 
-class FlagCmd(object):
+class FlagCmd:
     """
     Create a flagcmd.
         Added detailed docs here.

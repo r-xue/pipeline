@@ -2,7 +2,7 @@
 This module defines types of objects used in single dish.
 """
 
-from typing import Dict, NewType, TYPE_CHECKING, Union
+from typing import NewType, TYPE_CHECKING
 
 import numpy as np
 
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
     # Direction
     # type as a direction of the origin for moving target
-    Direction = NewType('Direction', Dict[str, Union[str, float]])
+    Direction = NewType('Direction', dict[str, str | float])
 
     # Angle
-    Angle = NewType('Angle', Dict[str, Union[str, float]])
+    Angle = NewType('Angle', dict[str, str | float])

@@ -4,11 +4,11 @@
 #shebang cluster
 #!/opt/pipelinedriver/2024OCT/casa/casa-6.6.1-17-pipeline-2024.1.0.8/bin/python3
 
-import os, sys
 import argparse
 import glob
+import os
+import sys
 import time as systime
-import numpy as np
 
 from . import sd_applycal_qa
 from . import sd_qa_reports

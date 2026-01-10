@@ -61,7 +61,7 @@ class VdpCommonGaincalInputs(commoncalinputs.VdpCommonCalibrationInputs):
     def __init__(self, context, output_dir=None, vis=None, caltable=None, intent=None, field=None, spw=None,
                  refant=None, antenna=None, minblperant=None, opacity=None, selectdata=None, uvrange=None,
                  calmode=None, refantmode=None):
-        super(VdpCommonGaincalInputs, self).__init__(context, output_dir=output_dir, vis=vis, intent=intent,
+        super().__init__(context, output_dir=output_dir, vis=vis, intent=intent,
                                                      field=field, spw=spw, refant=refant, antenna=antenna,
                                                      minblperant=minblperant, opacity=opacity, selectdata=selectdata,
                                                      uvrange=uvrange)
@@ -102,7 +102,7 @@ class GaincalResults(basetask.Results):
         if subtask_results is None:
             subtask_results = []
 
-        super(GaincalResults, self).__init__()
+        super().__init__()
         self.pool = pool[:]
         self.final = final[:]
         self.subtask_results = subtask_results[:]

@@ -10,6 +10,10 @@ import argparse
 import pipeline
 pipeline.initcli()
 
+from pipeline.h.cli import h_init, h_save
+from pipeline.hifv.cli import hifv_importdata
+
+
 class NewTask:
 
     def __init__(self):

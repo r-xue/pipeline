@@ -35,7 +35,7 @@ def get_task_description(prefix):
         return '{0} tasks'.format(modifier)
 
 
-class taskutil(object):
+class taskutil:
     def __init__(self, dirname='', title='', prefix=None):
         self.taskdir = dirname
         self.title = title
@@ -229,7 +229,7 @@ class taskutil(object):
 
 class taskutil2(taskutil):
     def __init__(self, dirname='', title='', prefix=None):
-        super(taskutil2, self).__init__(dirname=dirname, title=title, prefix=prefix)
+        super().__init__(dirname=dirname, title=title, prefix=prefix)
 
     def createtasklist(self):
         s = subprocess.getoutput('ls '+self.taskdir+'/*.xml')
@@ -242,7 +242,7 @@ class taskutil2(taskutil):
                 self.tasks.append(task)
 
 
-class hetaskutil(object):
+class hetaskutil:
     #def __init__( self, dir='/home/nakazato/ALMA/PIPELINE/Heuristics/src/heuristics', sddir='SDPipelineTaskInterface', ifdir='SFIPipelineTaskInterface' ):
     def __init__(self, dirname):
         self.phdir = dirname
@@ -324,13 +324,13 @@ class hetaskutil(object):
 
 class hetaskutil2(hetaskutil):
     def __init__(self, dirname='', cli=''):
-        super(hetaskutil2, self).__init__(dirname=dirname)
+        super().__init__(dirname=dirname)
         self.addmodule('h', 'Common')
 
 
 class hetaskutil3(hetaskutil):
     def __init__(self, dirname='', cli=''):
-        super(hetaskutil3, self).__init__(dirname=dirname)
+        super().__init__(dirname=dirname)
         self.addmodule('h', 'Generic')
         self.addmodule('hifa', 'Interferometry ALMA')
         self.addmodule('hifv', 'Interferometry VLA')

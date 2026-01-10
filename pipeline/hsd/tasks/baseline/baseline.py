@@ -1,9 +1,11 @@
 """Spectral baseline subtraction stage."""
+from __future__ import annotations
+
 import collections
 import os
+from typing import TYPE_CHECKING
 
 import numpy
-from typing import TYPE_CHECKING, Any, Callable, List, Optional, Tuple, Type, Union
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -13,22 +15,24 @@ import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.domain import DataType
 from pipeline.hsd.heuristics import MaskDeviationHeuristic
+from pipeline.hsd.tasks.common.inspection_util import generate_ms, inspect_reduction_group, merge_reduction_group
 from pipeline.infrastructure import task_registry
 from . import maskline
 from . import worker
 from .. import common
 from ..common import compress
-from pipeline.hsd.tasks.common.inspection_util import generate_ms, inspect_reduction_group, merge_reduction_group
 from ..common import utils
 
-from .typing import FitFunc, FitOrder, LineWindow
-
 if TYPE_CHECKING:
+    from collections.abc import Callable
+    from typing import Any
+
     from pipeline.infrastructure.api import Heuristic
     from pipeline.infrastructure.launcher import Context
+    from .typing import FitFunc, FitOrder, LineWindow
 
 # import memory_profiler
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class SDBaselineInputs(vdp.StandardInputs):
@@ -60,7 +64,7 @@ class SDBaselineInputs(vdp.StandardInputs):
 
     # handle conversion from string to bool
     @switchpoly.convert
-    def switchpoly(self, value: Union[str, bool]) -> bool:
+    def switchpoly(self, value: str | bool) -> bool:
         """Convert switchpoly value into bool.
 
         Args:
@@ -88,23 +92,23 @@ class SDBaselineInputs(vdp.StandardInputs):
 
     # docstring and type hints: supplements hsd_baseline
     def __init__(self,
-                 context: 'Context',
-                 infiles: Optional[List[str]] = None,
-                 antenna: Optional[List[str]] = None,
-                 spw: Optional[List[str]] = None,
-                 pol: Optional[List[str]] = None,
-                 field: Optional[List[str]] = None,
-                 linewindow: Optional[LineWindow] = None,
-                 linewindowmode: Optional[str] = None,
-                 edge: Optional[Tuple[int, int]] = None,
-                 broadline: Optional[bool] = None,
-                 fitfunc: Optional[FitFunc] = None,
-                 fitorder: Optional[FitOrder] = None,
-                 switchpoly: Optional[bool] = None,
-                 clusteringalgorithm: Optional[str] = None,
-                 deviationmask: Optional[bool] = None,
-                 deviationmask_sigma_threshold: Optional[bool] = None,
-                 parallel: Optional[str] = None) -> None:
+                 context: Context,
+                 infiles: list[str] | None = None,
+                 antenna: list[str] | None = None,
+                 spw: list[str] | None = None,
+                 pol: list[str] | None = None,
+                 field: list[str] | None = None,
+                 linewindow: LineWindow | None = None,
+                 linewindowmode: str | None = None,
+                 edge: tuple[int, int] | None = None,
+                 broadline: bool | None = None,
+                 fitfunc: FitFunc | None = None,
+                 fitorder: FitOrder | None = None,
+                 switchpoly: bool | None = None,
+                 clusteringalgorithm: str | None = None,
+                 deviationmask: bool | None = None,
+                 deviationmask_sigma_threshold: bool | None = None,
+                 parallel: str | None = None) -> None:
         """Construct SDBaselineInputs instance.
 
         Args:
@@ -324,7 +328,7 @@ class SDBaselineInputs(vdp.StandardInputs):
         infiles = self.infiles
         if isinstance(self.infiles, list):
             self.infiles = infiles[0]
-        args = super(SDBaselineInputs, self).to_casa_args()
+        args = super().to_casa_args()
         self.infiles = infiles
 
         if 'antenna' not in args:
@@ -336,8 +340,8 @@ class SDBaselineResults(common.SingleDishResults):
     """Results class to hold the result of baseline subtraction task."""
 
     def __init__(self,
-                 task: Optional[Type[basetask.StandardTaskTemplate]] = None,
-                 success: Optional[bool] = None,
+                 task: type[basetask.StandardTaskTemplate] | None = None,
+                 success: bool | None = None,
                  outcome: Any = None) -> None:
         """Construct SDBaselineResults instance.
 
@@ -346,11 +350,11 @@ class SDBaselineResults(common.SingleDishResults):
             success: Whether task execution is successful or not.
             outcome: Outcome of the task execution.
         """
-        super(SDBaselineResults, self).__init__(task, success, outcome)
+        super().__init__(task, success, outcome)
         self.out_mses = []
 
     # @utils.profiler
-    def merge_with_context(self, context: 'Context') -> None:
+    def merge_with_context(self, context: Context) -> None:
         """Merge result instance into context.
 
         Merge of the result instance of baseline subtraction task includes
@@ -365,7 +369,7 @@ class SDBaselineResults(common.SingleDishResults):
         Args:
             context: Pipeline context object containing state information.
         """
-        super(SDBaselineResults, self).merge_with_context(context)
+        super().merge_with_context(context)
 
         # register output MS domain object and reduction_group to context
         target = context.observing_run
@@ -724,10 +728,10 @@ class SDBaseline(basetask.StandardTaskTemplate):
         return result
 
 
-class HeuristicsTask(object):
+class HeuristicsTask:
     """Executor for heuristics class. It is an adaptor to mpihelper framework."""
 
-    def __init__(self, heuristics_cls: Type['Heuristic'], *args: Any, **kwargs: Any) -> None:
+    def __init__(self, heuristics_cls: type[Heuristic], *args: Any, **kwargs: Any) -> None:
         """Construct HeuristicsTask instance.
 
         Args:
@@ -761,11 +765,11 @@ class DeviationMaskHeuristicsTask(HeuristicsTask):
     """Executor class specialized to MaskDeviationHeuristic."""
 
     def __init__(self,
-                 heuristics_cls: Type[MaskDeviationHeuristic],
+                 heuristics_cls: type[MaskDeviationHeuristic],
                  vis: str,
-                 field_list: List[int],
-                 antenna_list: List[int],
-                 spw_list: List[int],
+                 field_list: list[int],
+                 antenna_list: list[int],
+                 spw_list: list[int],
                  deviationmask_sigma_threshold: float,
                  consider_flag: bool = False) -> None:
         """Construct DeviationMaskHeuristicsTask instance.
@@ -785,7 +789,7 @@ class DeviationMaskHeuristicsTask(HeuristicsTask):
                                      (see SDBaselineInputs for details)
             consider_flag: Consider flag when perofrming heuristics. Defaults to False.
         """
-        super(DeviationMaskHeuristicsTask, self).__init__(heuristics_cls, vis=vis, consider_flag=consider_flag)
+        super().__init__(heuristics_cls, vis=vis, consider_flag=consider_flag)
         self.vis = vis
         self.field_list = field_list
         self.antenna_list = antenna_list
@@ -806,19 +810,19 @@ class DeviationMaskHeuristicsTask(HeuristicsTask):
                                 'antenna_id': antenna_id,
                                 'spw_id': spw_id,
                                 'detection': self.deviationmask_sigma_threshold})
-            mask_list = super(DeviationMaskHeuristicsTask, self).execute()
+            mask_list = super().execute()
             result.append(mask_list)
         return result
 
 
 def deviation_mask_heuristic(
         vis: str,
-        field_list: List[int],
-        antenna_list: List[int],
-        spw_list: List[int],
+        field_list: list[int],
+        antenna_list: list[int],
+        spw_list: list[int],
         deviationmask_sigma_threshold: float,
         consider_flag: bool = False,
-        parallel: Optional[bool] = None) -> Tuple[str, Union[mpihelpers.SyncTask, mpihelpers.AsyncTask]]:
+        parallel: bool | None = None) -> tuple[str, mpihelpers.SyncTask | mpihelpers.AsyncTask]:
     """Prepare task instance that can be executed in mpihelpers framework.
 
     Args:
@@ -852,7 +856,7 @@ def deviation_mask_heuristic(
     return vis, task
 
 
-def test_deviation_mask_heuristic(spw: Optional[int] = None) -> None:
+def test_deviation_mask_heuristic(spw: int | None = None) -> None:
     """Test deviation mask heuristic.
 
     Args:

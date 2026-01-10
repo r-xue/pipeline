@@ -6,7 +6,7 @@ from pipeline.infrastructure import casa_tools
 _pprinter = pprint.PrettyPrinter()
 
 
-class Antenna(object):
+class Antenna:
     """
     Antenna is a logical representation of an antenna.
 

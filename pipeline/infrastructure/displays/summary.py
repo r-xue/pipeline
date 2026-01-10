@@ -6,7 +6,7 @@ import math
 import operator
 import os
 import shutil
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -22,6 +22,8 @@ from pipeline.infrastructure.displays import plotpointings, plotpwv, plotstyle, 
 from pipeline.infrastructure.renderer import logger
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+
     from pipeline.domain import MeasurementSet, Source
     from pipeline.infrastructure.launcher import Context
 
@@ -412,7 +414,7 @@ class FieldVsTimeChartInputs(vdp.StandardInputs):
         return output
 
     def __init__(self, context, vis=None, output=None):
-        super(FieldVsTimeChartInputs, self).__init__()
+        super().__init__()
 
         self.context = context
         self.vis = vis
@@ -552,7 +554,7 @@ class IntentVsTimeChartInputs(vdp.StandardInputs):
         return output
 
     def __init__(self, context, vis=None, output=None):
-        super(IntentVsTimeChartInputs, self).__init__()
+        super().__init__()
 
         self.context = context
         self.vis = vis
@@ -670,7 +672,7 @@ class PWVChart:
                            parameters={'vis': self.ms.basename})
 
 
-class PointingsChart(object):
+class PointingsChart:
     """Base class for generating a pointings chart.
 
     This class provides a framework for creating and managing pointings plots for a

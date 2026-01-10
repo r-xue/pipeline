@@ -14,7 +14,7 @@ import glob
 import os
 import re
 import shutil
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import packaging.version
 import pytest
@@ -36,13 +36,13 @@ class PipelineRegression:
     def __init__(
             self,
             visname: list[str],
-            ppr: Optional[str] = None,
-            recipe: Optional[str] = None,
-            project_id: Optional[str] = None,
-            input_dir: Optional[str] = None,
-            output_dir: Optional[str] = None,
-            expectedoutput_file: Optional[str] = None,
-            expectedoutput_dir: Optional[str] = None
+            ppr: str | None = None,
+            recipe: str | None = None,
+            project_id: str | None = None,
+            input_dir: str | None = None,
+            output_dir: str | None = None,
+            expectedoutput_file: str | None = None,
+            expectedoutput_dir: str | None = None
             ):
         """Initializes a PipelineRegression instance.
 
@@ -112,7 +112,7 @@ class PipelineRegression:
             shutil.rmtree(self.output_dir)
         os.mkdir(self.output_dir)
 
-    def _pick_results_file(self, reference_data_files: list[str]) -> Optional[str]:
+    def _pick_results_file(self, reference_data_files: list[str]) -> str | None:
         """Picks results file based on the active CASA version from the given list of file_names
 
         Args:
@@ -148,7 +148,7 @@ class PipelineRegression:
 
         return self._results_file_heuristics(reference_dict=reference_dict)
 
-    def _results_file_heuristics(self, reference_dict: dict[str, dict[str, Version]]) -> Optional[str]:
+    def _results_file_heuristics(self, reference_dict: dict[str, dict[str, Version]]) -> str | None:
         """Analyze the relevant results files and pick the one that matches the closest to the current running versions
 
         Current heuristics will reject any file with CASA or Pipeline versions that exceed the current running versions
@@ -200,7 +200,7 @@ class PipelineRegression:
 
         return best_match
 
-    def __sanitize_regression_string(self, instring: str) -> tuple[str, str, Optional[float]]:
+    def __sanitize_regression_string(self, instring: str) -> tuple[str, str, float | None]:
         """Sanitize to get numeric values, remove newline chars and change to float.
 
         instring format: "[quantity_name]=[quantity value]:::tolerance"
@@ -240,7 +240,7 @@ class PipelineRegression:
     def run(self,
             telescope: str = 'alma',
             default_relative_tolerance: float = 1e-7,
-            omp_num_threads: Optional[int] = None
+            omp_num_threads: int | None = None
             ) -> None:
         """
         Run test with PPR if supplied or recipereducer if no PPR and compared to expected results.

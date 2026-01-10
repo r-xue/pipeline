@@ -1,4 +1,3 @@
-import os, sys
 import numpy as np
 import copy
 import casatools
@@ -7,7 +6,7 @@ from scipy import signal
 from . import sd_qa_utils
 
 
-class MSWrapperSD(object):
+class MSWrapperSD:
     """
     MSWrapper is a wrapper around a NumPy array populated with measurement set
     data for a specified scan and spectral window of Single Dish dataset.
