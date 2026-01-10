@@ -74,13 +74,12 @@
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
+import copy
 import os
 from math import *
-from datetime import datetime
+
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy import signal
-import copy
 
 try:
     from taskinit import tbtool,msmdtool,qatool,attool, mstool, casalog, metool

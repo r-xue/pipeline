@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import dataclasses
 import os
 import re
@@ -7,6 +9,7 @@ import numpy as np
 import pipeline.extern.tsys_contamination as extern
 import pipeline.h.tasks.tsysflag.tsysflag as tsysflag
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.extern.TsysDataClassFile import TsysData
 from pipeline.h.tasks.common import calibrationtableaccess as caltableaccess
@@ -15,7 +18,6 @@ from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.basetask import StandardTaskTemplate
 from pipeline.infrastructure.exceptions import PipelineException
 from pipeline.infrastructure.pipelineqa import QAScore, TargetDataSelection
-import pipeline.infrastructure.sessionutils as sessionutils
 
 __all__ = ["TsysFlagContamination", "TsysFlagContaminationInputs"]
 
@@ -184,7 +186,7 @@ class ExternFunctionArguments:
     single_polarization: bool
 
     @staticmethod
-    def from_inputs(inputs: TsysFlagContaminationInputs) -> "ExternFunctionArguments":
+    def from_inputs(inputs: TsysFlagContaminationInputs) -> ExternFunctionArguments:
         context = inputs.context
         weblog_dir = os.path.join(context.report_dir, f"stage{context.task_counter}")
         os.makedirs(weblog_dir, exist_ok=True)

@@ -6,7 +6,7 @@ import os
 import shutil
 from typing import TYPE_CHECKING, Any
 
-from numpy import median, percentile
+from numpy import percentile
 
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.logging as logging

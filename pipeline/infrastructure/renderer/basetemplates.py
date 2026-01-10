@@ -4,6 +4,7 @@ Created on 8 Sep 2014
 @author: sjw
 """
 import collections
+import collections.abc
 import contextlib
 import json
 import math

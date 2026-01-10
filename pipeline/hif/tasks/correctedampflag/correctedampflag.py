@@ -1,22 +1,28 @@
+from __future__ import annotations
+
 import collections
 import copy
 import os
 from statistics import mode
+from typing import TYPE_CHECKING
 
 import numpy as np
-from numpy.typing import NDArray
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
-from pipeline.domain.measurementset import MeasurementSet
 from pipeline.h.tasks.common import commonhelpermethods, mstools
 from pipeline.h.tasks.common.arrayflaggerbase import FlagCmd
 from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
 from pipeline.infrastructure import task_registry
 from .resultobjects import CorrectedampflagResults
+
+if TYPE_CHECKING:
+    from numpy.typing import NDArray
+
+    from pipeline.domain import MeasurementSet
 
 LOG = infrastructure.logging.get_logger(__name__)
 

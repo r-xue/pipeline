@@ -296,7 +296,7 @@ class MeasurementSet:
 
         if scan_id is not None:
             # encase raw numbers in a tuple
-            if not isinstance(scan_id, collections.abc.Sequence):
+            if not isinstance(scan_id, Sequence):
                 scan_id = (scan_id,)
             pool = [s for s in pool if s.id in scan_id]
 
@@ -314,7 +314,7 @@ class MeasurementSet:
             pool = [s for s in pool if not fields_with_name.isdisjoint(s.fields)]
 
         if spw is not None:
-            if not isinstance(spw, collections.abc.Sequence):
+            if not isinstance(spw, Sequence):
                 spw = (spw,)
             if isinstance(spw, str):
                 if spw in ('', '*'):
@@ -634,7 +634,7 @@ class MeasurementSet:
 
         if field_id is not None:
             # encase raw numbers in a tuple
-            if not isinstance(field_id, collections.abc.Sequence):
+            if not isinstance(field_id, Sequence):
                 field_id = (field_id,)
             pool = [f for f in pool if f.id in field_id]
 

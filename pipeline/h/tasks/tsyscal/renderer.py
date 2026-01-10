@@ -4,6 +4,7 @@ Created on 9 Sep 2014
 @author: sjw
 """
 import collections
+import collections.abc
 import os
 
 import numpy

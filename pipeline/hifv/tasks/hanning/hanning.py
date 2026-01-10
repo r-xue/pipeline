@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import os
 import shutil
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from pipeline import infrastructure
 from pipeline.domain.measures import FrequencyUnits
@@ -13,6 +13,8 @@ from pipeline.infrastructure.utils import conversion, find_ranges
 LOG = infrastructure.logging.get_logger(__name__)
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from pipeline.infrastructure.api import Results
     from pipeline.infrastructure.jobrequest import JobRequest
     from pipeline.infrastructure.launcher import Context

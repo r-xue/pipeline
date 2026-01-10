@@ -1,14 +1,12 @@
-import sys
-import numpy as np
-import re
+import copy
 import glob
+import re
+
+import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
+import numpy as np
 from astropy.nddata import block_reduce
 from astropy.time import Time
-import matplotlib.dates as mdates
-import casatools
-import copy
 
 from pipeline.infrastructure.filenamer import sanitize
 from . import sd_qa_utils

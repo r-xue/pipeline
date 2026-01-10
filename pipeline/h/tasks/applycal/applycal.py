@@ -3,7 +3,7 @@ from __future__ import annotations
 import collections
 import copy
 import os
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -18,6 +18,8 @@ from pipeline.infrastructure import task_registry
 from ...heuristics.fieldnames import IntentFieldnames
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from pipeline.infrastructure.callibrary import IntervalCalState
 
 __all__ = [

@@ -43,7 +43,7 @@ import os
 import tempfile
 import traceback
 import xml.etree.ElementTree as ElementTree
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING
 
 import pipeline.cli as cli
 import pipeline.h.cli.cli as h_cli
@@ -54,6 +54,9 @@ from pipeline.infrastructure import exceptions, utils
 LOG = infrastructure.logging.get_logger(__name__)
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+    from typing import Any
+
     from pipeline.infrastructure.launcher import Context
 
 RECIPES_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), 'recipes'))

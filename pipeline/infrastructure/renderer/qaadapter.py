@@ -4,6 +4,7 @@ stage number, into a structure ordered by task type. This regrouping is used
 by the QA sections of the weblog.
 '''
 import collections
+import collections.abc
 import json
 import os
 import weakref

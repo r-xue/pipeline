@@ -749,15 +749,18 @@ def _pipeline_revision() -> str:
     return version_str
 
 
-def _cluster_details():
-    env_details = [node_details]
-    if mpihelpers.is_mpi_ready():
-        mpi_results = mpihelpers.mpiclient.push_command_request('pipeline.environment.node_details', block=True,
-                                                                target_server=mpihelpers.mpi_server_list)
-        for r in mpi_results:
-            env_details.append(r['ret'])
+# TODO: remove this commented-out code after verifying that
+# the deferred cluster_details() function works as intended.
+# Cluster details are now deferred until first requested
+# def _cluster_details():
+#     env_details = [node_details]
+#     if mpihelpers.is_mpi_ready():
+#         mpi_results = mpihelpers.mpiclient.push_command_request('pipeline.environment.node_details', block=True,
+#                                                                 target_server=mpihelpers.mpi_server_list)
+#         for r in mpi_results:
+#             env_details.append(r['ret'])
 
-    return env_details
+#     return env_details
 
 
 casa_version = casatasks.version()

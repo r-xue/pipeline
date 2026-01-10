@@ -12,9 +12,8 @@ from pipeline.infrastructure import casa_tasks
 from .imageparams_vlass_single_epoch_continuum import ImageParamsHeuristicsVlassSeContMosaic
 
 if TYPE_CHECKING:
+    from pipeline.hif.tasks.makeimlist.cleantarget import CleanTarget
     from pipeline.infrastructure.vdp import StandardInputs
-    from pipeline.hif.tasks.makeimlist import CleanTarget
-
 
 LOG = infrastructure.logging.get_logger(__name__)
 

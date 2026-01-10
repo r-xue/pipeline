@@ -3,7 +3,6 @@ Created on 28 Apr 2017
 
 @author: Vincent Geers (UKATC)
 """
-import collections
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates

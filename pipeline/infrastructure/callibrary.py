@@ -10,7 +10,7 @@ import operator
 import os
 import uuid
 import weakref
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 import cachetools
 import intervaltree
@@ -20,7 +20,7 @@ from casatasks.private.callibrary import applycaltocallib
 from . import casa_tools, launcher, logging, utils
 
 if TYPE_CHECKING:
-    from collections.abc import Generator, Iterable
+    from collections.abc import Callable, Generator, Iterable
 
     from pipeline.domain import Field, MeasurementSet, SpectralWindow
 

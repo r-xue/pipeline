@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import collections
 import os
 import shutil
-from typing import Callable
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -13,14 +15,18 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.hif.tasks import gaincal
-from pipeline.hif.tasks.bandpass.common import BandpassResults
-from pipeline.hif.tasks.gaincal.common import GaincalResults
 from pipeline.hifa.heuristics import atm as atm_heuristic
 from pipeline.hifa.heuristics import wvrgcal as wvrgcal_heuristic
 from pipeline.hifa.tasks import bandpass
 from pipeline.infrastructure import casa_tasks, task_registry
 from . import resultobjects
 from . import wvrg_qa
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+    from pipeline.hif.tasks.bandpass.common import BandpassResults
+    from pipeline.hif.tasks.gaincal.common import GaincalResults
 
 __all__ = [
     'Wvrgcal',

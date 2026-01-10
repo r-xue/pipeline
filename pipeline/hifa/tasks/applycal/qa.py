@@ -7,6 +7,7 @@ of the web log.
 from __future__ import annotations
 
 import collections
+import collections.abc
 import copy
 import dataclasses
 import itertools

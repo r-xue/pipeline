@@ -5,7 +5,6 @@ Created on 24 Aug 2015
 """
 import collections
 import copy
-import glob
 import operator
 import os
 import shutil

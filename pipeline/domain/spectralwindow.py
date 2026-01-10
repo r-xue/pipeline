@@ -15,12 +15,15 @@ from typing import TYPE_CHECKING
 
 import numpy
 
+import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 
 from . import measures
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator, Sequence
+
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class ArithmeticProgression:

@@ -58,6 +58,7 @@ Examples:
 
 """
 import collections
+import collections.abc
 import copy
 import inspect
 import numbers

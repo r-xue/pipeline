@@ -11,7 +11,7 @@ from pubsub import pub
 from .events import Event
 
 if TYPE_CHECKING:
-    from typing import Callable
+    from collections.abc import Callable
 
 E = TypeVar('E', bound=Event)
 

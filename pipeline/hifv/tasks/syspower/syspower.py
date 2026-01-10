@@ -1,16 +1,15 @@
 import ast
+import collections
 import os
 import re
 import shutil
 from copy import deepcopy
 from math import factorial
-import collections
 
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry

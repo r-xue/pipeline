@@ -1,12 +1,17 @@
 """
 Heuristic for identifying and/or defining the SPW designation, either as a continuum window or for spectral line analysis
 """
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 import pipeline.infrastructure as infrastructure
-from pipeline.domain.spectralwindow import SpectralWindow
-from pipeline.domain.measurementset import MeasurementSet
 from pipeline.infrastructure.utils.conversion import range_to_list, commafy
 from pipeline.infrastructure.utils import find_ranges
+
+if TYPE_CHECKING:
+    from pipeline.domain.spectralwindow import SpectralWindow
+    from pipeline.domain.measurementset import MeasurementSet
 
 LOG = infrastructure.logging.get_logger(__name__)
 

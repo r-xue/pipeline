@@ -4,11 +4,11 @@ from __future__ import annotations
 import glob
 import os
 import traceback
-from typing import TYPE_CHECKING, Any, NoReturn
+from typing import TYPE_CHECKING
 
+import numpy as np
 from matplotlib.figure import Figure
 from matplotlib.ticker import NullFormatter
-import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
@@ -19,6 +19,7 @@ from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from typing import Any, NoReturn
 
     from matplotlib.axes import Axes
 

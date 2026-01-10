@@ -22,7 +22,7 @@ QAPlugin.handle(context, result), the method overridden by the task-specific
 QAPlugin.
 """
 import abc
-import collections
+import collections.abc
 import enum
 import operator
 import traceback

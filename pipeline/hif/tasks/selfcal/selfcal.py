@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import copy
 import json
 import os
@@ -7,7 +9,7 @@ import traceback
 from datetime import datetime
 from fnmatch import fnmatch
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING
 
 import numpy as np
 from astropy.utils.misc import JsonCustomEncoder
@@ -23,9 +25,12 @@ from pipeline.domain import DataType
 from pipeline.hif.heuristics.auto_selfcal import auto_selfcal
 from pipeline.hif.tasks.applycal import SerialIFApplycal
 from pipeline.hif.tasks.makeimlist import MakeImList
-from pipeline.infrastructure import callibrary, casa_tasks, casa_tools, logging, task_registry, utils
+from pipeline.infrastructure import callibrary, casa_tasks, casa_tools, task_registry, utils
 from pipeline.infrastructure.contfilehandler import contfile_to_chansel
 from pipeline.infrastructure.mpihelpers import TaskQueue
+
+if TYPE_CHECKING:
+    from typing import Any
 
 LOG = infrastructure.get_logger(__name__)
 

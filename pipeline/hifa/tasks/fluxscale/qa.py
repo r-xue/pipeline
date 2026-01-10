@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import ast
 import collections
+import collections.abc
 import functools
 import operator
 import re

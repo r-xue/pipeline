@@ -7,6 +7,7 @@ user.
 from __future__ import annotations
 
 import collections
+import collections.abc
 import datetime
 import decimal
 import math

@@ -21,8 +21,8 @@ from pipeline.infrastructure.utils import absolute_path, relative_path, list_to_
 from . import compress
 
 if TYPE_CHECKING:
-    from collections.abc import Generator, Iterable, Sequence
-    from typing import Any, Callable
+    from collections.abc import Generator, Iterable, Sequence, Callable
+    from typing import Any
 
     from casatools import table as casa_table
 

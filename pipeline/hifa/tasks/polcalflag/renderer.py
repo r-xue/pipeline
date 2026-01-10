@@ -3,7 +3,6 @@ Created on 25 Mar 2020
 
 @author: Dirk Muders (MPIfR)
 """
-import collections
 
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates

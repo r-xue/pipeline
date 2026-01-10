@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import collections
 import os
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING
 
 import numpy
 
@@ -15,19 +15,21 @@ import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.domain import DataType
 from pipeline.hsd.heuristics import MaskDeviationHeuristic
+from pipeline.hsd.tasks.common.inspection_util import generate_ms, inspect_reduction_group, merge_reduction_group
 from pipeline.infrastructure import task_registry
 from . import maskline
 from . import worker
 from .. import common
 from ..common import compress
-from pipeline.hsd.tasks.common.inspection_util import generate_ms, inspect_reduction_group, merge_reduction_group
 from ..common import utils
 
-from .typing import FitFunc, FitOrder, LineWindow
-
 if TYPE_CHECKING:
+    from collections.abc import Callable
+    from typing import Any
+
     from pipeline.infrastructure.api import Heuristic
     from pipeline.infrastructure.launcher import Context
+    from .typing import FitFunc, FitOrder, LineWindow
 
 # import memory_profiler
 LOG = infrastructure.logging.get_logger(__name__)

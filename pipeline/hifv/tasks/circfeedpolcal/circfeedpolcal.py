@@ -1,7 +1,6 @@
-import os
-import math
 import ast
-import collections
+import math
+import os
 import traceback
 
 import pipeline.hif.heuristics.findrefant as findrefant
@@ -13,12 +12,8 @@ from pipeline.hif.tasks.polarization import polarization
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
 from pipeline.hifv.heuristics import uvrange
 from pipeline.hifv.heuristics.lib_EVLApipeutils import vla_minbaselineforcal
-from pipeline.hifv.tasks.finalcals.finalcals import FinalcalsResults as FinalcalsResults
-from pipeline.hifv.tasks.importdata.importdata import VLAImportDataResults as VLAImportDataResults
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
-
-
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -117,6 +112,7 @@ class CircfeedpolcalInputs(vdp.StandardInputs):
         self.clipminmax = clipminmax
         self.refant = refant
         self.run_setjy = run_setjy
+
 
 @task_registry.set_equivalent_casa_task('hifv_circfeedpolcal')
 class Circfeedpolcal(polarization.Polarization):
@@ -481,7 +477,6 @@ class Circfeedpolcal(polarization.Polarization):
                     fluxcalfieldname = m.get_fields(intent='POLANGLE')[0].name
                     fluxcal = fluxcalfieldname
 
-
         try:
             task_args = {}
             if fluxcal in ('3C286', '1331+3030', '"1331+305=3C286"', 'J1331+3030'):
@@ -610,5 +605,3 @@ class Circfeedpolcal(polarization.Polarization):
         job = casa_tasks.flagdata(**task_args)
 
         return self._executor.execute(job)
-
-

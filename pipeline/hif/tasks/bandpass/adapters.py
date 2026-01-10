@@ -138,14 +138,14 @@ class PolynomialHeuristicAdapter(adapters.Adapter):
             data = numpy.zeros([num_antenna+1, nchannels], complex)
             flag = numpy.zeros([num_antenna+1, nchannels], bool)
 
-            antennas1 = [antenna1[i] for i in range(numpy.shape(gain)[2])
-                         if i in antenna_ids]
-            for ant in antennas1:
-                for p in range(npol):
-                    data[ant, :] += gain[p, :, i]
-                    flag[ant, :] = numpy.logical_or(flag[ant, :],
-                     cal_flag[p, :, i])
-                data[ant, :] /= float(npol)
+            for i in range(numpy.shape(gain)[2]):
+                if i in antenna_ids:
+                    ant = antenna1[i]
+                    for p in range(npol):
+                        data[ant, :] += gain[p, :, i]
+                        flag[ant, :] = numpy.logical_or(flag[ant, :],
+                         cal_flag[p, :, i])
+                    data[ant, :] /= float(npol)
 
         return data
 

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import contextlib
-import contextvars
 import inspect
 from functools import wraps
 from typing import TYPE_CHECKING
@@ -17,8 +16,9 @@ from .. import heuristics
 from . import cli
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
-    from typing import Any, Callable
+    from collections.abc import Callable, Generator
+    from contextvars import ContextVar
+    from typing import Any
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -87,7 +87,7 @@ def cli_wrapper(func: Callable) -> Callable:
     return wrapper
 
 @contextlib.contextmanager
-def set_contextvar(var: contextvars.ContextVar, value: Any) -> Generator[None, None, None]:
+def set_contextvar(var: ContextVar, value: Any) -> Generator[None, None, None]:
     """A context manager to safely set and reset a ContextVar."""
     token = var.set(value)
     try:

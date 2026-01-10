@@ -7,7 +7,7 @@ import os
 import warnings
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 import numpy as np
 import scipy.optimize
@@ -18,6 +18,8 @@ from . import mswrapper, qa_utils
 from .qa_utils import UnitFactorType
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from pipeline.domain import MeasurementSet
 
 LOG = infrastructure.logging.get_logger(__name__)

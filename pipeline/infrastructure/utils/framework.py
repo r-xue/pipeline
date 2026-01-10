@@ -8,6 +8,7 @@ The framework module contains:
 from __future__ import annotations
 
 import collections
+import collections.abc
 import copy
 import errno
 import glob

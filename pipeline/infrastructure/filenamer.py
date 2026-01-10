@@ -1,7 +1,6 @@
 import os
-import shutil
-import string
 import re
+import string
 
 from . import utils
 

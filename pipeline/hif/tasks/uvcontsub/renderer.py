@@ -1,7 +1,6 @@
 import collections
 import os
 
-import pipeline.infrastructure
 #import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils

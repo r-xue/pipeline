@@ -5,7 +5,6 @@ import os
 
 import numpy as np
 
-import pipeline.domain.measures as measures
 import pipeline.h.tasks.applycal.renderer as applycal_renderer
 import pipeline.infrastructure
 import pipeline.infrastructure.filenamer as filenamer

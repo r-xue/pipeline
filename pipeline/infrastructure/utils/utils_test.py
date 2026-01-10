@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import copy
 import os
 import sys
 from collections.abc import Callable
-from typing import Any
+from typing import TYPE_CHECKING
 from unittest.mock import Mock
 
 import numpy as np
@@ -15,6 +17,9 @@ from .utils import find_ranges, dict_merge, are_equal, approx_equal, flagged_int
     get_casa_quantity, fieldname_for_casa, fieldname_clean, \
     get_field_accessor, get_field_identifiers, get_receiver_type_for_spws, place_repr_source_first, \
     get_taskhistory_fromimage, list_to_str
+
+if TYPE_CHECKING:
+    from typing import Any
 
 params_find_ranges = [('', ''), ([], ''), ('1:2', '1:2'), ([1, 2, 3], '1~3'),
                       (['5~12', '14', '16:17'], '5~12,14,16:17'),

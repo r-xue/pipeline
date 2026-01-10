@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import abc
 import collections
+import collections.abc
 import datetime
 import itertools
 import os

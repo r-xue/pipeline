@@ -34,8 +34,7 @@ from pipeline.infrastructure.displays.plotstyle import casa5style_plot
 from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
-    from typing import Callable
+    from collections.abc import Generator, Callable
 
     from pipeline.hsd.tasks.common.display import SDImageDisplayInputs
 

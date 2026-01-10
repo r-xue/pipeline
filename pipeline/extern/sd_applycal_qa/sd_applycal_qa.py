@@ -1,10 +1,9 @@
-import os, sys
-import numpy as np
 import copy
+import os
 import pickle
 from itertools import product
-import matplotlib.dates as mdates
-import casatools
+
+import numpy as np
 from scipy.stats import mstats
 
 import pipeline.infrastructure.pipelineqa as pqa
