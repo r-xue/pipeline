@@ -19,7 +19,8 @@ from pipeline.infrastructure import casa_tools, tablereader, utils
 from pipeline.infrastructure.launcher import current_task_name
 
 if TYPE_CHECKING:
-    from pipeline.domain import Antenna, AntennaArray, DataDescription, DataType, Field, Polarization, Scan, State
+    from pipeline.domain import (Antenna, AntennaArray, DataDescription,
+                                 DataType, Field, Polarization, Scan, State)
     from pipeline.infrastructure.tablereader import RetrieveByIndexContainer
 
 LOG = infrastructure.logging.get_logger(__name__)
@@ -885,8 +886,8 @@ class MeasurementSet:
             return None
         start_time = utils.get_epoch_as_datetime(self.start_time)
         for cycle, (start_str, end_str) in cycle_numbers.items():
-            start = datetime.datetime.strptime(start_str, '%Y-%m-%d')
-            end = datetime.datetime.strptime(end_str, '%Y-%m-%d')
+            start = datetime.datetime.strptime(start_str, '%Y-%m-%d').replace(tzinfo=datetime.timezone.utc)
+            end = datetime.datetime.strptime(end_str, '%Y-%m-%d').replace(tzinfo=datetime.timezone.utc)
             if start <= start_time <= end:
                 return cycle
         return None  # No match

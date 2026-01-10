@@ -791,7 +791,7 @@ class T1_4MRenderer(RendererBase):
         ## The end time of the last task is tentatively defined as the time of current time.
         timestamps = [ r.timestamps.start for r in context.results ]
         # tentative task end time stamp for the last stage
-        timestamps.append(datetime.datetime.utcnow())
+        timestamps.append(datetime.datetime.now(datetime.timezone.utc))
         task_duration = []
         for i in range(len(context.results)):
             # task execution duration
