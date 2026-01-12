@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING
 from pipeline.domain.spectralwindow import match_spw_basename
 from pipeline.infrastructure import basetask, exceptions, logging
 
+from . import daskhelpers
 from . import mpihelpers, utils, vdp
 
 __all__ = [
@@ -27,7 +28,7 @@ __all__ = [
 ]
 
 if TYPE_CHECKING:
-    from pipeline.domain import MeasurementSet, ObservingRun
+    from pipeline.domain import MeasurementSet
 
 LOG = logging.get_logger(__name__)
 
@@ -184,7 +185,7 @@ class VDPTaskFactory(object):
     def __enter__(self):
         # If there's a possibility that we'll submit MPI jobs, save the context
         # to disk ready for import by the MPI servers.
-        if mpihelpers.mpiclient:
+        if mpihelpers.mpiclient or daskhelpers.daskclient:
             # Use the tempfile module to generate a unique temporary filename,
             # which we use as the output path for our pickled context
             tmpfile = tempfile.NamedTemporaryFile(suffix='.context',
@@ -200,6 +201,29 @@ class VDPTaskFactory(object):
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.__context_path and os.path.exists(self.__context_path):
             os.unlink(self.__context_path)
+
+    def _validate_args(self, task_args):
+        inputs_constructor_fn = getattr(self.__task.Inputs, '__init__')
+        valid_args = remove_unexpected_args(inputs_constructor_fn, task_args)
+        LOG.debug('Validated input arguments from %s: ', self.__task.Inputs)
+        LOG.debug('  %s', valid_args)
+
+        if issubclass(self.__task.Inputs, vdp.ModeInputs):
+            # PIPE-2841: add arguments from the underlying active task referenced via ModeInputs,
+            # which might be absent from the constructor task input class signature.
+            active_mode_task = self.__task.Inputs._modes[self.__inputs.mode]
+            task_inputs_cls = active_mode_task.Inputs
+            inputs_constructor_fn = getattr(task_inputs_cls, '__init__')
+            valid_args_modeinputs = remove_unexpected_args(inputs_constructor_fn, task_args)
+
+            LOG.debug('Validated input arguments from %s (delegated from ModeInputs) ', task_inputs_cls)
+            LOG.debug('  %s', valid_args_modeinputs)
+            valid_args = valid_args | valid_args_modeinputs
+
+        LOG.debug('Validated input arguments for constructing a vdp task from %s: ', self.__task)
+        LOG.debug('  %s', valid_args)
+
+        return valid_args
 
     def get_task(self, vis):
         """
@@ -219,23 +243,9 @@ class VDPTaskFactory(object):
         # task, and hence and hence have a different signature. For
         # instance, the session-aware Inputs classes accept a
         # 'parallel' argument, which the non-session tasks do not.
-        #
-        # To make things complicated, ModeInputs are a special case.
-        # Here we shouldn't inspect the constructor signature of the
-        # task as it doesn't reflect that of the active task, which is
-        # the one that we would want to filter on. So, if the task's
-        # Inputs are ModeInputs, dereference the task's Inputs class.
-        if issubclass(self.__task.Inputs, vdp.ModeInputs):
-            active_mode_task = self.__task.Inputs._modes[self.__inputs.mode]
-            task_inputs_cls = active_mode_task.Inputs
-        else:
-            task_inputs_cls = self.__task.Inputs
-        valid_args = validate_args(task_inputs_cls, task_args)
+        valid_args = self._validate_args(task_args)
 
-        is_mpi_ready = mpihelpers.is_mpi_ready()
-        is_tier0_job = is_mpi_ready
-
-        parallel_wanted = mpihelpers.parse_mpi_input_parameter(self.__inputs.parallel)
+        parallel_wanted = mpihelpers.parse_parallel_input_parameter(self.__inputs.parallel)
 
         # PIPE-2114: always execute per-EB "SerialTasks" from the MPI client process in a single-EB
         # data processing session.
@@ -244,7 +254,10 @@ class VDPTaskFactory(object):
                       'to execute the task on the MPIclient.')
             parallel_wanted = False
 
-        if is_tier0_job and parallel_wanted:
+        if parallel_wanted and daskhelpers.is_dask_ready():
+            executable = mpihelpers.Tier0PipelineTask(self.__task, valid_args, self.__context_path)
+            return valid_args, daskhelpers.FutureTask(executable)
+        elif parallel_wanted and mpihelpers.is_mpi_ready():
             executable = mpihelpers.Tier0PipelineTask(self.__task, valid_args, self.__context_path)
             return valid_args, mpihelpers.AsyncTask(executable)
         else:
@@ -283,12 +296,6 @@ def remove_unexpected_args(fn, fn_args):
     # LOG.info('Valid: {!s}'.format(x))
 
     return x
-
-
-def validate_args(inputs_cls, task_args):
-    inputs_constructor_fn = getattr(inputs_cls, '__init__')
-    valid_args = remove_unexpected_args(inputs_constructor_fn, task_args)
-    return valid_args
 
 
 def get_spwmap(source_ms: MeasurementSet, target_ms: MeasurementSet) -> dict[int, int]:

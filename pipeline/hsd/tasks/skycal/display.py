@@ -394,7 +394,7 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
         """Initialize the class.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
             result: Pipeline task execution result.
             field: Field string. Either field id or field name.
         """
@@ -462,7 +462,7 @@ class SingleDishPlotmsLeaf(object):
         to customize plotms but currently those parameters are ignored.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
             result: SDSkyCalResults instance.
             calapp: CalApplication instance.
             xaxis: The content of X-axis of the plot.
@@ -648,7 +648,7 @@ class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
         """Initialize the class.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
             result: SDSkyCalResults instance.
             calapp: List of CalApplication instances.
         """
@@ -669,7 +669,7 @@ class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
         """Initialize the class.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
             result: SDSkyCalResults instance.
             calapp: List of CalApplication instances.
         """
@@ -688,7 +688,7 @@ def plot_elevation_difference(
     """Generate plot of elevation difference.
 
     Args:
-        context: Pipeline context.
+        context: Pipeline context object containing state information.
         result: SDSkyCalResults instance.
         eldiff: -- dictionary whose value is ElevationDifference named tuple instance that holds
                       'timeon': timestamp for ON-SOURCE pointings
@@ -837,6 +837,7 @@ def plot_elevation_difference(
 
             antenna_name = ms.antennas[antenna_id].name
 
+            xmin, xmax = None, None
             for spw_id, eld in eldant.items():
                 if len(eld.timeon) == 0 or len(eld.timecal) == 0:
                     continue
@@ -875,26 +876,28 @@ def plot_elevation_difference(
                         for a in [a1, a3]:
                             a.plot(x, y, ls, mew=0)
 
-            # finalize figure for per-antenna plot
-            finalize_figure(figure0, ms.basename, field_name, antenna_name, xmin, xmax)
+            # skip per-antenna plots if there are no data to plot
+            if xmin and xmax:
+                # finalize figure for per-antenna plot
+                finalize_figure(figure0, ms.basename, field_name, antenna_name, xmin, xmax)
+
+                # generate plot object
+                plot = generate_plot(figure0, ms.basename, field_name, antenna_name)
+                figure0.clear()
+                if plot is not None:
+                    plots_per_field.append(plot)
+
+        # skip summary if there are no data to plot
+        if global_xmin and global_xmax:
+            # finalize figure for summary plot
+            finalize_figure(figure1, ms.basename, field_name, 'ALL', global_xmin, global_xmax)
 
             # generate plot object
-            plot = generate_plot(figure0, ms.basename, field_name, antenna_name)
+            plot = generate_plot(figure1, ms.basename, field_name, '')
+            figure1.clear()
             if plot is not None:
                 plots_per_field.append(plot)
 
-            figure0.clear()
-
-        # finalize figure for summary plot
-        finalize_figure(figure1, ms.basename, field_name, 'ALL', global_xmin, global_xmax)
-
-        # generate plot object
-        plot = generate_plot(figure1, ms.basename, field_name, '')
-        if plot is not None:
-            plots_per_field.append(plot)
-
         plots.extend(plots_per_field)
-
-        figure1.clear()
 
     return plots
