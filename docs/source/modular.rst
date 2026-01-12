@@ -1,17 +1,23 @@
 Run the Pipeline in a Conda environment
 ================================================
 
+
 .. warning::
 
  Running and developing the pipeline from a Conda environment is not officially supported or validated for observatory operation, and the information provided here is for demonstration purposes only.
 
+.. contents:: Table of Contents
+   :local:
+   :depth: 2
+
+
 Setup - step-by-step
 -------------------------------------
 
-- Install ``Miniforge``: We recommend the minimal `miniforge3`_ installer, which only includes the `conda-forge`_ channel by default.
-  
-.. _miniforge: https://github.com/conda-forge/miniforge
-.. _miniforge3: https://github.com/conda-forge/miniforge
+
+.. _Miniforge: https://github.com/conda-forge/miniforge
+.. _Micromamba: https://micromamba.readthedocs.io/en/latest/
+.. _miniforge3: https://github.com/conda-forge/miniforge/releases
 .. _conda-forge: https://conda-forge.org
 .. _CASA6: https://casadocs.readthedocs.io/en/stable/
 .. _Pipeline: https://open-bitbucket.nrao.edu/projects/PIPE
@@ -19,62 +25,89 @@ Setup - step-by-step
 .. _casatasks: https://casadocs.readthedocs.io/en/stable/api/casatasks.html
 .. _casatools: https://casadocs.readthedocs.io/en/stable/api/casatools.html
 
-- Reproduce a Python environment with modular `CASA6`_ components and their dependency libraries and helper tools, e.g., `openmpi <https://www.open-mpi.org>`_.
+- Install `Miniforge`_ or `Micromamba`_: below we use `miniforge3`_ installer as examples, which only includes the `conda-forge`_ channel by default.
+
+.. code-block:: bash
+
+  #!/bin/bash
+
+  # 1. Detect OS and Architecture
+  OS=$(uname -s | sed 's/Darwin/MacOSX/')
+  ARCH=$(uname -m)
+
+  # 2. Construct the download URL
+  URL="https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-${OS}-${ARCH}.sh"
+
+  # 3. Download the installer
+  echo "Downloading Miniforge for ${OS}-${ARCH}..."
+  curl -L "$URL" -o miniforge.sh
+
+  # 4. Run the installer (using sudo for /opt permissions)
+  # -b = Batch mode (no questions)
+  # -p = Prefix (installation path)
+  # -f = Force (overwrite if exists)
+  echo "Installing to /opt/miniforge3..."
+  sudo bash miniforge.sh -b -f -p /opt/miniforge3
+
+  # 5. Cleanup
+  rm miniforge.sh
+  echo "Installation complete."
+
+- Reproduce a Python environment with modular `CASA6`_ components and the dependency libraries required by them and Pipeline, e.g., `openmpi <https://www.open-mpi.org>`_.
 
   - Fetch source code:
 
     .. code-block:: bash
 
-      git clone https://open-bitbucket.nrao.edu/scm/pipe/pipeline.git \
-        --branch update-docs-build-and-packaging-setup
+      git clone https://open-bitbucket.nrao.edu/scm/pipe/pipeline.git
       cd pipeline
   
-  - Recreate the Conda environment with all CASA6 components for `Pipeline`_ development:
+  - Recreate the Conda environment with all CASA6 components for `Pipeline`_ operation or development:
 
     .. code-block:: bash
 
-      conda env update --file=environment.yml
+      conda env update --name pipeline --file=environment.yml
       
-    or just
+    or just simply run:
 
     .. code-block:: bash
 
       conda env update
 
     This will create or update a Conda environment named 'pipeline'.  
-    You might also update the packages/libraries in the existing environment:
 
-    .. code-block:: bash
+    .. note::
+      
+        Occasionally, you might also update, clean up, or remove a pre-existing environment:
 
-      conda update -n pipeline --all
+        .. code-block:: bash
 
-    However, this will likely upgrade the pinned software version defined in ``environment.yml`` and introduce potential issues.
-    But you can always pin them back by rerunning ``conda env update --file=environment.yml``.
+          conda env update --name pipeline --file=environment.yml # Update an existing environment
+          conda env update --name pipeline --file=environment.yml --prune # Remove packages not in the environment file
+          conda env remove --name pipeline # Remove the entire environment
 
-    To clean up an existing environment and start fresh:
+- Activate the environment and verify the `CASA6`_ software stack installation:
 
-    .. code-block:: bash
+  .. code-block:: bash
 
-      conda env remove -n pipeline
-
-    If you just want to remove one component:
-
-    .. code-block:: bash
-
-      conda remove -n pipeline mpi4py
+    conda activate pipeline
+    # Create the default CASA data directory if it doesn't exist (can be customized later)
+    mkdir -p ~/.casa/data
+    # Verify casatools installation/functionality; CASA data could be fetched from internet if not present locally by casaconfig
+    # https://casadocs.readthedocs.io/en/stable/api/casaconfig.html
+    python -c "import casatools; print('casatools version:', casatools.version_string())"
 
 - Install `Pipeline`_:
 
   .. code-block:: bash
 
-    conda activate pipeline
     pip install .
 
-  or to use an add-on library for development and experimental purposes in editable mode, try:
+  To install `Pipeline`_ along with add-on libraries for developmental and experimental purposes in editable mode, try:
 
   .. code-block:: bash
 
-    pip install -e .[dev,docs,exp]
+    pip install -e .[dev,docs]
 
   Note that the `ReadtheDocs` setup of `Pipeline`_ uses this approach for documentation builds (see `.readthedocs.yaml`)
 
@@ -88,14 +121,24 @@ Setup - step-by-step
 Run `Pipeline`_
 ---------------
 
-Typical use pattern (see more details below):
+Typical use patterns of `Pipeline`_ include running within a headless environment, or workstation interactive mode, either in serial or parallel mode:
+
+For interactive workstation sessions, one could simply run:
+
+.. code-block:: bash
+
+  conda activate pipeline
+  python -m casashell
+
+For headless sessions with automated `Pipeline`_ processing,
 
 .. code-block:: bash
 
   conda activate pipeline
   xvfb-run -a python run_pipeline.py
 
-``run_pipeline.py`` is a demo script. An example context could be:
+
+Here ``run_pipeline.py`` is a demo script. Example content could be:
 
 .. code-block:: python
 
@@ -103,46 +146,94 @@ Typical use pattern (see more details below):
   pipeline.recipereducer.reduce(vis=['../rawdata/uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms'],
                                 procedure='procedure_hifa_calimage.xml', loglevel='debug')
 
+or alternatively:
+
+.. code-block:: python
+
+  context = h_init()
+  context.set_state('ProjectStructure', 'recipe_name', 'hifa_calimage')
+  try:
+      hifa_importdata(vis=['uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms'], session=['default'], dbservice=True)
+      hifa_flagdata()
+      hifa_fluxcalflag()
+      hif_rawflagchans()
+      hif_refant()
+      h_tsyscal()
+      hifa_tsysflag()
+      hifa_tsysflagcontamination()
+      hifa_antpos()
+      hifa_wvrgcalflag()
+      hif_lowgainflag()
+      hif_setmodels()
+      hifa_bandpassflag()
+      hifa_bandpass()
+      hifa_spwphaseup()
+      hifa_gfluxscaleflag()
+      hifa_gfluxscale()
+      hifa_timegaincal()
+      hifa_renorm(createcaltable=True, atm_auto_exclude=True)
+      hifa_targetflag()
+      hif_applycal()
+      hif_makeimlist(intent='PHASE,BANDPASS,AMPLITUDE')
+      hif_makeimages()
+      hif_makeimlist(intent='CHECK', per_eb=True)
+      hif_makeimages()
+      hifa_imageprecheck()
+      hif_checkproductsize(maxcubesize=40.0, maxcubelimit=60.0, maxproductsize=500.0)
+  finally:
+      h_save()
+
+
+
+Some examples of more detailed and strictly managed ways to run the `Pipeline`_ in serial or parallel mode sessions follow.
+
 Serial session
 ^^^^^^^^^^^^^^
 
-- A standard Python session:
+- A plain Python session without invoking `casashell`_:
 
   .. code-block:: bash
 
-    PYTHONNOUSERSITE=1 OMP_NUM_THREADS=8 xvfb-run -a python ../scripts/run_pipeline.py
+    PYTHONNOUSERSITE=1 OMP_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 xvfb-run -a python ../scripts/run_pipeline.py
 
-- Via `casashell`_:
+  Here we isolate the user site-packages by setting the `PYTHONNOUSERSITE` environment variable to `1` to avoid potential package conflicts.
+  We also set `OMP_NUM_THREADS` to control the number of threads used by OpenMP/OpenBlas-enabled libraries (e.g., `numpy`, `scipy`, `casatools`, etc.) during the Pipeline processing.
+
+- A session via `casashell`_, with `CASA6`_ logging and plotting enabled:
 
   .. code-block:: bash
 
-    PYTHONNOUSERSITE=1 OMP_NUM_THREADS=8 xvfb-run -a \
+    PYTHONNOUSERSITE=1 OMP_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 xvfb-run -a \
     python -m casashell --nologger --log2term --agg -c ../scripts/run_pipeline.py
 
 Parallel (``mpicasa``) session
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-As reported in `CAS-14037 <https://open-jira.nrao.edu/browse/CAS-14037>`_, to avoid circular imports during the `casampi` process initialization, you need to execute `casampi.private.start_mpi` before and outside the scope of `casatasks`_ or `casashell`_ (which implicitly import `casatasks`). As a workaround, include the following boilerplate command at the beginning of your workflow script.
-
-  .. code-block:: python
-
-    try:
-        import casampi.private.start_mpi  # assign the client and server roles
-        import casatasks                  # ensure the time-based logfile name
-    except (ImportError, RuntimeError) as error:
-        pass
-
-- A standard Python session:
+- A standard Python session with invoking `casashell`_:
 
   .. code-block:: bash
 
-    PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 xvfb-run -a \
-    mpirun -display-allocation -display-map -oversubscribe --mca btl_vader_single_copy_mechanism none -x OMP_NUM_THREADS -n 4 \
-            python -c "import casampi.private.start_mpi; exec(open('../scripts/run_pipeline.py').read())"
+    PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+    mpirun --mca btl_vader_single_copy_mechanism none -x OMP_NUM_THREADS -x OPENBLAS_NUM_THREADS -x PRTE_MCA_quiet -np 4 \
+            python -c "import casampi.private.start_mpi; exec(open('run_pipeline.py').read())"  
 
- If you run a parallel CASA session without going through `casashell`_ (e.g., `mpirun -n 4 python run_script.py`), place the code snippet above at the beginning of your Python script before any `casatasks` import actions to avoid deadlocks.
 
-- Via `casashell`_:
+  As discussed/examined in `CAS-14037 <https://open-jira.nrao.edu/browse/CAS-14037>`_, `casashell`_ include certain setup-dependent (modular vs. monolithic) Python environment initialization to help casampi setup the client and server roles for different openmpi process and avoid circular imports during the `casampi` process initialization. Without `casashell` involvement, you need to execute `casampi.private.start_mpi` before and outside the scope of `casatasks`_ or `casashell`_ (which implicitly import `casatasks`). As a workaround, include the following boilerplate command at the beginning of your workflow script.
+
+    .. code-block:: python
+
+      try:
+          import casampi.private.start_mpi  # assign the client and server roles
+          import casatasks                  # ensure the time-based logfile name
+      except (ImportError, RuntimeError) as error:
+          pass
+  
+  Alternatively, as above example, prepend them into a one-liner command with `-c` option of `python` executable.
+  If you run a parallel CASA session without going through `casashell`_ (e.g., `mpirun -n 4 python run_script.py`), place the code snippet above at the beginning of your Python script before any `casatasks` import actions to avoid deadlocks.
+
+  The consequence of not doing so is that all openmpi process will be initialized in the same way, and instructed to execute the content of your script concurrently, without the expected ``1 x mpiclient + (nproc-1) x mpiserver`` configuration.
+
+- A session via `casashell`_, with `CASA6`_ logging and plotting enabled:
 
   .. code-block:: bash
 
@@ -150,15 +241,13 @@ As reported in `CAS-14037 <https://open-jira.nrao.edu/browse/CAS-14037>`_, to av
     mpirun -display-allocation -display-map -oversubscribe --mca btl_vader_single_copy_mechanism none -x OMP_NUM_THREADS -n 4 \
             python -c "import casampi.private.start_mpi; import casashell.__main__" --nologger --log2term --agg -c ../scripts/run_pipeline.py
 
- If you run a parallel CASA session with `casashell`, you need to add the code snippet inside `~/.casa/config.py`. Failure to do so will result in a deadlock the first time `casatasks` is imported. Note that we use `python -c "import casampi.private.start_mpi; import casashell.__main__"` instead of `python -m casashell`_ so that `start_mpi` runs before `casatasks`_ is imported.
+  If you run a parallel CASA session with `casashell`, you need to add the code snippet inside `~/.casa/config.py`. Failure to do so will result in a deadlock the first time `casatasks` is imported. Note that we use `python -c "import casampi.private.start_mpi; import casashell.__main__"` instead of `python -m casashell`_ so that `start_mpi` runs before `casatasks`_ is imported. 
+  the first time `casatasks` is imported in a MPI server process, it will attempt to start a new MPI environment, leading to a deadlock situation.
 
-.. note::
 
-  **Notes on macOS (including Apple Silicon)**
+.. admonition:: Notes on running a parallel CASA session from macOS
 
-  - Running a `mpicasa` session on macOS
-
-    A parallel Pipeline data processing session might hang on macOS at the compleation of the job due to lingering `casaplotms.app` sub-processes. 
+  - A parallel Pipeline data processing session might hang on macOS at the completion of the job due to lingering `casaplotms.app` sub-processes. 
     This behavior appears to be different from Linux, potentially caused by the fact that each ``casaplotms`` process spawned from a MPIserver process runs as a macOS "app".
     Although this doesn’t affect the data processing, to ensure a clean exit, one might need to use the following snippet at the end of your Python job script:
 
@@ -173,42 +262,17 @@ As reported in `CAS-14037 <https://open-jira.nrao.edu/browse/CAS-14037>`_, to av
               rs_list = client.push_command_request('plotmstool.__proc!=None', block=True,
                                                                   target_server=mpi_server_list)
               servers_with_active_plotms = [rs['server'] for rs in rs_list if rs['ret']]
-                              if servers_with_active_plotms:
-                                  print(f'servers with active plotms instances: {servers_with_active_plotms}')
-              client.push_command_request('plotmstool.__proc.kill()', block=True, target_server=servers_with_active_plotms)
+              if servers_with_active_plotms:
+                  print(f'servers with active plotms instances: {servers_with_active_plotms}')
+                  client.push_command_request('plotmstool.__proc.kill()', block=True, target_server=servers_with_active_plotms)
           except:
               pass
         
       close_plotms_on_mpiservers()
 
-    In addition, ``xvfb-run`` is unavailable on macOS, therefore, you are not able to use it for headless sessions. To complete a Pipeline processing session with casaplotms as necessary, one has to remotely login in GUI and casaplotms GUI will show up in the desktop GUI end and can't be forwarded.
 
-  - With ``casashell``:
-
-      .. code-block:: bash
-
-        PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 \
-        mpirun -display-allocation -display-map -oversubscribe --mca btl_vader_single_copy_mechanism none -x OMP_NUM_THREADS -x PYTHONNOUSERSITE -n 4 \
-                    python -c "import casampi.private.start_mpi; import casashell.__main__" --nologger --log2term --agg -c ../scripts/run_pltest.py
-
-  - Without ``casashell``:
-
-      .. code-block:: bash
-
-        PYTHONNOUSERSITE=1 OMP_NUM_THREADS=1 \
-        mpirun -display-allocation -display-map -oversubscribe --mca btl_vader_single_copy_mechanism none -x OMP_NUM_THREADS -x PYTHONNOUSERSITE -n 4 \
-                    python -c "import casampi.private.start_mpi; exec(open('../scripts/run_pltest.py').read())"
-
-  - ``x86_64`` vs ``arm64``
-
-    * `casatools`_ wheels started become available on both ``x86_64`` and ``arm64`` archiectures of macOS (see the `CASA6 compaibility matrix <https://casadocs.readthedocs.io/en/stable/notebooks/introduction.html#Compatibility>`_)
-
-    * Because the `casatools`_ wheels only start being built from CASA ver>=6.6.4 with Py3.10 on the ARM64 (Apple Silicon) platform:
-
-      * If your local **Conda installation architecture** is "x86_64" (either an Intel Mac or Apple Silicon Mac with the Rosetta 2 emulation layer),
-      you can keep using the "python=3.8" in the Conda environment for full compatibility and support of all Pipeline features. Note one might need to set
-      an environment variable (SYSTEM_VERSION_COMPAT=0) for your Conda command because `Conda/Python3.8 <https://github.com/pypa/packaging/pull/319>`_ is too old for pip to recognize the macOS version labels. If your local Conda architecture is "arm64" (native on Apple Silicon Macs), please choose the Python 3.10 setup (as specified in the latest `pipeline.yml``).
-      The support of CPU architectures from `miniforge`_ can be found `here <https://github.com/conda-forge/miniforge?tab=readme-ov-file#miniforge3>`_
+    In addition, ``xvfb-run`` is not available on macOS, even if xvfb/X11 is installed; therefore, you may not be able to use it for headless sessions.
+    Additionally, to complete a Pipeline processing session requiring ``casaplotms``, one must log in remotely with GUI access. The ``casaplotms`` GUI will appear in the desktop environment but cannot be forwarded via X11.
 
 
 Useful shorthand
