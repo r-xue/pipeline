@@ -5,7 +5,6 @@ import time
 
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure as infrastructure
-from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.hifv.heuristics.lib_EVLApipeutils import vla_minbaselineforcal
@@ -95,12 +94,6 @@ def computeChanFlag(vis, caltable, context):
                 LOG.info('WEAKBP FAILED SOLUTION: SPW '+str(spwArr[0])+': '+str(row[0])+'~'+str(row[-1]))
                 if length > len(flagArr[1])/32.0:
                     largechunk = True
-
-            # print rrow.rjust(4), 'Pol A:', str(np.sum(flagArr[0])).rjust(4),' Pol B:',
-                    # str(np.sum(flagArr[1])).rjust(4),
-                    # ' / ',str(len(flagArr[0])),
-                    # ' chan flagged ', '(', 100.0*float(np.sum(flagArr[0]))/len(flagArr[0]),
-                    # '%,  ',                                 100.0*float(np.sum(flagArr[1]))/len(flagArr[1]), '%)'
 
     spwids = np.unique(spwids)
     spwids = list(spwids)
