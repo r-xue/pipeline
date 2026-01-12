@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+import time
 
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure as infrastructure
@@ -210,7 +211,8 @@ def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypec
     LOG.info(f"Re-running bandpass for SPWs with low S/N: {low_snr_spws}")
     # rename the old caltable
     if os.path.exists(caltable):
-        os.rename(caltable, f"{caltable}.allspws.bak")
+        timestamp = time.strftime("%Y%m%d_%H%M%S")
+        os.rename(caltable, f"{caltable}.allspws.{timestamp}.bak")
 
     # Run bandpass using high-SNR SPWs only
     bandpass_task_args['spw'] = ','.join(map(str, good_snr_spws))
