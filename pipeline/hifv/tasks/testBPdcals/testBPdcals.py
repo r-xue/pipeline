@@ -1057,7 +1057,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
             if len(badspwlist) > 0:
                 spw_info_list = []
-
+                corr_str = ''
                 for ispw in badspwlist:
                     # PIPE-1435: get list of bad polarizations for this spw
                     pol_list = badpols[iant].get(ispw, [])
@@ -1082,10 +1082,10 @@ class testBPdcals(basetask.StandardTaskTemplate):
                         "spw": str(ispw),
                         "correlation": corr_str
                         })
-                weblogflagdict[antName].append(spw_info_list)
+                weblogflagdict[antName].extend(spw_info_list)
 
             if doflagemptyspws and len(flaggedspwlist) > 0:
-
+                corr_str = ''
                 spw_info_list = []
                 for ispw in flaggedspwlist:
                     pol_list = badpols[iant].get(ispw, [])
@@ -1104,18 +1104,18 @@ class testBPdcals(basetask.StandardTaskTemplate):
                         "spw": str(ispw),
                         "correlation": corr_str
                         })
-                extflaglist.append(flaglist)
-                weblogflagdict[antName].append(spw_info_list)
+                extflaglist.extend(flaglist)
+                weblogflagdict[antName].extend(spw_info_list)
 
         # Get basebands matched with spws.  spws is a single element list with a single csv string
         tempDict = {}
         for antNamekey, spws in weblogflagdict.items():
             basebands = []
-            for spwentry in spws[0]:
+            for spwentry in spws:
                 spw = m.get_spectral_window(spwentry["spw"])
                 basebands.append(spw.name.split('#')[0] + '  ' + spw.name.split('#')[1])
             basebands = list(set(basebands))  # Unique basebands
-            tempDict[antNamekey] = {'spws': spws[0], 'basebands': basebands}
+            tempDict[antNamekey] = {'spws': spws, 'basebands': basebands}
 
         weblogflagdict = tempDict
         nflagcmds = len(flaglist) + len(extflaglist)
