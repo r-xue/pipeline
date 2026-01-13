@@ -378,7 +378,13 @@ class Syspower(basetask.StandardTaskTemplate):
                 for j, this_spw in enumerate(spws):
                     hits = np.where((sp_ant == this_ant) & (sp_spw == this_spw))[0]
                     times, ind = np.unique(sp_time[hits], return_index=True)
-                    hits2 = np.where(np.isin(sorted_time, times))[0]
+                    # Both arrays passed to np.isin are unique:
+                    #  - `times` is made unique explicitly via np.unique above.
+                    #  - `sorted_time` is constructed as the global, deduplicated time axis
+                    #    (sorted list of distinct times) earlier in this task.
+                    # Given these invariants, it is safe to set assume_unique=True here
+                    # to avoid the overhead of additional uniqueness checks.
+                    hits2 = np.where(np.isin(sorted_time, times, assume_unique=True))[0]
                     flux_hits = np.where((times >= np.min(flux_times)) & (times <= np.max(flux_times)))[0]
                     if len(hits) != len(hits2):
                         spw_problems.append(this_spw)
