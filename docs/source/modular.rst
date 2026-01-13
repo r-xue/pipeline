@@ -33,7 +33,6 @@ Setup - step-by-step
 - Install `Miniforge`_ or `Micromamba`_: below we use `miniforge3`_ installer as examples, which only includes the `conda-forge`_ channel by default.
 
   .. code-block:: bash
-    :caption: Miniforge Installation Script
 
     #!/bin/bash
 
@@ -48,14 +47,13 @@ Setup - step-by-step
     echo "Downloading Miniforge for ${OS}-${ARCH}..."
     curl -L "$URL" -o miniforge.sh
 
-    # 4. Run the installer (using sudo for /opt permissions)
-    # -b = Batch mode (no questions)
-    # -p = Prefix (installation path)
-    # -f = Force (overwrite if exists)
+    # 4. Run the installer (adjust the installation path as needed)
     echo "Installing to /opt/miniforge3..."
-    sudo bash miniforge.sh -b -f -p /opt/miniforge3
+    bash miniforge.sh -b -f -p /opt/miniforge3
 
-    # 5. Cleanup
+    # 5. Update and Cleanup
+    conda update --all
+    conda clean -a -y
     rm miniforge.sh
     echo "Installation complete."
 
@@ -72,7 +70,7 @@ Setup - step-by-step
 
     .. code-block:: bash
 
-      conda env update --name pipeline --file=environment.yml
+      PIP_VERBOSE=3 conda env update --name pipeline --file=environment.yml -vv
       
     or just simply run:
 
