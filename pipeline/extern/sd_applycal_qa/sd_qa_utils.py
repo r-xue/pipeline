@@ -1,15 +1,13 @@
-import colorsys
-import os
-
+import os, sys
 import numpy as np
-from astropy import units as u
 from scipy.interpolate import CubicSpline
 from scipy.ndimage import convolve1d
 from scipy.ndimage import gaussian_filter1d
 from scipy.optimize import minimize_scalar
-
+from astropy import units as u
 from casatools import msmetadata as msmdtool
 from casatools import table as tbtool
+import colorsys
 
 #Useful function for fully flattening array
 flattenlist = lambda l: [item for sublist in l for item in sublist]

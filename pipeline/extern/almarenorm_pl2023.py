@@ -74,12 +74,14 @@
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-import copy
 import os
 from math import *
-
+from typing import List, Union, Dict
+from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import signal
+import copy
 
 try:
     from taskinit import tbtool,msmdtool,qatool,attool, mstool, casalog, metool
@@ -97,8 +99,8 @@ myms=mstool()
 
 
 # Interface function for use by ALMA Pipeline renormalization task (PIPE-1687).
-def alma_renorm(vis: str, spw: list[int], apply: bool, threshold: None | float, excludechan: dict,
-                correct_atm: bool, atm_auto_exclude: bool, bwthreshspw: dict) -> tuple:   ## PIPE-1469 for bwthreshspw
+def alma_renorm(vis: str, spw: List[int], apply: bool, threshold: Union[None, float], excludechan: Dict,
+                correct_atm: bool, atm_auto_exclude: bool, bwthreshspw: Dict) -> tuple:   ## PIPE-1469 for bwthreshspw
     """
     Interface function for ALMA Pipeline: this runs the ALMA renormalization
     heuristic for input vis, and returns statistics and metadata required by
@@ -199,7 +201,7 @@ def alma_renorm(vis: str, spw: list[int], apply: bool, threshold: None | float, 
 
 
 
-class ACreNorm:
+class ACreNorm(object):
 
 
     def __init__(self,msname):

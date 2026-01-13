@@ -19,6 +19,7 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure.displays.summary import UVChart
+from pipeline.infrastructure.renderer.basetemplates import JsonPlotRenderer
 from ..common import flagging_renderer_utils as flagutils, mstools
 from ..common.displays import applycal as applycal
 
@@ -31,7 +32,6 @@ if TYPE_CHECKING:
     from pipeline.h.tasks.applycal.applycal import ApplycalResults
     from pipeline.infrastructure.basetask import ResultsList
     from pipeline.infrastructure.launcher import Context
-    from pipeline.infrastructure.renderer.basetemplates import JsonPlotRenderer
     from pipeline.infrastructure.renderer.logger import Plot
 
 

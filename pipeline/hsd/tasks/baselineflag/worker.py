@@ -3,7 +3,7 @@ import copy
 import math
 import os
 import time
-from typing import TYPE_CHECKING
+from collections.abc import Generator
 
 import numpy
 
@@ -11,6 +11,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataTable, DataType, MeasurementSet
 from pipeline.domain.datatable import OnlineFlagIndex, TsysFlagIndex
 from pipeline.hsd.tasks.common import utils as sdutils
 from pipeline.infrastructure import casa_tasks
@@ -19,11 +20,6 @@ from .. import common
 from .SDFlagRule import INVALID_STAT
 
 LOG = infrastructure.logging.get_logger(__name__)
-
-if TYPE_CHECKING:
-    from collections.abc import Generator
-
-    from pipeline.domain import DataTable, DataType, MeasurementSet
 
 
 class SDBLFlagWorkerInputs(vdp.StandardInputs):

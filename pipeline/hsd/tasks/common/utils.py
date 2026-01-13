@@ -8,7 +8,7 @@ import functools
 import os
 import sys
 import time
-from typing import TYPE_CHECKING, TypeAlias
+from typing import TYPE_CHECKING
 
 import numpy
 from astropy.time import Time
@@ -22,16 +22,15 @@ from . import compress
 
 if TYPE_CHECKING:
     from collections.abc import Generator, Iterable, Sequence, Callable
-    from typing import Any
+    from typing import Any, TypeAlias
 
     from casatools import table as casa_table
+    TableLike: TypeAlias = casa_tools._logging_table_cls | casa_table
 
     from pipeline.domain import DataTable, Field, MeasurementSet, ObservingRun
     from pipeline.infrastructure import Context
 
 LOG = infrastructure.logging.get_logger(__name__)
-
-TableLike: TypeAlias = casa_tools._logging_table_cls | casa_table
 
 
 def profiler(func: Callable):

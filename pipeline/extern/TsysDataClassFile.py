@@ -483,10 +483,7 @@ def chanfreq_records_to_functions(chan_records):
     return freqMHz, chan, numchannels
 
 
-class TsysData:
-    class IntentException(Exception):  # v2.4
-        pass
-
+class TsysData(object):
     def __init__(
         self,
         tsystable=None,
@@ -714,10 +711,13 @@ class TsysData:
             # return(scienceSpws, _tsysmap)
         else:
             # mymsmd.close()
-            raise TsysData.IntentException(
+            raise IntentException(
                 "%s not found in this dataset. Available intents: " % (intent),
                 allIntents,
             )
+
+    class IntentException(Exception):  # v2.4
+        pass
 
     def get_valid_antennae(self):
         valid_dict = dict()

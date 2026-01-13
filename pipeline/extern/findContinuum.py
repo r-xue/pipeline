@@ -197,32 +197,26 @@ Code changes for Pipeline2020:
 """
 from __future__ import print_function  # prevents adding old-style print statements
 
-import copy
-import decimal
-import glob
-import pickle
 import os
-import random
-import shutil
-import subprocess
-import sys
-import time as timeUtilities
 import warnings
-
+import decimal
 import numpy as np
 # np.set_printoptions(threshold=sys.maxsize)   # for debugging large arrays
 #import matplotlib.pyplot as pl  # used through Cycle 7 but avoided with python3 starting in PL2020
 #import pylab as pl  # used from Pipeline 2020-2023
 import matplotlib.pyplot as pl # restored for Pipeline 2024: PIPE-1865
 import matplotlib.ticker
-import scipy
-from scipy.stats import scoreatpercentile, percentileofscore
-from scipy.ndimage import gaussian_filter
-
+import time as timeUtilities
+import pickle
+import copy
 difSNRFontsizeAdjust = -2
 DISABLE_CUBE_NOISE = 1e9  # shortcut for not passing skipCubeNoise all the way through to extraMaskYesOrNo, this is the value that MADCubeOutside is set to if skipCubeNoise is True
 ACA_MAX_BASELINE = 60
 MAX_RANGES_FOR_IMMOMENTS = 240
+try:
+    from importlib import reload
+except:
+    pass  # reload is already available in python 2.x
 # Check if this is CASA6  CASA 6
 try:
     import casatools
@@ -308,6 +302,16 @@ if casaVersion < '5.9.9':
 else:
     from casatools import synthesismaskhandler
 
+import warnings
+import subprocess
+import sys
+import scipy
+import glob
+import shutil
+import random
+from scipy.stats import scoreatpercentile, percentileofscore
+from scipy.ndimage import gaussian_filter
+
 casaVersionString = casaVersion
 casaMajorVersion = int(casaVersion[0])
 
@@ -317,9 +321,6 @@ if casaMajorVersion < 5:
 else:
     # scipy.nanmean still exists, but is deprecated in favor of numpy's version
     from numpy import nanmean as scipy_nanmean
-
-from pipeline.hif.heuristics.mosaicoverlap import primaryArcsecBeam
-
 
 def version(showfile=True):
     """
@@ -3178,9 +3179,9 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
             else:
                 if returnWarnings:
                     if returnMomDiffSNR:
-                        return(selection, png, aggregateBandwidth, returnWarnings, jointMask, momDiffSNR)
+                        return(selection, png, aggregateBandwidth, returnWarningStrings, jointMask, momDiffSNR)
                     else:
-                        return(selection, png, aggregateBandwidth, returnWarnings, jointMask)
+                        return(selection, png, aggregateBandwidth, returnWarningStrings, jointMask)
                 else:
                     if returnMomDiffSNR:
                         # Pipeline Cycle 6 (and prior) use case

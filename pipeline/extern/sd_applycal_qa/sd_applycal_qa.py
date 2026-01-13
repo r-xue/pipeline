@@ -1,9 +1,11 @@
+import os, sys
+from typing import List, Tuple, Union
+import numpy as np
 import copy
-import os
 import pickle
 from itertools import product
-
-import numpy as np
+import matplotlib.dates as mdates
+import casatools
 from scipy.stats import mstats
 
 import pipeline.infrastructure.pipelineqa as pqa
@@ -242,7 +244,7 @@ def qascorefunc(nsigma: float, score_top: float = 0.67, score_bottom: float = 0.
     return max(score_top - (score_top - score_bottom)*(nsigma - nsigma_threshold)/(nsigma_bottom - nsigma_threshold), score_bottom)
 
 def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_thresholds, plot_output_path: str = '.',
-                    plot_sciline: str = 'on-detection', weblog_output_path: str = '.') -> tuple[mswrapper_sd.MSWrapperSD, pqa.QAScore, list, list]:
+                    plot_sciline: str = 'on-detection', weblog_output_path: str = '.') -> Tuple[mswrapper_sd.MSWrapperSD, pqa.QAScore, list, list]:
     '''Function that calculates the applycal QA score for a given dataset msw.
     param:
         msw: MSWrapper_SD object containing the data statistics used for the QA scores calculation. This method will use the
@@ -534,7 +536,7 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
 
     return (msw, qascore, qascores_scans, plotfname)
 
-def load_and_stats(msNames: list[str], use_tsys_data: bool = True, sciline_det: bool = True,
+def load_and_stats(msNames: List[str], use_tsys_data: bool = True, sciline_det: bool = True,
                    buffer_data: bool = False) -> dict:
     '''Load a collection of MSWrapper_SD objects, and run a basic filter and statistics on each of them.
     Return a dictionary of MSWrapper_SD objects, indexed by tuples in the form (ms, spw, ant, fieldid).
@@ -587,10 +589,10 @@ def load_and_stats(msNames: list[str], use_tsys_data: bool = True, sciline_det: 
 
     return mswCollection
 
-def get_ms_applycal_qascores(msNames: list[str], thresholds: dict = default_thresholds, plot_output_path: str = '.',
+def get_ms_applycal_qascores(msNames: List[str], thresholds: dict = default_thresholds, plot_output_path: str = '.',
                              use_tsys_data: bool = True, sciline_det: bool = True,
                              plot_sciline: str = 'on-detection', weblog_output_path: str = '.',
-                             buffer_data: bool = False) -> tuple[list, list, list]:
+                             buffer_data: bool = False) -> Tuple[list, list, list]:
     '''Function used to obtain applycal X-Y QA score on a list of calibrated MSs, at the
     applycal stage of SD pipeline.
     param:
