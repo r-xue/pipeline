@@ -230,7 +230,7 @@ def extractValues(data, vis, caltable):
     return bandpass_phase, bandpass_amp, bandpass_phase2, bandpass_amp2, bandpass_flag
 
 
-def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
+def evalPerAntBP_Platform(data, output_dir, ms, caltable, create_plots) -> dict:
     """
     Evaluate bandpass platforming for each ms and caltable
 
@@ -282,6 +282,8 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
                 "Tebbsky": Tebbsky,
                 "tau": tau,
             }
+        else:
+            LOG.info(f"Subband qa heuristic not evaluated for spw {ispw} as it is not a FDM spw.")
 
     # Taking statistical summary values for heuristics
     # per spw, ant, and pol
@@ -310,7 +312,8 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
         # This heuristic is only evaluated for FDM spws
         spw_type = ms.get_spectral_window(ispw).type
         if 'FDM' not in spw_type:
-            LOG.info(f"Subband qa heuristic not evaluated for spw {ispw} as it is not a FDM spw.")
+            # The LOG.info message for this is done outside of the loop so it isn't 
+            # repeated for each antenna. 
             continue
 
         ################################
@@ -1283,56 +1286,57 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
             #######################
             # plotting
             #######################
-            freq_range=np.max(spw_freq)-np.min(spw_freq)
-            margin=freq_range*0.05
-            if ipol==0:
-                amp_range=np.max(bp_amp2)-np.min(bp_amp2)
-                amargin=amp_range*0.1
-                transmission2=(transmission-1.0)*0.1+np.max(bp_amp2)+amargin
-                pcolor='blue'
-                ax1.plot(spw_freq,bp_amp2,color=pcolor)
-                ax1.plot(spw_freq,transmission2,color='black',alpha=0.5)
-                ax1.set_ylabel('amplitude')
-                ax1.set_xlabel('frequency [GHz]')
-                ax1.set_xlim(np.min(spw_freq)-margin,np.max(spw_freq)+margin)
-                if (len(flagchan_range_amp)>0):
-                    for p in range(len(flagchan_range_amp)):
-                        ax1.hlines(y=np.max(bp_amp2)*1.05,xmin=flagchan_range_amp[p][0], xmax=flagchan_range_amp[p][1],color='black', linewidth=4)
-                        ax1.axvspan(flagchan_range_amp[p][0], flagchan_range_amp[p][1],color='black', alpha=0.4)
-                ax3.plot(spw_freq,bp_phs2,color=pcolor)
-                ax3.set_ylabel('degree')
-                ax3.set_xlabel('frequency [GHz]')
-                ax3.set_xlim(np.min(spw_freq)-margin,np.max(spw_freq)+margin)
-                if (len(flagchan_range_phs)>0):
-                    for p in range(len(flagchan_range_phs)):
-                        ax3.hlines(y=np.max(bp_phs2)*1.05,xmin=flagchan_range_phs[p][0], xmax=flagchan_range_phs[p][1],color='black', linewidth=4)
-                        ax3.axvspan(flagchan_range_phs[p][0], flagchan_range_phs[p][1],color='black', alpha=0.4)
+            if create_plots:
+                freq_range=np.max(spw_freq)-np.min(spw_freq)
+                margin=freq_range*0.05
+                if ipol==0:
+                    amp_range=np.max(bp_amp2)-np.min(bp_amp2)
+                    amargin=amp_range*0.1
+                    transmission2=(transmission-1.0)*0.1+np.max(bp_amp2)+amargin
+                    pcolor='blue'
+                    ax1.plot(spw_freq,bp_amp2,color=pcolor)
+                    ax1.plot(spw_freq,transmission2,color='black',alpha=0.5)
+                    ax1.set_ylabel('amplitude')
+                    ax1.set_xlabel('frequency [GHz]')
+                    ax1.set_xlim(np.min(spw_freq)-margin,np.max(spw_freq)+margin)
+                    if (len(flagchan_range_amp)>0):
+                        for p in range(len(flagchan_range_amp)):
+                            ax1.hlines(y=np.max(bp_amp2)*1.05,xmin=flagchan_range_amp[p][0], xmax=flagchan_range_amp[p][1],color='black', linewidth=4)
+                            ax1.axvspan(flagchan_range_amp[p][0], flagchan_range_amp[p][1],color='black', alpha=0.4)
+                    ax3.plot(spw_freq,bp_phs2,color=pcolor)
+                    ax3.set_ylabel('degree')
+                    ax3.set_xlabel('frequency [GHz]')
+                    ax3.set_xlim(np.min(spw_freq)-margin,np.max(spw_freq)+margin)
+                    if (len(flagchan_range_phs)>0):
+                        for p in range(len(flagchan_range_phs)):
+                            ax3.hlines(y=np.max(bp_phs2)*1.05,xmin=flagchan_range_phs[p][0], xmax=flagchan_range_phs[p][1],color='black', linewidth=4)
+                            ax3.axvspan(flagchan_range_phs[p][0], flagchan_range_phs[p][1],color='black', alpha=0.4)
 
-            else:
-                amp_range=np.max(bp_amp2)-np.min(bp_amp2)
-                amargin=amp_range*0.1
-                transmission2=(transmission-1.0)*0.1+np.max(bp_amp2)+amargin
-                pcolor='green'
-                ax2.plot(spw_freq,bp_amp2,color=pcolor)
-                ax2.plot(spw_freq,transmission2,color='black',alpha=0.5)
-                ax2.set_ylabel('amplitude')
-                ax2.set_xlabel('frequency [GHz]')
-                ax2.set_xlim(np.min(spw_freq)-margin,np.max(spw_freq)+margin)
-                if (len(flagchan_range_amp)>0):
-                    for p in range(len(flagchan_range_amp)):
-                        ax2.hlines(y=np.max(bp_amp2)*1.05,xmin=flagchan_range_amp[p][0], xmax=flagchan_range_amp[p][1],color='black', linewidth=4)
-                        ax2.axvspan(flagchan_range_amp[p][0], flagchan_range_amp[p][1],color='black', alpha=0.4)
-                ax4.plot(spw_freq,bp_phs2,color=pcolor)
-                ax4.set_ylabel('degree')
-                ax4.set_xlabel('frequency [GHz]')
-                ax4.set_xlim(np.min(spw_freq)-margin,np.max(spw_freq)+margin)
-                if (len(flagchan_range_phs)>0):
-                    for p in range(len(flagchan_range_phs)):
-                        ax4.hlines(y=np.max(bp_phs2)*1.05,xmin=flagchan_range_phs[p][0], xmax=flagchan_range_phs[p][1],color='black', linewidth=4)
-                        ax4.axvspan(flagchan_range_phs[p][0], flagchan_range_phs[p][1],color='black', alpha=0.4)
+                else:
+                    amp_range=np.max(bp_amp2)-np.min(bp_amp2)
+                    amargin=amp_range*0.1
+                    transmission2=(transmission-1.0)*0.1+np.max(bp_amp2)+amargin
+                    pcolor='green'
+                    ax2.plot(spw_freq,bp_amp2,color=pcolor)
+                    ax2.plot(spw_freq,transmission2,color='black',alpha=0.5)
+                    ax2.set_ylabel('amplitude')
+                    ax2.set_xlabel('frequency [GHz]')
+                    ax2.set_xlim(np.min(spw_freq)-margin,np.max(spw_freq)+margin)
+                    if (len(flagchan_range_amp)>0):
+                        for p in range(len(flagchan_range_amp)):
+                            ax2.hlines(y=np.max(bp_amp2)*1.05,xmin=flagchan_range_amp[p][0], xmax=flagchan_range_amp[p][1],color='black', linewidth=4)
+                            ax2.axvspan(flagchan_range_amp[p][0], flagchan_range_amp[p][1],color='black', alpha=0.4)
+                    ax4.plot(spw_freq,bp_phs2,color=pcolor)
+                    ax4.set_ylabel('degree')
+                    ax4.set_xlabel('frequency [GHz]')
+                    ax4.set_xlim(np.min(spw_freq)-margin,np.max(spw_freq)+margin)
+                    if (len(flagchan_range_phs)>0):
+                        for p in range(len(flagchan_range_phs)):
+                            ax4.hlines(y=np.max(bp_phs2)*1.05,xmin=flagchan_range_phs[p][0], xmax=flagchan_range_phs[p][1],color='black', linewidth=4)
+                            ax4.axvspan(flagchan_range_phs[p][0], flagchan_range_phs[p][1],color='black', alpha=0.4)
 
-        plt.savefig(figure_path)
-        plt.close()
+            plt.savefig(figure_path)
+            plt.close()
 
     # Create the output files
     outfile_name = os.path.join(output_dir, f"{caltable_name}_platform.txt")
@@ -1355,7 +1359,7 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
         spw_affected_return[spw_id] = {
             'antennas': sorted(failure.ant_set),  # return sorted list of antennas
             'failure': failure.failure_type.value  # convert enum back to string 
-        } 
+        }
 
     return spw_affected_return
 
@@ -1467,7 +1471,7 @@ def setup_bandpass_dict(ms: MeasurementSet, caltable: str) -> dict:
     return bandpass_library
 
 
-def bandpass_platforming(ms: MeasurementSet, caltable) -> dict:
+def bandpass_platforming(ms: MeasurementSet, caltable, create_plots=False) -> dict:
     """
     Evaluate bandpass platforming for each ms and caltable.
     Interface with pipeline.qa.bandpass_platforming.
@@ -1488,6 +1492,6 @@ def bandpass_platforming(ms: MeasurementSet, caltable) -> dict:
         os.mkdir(output_dir)
 
     # Evaluate the bandpass platforming qa heuristics
-    spws_affected = evalPerAntBP_Platform(bandpass_library, output_dir, ms, caltable)
+    spws_affected = evalPerAntBP_Platform(bandpass_library, output_dir, ms, caltable, create_plots)
 
     return spws_affected
