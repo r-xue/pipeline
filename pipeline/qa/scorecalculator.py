@@ -5124,7 +5124,7 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
     # PIPE-2584, part-3: IF spectral index > +/- 5: QA score < 0.5
     for sp_result in result.spindex_results:
         if abs(float(sp_result["spix"])) > 5:
-            score = 0.3
+            score = rendererutils.SCORE_THRESHOLD_ERROR
             msg = "spectral index > +- 5"
             origin = pqa.QAOrigin(metric_name='score_fluxboot',
                                   metric_score=score,
@@ -5154,12 +5154,16 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
 
     spws = ms.get_spectral_windows()
     str_spws = [str(spw.id) for spw in spws]
+
+    no_data_spws = {}
     for scan in context.evla['msinfo'][result.vis].calibrator_scan_select_string.split(","):
+
         for spw in str_spws:
             # PIPE-2166: setting doquantiles to false
             taql = f"SCAN_NUMBER={scan} and DATA_DESC_ID =={spw} and FLAG_ROW==False"
             numrows = utils.get_row_count(calms, taql)
             if numrows == 0:
+                no_data_spws.setdefault(scan, []).append(spw)
                 continue
 
             job = casa_tasks.visstat(vis=calms,scan=scan, useflags=True,
@@ -5168,12 +5172,25 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
             vis_stats = job.execute()
             for desc_id,stats in vis_stats.items():
                 if all(stats.get(key) == 1 for key in ["min","max","mean","median"]):
-                    score = 0.3
+                    score = rendererutils.SCORE_THRESHOLD_ERROR
                     msg = f"Model column is set to one for {spw} and {scan}"
                     origin = pqa.QAOrigin(metric_name='score_fluxboot',
                                           metric_score=score,
                                           metric_units='')
                     applies_to = pqa.TargetDataSelection(vis={result.vis}, scan=scan)
                     qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin, applies_to=applies_to))
+    if no_data_spws:
+        score = rendererutils.SCORE_THRESHOLD_ERROR
+        scan_parts = []
+        for scan, spws in sorted(no_data_spws.items()):
+            spw_list = ",".join(map(str, spws))
+            scan_parts.append(f"scan {scan}: spws {spw_list}")
+
+        msg = f"No data found in {calms} for {'; '.join(scan_parts)}"
+        origin = pqa.QAOrigin(metric_name='score_fluxboot',
+                                metric_score=score,
+                                metric_units='')
+        applies_to = pqa.TargetDataSelection(vis={result.vis}, scan=scan)
+        qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin, applies_to=applies_to))
 
     return qascores
