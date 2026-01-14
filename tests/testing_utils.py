@@ -5,7 +5,7 @@ import glob
 import os
 import re
 import shutil
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING
 
 import packaging.version
 import pytest
@@ -15,23 +15,42 @@ from pipeline.infrastructure import casa_tools, executeppr, executevlappr, launc
 from pipeline.infrastructure.renderer import regression
 
 if TYPE_CHECKING:
+    from typing import Any, Literal
+
     from packaging.version import Version
 
 LOG = infrastructure.logging.get_logger(__name__)
 
 
+def ensure_working_dir(pt: PipelineTester) -> None:
+    """Ensure the working directory exists for a PipelineTester instance.
+
+    Args:
+        pt: PipelineTester instance whose output_dir working directory should be created.
+
+    Raises:
+        OSError: If the directory cannot be created due to permission or other OS-level errors.
+    """
+    try:
+        os.makedirs(f'{pt.output_dir}/working/', exist_ok=True)
+    except OSError as exc:
+        LOG.warning("Failed to create working directory for %s: %s", pt.output_dir, exc)
+        raise
+
+
 def setup_flux_antennapos(test_directory, output_dir):
     # Copy flux.csv and antennapos.csv into the working directory
     flux_file = casa_tools.utils.resolve(f'{test_directory}/flux.csv')
-    anteannapos_file = casa_tools.utils.resolve(f'{test_directory}/antennapos.csv')
+    antennapos_file = casa_tools.utils.resolve(f'{test_directory}/antennapos.csv')
 
     try:
         os.mkdir(f'{output_dir}/working/')
     except FileExistsError:
+        # Directory already exists; reuse it without failing.
         pass
 
     shutil.copyfile(flux_file, casa_tools.utils.resolve(f'{output_dir}/working/flux.csv'))
-    shutil.copyfile(anteannapos_file, casa_tools.utils.resolve(f'{output_dir}/working/antennapos.csv'))
+    shutil.copyfile(antennapos_file, casa_tools.utils.resolve(f'{output_dir}/working/antennapos.csv'))
 
 
 class PipelineTester:
@@ -277,7 +296,7 @@ class PipelineTester:
                              numerical difference from threading-sensitive CASA tasks (e.g. setjy/tclean, which relies
                              on the FFTW library).
 
-        NOTA: Because a PL execution depends on global CASA states, only one test can run under
+        NOTE: Because a PL execution depends on global CASA states, only one test can run under
         a CASA process at the same. Therefore a parallelization based on process-forking might not work
         properly (e.g., xdist: --forked).  However, it's okay to group tests under several independent
         subprocesses (e.g., xdist: -n 4)
@@ -474,3 +493,5 @@ class PipelineTester:
                 LOG.info("Removing working directory %s as requested.", self.output_dir)
             except FileNotFoundError:
                 pass
+            except OSError as exc:
+                LOG.warning("Failed to remove working directory %s: %s", self.output_dir, exc)

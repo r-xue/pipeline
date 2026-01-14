@@ -5,8 +5,8 @@ import os
 import pytest
 
 
-@pytest.fixture(autouse=True)
-def data_directory(scope="module") -> str:
+@pytest.fixture(autouse=True, scope="module")
+def data_directory() -> str:
     if hasattr(pytest, 'pytestconfig'):
         big_data_dir = pytest.pytestconfig.getoption('--data-directory')
     else:

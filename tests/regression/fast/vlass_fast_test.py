@@ -1,8 +1,7 @@
-import os
 import shutil
 
 from pipeline.infrastructure import casa_tools
-from tests.testing_utils import PipelineTester
+from tests.testing_utils import PipelineTester, ensure_working_dir
 
 
 def test_TSKY0001__vlass_quicklook_regression():
@@ -20,11 +19,7 @@ def test_TSKY0001__vlass_quicklook_regression():
         expectedoutput_dir=ref_directory,
         )
 
-    # Copy parameter list file into the working directory
-    try:
-        os.mkdir(f'{pt.output_dir}/working/')
-    except FileExistsError:
-        pass
+    ensure_working_dir(pt)
     if not pt.compare_only:
         parameter_list_file = casa_tools.utils.resolve(
             f'{ref_directory}/TSKY0001.sb32295801.eb32296475.57549.31722762731_split_QLIP_parameter.list')

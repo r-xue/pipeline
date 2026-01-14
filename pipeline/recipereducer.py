@@ -43,14 +43,16 @@ import os
 import tempfile
 import traceback
 import xml.etree.ElementTree as ElementTree
-from collections.abc import Callable
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import pipeline.h.cli.cli as h_cli
 from pipeline import cli, infrastructure
 from pipeline.infrastructure import exceptions, launcher, utils
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+    from typing import Any
+
     from pipeline.infrastructure.launcher import Context
 
 LOG = infrastructure.logging.get_logger(__name__)
@@ -281,8 +283,8 @@ def run_named_tasks(tasks: list[tuple[str, dict[str, Any]]]) -> Context:
       1. Initialize a fresh pipeline context via `cli.h_init()`.
       2. Resolve each task name to a callable using `cli.get_pipeline_task_with_name`.
       3. Execute tasks in order, logging the call signature.
-      4. Collect and aggregate tracebacks from task results; raise
-         `exceptions.PipelineException` if any are present.
+        4. Raise `exceptions.PipelineException` immediately if any task result
+            reports tracebacks (handled inside `_execute_task`).
       5. Save the context via `cli.h_save()`.
 
     Args:
@@ -323,11 +325,11 @@ def reduce(
     """Executes a CASA Pipeline data reduction procedure.
 
     This function triggers the execution of pipeline tasks defined in a
-    given XML precipe procedure, managing context creation and task sequencing.
+    given XML recipe procedure, managing context creation and task sequencing.
 
     Args:
         vis: List of measurement sets to process.
-        infiles: Supplementary input files for the pipeline executation.
+        infiles: Supplementary input files for the pipeline execution.
         procedure: XML procedure file defining the pipeline workflow.
         context: Existing context object. A new context is created if None.
         name: Context name, used only if `context` is None.

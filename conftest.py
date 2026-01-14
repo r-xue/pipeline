@@ -98,7 +98,9 @@ def _auto_mark(item: Item) -> None:
     - Observing mode (single-dish, interferometry)
     """
     # Robust path-based matching
-    parts = tuple(pathlib.Path(getattr(item, "path", "")).parts)
+    path_obj = pathlib.Path(getattr(item, "path", ""))
+    parts = tuple(path_obj.parts)
+    path_lower = "/".join(parts).lower()
 
     # High-level buckets by directory
     if "tests" in parts and "regression" in parts:
@@ -110,19 +112,19 @@ def _auto_mark(item: Item) -> None:
             item.add_marker(pytest.mark.fast)
 
         # separate by telescope
-        if "alma" in parts[-1]:
+        if "alma" in path_lower:
             item.add_marker(pytest.mark.alma)
-        elif "nobeyama" in parts[-1]:
+        elif "nobeyama" in path_lower:
             item.add_marker(pytest.mark.nobeyama)
-        elif "vlass" in parts[-1]:
+        elif "vlass" in path_lower:
             item.add_marker(pytest.mark.vlass)
-        elif "vla" in parts[-1]:
+        elif "vla" in path_lower:
             item.add_marker(pytest.mark.vla)
 
         # separate between single-dish and interferometry
-        if "sd" in parts[-1]:
+        if "sd" in path_lower:
             item.add_marker(pytest.mark.sd)
-        elif "if" in parts[-1]:
+        elif "if" in path_lower:
             item.add_marker(pytest.mark.interferometry)
 
     if "tests" in parts and "component" in parts:

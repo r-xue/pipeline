@@ -1,8 +1,7 @@
-import os
 import shutil
 
 from pipeline.infrastructure import casa_tools
-from tests.testing_utils import PipelineTester
+from tests.testing_utils import PipelineTester, ensure_working_dir
 
 
 def test_VLASS2_2__se_cont_mosaic_procedure_vlassSEIP__regression(data_directory):
@@ -21,10 +20,7 @@ def test_VLASS2_2__se_cont_mosaic_procedure_vlassSEIP__regression(data_directory
         expectedoutput_dir=ref_directory,
         )
 
-    try:
-        os.mkdir(f'{pt.output_dir}/working/')
-    except FileExistsError:
-        pass
+    ensure_working_dir(pt)
 
     # Copy parameter list file into the working directory
     if not pt.compare_only:
@@ -51,10 +47,7 @@ def test_VLASS2_2__se_cont_awp32_procedure_vlassSEIP__regression(data_directory)
         expectedoutput_dir=ref_directory,
         )
 
-    try:
-        os.mkdir(f'{pt.output_dir}/working/')
-    except FileExistsError:
-        pass
+    ensure_working_dir(pt)
 
     # Copy parameter list file into the working directory
     if not pt.compare_only:
@@ -81,10 +74,7 @@ def test_VLASS2_2__se_cube_procedure_vlassCCIP__regression(data_directory):
         expectedoutput_dir=ref_directory,
         )
 
-    try:
-        os.mkdir(f'{pt.output_dir}/working/')
-    except FileExistsError:
-        pass
+    ensure_working_dir(pt)
 
     # Copy parameter list files and reimaging resources into the working directory
     if not pt.compare_only:

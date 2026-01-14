@@ -5,7 +5,7 @@ from tests.testing_utils import PipelineTester
 
 
 def test_uid___A002_X85c183_X36f__procedure_hsd_calimage__regression():
-    """Run ALMA single-dish cal+image regression on the obseration data of M100.
+    """Run ALMA single-dish cal+image regression on the observation data of M100.
 
     Recipe name:                procedure_hsd_calimage
     Dataset:                    uid___A002_X85c183_X36f
