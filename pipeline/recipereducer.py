@@ -301,7 +301,11 @@ def run_named_tasks(tasks: list[tuple[str, dict[str, Any]]]) -> Context:
 
     for task_name, task_args in tasks:
         task = cli.get_pipeline_task_with_name(task_name=task_name)
-        _execute_task(task, task_args)
+        result = _execute_task(task, task_args)
+
+        # If an unhandled exception occurred, return context early
+        if result is None:
+            return launcher.Pipeline(context='last').context
 
     LOG.info('Saving context after explicit task list execution...')
     cli.h_save()

@@ -108,6 +108,8 @@ class PipelineTester:
         self.tasks = tasks
         self.project_id = project_id
         self.input_dir = input_dir
+        self.output_dir = output_dir
+        self.expectedoutput_file = expectedoutput_file
         if output_dir:
             self.output_dir = output_dir
         elif self.project_id:
@@ -117,6 +119,7 @@ class PipelineTester:
         if expectedoutput_file:
             self.expectedoutput_file = casa_tools.utils.resolve(expectedoutput_file)
         else:
+            self.expectedoutput_dir = expectedoutput_dir
             # Find the reference file in expectedoutput_dir that matches the current CASA version and use that.
             if expectedoutput_dir:
                 reference_data_files = glob.glob(casa_tools.utils.resolve(expectedoutput_dir)+'/*.results.txt')
