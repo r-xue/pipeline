@@ -1063,6 +1063,6 @@ def do_gtype_gaincal(context, executor, task_args) -> GaincalResults:
     result = executor.execute(task)
 
     # sanity checks in case gaincal starts returning additional caltable applications
-    assert len(result.final) <= 1, '>1 caltable application registered by gaincal'
+    assert len(result.final) <= 1, 'Expected at most 1 caltable application registered by gaincal, got more'
 
     return result

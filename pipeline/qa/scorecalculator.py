@@ -260,11 +260,11 @@ def linear_score(x: float, x1: float, x2: float, y1: float = 0.0, y2: float = 1.
         The linearly interpolated score value.
 
     Examples:
-        >>> linear_score_new(0.5, 0.0, 1.0)  # Midpoint between 0 and 1
+        >>> linear_score(0.5, 0.0, 1.0)  # Midpoint between 0 and 1
         0.5
-        >>> linear_score_new(1.5, 0.0, 1.0)  # Clipped to upper bound
+        >>> linear_score(1.5, 0.0, 1.0)  # Clipped to upper bound
         1.0
-        >>> linear_score_new(-0.5, 0.0, 1.0)  # Clipped to lower bound
+        >>> linear_score(-0.5, 0.0, 1.0)  # Clipped to lower bound
         0.0
 
     Raises:

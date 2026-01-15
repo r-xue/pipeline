@@ -1073,7 +1073,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             phasecal_result = self._executor.execute(phasecal_task)
 
             # Collect CalApplications.
-            # PIPE-2752: calapps_final execludes expected caltables that were not successfully created.
+            # PIPE-2752: calapps_final excludes expected caltables that were not successfully created.
             calapps_pool.extend(phasecal_result.pool)
             calapps_final.extend(phasecal_result.final)
 
