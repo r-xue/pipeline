@@ -55,7 +55,7 @@ class SelfcalInputs(vdp.StandardInputs):
         """Initialize Inputs.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
 
             vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
@@ -112,7 +112,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         self._do_gaincal()
         applycal_rtn = self._do_applycal()
 
-        if applycal_rtn is None:
+        if not applycal_rtn:
             self.caltable = None
 
         return SelfcalResults(caltable=self.caltable)
@@ -184,7 +184,8 @@ class Selfcal(basetask.StandardTaskTemplate):
         # when caltable does not exist
         if os.path.exists(self.caltable):
             job = casa_tasks.applycal(**applycal_task_args)
-            return self._executor.execute(job)
+            self._executor.execute(job)
+            return True
         else:
             LOG.warning(f'{self.caltable} does not exist, skipping applycal.')
-            return None
+            return False

@@ -9,6 +9,7 @@ from __future__ import annotations
 import collections
 import datetime
 import functools
+import itertools
 import math
 import operator
 import os
@@ -4735,8 +4736,7 @@ def score_iersstate(mses: list[MeasurementSet]) -> list[pqa.QAScore]:
 
 @log_qa
 def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list[pqa.QAScore]:
-    """
-    Calculate score about calibrated amplitude vs. time plot of Single Dish Applycal.
+    """Calculate score about calibrated amplitude vs. time plot of Single Dish Applycal.
 
     Calculate score according to the existence of plot file for each EB, spw and antenna
     and the quality of it.
@@ -4749,19 +4749,16 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
       2. Check whether the number of flagged data is equal to that of total data or not.
 
     Args:
-        context: Pipeline context.
+        context: Pipeline context object containing state information.
         result: SDApplycalResults instance.
 
     Returns:
         list[pqa.QAScore]: List which contains QAScore objects.
     """
-
     vis = os.path.basename(result.inputs['vis'])
     ms = context.observing_run.get_ms(vis)
     spwids = [spw.id for spw in ms.get_spectral_windows()]
-    ants = ['all']
-    ants_foreach = [ant.name for ant in ms.get_antenna()]
-    ants.extend(ants_foreach)
+    ants = ['all'] + [ant.name for ant in ms.get_antenna()]
 
     stage_dir = os.path.join(context.report_dir, 'stage%s' % context.task_counter)
 
@@ -4771,6 +4768,20 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
     flagdata = flagdata_task.execute()
     flagdata_summary = list(flagdata.values())
     scores = []
+    PlotMetadata = collections.namedtuple(
+        'PlotMetadata', ['vis', 'spw', 'ant']
+    )
+    all_plots = itertools.chain(
+        result.amp_vs_time_summary_plots,
+        result.amp_vs_time_detail_plots
+    )
+    metadata_for_plots = [
+        PlotMetadata(
+            vis=x.parameters["vis"],
+            spw=x.parameters["spw"],
+            ant=x.parameters["ant"]
+        ) for x in all_plots
+    ]
     for spwid in spwids:
         shortmsg_success = 'Calibrated amplitude vs time plot is successfully created'
         longmsg_success = f'{shortmsg_success} for EB {vis}, SPW {spwid}'
@@ -4786,10 +4797,15 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
         target_summary_for_spw = target_summary[0]
 
         for ant in ants:
-            filename = f'{vis}-real_vs_time-{ant}-{key}.png'
-            figfile = os.path.join(stage_dir, filename)
-
-            if not os.path.exists(figfile):
+            # Instead of checking the existence of a plot file,
+            # compare metadata for the plot object associated with
+            # the plot file.
+            plot_metadata = PlotMetadata(
+                vis=vis,
+                spw=str(spwid),
+                ant=ant
+            )
+            if plot_metadata not in metadata_for_plots:
                 shortmsg = shortmsg_failed
                 longmsg = f'{longmsg_failed}, Antenna {ant}.'
                 score = 0.65
