@@ -752,13 +752,13 @@ def phasecenter_to_skycoord(phasecenter: str) -> SkyCoord:
 
     # handle common case of Dec expressed with two dots instead of colons
     if (
-        dec.count('.') == 2
+        dec.count('.') >= 2
         and ':' not in dec
         and 'deg' not in dec
         and 'd' not in dec
         and 'rad' not in dec
     ):
-        dec = dec.replace('.', ':')
+        dec = dec.replace('.', ':', 2)
 
     angle_units = ('rad', 'deg', 'arcmin', 'arcsec', 'amin', 'asec')
 
