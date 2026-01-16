@@ -15,7 +15,7 @@ from . import diffgaincal
 LOG = logging.get_logger(__name__)
 
 # PIPE-2689: threshold to declare if overall SNR is low.
-THRESHOLD_OVERALL_SNR = 10.0
+THRESHOLD_OVERALL_SNR = 5.0
 
 
 class DiffgaincalQAHandler(pqa.QAPlugin):
