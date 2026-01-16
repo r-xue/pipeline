@@ -62,9 +62,9 @@ class VdpCommonGaincalInputs(commoncalinputs.VdpCommonCalibrationInputs):
                  refant=None, antenna=None, minblperant=None, opacity=None, selectdata=None, uvrange=None,
                  calmode=None, refantmode=None):
         super().__init__(context, output_dir=output_dir, vis=vis, intent=intent,
-                                                     field=field, spw=spw, refant=refant, antenna=antenna,
-                                                     minblperant=minblperant, opacity=opacity, selectdata=selectdata,
-                                                     uvrange=uvrange)
+                         field=field, spw=spw, refant=refant, antenna=antenna,
+                         minblperant=minblperant, opacity=opacity, selectdata=selectdata,
+                         uvrange=uvrange)
         self.calmode = calmode
         self.caltable = caltable
         self.refantmode = refantmode

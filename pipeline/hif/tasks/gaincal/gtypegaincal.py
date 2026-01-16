@@ -28,10 +28,10 @@ class GTypeGaincalInputs(common.VdpCommonGaincalInputs):
                  refantmode=None, minblperant=None, minsnr=None, solnorm=None, append=None, scan=None, preavg=None,
                  opacity=None, parang=None, gaintype=None, selectdata=None):
         super().__init__(context, output_dir=output_dir, vis=vis, caltable=caltable,
-                                                 intent=intent, field=field, spw=spw, refant=refant,
-                                                 refantmode=refantmode, antenna=antenna, minblperant=minblperant,
-                                                 opacity=opacity, selectdata=selectdata, uvrange=uvrange,
-                                                 calmode=calmode)
+                         intent=intent, field=field, spw=spw, refant=refant,
+                         refantmode=refantmode, antenna=antenna, minblperant=minblperant,
+                         opacity=opacity, selectdata=selectdata, uvrange=uvrange,
+                         calmode=calmode)
         self.append = append
         self.combine = combine
         self.gaintype = gaintype
