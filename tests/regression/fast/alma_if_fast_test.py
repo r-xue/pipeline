@@ -183,18 +183,17 @@ def test_csv_3899_eb2_small__procedure_hifa_calimage__regression():
     pt.run(omp_num_threads=1)
 
 
-@pytest.mark.skip(reason="Recent failure needs longer investigation")
 @pytest.mark.twelve
 def test_uid___A002_Xee1eb6_Xc58d_original__procedure_hifa_calsurvey__regression():
-    """Run ALMA cal+survey regression on a calibration survey test dataset
+    """Run ALMA cal+survey regression on a calibration survey test dataset.
 
     Recipe name:                procedure_hifa_calsurvey
-    Dataset:                    uid___A002_Xee1eb6_Xc58d_original.ms
+    Dataset:                    uid___A002_Xee1eb6_Xc58d
     """
     ref_directory = 'pl-regressiontest/uid___A002_Xee1eb6_Xc58d_calsurvey'
 
     pt = PipelineTester(
-        visname=['uid___A002_Xee1eb6_Xc58d_original.ms'],
+        visname=['uid___A002_Xee1eb6_Xc58d'],
         recipe='procedure_hifa_calsurvey.xml',
         input_dir=ref_directory,
         output_dir='uid___A002_Xee1eb6_Xc58d_calsurvey_output',
