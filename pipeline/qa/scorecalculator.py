@@ -533,19 +533,13 @@ def score_diffgaincal_combine(vis: str, combine: str, qa_message: str, phaseup_t
 @log_qa
 def score_diffgaincal_residuals(residuals_info: dict, score_type: str) -> pqa.QAScore:
     """
-    Compute QA score for (1) diffgain residual phase offsets for given score type
+    Compute QA score for diffgain residual phase offsets for given score type
     based on pre-computed statistics provided in residual_info dictionary.
 
     The premise is:
         - mean should be around 0.
         - no outlier values above set limits.
         - RMS at set limits.
-
-    And (2) based on the B2B offset solution diferences.
-
-    The premise is:
-        - B2B offset has two solutions in time, per spw, per pol, per ant
-        - B2B 'band' offset should generally be constant in time
 
     Args:
         residuals_info: Dictionary containing info on diffgain residual phase.
@@ -555,8 +549,6 @@ def score_diffgaincal_residuals(residuals_info: dict, score_type: str) -> pqa.QA
             - 'offsets': use mean.
             - 'rms': use RMS
             - 'outliers': use maximum (per antenna)
-            B2B OFFSET
-            - 'B2B offset': used diff between solutions
 
     Returns:
         QA score.
@@ -590,8 +582,9 @@ def score_diffgaincal_residuals(residuals_info: dict, score_type: str) -> pqa.QA
 
     ms_name = residuals_info['ms_name']
 
-    # use a message phrase based on score type
-    messph = 'phase difference for' if score_type == 'B2B offset' else 'residual phase'
+    # Use a message phrase based on score type.
+    # In the future, a b2b offset score will be added with a different `messph`
+    messph = 'phase difference for residual phase'
 
     # If the diffgain residual phase offsets caltable had overall low SNR, then
     # return a suboptimal (blue) score without scoring variability or outliers.
@@ -599,12 +592,7 @@ def score_diffgaincal_residuals(residuals_info: dict, score_type: str) -> pqa.QA
         score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
         shortmsg = f"Low SNR in diffgaincal {messph} {score_type}"
         longmsg = (f"Low SNR in diffgaincal {messph} {score_type} for {ms_name}: not scoring based on"
-                   f" variability, offsets or outliers.")
-    elif residuals_info['single_diff']:  # only for B2B offset can this be true
-        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
-        shortmsg = f"No {messph} {score_type}"
-        longmsg = (f"No {messph} {score_type}: not scoring based on"
-                   f" only a single solution.")
+                   f" variability or outliers.")
     else:
         # Get info from residuals statistics dict.
         intent = residuals_info['intent']
@@ -612,7 +600,11 @@ def score_diffgaincal_residuals(residuals_info: dict, score_type: str) -> pqa.QA
         data = residuals_info['data']
 
         # Convert score type to what statistic to score.
-        type_to_param = {'offsets': 'mean', 'rms': 'rms', 'outliers': 'max', 'B2B offset': 'diff'}
+        type_to_param = {
+            'offsets': 'mean',
+            'rms': 'rms',
+            'outliers': 'max',
+        }
         param = type_to_param[score_type]
 
         # Identify where the residual phase statistic is poor, elevated, or
@@ -645,8 +637,9 @@ def score_diffgaincal_residuals(residuals_info: dict, score_type: str) -> pqa.QA
             shortmsg = f'Excellent Diffgaincal {messph} {score_type}'
             longmsg = f'For {ms_name}, field={field} intent={intent} has excellent {messph} {score_type} <30 deg.'
 
-    # change origin message based on score type        
-    originmess = 'b2boffset' if score_type =='B2B offset' else 'residual'
+    # Specify score type. In the future, a b2b offset score with a different
+    # `originmess` will be added
+    originmess = 'residual'
     origin = pqa.QAOrigin(metric_name=f'score_diffgaincal_{originmess}',
                           metric_score=score,
                           metric_units=f'Score based on diffgain {originmess} analysis')
