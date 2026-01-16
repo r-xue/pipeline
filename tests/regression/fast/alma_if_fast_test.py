@@ -99,6 +99,7 @@ def test_uid___A002_Xc46ab2_X15ae__selfcal_restore_procedure_hifa_image__regress
     pt.run()
 
 
+@pytest.mark.skip(reason="Dataset not available")
 @pytest.mark.seven
 def test_E2E9_1_00084_S__uid___A001_X2df7_X1ec__PPR__regression():
     """Run ALMA polcal+image regression on a multi-EB 7m test dataset with a PPR file.
@@ -124,6 +125,7 @@ def test_E2E9_1_00084_S__uid___A001_X2df7_X1ec__PPR__regression():
     pt.run()
 
 
+@pytest.mark.skip(reason="Dataset not available")
 @pytest.mark.seven
 def test_2023_1_00228_S__uid___A002_X1199f9e_X7c24__procedure_hifa_calimage_diffgain__regression():
     """Run ALMA cal+image regression on a 7m B2B dataset with differential gain calibration.
@@ -184,7 +186,7 @@ def test_csv_3899_eb2_small__procedure_hifa_calimage__regression():
 
 
 @pytest.mark.twelve
-def test_uid___A002_Xee1eb6_Xc58d_original__procedure_hifa_calsurvey__regression():
+def test_uid___A002_Xee1eb6_Xc58d__procedure_hifa_calsurvey__regression():
     """Run ALMA cal+survey regression on a calibration survey test dataset.
 
     Recipe name:                procedure_hifa_calsurvey
