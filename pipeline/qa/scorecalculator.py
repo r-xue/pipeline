@@ -5105,15 +5105,15 @@ def score_testBPdcals_dts_ants(vis:str, amp_collection:dict, phase_collection:di
     return qa_score
 
 @log_qa
-def score_testBPdcals_refant(vis:str, has_bad_refant:bool, bandname:str) -> pqa.QAScore:
+def score_testBPdcals_refant(vis:str, bad_refant:list, bandname:str) -> pqa.QAScore:
     """Evaluate QA score based on reference antenna validity."""
 
     applies_to = pqa.TargetDataSelection(vis=vis)
     # PIPE-2580: if bad reference antenna found, QA score <0.5
-    if has_bad_refant:
+    if len(bad_refant) > 0  :
         score = rendererutils.SCORE_THRESHOLD_ERROR
-        longmsg = f"Bad reference antenna found in {bandname} band"
-        shortmsg = f"Bad reference antenna found in {bandname} band"
+        longmsg = f"Bad reference antenna ({', '.join(bad_refant)}) found in {bandname} band"
+        shortmsg = longmsg
     else:
         score = 1.0
         longmsg = f"No bad reference antenna found in {bandname} band"

@@ -56,7 +56,7 @@ class testBPdcalsQAHandler(pqa.QAPlugin):
             score_dts_ant = qacalc.score_testBPdcals_dts_ants(vis, result.amp_collection[bandname], result.phase_collection[bandname], bandname)
             scores.append(score_dts_ant)
 
-            score_refant = qacalc.score_testBPdcals_refant(vis, result.has_bad_refant[bandname], bandname)
+            score_refant = qacalc.score_testBPdcals_refant(vis, result.bad_refant[bandname], bandname)
             scores.append(score_refant)
 
             score_median_delay = qacalc.score_testBPdcals_delay(vis, result.ktypecaltable[bandname], bandname)
