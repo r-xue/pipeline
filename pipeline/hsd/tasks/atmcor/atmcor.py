@@ -651,7 +651,7 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
 
         Returns:
             Four tuple, status of ATM model heuristics, argument list for sdatmcor,
-            index of best ATM model, and list of attempted ATM models.
+            index of the best ATM model, and list of attempted ATM models.
         """
         # create weblog directory
         stage_number = self.inputs.context.task_counter
