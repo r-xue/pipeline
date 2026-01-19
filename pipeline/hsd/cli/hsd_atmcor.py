@@ -42,16 +42,6 @@ def hsd_atmcor(
 
     """
 
-
-    ##########################################################################
-    #                                                                        #
-    #  CASA task interface boilerplate code starts here. No edits should be  #
-    #  needed beyond this point.                                             #
-    #                                                                        #
-    ##########################################################################
-
-    # create a dictionary containing all the arguments given in the
-    # constructor
     all_inputs = vars()
 
     # get the name of this function for the weblog, eg. 'hif_flagdata'
