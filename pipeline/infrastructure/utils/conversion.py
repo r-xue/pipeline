@@ -58,6 +58,8 @@ __all__ = [
 # the data.
 USE_CASA_PARSING_ROUTINES = True
 
+_ANGLE_UNITS = ('rad', 'deg', 'arcmin', 'arcsec', 'amin', 'asec')
+
 
 class LoggingLRUCache(cachetools.LRUCache):
     """'Least recently used' cache that logs when cache entries are evicted.
@@ -760,10 +762,8 @@ def phasecenter_to_skycoord(phasecenter: str) -> SkyCoord:
     ):
         dec = dec.replace('.', ':', 2)
 
-    angle_units = ('rad', 'deg', 'arcmin', 'arcsec', 'amin', 'asec')
-
     # determine RA unit
-    if any(u in ra for u in angle_units):
+    if any(u in ra for u in _ANGLE_UNITS):
         # if units are specified, let astropy handle it
         ra_unit = None
     elif 'h' in ra or ':' in ra:
@@ -777,7 +777,7 @@ def phasecenter_to_skycoord(phasecenter: str) -> SkyCoord:
             LOG.warning("Unable to determine RA unit, assuming hourangle for RA value %s", ra)
 
     # determine Dec unit
-    if any(u in dec for u in angle_units):
+    if any(u in dec for u in _ANGLE_UNITS):
         # if units are specified, let astropy handle it
         dec_unit = None
     else:
