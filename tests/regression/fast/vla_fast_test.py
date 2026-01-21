@@ -1,5 +1,7 @@
 import shutil
 
+import pytest
+
 from pipeline.infrastructure import casa_tools
 from tests.testing_utils import PipelineTester
 
@@ -94,6 +96,7 @@ def test_13A_537__restore__post1553__PPR__regression():
     pt.run(telescope='vla')
 
 
+@pytest.mark.skip(reason="PPR xml not available")
 def test_13A_537__restore__cont_cube_selfcal__regression():
     """Run VLA calibration restoredata, then continuum and cube imaging with selfcal regression with a PPR file
 
