@@ -21,7 +21,7 @@ from .. import common
 from ..common import utils as sdutils
 
 if TYPE_CHECKING:
-    from numbers import Integral
+    from numbers import Real
 
     from pipeline.infrastructure import Context
 
@@ -32,7 +32,7 @@ class SDBLFlagInputs(vdp.StandardInputs):
     """
     Inputs for single dish flagging
     """
-    def __to_numeric(self, val: Any) -> Integral | float:
+    def __to_numeric(self, val: Any) -> Real | str | None:
         """Convert any value into numeric.
 
         Utility method for VisDependentProperty.
@@ -198,34 +198,36 @@ class SDBLFlagInputs(vdp.StandardInputs):
         return ','.join(pols)
 
     #  docstring and type hints: supplements hsd_blflag
-    def __init__(self,
-                 context: Context,
-                 output_dir: str | None = None,
-                 iteration: str | int | None = None,
-                 edge: str | int | list[int] | None = None,
-                 flag_tsys: str | bool | None = None,
-                 tsys_thresh: str | Integral | None = None,
-                 flag_prfre: str | bool | None = None,
-                 prfre_thresh: str | Integral | None = None,
-                 flag_pofre: str | bool | None = None,
-                 pofre_thresh: str | Integral | None = None,
-                 flag_prfr: str | bool | None = None,
-                 prfr_thresh: str | Integral | None = None,
-                 flag_pofr: str | bool | None = None,
-                 pofr_thresh: str | Integral | None = None,
-                 flag_prfrm: str | bool | None = None,
-                 prfrm_thresh: str | Integral | None = None,
-                 prfrm_nmean: str | Integral | None = None,
-                 flag_pofrm: str | bool | None = None,
-                 pofrm_thresh: str | Integral | None = None,
-                 pofrm_nmean: str | Integral | None = None,
-                 plotflag: str | bool | None = None,
-                 infiles: str | list[str] | None = None,
-                 antenna: str | list[str] | None = None,
-                 field: str | list[str] | None = None,
-                 spw: str | list[str] | None = None,
-                 pol: str | list[str] | None = None,
-                 parallel: bool | str | None = None):
+    def __init__(
+            self,
+            context: Context,
+            output_dir: str | None = None,
+            iteration: str | int | None = None,
+            edge: str | int | list[int] | None = None,
+            flag_tsys: str | bool | None = None,
+            tsys_thresh: str | int | float | None = None,
+            flag_prfre: str | bool | None = None,
+            prfre_thresh: str | int | float | None = None,
+            flag_pofre: str | bool | None = None,
+            pofre_thresh: str | int | float | None = None,
+            flag_prfr: str | bool | None = None,
+            prfr_thresh: str | int | float | None = None,
+            flag_pofr: str | bool | None = None,
+            pofr_thresh: str | int | float | None = None,
+            flag_prfrm: str | bool | None = None,
+            prfrm_thresh: str | int | float | None = None,
+            prfrm_nmean: str | int | None = None,
+            flag_pofrm: str | bool | None = None,
+            pofrm_thresh: str | int | float | None = None,
+            pofrm_nmean: str | int | None = None,
+            plotflag: str | bool | None = None,
+            infiles: str | list[str] | None = None,
+            antenna: str | list[str] | None = None,
+            field: str | list[str] | None = None,
+            spw: str | list[str] | None = None,
+            pol: str | list[str] | None = None,
+            parallel: bool | str | None = None,
+            ):
         """Construct SDBLFlagInputs instance.
 
         Args:

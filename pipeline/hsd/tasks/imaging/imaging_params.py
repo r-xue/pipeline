@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING, Any, Generic, NewType, Final, TypeVar
+from typing import TYPE_CHECKING, Generic, TypeVar
 
 import numpy
 
@@ -12,7 +12,7 @@ from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils.debugwrapper import debugwrapper
 
 if TYPE_CHECKING:
-    from collections import namedtuple
+    from typing import Any, Final, NamedTuple
 
     from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResults, SDImagingResultItem
     from pipeline.hsd.tasks.common.direction_utils import Direction
@@ -20,8 +20,16 @@ if TYPE_CHECKING:
     from pipeline.domain.datatable import DataTableImpl
     from pipeline.domain import MeasurementSet
     from pipeline.domain.singledish import MSReductionGroupDesc
-    RasterInfo = NewType('RasterInfo', namedtuple('RasterInfo', 'center_ra center_dec width'
-                                                                'height scan_angle row_separation row_duration'))
+
+    class RasterInfo(NamedTuple):
+        center_ra: float
+        center_dec: float
+        width: float
+        height: float
+        scan_angle: float
+        row_separation: float
+        row_duration: float
+
     ImageGroup = dict[str, list[MeasurementSet | int | list[str | list[list[float | bool]]]]]
 
 T = TypeVar('T')

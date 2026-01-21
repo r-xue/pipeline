@@ -131,11 +131,15 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(PlotbandpassDetailBase, SingleDishSk
             result: SDSkyCalResults instance
             field: Field string. Either field id or field name.
         """
-        super().__init__(context, result,
-                                                                    'freq', 'amp',
-                                                                    showatm=True,
-                                                                    overlay='antenna',
-                                                                    solutionTimeThresholdSeconds=3600.)
+        super().__init__(
+            context,
+            result,
+            'freq',
+            'amp',
+            showatm=True,
+            overlay='antenna',
+            solutionTimeThresholdSeconds=3600.0,
+        )
 
         self.context = context
         # self._figfile structure: {spw_id: {antenna_id: filename}}
@@ -410,9 +414,14 @@ class SingleDishSkyCalAmpVsFreqDetailChart(BandpassDetailChart, SingleDishSkyCal
             extra_options['solutionTimeThresholdSeconds'] = solution_interval
 
         super().__init__(
-            context, result, xaxis='freq', yaxis='amp',
-            showatm=True, overlay='time',
-            **extra_options)
+            context,
+            result,
+            xaxis='freq',
+            yaxis='amp',
+            showatm=True,
+            overlay='time',
+            **extra_options,
+        )
 
         self.init_with_field(context, result, field)
 
@@ -657,9 +666,14 @@ class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
             result: SDSkyCalResults instance.
             calapp: List of CalApplication instances.
         """
-        super().__init__(context, result, calapp,
-                                                                    xaxis='time', yaxis='amp',
-                                                                    coloraxis='field')
+        super().__init__(
+            context,
+            result,
+            calapp,
+            xaxis='time',
+            yaxis='amp',
+            coloraxis='field',
+        )
 
 
 class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
@@ -678,9 +692,14 @@ class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
             result: SDSkyCalResults instance.
             calapp: List of CalApplication instances.
         """
-        super().__init__(context, result, calapp,
-                                                                   xaxis='time', yaxis='amp',
-                                                                   coloraxis='field')
+        super().__init__(
+            context,
+            result,
+            calapp,
+            xaxis='time',
+            yaxis='amp',
+            coloraxis='field',
+        )
 
 
 @casa5style_plot

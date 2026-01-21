@@ -36,6 +36,8 @@ from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
 if TYPE_CHECKING:
     from collections.abc import Generator, Callable
 
+    from numpy.ma.core import MaskedArray
+
     from pipeline.hsd.tasks.common.display import SDImageDisplayInputs
 
 RArotation = pointing.RArotation
@@ -481,10 +483,17 @@ class ChannelMapAxesManager(ImageAxesManager):
             brightnessunit: unit of the data to be displayed
             freq_frame: frequency reference frame
         """
-        super().__init__(fig, xformatter, yformatter,
-                                                    xlocator, ylocator,
-                                                    xrotation, yrotation,
-                                                    ticksize, colormap)
+        super().__init__(
+            fig,
+            xformatter,
+            yformatter,
+            xlocator,
+            ylocator,
+            xrotation,
+            yrotation,
+            ticksize,
+            colormap,
+        )
         self.nh = nh
         self.nv = nv
         self.brightnessunit = brightnessunit
@@ -832,7 +841,7 @@ class SDChannelMapDisplay(SDImageDisplay):
         Returns:
             extended ndarray of velocities
         """
-        assert len( self.velocity ) > 1
+        assert len(self.velocity) > 1
 
         extended_velocity = numpy.append(
             self.velocity,
@@ -853,7 +862,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         return self.__plot_channel_map()
 
-    def __get_integrated_spectra(self) -> numpy.ma.masked_array:
+    def __get_integrated_spectra(self) -> MaskedArray:
         """Compute integrated spectrum from the image.
 
         Image weights provided by the weight image is taken into account.

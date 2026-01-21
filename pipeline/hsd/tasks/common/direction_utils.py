@@ -19,22 +19,43 @@ at the time of the first on-source observing point in the dataset.
 """
 from __future__ import annotations
 
-from typing import NewType
+from typing import TYPE_CHECKING
 
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.logging.get_logger(__name__)
 
-Quantity  = NewType( 'Quantity',  dict )
-Direction = NewType( 'Direction', dict )
-Epoch     = NewType( 'Epoch',     dict )
-Position  = NewType( 'Position',  dict )
+if TYPE_CHECKING:
+    from typing import TypedDict, Any
+
+    class Quantity(TypedDict, total=False):
+        value: float
+        unit: str
+        # Measures often add additional keys; keep this open.
+        # Using Any allows casa measures/quanta dictionaries to pass through.
+        extra: Any
+
+    class Direction(TypedDict):
+        type: str
+        refer: str
+        m0: dict
+        m1: dict
+
+    class Epoch(TypedDict):
+        type: str
+        refer: str
+        m0: dict
+
+    class Position(TypedDict):
+        type: str
+        refer: str
+        m0: dict
 
 __all__ = { 'direction_shift', 'direction_offset', 'direction_recover', 'direction_convert' }
 
 
-def direction_shift( direction:Direction, reference:Direction, origin:Direction ) -> Direction:
+def direction_shift(direction: Direction, reference: Direction, origin: Direction) -> Direction:
     """
     Calculate the 'shifted-direction' of the observing point.
 
@@ -52,7 +73,7 @@ def direction_shift( direction:Direction, reference:Direction, origin:Direction 
     Returns:                           
         shifted-direction (reference centerized at origin)
     Raises:
-        RunTimeRrror: If 'refer's are inconsistent among direction, reference, and origin
+        RuntimeError: If 'refer's are inconsistent among direction, reference, and origin
     """
     # check if 'refer's are all identical for each directions
     if origin['refer'] != reference['refer']:
@@ -68,7 +89,7 @@ def direction_shift( direction:Direction, reference:Direction, origin:Direction 
     return new_direction
 
 
-def direction_offset( direction:Direction, reference:Direction ) -> Direction:
+def direction_offset(direction: Direction, reference: Direction) -> Direction:
     """
     Calculate the 'offset-direction' of the observing point.
 
@@ -86,7 +107,7 @@ def direction_offset( direction:Direction, reference:Direction ) -> Direction:
     Returns:                           
         offset-direction (reference centerized at (0,0) )
     Raises:
-        RunTimeError: If 'refer's of directoin and reference are inconsistent
+        RuntimeError: If 'refer's of direction and reference are inconsistent
     """
     # check if 'refer's are all identical for each directions
     if direction['refer'] != reference['refer']:
@@ -103,7 +124,7 @@ def direction_offset( direction:Direction, reference:Direction ) -> Direction:
     return new_direction
 
 
-def direction_recover( ra:float, dec:float, org_direction:Direction ) -> tuple[float, float]:
+def direction_recover(ra: float, dec: float, org_direction: Direction) -> tuple[float, float]:
     """
     Recovers the 'Shifted-coordinate' from 'Offset-coordinate'.
 
@@ -111,7 +132,7 @@ def direction_recover( ra:float, dec:float, org_direction:Direction ) -> tuple[f
     'Offset-coordinate' values.
 
     Args:
-        ra:  ra of 'Offset-corrdinate'
+        ra:  ra of 'Offset-coordinate'
         dec: dec of 'Offset-coordinate'
         org_direction: direction of the origin
     Returns:                                                               
@@ -132,7 +153,7 @@ def direction_recover( ra:float, dec:float, org_direction:Direction ) -> tuple[f
     return new_ra, new_dec
 
 
-def direction_convert(direction:Direction, mepoch:Epoch, mposition:Position, outframe:str) -> tuple[Quantity, Quantity]:
+def direction_convert(direction: Direction, mepoch: Epoch, mposition: Position, outframe: str) -> tuple[Quantity, Quantity]:
     """
     Convert the frame of the 'direction' to 'outframe'.
 

@@ -194,19 +194,20 @@ class BaselineSubtractionDataManager:
         self.prefit_storage.resize_storage(num_ra, num_dec, num_pol, num_chan)
         self.postfit_storage.resize_storage(num_ra, num_dec, num_pol, num_chan)
 
-    def store_result_get_data(self,
-                              num_ra: int,
-                              num_dec: int,
-                              rowlist: list[dict[str, int | float | list[int]]],
-                              npol: int,
-                              nchan: int,
-                              out_rowmap: dict | None = None,
-                              in_rowmap: dict | None = None
-                              ) -> tuple[numpy.ma.masked_array,
-                                         numpy.ma.masked_array,
-                                         numpy.ma.masked_array | None,
-                                         numpy.ma.masked_array | None,
-                                         numpy.ma.masked_array | None]:
+    def store_result_get_data(
+            self,
+            num_ra: int,
+            num_dec: int,
+            rowlist: list[dict[str, int | float | list[int]]],
+            npol: int,
+            nchan: int,
+            out_rowmap: dict | None = None,
+            in_rowmap: dict | None = None,
+            ) -> tuple[MaskedArray,
+                        MaskedArray,
+                        MaskedArray | None,
+                        MaskedArray | None,
+                        MaskedArray | None]:
         """
         Args:
             num_ra: Number of panels along horizontal axis
@@ -394,7 +395,7 @@ class BaselineSubtractionDataManager:
         map_data_storage: numpy.ndarray | None = None,
         map_mask_storage: numpy.ndarray | None = None,
         produce_averaged_data: bool = False
-    ) -> tuple[numpy.ma.masked_array, ...]:
+    ) -> tuple[MaskedArray, ...]:
         """Create array data for sparse map.
 
         Computes the following masked array data for sparse map:
@@ -738,11 +739,11 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
         field_id: int,
         antenna_id: int,
         spw_id: int,
-        postfit_integrated_data: numpy.ma.masked_array,
-        postfit_map_data: numpy.ma.masked_array,
-        prefit_integrated_data: numpy.ma.masked_array,
-        prefit_map_data: numpy.ma.masked_array,
-        prefit_averaged_data: numpy.ma.masked_array,
+        postfit_integrated_data: MaskedArray,
+        postfit_map_data: MaskedArray,
+        prefit_integrated_data: MaskedArray,
+        prefit_map_data: MaskedArray,
+        prefit_averaged_data: MaskedArray,
         num_ra: int,
         num_dec: int,
         rowlist: list[dict[str, int | float | list[int]]],
@@ -898,11 +899,11 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
         self,
         prefit_figfile_prefix: str,
         postfit_figfile_prefix: str,
-        postfit_integrated_data: numpy.ma.masked_array,
-        postfit_map_data: numpy.ma.masked_array,
-        prefit_integrated_data: numpy.ma.masked_array,
-        prefit_map_data: numpy.ma.masked_array,
-        prefit_averaged_data: numpy.ma.masked_array,
+        postfit_integrated_data: MaskedArray,
+        postfit_map_data: MaskedArray,
+        prefit_integrated_data: MaskedArray,
+        prefit_map_data: MaskedArray,
+        prefit_averaged_data: MaskedArray,
         num_ra: int,
         num_dec: int,
         rowlist: list[dict[str, int | float | list[int]]],
@@ -1060,7 +1061,7 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
     def plot_flatness_profile(
         self,
         postfit_figfile_prefix: str,
-        postfit_integrated_data: numpy.ma.masked_array,
+        postfit_integrated_data: MaskedArray,
         npol: int
     ) -> dict[str, dict[int, str]]:
         """Create plots of baseline flatness profile of a spectrum (after baseline subtraction).
@@ -1292,7 +1293,7 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
         plt.savefig(figfile, dpi=DPIDetail)
 
     def calculate_baseline_quality_stat(self, field_id: int, ant_id: int, spw_id: int,
-                                        postfit_integrated_data: numpy.ma.masked_array,
+                                        postfit_integrated_data: MaskedArray,
                                         npol: int, frequency: list[float],
                                         deviation_mask: list[tuple[int, int] | None],
                                         channelmap_range: list[tuple[int, int, bool] | None],

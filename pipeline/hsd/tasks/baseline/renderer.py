@@ -38,9 +38,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
                          Defaults to 'Generate Baseline tables and subtract spectral baseline'.
             always_rerender: Always rerender the page if True. Defaults to False.
         """
-        super().__init__(template,
-                                                                     description,
-                                                                     always_rerender)
+        super().__init__(template, description, always_rerender)
 
     def update_mako_context(self, ctx: dict, context: Context, results: ResultsList) -> None:
         """Update context object for Mako template in place.

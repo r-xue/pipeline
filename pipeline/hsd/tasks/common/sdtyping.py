@@ -2,20 +2,16 @@
 This module defines types of objects used in single dish.
 """
 
-from typing import NewType, TYPE_CHECKING
+from typing import TypeAlias
 
 import numpy as np
+import numpy.typing as npt
 
-if TYPE_CHECKING:
+# N-Dimension Array of float64
+NpArray1D: TypeAlias = npt.NDArray[np.float64]
+NpArray2D: TypeAlias = npt.NDArray[np.float64]
+NpArray3D: TypeAlias = npt.NDArray[np.float64]
 
-    # N-Dimension Array of float64 
-    NpArray1D = NewType('NpArray1D', np.ndarray[np.float64])
-    NpArray2D = NewType('NpArray2D', np.ndarray[np.ndarray[np.float64]])
-    NpArray3D = NewType('NpArray3D', np.ndarray[np.ndarray[np.ndarray[np.float64]]])
-
-    # Direction
-    # type as a direction of the origin for moving target
-    Direction = NewType('Direction', dict[str, str | float])
-
-    # Angle
-    Angle = NewType('Angle', dict[str, str | float])
+# Direction / Angle are dictionaries produced by CASA measures/quanta
+Direction: TypeAlias = dict[str, str | float]
+Angle: TypeAlias = dict[str, str | float]

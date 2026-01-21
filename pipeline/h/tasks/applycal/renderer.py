@@ -785,8 +785,8 @@ def get_brightest_field(ms, source, intent='TARGET'):
     field as the field with highest median flux averaged over all spws.
 
     Args:
-        ms: Measurement set to analyse.
-        source: Representative source for the measurement set.
+        ms: MeasurementSet to analyse.
+        source: Representative source for the MeasurementSet.
         intent: Intent used to filter scans and fields.
 
     Returns:

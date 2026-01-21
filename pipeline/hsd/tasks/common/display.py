@@ -17,8 +17,6 @@ import matplotlib.gridspec as gridspec
 import numpy as np
 from matplotlib.dates import date2num, DateFormatter, MinuteLocator
 
-from casatools import coordsys as casa_coordsys  # Used for annotation purpose.
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.displays.pointing as pointing
 from pipeline.infrastructure import casa_tools
@@ -30,6 +28,9 @@ if TYPE_CHECKING:
     from typing import NoReturn
 
     from matplotlib.axes import Axes
+    from numpy.ma.core import MaskedArray
+
+    from casatools import coordsys as casa_coordsys
 
     from pipeline.domain.singledish import MSReductionGroupDesc
     from pipeline.infrastructure.renderer.logger import Plot
@@ -1435,8 +1436,8 @@ class SDSparseMapPlotter:
         axes.set_xlim((np.argmin(f), np.argmax(f)))
 
     def plot(self,
-             map_data: np.ndarray | np.ma.masked_array,
-             averaged_data: np.ndarray | np.ma.masked_array,
+             map_data: np.ndarray | MaskedArray,
+             averaged_data: np.ndarray | MaskedArray,
              frequency: np.ndarray, fit_result: np.ndarray | None = None,
              figfile: str | None = None) -> bool:
         """Generate sparse profile map.
