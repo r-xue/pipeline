@@ -38,16 +38,23 @@ def ensure_working_dir(pt: PipelineTester) -> None:
         raise
 
 
-def setup_flux_antennapos(test_directory, output_dir):
-    # Copy flux.csv and antennapos.csv into the working directory
+def setup_flux_antennapos(test_directory: str, output_dir: str) -> None:
+    """Copy flux.csv and antennapos.csv into the working directory.
+    Args:
+        test_directory: Directory where flux.csv and antennapos.csv are located.
+        output_dir: Output directory where the working directory is located.
+
+    Raises:
+        OSError: If the files cannot be copied due to permission or other OS-level errors.
+    """
     flux_file = casa_tools.utils.resolve(f'{test_directory}/flux.csv')
     antennapos_file = casa_tools.utils.resolve(f'{test_directory}/antennapos.csv')
 
     try:
-        os.mkdir(f'{output_dir}/working/')
-    except FileExistsError:
-        # Directory already exists; reuse it without failing.
-        pass
+        os.makedirs(f'{output_dir}/working/', exist_ok=True)
+    except OSError as exc:
+        LOG.warning("Failed to create working directory for %s: %s", output_dir, exc)
+        raise
 
     shutil.copyfile(flux_file, casa_tools.utils.resolve(f'{output_dir}/working/flux.csv'))
     shutil.copyfile(antennapos_file, casa_tools.utils.resolve(f'{output_dir}/working/antennapos.csv'))
@@ -270,7 +277,8 @@ class PipelineTester:
         if not isinstance(value, (float, int, bool, type(None))):
             value = keyval.split("=")[-1]
             raise ValueError(
-                "For the key: {}, value: {} cannot be converted to int/float/boolean/None.".format(keystring, value))
+                f"For key '{keystring}', value '{value}' of type {type(value).__name__} "
+                "cannot be converted to int/float/boolean/None.")
 
         try:
             tolerance = float(instring.split(':::')[-1].replace('\n', ''))
@@ -384,7 +392,7 @@ class PipelineTester:
                 assert oldkey == newkey, f"Expected key {oldkey} does not match new key {newkey}."
                 tolerance = tol if tol else relative_tolerance
                 if newval is not None:
-                    LOG.info(f'Comparing {oldval} to {newval} with a rel. tolerance of {tolerance}')
+                    LOG.info('Comparing %s to %s with a rel. tolerance of %s', oldval, newval, tolerance)
                     if oldval != pytest.approx(newval, rel=tolerance):
                         diff = oldval-newval
                         percent_diff = (oldval-newval)/oldval * 100 if oldval != 0 else 100
@@ -400,7 +408,7 @@ class PipelineTester:
                     errors.append(errorstr)
                 else:
                     # If old and new values are both None, this is expected, so pass
-                    LOG.info(f'Comparing {oldval} and {newval}... both values are None.')
+                    LOG.info('Comparing %s and %s... both values are None.', oldval, newval)
 
             [LOG.warning(x) for x in errors]
             n_errors = len(errors)
@@ -495,6 +503,6 @@ class PipelineTester:
                 shutil.rmtree(self.output_dir)
                 LOG.info("Removing working directory %s as requested.", self.output_dir)
             except FileNotFoundError:
-                pass
+                LOG.debug("Working directory %s already removed before cleanup.", self.output_dir)
             except OSError as exc:
                 LOG.warning("Failed to remove working directory %s: %s", self.output_dir, exc)
