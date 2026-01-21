@@ -67,9 +67,9 @@ def test_get_fluxes_both_fail_fallbacks(mock_log, mock_urlopen, mock_local_get_s
     assert result[1] == ['combined_result'], "Should still return combined results"
     assert result[2] is None, "QA status should be None in fallback"
 
-    # Verify local fallback used and error logged
+    # Verify local fallback used and warning logged
     mock_local_get_setjy.assert_called_once_with(observing_run.measurement_sets)
-    mock_log.error.assert_called_once()
+    assert mock_log.warning.call_count == 2, "Should log two warnings (primary and backup failures)"
 
 
 @mock.patch('pipeline.hifa.tasks.importdata.almaimportdata.fluxes.import_flux', return_value=['combined_result'])
