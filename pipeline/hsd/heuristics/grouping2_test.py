@@ -1,5 +1,4 @@
 """Test for heuristics defined in grouping2.py."""
-from typing import Tuple
 
 import numpy as np
 import pytest
@@ -35,7 +34,7 @@ def random_noise(n: int, mean: int = 0, amp: int = 1, rs: np.random.mtrand.Rando
     return (r - (0.5 - mean)) * amp / 0.5
 
 
-def generate_position_data_psw() -> Tuple[np.ndarray, np.ndarray]:
+def generate_position_data_psw() -> tuple[np.ndarray, np.ndarray]:
     """Generate position data for simulated position-switch observation.
 
     Generate position data for simulated position-switch observatin.
@@ -99,7 +98,7 @@ def generate_time_data_psw() -> np.ndarray:
     return time_list
 
 
-def generate_position_data_raster() -> Tuple[np.ndarray, np.ndarray]:
+def generate_position_data_raster() -> tuple[np.ndarray, np.ndarray]:
     """Generate position data for simulated OTF raster observation.
 
     Generate position data for simulated OTF raster observatin

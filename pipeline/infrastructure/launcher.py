@@ -2,17 +2,22 @@
 The launcher module contains classes to initialize the pipeline, potentially
 from a saved context state.
 """
+from __future__ import annotations
+
 import contextvars
 import datetime
 import os
 import pickle
 import pprint
-from typing import Any
+from typing import TYPE_CHECKING
 
 from pipeline import domain, environment
 
 from . import callibrary, casa_tools, eventbus, imagelibrary, logging, project, utils
 from .eventbus import ContextCreatedEvent, ContextResumedEvent
+
+if TYPE_CHECKING:
+    from typing import Any
 
 LOG = logging.get_logger(__name__)
 
@@ -119,7 +124,7 @@ class Context:
         if name is None:
             # initialise the context name with something reasonable: a current
             # timestamp
-            now = datetime.datetime.utcnow()
+            now = datetime.datetime.now(datetime.timezone.utc)
             name = now.strftime('pipeline-%Y%m%dT%H%M%S')
         self.name = name
 

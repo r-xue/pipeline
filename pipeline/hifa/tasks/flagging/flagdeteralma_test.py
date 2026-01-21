@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-import numpy.testing as nt
+
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.tablereader import MeasurementSetReader
 from .flagdeteralma import (get_partialpol_spws, load_partialpols_alma, get_partialpol_flag_cmd_params,

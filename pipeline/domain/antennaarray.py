@@ -1,20 +1,27 @@
+from __future__ import annotations
+
 import collections
 import itertools
 import math
 import warnings
-from typing import Sequence
+from typing import TYPE_CHECKING
 
 import numpy
 
 from pipeline.infrastructure import casa_tools
 
-from . import Antenna, measures
+from . import measures
 from .measures import Distance, DistanceUnits
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from pipeline.domain import Antenna
 
 Baseline = collections.namedtuple('Baseline', 'antenna1 antenna2 length')
 
 
-class AntennaArray(object):
+class AntennaArray:
     """
     AntennaArray is a logical representation of the antenna array.
 

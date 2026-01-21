@@ -45,7 +45,7 @@ def sanitize(text):
     return filename
 
 
-class ImageDisplay(object):
+class ImageDisplay:
 
     @staticmethod
     def _findchunks(times):

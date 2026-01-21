@@ -6,7 +6,6 @@ from glob import glob
 import hashlib
 import json
 import os
-from typing import List, Dict
 
 from .. import casa_tools
 from .conversion import get_epoch_as_datetime
@@ -43,7 +42,7 @@ def get_iso_mtime(filename: str) -> str:
     return datetime.fromtimestamp(os.path.getmtime(filename)).isoformat()
 
 
-def get_solar_system_model_files(ss_object: str, ss_path: str = SOLAR_SYSTEM_MODELS_PATH) -> List[str]:
+def get_solar_system_model_files(ss_object: str, ss_path: str = SOLAR_SYSTEM_MODELS_PATH) -> list[str]:
     """Return the data files corresponding to a Solar System object"""
     models = glob(os.path.join(ss_path, "*.dat"))
     # NOTE: The filter function may fail in the unlikely case that an object name is
@@ -52,7 +51,7 @@ def get_solar_system_model_files(ss_object: str, ss_path: str = SOLAR_SYSTEM_MOD
     return sorted(object_models)
 
 
-def get_filename_info(filename: str) -> Dict[str, str]:
+def get_filename_info(filename: str) -> dict[str, str]:
     """Get a string with information about the modification date and MD5 hash of a file"""
     md5_hex = get_file_md5(filename)
     mtime = get_iso_mtime(filename)

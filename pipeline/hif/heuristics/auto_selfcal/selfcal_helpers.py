@@ -9,10 +9,11 @@ import os
 import shutil
 import time
 import traceback
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import numpy as np
 import scipy
+
 from casatasks import casalog
 
 import pipeline.hif.heuristics.findrefant as findrefant
@@ -26,6 +27,8 @@ from pipeline.infrastructure.contfilehandler import ContFileHandler
 from pipeline.infrastructure.displays.plotstyle import matplotlibrc_formal
 
 if TYPE_CHECKING:
+    from typing import Any
+
     from pipeline.domain.observingrun import ObservingRun
 
 LOG = infrastructure.logging.get_logger(__name__)

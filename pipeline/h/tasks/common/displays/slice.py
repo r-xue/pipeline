@@ -44,7 +44,7 @@ flag_color = {'edges': 'lightblue',
               'tmf': 'aqua'}
 
 
-class SliceDisplay(object):
+class SliceDisplay:
     def plot(self, context, results, reportdir, description_to_plot=None,
              overplot_spectrum=None, plotbad=True, plot_only_flagged=False,
              prefix=''):

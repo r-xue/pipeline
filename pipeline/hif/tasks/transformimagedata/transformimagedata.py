@@ -14,7 +14,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class TransformimagedataResults(basetask.Results):
     def __init__(self, vis, outputvis):
-        super(TransformimagedataResults, self).__init__()
+        super().__init__()
         self.vis = vis
         self.outputvis = outputvis
         self.ms = None

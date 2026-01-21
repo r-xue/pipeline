@@ -55,22 +55,26 @@
 # 08/jan/2021: - Added functionality to run atmcorr routine in "try" mode and extract three different
 #                metrics for a family of model parameters.
 # 24/jul/2020: - Aligned with script atmcorr_20200722.py
-
-import os
-from typing import Generator
+from __future__ import annotations
 
 import glob
+import os
+import time as systime
+from itertools import product
+from typing import TYPE_CHECKING
+
 import numpy as np
 import pylab as pl
-from itertools import product
 from matplotlib import pyplot as plt
-import time as systime
 from scipy.interpolate import CubicSpline
 
 import pipeline.infrastructure.callibrary as callibrary
-import pipeline.infrastructure.logging as logging
-import pipeline.infrastructure.casa_tools as casa_tools
 import pipeline.infrastructure.casa_tasks as casa_tasks
+import pipeline.infrastructure.casa_tools as casa_tools
+import pipeline.infrastructure.logging as logging
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 LOG = logging.get_logger(__name__)
 
