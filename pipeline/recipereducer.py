@@ -283,8 +283,8 @@ def run_named_tasks(tasks: list[tuple[str, dict[str, Any]]]) -> Context:
       1. Initialize a fresh pipeline context via `cli.h_init()`.
       2. Resolve each task name to a callable using `cli.get_pipeline_task_with_name`.
       3. Execute tasks in order, logging the call signature.
-        4. Raise `exceptions.PipelineException` immediately if any task result
-            reports tracebacks (handled inside `_execute_task`).
+      4. Raise `exceptions.PipelineException` immediately if any task result 
+         reports tracebacks (handled inside `_execute_task`).
       5. Save the context via `cli.h_save()`.
 
     Args:
