@@ -616,13 +616,13 @@ def score_diffgaincal_residuals(residuals_info: dict, score_type: str) -> pqa.QA
 
         # Poor phase statistics are scored as a red error.
         if poor:
-            score = rendererutils.SCORE_THRESHOLD_ERROR
+            score = rendererutils.SCORE_THRESHOLD_WARNING
             shortmsg = f'High Diffgaincal {messph} {score_type}'
             longmsg = (f'For {ms_name}, field={field} intent={intent} has high {messph} {score_type} >70 deg for'
                        f' {get_expanded_message(poor)}.')
         # Elevated phase statistics are scored as a yellow warning.
         elif elevated:
-            score = rendererutils.SCORE_THRESHOLD_WARNING
+            score = 0.67
             shortmsg = f'Elevated Diffgaincal {messph} {score_type}'
             longmsg = (f'For {ms_name}, field={field} intent={intent} has elevated {messph} {score_type} between'
                        f' 50-70 deg for {get_expanded_message(elevated)}.')
