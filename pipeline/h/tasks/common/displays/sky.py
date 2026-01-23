@@ -82,12 +82,12 @@ class SkyDisplay:
 
         Args:
             *args: Positional arguments to be passed to self.plot().
-            stokes_list (list[str] | None): List of Stokes parameters to plot.
+            stokes_list: List of Stokes parameters to plot.
                 If None, all available Stokes planes will be plotted.
             **kwargs: Keyword arguments to be passed to self.plot().
 
         Returns:
-            List: A list of plot objects, one for each Stokes parameter.
+            A list of plot objects, one for each Stokes parameter.
 
         Description:
             This method generates one plot per Stokes parameter for a given image file.

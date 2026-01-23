@@ -5,11 +5,11 @@ import datetime
 import pprint
 from typing import TYPE_CHECKING
 
-import numpy as np
-
 from pipeline.infrastructure import casa_tools, utils
 
 if TYPE_CHECKING:
+    from numpy.typing import NDArray
+
     from pipeline.infrastructure.utils.utils import DirectionDict, EpochDict, QuantityDict
 
 _pprinter = pprint.PrettyPrinter(width=1e99)
@@ -36,7 +36,7 @@ class Field:
             field_id: int,
             name: str,
             source_id: int,
-            time: np.ndarray,
+            time: NDArray,
             direction: DirectionDict,
             ) -> None:
         """

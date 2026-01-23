@@ -8,14 +8,19 @@ observing region.
 
 Note that it does not check if observing pattern is raster.
 """
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 
 import numpy as np
-import numpy.typing as npt
 from scipy.stats import median_abs_deviation
 
 from pipeline.domain.measurementset import MeasurementSet
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure as infrastructure
+
+if TYPE_CHECKING:
+    from numpy.typing import NDArray
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -51,7 +56,7 @@ class HeuristicsParameter:
     RoundTripRasterScanThresholdFactor = 0.6
 
 
-def distance(x0: float, y0: float, x1: float, y1: float) -> np.ndarray:
+def distance(x0: float, y0: float, x1: float, y1: float) -> NDArray:
     """
     Compute distance between two points (x0, y0) and (x1, y1).
 
@@ -67,11 +72,11 @@ def distance(x0: float, y0: float, x1: float, y1: float) -> np.ndarray:
 
 
 def generate_histogram(
-    arr: np.ndarray,
+    arr: NDArray,
     bin_width: float,
     left_edge: float,
     right_edge: float
-) -> tuple[np.ndarray, np.ndarray]:
+) -> tuple[NDArray, NDArray]:
     """Generate histogram for given array.
 
     Generates histogram for given array, arr, with the configuration specified by
@@ -91,8 +96,8 @@ def generate_histogram(
 
 
 def detect_peak(
-    hist: np.ndarray,
-    mask: np.ndarray | None = None
+    hist: NDArray,
+    mask: NDArray | None = None
 ) -> tuple[int, int, int, int]:
     """Detect peak in the given histogram.
 
@@ -137,7 +142,7 @@ def detect_peak(
     return total, ipeak, imin, imax
 
 
-def find_histogram_peak(hist: np.ndarray) -> list[int]:
+def find_histogram_peak(hist: NDArray) -> list[int]:
     """Find histogram peaks.
 
     Repeatedly calls detect_peak until fraction of data included in
@@ -181,9 +186,9 @@ def find_histogram_peak(hist: np.ndarray) -> list[int]:
 
 
 def shift_angle(
-    angle: float | np.ndarray,
+    angle: float | NDArray,
     delta: float
-) -> float | np.ndarray:
+) -> float | NDArray:
     """Shift angle or angle array by the value, delta.
 
     All angles must be the value in degree.
@@ -198,7 +203,7 @@ def shift_angle(
     return (angle + 360 + delta) % 360
 
 
-def find_most_frequent(v: np.ndarray) -> int:
+def find_most_frequent(v: NDArray) -> int:
     """
     Return the most frequent value in an input array.
 
@@ -222,7 +227,7 @@ def find_most_frequent(v: np.ndarray) -> int:
     return mode
 
 
-def refine_gaps(gap_list: list[int], num_data: int) -> np.ndarray:
+def refine_gaps(gap_list: list[int], num_data: int) -> NDArray:
     """Refine gap list by eliminating unreasonable gaps.
 
     When there is relatively large pointing error right before
@@ -314,9 +319,9 @@ def create_range(
 
 
 def find_angle_gap_by_range(
-    angle_deg: np.ndarray,
+    angle_deg: NDArray,
     acceptable_ranges: list[tuple[float, float]]
-) -> np.ndarray:
+) -> NDArray:
     """Find angle gap using the range.
 
     Given the angle array in degree, angle_deg, find angle using the
@@ -349,7 +354,7 @@ def find_angle_gap_by_range(
     return angle_gap
 
 
-def find_distance_gap(delta_ra: np.ndarray, delta_dec: np.ndarray) -> np.ndarray:
+def find_distance_gap(delta_ra: NDArray, delta_dec: NDArray) -> NDArray:
     """Find distance gap.
 
     Distance gap is detected by the condition below:
@@ -399,7 +404,7 @@ def find_distance_gap(delta_ra: np.ndarray, delta_dec: np.ndarray) -> np.ndarray
     return distance, distance_gap, distance_threshold
 
 
-def find_angle_gap(angle_deg: np.ndarray) -> list[int]:
+def find_angle_gap(angle_deg: NDArray) -> list[int]:
     """Find angle gap.
 
     Find angle gap by using angle histogram. For raster scan,
@@ -460,11 +465,10 @@ def find_angle_gap(angle_deg: np.ndarray) -> list[int]:
     angle_gap = find_angle_gap_by_range(angle_deg, acceptable_ranges)
     LOG.info('angle gap: %s', angle_gap)
 
-    #return angle_deg, angle_gap, hist, bin_edges, peak_indices, acceptable_ranges
     return angle_gap
 
 
-def find_raster_row(ra: np.ndarray, dec: np.ndarray) -> np.ndarray:
+def find_raster_row(ra: NDArray, dec: NDArray) -> NDArray:
     """Find raster rows using angle gap as primary and distance gap as secondary.
 
     The function tries to find angle gap with tight condition and distance
@@ -500,7 +504,7 @@ def find_raster_row(ra: np.ndarray, dec: np.ndarray) -> np.ndarray:
     return refined_gap
 
 
-def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: list[list[int]]) -> np.ndarray:
+def get_raster_distance(ra: NDArray, dec: NDArray, dtrow_list: list[list[int]]) -> NDArray:
     """
     Compute distances between raster rows and the first row.
 
@@ -509,13 +513,13 @@ def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: list[list[i
     The representative position of each raster row is the mid point (mean position) of R.A. and Dec.
 
     Args:
-        ra: np.ndarray of RA
-        dec: np.ndarray of Dec
-        dtrow_list: list of row ids for datatable rows per data chunk indicating
+        ra: An array of RA.
+        dec: An array of Dec.
+        dtrow_list: List of row ids for datatable rows per data chunk indicating
                     single raster row.
 
     Returns:
-        np.ndarray of the distances.
+        An array of the distances.
     """
     i1 = dtrow_list[0]
     x1 = ra[i1].mean()
@@ -535,7 +539,7 @@ class RasterScanHeuristicsResult():
         """Initialize an object.
 
         Args:
-            ms (MeasurementSet): an MeasurementSet object related to the instance.
+            ms: A MeasurementSet object related to the instance.
         """
         self.__ms = ms
         self.__antenna = {}
@@ -552,9 +556,9 @@ class RasterScanHeuristicsResult():
         """Set False means raster analysis failure to self.antenna dictionary that is used for getting fail antennas.
 
         Args:
-            antid (int): An Antenna ID of the result
-            spwid (int): An SpW ID of the result
-            fieldid (int): A field ID of the result
+            antid: An Antenna ID of the result.
+            spwid: An SpW ID of the result.
+            fieldid: A field ID of the result.
         """
         self._set_result(antid, spwid, fieldid, False)
 
@@ -562,10 +566,10 @@ class RasterScanHeuristicsResult():
         """Set boolean that appears the result of raster analysis to self.antenna dictionary that is used for getting fail antennas.
 
         Args:
-            antid (int): An Antenna ID of the result
-            spwid (int): An SpW ID of the result
-            fieldid (int): A field ID of the result
-            result (bool): result of raster analysis
+            antid: An Antenna ID of the result.
+            spwid: An SpW ID of the result.
+            fieldid: A field ID of the result.
+            result: result of raster analysis.
         """
         field = self.antenna.setdefault(antid, {}) \
                             .setdefault(spwid, {}) \
@@ -576,7 +580,7 @@ class RasterScanHeuristicsResult():
         """Get antennas which have had some error in raster scan analysis of the self.ms.
 
         Returns:
-            List[str]: List of antenna names
+            List of antenna names.
         """
         def _contains_fail(value: str | dict[str, dict]):
             if isinstance(value, dict):
@@ -587,8 +591,8 @@ class RasterScanHeuristicsResult():
         return sorted([self.ms.antennas[id].name for id in antenna_ids])
 
 
-def find_raster_gap(ra: npt.NDArray[np.float64], dec: npt.NDArray[np.float64], dtrow_list: list[npt.NDArray[np.int64]]) \
-        -> npt.NDArray[np.int64]:
+def find_raster_gap(ra: NDArray[np.float64], dec: NDArray[np.float64], dtrow_list: list[NDArray[np.int64]]) \
+        -> NDArray[np.int64]:
     """
     Find gaps between individual raster map.
 
@@ -604,9 +608,9 @@ def find_raster_gap(ra: npt.NDArray[np.float64], dec: npt.NDArray[np.float64], d
     >>>     plt.plot(ra[idx], dec[idx], '.')
 
     Args:
-        ra: np.ndarray of RA
-        dec: np.ndarray of Dec
-        dtrow_list: List of np.ndarray holding array indices for ra and dec.
+        ra: An array of RA.
+        dec: An array of Dec.
+        dtrow_list: List of arrays holding array indices for ra and dec.
                     Each index array is supposed to represent single raster row.
 
     Raises:
@@ -614,7 +618,7 @@ def find_raster_gap(ra: npt.NDArray[np.float64], dec: npt.NDArray[np.float64], d
             irregular row input or unsupported raster mapping
 
     Returns:
-        np.ndarray of index for dtrow_list indicating boundary between raster maps
+        An array of index for dtrow_list indicating boundary between raster maps.
     """
     msg = 'Failed to identify gap between raster map iteration.'
 
@@ -648,8 +652,8 @@ def find_raster_gap(ra: npt.NDArray[np.float64], dec: npt.NDArray[np.float64], d
 class RasterScanHeuristic(api.Heuristic):
     """Heuristic to analyze raster scan pattern."""
 
-    def calculate(self, ra: npt.NDArray[np.float64], dec: npt.NDArray[np.float64]) \
-                      -> tuple[list[npt.NDArray[np.int64]], list[npt.NDArray[np.int64]]]:
+    def calculate(self, ra: NDArray[np.float64], dec: NDArray[np.float64]) \
+                      -> tuple[list[NDArray[np.int64]], list[NDArray[np.int64]]]:
         """Detect gaps that separate individual raster rows and raster maps.
 
         Detected gaps are transrated into TimeTable and TimeGap described below.
@@ -690,7 +694,6 @@ class RasterScanHeuristic(api.Heuristic):
             TimeGap[1]: large gap
         """
         gaplist_row = find_raster_row(ra, dec)
-        # gaplist_row = ret[2]
         idx_iter = zip(gaplist_row[:-1], gaplist_row[1:])
         dtrow_list = [np.arange(s, e, dtype=int) for s, e in idx_iter]
         gaplist_map = find_raster_gap(ra, dec, dtrow_list)

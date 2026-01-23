@@ -23,6 +23,9 @@ from ..common import utils
 from .typing import FitFunc, FitOrder
 
 if TYPE_CHECKING:
+    from numpy import floating
+    from numpy.typing import NDArray
+
     from pipeline.domain import MeasurementSet
     from pipeline.hsd.tasks.common.utils import RGAccumulator
     from pipeline.infrastructure.launcher import Context
@@ -114,7 +117,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         return self.plan.get_spw_id_list()
 
     @vdp.VisDependentProperty(readonly=True)
-    def grid_table(self) -> list[int | float | np.ndarray]:
+    def grid_table(self) -> list[int | float | NDArray[floating]]:
         """Return list of grid tables to process.
 
         Returned list should conform with the list of MS and

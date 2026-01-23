@@ -59,14 +59,6 @@ class PlotmsLeaf:
                 raise NotImplementedError('Could not expand correlation for observatory: {!s}'.format(observatory))
         self._correlation = correlation
 
-        #         # convert intent to scan selection
-        #         if intent != '':
-        #             domain_fields = self._ms.get_fields(field)
-        #             domain_spws = self._ms.get_spectral_windows(spw)
-        #             scans = [s for s in self._ms.get_scans(scan_intent=intent)
-        #                      if s.fields.intersection(domain_fields)
-        #                      and s.spws.intersection(domain_spws)]
-        #             scan = ','.join([str(s.id) for s in scans])
         self._scan = scan
 
         # use field name rather than ID where possible
@@ -582,7 +574,6 @@ class BasebandSummaryChart(PlotmsBasebandComposite):
     """
 
     def __init__(self, context, output_dir, calto, xaxis, yaxis, intent, **kwargs):
-        # (calto, intent) = _get_summary_args(context, result, intent)
         LOG.info('%s vs %s plot: %s' % (yaxis, xaxis, calto))
 
         if 'field' in kwargs:
@@ -604,7 +595,6 @@ class FieldBasebandSummaryChart(PlotmsFieldBasebandComposite):
     """
 
     def __init__(self, context, output_dir, calto, xaxis, yaxis, intent, **kwargs):
-        # (calto, intent) = _get_summary_args(context, result, intent)
         LOG.info('%s vs %s plot: %s' % (yaxis, xaxis, calto))
 
         if 'field' in kwargs:
@@ -908,7 +898,6 @@ class SpwAntDetailChart(PlotmsSpwAntComposite):
     """
 
     def __init__(self, context, output_dir, calto, xaxis, yaxis, intent, **kwargs):
-        # (calto, intent) = _get_summary_args(context, result, intent)
         LOG.info('%s vs %s plot: %s' % (yaxis, xaxis, calto))
 
         if 'field' in kwargs:
@@ -930,7 +919,6 @@ class FieldSpwAntDetailChart(PlotmsFieldSpwAntComposite):
     """
 
     def __init__(self, context, output_dir, calto, xaxis, yaxis, intent, **kwargs):
-        # (calto, intent) = _get_summary_args(context, result, intent)
         LOG.info('%s vs %s plot: %s' % (yaxis, xaxis, calto))
 
         # request plots per spw, overlaying all antennas

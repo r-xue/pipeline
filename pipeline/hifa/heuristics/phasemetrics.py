@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import copy
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -6,6 +9,9 @@ import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 from pipeline.hifa.heuristics import atm as atm_heuristic
 from pipeline.hifa.heuristics import phasespwmap
+
+if TYPE_CHECKING:
+    from numpy.typing import NDArray
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -394,7 +400,6 @@ class PhaseStabilityHeuristics:
                self.caltable, self.spw, self.scan, self.antlist
 
         :returns: total time of baseline scan, average integration time
-        :rtype: float, float
         """
         with casa_tools.TableReader(self.caltable) as tb:
             nant = len(self.antlist)
@@ -435,7 +440,7 @@ class PhaseStabilityHeuristics:
         input used:
             self.vis
 
-        return: the cycletime (float)
+        return: the cycletime
         """
         with casa_tools.MSMDReader(self.vis) as msmd:
             scans = msmd.scansforintent('*PHASE*')
@@ -556,7 +561,7 @@ class PhaseStabilityHeuristics:
         return config
 
     def _getblflags(self, spw: int, ant1: str | None = None, ant2: str | None = None) \
-            -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+            -> tuple[NDArray, NDArray, NDArray, NDArray]:
         """
         Code to open and close the table for the MS
         and get the baseline based flags in one lump
@@ -617,7 +622,7 @@ class PhaseStabilityHeuristics:
         LOG.info(' The median integration time {}'.format(self.difftime))
 
     # Methods used by _do_analysis()
-    def _get_cal_phase(self, ant: int) -> np.ndarray:
+    def _get_cal_phase(self, ant: int) -> NDArray:
         """
         Read a caltable file and select the
         phases from one pol (tested in PIPE692 as sufficient).
@@ -627,7 +632,7 @@ class PhaseStabilityHeuristics:
         are unwrapped, i.e. solved for the 2PI ambiguitiy
 
         input required:
-                 ant (int)  - the antenna to get the phases for
+                 ant - the antenna to get the phases for
 
         uses inputs:
                  self.caltable, self.refantid, self.spw, self.scan
@@ -831,7 +836,7 @@ class PhaseStabilityHeuristics:
         return flaggedbl
 
     def _get_final_spw_and_blflags(self, inputsin, qa_spw_candidates) \
-            -> tuple[int, tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]]:
+            -> tuple[int, tuple[NDArray, NDArray, NDArray, NDArray]]:
         """
         Select the best candidate SpW for the phase decoherence analysis based
         on ranked list and baseline flagging information.
@@ -927,7 +932,7 @@ class PhaseStabilityHeuristics:
         return qa_spw_list_filtered
 
     @staticmethod
-    def phase_unwrap(phase: np.ndarray) -> np.ndarray:
+    def phase_unwrap(phase: NDArray) -> NDArray:
         """
         Unwraps the phases to solve for 2PI ambiguities
         Input phases may contain np.nan.
@@ -942,21 +947,19 @@ class PhaseStabilityHeuristics:
         return working_phase
 
     @staticmethod
-    def mad(data: np.ndarray, axis: int | None = None) -> float:
+    def mad(data: NDArray, axis: int | None = None) -> float:
         """
         This calculates the MAD - median absolute deviation from the median
         The input must be nan free, i.e. finite data
 
         :param data: input data stream
-        :type data: list or array
-
+        :param axis: axis to operate along
         :returns: median absolute deviation (from the median)
-        :rtyep: float
         """
         return np.median(np.abs(data - np.median(data, axis)), axis)
 
     @staticmethod
-    def std_overlapping_avg(phase: np.ndarray, diffTime: float, over: float=120.0) -> float:
+    def std_overlapping_avg(phase: NDArray, diffTime: float, over: float=120.0) -> float:
         """
         Calculate STD over a set time and return the average of all overlapping
         values of the standard deviation - overlapping estimator. This acts
@@ -969,13 +972,9 @@ class PhaseStabilityHeuristics:
         the same value for zero-centered phases.
 
         :param phase: any unwrapped input phase
-        :type phase: array
         :param diffTime: the time between each data integration
-        :type diffTime: float
         :param over: time in seconds to calculate the SD over
-        :type over: float
         :returns: average standard deviation for the dataset calculated over the input timescale
-        :rtype: float
         """
 
         # Overlap in elements
@@ -995,7 +994,7 @@ class PhaseStabilityHeuristics:
         return std_mean
 
     @staticmethod
-    def ave_phase(phase: np.ndarray, diffTime: np.ndarray, over: float=1.0) -> np.ndarray:
+    def ave_phase(phase: NDArray, diffTime: NDArray, over: float=1.0) -> NDArray:
         """
         Do an averaging/smoopthing on the phase data
         The default for ALMA for phase statistics should be 10s.
@@ -1004,13 +1003,9 @@ class PhaseStabilityHeuristics:
         then no averaging is made.
 
         :param phase: phase series of the data to average
-        :type phase: array
         :param diffTime: the average difference in time between each data value, i.e. each phase
-        :type diffTime: float
         :param over: the time to average over - default is 1s
-        :type over: float
         :returns: array of averaged phases
-        :rtype: array
         """
         over = int(np.round(over / diffTime))
         # Make an int for using elements

@@ -283,7 +283,6 @@ class ImageDisplay:
         xunits = image.axes[0].units
         ytitle = image.axes[1].name
         ydata = image.axes[1].data
-        # yunits = image.axes[1].units
         dataunits = image.units
         datatype = image.datatype
 

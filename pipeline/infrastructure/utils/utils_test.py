@@ -21,11 +21,14 @@ from .utils import find_ranges, dict_merge, are_equal, approx_equal, flagged_int
 if TYPE_CHECKING:
     from typing import Any
 
+    from numpy import generic
+    from numpy.typing import NDArray
+
+
 params_find_ranges = [('', ''), ([], ''), ('1:2', '1:2'), ([1, 2, 3], '1~3'),
                       (['5~12', '14', '16:17'], '5~12,14,16:17'),
                       ([1, 2, 3, 6, 7], '1~3,6~7'),
                       ([1, 2, 3, '6', '7'], '1~3,6~7')]
-
 
 @pytest.mark.parametrize('data, expected', params_find_ranges)
 def test_find_ranges(data: str | list, expected: str):
@@ -68,7 +71,7 @@ params_are_equal = [([1, 2, 3], [1, 2, 3], True), ([1, 2.5, 3], [1, 2, 3], False
 
 
 @pytest.mark.parametrize('a, b, expected', params_are_equal)
-def test_are_equal(a: list | np.ndarray, b: list | np.ndarray, expected: bool):
+def test_are_equal(a: list | NDArray[generic], b: list | NDArray[generic], expected: bool):
     """Test are_equal()
 
     This utility function check the equivalence of array like objects. Two arrays
@@ -113,7 +116,7 @@ params_flagged_intervals = [([], []), ([1, 2], [(0, 0)]),
 
 
 @pytest.mark.parametrize('vec, expected', params_flagged_intervals)
-def test_flagged_intervals(vec: list[int] | np.ndarray, expected: list[tuple[int]]):
+def test_flagged_intervals(vec: list[int] | NDArray[generic], expected: list[tuple[int]]):
     """Test flagged_intervals()
 
     This utility function finds islands of ones in vector provided in argument.

@@ -379,9 +379,6 @@ class FlagCmd:
                 match = match and (('ANTENNA' in str(self.axisnames).upper()) or
                                    ('BASELINE' in str(self.axisnames).upper()))
 
-#        if self.flag_time is not None:
-#            match = match and ('TIME' in self.axisnames)
-
         # does correlation/pol match?
         match = match and (
           ("correlation=" not in self.__repr__()) or

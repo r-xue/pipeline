@@ -28,7 +28,6 @@ import os
 import re
 import time
 
-# import memory_profiler
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
@@ -295,7 +294,6 @@ class DataTableImpl:
 
     def __del__(self):
         # make sure that table is closed
-        # LOG.debug('__del__ close CASA table...')
         self.cols.clear()
         self._close()
 
@@ -484,7 +482,6 @@ class DataTableImpl:
             os.makedirs(abspath)
         elif overwrite:
             LOG.debug('Overwrite existing DataTable %s...' % name)
-            # os.system( 'rm -rf %s/*'%(abspath) )
         else:
             raise IOError('The file %s exists.' % name)
 
@@ -499,7 +496,6 @@ class DataTableImpl:
                 tbloc = self.tb1.copy(os.path.join(abspath, 'RO'), deep=True,
                                       valuecopy=True, returnobject=True)
                 tbloc.close()
-        # LOG.trace('Exporting RW table')
         tbloc = self.tb2.copy(os.path.join(abspath, 'RW'), deep=True,
                               valuecopy=True, returnobject=True)
         tbloc.close()
@@ -548,12 +544,10 @@ class DataTableImpl:
                 nchunk = nrow // nrow_chunk
                 mod = nrow % nrow_chunk
                 chunks = [nrow_chunk] * nchunk + [mod]
-                # LOG.info('chunks={0} (nrow {1})'.format(chunks, nrow))
                 # for each column
                 for col in intersects:
                     start_row = dirty_rows.min()
                     for size_chunk in chunks:
-                        # LOG.info('start_row {0}, size_chunk {1}'.format(start_row, size_chunk))
                         # read chunk
                         chunk_src = self.tb2.getcol(col, startrow=start_row, nrow=size_chunk)
                         chunk_dst = tb.getcol(col, startrow=start_row, nrow=size_chunk)
@@ -565,7 +559,6 @@ class DataTableImpl:
                                                                 dirty_rows <= chunk_max)]
                         for row in target_rows:
                             chunk_index = row - start_row
-                            # LOG.info('row {0}, chunk_index {1}'.format(row, chunk_index))
                             chunk_dst[..., chunk_index] = chunk_src[..., chunk_index]
 
                         # flush chunk
@@ -809,9 +802,7 @@ class DataTableImpl:
                 atm_fields = msobj.get_fields(intent='ATMOSPHERE')
                 # absolute OFF
                 test_prefix = '{}_OFF_'.format(to_field.clean_name)
-                #LOG.info('test_prefix {}, atm_fields {}'.format(test_prefix, [a.clean_name for a in atm_fields]))
                 nearest_id = np.where([a.clean_name.startswith(test_prefix) for a in atm_fields])[0]
-                #LOG.info('nearest_id = {}'.format(nearest_id))
                 if len(nearest_id) > 0:
                     from_fields = [atm_fields[i].id for i in nearest_id]
                 else:
@@ -821,12 +812,10 @@ class DataTableImpl:
                     nearest_id = -1
                     for f in atm_fields:
                         r = casa_tools.measures.separation(origin, f.mdirection)
-                        #LOG.info('before test: rmin {} r {} nearest_id {}'.format(rmin['value'], r['value'], nearest_id))
                         # quanta.le is equivalent to <=
                         if casa_tools.quanta.le(r, rmin):
                             rmin = r
                             nearest_id = f.id
-                        #LOG.info('after test: rmin {} r {} nearest_id {}'.format(rmin['value'], r['value'], nearest_id))
                     if nearest_id != -1:
                         from_fields = [nearest_id]
                     else:
@@ -839,7 +828,6 @@ class DataTableImpl:
             tsel = tb.query('FIELD_ID IN {}'.format(list_to_str(from_fields)))
             spws = tsel.getcol('SPECTRAL_WINDOW_ID')
             times = tsel.getcol('TIME')
-            #fieldids = tsel.getcol('FIELD_ID')
             antids = tsel.getcol('ANTENNA1')
             tsys_masked = {}
             for i in range(tsel.nrows()):
@@ -847,8 +835,6 @@ class DataTableImpl:
                 flag = tsel.getcell('FLAG', i)
                 tsys_masked[i] = np.ma.masked_array(tsys, mask=(flag == True))
             tsel.close()
-
-        #LOG.info('tsys={}'.format(tsys_masked))
 
         def map_spwchans(atm_spw, science_spw):
             """
@@ -862,8 +848,6 @@ class DataTableImpl:
                 abs(atm_freqs - float(science_spw.max_frequency.value))))[0][-1]
             start_atmchan = min(min_chan, max_chan)
             end_atmchan = max(min_chan, max_chan)
-            # LOG.trace('calculate_average_tsys:   satrt_atmchan == %d' % start_atmchan)
-            # LOG.trace('calculate_average_tsys:   end_atmchan == %d' % end_atmchan)
             if end_atmchan == start_atmchan:
                 end_atmchan = start_atmchan + 1
             return start_atmchan, end_atmchan
@@ -896,19 +880,12 @@ class DataTableImpl:
                 cal_idxs = np.where(np.logical_and(spws == spw_from, antids == ant_to))[0]
                 if len(cal_idxs) == 0:
                     continue
-                # atsys.shape = (nrow, npol)
                 atsys = np.asarray([tsys_masked[i].take(corr_index, axis=0)[:, start_atmchan:end_atmchan+1].mean(axis=1).data
                                            for i in cal_idxs])
                 dtrows = field_sel[np.where(np.logical_and(dt_antenna == ant_to, dt_spw == spw_to))[0]]
-                #LOG.info('ant {} spw {} dtrows {}'.format(ant_to, spw_to, len(dtrows)))
                 time_sel = times.take(cal_idxs)  # in sec
                 for dt_id in dtrows:
-                    #LOG.info('ant {} spw {} field {}'.format(self.getcell('ANTENNA', dt_id),
-                    #                                         self.getcell('IF', dt_id),
-                    #                                         self.getcell('FIELD_ID', dt_id)))
                     tref = self.getcell('TIME', dt_id) * 86400  # day->sec
-                    # LOG.trace("cal_field_ids=%s" % cal_field_idxs)
-                    # LOG.trace('atsys = %s' % str(atsys))
                     if atsys.shape[0] == 1:  # only one Tsys measurement selected
                         self.putcell('TSYS', dt_id, atsys[0, :])
                     else:
@@ -935,14 +912,10 @@ class DataTableImpl:
         ms_rows = self.getcol('ROW')
         tmp_array = np.empty((4, 1,), dtype=np.int32)
         with casa_tools.TableReader(infile) as tb:
-            # for dt_row in index[0]:
             for dt_row, ms_row in enumerate(ms_rows):
-                # ms_row = rows[dt_row]
                 flag = tb.getcell('FLAG', ms_row)
                 rowflag = tb.getcell('FLAG_ROW', ms_row)
-                # irow += 1
                 npol = flag.shape[0]
-                #online_flag = np.empty((npol, 1,), dtype=np.int32)
                 online_flag = tmp_array[:npol, :]
                 if rowflag == True:
                     online_flag[:] = 0
@@ -1087,7 +1060,6 @@ def _interpolate(v, t, tref):
     # if x matches any value in a, bisect_left returns its index.
     # (bisect_right and bisect returns index next to the matched value)
     idx = bisect.bisect_left(t, tref)
-    #LOG.info('len(t) = {}, idx = {}'.format(len(t), idx))
     if idx == 0:
         return v[0]
     elif idx == len(t):

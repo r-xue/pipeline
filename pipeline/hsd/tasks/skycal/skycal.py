@@ -22,6 +22,9 @@ from pipeline.domain.datatable import OnlineFlagIndex
 from ..common import SingleDishResults
 
 if TYPE_CHECKING:
+    from numpy import generic
+    from numpy.typing import NDArray
+
     from pipeline.infrastructure.launcher import Context
 
 LOG = infrastructure.get_logger(__name__)
@@ -400,7 +403,7 @@ def get_elevation(
         antenna_id: int | str,
         field_id: int | str,
         on_source: bool
-) -> dict[str, np.ndarray]:
+) -> dict[str, NDArray[generic]]:
     """Get elevation and associated time and flag from datatable.
 
     Args:

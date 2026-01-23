@@ -19,6 +19,8 @@ from pipeline.infrastructure import casa_tools, utils
 if TYPE_CHECKING:
     from matplotlib.axes import Axes
     from matplotlib.figure import Figure
+    from numpy import floating
+    from numpy.typing import NDArray
 
     from pipeline.domain import Field, MeasurementSet, Source
     from pipeline.domain.measures import Distance, EquatorialArc
@@ -54,7 +56,7 @@ class MDirection(TypedDict):
 def compute_obs_data(
         ms: MeasurementSet,
         fields: list[Field],
-        ) -> tuple[np.ndarray, np.ndarray, float, list[Distance], list[float]]:
+        ) -> tuple[NDArray[floating], NDArray[floating], float, list[Distance], list[float]]:
     """Extract and compute relevant observation data for plotting.
 
     Args:
@@ -87,7 +89,10 @@ def compute_obs_data(
     return ra, dec, median_ref_freq, dish_diameters, beam_diameters
 
 
-def compute_offsets(ra: np.ndarray, dec: np.ndarray) -> tuple[np.ndarray, np.ndarray, float, float]:
+def compute_offsets(
+        ra: NDArray[floating],
+        dec: NDArray[floating],
+        ) -> tuple[NDArray[floating], NDArray[floating], float, float]:
     """Compute RA/Dec offsets for plotting.
 
     Args:
@@ -110,8 +115,8 @@ def compute_offsets(ra: np.ndarray, dec: np.ndarray) -> tuple[np.ndarray, np.nda
 
 
 def create_figure(
-        delta_ra: np.ndarray,
-        delta_dec: np.ndarray,
+        delta_ra: NDArray[floating],
+        delta_dec: NDArray[floating],
         beam_diameters: list[float],
         margin_x: int = 100,
         margin_y: int = 80,
@@ -188,7 +193,9 @@ def add_elements_to_plot(
                         ax.plot(x, y, marker='+', linestyle='None', color=color, markersize=4)
 
                 if f'Tsys {intent} Scan(s)' not in legend_labels:
-                    legend_labels[f'Tsys {intent} Scan(s)'] = lines.Line2D([0], [0], color=color, linewidth=2, linestyle=linestyle)
+                    legend_labels[f'Tsys {intent} Scan(s)'] = lines.Line2D(
+                        [0], [0], color=color, linewidth=2, linestyle=linestyle,
+                        )
                     legend_colors[f'Tsys {intent} Scan(s)'] = color
         for key, specs in values['target fields'].items():
             linestyle = 'dotted'
@@ -379,7 +386,9 @@ def plot_tsys_scans(ms: MeasurementSet, source: Source, figfile: str) -> None:
 
     # Create Tsys scans plot
     fig, ax, fontsize = create_figure(delta_ra, delta_dec, beam_diameters)
-    plot_dict = compute_element_locs(fields, delta_ra, delta_dec, dish_diameters, beam_diameters, tsys_scans_dict=tsys_scans_dict)
+    plot_dict = compute_element_locs(
+        fields, delta_ra, delta_dec, dish_diameters, beam_diameters, tsys_scans_dict=tsys_scans_dict,
+        )
     legend_labels, legend_colors = add_elements_to_plot(ax, plot_dict, fontsize=fontsize)
 
     # Add title, legend, and labels
@@ -663,7 +672,9 @@ def tsys_scans_radec(
                 else:
                     LOG.warning("Result may be inaccurate, especially if it's (0,0).")
             else:
-                LOG.attention("Cycle number could not be determined. Result may be inaccurate, especially if it's (0,0).")
+                LOG.attention(
+                    "Cycle number could not be determined. Result may be inaccurate, especially if it's (0,0).",
+                    )
 
     with (
         casa_tools.MSReader(vis) as myms,

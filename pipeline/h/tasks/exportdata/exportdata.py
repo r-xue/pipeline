@@ -414,11 +414,11 @@ class ExportData(basetask.StandardTaskTemplate):
         visibility files, and measurement sets based on the provided context and flags.
 
         Args:
-            context (Context): The Pipeline context object.
-            session (List[str]): Session names
-            vis (Optional[Union[List[str], str]]): A single visibility file name, a list of such names,
+            context: The Pipeline context object.
+            session: Session names
+            vis: A single visibility file name, a list of such names,
                 or None. If None, the method uses all measurement sets registered in the context.
-            imaging_only_mses (Optional[bool] = False): A flag to determine how to filter measurement
+            imaging_only_mses: A flag to determine how to filter measurement
                 sets based on imaging data:
                 True: Includes only measurement sets with imaging data.
                 False: Includes only those without imaging data.
@@ -1452,9 +1452,9 @@ finally:
         Args:
             context : pipeline context
             oussid : OUS status ID
-            products_dir (str): path of product directory
+            products_dir: path of product directory
             report_generator: AQUA XML Generator
-            weblog_filename (str): weblog tarball filename
+            weblog_filename: weblog tarball filename
 
         Returns:
             AQUA report file path

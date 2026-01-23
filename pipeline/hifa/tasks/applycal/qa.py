@@ -19,7 +19,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING, overload
 
 import numpy as np
-import numpy.typing as npt
 
 import pipeline.h.tasks.applycal.applycal as h_applycal
 import pipeline.hif.tasks.applycal.ifapplycal as hif_applycal
@@ -31,6 +30,8 @@ from .ampphase_vs_freq_qa import Outlier, score_all_scans
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Reversible
+
+    from numpy.typing import NDArray
 
     from pipeline.domain.measurementset import MeasurementSet
     from pipeline.infrastructure.pipelineqa import QAScore, WebLogLocation
@@ -279,10 +280,10 @@ class QAScoreEvalFunc:
         ...
 
     @overload
-    def __call__(self, qascore: list[pqa.QAScore]) -> npt.NDArray:
+    def __call__(self, qascore: list[pqa.QAScore]) -> NDArray:
         ...
 
-    def __call__(self, qascore: pqa.QAScore | list[pqa.QAScore]) -> float | npt.NDArray:
+    def __call__(self, qascore: pqa.QAScore | list[pqa.QAScore]) -> float | NDArray:
         # If given a list of QA scores, evaluate them all and return an array of the results
         if type(qascore) == list:
             output = [self.__call__(q) for q in qascore]

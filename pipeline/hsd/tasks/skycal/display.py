@@ -25,6 +25,8 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from typing import Any, NoReturn
 
+    from numpy import generic
+    from numpy.typing import NDArray
     from matplotlib.axes import Axes
 
     from pipeline.domain import Field, MeasurementSet, Scan
@@ -706,7 +708,7 @@ class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
 def plot_elevation_difference(
         context: Context,
         result: SDSkyCalResults,
-        eldiff: dict[str, np.ndarray],
+    eldiff: dict[str, NDArray[generic]],
         threshold: float = 3.0
         ) -> list[logger.Plot]:
     """Generate plot of elevation difference.

@@ -36,6 +36,8 @@ from pipeline.config import config
 from pipeline.infrastructure.utils import get_obj_size, human_file_size
 
 if TYPE_CHECKING:
+    from typing import Callable
+
     from dask.distributed import Client, LocalCluster, Worker
     from dask_jobqueue import HTCondorCluster, SLURMCluster
 
@@ -141,7 +143,7 @@ def is_worker() -> bool:
     tested.
 
     Returns:
-        bool: True if the process is a Dask worker, False otherwise.
+        True if the process is a Dask worker, False otherwise.
     """
     is_worker = False
     if (Worker and Worker._instances) or is_mpi_session:
@@ -313,8 +315,8 @@ def session_startup(casa_config: dict[str, str | None], loglevel: str | None = N
 
     Returns:
         A tuple containing:
-            - The path to the CASA log file (str).
-            - The CASA log filter level (str).
+            - The path to the CASA log file .
+            - The CASA log filter level .
     """
     from casaconfig import config
 
@@ -326,7 +328,7 @@ def session_startup(casa_config: dict[str, str | None], loglevel: str | None = N
             setattr(config, key, value)
             if key == 'logfile':
                 pass
-                # casatasks.casalog.setlogfile(value)
+
     # Initialize casatasks and get log file
 
     casalogfile = casatasks.casalog.logfile()
@@ -409,12 +411,6 @@ def start_daskcluster(
     # attached the exect client casaconfig issue which can be used to help initialze workers
     dask.config.update_defaults({'casaconfig': config['casaconfig']})
 
-    # Optionally, print the config to see what is loaded
-    # LOG.info(dask.config.config)
-
-    # Retrieve settings from the config
-    # scheduler_port = dask.config.get('distributed.scheduler.port', default=None)
-
     dashboard_address: str | None = dask.config.get('dashboard_address', default=None)
     host: str | None = dask.config.get('host', default=None)
     n_workers: int | None = dask.config.get('n_workers', default=None)
@@ -458,23 +454,12 @@ def start_daskcluster(
                     name=default_worker_name('jobqueue.slurm.name'),
                     queue=dask.config.get('jobqueue.slurm.queue', default=default_slurm_queue()),
                     silence_logs='debug',
-                    # log_directory='dask-logs',
-                    # job_extra_directives=[
-                    #     "#SBATCH --job-name=pipeline/dask-worker",
-                    #     "#SBATCH --output=dask-worker-%j.out",
-                    #     "#SBATCH --error=dask-worker-%j.err",
-                    # ],
-                    # job_script_epilogue=[
-                    #     # Any final cleanup steps if needed
-                    #     "echo Worker exiting on $(hostname) at $(date)"
-                    # ],                #
                     host=host,
                     scheduler_options={'dashboard_address': dashboard_address},
                     death_timeout='60s',
                     worker_extra_args=worker_extra_args,
                     job_script_prologue=[f'export PYTHONPATH={pythonpath_pkg}:$PYTHONPATH'],
                 )
-                # cluster.scale(n_workers)
                 LOG.debug('dask SLURMCluster job script: \n %s', pformat(cluster.job_script()))
         elif clustertype == 'htcondor':
             with sanitized_env():
@@ -493,7 +478,6 @@ def start_daskcluster(
                     worker_extra_args=worker_extra_args,
                     job_script_prologue=[f'export PYTHONPATH={pythonpath_pkg}:$PYTHONPATH'],
                 )
-                # cluster.scale(n_workers)
                 LOG.debug('dask HTCondorCluster job script: \n %s', pformat(cluster.job_script()))
         else:
             LOG.warning('dask cluster specification (%s) not valid, skipping!', clustertype)
@@ -528,16 +512,6 @@ def start_daskcluster(
         plugin = SetupPlugin(config={'logfile': casatasks.casalog.logfile()})
         daskclient.register_plugin(plugin)
 
-        # daskclient.run(session_startup, {})
-        # casaconfig: dict[str, str | None] = {"logfile": casalogfile}
-        # import casatasks
-        # casalogfile: str | None = None
-        # casalogfile = casatasks.casalog.logfile()
-        # def custom_worker_init(logfile):
-        #     # os.environ['_CASA_LOGFILE'] = logfile
-        #     print(f'Initialized worker with PID: {os.getpid()}, logfile: {logfile}')
-        # daskclient.run(custom_worker_init, casalogfile)
-
         tier0futures = bool(dask.config.get('tier0futures', default=None))
 
         atexit.register(stop_daskcluster)
@@ -561,7 +535,7 @@ def start_daskcluster(
     return daskclient
 
 
-def exec_func(fn: callable, *args, include_client: bool = True, **kwargs) -> None:
+def exec_func(fn: Callable, *args, include_client: bool = True, **kwargs) -> None:
     """Execute the same function on both client and MPI server processes.
 
     This function enables synchronized execution across MPI infrastructure. It's particularly useful

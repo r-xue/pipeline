@@ -95,7 +95,6 @@ class HeuristicsLineFinder(api.Heuristic):
             good_variances = good_variances[:int(0.8*len(good_variances))]
             mad = np.median(good_variances)
 
-            #line_indeces = indeces[np.logical_and(mask==1, variances > 7*mad)]
             line_indeces = indeces[np.logical_and(mask==1, variances > threshold*mad)]
 
             if mad > previous_mad or list(line_indeces) == list(previous_line_indeces):
@@ -114,7 +113,6 @@ class HeuristicsLineFinder(api.Heuristic):
                 range_end = i
             elif i == range_end + 1:
                 range_end = i
-#            elif range_end - range_start + 1 > 2:
             elif range_end - range_start + 1 > 1:
                 ranges += [range_start, range_end]
                 range_start = i
@@ -128,7 +126,6 @@ class HeuristicsLineFinder(api.Heuristic):
         if tweak:
             ranges = self.tweak_lines(_spectrum, ranges, _edge)
 
-        #return len(ranges)/2
         return ranges
 
     def tweak_lines(self, spectrum: list[float], ranges: list[int],

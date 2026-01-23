@@ -20,6 +20,9 @@ if TYPE_CHECKING:
     from collections.abc import Generator
     from typing import Any
 
+    from numpy import floating
+    from numpy.typing import NDArray
+
 LOG = infrastructure.logging.get_logger(__name__)
 
 
@@ -211,7 +214,7 @@ class K2JyBoxScatterDisplay:
         yield plot
 
     @staticmethod
-    def __compute_x_positions(frequencies: list[float], alpha: float) -> np.ndarray:
+    def __compute_x_positions(frequencies: list[float], alpha: float) -> NDArray[floating]:
         """
         The x-positions for SPWs plotting are computed as a blend between uniform spacing (by index) and
         normalized frequency differences:

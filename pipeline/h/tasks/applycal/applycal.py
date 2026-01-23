@@ -384,18 +384,6 @@ def reshape_flagdata_summary(flagdata_result):
     return flagsummary
 
 
-# def limit_fields(flagsummary, ms):
-#     calibrator_fields = ms.get_fields(intent='AMPLITUDE,PHASE,BANDPASS')
-#
-#     target_fields = ms.get_fields(intent='TARGET')
-#     plot_stride = len(target_fields) / 30 + 1
-#     targetfields = target_fields[::plot_stride]
-#
-#     fields_to_plot = calibrator_fields + targetfields
-#
-#     return {k: v for k, v in flagsummary.items() if k in fields_to_plot}
-
-
 @task_registry.set_equivalent_casa_task('h_applycal')
 @task_registry.set_casa_commands_comment('Calibrations are applied to the data. Final flagging summaries are computed')
 class Applycal(sessionutils.ParallelTemplate):

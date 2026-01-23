@@ -1,7 +1,10 @@
 """Test module for atmutil.py."""
-import math
-import pytest
+from __future__ import annotations
 
+import math
+from typing import TYPE_CHECKING
+
+import pytest
 import numpy as np
 
 from pipeline.infrastructure import casa_tools
@@ -11,6 +14,9 @@ from .atmutil import get_dry_opacity, get_wet_opacity
 from .atmutil import _test
 from .atmutil import get_spw_spec, get_median_elevation, get_transmission
 from .atmutil import AtmType
+
+if TYPE_CHECKING:
+    from numpy.typing import NDArray
 
 defaultAtm = dict(humidity=20.0, temperature=270.0, pressure=560.0,
                   atmtype=AtmType.midLatitudeWinter, altitude=5000.0,
@@ -112,9 +118,9 @@ def test_calc_airmass(elevation: float, expected_airmass: float):
                            np.array([0.05, 0.15])),
                            np.array([0.7788007830714049, 0.6065306597126334]))
                           ))
-def test_calc_transmission(in_param: tuple[float, float | np.ndarray,
-                                           float | np.ndarray],
-                           expected: float | np.ndarray):
+def test_calc_transmission(in_param: tuple[float, float | NDArray,
+                                           float | NDArray],
+                           expected: float | NDArray):
     """
     Test calc_transmission.
 

@@ -8,8 +8,7 @@ from typing import TYPE_CHECKING
 
 import matplotlib.figure as figure
 import numpy as np
-from matplotlib.ticker import (AutoLocator, Formatter, FuncFormatter, Locator,
-                               MultipleLocator)
+from matplotlib.ticker import AutoLocator, FuncFormatter, MultipleLocator
 
 import pipeline.infrastructure as infrastructure
 from pipeline.domain.datatable import DataTableImpl as DataTable
@@ -24,8 +23,12 @@ if TYPE_CHECKING:
     from numbers import Integral
 
     from matplotlib.axes._axes import Axes
+    from matplotlib.ticker import Formatter, Locator
+    from numpy import floating
+    from numpy.typing import NDArray
 
     from pipeline.domain import Antenna, MeasurementSet
+    from pipeline.infrastructure.launcher import Context
 
 RArotation = 90
 DECrotation = 0
@@ -420,22 +423,16 @@ def GLGBlabel(span: float
         (GLlocator, GBlocator, GLformatter, GBformatter) for Galactic coordinate
 
     """
-    # RAtick = [15.0, 5.0, 2.5, 1.25, 1/2.0, 1/4.0, 1/12.0, 1/24.0, 1/48.0, 1/120.0, 1/240.0, 1/480.0, 1/1200.0,
-    #           1/2400.0, 1/4800.0, 1/12000.0, 1/24000.0, 1/48000.0, -1.0]
+
     XYtick = [20.0, 10.0, 5.0, 2.0, 1.0, 1/3.0, 1/6.0, 1/12.0, 1/30.0, 1/60.0, 1/180.0, 1/360.0, 1/720.0, 1/1800.0,
               1/3600.0, 1/7200.0, 1/18000.0, 1/36000.0, -1.0]
-    #for RAt in RAtick:
-    #    if span > (RAt * 3.0) and RAt > 0:
-    #        RAlocator = MultipleLocator(RAt)
-    #        break
-    #if RAt < 0: RAlocator = MultipleLocator(1/96000.)
-    #if RAt < 0: RAlocator = AutoLocator()
+
     for t in XYtick:
         if span > (t * 3.0) and t > 0:
             GLlocator = MultipleLocator(t)
             GBlocator = MultipleLocator(t)
             break
-    #if DECt < 0: DEClocator = MultipleLocator(1/72000.0)
+
     if t < 0:
         GLlocator = AutoLocator()
         GBlocator = AutoLocator()
@@ -451,7 +448,6 @@ def GLGBlabel(span: float
         GBformatter = FuncFormatter(DDMMSS)
     elif span < 1.0:
         GLformatter = FuncFormatter(DDMMSS)
-        #GBformatter=FuncFormatter(DDMM)
         GBformatter = FuncFormatter(DDMMSS)
     else:
         GLformatter = FuncFormatter(DDMM)
@@ -483,13 +479,13 @@ def RADEClabel(span: float,
         if span > (RAt * 3.0) and RAt > 0:
             RAlocator = MultipleLocator(RAt)
             break
-    #if RAt < 0: RAlocator = MultipleLocator(1/96000.)
+
     if RAt < 0: RAlocator = AutoLocator()
     for DECt in DECtick:
         if span > (DECt * 3.0) and DECt > 0:
             DEClocator = MultipleLocator(DECt)
             break
-    #if DECt < 0: DEClocator = MultipleLocator(1/72000.0)
+
     if DECt < 0: DEClocator = AutoLocator()
 
     if span < 0.0001:
@@ -515,7 +511,6 @@ def RADEClabel(span: float,
             RAformatter = FuncFormatter(DDMMSS)
         else:
             RAformatter = FuncFormatter(HHMMSS)
-        #DECformatter=FuncFormatter(DDMM)
         DECformatter = FuncFormatter(DDMMSS)
     else:
         if ofs_coord:
@@ -758,9 +753,9 @@ def draw_beam(axes, r: float, aspect: float, x_base: float, y_base: float,
 
 
 def draw_pointing(axes_manager: PointingAxesManager,
-                  RA: np.ndarray,
-                  DEC: np.ndarray,
-                  FLAG: np.ndarray | None=None,
+                  RA: NDArray[floating],
+                  DEC: NDArray[floating],
+                  FLAG: NDArray[np.bool_] | None=None,
                   plotfile: str | None=None,
                   connect: bool=True,
                   circle: list[float | None]=[],
@@ -864,7 +859,7 @@ class SingleDishPointingChart:
     Data and antenna must be given as domain objects.
     """
     def __init__(self,
-                 context: infrastructure.launcher.Context,
+                 context: Context,
                  ms: MeasurementSet) -> None:
         """Initialize SingleDishPointingChart class.
 
@@ -915,15 +910,15 @@ class SingleDishPointingChart:
         based on existing file is returned.
 
         Args:
-            revise_plot (bool): Overwrite existing plot or not. Defaults to False.
-            antenna (Antenna): Antenna domain object. Defaults to None.
-            target_field_id (int | None): ID for target (ON_SOURCE) field. Defaults to None.
-            reference_field_id (int | None): ID for reference (OFF_SOURCE) field. Defaults to None.
-            target_only (bool): Whether plot ON_SOURCE only (True) or both ON_SOURCE and OFF_SOURCE. Defaults to True.
-            ofs_coord (bool): Use offset coordinate or not. Defaults to False.
+            revise_plot: Overwrite existing plot or not. Defaults to False.
+            antenna: Antenna domain object. Defaults to None.
+            target_field_id: ID for target (ON_SOURCE) field. Defaults to None.
+            reference_field_id: ID for reference (OFF_SOURCE) field. Defaults to None.
+            target_only: Whether plot ON_SOURCE only (True) or both ON_SOURCE and OFF_SOURCE. Defaults to True.
+            ofs_coord: Use offset coordinate or not. Defaults to False.
 
         Returns:
-            Plot | None: A Plot object.
+            A Plot object or None.
         """
         self.antenna = antenna
         self.target_only = target_only
@@ -1050,8 +1045,8 @@ class SingleDishPointingChart:
             thumb_file = ret.thumbnail
 
         # execute gc.collect() when the number of uncollected objects reaches 256 (decided ad hoc) or more.
-        # figure.Figure creates a huge number of objects, and if plot() is called a significant number of times to plot points,
-        # the python kernel cannot collect objects all at once by default GC setting.
+        # figure.Figure creates a huge number of objects, and if plot() is called a significant number of times
+        # to plot points, the python kernel cannot collect objects all at once by default GC setting.
         if gc.get_count()[0] > 255:
             gc.collect()
 
@@ -1062,7 +1057,7 @@ class SingleDishPointingChart:
         Generate file path to export a plot.
 
         Returns:
-            str: file path to export a plot.
+            The file path to export a plot.
 
         """
         session_part = self.ms.session
@@ -1092,7 +1087,7 @@ class SingleDishPointingChart:
         Generate a Plot object.
 
         Returns:
-            Plot: A Plot object.
+            A Plot object.
 
         """
         intent = 'target' if self.target_only == True else 'target,reference'

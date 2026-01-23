@@ -5,15 +5,22 @@ Examples:
     Calculate using metadata in MeasurementSet
     >>> (freq, trans) = atmutil.get_transmission('M100.ms', antenna_id=1, spw_id=18, doplot=True)
 """
+from __future__ import annotations
+
 import math
 import os
+from typing import TYPE_CHECKING
 
-import casatools
 import matplotlib.pyplot as plt
 import numpy as np
 
 import pipeline.extern.adopted as adopted
 from pipeline.infrastructure import casa_tools, get_logger
+
+if TYPE_CHECKING:
+    from numpy.typing import NDArray
+
+    from casatools import atmosphere
 
 LOG = get_logger(__name__)
 
@@ -28,7 +35,7 @@ class AtmType:
     subarcticWinter = 5
 
 
-def init_at(at: casatools.atmosphere, humidity: float = 20.0,
+def init_at(at: atmosphere, humidity: float = 20.0,
             temperature: float = 270.0, pressure: float = 560.0,
             atmtype: AtmType = AtmType.midLatitudeWinter, altitude: float = 5000.0,
             fcenter: float = 100.0, nchan: float = 4096, resolution: float = 0.001):
@@ -64,7 +71,7 @@ def init_at(at: casatools.atmosphere, humidity: float = 20.0,
                           fRes=myqa.quantity(resolution, 'GHz'))
 
 
-def init_atm(at: casatools.atmosphere, altitude: float = 5000.0, temperature: float = 270.0, pressure: float = 560.0,
+def init_atm(at: atmosphere, altitude: float = 5000.0, temperature: float = 270.0, pressure: float = 560.0,
              max_altitude: float = 48.0, humidity: float = 20.0, delta_p: float = 10.0, delta_pm: float = 1.2,
              h0: float = 2.0, atmtype: int = AtmType.midLatitudeWinter):
     """
@@ -95,7 +102,7 @@ def init_atm(at: casatools.atmosphere, altitude: float = 5000.0, temperature: fl
                       atmType=atmtype)
 
 
-def init_spw(at: casatools.atmosphere, fcenter: float = 100.0, nchan: float = 4096, resolution: float = 0.001):
+def init_spw(at: atmosphere, fcenter: float = 100.0, nchan: float = 4096, resolution: float = 0.001):
     """
     Initialize spectral window setting in CASA atmosphere tool using spectral window frequencies.
 
@@ -126,8 +133,8 @@ def calc_airmass(elevation: float = 45.0) -> float:
     return 1.0 / math.cos(math.radians(90.0 - elevation))
 
 
-def calc_transmission(airmass: float, dry_opacity: float | np.ndarray,
-                      wet_opacity: float | np.ndarray) -> float | np.ndarray:
+def calc_transmission(airmass: float, dry_opacity: float | NDArray,
+                      wet_opacity: float | NDArray) -> float | NDArray:
     """
     Calculate total atmospheric transmission.
 
@@ -145,7 +152,7 @@ def calc_transmission(airmass: float, dry_opacity: float | np.ndarray,
     return np.exp(-airmass * (dry_opacity + wet_opacity))
 
 
-def get_dry_opacity(at: casatools.atmosphere) -> np.ndarray:
+def get_dry_opacity(at: atmosphere) -> NDArray:
     """
     Obtain the integrated zenith opacity of dry species.
 
@@ -162,7 +169,7 @@ def get_dry_opacity(at: casatools.atmosphere) -> np.ndarray:
     return dry_opacity
 
 
-def get_wet_opacity(at: casatools.atmosphere) -> np.ndarray:
+def get_wet_opacity(at: atmosphere) -> NDArray:
     """
     Obtain the integrated zenith opacity of wet species.
 
@@ -179,7 +186,7 @@ def get_wet_opacity(at: casatools.atmosphere) -> np.ndarray:
     return wet_opacity
 
 
-def _test(pwv: float = 1.0, elevation: float = 45.0) -> np.ndarray:
+def _test(pwv: float = 1.0, elevation: float = 45.0) -> NDArray:
     """
     Calculate atmospheric transmission and generate a plot.
 
@@ -214,8 +221,8 @@ def _test(pwv: float = 1.0, elevation: float = 45.0) -> np.ndarray:
     return transmission
 
 
-def plot(frequency: np.ndarray, dry_opacity: np.ndarray,
-         wet_opacity: np.ndarray, transmission: np.ndarray):
+def plot(frequency: NDArray, dry_opacity: NDArray,
+         wet_opacity: NDArray, transmission: NDArray):
     """
     Generate a plot of atmospheric transmission, wet and dry opacities.
 
@@ -412,7 +419,7 @@ def get_altitude(vis: str) -> float:
 
 
 def get_transmission(vis: str, antenna_id: int = 0, spw_id: int = 0,
-                     doplot: bool = False) -> tuple[np.ndarray, np.ndarray]:
+                     doplot: bool = False) -> tuple[NDArray, NDArray]:
     """
     Calculate atmospheric transmission of an antenna and spectral window.
 
@@ -436,7 +443,7 @@ def get_transmission(vis: str, antenna_id: int = 0, spw_id: int = 0,
     return get_transmission_for_range(vis, center_freq, nchan, resolution, antenna_id, doplot)
 
 
-def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolution: float, antenna_id: int = 0, doplot: bool = False) -> tuple[np.ndarray, np.ndarray]:
+def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolution: float, antenna_id: int = 0, doplot: bool = False) -> tuple[NDArray, NDArray]:
     """
     Calculate atmospheric transmission covering a range of frequency.
 
@@ -505,10 +512,10 @@ def get_table_nrow(table_name: str) -> int | None:
     If the table exists, it opens the table, retrieves the number of rows, and returns that number.
 
     Args:
-        table_name (str): The name of the table to check.
+        table_name: The name of the table to check.
 
     Returns:
-        int | None: The number of rows in the table, or None if the table does not exist.
+        The number of rows in the table, or None if the table does not exist.
     """
     if not os.path.exists(table_name):
         LOG.debug('%s does not exist.', table_name)

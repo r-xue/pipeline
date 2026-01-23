@@ -40,6 +40,8 @@ if TYPE_CHECKING:
     from typing import Any
 
     from dask.distributed import Client
+    from numpy import generic, floating
+    from numpy.typing import NDArray
 
 
 @pytest.fixture(scope='module')
@@ -91,26 +93,26 @@ def test_parallel_processing(dask_client: Client, sample_data_dir: str) -> None:
     import dask
 
     @dask.delayed
-    def load_array(filename: str) -> np.ndarray:
+    def load_array(filename: str) -> NDArray[generic]:
         """Load a numpy array from file.
 
         Args:
             filename: The path to the numpy array file.
 
         Returns:
-            np.ndarray: The loaded numpy array.
+            The loaded numpy array.
         """
         return np.load(filename)
 
     @dask.delayed
-    def process_array(array: np.ndarray) -> dict[str, float]:
+    def process_array(array: NDArray[floating]) -> dict[str, float]:
         """Process an array with a CPU-intensive operation.
 
         Args:
             array: The numpy array to process.
 
         Returns:
-            dict[str, float]: A dictionary containing statistics of the processed array.
+            A dictionary containing statistics of the processed array.
         """
         # Simulate CPU-intensive work
         result = np.sin(array) * np.cos(array) * np.sqrt(np.abs(array))
@@ -170,7 +172,7 @@ def test_parallel_map(dask_client: Client, sample_data_dir: str) -> None:
             filename: The path to the file.
 
         Returns:
-            dict[str, Any]: A dictionary containing file statistics.
+            A dictionary containing file statistics.
         """
         arr = np.load(filename)
         transformed = np.exp(-arr) * np.cos(arr)
@@ -218,7 +220,7 @@ def test_parallel_task_performance(dask_client: Client, sample_data_dir: str) ->
             seed: Seed for random number generation.
 
         Returns:
-            float: The mean of the calculation results.
+            The mean of the calculation results.
         """
         np.random.seed(seed)
         x = np.random.random(1000000)

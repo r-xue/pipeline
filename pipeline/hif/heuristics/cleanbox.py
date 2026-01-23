@@ -12,10 +12,11 @@ from pipeline.infrastructure import casa_tools
 if TYPE_CHECKING:
     from typing import Any
 
+    from numpy.typing import NDArray
+
     import casatools.image
 
     from pipeline.infrastructure.casa_tools import _logging_image_cls as LoggingImage
-
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -427,7 +428,7 @@ def image_statistics_per_stokes(
     stokescontrol: str = 'a',
     region: dict | None = None,
     **kwargs: Any,
-) -> dict[str, np.ndarray]:
+) -> dict[str, NDArray]:
     """Compute statistics for each Stokes plane of a 4D CASA image cube.
 
     This function iterates through the Stokes planes (e.g., I, Q, U, V) of a 4D image cube, computes a standard

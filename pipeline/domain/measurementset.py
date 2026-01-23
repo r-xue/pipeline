@@ -19,6 +19,10 @@ from pipeline.infrastructure import casa_tools, tablereader, utils
 from pipeline.infrastructure.launcher import current_task_name
 
 if TYPE_CHECKING:
+    from typing import Callable
+
+    from numpy import floating
+
     from pipeline.domain import Antenna, AntennaArray, DataDescription, DataType, Field, Polarization, Scan, State
     from pipeline.infrastructure.tablereader import RetrieveByIndexContainer
 
@@ -1293,7 +1297,7 @@ class MeasurementSet:
             elif stat_type == "median":
                 return float(np.median(integration))
 
-    def get_times_on_source_per_field_id(self, field: str, intent: str) -> dict[int, np.float]:
+    def get_times_on_source_per_field_id(self, field: str, intent: str) -> dict[int, floating]:
         """
         Return on-source time for given field ID(s) and intent(s).
 
@@ -1671,7 +1675,7 @@ class MeasurementSet:
             epoch :  A dictionary representing the time epoch.
 
         Returns:
-            list: A list containing azimuth (degrees) and elevation (degrees), in that order.
+            A list containing azimuth (degrees) and elevation (degrees), in that order.
         """
         me = casa_tools.measures
         me.doframe(epoch)
@@ -1684,18 +1688,18 @@ class MeasurementSet:
 
         return [myaz, myel]
 
-    def compute_az_el_for_ms(self, func: callable) -> tuple[float, float]:
+    def compute_az_el_for_ms(self, func: Callable) -> tuple[float, float]:
         """Computes overall azimuth and elevation values across POINTING, SIDEBAND, ATMOSPHERE scans.
 
         Applies the given aggregation function (e.g. `min`, `max`, `mean`) to azimuth and elevation
         values computed at the start and end of each field in science scans.
 
         Args:
-            func (callable): A function that takes a list of floats and returns a single float.
+            func: A function that takes a list of floats and returns a single float.
                 Common examples include `min`, `max`, or `np.mean`.
 
         Returns:
-            tuple[float, float]: A tuple containing the aggregated azimuth and elevation values.
+            A tuple containing the aggregated azimuth and elevation values.
         """
         cal_scans = self.get_scans(scan_intent='POINTING,SIDEBAND,ATMOSPHERE')
         scans = [s for s in self.scans if s not in cal_scans]

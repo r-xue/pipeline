@@ -813,7 +813,6 @@ class CaltableWrapper:
         return mask
 
     def filter(self, spw=None, antenna=None, scan=None):
-        # LOG.trace('filter(spw=%s, antenna=%s, scan=%s)' % (spw, antenna, scan))
         if spw is None:
             spw = self._spws
         if antenna is None:
@@ -852,7 +851,6 @@ class PhaseVsBaselineData:
             raise ValueError('Data slice contains multiple antennas. Got %s' % data.antenna)
         if len(set(data.spw)) > 1:
             raise ValueError('Data slice contains multiple spws. Got %s' % data.spw)
-        #        assert len(set(data.scan)) is 1, 'Data slice contains multiple scans'
 
         self.data = data
         self.data_for_corr = self.data.data[:, corr_id]

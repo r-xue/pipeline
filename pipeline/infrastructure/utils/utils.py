@@ -20,28 +20,32 @@ import shutil
 import string
 import tarfile
 import time
-from collections.abc import Callable, Iterable
+from collections.abc import Iterable
 from datetime import datetime
 from functools import wraps
 from numbers import Number
-from typing import TYPE_CHECKING, Any, TypedDict
+from typing import TYPE_CHECKING, TypedDict
 from urllib.parse import urlparse
 
 import numpy as np
-import numpy.typing as npt
 
 from pipeline import infrastructure
 from pipeline.infrastructure import casa_tools
 from .conversion import commafy, dequote, range_to_list
 
 if TYPE_CHECKING:
-    from collections.abc import Collection, Iterator, Sequence
+    from collections.abc import Callable, Collection, Iterator, Sequence
     from io import TextIOWrapper
-    from typing import DefaultDict, OrderedDict
+    from typing import Any, DefaultDict, OrderedDict
+
+    from numpy import generic
+    from numpy.typing import NDArray
 
     from pipeline.domain import Field, MeasurementSet
     from pipeline.infrastructure.filenamer import PipelineProductNameBuilder
     from pipeline.infrastructure.launcher import Context
+
+    ConditionType = Callable | dict[str, dict[str, dict[str, Any]]]
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -169,7 +173,7 @@ def dict_merge(a: dict, b: dict | Any) -> dict:
     return result
 
 
-def are_equal(a: list | np.ndarray, b: list | np.ndarray) -> bool:
+def are_equal(a: list | NDArray[generic], b: list | NDArray[generic]) -> bool:
     """Return True if the contents of the given arrays are equal.
 
     This utility function check the equivalence of array like objects. Two arrays
@@ -202,7 +206,7 @@ def approx_equal(x: float, y: float, tol: float = 1e-15) -> bool:
     return (lo + 0.5 * tol) >= (hi - 0.5 * tol)
 
 
-def flagged_intervals(vec: list | np.ndarray) -> list:
+def flagged_intervals(vec: list | NDArray[generic]) -> list:
     """Idendity isnads of ones in input array or list.
 
     This utility function finds islands of ones in array or list provided in argument.
@@ -422,10 +426,10 @@ def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple[str
     , after the prefix is applied.
 
     Args:
-        value (float): the numerical value for picking the prefix.
-        select (str, optional): SI prefix candidates, a substring of "yzafpnum kMGTPEZY").
+        value: the numerical value for picking the prefix.
+        select: SI prefix candidates, a substring of "yzafpnum kMGTPEZY".
             Defaults to 'mu'.
-        lztol (int, optional): leading zeros tolerance.
+        lztol: leading zeros tolerance.
             Defaults to 0 (avoid any leading zeros when possible).
 
     Returns:
@@ -870,9 +874,6 @@ def remove_trailing_string(s: str, t: str) -> str:
         return s
 
 
-ConditionType = Callable | dict[str, dict[str, dict[str, Any]]]
-
-
 def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth: int=5,
                        condition: ConditionType | None = None, timestamp: bool=True):
     """
@@ -1094,7 +1095,7 @@ def _str_to_func(cls: object, _name: str) -> Callable | bool:
     return False
 
 
-def list_to_str(value: list[Number | str] | npt.NDArray) -> str:
+def list_to_str(value: list[Number | str] | NDArray) -> str:
     """Convert list or numpy.ndarray into string.
 
     The list/ndarray should be 1-dimensional. In that case, the function
@@ -1127,10 +1128,10 @@ def validate_url(url: str) -> bool:
     and a network location (netloc), which are required components for a valid URL.
 
     Args:
-        url (str): The URL to validate.
+        url: The URL to validate.
 
     Returns:
-        bool: True if the URL is valid, False otherwise.
+        True if the URL is valid, False otherwise.
     """
     url_regex = re.compile(
         r'^(https?:\/\/)?'  # HTTP or HTTPS

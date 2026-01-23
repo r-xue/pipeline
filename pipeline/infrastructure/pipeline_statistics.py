@@ -23,6 +23,9 @@ from pipeline.infrastructure.renderer import regression
 LOG = infrastructure.logging.get_logger(__name__)
 
 if TYPE_CHECKING:
+    from numpy import generic
+    from numpy.typing import NDArray
+
     from pipeline.domain.measurementset import MeasurementSet
     from pipeline.infrastructure.basetask import Results, ResultsList
     from pipeline.infrastructure.launcher import Context
@@ -72,7 +75,7 @@ class PipelineStatistic:
         units: The units associated with the value (Optional)
         level: A PipelineStatisticLevel that specifies whether this value applies to a MOUS, EB, or SPW
     """
-    def __init__(self, name: str, value: str | int | float | list | dict | set | np.int64 | np.ndarray,
+    def __init__(self, name: str, value: str | int | float | list | dict | set | np.int64 | NDArray[generic],
                  longdesc: str, origin: str = '', units: str = '',
                  level: PipelineStatisticLevel = None):
 

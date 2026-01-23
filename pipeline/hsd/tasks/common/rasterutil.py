@@ -11,20 +11,23 @@ import sys
 from operator import sub
 from typing import TYPE_CHECKING
 
-from matplotlib.animation import FuncAnimation, ImageMagickWriter
-from matplotlib.lines import Line2D
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.animation import FuncAnimation, ImageMagickWriter
+from matplotlib.lines import Line2D
 
 import pipeline.domain.datatable as datatable
-from pipeline.domain.datatable import DataTableImpl
 import pipeline.infrastructure.logging as logging
+from pipeline.domain.datatable import DataTableImpl
 from pipeline.infrastructure import casa_tools
 
 from ...heuristics import rasterscan
 
 if TYPE_CHECKING:
     from collections.abc import Generator
+
+    from numpy import floating, generic
+    from numpy.typing import NDArray
 
     from pipeline.domain.measurementset import MeasurementSet
 
@@ -36,7 +39,7 @@ MetaDataSet = collections.namedtuple(
     ['timestamp', 'dtrow', 'field', 'spw', 'antenna', 'ra', 'dec', 'srctype', 'pflag'])
 
 
-def distance(x0: float, y0: float, x1: float, y1: float) -> np.ndarray:
+def distance(x0: float, y0: float, x1: float, y1: float) -> float:
     """
     Compute distance between two points (x0, y0) and (x1, y1).
 
@@ -66,13 +69,24 @@ def is_multi_beam(datatable: DataTableImpl) -> bool:
     return len(np.unique(datatable.getcol('BEAM'))) != 1
 
 
-def extract_dtrow_list(timetable: list[list[list[int]]], for_small_gap: bool = True) -> list[np.ndarray]:
+def extract_dtrow_list(timetable: list[list[list[int]]], for_small_gap: bool = True) -> list[NDArray[generic]]:
     """Convert timetable into datatable row id list."""
     tt_idx = 0 if for_small_gap else 1
     return [np.asarray(x[1]) for x in timetable[tt_idx]]
 
 
-def read_readonly_data(table: DataTableImpl) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def read_readonly_data(
+        table: DataTableImpl,
+        ) -> tuple[
+            NDArray[generic],
+            NDArray[generic],
+            NDArray[generic],
+            NDArray[generic],
+            NDArray[generic],
+            NDArray[generic],
+            NDArray[generic],
+            NDArray[generic],
+            ]:
     """
     Extract necerrary data from datatable instance.
 
@@ -95,7 +109,7 @@ def read_readonly_data(table: DataTableImpl) -> tuple[np.ndarray, np.ndarray, np
     return timestamp, dtrow, ra, dec, srctype, antenna, field, spw
 
 
-def read_readwrite_data(table: DataTableImpl) -> np.ndarray:
+def read_readwrite_data(table: DataTableImpl) -> NDArray[np.bool_]:
     """
     Extract necessary data from datatable instance.
 
@@ -103,7 +117,7 @@ def read_readwrite_data(table: DataTableImpl) -> np.ndarray:
         table: datatable instance
 
     Returns:
-        pflag: np.ndarray of online flag status
+        pflag: An array of online flag status
     """
     pflags = table.getcol('FLAG_PERMANENT')
     pflag = np.any(pflags[:, datatable.OnlineFlagIndex, :], axis=0)
@@ -182,7 +196,7 @@ def from_context(context_dir: str) -> MetaDataSet:
     return metadata
 
 
-def get_science_target_fields(metadata: MetaDataSet) -> np.ndarray:
+def get_science_target_fields(metadata: MetaDataSet) -> NDArray[generic]:
     """
     Get a list of unique field IDs of science targets.
 
@@ -190,12 +204,12 @@ def get_science_target_fields(metadata: MetaDataSet) -> np.ndarray:
         metadata: MetaDataSet extracted from a datatable
 
     Returns:
-        np.ndarray of field ids for science targets
+        An array of field ids for science targets
     """
     return np.unique(metadata.field[metadata.srctype == 0])
 
 
-def get_science_spectral_windows(metadata: MetaDataSet) -> np.ndarray:
+def get_science_spectral_windows(metadata: MetaDataSet) -> NDArray[generic]:
     """
     Get a list of unique spw IDs of science targets.
 
@@ -203,12 +217,16 @@ def get_science_spectral_windows(metadata: MetaDataSet) -> np.ndarray:
         metadata: MetaDataSet extracted from a datatable
 
     Returns:
-        np.ndarray of spw ids for science targets
+        An array of spw ids for science targets
     """
     return np.unique(metadata.spw[metadata.srctype == 0])
 
 
-def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: list[list[int]]) -> np.ndarray:
+def get_raster_distance(
+        ra: NDArray[floating],
+        dec: NDArray[floating],
+        dtrow_list: list[list[int]],
+        ) -> NDArray[floating]:
     """
     Compute distances between raster rows and the first row.
 
@@ -217,13 +235,13 @@ def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: list[list[i
     The representative position of each raster row is the mid point (mean position) of R.A. and Dec.
 
     Args:
-        ra: np.ndarray of RA
-        dec: np.ndarray of Dec
+        ra: An array of RA
+        dec: An array of Dec
         dtrow_list: list of row ids for datatable rows per data chunk indicating
                     single raster row.
 
     Returns:
-        np.ndarray of the distances.
+        An array of the distances.
     """
     i1 = dtrow_list[0]
     x1 = ra[i1].mean()
@@ -236,7 +254,7 @@ def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: list[list[i
     return distance_list
 
 
-def flag_incomplete_raster(raster_index_list: list[np.ndarray], nd_raster: int, nd_row: int) -> np.ndarray:
+def flag_incomplete_raster(raster_index_list: list[NDArray[generic]], nd_raster: int, nd_row: int) -> NDArray[generic]:
     """
     Return IDs of incomplete raster map.
 
@@ -254,7 +272,7 @@ def flag_incomplete_raster(raster_index_list: list[np.ndarray], nd_raster: int, 
         nd_row: typical number of data per raster row (MM)
 
     Returns:
-        np.ndarray of index for raster map to flag.
+        An array of index for raster map to flag.
     """
     nd = np.fromiter(map(len, raster_index_list), dtype=int)
     assert nd_raster >= nd_row
@@ -279,7 +297,11 @@ def flag_incomplete_raster(raster_index_list: list[np.ndarray], nd_raster: int, 
     return idx
 
 
-def flag_worm_eaten_raster(meta: MetaDataSet, raster_index_list: list[np.ndarray], nd_row: int) -> np.ndarray:
+def flag_worm_eaten_raster(
+        meta: MetaDataSet,
+        raster_index_list: list[NDArray[generic]],
+        nd_row: int,
+        ) -> NDArray[generic]:
     """
     Return IDs of raster map where number of continuous flagged data exceeds upper limit given by nd_row.
 
@@ -295,7 +317,7 @@ def flag_worm_eaten_raster(meta: MetaDataSet, raster_index_list: list[np.ndarray
         nd_row: typical number of data per raster row (MM)
 
     Returns:
-        np.ndarray of index for raster map to flag.
+        An array of index for raster map to flag.
     """
     # check if there are at least MM continuously flagged data
     # where MM is number of typical data points for one raster row
@@ -324,7 +346,11 @@ def flag_worm_eaten_raster(meta: MetaDataSet, raster_index_list: list[np.ndarray
     return idx
 
 
-def get_raster_flag_list(flagged1: list[int], flagged2: list[int], raster_index_list: list[np.ndarray]) -> np.ndarray:
+def get_raster_flag_list(
+        flagged1: list[int],
+        flagged2: list[int],
+        raster_index_list: list[NDArray[generic]],
+        ) -> NDArray[generic]:
     """
     Merge flag result and convert raster id to list of data index.
 
@@ -334,7 +360,7 @@ def get_raster_flag_list(flagged1: list[int], flagged2: list[int], raster_index_
         raster_index_list: list of indices for metadata arrays per raster map
 
     Returns:
-        np.ndarray of data ids to be flagged
+        An array of data ids to be flagged
     """
     flagged = set(flagged1).union(set(flagged2))
     g = (raster_index_list[i] for i in flagged)
@@ -342,7 +368,11 @@ def get_raster_flag_list(flagged1: list[int], flagged2: list[int], raster_index_
     return data_ids
 
 
-def flag_raster_map(datatable: DataTableImpl, ms: MeasurementSet, rasterscan_heuristics_result: rasterscan.RasterScanHeuristicsResult) -> list[int]:
+def flag_raster_map(
+        datatable: DataTableImpl,
+        ms: MeasurementSet,
+        rasterscan_heuristics_result: rasterscan.RasterScanHeuristicsResult,
+        ) -> list[int]:
     """
     Return list of index to be flagged by flagging heuristics for raster scan.
 
@@ -400,7 +430,8 @@ def flag_raster_map(datatable: DataTableImpl, ms: MeasurementSet, rasterscan_heu
         try:
             raster_gap = rasterscan.find_raster_gap(metadata.ra, metadata.dec, dtrow_list)
         except rasterscan.RasterScanHeuristicsFailure as e:
-            LOG.debug('{} This often happens when pointing pattern deviates from regular raster. You may want to check the pointings in observation.'.format(e))
+            LOG.debug('%s This often happens when pointing pattern deviates from regular raster. '
+                      'You may want to check the pointings in observation.', e)
             rasterscan_heuristics_result.set_result_fail(key[2], key[1], key[0])
             # exclude combination of (field_id, spw_id, antenna_id) held by key
             # from the subsequent analysis
@@ -425,11 +456,14 @@ def flag_raster_map(datatable: DataTableImpl, ms: MeasurementSet, rasterscan_heu
         LOG.trace('FIELD %s spectralSpec %s: Number of data per raster row = %s', field_id, spectralspec, ndrow)
         nd_per_row_rep = find_most_frequent(ndrow)
         LOG.debug('FIELD %s spectralSpec %s: number of raster row = %s', field_id, spectralspec, len(ndrow))
-        LOG.debug('FIELD %s spectralSpec %s: most frequent # of data per raster row = %s', field_id, spectralspec, nd_per_row_rep)
+        LOG.debug('FIELD %s spectralSpec %s: most frequent # of data per raster row = %s',
+                  field_id, spectralspec, nd_per_row_rep)
         nd_per_raster_rep = find_most_frequent(ndmap)
         LOG.debug('FIELD %s spectralSpec %s: number of raster map = %s', field_id, spectralspec, len(ndmap))
-        LOG.debug('FIELD %s spectralSpec %s: most frequent # of data per raster map = %s', field_id, spectralspec, nd_per_raster_rep)
-        LOG.debug('FIELD %s spectralSpec %s: nominal number of row per raster map = %s', field_id, spectralspec, nd_per_raster_rep // nd_per_row_rep)
+        LOG.debug('FIELD %s spectralSpec %s: most frequent # of data per raster map = %s',
+                  field_id, spectralspec, nd_per_raster_rep)
+        LOG.debug('FIELD %s spectralSpec %s: nominal number of row per raster map = %s',
+                  field_id, spectralspec, nd_per_raster_rep // nd_per_row_rep)
         repmapdict[key] = {
             'row': nd_per_row_rep,
             'map': nd_per_raster_rep
@@ -472,7 +506,7 @@ def flag_raster_map(datatable: DataTableImpl, ms: MeasurementSet, rasterscan_heu
     return rowdict
 
 
-def find_most_frequent(v: np.ndarray) -> int:
+def find_most_frequent(v: NDArray[generic]) -> int:
     """
     Return the most frequent value in an input array.
 
@@ -535,16 +569,30 @@ def get_angle(dx: float, dy: float, aspect_ratio: float=1) -> float:
     return offset + theta
 
 
-def anim_gen(ra: np.ndarray, dec: np.ndarray, dtrow_list: list[np.ndarray], dist_list: np.ndarray, cmap: tuple[float, float, float, float]) -> Generator[tuple[np.ndarray | None, np.ndarray | None, tuple[float, float, float, float], bool], None, None]:
+def anim_gen(
+        ra: NDArray[floating],
+        dec: NDArray[floating],
+        dtrow_list: list[NDArray[generic]],
+        dist_list: NDArray[floating],
+        cmap: tuple[float, float, float, float],
+        ) -> Generator[
+            tuple[
+                NDArray[floating] | None, NDArray[floating] | None,
+                tuple[float, float, float, float],
+                bool,
+                ],
+            None,
+            None,
+            ]:
     """
     Generate position, color and boolean flag for generate_animation.
 
     Args:
-        ra: np.ndarray of RA
-        dec: np.ndarray of Dec
+        ra: An array of RA
+        dec: An array of Dec
         dtrow_list: list of row ids for datatable rows per data chunk indicating
                     single raster row.
-        dist_list: np.ndarray of distance
+        dist_list: An array of distance
         cmap: color map
 
     Yields:
@@ -570,7 +618,7 @@ def anim_gen(ra: np.ndarray, dec: np.ndarray, dtrow_list: list[np.ndarray], dist
     yield None, None, color, raster_flag
 
 
-def animate(i: tuple[np.ndarray, np.ndarray, tuple[float, float, float, float], bool]) -> list[Line2D]:
+def animate(i: tuple[NDArray[floating], NDArray[floating], tuple[float, float, float, float], bool]) -> list[Line2D]:
     """
     Generate plot corresponding to single frame.
 
@@ -597,13 +645,18 @@ def animate(i: tuple[np.ndarray, np.ndarray, tuple[float, float, float, float], 
     return lines
 
 
-def generate_animation(ra: np.ndarray, dec: np.ndarray, dtrow_list: list[np.ndarray], figfile: str = 'movie.gif') -> None:
+def generate_animation(
+        ra: NDArray[floating],
+        dec: NDArray[floating],
+        dtrow_list: list[NDArray[generic]],
+        figfile: str = 'movie.gif',
+        ) -> None:
     """
     Generate animation GIF file to illustrate observing pattern.
 
     Args:
-        ra: np.ndarray of RA
-        dec: np.ndarray of Dec
+        ra: An array of RA
+        dec: An array of Dec
         dtrow_list: list of row ids for datatable rows per data chunk indicating
                     single raster row.
         figfile: output file name, defaults to 'movie.gif'
