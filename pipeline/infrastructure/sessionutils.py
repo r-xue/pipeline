@@ -164,7 +164,7 @@ class VDPTaskFactory:
 
     The correctness of this task is dependent on the correct mapping of
     Inputs arguments to measurement set, hence it is dependent on
-    Inputs objects that sub-class VDP StandardInputs.
+    Inputs objects that subclass VDP StandardInputs.
     """
 
     def __init__(self, inputs, executor, task):
