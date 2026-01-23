@@ -26,14 +26,18 @@ class FailureType(Enum):
     PHASE = "phase"
     AMP = "amp"
     AMP_AND_PHASE = "amp and phase"
+
+class OverallFailureType(Enum):
     SPW_BINNING = "binning"
     SPW_SMALL_BANDWIDTH = "bandwidth"
-
+    NONE = "none"
 
 @dataclass
 class SpwFailure:
-    ant_set: set
-    failure_type: FailureType
+#    ant_set: set
+#    failure_type: FailureType
+    ants: dict # antName -> failureType
+    overall_failure: OverallFailureType
 
 
 def add_spw_failure(failing_spws: dict[int, SpwFailure], spw_id: int,
@@ -42,17 +46,21 @@ def add_spw_failure(failing_spws: dict[int, SpwFailure], spw_id: int,
     Adds failure information for a single antenna and associated failure type
     to the dict of failing spws.
     """
-    if failure_type in (FailureType.SPW_BINNING, FailureType.SPW_SMALL_BANDWIDTH):
+    if failure_type in (OverallFailureType.SPW_BINNING, OverallFailureType.SPW_SMALL_BANDWIDTH):
         # This fails for the entire spw so we don't need per-antenna information
-        failing_spws[spw_id] = SpwFailure(set(), failure_type)
+        failing_spws[spw_id] = SpwFailure({}, failure_type)
         return
 
     if spw_id in failing_spws:
-        failing_spws[spw_id].ant_set.add(ant_id)
-        if failure_type != failing_spws[spw_id].failure_type:
-            failing_spws[spw_id].failure_type = FailureType.AMP_AND_PHASE
+        failing_ants = failing_spws[spw_id].ants
+        if ant_id in failing_ants: 
+            if failure_type != failing_ants[ant_id].failure_type:
+                failing_ants[ant_id] = FailureType.AMP_AND_PHASE
+        else: 
+            failing_ants[ant_id] = failure_type
     else:
-        failing_spws[spw_id] = SpwFailure({ant_id}, failure_type)
+        failing_ants[ant_id] = failure_type
+        failing_spws[spw_id] = SpwFailure(failing_ants, failure_type)
 
 
 # Utility functions added by kberry or adopted from AU
@@ -283,7 +291,7 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable, create_plots) -> dict:
                 "tau": tau,
             }
         else:
-            LOG.info(f"Subband qa heuristic not evaluated for spw {ispw} as it is not a FDM spw.")
+            LOG.info(f"Subband qa heuristic not evaluated for spw {spwid} as it is not a FDM spw.")
 
     # Taking statistical summary values for heuristics
     # per spw, ant, and pol
@@ -1356,8 +1364,12 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable, create_plots) -> dict:
     # Reformat and return spws_affected as a dict
     spw_affected_return = {}
     for spw_id, failure in spws_affected.items():
+        ants_output = {}
+        for name, how_failed in failure.ants:
+            ants_output[name] = how_failed.value
+            # aggregate here or on the other side?
         spw_affected_return[spw_id] = {
-            'antennas': sorted(failure.ant_set),  # return sorted list of antennas
+            'antennas': ants_output,  # return dict of antennas "name" : "failure_type"
             'failure': failure.failure_type.value  # convert enum back to string 
         }
 
