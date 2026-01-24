@@ -1,11 +1,12 @@
 """
 Utilities to work with the CASA data files
 """
-from datetime import datetime, timedelta
-from glob import glob
+
 import hashlib
 import json
 import os
+from datetime import datetime, timedelta, timezone
+from glob import glob
 
 from .. import casa_tools
 from .conversion import get_epoch_as_datetime
@@ -70,6 +71,13 @@ def get_object_info_string(ss_object: str, ss_path: str = SOLAR_SYSTEM_MODELS_PA
     info_dict = {object_model_filenames[i]: get_filename_info(om) for i, om in enumerate(object_models)}
     info_string = json.dumps(info_dict)
     return f"Solar System models used for {ss_object} => " + info_string
+
+
+def _to_utc(dt: datetime) -> datetime:
+    """Return a timezone-aware UTC datetime, converting naive inputs."""
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone.utc)
 
 
 # Get IERSpredict version
@@ -169,7 +177,7 @@ class IERSInfo():
         If the geodetic tables could not be loaded correctly it always return False.
         """
         if self.info["IERSeop2000_last"] is not None:
-            return date <= self.info["IERSeop2000_last"]
+            return _to_utc(date) <= self.info["IERSeop2000_last"]
         else:
             return False
 
@@ -189,15 +197,16 @@ class IERSInfo():
 
         if iers_eop_last is None:
             return "CRITICAL"
-        if date <= iers_eop_last:
+        date_utc = _to_utc(date)
+        if date_utc <= iers_eop_last:
             return "GOOD"
-        elif (date > iers_eop_last) and (date <= (iers_eop_last + maximum_delay) ):
+        elif (date_utc > iers_eop_last) and (date_utc <= (iers_eop_last + maximum_delay) ):
             return "INFO"
 
         # Comparisons with predicted IERS
         if  iers_eop_predict_last is None:
             return "CRITICAL"
-        elif (date > (iers_eop_last + maximum_delay)) and (date <= iers_eop_predict_last):
+        elif (date_utc > (iers_eop_last + maximum_delay)) and (date_utc <= iers_eop_predict_last):
             return "WARN"
         else:
             return "CRITICAL"
