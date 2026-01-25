@@ -244,22 +244,46 @@ def calc_frac_newly_flagged(summaries, agents=None, scanids=None):
     return frac_flagged
 
 
-def linear_score(x, x1, x2, y1=0.0, y2=1.0):
-    """
-    Calculate the score for the given data value, assuming the
-    score follows a linear gradient between the low and high values.
+def linear_score(x: float, x1: float, x2: float, y1: float = 0.0, y2: float = 1.0) -> float:
+    """Calculate the score for the given data value using linear scaling.
 
-    x values will be clipped to lie within the range x1->x2
-    """
-    x1 = float(x1)
-    x2 = float(x2)
-    y1 = float(y1)
-    y2 = float(y2)
+    Computes a linearly interpolated score between two boundary points (x1, y1) and (x2, y2).
+    The input value x is automatically clipped to lie within the range [min(x1, x2), max(x1, x2)].
 
-    clipped_x = sorted([x1, x, x2])[1]
-    m = (y2-y1) / (x2-x1)
-    c = y1 - m*x1
-    return m*clipped_x + c
+    Args:
+        x: The input data value to score.
+        x1: The first boundary x-coordinate.
+        x2: The second boundary x-coordinate.
+        y1: The score corresponding to x1.
+        y2: The score corresponding to x2.
+
+    Returns:
+        The linearly interpolated score value.
+
+    Examples:
+        >>> linear_score(0.5, 0.0, 1.0)  # Midpoint between 0 and 1
+        0.5
+        >>> linear_score(1.5, 0.0, 1.0)  # Clipped to upper bound
+        1.0
+        >>> linear_score(-0.5, 0.0, 1.0)  # Clipped to lower bound
+        0.0
+
+    Raises:
+        ZeroDivisionError: When x1 equals x2 (no valid interpolation range).
+    """
+    # Ensure all inputs are float type for consistent arithmetic
+    x, x1, x2, y1, y2 = map(float, [x, x1, x2, y1, y2])
+
+    # Handle edge case to prevent division by zero
+    if x1 == x2:
+        raise ZeroDivisionError('Cannot interpolate when x1 equals x2 (zero-width interval)')
+
+    # Clip x to valid interpolation range
+    x_min, x_max = (x1, x2) if x1 <= x2 else (x2, x1)
+    x_clipped = max(x_min, min(x_max, x))
+
+    # Linear interpolation formula: y = y1 + (y2 - y1) * (x - x1) / (x2 - x1)
+    return y1 + (y2 - y1) * (x_clipped - x1) / (x2 - x1)
 
 
 def score_data_flagged_by_agents(ms, summaries, min_frac, max_frac, agents=None, intents=None):
@@ -4348,7 +4372,7 @@ def score_fluxservice(result: ALMAImportDataResults) -> list[pqa.QAScore]:
     flux_qa_dict = {
         'FIRSTURL': (1.0, "Flux catalog service used."),
         'BACKUPURL': (0.9, "Backup flux catalog service used."),
-        'FAIL': (0.3, "Neither primary nor backup flux service could be queried. ASDM values used."),
+        'FAIL': (0.3, "Online flux catalog unavailable. Pipeline halted after weblog creation."),
         None: (1.0, "Flux catalog service not used.")
     }
 
