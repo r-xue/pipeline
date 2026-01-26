@@ -1420,7 +1420,7 @@ class SDSparseMapPlotter(object):
         """Add channel axis to integrated spectrum.
 
         Args:
-            frequency: Frequency label.
+            frequency: Frequency label. Must be sorted.
         """
         axes = self.axes.axes_chan
         f = np.asarray(frequency)
