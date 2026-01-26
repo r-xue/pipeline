@@ -10,8 +10,7 @@ _pprinter = pprint.PrettyPrinter()
 
 
 class Source:
-    """
-    Source is a logical representation of an astronomical source.
+    """A logical representation of an astronomical source.
 
     Attributes:
         id: The numerical identifier of the source.
@@ -22,8 +21,7 @@ class Source:
     """
     def __init__(self, source_id: int | numpy.integer, name: str, direction: dict, proper_motion: dict[str, dict],
                  is_eph_obj: bool, table_name: str, avg_spacing: float | str) -> None:
-        """
-        Initialize a Source object.
+        """Initialize a Source object.
 
         Args:
             source_id: The numerical identifier of the source.

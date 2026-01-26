@@ -231,9 +231,8 @@ class DataTableIndexer:
         return perms_list - base
 
 
-class DataTableImpl:
-    """
-    DataTable is an object to hold meta data of scantable on memory.
+class DataTableImpl(object):
+    """DataTable is an object to hold meta data of scantable on memory.
 
     row layout: [Row, Scan, IF, Pol, Beam, Date, Time, ElapsedTime,
                    0,    1,  2,   3,    4,    5,    6,            7,

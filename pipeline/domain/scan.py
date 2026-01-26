@@ -19,8 +19,7 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class Scan:
-    """
-    Scan is a logical representation of a single scan.
+    """A logical representation of a single scan.
 
     Attributes:
         id: The scan number within the MeasurementSet.

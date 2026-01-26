@@ -6,9 +6,8 @@ if TYPE_CHECKING:
     from numpy.typing import NDArray
 
 
-class Polarization:
-    """
-    Polarization is a logical representation of a polarization.
+class Polarization(object):
+    """A logical representation of a polarization.
 
     Integer correlation Stokes types are translated to their corresponding
     string representation using a local definition of the Stokes enumeration
