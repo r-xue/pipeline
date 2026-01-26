@@ -121,11 +121,13 @@ show_missing = true
 skip_covered = false
 exclude_lines = [
     'pragma: no cover',
+    'if TYPE_CHECKING:',
     'if __name__ == "__main__":',
     'from .* import .*',
     'import .*',
     'raise NotImplementedError',
     'pass',
+    '@(abc\\.)?abstractmethod',
 ]
 
 [tool.pytest.ini_options]
