@@ -4,7 +4,7 @@ from __future__ import annotations
 import contextlib
 import copy
 import os
-from typing import TYPE_CHECKING, Any, TypedDict
+from typing import TYPE_CHECKING, Any
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -24,6 +24,7 @@ if TYPE_CHECKING:
 
     from pipeline.domain import Field, MeasurementSet, Source
     from pipeline.domain.measures import Distance, EquatorialArc
+    from pipeline.infrastructure.utils.casa_types import DirectionDict
 
 COLORBLIND_PALETTE = {
     'on_tsys': "#FF00E6",
@@ -39,18 +40,6 @@ SEVEN_M = measures.Distance(7, measures.DistanceUnits.METRE)
 C_MKS = 299792458
 # used to convert between radians and arcsec
 RADIANS_TO_ARCSEC = 180 / np.pi * 60 * 60
-
-
-class CoordValue(TypedDict):
-    unit: str
-    value: float
-
-
-class MDirection(TypedDict):
-    m0: CoordValue
-    m1: CoordValue
-    refer: str
-    type: str
 
 
 def compute_obs_data(
@@ -619,7 +608,7 @@ def antenna_taper_factor(array_name: str) -> float:
 
 def tsys_scans_radec(
         ms: MeasurementSet,
-        mean_direction: MDirection,
+        mean_direction: DirectionDict,
         tsys_field: Field,
 ) -> dict[str, dict[int, dict[str, tuple[float, float] | bool]]]:
     """
@@ -788,7 +777,7 @@ def tsys_scans_radec(
 
 
 def apply_offset_to_radec(
-        direction: MDirection,
+        direction: DirectionDict,
         offsets: tuple[float, float] = (0.0, 0.0),
         use_euler_angles: bool = True
         ) -> tuple[float, float]:
@@ -873,7 +862,7 @@ def rotation_euler(rao: float, deco: float, r_long: float, r_lat: float) -> tupl
     return new_ra, new_dec
 
 
-def radec_to_direction(ra: float, dec: float, unit: str = "rad", frame: str = 'ICRS') -> MDirection:
+def radec_to_direction(ra: float, dec: float, unit: str = "rad", frame: str = 'ICRS') -> DirectionDict:
     """
     Converts RA and Dec float values into a CASA direction dictionary.
     Adapted from Todd Hunter's AU tool rad2direction
@@ -890,7 +879,7 @@ def radec_to_direction(ra: float, dec: float, unit: str = "rad", frame: str = 'I
     return casa_tools.measures.direction(frame, f'{ra}{unit}', f'{dec}{unit}')
 
 
-def direction_to_radec(direction: MDirection) -> tuple[float, float]:
+def direction_to_radec(direction: DirectionDict) -> tuple[float, float]:
     """
     Extracts RA and Dec values from a CASA direction dictionary.
     Adapted from Todd Hunter's AU tool direction2rad
@@ -904,7 +893,7 @@ def direction_to_radec(direction: MDirection) -> tuple[float, float]:
     return direction['m0']['value'], direction['m1']['value']
 
 
-def diff_directions(orig_direction: MDirection, offset_direction: MDirection) -> tuple[float, float]:
+def diff_directions(orig_direction: DirectionDict, offset_direction: DirectionDict) -> tuple[float, float]:
     """
     Compute the relative difference between the original position and an offset position.
 

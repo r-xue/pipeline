@@ -24,38 +24,20 @@ from typing import TYPE_CHECKING
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
 
-LOG = infrastructure.logging.get_logger(__name__)
-
 if TYPE_CHECKING:
-    from typing import TypedDict, Any
+    from pipeline.infrastructure.utils.casa_types import (
+        DirectionDict,
+        EpochDict,
+        PositionDict,
+        QuantityDict,
+    )
 
-    class Quantity(TypedDict, total=False):
-        value: float
-        unit: str
-        # Measures often add additional keys; keep this open.
-        # Using Any allows casa measures/quanta dictionaries to pass through.
-        extra: Any
-
-    class Direction(TypedDict):
-        type: str
-        refer: str
-        m0: dict
-        m1: dict
-
-    class Epoch(TypedDict):
-        type: str
-        refer: str
-        m0: dict
-
-    class Position(TypedDict):
-        type: str
-        refer: str
-        m0: dict
+LOG = infrastructure.logging.get_logger(__name__)
 
 __all__ = { 'direction_shift', 'direction_offset', 'direction_recover', 'direction_convert' }
 
 
-def direction_shift(direction: Direction, reference: Direction, origin: Direction) -> Direction:
+def direction_shift(direction: DirectionDict, reference: DirectionDict, origin: DirectionDict) -> DirectionDict:
     """
     Calculate the 'shifted-direction' of the observing point.
 
@@ -89,7 +71,7 @@ def direction_shift(direction: Direction, reference: Direction, origin: Directio
     return new_direction
 
 
-def direction_offset(direction: Direction, reference: Direction) -> Direction:
+def direction_offset(direction: DirectionDict, reference: DirectionDict) -> DirectionDict:
     """
     Calculate the 'offset-direction' of the observing point.
 
@@ -124,7 +106,7 @@ def direction_offset(direction: Direction, reference: Direction) -> Direction:
     return new_direction
 
 
-def direction_recover(ra: float, dec: float, org_direction: Direction) -> tuple[float, float]:
+def direction_recover(ra: float, dec: float, org_direction: DirectionDict) -> tuple[float, float]:
     """
     Recovers the 'Shifted-coordinate' from 'Offset-coordinate'.
 
@@ -153,7 +135,12 @@ def direction_recover(ra: float, dec: float, org_direction: Direction) -> tuple[
     return new_ra, new_dec
 
 
-def direction_convert(direction: Direction, mepoch: Epoch, mposition: Position, outframe: str) -> tuple[Quantity, Quantity]:
+def direction_convert(
+        direction: DirectionDict,
+        mepoch: EpochDict,
+        mposition: PositionDict,
+        outframe: str,
+        ) -> tuple[QuantityDict, QuantityDict]:
     """
     Convert the frame of the 'direction' to 'outframe'.
 

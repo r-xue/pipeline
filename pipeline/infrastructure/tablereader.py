@@ -31,13 +31,9 @@ if TYPE_CHECKING:
         ObservingRun, Polarization, Scan, Source, SpectralWindow, State
     from pipeline.domain.measures import Frequency, FrequencyRange
     from pipeline.domain.state import StateFactory
-    from pipeline.infrastructure.utils.utils import DirectionDict, QuantityDict
+    from pipeline.infrastructure.utils.casa_types import DirectionDict, LongLatDict, QuantityDict
 
 LOG = infrastructure.logging.get_logger(__name__)
-
-class LongLatDict(TypedDict):
-    latitude: QuantityDict
-    longitude: QuantityDict
 
 T = TypeVar('T')
 

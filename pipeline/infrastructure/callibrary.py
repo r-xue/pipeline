@@ -32,7 +32,7 @@ CalToArgs = collections.namedtuple('CalToArgs', ['vis', 'spw', 'field', 'intent'
 CalAppOrigin = collections.namedtuple('CalAppOrigin', ['task', 'inputs'])
 
 # observations before this date are considered Cycle 0 observations
-CYCLE_0_END_DATE = datetime.datetime(2013, 1, 21)
+CYCLE_0_END_DATE = datetime.datetime(2013, 1, 21, tzinfo=datetime.timezone.utc)
 
 
 class CalApplication:

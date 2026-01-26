@@ -24,7 +24,7 @@ from collections.abc import Iterable
 from datetime import datetime
 from functools import wraps
 from numbers import Number
-from typing import TYPE_CHECKING, TypedDict
+from typing import TYPE_CHECKING
 from urllib.parse import urlparse
 
 import numpy as np
@@ -89,28 +89,11 @@ __all__ = [
     'remove_trailing_string',
     'string_to_val',
     'validate_url',
-    'DirectionDict',
-    'EpochDict',
-    'QuantityDict',
 ]
 
-
-class QuantityDict(TypedDict):
-    unit: str
-    value: float
-
-
-class DirectionDict(TypedDict):
-    m0: QuantityDict
-    m1: QuantityDict
-    refer: str
-    type: str
-
-
-class EpochDict(TypedDict):
-    m0: QuantityDict
-    refer: str
-    type: str
+# Import TypedDict definitions from centralized module for type checking only
+if TYPE_CHECKING:
+    from pipeline.infrastructure.utils.casa_types import DirectionDict, EpochDict, QuantityDict
 
 
 def find_ranges(data: str | list[int]) -> str:
