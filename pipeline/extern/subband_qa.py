@@ -54,11 +54,12 @@ def add_spw_failure(failing_spws: dict[int, SpwFailure], spw_id: int,
     if spw_id in failing_spws:
         failing_ants = failing_spws[spw_id].ants
         if ant_id in failing_ants: 
-            if failure_type != failing_ants[ant_id].failure_type:
+            if failure_type != failing_ants[ant_id]:
                 failing_ants[ant_id] = FailureType.AMP_AND_PHASE
         else: 
             failing_ants[ant_id] = failure_type
     else:
+        failing_ants = {}
         failing_ants[ant_id] = failure_type
         failing_spws[spw_id] = SpwFailure(failing_ants, failure_type)
 
@@ -348,15 +349,16 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable, create_plots) -> dict:
             add_spw_failure(spws_affected, ispw, "", FailureType.SPW_SMALL_BANDWIDTH)
             continue
 
-        #################################
-        # naming plot files
-        # bandpass amp   pol0 pol1
-        # bandpass phase pol0 pol1
-        #################################
-        figure_name = caltable_name + '_ant' + iant + '_spw' + str(ispw) + '_platforming.png'
-        figure_path = os.path.join(output_dir, figure_name)
-        fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(18, 15))
-        fig.suptitle(pldir + ' ' + vis + ' ' + 'ant ' + iant + ' spw ' + str(ispw), fontsize=20)
+        if create_plots:
+            #################################
+            # naming plot files
+            # bandpass amp   pol0 pol1
+            # bandpass phase pol0 pol1
+            #################################
+            figure_name = caltable_name + '_ant' + iant + '_spw' + str(ispw) + '_platforming.png'
+            figure_path = os.path.join(output_dir, figure_name)
+            fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(18, 15))
+            fig.suptitle(pldir + ' ' + vis + ' ' + 'ant ' + iant + ' spw ' + str(ispw), fontsize=20)
 
 
         ################################
@@ -1343,8 +1345,8 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable, create_plots) -> dict:
                             ax4.hlines(y=np.max(bp_phs2)*1.05,xmin=flagchan_range_phs[p][0], xmax=flagchan_range_phs[p][1],color='black', linewidth=4)
                             ax4.axvspan(flagchan_range_phs[p][0], flagchan_range_phs[p][1],color='black', alpha=0.4)
 
-            plt.savefig(figure_path)
-            plt.close()
+                plt.savefig(figure_path)
+                plt.close()
 
     # Create the output files
     outfile_name = os.path.join(output_dir, f"{caltable_name}_platform.txt")
@@ -1365,12 +1367,12 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable, create_plots) -> dict:
     spw_affected_return = {}
     for spw_id, failure in spws_affected.items():
         ants_output = {}
-        for name, how_failed in failure.ants:
+        for name, how_failed in failure.ants.items():
             ants_output[name] = how_failed.value
             # aggregate here or on the other side?
         spw_affected_return[spw_id] = {
             'antennas': ants_output,  # return dict of antennas "name" : "failure_type"
-            'failure': failure.failure_type.value  # convert enum back to string 
+            'failure': failure.overall_failure.value  # convert enum back to string 
         }
 
     return spw_affected_return

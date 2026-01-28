@@ -547,7 +547,7 @@ def _calc_subband_qa_score(spw_dict: dict, ms: MeasurementSet, caltable: str) ->
                 amp_list = []
                 amp_and_phase_list = []
 
-                for name, fail in ant_dict: 
+                for name, fail in ant_dict.items(): 
                     if fail == "phase":
                         phase_list.append(name)
                     elif fail == "amp":
@@ -555,7 +555,7 @@ def _calc_subband_qa_score(spw_dict: dict, ms: MeasurementSet, caltable: str) ->
                     elif fail == "amp and phase":
                         amp_and_phase_list.append(name)
                     else: 
-                        LOG.warning("Unknown failure type")  # FIXME: add more detail
+                        LOG.warning("Unknown failure type for hifa bandpass subband qa.")
                 if phase_list:
                     spw_msg = f"Spw {spw} (phase): {', '.join(phase_list)}"
                     spw_messages.append(spw_msg)
