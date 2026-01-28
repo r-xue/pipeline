@@ -889,8 +889,8 @@ class MeasurementSet:
             return None
         start_time = utils.get_epoch_as_datetime(self.start_time)
         for cycle, (start_str, end_str) in cycle_numbers.items():
-            start = datetime.datetime.strptime(start_str, '%Y-%m-%d')
-            end = datetime.datetime.strptime(end_str, '%Y-%m-%d')
+            start = datetime.datetime.strptime(start_str, '%Y-%m-%d').replace(tzinfo=datetime.timezone.utc)
+            end = datetime.datetime.strptime(end_str, '%Y-%m-%d').replace(tzinfo=datetime.timezone.utc)
             if start <= start_time <= end:
                 return cycle
         return None  # No match

@@ -2012,7 +2012,7 @@ def compute_zd_telmjd_for_ms(
     data = {}
     fields = ms.get_fields(intent='TARGET')
     observatory = ms.antenna_array.name
-    mjd_epoch = datetime.datetime(1858, 11, 17)
+    mjd_epoch = datetime.datetime(1858, 11, 17, tzinfo=datetime.timezone.utc)
 
     for field in fields:
         if field.id not in data:

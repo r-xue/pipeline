@@ -255,7 +255,7 @@ def add_catalogue_fluxes(
     science_windows = ms.get_spectral_windows(science_windows_only=True)
 
     # Test query to see if we need to switch to the backup URL
-    obs_time = datetime.datetime(2013, 3, 27, 7, 53, 3, 168000)
+    obs_time = datetime.datetime(2013, 3, 27, 7, 53, 3, 168000, tzinfo=datetime.timezone.utc)
     freq_hz = '86837309056.169219970703125'
     source_name = 'J1427-4206'
     contact_fail = False

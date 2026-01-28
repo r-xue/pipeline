@@ -379,7 +379,7 @@ class StateFactory:
                 to distinguish between Cycle 0 and later ALMA datasets.
         """
         if observatory == 'ALMA':
-            if start and start < datetime.datetime(2013, 1, 21):
+            if start and start < datetime.datetime(2013, 1, 21, tzinfo=datetime.timezone.utc):
                 self._constructor = StateALMACycle0
             else:
                 self._constructor = StateALMA

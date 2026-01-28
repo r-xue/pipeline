@@ -1118,7 +1118,7 @@ class TimeInterval:
     """
     __slots__ = ('start', 'end')
 
-    FOREVER = datetime.datetime(9999, 12, 31)
+    FOREVER = datetime.datetime(9999, 12, 31, tzinfo=datetime.timezone.utc)
 
     def __getstate__(self) -> tuple[datetime.datetime, datetime.datetime]:
         return self.start, self.end

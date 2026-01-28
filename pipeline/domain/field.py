@@ -204,7 +204,7 @@ class Field:
             observatory: Name of the observatory (e.g., 'VLA', 'ALMA').
         """
         # Mean observing time
-        mjd_epoch = datetime.datetime(1858, 11, 17)
+        mjd_epoch = datetime.datetime(1858, 11, 17, tzinfo=datetime.timezone.utc)
         start_time = mjd_epoch + datetime.timedelta(seconds=min(self.time))
         end_time = mjd_epoch + datetime.timedelta(seconds=max(self.time))
         mid_time = utils.obs_midtime(start_time, end_time)
