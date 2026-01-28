@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hif.tasks.mstransform.mstransform.MstransformInputs.__init__
 @utils.cli_wrapper
 def hif_mstransform(vis=None, outputvis=None, field=None, intent=None, spw=None, chanbin=None, timebin=None,
-                    parallel=None):
+                    per_spw=None, parallel=None):
     """Create new MeasurementSets for science target imaging.
 
     Create new MeasurementSets for imaging from the corrected column of the input

@@ -1,3 +1,4 @@
+import collections.abc
 import operator
 import os
 import shutil
@@ -10,7 +11,8 @@ import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
 from pipeline.hif.heuristics.auto_selfcal.selfcal_helpers import get_calinfo_from_ms
-from pipeline.infrastructure import casa_tasks, task_registry
+from pipeline.infrastructure import casa_tasks, exceptions, mpihelpers, task_registry
+from pipeline.infrastructure.mpihelpers import TaskQueue
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -104,12 +106,13 @@ class MstransformInputs(vdp.StandardInputs):
 
     chanbin = vdp.VisDependentProperty(default=1)
     timebin = vdp.VisDependentProperty(default='0s')
+    per_spw = vdp.VisDependentProperty(default=False)
 
     parallel = sessionutils.parallel_inputs_impl(default=False)
 
     # docstring and type hints: supplements hif_mstransform
     def __init__(self, context, output_dir=None, vis=None, outputvis=None, field=None, intent=None, spw=None,
-                 chanbin=None, timebin=None, parallel=None):
+                 chanbin=None, timebin=None, per_spw=None, parallel=None):
         """Initialize Inputs.
 
         Args:
@@ -149,6 +152,8 @@ class MstransformInputs(vdp.StandardInputs):
 
             timebin: Bin width for time averaging. If timebin > 0s then timeaverage is automatically switched to True.
 
+            per_spw: If True, execute mstransform separately for each spectral window in spw.
+
             parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
 
                 Options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
@@ -168,6 +173,7 @@ class MstransformInputs(vdp.StandardInputs):
         self.spw = spw
         self.chanbin = chanbin
         self.timebin = timebin
+        self.per_spw = per_spw
         self.parallel = parallel
 
     def to_casa_args(self):
@@ -207,6 +213,7 @@ class SerialMstransform(basetask.StandardTaskTemplate):
 
         # Run CASA task
         mstransform_args = inputs.to_casa_args()
+        mstransform_args.pop('per_spw', None)
         mstransform_job = casa_tasks.mstransform(**mstransform_args)
         try:
             self._executor.execute(mstransform_job)
@@ -317,8 +324,81 @@ class Mstransform(sessionutils.ParallelTemplate):
     Inputs = MstransformInputs
     Task = SerialMstransform
 
+    def _get_task_args_list(self):
 
-FLAGGING_TEMPLATE_HEADER = '''#
+        valid_args_list = []
+        inputs = self.inputs
+        original_vis = inputs.vis
+        try:
+            vis_list = inputs.vis if isinstance(inputs.vis, list) else [inputs.vis]
+            for vis in vis_list:
+                inputs.vis = vis
+                task_args = inputs.as_dict()
+                valid_args_list.append(task_args)
+        finally:
+            inputs.vis = original_vis
+
+        if inputs.per_spw:
+            valid_args_list_per_spw = []
+            for args in valid_args_list:
+                spw_value = args.get('spw')
+                # If no SPW is specified, keep the original args unchanged for this entry.
+                if spw_value is None:
+                    valid_args_list_per_spw.append(args)
+                    continue
+
+                spw_list = [s.strip() for s in spw_value.split(',') if s.strip()]
+                for spw in spw_list:
+                    args_spw = args.copy()
+                    args_spw['spw'] = spw
+                    base, ext = os.path.splitext(args_spw['outputvis'])
+                    args_spw['outputvis'] = f'{base}.spw{spw}{ext}'
+                    valid_args_list_per_spw.append(args_spw)
+
+            valid_args_list = valid_args_list_per_spw
+
+        if inputs.per_spw:
+            LOG.info(
+                'Mstransform will be executed per SPW; the number of tasks to be executed is %d',
+                len(valid_args_list),
+            )
+        else:
+            LOG.info(
+                'Mstransform will be executed; the number of tasks to be executed is %d',
+                len(valid_args_list),
+            )
+
+        return valid_args_list
+
+    def prepare(self):
+
+        assessed = []
+        parallel = mpihelpers.parse_parallel_input_parameter(self.inputs.parallel)
+        task_args_list = self._get_task_args_list()
+        taskqueue_parallel_request = len(task_args_list) > 1 and parallel
+
+        with TaskQueue(parallel=taskqueue_parallel_request, executor=self._executor) as tq:
+            
+            for task_args in task_args_list:
+                tq.add_pipelinetask(SerialMstransform, task_args, self.inputs.context)
+            task_results_list = tq.get_results()
+        
+        for task_args, worker_result in zip(task_args_list, task_results_list):
+            vis = task_args['vis']
+            try:
+                if isinstance(worker_result, collections.abc.Iterable):
+                    result = worker_result[0]
+                else:
+                    result = worker_result
+            except exceptions.PipelineException as e:
+                assessed.append((vis, task_args, e))
+            else:
+                assessed.append((vis, task_args, result))
+
+        return assessed
+
+
+FLAGGING_TEMPLATE_HEADER = """#
 # ___TITLESTR___
 #
 # Examples
@@ -328,4 +408,4 @@ FLAGGING_TEMPLATE_HEADER = '''#
 # mode='manual' spw='25:0~3;122~127' reason='stage8_2'
 # mode='manual' antenna='DV07' timerange='2013/01/31/08:09:55.248~2013/01/31/08:10:01.296' reason='quack'
 #
-'''
+"""
