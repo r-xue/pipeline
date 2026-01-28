@@ -40,7 +40,7 @@ def get_file_md5(filename: str) -> str:
 def get_iso_mtime(filename: str) -> str:
     """Return the ISO 8601 datetime string corresponding to the
     modification time of a given file"""
-    return datetime.fromtimestamp(os.path.getmtime(filename)).isoformat()
+    return datetime.fromtimestamp(os.path.getmtime(filename), tz=timezone.utc).isoformat()
 
 
 def get_solar_system_model_files(ss_object: str, ss_path: str = SOLAR_SYSTEM_MODELS_PATH) -> list[str]:

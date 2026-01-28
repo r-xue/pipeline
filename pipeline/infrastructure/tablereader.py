@@ -1430,7 +1430,7 @@ class StateTable:
 
         epoch_start = me.epoch(time_ref, qa.quantity(scan_start, time_unit))
         str_start = qa.time(epoch_start['m0'], form=['fits'])[0]
-        dt_start = datetime.datetime.strptime(str_start, '%Y-%m-%dT%H:%M:%S')
+        dt_start = datetime.datetime.strptime(str_start, '%Y-%m-%dT%H:%M:%S').replace(tzinfo=datetime.timezone.utc)
 
         return domain.state.StateFactory(facility, dt_start)        
 

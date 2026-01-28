@@ -1999,7 +1999,7 @@ def get_metadata(obj: SDImageDisplay) -> dict[str, str]:
     _metadata['ANTENNA'] = getattr(obj, 'antenna', None)
     _metadata['CASA'] = casa_version_string
     _metadata['VERSION'] = pipeline_revision
-    _metadata['DATE'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+    _metadata['DATE'] = datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S:%f')
     if hasattr(obj, 'inputs'):
         _metadata['IMAGE'] = getattr(obj.inputs, 'imagename', None)
         _metadata['FIELD'] = getattr(obj.inputs, 'source', None)

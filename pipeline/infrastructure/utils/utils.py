@@ -21,7 +21,7 @@ import string
 import tarfile
 import time
 from collections.abc import Iterable
-from datetime import datetime
+from datetime import datetime, timezone
 from functools import wraps
 from numbers import Number
 from typing import TYPE_CHECKING
@@ -904,7 +904,7 @@ def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth
 
             # create timestamp
             epoch_time = time.time()
-            dt = datetime.fromtimestamp(epoch_time)
+            dt = datetime.fromtimestamp(epoch_time, tz=timezone.utc)
             ns = int((epoch_time - int(epoch_time)) * 1_000_000_000)
             _timestamp = dt.strftime(f'%Y%m%d-%H%M%S.{ns}')
 

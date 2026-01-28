@@ -1014,9 +1014,13 @@ class T2_1DetailsRenderer:
             'zd_min'          : round(zd_min, 2),
             'zd_avg'          : round(zd_avg, 2),
             'zd_max'          : round(zd_max, 2),
-            'telmjd_min'      : utils.format_datetime(datetime.datetime.fromtimestamp(telmjd_min)),
-            'telmjd_avg'      : utils.format_datetime(datetime.datetime.fromtimestamp(telmjd_avg)),
-            'telmjd_max'      : utils.format_datetime(datetime.datetime.fromtimestamp(telmjd_max)),
+            'telmjd_min'      : utils.format_datetime(
+                datetime.datetime.fromtimestamp(telmjd_min, tz=datetime.timezone.utc)
+                ),
+            'telmjd_avg'      : utils.format_datetime(
+                datetime.datetime.fromtimestamp(telmjd_avg, tz=datetime.timezone.utc)),
+            'telmjd_max'      : utils.format_datetime(
+                datetime.datetime.fromtimestamp(telmjd_max, tz=datetime.timezone.utc)),
             'vla_basebands'   : vla_basebands
         }
 

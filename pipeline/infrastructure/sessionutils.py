@@ -101,7 +101,7 @@ def group_into_sessions(context, all_results, measurement_sets=None):
 
     def get_start_time(r):
         basename = os.path.basename(r[0])
-        return ms_start_times.get(basename, datetime.datetime.utcfromtimestamp(0))
+        return ms_start_times.get(basename, datetime.datetime.fromtimestamp(0, tz=datetime.timezone.utc))
 
     def chrono_sort_results(arg_tuple):
         session_id, results = arg_tuple

@@ -63,7 +63,7 @@ class TaskTimeTracker:
         if event.context_name != self.context_name:
             return
 
-        now = datetime.datetime.now()
+        now = datetime.datetime.now(datetime.timezone.utc)
         stage_number = event.stage_number
 
         try:

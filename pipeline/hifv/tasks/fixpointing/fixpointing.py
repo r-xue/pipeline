@@ -55,7 +55,7 @@ def fixpointing_offset_vlass(vis, intable='POINTING', antlist=[], timeoffset=[0.
 
     """
     r2d = 180.0 / np.pi
-    datestring = datetime.isoformat(datetime.today())
+    datestring = datetime.now(timezone.utc).isoformat()
     if not os.path.exists(vis + '/POINTING_ORIG'):
         shutil.copytree(vis + '/POINTING', vis + '/POINTING_ORIG')
         LOG.info('Copying POINTING to POINTING_ORIG')

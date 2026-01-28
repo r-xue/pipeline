@@ -60,7 +60,7 @@ class ZDTELMJDChart:
 
         # Get first time from all data
         all_times = [t for field_data in self.data.values() for t in field_data['telmjd']]
-        first_time = min(all_times) if all_times else datetime.datetime.now()
+        first_time = min(all_times) if all_times else datetime.datetime.now(datetime.timezone.utc)
 
         # Create a mapping of field IDs to field names for the legend
         fields = self.ms.get_fields(intent='TARGET')

@@ -489,7 +489,7 @@ def start_daskcluster(
 
         # Wait for all workers to become available.
         # This is necessary on HTCondor/SLURM clusters where workers are spawned asynchronously.
-        start_time = datetime.datetime.now()
+        start_time = datetime.datetime.now(datetime.timezone.utc)
         LOG.info(
             'starting %s workers at %s (waiting up to %d seconds)',
             n_workers,
@@ -499,7 +499,7 @@ def start_daskcluster(
 
         daskclient.wait_for_workers(n_workers, timeout=QUEUE_WAIT)
 
-        end_time = datetime.datetime.now()
+        end_time = datetime.datetime.now(datetime.timezone.utc)
         elapsed = (end_time - start_time).total_seconds()
         LOG.info(
             'Acquired %d workers at %s (waited %.2f seconds)',

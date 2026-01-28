@@ -6,7 +6,7 @@ import os
 import shutil
 import tarfile
 import traceback
-from datetime import datetime
+from datetime import datetime, timezone
 from fnmatch import fnmatch
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -359,7 +359,7 @@ class Selfcal(basetask.StandardTaskTemplate):
             filename: Output JSON filename or path
         """
         current_version = 1.0
-        current_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        current_datetime = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
         scal_targets_copy = copy.deepcopy(scal_targets)
 
         # Remove heuristics from each target
@@ -418,7 +418,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         This private method is kept for future reference.       
         """
         current_version = 1.0
-        current_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        current_datetime = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
         scal_targets_copy: list[dict[str, Any]] = []
 
         for target in scal_targets:

@@ -1454,7 +1454,7 @@ def create_interval_tree_nd(intervals, value_fn):
     :return: an IntervalTree
     """
     # wrapper to create TimestampedData objects with a fixed timestamp of now
-    tsd_now = functools.partial(TimestampedData, datetime.datetime.now())
+    tsd_now = functools.partial(TimestampedData, datetime.datetime.now(datetime.timezone.utc))
 
     # Intervals have to point to the next dimension, so we must create the
     # dimensions in reverse order, starting with the deepest dimension.
