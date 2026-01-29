@@ -40,6 +40,24 @@ def get_value_in_deg(quantity: Dict[str, Any]) -> numpy.ndarray:
     return qa.getvalue(qa.convert(quantity, 'deg'))
 
 
+def rewrap_angle( x: numpy.ndarray, cycle: float = 360.0 ) -> numpy.ndarray:
+    """ Rewrap the angle to preserve the continuity
+
+    This method rewraps the angle value to preserve its continuity,
+    assuming the angles are distributed within the width of cycle/2.
+    Eg. Series of angles crossing over -180 to +180 will be converted as
+    [ -179.5, +178.2 ] -> [ +180.5, +178.2 ]
+    while series of angles crossing over 0.0 will remain unchanged.
+    [ -2.3, +3.5 ] -> [ -2.3, +3.5 ]
+
+    Args:
+        x: angles to rewrap
+    Returns:
+        numpy.ndarray: rewrapped angles
+    """
+    return x % cycle if min( x[x > 0] ) - max( x[x < 0] ) > cycle / 2 else x
+
+
 def get_state_id(ms: MeasurementSet, spw: str, intent: str) -> numpy.ndarray:
     """Get state ID from MeasurementSet.
 
@@ -795,6 +813,11 @@ class MetaDataReader(object):
         # save org_directions if exists
         if 'org_direction' in locals():
             self.datatable.putkeyword('ORG_DIRECTION', org_direction)
+
+        # rewrap the AZ values
+        Tra = rewrap_angle( Tra )
+        Tshift_ra = rewrap_angle( Tshift_ra )
+        Tofs_ra = rewrap_angle( Tofs_ra )
 
         self.datatable.putcol('RA', Tra, startrow=ID)
         self.datatable.putcol('DEC', Tdec, startrow=ID)
