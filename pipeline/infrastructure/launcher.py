@@ -91,7 +91,7 @@ class Context:
         if name is None:
             # initialise the context name with something reasonable: a current
             # timestamp
-            now = datetime.datetime.utcnow()
+            now = datetime.datetime.now(datetime.timezone.utc)
             name = now.strftime('pipeline-%Y%m%dT%H%M%S')
         self.name = name
 
