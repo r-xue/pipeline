@@ -8,6 +8,15 @@ The pipeline uses a comprehensive testing strategy that includes automated regre
 component tests, and unit tests. Each type of test serves a specific purpose in ensuring 
 code quality and preventing regressions.
 
+Documentation Contents
+======================
+
+.. toctree::
+   :maxdepth: 2
+
+   automated_testing
+   unit_testing
+
 Test Types Overview
 ===================
 
@@ -97,15 +106,6 @@ Test Organization
         │           ├── task.py
         │           └── task_test.py
         └── ...
-
-Documentation Contents
-======================
-
-.. toctree::
-   :maxdepth: 2
-
-   automated_testing
-   unit_testing
 
 Related Documentation
 =====================
