@@ -80,6 +80,8 @@ jobs:
           python -m pip install ${{ inputs.pip_install }}
           mkdir -p ~/.casa
           mkdir -p casarundata
+          # Configure CASA datapath in ~/.casa/config.py
+          # We use double quotes so the shell expands $HOME and $GITHUB_WORKSPACE
           echo "measurespath = '$GITHUB_WORKSPACE/casarundata'" >> ~/.casa/config.py
           echo "datapath = [ '$GITHUB_WORKSPACE/casarundata', '$GITHUB_WORKSPACE/pipeline-testdata' ]" >> ~/.casa/config.py
           echo "measures_auto_update = True" >> ~/.casa/config.py
@@ -92,7 +94,6 @@ jobs:
           key: casarundata
 
       - name: Get casarundata
-        shell: bash
         run: |
           # Trigger casatools import to fetch or update casarundata under $GITHUB_WORKSPACE/casarundata.
           # This may download or update measurement sets and related runtime data; fail explicitly if it does not succeed.
