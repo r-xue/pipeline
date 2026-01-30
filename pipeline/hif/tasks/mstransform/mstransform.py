@@ -196,8 +196,10 @@ class MstransformInputs(vdp.StandardInputs):
         else:
             d['timeaverage'] = False
 
-        # Remove parallel if it exists, as mstransform does not support it.
-        d.pop('parallel', None)
+        # Remove parallel and per_spw if they exist,
+        # as casatasks/mstransform does not support them.
+        for key in ('parallel', 'per_spw'):
+            d.pop(key, None)
 
         return d
 
@@ -213,7 +215,6 @@ class SerialMstransform(basetask.StandardTaskTemplate):
 
         # Run CASA task
         mstransform_args = inputs.to_casa_args()
-        mstransform_args.pop('per_spw', None)
         mstransform_job = casa_tasks.mstransform(**mstransform_args)
         try:
             self._executor.execute(mstransform_job)

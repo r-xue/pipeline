@@ -104,12 +104,10 @@ class VlaMstransform(mst.SerialMstransform):
         # Run CASA task to create the output MS for continuum data
         mstransform_args = inputs.to_casa_args()
 
-        # Remove input member variables that don't belong as input to the mstransform task
-        mstransform_args.pop('outputvis_for_line', None)
-        mstransform_args.pop('spw_line', None)
-        mstransform_args.pop('omit_contline_ms', None)
-        mstransform_args.pop('parallel', None)
-        
+        # Remove input member variables that don't belong as input to casatasks/mstransform
+        for key in ('outputvis_for_line', 'spw_line', 'omit_contline_ms'):
+            mstransform_args.pop(key, None)
+
         mstransform_job = casa_tasks.mstransform(**mstransform_args)
 
         try:
