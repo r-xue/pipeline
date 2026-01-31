@@ -641,6 +641,7 @@ def estimate_near_field_SNR(
 
     # Store tools to close at the end
     tools_to_close = []
+    final_mask_name = imagename.replace('image', 'nearfield.mask').replace('.tt0', '')
 
     try:
         # Load Image Info
@@ -761,8 +762,6 @@ def estimate_near_field_SNR(
         # Big_Mask=0, Small_Mask=0 (Outer)   -> 1 (Valued 1)
         # Result: 0 in annulus (valid region), 1 elsewhere (masked)
         ia_big_ceiling.putchunk((ia_big_ceiling.getchunk() <= ia_smooth_ceiling.getchunk()).astype(np.int8))
-
-        final_mask_name = imagename.replace('image', 'nearfield.mask').replace('.tt0', '')
         ia_annulus = ia_big_ceiling.subimage(outfile=final_mask_name, overwrite=True, wantreturn=True)
 
         tools_to_close.append(ia_annulus)
@@ -796,11 +795,6 @@ def estimate_near_field_SNR(
                 LOG.info('Near Field rms: %.2e mJy/beam', rms * 1000)
                 LOG.info('Peak Near Field SNR: %.2f', snr)
 
-        # 6. Save Near Field Mask if requested
-        if not save_near_field_mask:
-            if os.path.exists(final_mask_name):
-                shutil.rmtree(final_mask_name)
-
     except Exception:
         LOG.error('Error in estimate_near_field_SNR: %s', traceback.format_exc())
         return np.float64(-99.0), np.float64(-99.0)
@@ -811,6 +805,11 @@ def estimate_near_field_SNR(
                 tool.close()
             except Exception:
                 pass
+
+    # 6. Clean up NF mask if saving final mask is not requested
+    if not save_near_field_mask:
+        if os.path.exists(final_mask_name):
+            shutil.rmtree(final_mask_name)
 
     return snr, rms
 
