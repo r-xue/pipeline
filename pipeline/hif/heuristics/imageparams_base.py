@@ -473,7 +473,7 @@ class ImageParamsHeuristics(object):
                         continue
 
                     # use imager.advise to get the maximum cell size
-                    aipsfieldofview = '%4.1farcsec' % (2.0 * largest_primary_beam_size)
+                    aipsfieldofview = '%4.1farcsec' % (2.0 * np.asarray(largest_primary_beam_size).item())
                     rtn = casa_tools.imager.advise(takeadvice=False, amplitudeloss=0.5, fieldofview=aipsfieldofview)
                     casa_tools.imager.done()
                     if not rtn[0]:
@@ -690,7 +690,7 @@ class ImageParamsHeuristics(object):
                                                               taql=taql, spw=real_spwspec,
                                                               scan=scanids, usescratch=False, writeaccess=False)
                             if rtn is True:
-                                aipsfieldofview = '%4.1farcsec' % (2.0 * self.largest_primary_beam_size(spwspec, field_intent[1]))
+                                aipsfieldofview = '%4.1farcsec' % (2.0 * np.asarray(self.largest_primary_beam_size(spwspec, field_intent[1])).item())
                                 # Need to run advise to check if the current selection is completely flagged
                                 rtn = casa_tools.imager.advise(takeadvice=False, amplitudeloss=0.5,
                                                                fieldofview=aipsfieldofview)
@@ -1262,11 +1262,11 @@ class ImageParamsHeuristics(object):
 
         if is_mos_or_het and nfields <= 3:
             # PIPE-209 asks for a slightly larger size for small (2-3 field) mosaics.
-            nxpix = int((1.65 * beam_radius_v + xspread) / cellx_v)
-            nypix = int((1.65 * beam_radius_v + yspread) / celly_v)
+            nxpix = int(np.asarray((1.65 * beam_radius_v + xspread) / cellx_v).item())
+            nypix = int(np.asarray((1.65 * beam_radius_v + yspread) / celly_v).item())
         else:
-            nxpix = int((1.5 * beam_radius_v + xspread) / cellx_v)
-            nypix = int((1.5 * beam_radius_v + yspread) / celly_v)
+            nxpix = int(np.asarray((1.5 * beam_radius_v + xspread) / cellx_v).item())
+            nypix = int(np.asarray((1.5 * beam_radius_v + yspread) / celly_v).item())
 
         if (not is_mos_or_het) and (sfpblimit is not None):
             beam_fwhp = 1.12 / 1.22 * beam_radius_v

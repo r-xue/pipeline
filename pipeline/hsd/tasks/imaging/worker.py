@@ -6,7 +6,7 @@ import math
 import os
 import shutil
 
-import numpy
+import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -193,13 +193,13 @@ def ImageCoordinateUtil(
                                        qa.formxxx(dec_center, 'dms'))
     LOG.info('phasecenter=\'%s\'' % (phasecenter,))
 
-    dec_correction = 1.0 / math.cos(dec_center_in_deg / 180.0 * 3.1415926535897931)
+    dec_correction = 1.0 / math.cos(np.asarray(dec_center_in_deg).item() / 180.0 * 3.1415926535897931)
     width = 2 * max(abs(ra_center_in_deg - ra_min), abs(ra_max - ra_center_in_deg))
     height = 2 * max(abs(dec_center_in_deg - dec_min), abs(dec_max - dec_center_in_deg))
-    LOG.debug('Map extent: [%f, %f] arcmin' % (width / 60., height / 60.))
+    LOG.debug('Map extent: [%f, %f] arcmin' % (np.asarray(width).item() / 60., np.asarray(height).item() / 60.))
 
-    nx = int(width / (cell_in_deg * dec_correction)) + 1
-    ny = int(height / cell_in_deg) + 1
+    nx = int(np.asarray(width / (cell_in_deg * dec_correction)).item()) + 1
+    ny = int(np.asarray(height / cell_in_deg).item()) + 1
 
     # Adjust nx and ny to be even number for performance (which is
     # recommended by imager).
