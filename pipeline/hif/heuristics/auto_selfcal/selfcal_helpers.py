@@ -584,7 +584,7 @@ def estimate_SNR(
         if verbose:
             LOG.info('Image name: %s', imagename)
             LOG.info(
-                '#Beam %.3f arcsec x %.3f arcsec (%.2f deg)',
+                'Beam %.3f arcsec x %.3f arcsec (%.2f deg)',
                 beammajor,
                 beamminor,
                 beampa,
@@ -695,8 +695,6 @@ def estimate_near_field_SNR(
         # Ceiling: iif(smooth > 0.1*max, 1.0, 0.0)
         # We use the name() of the transient image in the LEL expression
         ia_smooth.putchunk((ia_smooth.getchunk() > (0.1 * smooth_max)).astype(np.int8))
-        ia_smooth_ceiling = ia_smooth
-        tools_to_close.append(ia_smooth_ceiling)
 
         # 2. Beam Extent from PSF (Calculated via transient images)
         psf_image = mask_image.replace('mask', 'psf').replace('.tt0', '') + '.tt0'
@@ -740,7 +738,7 @@ def estimate_near_field_SNR(
         outer_major = max(beammajor * 5, beam_extent_size, 5 * las if las is not None else 0.0)
 
         # 3. Big Smooth Mask (Outer Limit)
-        ia_big_smooth = ia_smooth_ceiling.convolve2d(
+        ia_big_smooth = ia_smooth.convolve2d(
             outfile='',
             major=f'{outer_major}arcsec',
             minor=f'{outer_major}arcsec',
@@ -751,18 +749,23 @@ def estimate_near_field_SNR(
         big_stats = ia_big_smooth.statistics()
         big_max = big_stats['max'][0]
 
-        ia_big_smooth.putchunk((ia_big_smooth.getchunk() > (0.01 * big_max)).astype(np.int8))
-        ia_big_ceiling = ia_big_smooth
+        # Label regions outside outer boundary as True
+        final_mask = ia_big_smooth.getchunk() < (0.01 * big_max)
 
-        tools_to_close.append(ia_big_ceiling)
+        # Label regions inside inner boundary as True
+        final_mask |= ia_smooth.getchunk() != 0  # in-place OR
 
-        # 4. Near Field Annulus Mask
-        # Big_Mask=1, Small_Mask=0 (Annulus) -> 0 (Valued 0)
-        # Big_Mask=1, Small_Mask=1 (Center)  -> 1 (Valued 1)
-        # Big_Mask=0, Small_Mask=0 (Outer)   -> 1 (Valued 1)
-        # Result: 0 in annulus (valid region), 1 elsewhere (masked)
-        ia_big_ceiling.putchunk((ia_big_ceiling.getchunk() <= ia_smooth_ceiling.getchunk()).astype(np.int8))
-        ia_annulus = ia_big_ceiling.subimage(outfile=final_mask_name, overwrite=True, wantreturn=True)
+        # Label regions with bad pixels of the original image as True
+        # for casacore image built-in masks, True=Good, False=Bad
+        # note that for numpy.ma, True=Masked/Bad, False=Unmasked/Good
+        image = iatool()
+        image.open(imagename)
+        final_mask |= ~image.getchunk(getmask=True)
+        tools_to_close.append(image)
+
+        # Result: False in annulus (valid region), True elsewhere / masked
+        ia_big_smooth.putchunk(final_mask.astype(np.int8))
+        ia_annulus = ia_big_smooth.subimage(outfile=final_mask_name, overwrite=True, wantreturn=True)
 
         tools_to_close.append(ia_annulus)
 
