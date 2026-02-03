@@ -1,6 +1,5 @@
 import collections
 import os
-import shutil
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -20,7 +19,7 @@ LOG = logging.get_logger(__name__)
 ct = CasaTasks()
 tq = None # a module-level TaskQueue instance, intialized as None, but could be later set by the renderer
 
-class SelfcalSummary(object):
+class SelfcalSummary:
     def __init__(self, context, r, target):
         self.context = context
         self.result = r
