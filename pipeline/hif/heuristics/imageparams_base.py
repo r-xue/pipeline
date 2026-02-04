@@ -1191,7 +1191,7 @@ class ImageParamsHeuristics(object):
 
         Example:
             >>> heuristics.imaging_imsize([512, 512], '0.1arcsec', 60.0)
-            [640, 640]
+            [1440, 1440]
         """
         qa_tool = casa_tools.quanta
         cell_arcsec = qa_tool.convert(cell, 'arcsec')['value']
