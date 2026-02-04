@@ -34,9 +34,7 @@ class OverallFailureType(Enum):
 
 @dataclass
 class SpwFailure:
-#    ant_set: set
-#    failure_type: FailureType
-    ants: dict # antName -> failureType
+    ants: dict
     overall_failure: OverallFailureType
 
 
@@ -292,7 +290,9 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable, create_plots) -> dict:
                 "tau": tau,
             }
         else:
+            # This message is printed outside of the large for-loop below so it isn't repeated for each antenna. 
             LOG.info(f"Subband qa heuristic not evaluated for spw {spwid} as it is not a FDM spw.")
+
 
     # Taking statistical summary values for heuristics
     # per spw, ant, and pol
@@ -340,13 +340,13 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable, create_plots) -> dict:
         chanwidth = spw_bandwidth/spw_nchan
 
         if chanwidth >= subb_bw:
-            add_spw_failure(spws_affected, ispw, "", FailureType.SPW_BINNING)
+            add_spw_failure(spws_affected, ispw, "", OverallFailureType.SPW_BINNING)
             continue
 
         # This heuristic is not evaluated if the bandwidth of the spw is equal
         # or smaller than twice the subband width
         if spw_bandwidth <= 2 * subb_bw:
-            add_spw_failure(spws_affected, ispw, "", FailureType.SPW_SMALL_BANDWIDTH)
+            add_spw_failure(spws_affected, ispw, "", OverallFailureType.SPW_SMALL_BANDWIDTH)
             continue
 
         if create_plots:
