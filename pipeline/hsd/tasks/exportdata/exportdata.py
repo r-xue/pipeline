@@ -8,8 +8,10 @@ To test these classes, register some data with the pipeline using ImportData,
 then execute:
 
 import pipeline
+from pipeline.infrastructure import launcher
+
 # Create a pipeline context and register some data
-context = pipeline.Pipeline().context
+context = launcher.Pipeline().context
 output_dir = "."
 products_dir = "./products"
 inputs = pipeline.tasks.singledish.SDExportData.Inputs(context, output_dir,

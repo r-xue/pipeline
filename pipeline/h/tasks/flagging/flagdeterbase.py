@@ -6,10 +6,12 @@ To test these classes, register some data with the pipeline using ImportData,
 then execute:
 
 import pipeline
+from pipeline.infrastructure import launcher
+
 vis = [ '<MS name>' ]
 
 # Create a pipeline context and register some data
-context = pipeline.Pipeline().context
+context = launcher.Pipeline().context
 inputs = pipeline.tasks.ImportData.Inputs(context, vis=vis)
 task = pipeline.tasks.ImportData(inputs)
 results = task.execute()

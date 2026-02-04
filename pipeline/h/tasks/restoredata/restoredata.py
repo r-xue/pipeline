@@ -16,10 +16,12 @@ To test these classes, register some data with the pipeline using ImportData,
 then execute:
 
 import pipeline
+from pipeline.infrastructure import launcher
+
 vis = [ '<ASDM name>' ]
 
 # Create a pipeline context and register some data
-context = pipeline.Pipeline().context
+context = launcher.Pipeline().context
 inputs = pipeline.tasks.RestoreData.Inputs(context, vis=vis)
 task = pipeline.tasks.RestoreData(inputs)
 results = task.execute()

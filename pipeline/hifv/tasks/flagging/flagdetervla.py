@@ -20,9 +20,11 @@
 # these commands:
 #
 # import pipeline
+# from pipeline.infrastructure import launcher
+#
 #
 # vis = [ '<MS name>' ]
-# context = pipeline.Pipeline( vis ).context
+# context = launcher.Pipeline( vis ).context
 #
 # inputs = pipeline.hifv.tasks.flagging.FlagDeterVLA.Inputs( context, vis=vis,
 #   output_dir='.', autocorr=True, shadow=True, scan=True, scannumber='4,5,8',
