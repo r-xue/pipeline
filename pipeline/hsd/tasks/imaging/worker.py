@@ -651,7 +651,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         with casa_tools.ImageReader(weightname) as ia:
             sumsq = ia.statistics()['sumsq'][0]
         if sumsq == 0.0:
-            LOG.warning("No valid pixel found in image, %s. Discarding the image from futher processing." % imagename)
+            LOG.warning("No valid pixel found in image, %s. Discarding the image from further processing." % imagename)
             return False, stokes
 
         virtual_spw_id = context.observing_run.real2virtual_spw_id(ref_spwid, reference_data)
