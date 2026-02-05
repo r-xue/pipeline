@@ -110,7 +110,6 @@ If we don't have a PPR or an executable script available.
 
 ```python
 $ casa
-import pipeline
 import pipeline.recipes.hifv as hifv
 from pipeline.infrastructure import launcher
 
@@ -199,7 +198,6 @@ pipeline.recipereducer.reduce(
 Assuming the developer developed / debugged stage 4, once that is done, it is
 possible to use `recipereducer` to resume with the remainder of the recipe, with:
 ```python
-import pipeline
 import pipeline.recipereducer
 from pipeline.infrastructure import launcher
 
@@ -429,7 +427,6 @@ The path of pickled context files is: `output_dir`/`context_name`/`saved_state`/
   `recipereducer` doesn't offer the "breakpoint" feature built in `executeppr`. However, a calculated usage of `starttage`/ `exitstage`/`context` keywords may achieve the same workflow-level "break/resume":
 
   ```python
-  import pipeline
   from pipeline.infrastructure import task_registry, launcher
   context = launcher.Pipeline(context='pipeline-procedure_hifa_calimage/saved_state/context-stage3.pickle', loglevel='debug', plotlevel='default').context
   import pipeline.recipereducer
@@ -448,7 +445,6 @@ pipeline stage (therefore limits your testing scope).
 
 ```python
 import os
-import pipeline
 import pipeline.infrastructure.renderer.htmlrenderer as hr
 from pipeline.infrastructure import launcher
 
@@ -469,7 +465,6 @@ heuristic on the existing task result in the context to iterate more rapidly on
 the heuristic without having to re-run the time-consuming pipeline task itself.
 
 ```python
-import pipeline
 from pipeline.infrastructure import pipelineqa, launcher
 context = launcher.Pipeline(context='last', loglevel='debug', plotlevel='default').context
 
