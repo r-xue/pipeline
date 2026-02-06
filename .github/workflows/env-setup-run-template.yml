@@ -106,7 +106,9 @@ jobs:
         if: inputs.test_data == 'unit' && steps.cache-testdata.outputs.cache-hit != 'true'
         run: |
           # This creates the directory 'pipeline-testdata' INSIDE the current workspace ($GITHUB_WORKSPACE)
-          git clone --filter=blob:none --sparse https://open-bitbucket.nrao.edu/scm/pipe/pipeline-testdata.git pipeline-testdata
+          if [ ! -d "pipeline-testdata/.git" ]; then
+              git clone --filter=blob:none --sparse https://open-bitbucket.nrao.edu/scm/pipe/pipeline-testdata.git pipeline-testdata
+          fi
           cd pipeline-testdata
           # Configure sparse checkout & Pull LFS files
           git sparse-checkout set pl-unittest
