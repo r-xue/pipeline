@@ -19,6 +19,7 @@ from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain.datatable import OnlineFlagIndex
 from pipeline.domain.measurementset import MeasurementSet
 from pipeline.hsd.tasks.common import TableSelector, mjd_to_datestring
+from pipeline.hsd.tasks.common import utils as sdutils
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.launcher import Context
 
@@ -38,27 +39,6 @@ def get_value_in_deg(quantity: Dict[str, Any]) -> numpy.ndarray:
     """
     qa = casa_tools.quanta
     return qa.getvalue(qa.convert(quantity, 'deg'))
-
-
-def rewrap_angle( x: numpy.ndarray, cycle: float = 360.0 ) -> numpy.ndarray:
-    """ Rewrap the angle to preserve the continuity
-
-    This method rewraps the angle values to preserve/realize their continuity,
-    assuming they are distributed within the width of cycle/2.
-    Eg. Series of angles crossing over -180 to +180 will be converted as
-    [ -179.5, +178.2 ] -> [ +180.5, +178.2 ]
-    They remain unchanged for other cases, including when they are cossing over 0.0.
-    [ -2.3, +3.5 ] -> [ -2.3, +3.5 ]
-
-    Args:
-        x: angles to rewrap
-    Returns:
-        numpy.ndarray: rewrapped angles
-    """
-    if min( x ) * max( x ) < 0 and min( x[x > 0] ) - max( x[x < 0] ) > cycle / 2:
-        return x % cycle
-    else:
-        return x
 
 
 def get_state_id(ms: MeasurementSet, spw: str, intent: str) -> numpy.ndarray:
@@ -818,9 +798,9 @@ class MetaDataReader(object):
             self.datatable.putkeyword('ORG_DIRECTION', org_direction)
 
         # rewrap the AZ values
-        Tra = rewrap_angle( Tra )
-        Tshift_ra = rewrap_angle( Tshift_ra )
-        Tofs_ra = rewrap_angle( Tofs_ra )
+        Tra = sdutils.rewrap_angle( Tra )
+        Tshift_ra = sdutils.rewrap_angle( Tshift_ra )
+        Tofs_ra = sdutils.rewrap_angle( Tofs_ra )
 
         self.datatable.putcol('RA', Tra, startrow=ID)
         self.datatable.putcol('DEC', Tdec, startrow=ID)
