@@ -44,6 +44,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
     vis = vdp.VisDependentProperty(default='', null_input=['', None, [], ['']])
     plan = vdp.VisDependentProperty(default=None)
     fit_func = vdp.VisDependentProperty(default='cspline')
+    wave_number = vdp.VisDependentProperty(default=[0])
     fit_order = vdp.VisDependentProperty(default='automatic')
     switchpoly = vdp.VisDependentProperty(default=True)
     edge = vdp.VisDependentProperty(default=(0, 0))
@@ -175,6 +176,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         vis: Optional[Union[str, List[str]]] = None,
         plan: Optional[Union['RGAccumulator', List['RGAccumulator']]] = None,
         fit_func: Optional[FitFunc] = None,
+        wave_number: Optional[List[int]] = None,
         fit_order: Optional[FitOrder] = None,
         switchpoly: Optional[bool] = None,
         edge: Optional[List[int]] = None,
@@ -240,6 +242,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         self.plan = plan
         self.fit_order = fit_order
         self.fit_func = fit_func
+        self.wave_number = wave_number
         self.switchpoly = switchpoly
         self.edge = edge
         self.deviationmask = deviationmask
@@ -358,6 +361,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         rowmap = sdutils.make_row_map_between_ms(origin_ms, vis)
         fit_order = self.inputs.fit_order
         fit_func = self.inputs.fit_func
+        wave_number = self.inputs.wave_number
         edge = self.inputs.edge
         args = self.inputs.to_casa_args()
         blparam = args['blparam']
@@ -386,7 +390,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         spw_funcs_dict = SerialBaselineSubtractionWorker.get_fit_func_dict(
             fit_func, unique_spws, ms, self.inputs.context, self.inputs.switchpoly)
 
-        # initialization of blparam file
+        # initialization of blparam file.
         # blparam file needs to be removed before starting iteration through
         # reduction group
         if os.path.exists(blparam):
@@ -396,11 +400,15 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         for (field_id, antenna_id, spw_id) in process_list.iterate_id():
             if (field_id, antenna_id, spw_id) in deviationmask_list:
                 deviationmask = deviationmask_list[(field_id, antenna_id, spw_id)]
+
             else:
                 deviationmask = None
+
             formatted_edge = list(common.parseEdge(edge))
             heuristic = spw_funcs_dict[spw_id]
+            heuristic.wave_number = wave_number
             current_fit_order = fit_order_dict.get(spw_id, 'automatic')
+
             out_blparam = heuristic(
                 self.datatable, ms, rowmap,
                 antenna_id, field_id, spw_id,
@@ -587,10 +595,11 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         """
         if not fit_func:
             fit_func_value = 'cspline'
+
         else:
             fit_func_value = fit_func
 
-        valid_funcs = {'spline', 'cspline', 'poly', 'polynomial'}
+        valid_funcs = {'spline', 'cspline', 'poly', 'polynomial', 'sinusoid'}
         if not isinstance(fit_func_value, dict):
             # Validate string
             if isinstance(fit_func_value, str) and fit_func_value not in valid_funcs:
@@ -609,7 +618,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                 key = str(context.observing_run.virtual2real_spw_id(k, ms)) if context else str(k) # for unit tests
                 processed_fit_func[key] = v
 
-            # For each spw, use its provided value or default to 'cspline'
+            # For each spw, use it's provided value or default to 'cspline'
             unique_fit_funcs = {processed_fit_func.get(str(spw_id), 'cspline') for spw_id in spw_id_list}
 
             # Create one BaselineFitParamConfig instance per unique function string.
@@ -634,6 +643,5 @@ class BaselineSubtractionWorker(sessionutils.ParallelTemplate):
     Note that this is abstract class. Task property must be implemented
     in each subclass.
     """
-
     Inputs = BaselineSubtractionWorkerInputs
     Task = SerialBaselineSubtractionWorker

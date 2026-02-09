@@ -22,6 +22,7 @@ class FittingFunction(enum.Enum):
     CSPLINE = 'segmented cubic spline'
     POLYNOMIAL = POLY
     SPLINE = CSPLINE
+    SINUSOID = "sinusoid"
 
 
 def get_fitting_function(name: str) -> FittingFunction:
@@ -82,7 +83,7 @@ class FitOrderHeuristics(api.Heuristic):
 
         Then, Fourier power spectrum is averaged and averaged power
         spectrum is analyzed to determine optimal polynomial order
-        for input data array. The heuristics returns one representative
+        for input data array. The heuristics return one representative
         polynomial order per input data array.
 
         Args:

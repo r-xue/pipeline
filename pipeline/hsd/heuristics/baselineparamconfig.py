@@ -45,11 +45,19 @@ BLP = BaselineParamKeys
 
 
 def write_blparam(fileobj, param):
+    import re
+
     param_values = collections.defaultdict(str)
     for key in BLP:
         if key in param:
             param_values[key] = param[key]
+
     line = ','.join(map(str, [param_values[k] for k in BLP]))
+
+    # Because casa's reader for the blparam file doesn't do spaces and
+    # wave number list always ends up with spaces when written to file.
+    line = re.sub(r'\s+', '', line)
+
     fileobj.write(line+'\n')
 
 
@@ -71,7 +79,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
     """
 
     ApplicableDuration = 'raster'  # 'raster' | 'subscan'
-    MaxPolynomialOrder = 'none'  # 'none', 0, 1, 2,...
+    MaxPolynomialOrder = 'none'    # 'none', 0, 1, 2,...
     PolynomialOrder = 'automatic'  # 'automatic', 0, 1, 2, ...
 
     def __init__(self, fitfunc: str = 'cspline', switchpoly: bool = True):
@@ -81,7 +89,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
             fitfunc: Fit function to use. Cubic spline ('spline' or 'cspline')
                      and polynomial ('poly' or 'polynomial') are available.
                      Default is 'cspline'.
-            switchpoly: Whether or not fall back to low order polynomial fit
+            switchpoly: Whether to fall back to low order polynomial fit
                         when large mask exist at the edge of spw if fitfunc
                         is either 'cspline' or 'spline'. Defaults to True.
 
@@ -93,9 +101,12 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         LOG.info(f'Baseline parameter is optimized for {self.fitfunc.description} fitting')
 
         self.paramdict = {}
+        self.wave_number = None
         self.heuristics_engine = fitorder.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic()
+
         if switchpoly is True:
             self.switching_heuristic = do_switching
+
         else:
             self.switching_heuristic = no_switching
 
@@ -139,17 +150,17 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
             antenna_id: Antenna ID to process
             field_id: Field ID to process
             spw_id: Spw ID to process
-            fit_order: Fiting order ('automatic' or number)
+            fit_order: Fitting order ('automatic' or number)
             edge: Number of edge channels to be excluded from the heuristics
                 (format: [L, R])
             deviation_mask: Deviation mask
-            blparam: Name of the BLParam file
+            blparam: Name of the BLParam file.
                 File contents will be updated by this heuristics
 
         Note:
             In this method, the boundaries of channel ranges are indicated by a list [start, end].
             Basically, the treatment of pythonic range is [start, end+1], but it is not intuitive for
-            dealing with channels and masks of MeasurementSet. Therefore these are written as [start, end]
+            dealing with channels and masks of MeasurementSet. Therefore, these are written as [start, end]
             in this source. Pythonic range-lists as boundaries for MS are only used in local processing
             scopes like a local function or loop block. Other than these scopes, we should write
             the channel/mask range as [start, end].
@@ -317,6 +328,12 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                             #irow = len(index_list_total) + i
                             irow = row
                             param = self._configure_baseline_param(irow, pol, polyorder, nchan, edge, mask_array, _masklist)
+
+                            if self.fitfunc.blfunc == "sinusoid" and self.wave_number is not None:
+                                param[BLP.FUNC] = self.fitfunc.blfunc
+                                param[BLP.NWAVE] = self.wave_number
+                                param[BLP.USELF] = False
+
                             if TRACE():
                                 LOG.trace('Row {}: param={}'.format(row, param))
                             write_blparam(blparamfileobj, param)
