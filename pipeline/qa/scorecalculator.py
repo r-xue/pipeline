@@ -9,6 +9,7 @@ from __future__ import annotations
 import collections
 import datetime
 import functools
+import itertools
 import math
 import operator
 import os
@@ -105,7 +106,10 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_tsysflagcontamination_external_heuristic',
            'score_syspowerdata',
            'score_solint',
-           'score_longsolint']
+           'score_longsolint',
+           'score_testBPdcals_dts_ants',
+           'score_testBPdcals_refant',
+           'score_testBPdcals_delay']
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -243,22 +247,46 @@ def calc_frac_newly_flagged(summaries, agents=None, scanids=None):
     return frac_flagged
 
 
-def linear_score(x, x1, x2, y1=0.0, y2=1.0):
-    """
-    Calculate the score for the given data value, assuming the
-    score follows a linear gradient between the low and high values.
+def linear_score(x: float, x1: float, x2: float, y1: float = 0.0, y2: float = 1.0) -> float:
+    """Calculate the score for the given data value using linear scaling.
 
-    x values will be clipped to lie within the range x1->x2
-    """
-    x1 = float(x1)
-    x2 = float(x2)
-    y1 = float(y1)
-    y2 = float(y2)
+    Computes a linearly interpolated score between two boundary points (x1, y1) and (x2, y2).
+    The input value x is automatically clipped to lie within the range [min(x1, x2), max(x1, x2)].
 
-    clipped_x = sorted([x1, x, x2])[1]
-    m = (y2-y1) / (x2-x1)
-    c = y1 - m*x1
-    return m*clipped_x + c
+    Args:
+        x: The input data value to score.
+        x1: The first boundary x-coordinate.
+        x2: The second boundary x-coordinate.
+        y1: The score corresponding to x1.
+        y2: The score corresponding to x2.
+
+    Returns:
+        The linearly interpolated score value.
+
+    Examples:
+        >>> linear_score(0.5, 0.0, 1.0)  # Midpoint between 0 and 1
+        0.5
+        >>> linear_score(1.5, 0.0, 1.0)  # Clipped to upper bound
+        1.0
+        >>> linear_score(-0.5, 0.0, 1.0)  # Clipped to lower bound
+        0.0
+
+    Raises:
+        ZeroDivisionError: When x1 equals x2 (no valid interpolation range).
+    """
+    # Ensure all inputs are float type for consistent arithmetic
+    x, x1, x2, y1, y2 = map(float, [x, x1, x2, y1, y2])
+
+    # Handle edge case to prevent division by zero
+    if x1 == x2:
+        raise ZeroDivisionError('Cannot interpolate when x1 equals x2 (zero-width interval)')
+
+    # Clip x to valid interpolation range
+    x_min, x_max = (x1, x2) if x1 <= x2 else (x2, x1)
+    x_clipped = max(x_min, min(x_max, x))
+
+    # Linear interpolation formula: y = y1 + (y2 - y1) * (x - x1) / (x2 - x1)
+    return y1 + (y2 - y1) * (x_clipped - x1) / (x2 - x1)
 
 
 def score_data_flagged_by_agents(ms, summaries, min_frac, max_frac, agents=None, intents=None):
@@ -4347,7 +4375,7 @@ def score_fluxservice(result: ALMAImportDataResults) -> list[pqa.QAScore]:
     flux_qa_dict = {
         'FIRSTURL': (1.0, "Flux catalog service used."),
         'BACKUPURL': (0.9, "Backup flux catalog service used."),
-        'FAIL': (0.3, "Neither primary nor backup flux service could be queried. ASDM values used."),
+        'FAIL': (0.3, "Online flux catalog unavailable. Pipeline halted after weblog creation."),
         None: (1.0, "Flux catalog service not used.")
     }
 
@@ -4735,8 +4763,7 @@ def score_iersstate(mses: list[MeasurementSet]) -> list[pqa.QAScore]:
 
 @log_qa
 def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list[pqa.QAScore]:
-    """
-    Calculate score about calibrated amplitude vs. time plot of Single Dish Applycal.
+    """Calculate score about calibrated amplitude vs. time plot of Single Dish Applycal.
 
     Calculate score according to the existence of plot file for each EB, spw and antenna
     and the quality of it.
@@ -4749,19 +4776,16 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
       2. Check whether the number of flagged data is equal to that of total data or not.
 
     Args:
-        context: Pipeline context.
+        context: Pipeline context object containing state information.
         result: SDApplycalResults instance.
 
     Returns:
         list[pqa.QAScore]: List which contains QAScore objects.
     """
-
     vis = os.path.basename(result.inputs['vis'])
     ms = context.observing_run.get_ms(vis)
     spwids = [spw.id for spw in ms.get_spectral_windows()]
-    ants = ['all']
-    ants_foreach = [ant.name for ant in ms.get_antenna()]
-    ants.extend(ants_foreach)
+    ants = ['all'] + [ant.name for ant in ms.get_antenna()]
 
     stage_dir = os.path.join(context.report_dir, 'stage%s' % context.task_counter)
 
@@ -4771,6 +4795,20 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
     flagdata = flagdata_task.execute()
     flagdata_summary = list(flagdata.values())
     scores = []
+    PlotMetadata = collections.namedtuple(
+        'PlotMetadata', ['vis', 'spw', 'ant']
+    )
+    all_plots = itertools.chain(
+        result.amp_vs_time_summary_plots,
+        result.amp_vs_time_detail_plots
+    )
+    metadata_for_plots = [
+        PlotMetadata(
+            vis=x.parameters["vis"],
+            spw=x.parameters["spw"],
+            ant=x.parameters["ant"]
+        ) for x in all_plots
+    ]
     for spwid in spwids:
         shortmsg_success = 'Calibrated amplitude vs time plot is successfully created'
         longmsg_success = f'{shortmsg_success} for EB {vis}, SPW {spwid}'
@@ -4786,10 +4824,15 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
         target_summary_for_spw = target_summary[0]
 
         for ant in ants:
-            filename = f'{vis}-real_vs_time-{ant}-{key}.png'
-            figfile = os.path.join(stage_dir, filename)
-
-            if not os.path.exists(figfile):
+            # Instead of checking the existence of a plot file,
+            # compare metadata for the plot object associated with
+            # the plot file.
+            plot_metadata = PlotMetadata(
+                vis=vis,
+                spw=str(spwid),
+                ant=ant
+            )
+            if plot_metadata not in metadata_for_plots:
                 shortmsg = shortmsg_failed
                 longmsg = f'{longmsg_failed}, Antenna {ant}.'
                 score = 0.65
@@ -5074,3 +5117,79 @@ def score_longsolint(context, result) -> list[pqa.QAScore]:
                           metric_score=score,
                           metric_units='')
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
+@log_qa
+def score_testBPdcals_dts_ants(vis:str, amp_collection:dict, phase_collection:dict, bandname:str) -> pqa.QAScore:
+    """Evaluate QA score based on the number of antennas affected by DTS issues."""
+
+    bad_ants = []
+    bad_ants.extend([str(a) for a in amp_collection.keys()])
+    bad_ants.extend([str(p) for p in phase_collection.keys()])
+    num_bad_ants = len(set(bad_ants))
+    applies_to = pqa.TargetDataSelection(vis=vis)
+
+    # PIPE-2580: if > 4 antennas have DTS issue, QA score < 0.5
+    if num_bad_ants > 4:
+        score = rendererutils.SCORE_THRESHOLD_ERROR
+        longmsg = f"{num_bad_ants} antennas have DTS issue in {bandname} band"
+        shortmsg = f"{num_bad_ants} antennas have DTS issue in {bandname} band"
+    else:
+        score = 1.0
+        longmsg = f"Fewer than four antennas have DTS issue in {bandname} band"
+        shortmsg = f"Fewer than four antennas have DTS issue in {bandname} band"
+    origin = pqa.QAOrigin(metric_name='score_testBPdcals_dts_ants',
+                          metric_score=score,
+                          metric_units='')
+    qa_score = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to)
+
+    return qa_score
+
+@log_qa
+def score_testBPdcals_refant(vis:str, bad_refant:list, bandname:str) -> pqa.QAScore:
+    """Evaluate QA score based on reference antenna validity."""
+
+    applies_to = pqa.TargetDataSelection(vis=vis)
+    # PIPE-2580: if bad reference antenna found, QA score <0.5
+    if len(bad_refant) > 0  :
+        score = rendererutils.SCORE_THRESHOLD_ERROR
+        longmsg = f"Bad reference antenna ({', '.join(bad_refant)}) found in {bandname} band"
+        shortmsg = longmsg
+    else:
+        score = 1.0
+        longmsg = f"No bad reference antenna found in {bandname} band"
+        shortmsg = f"No bad reference antenna found in {bandname} band"
+    origin = pqa.QAOrigin(metric_name='score_testBPdcals_refant',
+                          metric_score=score,
+                          metric_units='')
+    qa_score = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to)
+
+    return qa_score
+
+@log_qa
+def score_testBPdcals_delay(vis:str, caltable:str, bandname:str) -> pqa.QAScore:
+    """Evaluate QA score based on median delay per baseband."""
+
+    applies_to = pqa.TargetDataSelection(vis=vis)
+    # PIPE-2580: if median delay per baseband > 15 ms, QA score < 0.5
+    with casa_tools.TableReader(caltable) as tb:
+        fpar = tb.getcol('FPARAM')
+        delays = np.abs(fpar)
+        median_delay = np.median(delays)
+    qa = casa_tools.quanta
+    median_delay_val = qa.convert(qa.quantity(median_delay, "ns"), "ms")["value"]
+
+    if median_delay_val > 15:
+        score = rendererutils.SCORE_THRESHOLD_ERROR
+        longmsg = f"Median delay > 15 ms for {bandname} band"
+        shortmsg = f"Median delay > 15 ms for {bandname} band"
+    else:
+        score = 1.0
+        longmsg = f"Median delay < 15 ms for {bandname} band"
+        shortmsg = f"Median delay < 15 ms for {bandname} band"
+
+    origin = pqa.QAOrigin(metric_name='score_testBPdcals_delay',
+                          metric_score=score,
+                          metric_units='')
+    qa_score = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to)
+
+    return qa_score

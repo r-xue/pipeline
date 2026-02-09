@@ -117,7 +117,7 @@ class PolcalInputs(vdp.StandardInputs):
         """Initialize Inputs.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
 
             vis: The list of input MeasurementSets. Defaults to the list of
                 MeasurementSets specified in the pipeline context.
@@ -856,6 +856,7 @@ class Polcal(basetask.StandardTaskTemplate):
                 'datacolumn': 'corrected',
                 'observation': obsid,
                 'correlation': 'XY,YX',
+                'doquantiles': False
             }
             visstat_job = casa_tasks.visstat(**task_args)
             visstat_result = self._executor.execute(visstat_job)
