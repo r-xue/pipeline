@@ -695,7 +695,7 @@ class Editimlist(basetask.StandardTaskTemplate):
 
                 cutout_imsize = inpdict.get('cutout_imsize', None)
                 if cutout_imsize is not None:
-                    imlist_entry['imsize'] = th.imaging_imsize(
+                    imlist_entry['imsize'] = th.imsize_from_cutout(
                         cutout_imsize, imlist_entry['cell'], largest_primary_beam)
                     imlist_entry['misc_vlass'] = (imlist_entry['misc_vlass'] or {}) | {'cutout_imsize': cutout_imsize}
                     qa_tool = casa_tools.quanta

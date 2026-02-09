@@ -1168,7 +1168,7 @@ class ImageParamsHeuristics(object):
 
         return repr_target, repr_source, virtual_repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal
 
-    def imaging_imsize(
+    def imsize_from_cutout(
         self, cutout_imsize: list[int], cell: str, primary_beam: float, sfpblimit: float | None = None
     ) -> list[int]:
         """Calculate optimal imaging size based on requested cutout size.
@@ -1190,7 +1190,7 @@ class ImageParamsHeuristics(object):
             for FFT performance.
 
         Example:
-            >>> heuristics.imaging_imsize([512, 512], '0.1arcsec', 60.0)
+            >>> heuristics.imsize_from_cutout([512, 512], '0.1arcsec', 60.0)
             [1440, 1440]
         """
         qa_tool = casa_tools.quanta
