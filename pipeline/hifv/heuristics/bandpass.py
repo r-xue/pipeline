@@ -101,7 +101,7 @@ def computeChanFlag(vis, caltable, context):
     return (largechunk, spwids)
 
 
-def _compute_median_snr(ms, caltable):
+def _compute_median_snr(caltable):
 
     median_snr = {}
 
@@ -194,12 +194,12 @@ def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypec
         executor.execute(job)
 
     # PIPE-2512:  Re-run bandpass for low-S/N SPWs with smoothing
-    median_snrs = _compute_median_snr(m, caltable)
+    median_snrs = _compute_median_snr(caltable)
     low_snr_spws = [spw for spw, snr in median_snrs.items() if snr < 50.0]
     good_snr_spws = [spw for spw, snr in median_snrs.items() if snr >= 50.0]
     if not low_snr_spws:
         LOG.info("All SPWs have median S/N ≥ 50 — no rerun needed.")
-        return
+        return False
 
     LOG.info(f"Re-running bandpass for SPWs with low S/N: {low_snr_spws}")
     # rename the old caltable
@@ -217,7 +217,7 @@ def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypec
     for bad_spw in low_snr_spws:
         snr = median_snrs[bad_spw]
         nchan = m.get_spectral_window(bad_spw).num_channels
-        Nbin = min((50.0 / snr) ** 2, nchan / 16)
+        Nbin = nchan / 16 if snr <= 0 else min((50.0 / snr) ** 2, nchan / 16)
         solint_smooth = f"inf,{int(Nbin)}ch"
 
         LOG.info(f"SPW {bad_spw}: median S/N={snr:.1f}, rerunning with solint='{solint_smooth}'")
