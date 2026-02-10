@@ -1444,7 +1444,9 @@ def score_total_data_vla_delay(filename, vis, bandname=None):
                           metric_score=score,
                           metric_units='Delays that exceed 15 ns')
 
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(filename), origin=origin)
+    applies_to = pqa.TargetDataSelection(vis=vis)
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(filename), origin=origin, applies_to=applies_to)
 
 
 @log_qa
@@ -5336,10 +5338,10 @@ def score_flagged_ant_spw(vis:str, flaggedSolnApplycaldelay:dict) -> [pqa.QAScor
                 if spw_flagged:
                     flagged_spw_count += 1
             # If >50% of SPWs flagged on this antenna
-            if flagged_spw_count > len(flag_results['antspw'][antenna]):
+            if flagged_spw_count > len(flag_results['antspw'][antenna])//2:
                 flagged_ants += 1
 
-        if flagged_ants > total_ants / 2:
+        if flagged_ants > total_ants // 2:
             badbandlist.append(bandname)
         else:
             goodbandlist.append(bandname)
