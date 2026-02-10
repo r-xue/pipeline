@@ -1070,11 +1070,16 @@ class testBPdcals(basetask.StandardTaskTemplate):
                         all_corr = m.get_vla_corrlist_from_spw(str(ispw))
                         crosshands_in_spw = [c for c in all_corr if c in crosshands]
                         corr_to_flag = list(set(off_corr + crosshands_in_spw))
-                        corr_str = ','.join(map(str, corr_to_flag))
-                        flagstr = (
-                            f"mode='manual' antenna='{antName}' "
-                            f"spw='{ispw}' correlation='{corr_str}' "
-                            )
+                        if corr_to_flag:
+                            corr_str = ','.join(map(str, corr_to_flag))
+                            flagstr = (
+                                f"mode='manual' antenna='{antName}' "
+                                f"spw='{ispw}' correlation='{corr_str}' "
+                                )
+                        else:
+                            flagstr = (
+                                f"mode='manual' antenna='{antName}' spw='{ispw}' "
+                                )
                     else:
                         flagstr = (
                             f"mode='manual' antenna='{antName}' spw='{ispw}' "
@@ -1115,7 +1120,10 @@ class testBPdcals(basetask.StandardTaskTemplate):
         for antNamekey, spws in weblogflagdict.items():
             basebands = []
             for spwentry in spws:
-                spw = m.get_spectral_window(spwentry["spw"])
+                spw_id = spwentry.get("spw")
+                if spw_id is None:
+                    continue
+                spw = m.get_spectral_window(spw_id)
                 basebands.append(spw.name.split('#')[0] + '  ' + spw.name.split('#')[1])
             basebands = list(set(basebands))  # Unique basebands
             tempDict[antNamekey] = {'spws': spws, 'basebands': basebands}
