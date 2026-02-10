@@ -5264,7 +5264,7 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
     if not is_model_present:
         msg = f"Model column is not present"
         origin = pqa.QAOrigin(metric_name='score_fluxboot',
-                              metric_score=0.3,
+                              metric_score=score,
                               metric_units='')
         applies_to = pqa.TargetDataSelection(vis={result.vis})
         qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin, applies_to=applies_to))
