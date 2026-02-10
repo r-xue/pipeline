@@ -153,6 +153,9 @@ class Source:
         """
         qa = casa_tools.quanta
         val = qa.getvalue(self._proper_motion[axis])
+        # Handle array-to-scalar conversion for NumPy 1.25+ compatibility
+        if hasattr(val, 'item'):
+            val = val.item()
         units = qa.getunit(self._proper_motion[axis])
         return '' if val == 0 else '%.3e %s' % (val, units)
 

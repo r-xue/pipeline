@@ -805,7 +805,11 @@ def xml_for_sensitivity(d, stage_name):
         imagename = 'N/A'
 
     try:
-        if d['theoretical_sensitivity'] is None or float(d['theoretical_sensitivity']['value']) < 0:
+        theoretical_sens_val = d['theoretical_sensitivity']['value']
+        # Handle array-to-scalar conversion for NumPy 1.25+ compatibility
+        if hasattr(theoretical_sens_val, 'item'):
+            theoretical_sens_val = theoretical_sens_val.item()
+        if d['theoretical_sensitivity'] is None or float(theoretical_sens_val) < 0:
             theoretical_sensitivity_jy_per_beam = 'N/A'
         else:
             theoretical_sensitivity = qa.quantity(d['theoretical_sensitivity'])
