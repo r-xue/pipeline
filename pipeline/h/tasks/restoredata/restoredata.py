@@ -8,8 +8,8 @@ data products are on disk in the rawdata directory in the format produced by
 the ExportData class.
 
 This class assumes that the required data products have been
-    o downloaded from the archive along with the ASDMs (not yet possible)
-    o are sitting on disk in a form which is compatible with what is
+    - downloaded from the archive along with the ASDMs (not yet possible)
+    - are sitting on disk in a form which is compatible with what is
       produced by ExportData
 """
 import os
