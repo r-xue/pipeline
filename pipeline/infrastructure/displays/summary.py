@@ -5,18 +5,20 @@ import datetime
 import math
 import operator
 import os
+import shutil
 from typing import TYPE_CHECKING, Generator
 
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import dates, figure, ticker
+from matplotlib.lines import Line2D
 
 from pipeline import infrastructure
 from pipeline.domain import measures
 from pipeline.h.tasks.common import atmutil
 from pipeline.infrastructure import casa_tasks, casa_tools, utils, vdp
-from pipeline.infrastructure.displays import plotmosaic, plotpwv, plotstyle, plotsuntrack, plotweather
+from pipeline.infrastructure.displays import plotpointings, plotpwv, plotstyle, plotsuntrack, plotweather
 from pipeline.infrastructure.renderer import logger
 
 if TYPE_CHECKING:
@@ -29,7 +31,105 @@ DISABLE_PLOTMS = False
 ticker.TickHelper.MAXTICKS = 10000
 
 
-class AzElChart(object):
+class ZDTELMJDChart:
+    def __init__(
+            self,
+            context: Context,
+            ms: MeasurementSet,
+            data: dict[int, dict[str, list[float] | list[datetime.datetime]]],
+            ):
+        self.context = context
+        self.ms = ms
+        self.data = data
+        self.figfile = self._get_figfile()
+
+    def plot(self) -> logger.Plot:
+        if os.path.exists(self.figfile):
+            LOG.debug('Returning existing ZD vs TELMJD plot')
+            return self._get_plot_object()
+
+        plt.figure()
+        plt.clf()
+
+        # Plot field zenith angle vs telescope MJD
+        plot_colors = ['0000ff', '007f00', 'ff0000', '00bfbf', 'bf00bf', '3f3f3f',
+                       'bf3f3f', '3f3fbf', 'ffbfbf', '00ff00', 'c1912b', '89a038',
+                       '5691ea', 'ff1999', 'b2ffb2', '197c77', 'a856a5', 'fc683a']
+
+        # Get first time from all data
+        all_times = [t for field_data in self.data.values() for t in field_data['telmjd']]
+        first_time = min(all_times) if all_times else datetime.datetime.now()
+
+        # Create a mapping of field IDs to field names for the legend
+        fields = self.ms.get_fields(intent='TARGET')
+        field_id_to_name = {field.id: field.name for field in fields}
+        name_counts = {field.name: 0 for field in fields}
+        for field in fields:
+            name_counts[field.name] += 1
+
+        max_legend_entries = 6  # keep legend compact; very large MS can have hundreds of fields
+        max_label_length = 20
+        legend_handles = []
+        legend_labels: list[str] = []
+
+        def _label_for_field(field_id: int, raw_name: str) -> str:
+            label = f"{raw_name} (ID {field_id})" if name_counts.get(raw_name, 0) > 1 else raw_name
+            return label if len(label) <= max_label_length else f"{label[:max_label_length-3]}..."
+
+        for i, (field_id, field_data) in enumerate(self.data.items()):
+            color = plot_colors[i % len(plot_colors)]
+            telmjd = field_data.get('telmjd', [])
+            zd = field_data.get('zd', [])
+            raw_name = field_id_to_name.get(field_id, f'Field {field_id}')
+            label = _label_for_field(field_id, raw_name)
+
+            # Plot all measurements for this field
+            scatter = plt.scatter(telmjd, zd, color=f'#{color}', s=10, alpha=0.7)
+
+            if len(legend_labels) < max_legend_entries and label not in legend_labels:
+                scatter.set_label(label)
+                legend_handles.append(scatter)
+                legend_labels.append(label)
+
+        plt.xlabel(f'Time (UT on {first_time.strftime("%Y-%m-%d")})')
+        plt.gca().xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%H:%M:%S'))
+        plt.gcf().autofmt_xdate()
+        plt.ylabel('Zenith Angle (degrees)')
+        plt.title(f'Zenith Angle vs. Time for\n{self.ms.name}')
+
+        # Add legend if there are multiple fields, but keep it compact
+        if len(legend_labels) > 1:
+            remaining = max(len(self.data) - max_legend_entries, 0)
+            if remaining:
+                legend_handles.append(Line2D([], [], linestyle='none', marker=''))
+                legend_labels.append(f'+{remaining} more')
+
+            plt.legend(legend_handles, legend_labels, loc='best', fontsize='small', ncol=1, framealpha=0.9)
+
+        plt.tight_layout()
+
+        plt.savefig(self.figfile)
+        plt.clf()
+        plt.close()
+
+        return self._get_plot_object()
+
+    def _get_figfile(self) -> str:
+        session_part = self.ms.session
+        ms_part = self.ms.basename
+
+        return os.path.join(self.context.report_dir,
+                            'session%s' % session_part,
+                            ms_part, 'zd_telmjd.png')
+
+    def _get_plot_object(self) -> logger.Plot:
+        return logger.Plot(self.figfile,
+                           x_axis='Telescope MJD',
+                           y_axis='Zenith Angle',
+                           parameters={'vis': self.ms.basename})
+
+
+class AzElChart:
     def __init__(self, context, ms):
         self.context = context
         self.ms = ms
@@ -88,7 +188,7 @@ class AzElChart(object):
                            command=str(task))
 
 
-class SunTrackChart(object):
+class SunTrackChart:
     def __init__(self, context, ms):
         self.context = context
         self.ms = ms
@@ -129,7 +229,7 @@ class SunTrackChart(object):
                            parameters={'vis': self.ms.basename})
 
 
-class WeatherChart(object):
+class WeatherChart:
     def __init__(self, context, ms):
         self.context = context
         self.ms = ms
@@ -170,7 +270,7 @@ class WeatherChart(object):
                            parameters={'vis': self.ms.basename})
 
 
-class ElVsTimeChart(object):
+class ElVsTimeChart:
     def __init__(self, context, ms):
         self.context = context
         self.ms = ms
@@ -226,7 +326,7 @@ class ElVsTimeChart(object):
                            command=str(task))
 
 
-class ParameterVsTimeChart(object):
+class ParameterVsTimeChart:
     """
     Base class for FieldVsTimeChart and IntentVsTimeChart, sharing common logic such as the colour scheme for intents
     """
@@ -538,7 +638,7 @@ class IntentVsTimeChart(ParameterVsTimeChart):
                            parameters={'vis': self.inputs.ms.basename})
 
 
-class PWVChart(object):
+class PWVChart:
     def __init__(self, context, ms):
         self.context = context
         self.ms = ms
@@ -570,27 +670,27 @@ class PWVChart(object):
                            parameters={'vis': self.ms.basename})
 
 
-class MosaicChart(object):
-    """Base class for generating mosaic charts.
+class PointingsChart(object):
+    """Base class for generating a pointings chart.
 
-    This class provides a framework for creating and managing mosaic plots for a 
+    This class provides a framework for creating and managing pointings plots for a
     given measurement set and source.
 
     Attributes:
         context: The context of the processing session.
         ms: The measurement set to be analyzed.
-        source: The source for which the mosaic plot is generated.
+        source: The source for which the pointings plot is generated.
         figfile: The file path where the plot will be saved.
     """
 
     def __init__(self, context: Context, ms: MeasurementSet, source: Source):
         """
-        Initializes the MosaicChart with the given context, measurement set, and source.
+        Initializes the PointingsChart with the given context, measurement set, and source.
 
         Args:
             context: The processing session context.
             ms: The measurement set to analyze.
-            source: The source for which the mosaic is created.
+            source: The source for which the pointings is created.
         """
         self.context = context
         self.ms = ms
@@ -599,7 +699,7 @@ class MosaicChart(object):
 
     def plot(self) -> logger.Plot | None:
         """
-        Abstract method to generate the mosaic plot.
+        Abstract method to generate the pointings plot.
 
         Raises:
             NotImplementedError: If the subclass does not implement this method.
@@ -623,7 +723,7 @@ class MosaicChart(object):
         Creates a Plot object with metadata.
 
         Returns:
-            A plot object containing metadata about the generated mosaic.
+            A plot object containing metadata about the generated pointings.
         """
         return logger.Plot(
             self.figfile,
@@ -633,7 +733,7 @@ class MosaicChart(object):
             )
 
 
-class MosaicPointingsChart(MosaicChart):
+class MosaicPointingsChart(PointingsChart):
     """Generates a mosaic plot of pointings for a given source in a measurement set."""
 
     def __init__(self, context: Context, ms: MeasurementSet, source: Source):
@@ -643,7 +743,7 @@ class MosaicPointingsChart(MosaicChart):
         Args:
             context: The processing session context.
             ms: The measurement set to analyze.
-            source: The source for which the mosaic is created.
+            source: The source for which the mosaic pointings plot is created.
         """
         super().__init__(context, ms, source)
 
@@ -659,9 +759,9 @@ class MosaicPointingsChart(MosaicChart):
             return self._get_plot_object()
 
         try:
-            plotmosaic.plot_mosaic_source(self.ms, self.source, self.figfile)
+            plotpointings.plot_mosaic_source(self.ms, self.source, self.figfile)
         except Exception as e:
-            LOG.warning('Could not create mosaic plot: %s', e)
+            LOG.warning('Could not create mosaic pointings plot: %s', e)
             return None
 
         return self._get_plot_object()
@@ -677,27 +777,32 @@ class MosaicPointingsChart(MosaicChart):
             self.context.report_dir,
             f"session{self.ms.session}",
             self.ms.basename,
-            f"mosaic_source{self.source.id}.png"
+            f"source{self.source.id}_mosaic_pointings.png"
         )
 
 
-class MosaicTsysChart(MosaicChart):
-    """Generates a mosaic plot of system temperature (Tsys) scans for a given source."""
+class TsysScansChart(PointingsChart):
+    """Generates a plot of system temperature (Tsys) scan(s) for a given source."""
 
-    def __init__(self, context: Context, ms: MeasurementSet, source: Source):
+    def __init__(
+            self,
+            context: Context,
+            ms: MeasurementSet,
+            source: Source,
+            ):
         """
-        Initializes the MosaicTsysChart with the given parameters.
+        Initializes the TsysScansChart with the given parameters.
 
         Args:
             context: The processing session context.
             ms: The measurement set to analyze.
-            source: The source for which the Tsys mosaic is created.
+            source: The source for which the Tsys scan(s) plot is created.
         """
         super().__init__(context, ms, source)
 
     def plot(self) -> logger.Plot | None:
         """
-        Generates and saves the mosaic Tsys plot.
+        Generates and saves the Tsys scan(s) plot.
 
         Returns:
             The plot object if successful, otherwise None.
@@ -707,29 +812,29 @@ class MosaicTsysChart(MosaicChart):
             return self._get_plot_object()
 
         try:
-            plotmosaic.plot_mosaic_tsys_scans(self.ms, self.source, self.figfile)
+            plotpointings.plot_tsys_scans(self.ms, self.source, self.figfile)
         except Exception as e:
-            LOG.warning('Could not create mosaic plot: %s', e)
+            LOG.warning('Could not create Tsys scan(s) plot: %s', e)
             return None
 
         return self._get_plot_object()
 
     def _get_figfile(self) -> str:
         """
-        Determines the file path for the mosaic Tsys plot.
+        Determines the file path for the Tsys scan(s) plot.
 
         Returns:
-            The file path for storing the Tsys mosaic plot.
+            The file path for storing the Tsys scan(s) plot.
         """
         return os.path.join(
             self.context.report_dir,
             f"session{self.ms.session}",
             self.ms.basename,
-            f"mosaic_source{self.source.id}_tsys_scans.png"
+            f"source{self.source.id}_tsys_scans.png"
         )
 
 
-class PlotAntsChart(object):
+class PlotAntsChart:
     def __init__(self, context, ms, polarlog=False):
         self.context = context
         self.ms = ms
@@ -976,7 +1081,7 @@ class PlotAntsChart(object):
         subpl.set_rmin(rmin)
 
 
-class UVChart(object):
+class UVChart:
     # CAS-11793: calsurveys do not have TARGET sources, so we must also
     # search for sources with other intents
     preferred_intent_order = ['TARGET', 'AMPLITUDE', 'BANDPASS', 'PHASE']
@@ -1225,7 +1330,7 @@ class SpwIdVsFreqChartInputs(vdp.StandardInputs):
         self.vis = vis
 
 
-class SpwIdVsFreqChart(object):
+class SpwIdVsFreqChart:
     """Generate a plot of SPW ID Versus Frequency coverage."""
 
     Inputs = SpwIdVsFreqChartInputs
@@ -1269,14 +1374,24 @@ class SpwIdVsFreqChart(object):
     def plot(self) -> logger.Plot | None:
         """Create the plot.
 
+        If the plot file already exists, Plot object is generated from
+        the existing file. If input MS is the one generated by the
+        pipeline (e.g., in mstransform or baseline stages), this method
+        will copy the plot file from the origin MS if it exists.
+
         Returns:
             Plot object
             Note that it returns None if no TARGET scans found in MS
         """
         filename = self.inputs.output
+        ms = self.inputs.ms
+        origin_filename = filename.replace(ms.basename, ms.origin_ms)
         if os.path.exists(filename):
             return self._get_plot_object()
-        ms = self.inputs.ms
+        elif os.path.exists(origin_filename):
+            LOG.info("Copying frequency coverage plot for origin_ms.")
+            shutil.copyfile(origin_filename, filename)
+            return self._get_plot_object()
         request_spws = ms.get_spectral_windows()
         targeted_scans = ms.get_scans(scan_intent='TARGET')
         if len(targeted_scans) == 0:
@@ -1324,7 +1439,7 @@ class SpwIdVsFreqChart(object):
                     ax_spw.annotate(str(spwid), (fmin + bw/2, idx - bar_height/2), fontsize=14, ha='center', va='bottom')
                 idx += 1
                 rmin = min(rmin, abs(atmutil.get_spw_spec(vis=ms.name, spw_id=spwid)[2]))
-        
+
         # 3. Frequency vs. ATM transmission
         center_freq = (xmin + xmax) / 2.0
         # Determining the resolution value so that generates fine ATM transmission curve: it is set

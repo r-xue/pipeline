@@ -1,16 +1,21 @@
+from __future__ import annotations
+
 import collections
 import os
 import shutil
 import traceback
+from typing import TYPE_CHECKING
 
-import pipeline.h.tasks.exportdata.exportdata as exportdata
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import task_registry
+from pipeline import infrastructure
+from pipeline.h.tasks.exportdata import exportdata
+from pipeline.infrastructure import task_registry, vdp
 
 from . import almaifaqua
 
-LOG = infrastructure.get_logger(__name__)
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
+
+LOG = infrastructure.logging.get_logger(__name__)
 
 AuxFileProducts = collections.namedtuple('AuxFileProducts', 'flux_file antenna_file cont_file flagtargets_list')
 
@@ -20,9 +25,21 @@ class ALMAExportDataInputs(exportdata.ExportDataInputs):
     imaging_products_only = vdp.VisDependentProperty(default=False)
 
     # docstring and type hints: supplements hifa_exportdata
-    def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None, tarms=None,
-                 pprfile=None, calintents=None,
-                 calimages=None, targetimages=None, products_dir=None, imaging_products_only=None):
+    def __init__(
+            self,
+            context: Context,
+            output_dir: str = None,
+            session: list[str] = None,
+            vis: list[str] = None,
+            exportmses: bool = None,
+            tarms: bool = None,
+            pprfile: list[str] = None,
+            calintents: str = None,
+            calimages: list[str] = None,
+            targetimages: list[str] = None,
+            products_dir: str = None,
+            imaging_products_only: bool = None,
+            ):
         """Initialize the Inputs.
 
         Args:
@@ -34,43 +51,45 @@ class ALMAExportDataInputs(exportdata.ExportDataInputs):
                 to a single virtual session containing all the visibility files in vis.
                 In the future, this will default to the set of observing sessions defined
                 in the context.
-                Example: session=['session1', 'session2']
+                Example: ``session=['session1', 'session2']``
 
             vis: List of visibility data files for which flagging and calibration
                 information will be exported. Defaults to the list maintained in the
                 pipeline context.
-                Example: vis=['X227.ms', 'X228.ms']
+                Example: ``vis=['X227.ms', 'X228.ms']``
 
             exportmses: Export the final MeasurementSets instead of the final flags,
                 calibration tables, and calibration instructions.
 
+            tarms: Tar final MeasurementSets
+
             pprfile: Name of the pipeline processing request to be exported. Defaults
                 to a file matching the template 'PPR_*.xml'.
-                Example: pprfile=['PPR_GRB021004.xml']
+                Example: ``pprfile=['PPR_GRB021004.xml']``
 
             calintents: List of calibrator image types to be exported. Defaults to
-                all standard calibrator intents, 'BANDPASS', 'PHASE', 'FLUX'.
-                Example: 'PHASE'
+                all standard calibrator intents, ``'BANDPASS'``, ``'PHASE'``, ``'FLUX'``.
+                Example: ``'PHASE'``
 
             calimages: List of calibrator images to be exported. Defaults to all
                 calibrator images recorded in the pipeline context.
-                Example: calimages=['3C454.3.bandpass', '3C279.phase']
+                Example: ``calimages=['3C454.3.bandpass', '3C279.phase']``
 
             targetimages: List of science target images to be exported. Defaults to all
                 science target images recorded in the pipeline context.
-                Example: targetimages=['NGC3256.band3', 'NGC3256.band6']
+                Example: ``targetimages=['NGC3256.band3', 'NGC3256.band6']``
 
             products_dir: Name of the data products subdirectory. Defaults to './'.
-                Example: products_dir='../products'
+                Example: ``products_dir='../products'``
 
             imaging_products_only: Export science target imaging products only
 
         """
-        super(ALMAExportDataInputs, self).__init__(context, output_dir=output_dir, session=session, vis=vis,
-                                                   exportmses=exportmses, tarms=tarms, pprfile=pprfile, calintents=calintents,
-                                                   calimages=calimages, targetimages=targetimages,
-                                                   products_dir=products_dir,
-                                                   imaging_products_only=imaging_products_only)
+        super().__init__(context, output_dir=output_dir, session=session, vis=vis,
+                         exportmses=exportmses, tarms=tarms, pprfile=pprfile, calintents=calintents,
+                         calimages=calimages, targetimages=targetimages,
+                         products_dir=products_dir,
+                         imaging_products_only=imaging_products_only)
 
 
 @task_registry.set_equivalent_casa_task('hifa_exportdata')

@@ -94,14 +94,11 @@ def read_fluxes_nodb(ms):
             continue
 
         source_id = int(source_element)
-        if source_id >= len(ms.sources):
-            LOG.warning('Source.xml refers to source #{}, which was not found in {}'.format(source_id, ms.basename))
-            continue
-
         try:
             source = ms.sources[int(source_id)]
         except Exception as e:
-            LOG.warning("Source index error with: {!s} ".format(source_id))
+            LOG.warning('Source index error with source #%s from Source.xml in %s.', source_id, ms.basename)
+            continue
 
         # all elements must contain data to proceed
         if flux_text is None or frequency_text is None:
@@ -252,12 +249,12 @@ def CYCLE7_export_flux_from_result(results, context, filename='flux.csv'):
 
     # if the file exists, read it in
     if os.path.exists(abspath):
-        with open_with_lock(abspath, 'r') as f:
+        with open_with_lock(abspath, 'rt', encoding='utf-8') as f:
             # slurp in all but the header rows
             existing.extend([l for l in f.readlines() if not l.startswith(','.join(columns))])
 
     # so we can write it back out again, with our measurements appended
-    with open_with_lock(abspath, 'wt') as f:
+    with open_with_lock(abspath, 'wt', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow(columns)
         f.writelines(existing)
@@ -308,7 +305,7 @@ def export_flux_from_result(results, context, filename='flux.csv'):
 
     # if the file exists, read it in
     if os.path.exists(abspath):
-        with open_with_lock(abspath, 'r') as f:
+        with open_with_lock(abspath, 'rt', encoding='utf-8') as f:
 
             first = f.readline()
             if not first.startswith(','.join(columns)):
@@ -324,7 +321,7 @@ def export_flux_from_result(results, context, filename='flux.csv'):
 
     # so we can write it back out again, with our measurements appended
     comment_template = '# field={field} intents={intents} origin={origin} age={age} queried_at={queried_at}'
-    with open_with_lock(abspath, 'wt') as f:
+    with open_with_lock(abspath, 'wt', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow(columns)
         f.writelines(existing)
@@ -383,7 +380,7 @@ def import_flux(output_dir, observing_run, filename=None):
     if not filename:
         filename = os.path.join(output_dir, 'flux.csv')
 
-    with open_with_lock(filename, 'rt') as f:
+    with open_with_lock(filename, 'rt', encoding='utf-8') as f:
         reader = csv.DictReader(f, restkey='others', restval=None)
 
         counter = 0

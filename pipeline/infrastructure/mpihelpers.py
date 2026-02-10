@@ -1,33 +1,34 @@
 import abc
+import importlib.util
 import os
 import pickle
+import pprint
 import tempfile
 from inspect import signature
-import pprint 
 
-from pipeline.domain.unitformat import file_size
+from pipeline.infrastructure import daskhelpers, exceptions, logging
+from pipeline.infrastructure.utils import gen_hash, get_obj_size, human_file_size
 
-try:
-    from casampi.MPIEnvironment import MPIEnvironment
-    from casampi.MPICommandClient import MPICommandClient
-except ImportError:
-    # MPI not available on MacOS
+casampi_spec = importlib.util.find_spec('casampi')
+casalith_spec = importlib.util.find_spec('casalith')
+
+if casampi_spec is None:
+    # casampi not available
     class DummyMPIEnvironment:
         is_mpi_enabled = False
         is_mpi_client = False
+
     MPIEnvironment = DummyMPIEnvironment()
     # stub MPICommandClient too to keep IDE happy
     MPICommandClient = object
-
-
-from pipeline.infrastructure import exceptions
-from pipeline.infrastructure import logging
-from pipeline.infrastructure.utils import get_obj_size
-from .jobrequest import JobRequest
+else:
+    from casampi.MPICommandClient import MPICommandClient
+    from casampi.MPIEnvironment import MPIEnvironment
 
 # global variable for toggling MPI usage
 USE_MPI = True
 ENABLE_TIER0_PLOTMS = True
+BUFFER_LIMIT = 100*1024*1024  # 100 MiB
 
 LOG = logging.get_logger(__name__)
 
@@ -45,12 +46,16 @@ class AsyncTask(object):
 
         Note that tier0_executable must be picklable.
         """
-        LOG.debug('pushing tier0executable {} from the client: {}'.format(
-            executable, file_size.format(get_obj_size(executable))))
+        LOG.debug(
+            'pushing tier0executable {} from the MPI client: {}'.format(
+                executable, human_file_size(get_obj_size(executable))
+            )
+        )
         self.__pid = mpiclient.push_command_request(
             'pipeline.infrastructure.mpihelpers.mpiexec(tier0_executable)',
             block=False,
-            parameters={'tier0_executable': executable})
+            parameters={'tier0_executable': executable},
+        )
 
     def get_result(self):
         """
@@ -63,20 +68,31 @@ class AsyncTask(object):
         :rtype: pipeline.infrastructure.api.Result
         :except PipelineException: if the task did not complete successfully.
         """
-        response = mpiclient.get_command_response(self.__pid,
-                                                  block=True,
-                                                  verbose=True)
-        LOG.debug('Received the response (%s) from MPIserver-%s for command_request_id=%s executing %s; content:',
-                  file_size.format(get_obj_size(response)), response[0]['server'], response[0]['id'], response[0]['parameters']['tier0_executable'])
+        response = mpiclient.get_command_response(self.__pid, block=True, verbose=True)
+        LOG.debug(
+            'Received the response (%s) from MPIserver-%s for command_request_id=%s executing %s; content:',
+            human_file_size(get_obj_size(response)),
+            response[0]['server'],
+            response[0]['id'],
+            response[0]['parameters']['tier0_executable'],
+        )
         LOG.debug(pprint.pformat(response))
 
         response = response[0]
         if response['successful']:
             self._merge_casa_commands(response)
-            return response['ret']
+            ret, ret_file = response['ret']
+            if ret_file is not None:
+                LOG.debug('Retrieve the execution return of %s from %s',
+                          response['parameters']['tier0_executable'], ret_file)
+                with open(ret_file, 'rb') as pickle_file:
+                    ret = pickle.load(pickle_file)
+                os.unlink(ret_file)
+            return ret
         else:
-            err_msg = "Failure executing job on MPI server {}, " \
-                      "with traceback\n {}".format(response['server'], response['traceback'])
+            err_msg = 'Failure executing job on MPI server {}, with traceback\n {}'.format(
+                response['server'], response['traceback']
+            )
             raise exceptions.PipelineException(err_msg)
 
     def _merge_casa_commands(self, response):
@@ -104,7 +120,8 @@ class AsyncTask(object):
         """
 
         LOG.debug(
-            'Received a successful response from MPIserver-{server} for command_request_id={id}'.format(**response))
+            'Received a successful response from MPIserver-{server} for command_request_id={id}'.format(**response)
+        )
         LOG.debug('return request logs: {}'.format(response['parameters']['tier0_executable'].logs))
 
         response_logs = response['parameters']['tier0_executable'].logs
@@ -116,13 +133,18 @@ class AsyncTask(object):
             with open(client_cmdfile, 'a') as client:
                 with open(tier0_cmdfile, 'r') as tier0:
                     client.write('# MPIserver:           {}\n'.format(response['server']))
-                    client.write('# Duration:            {:.2f}s\n'.format(
-                        response['command_stop_time']-response['command_start_time']))
+                    client.write(
+                        '# Duration:            {:.2f}s\n'.format(
+                            response['command_stop_time'] - response['command_start_time']
+                        )
+                    )
                     client.write('# CommandRequest ID:   {}\n'.format(response['id']))
                     client.write(tier0.read())
                 os.remove(tier0_cmdfile)
         else:
-            LOG.debug('Cannot find Tier0 casa_commands.log for command_request_id={id}; no merge needed'.format(**response))
+            LOG.debug(
+                'Cannot find Tier0 casa_commands.log for command_request_id={id}; no merge needed'.format(**response)
+            )
 
 
 class SyncTask(object):
@@ -165,13 +187,14 @@ class SyncTask(object):
                     return self.__task()
         except Exception as e:
             import traceback
-            err_msg = "Failure executing job by an exception {} " \
-                      "with the following traceback\n {}".format(e.__class__.__name__, traceback.format_exc())
+
+            err_msg = 'Failure executing job by an exception {} with the following traceback\n {}'.format(
+                e.__class__.__name__, traceback.format_exc()
+            )
             raise exceptions.PipelineException(err_msg)
 
 
 class Executable(object):
-
     def __init__(self):
         self.logs = {}
 
@@ -218,8 +241,7 @@ class Tier0PipelineTask(Executable):
             with open(self.__context_path, 'rb') as context_file:
                 context = pickle.load(context_file)
 
-            self.logs['casa_commands'] = os.path.join(context.report_dir,
-                                                      context.logs['casa_commands'])
+            self.logs['casa_commands'] = os.path.join(context.report_dir, context.logs['casa_commands'])
             tmpfile = tempfile.NamedTemporaryFile(suffix='.casa_commands.log', dir='', delete=True)
             tmpfile.close()
             self.logs['casa_commands_tier0'] = tmpfile.name
@@ -240,9 +262,7 @@ class Tier0PipelineTask(Executable):
                 os.unlink(self.__task_args_path)
 
     def __str__(self):
-        return 'Tier0PipelineTask(%s, %s, %s)' % (self.__task_cls,
-                                                  self.__task_args_path,
-                                                  self.__context_path)
+        return 'Tier0PipelineTask(%s, %s, %s)' % (self.__task_cls, self.__task_args_path, self.__context_path)
 
 
 class Tier0JobRequest(Executable):
@@ -295,7 +315,7 @@ class Tier0FunctionCall(Executable):
         super().__init__()
         self.__fn = fn
         if use_pickle:
-            # pass function arguments via local pickle I/O to workround the casampi bsend buffer 
+            # pass function arguments via local pickle I/O to workround the casampi bsend buffer
             # size restriction (CAS-13656).
             tmpfile = tempfile.NamedTemporaryFile(suffix='.func_args', dir='', delete=True)
             tmpfile.close()
@@ -366,27 +386,80 @@ def mpiexec(tier0_executable):
     :param tier0_executable: the Tier0Executable task to execute
     :return: the Result returned by executing the task
     """
-    LOG.trace('rank%s@%s: mpiexec(%s)', MPIEnvironment.mpi_processor_rank,
-              MPIEnvironment.hostname, tier0_executable)
+    LOG.trace('rank%s@%s: mpiexec(%s)', MPIEnvironment.mpi_processor_rank, MPIEnvironment.hostname, tier0_executable)
 
     executable = tier0_executable.get_executable()
-    LOG.info('Executing %s on rank%s@%s', tier0_executable,
-             MPIEnvironment.mpi_processor_rank, MPIEnvironment.hostname)
+    LOG.info('Executing %s on rank%s@%s', tier0_executable, MPIEnvironment.mpi_processor_rank, MPIEnvironment.hostname)
 
-    ret = executable()
-    LOG.debug('Buffering the execution return (%s) of %s', file_size.format(get_obj_size(ret)), tier0_executable)
+    ret, ret_file = executable(), None
+    ret_size = get_obj_size(ret)  # in Bytes
+    if ret_size > BUFFER_LIMIT:
+        tmpfile = tempfile.NamedTemporaryFile(suffix='.context',
+                                              dir='',
+                                              delete=True)
+        tmpfile.close()
+        LOG.debug('Saving the execution return from %s to %s due to its size of %s execeeding the MPI Buffer limit %s restricted by Pipeline',
+                  tier0_executable, tmpfile.name, human_file_size(ret_size), human_file_size(BUFFER_LIMIT))
+        with open(tmpfile.name, 'wb') as pickle_file:
+            pickle.dump(ret, pickle_file, protocol=-1)
+        ret, ret_file = None, os.path.abspath(tmpfile.name)
+    else:
+        LOG.debug('Buffering the execution return (%s) from %s', human_file_size(ret_size), tier0_executable)
 
-    return ret
+    return ret, ret_file
 
 
 def is_mpi_ready():
     # to allow MPI jobs, the executing pipeline code must be running as the
     # client node on an MPI cluster, with the MPICommandClient ready and the
     # no user override specified.
-    return all([USE_MPI,  # User has not disabled MPI globally
-                MPIEnvironment.is_mpi_enabled,  # running on MPI cluster
-                MPIEnvironment.is_mpi_client,  # running as MPI client
-                mpiclient])  # MPICommandClient ready
+    return all([
+        USE_MPI,  # User has not disabled MPI globally
+        MPIEnvironment.is_mpi_enabled,  # running on MPI cluster
+        MPIEnvironment.is_mpi_client,  # running as MPI client
+        mpiclient,
+    ])  # MPICommandClient ready
+
+
+def is_mpi_server() -> bool:
+    """Check if the current process is running on an MPI server.
+
+    Determines whether this process is running as an MPI server by checking both that MPI is enabled
+    and that this process is not specifically an MPI client.
+
+    Returns:
+        True if the process is an MPI server, False otherwise.
+    """
+    return MPIEnvironment.is_mpi_enabled and not MPIEnvironment.is_mpi_client
+
+
+def exec_func(fn: callable, *args, include_client: bool = True, **kwargs) -> None:
+    """Execute the same function on both client and MPI server processes.
+
+    This function enables synchronized execution across MPI infrastructure. It's particularly useful
+    for setup tasks that need consistent state across all processes, such as changing the working directory.
+
+    Args:
+        fn: The function to execute.
+        *args: Positional arguments to pass to the function.
+        include_client: If True, the function is also executed on the client process.
+        **kwargs: Keyword arguments to pass to the function.
+    """
+    # Execute on client if requested
+    if include_client:
+        fn(*args, **kwargs)
+
+    # Prepare executable for server processes
+    executable = Tier0FunctionCall(fn, *args, **kwargs)
+
+    # Execute on all server processes if MPI is available
+    if mpiclient is not None and mpi_server_list is not None:
+        mpiclient.push_command_request(
+            'pipeline.infrastructure.mpihelpers.mpiexec(tier0_executable)',
+            block=True,
+            target_server=mpi_server_list,
+            parameters={'tier0_executable': executable},
+        )
 
 
 def _splitall(path):
@@ -417,6 +490,18 @@ def parse_mpi_input_parameter(input_arg):
         raise ValueError('Arg must be one of true, false or automatic. Got %s' % input_arg)
 
 
+def parse_parallel_input_parameter(input_arg):
+    lowercase = str(input_arg).lower()
+    if lowercase == 'automatic':
+        return is_mpi_ready() or daskhelpers.is_dask_ready()
+    elif lowercase == 'true':
+        return True
+    elif lowercase == 'false':
+        return False
+    else:
+        raise ValueError('Arg must be one of true, false or automatic. Got %s' % input_arg)
+
+
 mpiclient = None
 mpi_server_list = None
 
@@ -436,21 +521,21 @@ if MPIEnvironment.is_mpi_enabled:
             # get path to pipeline code and import it on the cluster nodes
             __client.push_command_request('import sys', block=True, target_server=mpi_server_list)
             __codepath = os.path.join(*_splitall(__file__)[0:-3])
-            __client.push_command_request('sys.path.insert(0, %r)' % __codepath, block=True, target_server=mpi_server_list)
+            __client.push_command_request(
+                'sys.path.insert(0, %r)' % __codepath, block=True, target_server=mpi_server_list
+            )
 
             __client.push_command_request('import pipeline', block=True, target_server=mpi_server_list)
             # __client.push_command_request('pipeline.infrastructure.logging.set_logging_level(level="trace")', block=True, target_server=mpi_server_list)
 
             mpiclient = __client
-            LOG.info('MPI environment detected. Pipeline operating in cluster'
-                     ' mode.')
+            LOG.info('MPI environment detected. Pipeline operating in cluster mode.')
     except:
-        LOG.warning('Problem initialising MPI. Pipeline falling back to single'
-                    ' host mode.')
+        LOG.warning('Problem initialising MPI. Pipeline falling back to single host mode.')
         mpiclient = None
 else:
-    LOG.info('Environment is not MPI enabled. Pipeline operating in single '
-             'host mode')
+    if casalith_spec:
+        LOG.info('Environment is not MPI enabled. Pipeline operating in single host mode')
     mpiclient = None
 
 
@@ -464,6 +549,7 @@ class TaskQueue:
 
     Example 1:
 
+        from pipeline.infrastructure.mpihelpers import TaskQueue
         q = TaskQueue()
         q.add_functioncall(test, 9, 8) # test is a function taking two arguments.
         for i in range(4):
@@ -474,67 +560,89 @@ class TaskQueue:
 
     Example 2:
 
+        from pipeline.infrastructure.mpihelpers import TaskQueue
+        from pipeline.infrastructure.utils.math import round_up
+        # A note on object serialization: The mapped object must be serializable (pickleable)
+        # and resolvable by the server process, as it is passed through our MPI4py wrapper.
+        # For reliable execution, define the function at the module level within the
+        # Pipeline package or before the casampi queue is created.
         with TaskQueue() as tq:
-            tq.map(fn, [(1,2),(2,3),(4,5),(6,7),(8,9)])
-        results = q.get_results()
+            tq.map(round_up,[(1.1,),(1.2,),(1.2,),(1.5,),(1.6,)])
+        results = tq.get_results()
+        print(results)
+
     """
 
-    def __init__(self, parallel=True, executor=None):
-
+    def __init__(self, parallel=True, executor=None, unique=False):
         self.__queue = []
+        self.__hash = []
+        self.__returned = []        
         self.__results = []
-        self.__running = True
         self.__executor = executor
         self.__mpi_server_list = mpi_server_list
-        self.__is_mpi_ready = is_mpi_ready()
-        self.__async = parallel and self.__is_mpi_ready
+        self.__is_async_ready = daskhelpers.is_dask_ready() or is_mpi_ready()
+        self.__parallel_wanted = parallel
+        self.__async = self.__parallel_wanted and self.__is_async_ready
+        self.__unique = unique
 
-        LOG.info('TaskQueue initialized; MPI server list: %s', self.__mpi_server_list)
+        LOG.info('TaskQueue initialized: ')
+        LOG.info('    MPI server list: %s', self.__mpi_server_list)
+        LOG.info('    Dask client:     %s', daskhelpers.daskclient)
+        LOG.info('    is_async  :      %s', self.__async)
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-
-        if self.__running:
-            _ = self.get_results()
-        else:
-            pass
+        self.get_results(clear=False)
         if exc_type:
             LOG.error('Error in TaskQueue: %s', exc_val)
         else:
             LOG.info('TaskQueue completed successfully')
 
     def __call__(self):
-        return self.get_results()
+        return self.get_results(clear=False)
 
-    def done(self):
-        return self.get_results()
+    def done(self, clear=False):
+        return self.get_results(clear=clear)
 
     def is_async(self):
         """Return True if the TaskQueue is running in parallel mode."""
         return self.__async
 
-    def get_results(self):
+    def get_results(self, clear=False):
+        """get all queue results in a block fashion."""
+        for idx, task in enumerate(self.__queue):
+            if not self.__returned[idx]:
+                self.__results[idx] = task.get_result()
+                self.__returned[idx] = True
 
-        if not self.__running and self.__results:
-            return self.__results
+        if clear:
+            self.__queue = []
+            self.__hash = []
+            self.__returned = []
+            results = self.__results[:]
+
+            self.__queue.clear()
+            self.__hash.clear()
+            self.__returned.clear()
+            self.__results.clear()
+            return results
         else:
-            results = []
-            for task in self.__queue:
-                results.append(task.get_result())
-            self.__results = results
-            self.__running = False
-
-        return self.__results
+            return self.__results
 
     def map(self, fn, iterable):
-
         if not hasattr(iterable, '__len__'):
             iterable = list(iterable)
 
         for args in iterable:
             self.add_functioncall(fn, *args)
+
+    def _register_task(self, task, task_hash):
+        self.__queue.append(task)
+        self.__hash.append(task_hash)
+        self.__returned.append(False)
+        self.__results.append(None)            
 
     def add_jobrequest(self, fn, job_args, executor=None):
         """Add a jobequest into the queue.
@@ -544,33 +652,76 @@ class TaskQueue:
             fn = casa_tasks.imdev
             job_args = {'imagename': 'myimage.fits'}
         """
+        task_hash = gen_hash((fn, job_args))
+        if self.__unique and task_hash in self.__hash:
+            LOG.debug('Skipping duplicated JobRequest - fn: %s, job_args: %s', fn, job_args)
+            return
+                
         if executor is None:
             executor = self.__executor
-        if self.__async:
+
+        # try different parallelization arrangement:
+        #   dask/futures -> casampi -> serial
+
+        if self.__parallel_wanted and daskhelpers.is_dask_ready():
+            executable = Tier0JobRequest(fn, job_args, executor=executor)
+            task = daskhelpers.FutureTask(executable)
+        elif self.__parallel_wanted and is_mpi_ready():
             executable = Tier0JobRequest(fn, job_args, executor=executor)
             task = AsyncTask(executable)
         else:
             task = SyncTask(fn(**job_args), executor)
-        self.__queue.append(task)
+
+        self._register_task(task, task_hash)
 
     def add_functioncall(self, fn, *args, use_pickle=False, **kwargs):
+        """Add a function call into the queue."""
+        task_hash = gen_hash((fn, args, kwargs))
+        if self.__unique and task_hash in self.__hash:
+            LOG.debug('Skipping duplicated JobRequest - fn: %s, args: %s, kwargs: %s', fn.__name__, args, kwargs)
+            return        
 
-        if self.__async:
+        # try different parallelization arrangement:
+        #   dask/futures -> casampi -> serial        
+        if self.__parallel_wanted and daskhelpers.is_dask_ready():
+            executable = Tier0FunctionCall(fn, *args, use_pickle=use_pickle, **kwargs)
+            task = daskhelpers.FutureTask(executable)
+        elif self.__parallel_wanted and is_mpi_ready():
             executable = Tier0FunctionCall(fn, *args, use_pickle=use_pickle, **kwargs)
             task = AsyncTask(executable)
         else:
             task = SyncTask(lambda: fn(*args, **kwargs))
-        self.__queue.append(task)
+
+        self._register_task(task, task_hash)
 
     def add_pipelinetask(self, task_cls, task_args, context, executor=None):
-
+        """Add a PipelineTask into the queue."""
+        task_hash = gen_hash((task_cls, task_args, context))
+        if self.__unique and task_hash in self.__hash:
+            LOG.debug(
+                'Skipping duplicated PipelineTask - task_cls: %s, task_args: %s, content: %s',
+                task_cls,
+                task_args,
+                context,
+            )
+            return
+                
         if executor is None:
             executor = self.__executor
 
-        if self.__async:
-            tmpfile = tempfile.NamedTemporaryFile(suffix='.context',
-                                                  dir=context.output_dir,
-                                                  delete=True)
+        # try different parallelization arrangement:
+        #   dask/futures -> casampi -> serial
+
+        if self.__parallel_wanted and daskhelpers.is_dask_ready():
+            tmpfile = tempfile.NamedTemporaryFile(suffix='.context', dir=context.output_dir, delete=True)
+            tmpfile.close()
+            context_path = tmpfile.name
+            context.save(context_path)
+            executable = Tier0PipelineTask(task_cls, task_args, context_path)
+            task = daskhelpers.FutureTask(executable)
+
+        elif self.__parallel_wanted and is_mpi_ready():
+            tmpfile = tempfile.NamedTemporaryFile(suffix='.context', dir=context.output_dir, delete=True)
             tmpfile.close()
             context_path = tmpfile.name
             context.save(context_path)
@@ -580,4 +731,5 @@ class TaskQueue:
             inputs = task_cls.Inputs(context, **task_args)
             task = task_cls(inputs)
             task = SyncTask(task, executor)
-        self.__queue.append(task)
+
+        self._register_task(task, task_hash)

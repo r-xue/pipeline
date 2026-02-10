@@ -1,3 +1,25 @@
+<%!
+rsc_path = ""
+
+def format_spwmap(spwmap, scispws):
+    if not spwmap:
+        return ''
+    else:
+        spwmap_strings=[]
+        for ind, spwid in enumerate(spwmap):
+        	if ind in scispws:
+        		spwmap_strings.append("<strong>{0}</strong>".format(spwid))
+        	else:
+        		spwmap_strings.append(str(spwid))
+        
+        return ', '.join(spwmap_strings)
+
+def format_field(field_name, field_id):
+    if not field_name:
+        return ''
+    else:
+        return '{} (#{})'.format(field_name, field_id)
+%>
 <%inherit file="t2-4m_details-base.mako"/>
 
 <%block name="title">Differential Gain Calibration</%block>
@@ -45,6 +67,46 @@ groups are combined while solving for SpW offsets between "reference" and
     % endfor
     </tbody>
 </table>
+
+% if spwmaps:
+<h3>Updated Spectral Window Map</h3>
+<table class="table table-bordered table-striped" summary="Narrow to wide spw mapping results">
+	<caption>New phase solution spwmap for the PHASE intent for the measurement
+	    set(s) where an updated spwmap was deemed necessary: if this stage found
+	    that the low frequency DIFFGAIN spectral windows needed combining in the
+	    reference solution (low-to-high transfer), due to SNR and/or
+	    instrumental issues for band-to-band, then the spectral window map is
+	    updated for the PHASE-to-TARGET mapping to use spectral window
+	    combination.
+	</caption>
+    <thead>
+	    <tr>
+	        <th>Measurement Set</th>
+            <th>Field</th>
+            <th>Intent</th>
+            <th>Scan IDs</th>
+            <th>Combine</th>
+            <th>Spectral Window Map</th>
+		    <th>Solint</th>
+		    <th>Gaintype</th>
+	    </tr>
+	</thead>
+	<tbody>
+    % for spwmap in spwmaps:
+		<tr>
+			<td>${spwmap.ms}</td>
+            <td>${format_field(spwmap.field, spwmap.fieldid)}</td>
+            <td>${spwmap.intent}</td>
+            <td>${spwmap.scanids}</td>
+            <td>${spwmap.combine}</td>
+            <td>${format_spwmap(spwmap.spwmap, spwmap.scispws)}</td>
+	        <td>${spwmap.solint}</td>
+	        <td>${spwmap.gaintype}</td>
+		</tr>
+    % endfor
+	</tbody>
+</table>
+% endif
 
 % if phase_vs_time_plots:
 <h2>Plots</h2>

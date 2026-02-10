@@ -151,7 +151,7 @@ class SyspowerInputs(vdp.StandardInputs):
         """Initialize Inputs.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
 
             vis: List of input visibility data.
 
@@ -200,10 +200,21 @@ class Syspower(basetask.StandardTaskTemplate):
             antexclude_dict = ast.literal_eval(self.inputs.antexclude)
         elif isinstance(self.inputs.antexclude, dict):
             antexclude_dict = self.inputs.antexclude
+        priorcals_results = None
+        for result in self.inputs.context.results:
+            objresult = result.read()
+            if objresult.taskname == "hifv_priorcals":
+                priorcals_results = objresult[0]
 
-        # PIPE-2164: getting rq table from context
-        # Assumes hifv_priorcals was executed as the previous stage
-        rq_table = next(iter(self.inputs.context.callibrary.active.get_caltable('rq')))
+        if priorcals_results is not None:
+            try:
+                rq_table = priorcals_results.rq_result[0].final[0].gaintable
+            except Exception as ex:
+                rq_table = priorcals_results.rq_result.final[0].gaintable
+                LOG.debug(ex)
+        else:
+            rq_table = ""
+            LOG.warning("Unable to find hifv_priorcals results")
 
         band_baseband_spw = collections.defaultdict(dict)
 
@@ -367,7 +378,13 @@ class Syspower(basetask.StandardTaskTemplate):
                 for j, this_spw in enumerate(spws):
                     hits = np.where((sp_ant == this_ant) & (sp_spw == this_spw))[0]
                     times, ind = np.unique(sp_time[hits], return_index=True)
-                    hits2 = np.where(np.in1d(sorted_time, times))[0]
+                    # Both arrays passed to np.isin are unique:
+                    #  - `times` is made unique explicitly via np.unique above.
+                    #  - `sorted_time` is constructed as the global, deduplicated time axis
+                    #    (sorted list of distinct times) earlier in this task.
+                    # Given these invariants, it is safe to set assume_unique=True here
+                    # to avoid the overhead of additional uniqueness checks.
+                    hits2 = np.where(np.isin(sorted_time, times, assume_unique=True))[0]
                     flux_hits = np.where((times >= np.min(flux_times)) & (times <= np.max(flux_times)))[0]
                     if len(hits) != len(hits2):
                         spw_problems.append(this_spw)
@@ -537,7 +554,7 @@ class Syspower(basetask.StandardTaskTemplate):
                             if j in subarray:
                                 bband = bband_common_indices.index(subarray)
 
-                        hits2 = np.where(np.in1d(sorted_time, rq_time[hits]))[0]
+                        hits2 = np.where(np.isin(sorted_time, rq_time[hits]))[0]
 
                         for pol in [0, 1]:
                             try:
@@ -573,7 +590,7 @@ class Syspower(basetask.StandardTaskTemplate):
                         for subarray in bband_common_indices:
                             if j in subarray:
                                 bband = bband_common_indices.index(subarray)
-                        hits2 = np.where(np.in1d(sorted_time, rq_time[hits]))[0]
+                        hits2 = np.where(np.isin(sorted_time, rq_time[hits]))[0]
 
                         for pol in [0, 1]:
                             try:

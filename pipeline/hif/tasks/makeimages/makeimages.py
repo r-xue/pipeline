@@ -4,6 +4,7 @@ from inspect import signature
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.daskhelpers as daskhelpers
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
@@ -27,7 +28,7 @@ class MakeImagesInputs(vdp.StandardInputs):
 
     calcsb = vdp.VisDependentProperty(default=False)
     cleancontranges = vdp.VisDependentProperty(default=False)
-    hm_cleaning = vdp.VisDependentProperty(default='rms')
+    hm_cleaning = vdp.VisDependentProperty(default='')
     hm_cyclefactor = vdp.VisDependentProperty(default=-999.0)
     hm_nmajor = vdp.VisDependentProperty(default=None)
     hm_dogrowprune = vdp.VisDependentProperty(default=None)
@@ -91,7 +92,7 @@ class MakeImagesInputs(vdp.StandardInputs):
         """Initialize Inputs.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
 
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
@@ -183,8 +184,13 @@ class MakeImagesInputs(vdp.StandardInputs):
                 - beamdev_thresh: default: 0.2
                   Threshold for the fractional beam deviation from the expected value required for the plane rejection.
 
-            parallel: Clean images using MPI cluster
+            parallel: Use CASA/tclean built-in parallel imaging for individual scientific targets, or, perform continuum imaging
+                of multiple target (calibrators) concurrently without the CASA/tclean built-in parallelization.
 
+                Options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
+
+                Default: ``'automatic'`` - optimizes the parallelization mode based on the imaging target type
+                    (scientific targets vs. calibrators) and the specific operation.
         """
         self.context = context
         self.output_dir = output_dir
@@ -223,7 +229,7 @@ class MakeImagesInputs(vdp.StandardInputs):
 
 # tell the infrastructure to give us mstransformed data when possible by
 # registering our preference for imaging measurement sets
-#api.ImagingMeasurementSetsPreferred.register(MakeImagesInputs)
+# api.ImagingMeasurementSetsPreferred.register(MakeImagesInputs)
 
 
 @task_registry.set_equivalent_casa_task('hif_makeimages')
@@ -287,14 +293,14 @@ class MakeImages(basetask.StandardTaskTemplate):
 
         description = {
             # map specmode to description for every clean target
-            _get_description_map(target['intent']).get(target['specmode'], 'Calculate clean products')
+            _get_description_map(target['intent'], target['stokes']).get(target['specmode'], 'Calculate clean products')
             for target in target_list
         }
         result.metadata['long description'] = ' / '.join(sorted(description))
 
         sidebar = {
             # map specmode to description for every clean target
-            _get_sidebar_map(target['intent']).get(target['specmode'], '')
+            _get_sidebar_map(target['intent'], target['stokes']).get(target['specmode'], '')
             for target in target_list
         }
         result.metadata['sidebar suffix'] = '/'.join(sidebar)
@@ -302,14 +308,18 @@ class MakeImages(basetask.StandardTaskTemplate):
         return result
 
     def analyse(self, result):
-
-        if self.inputs.context.imaging_mode == 'VLASS-SE-CUBE':
-            result = self._add_vlass_se_cube_metadata(result)
+        if self.inputs.context.imaging_mode is not None and self.inputs.context.imaging_mode.startswith('VLASS-'):
+            result = self._add_vlass_metadata(result)
 
         return result
 
-    def _add_vlass_se_cube_metadata(self, result):
+    def _add_vlass_metadata(self, result):
         """Attach extra imaging metadata to Tclean results for the VLASS Coarse Cube imaging."""
+        if self.inputs.context.imaging_mode != 'VLASS-SE-CUBE':
+            for idx, tclean_result in enumerate(result.results):
+                target = result.targets[idx]
+                tclean_result.imaging_metadata['cutout_imsize'] = (target['misc_vlass'] or {}).get('cutout_imsize')
+            return result
 
         vlass_plane_reject_keys_allowed = [
             'apply', 'exclude_spw', 'flagpct_thresh', 'beamdev_thresh']
@@ -361,18 +371,27 @@ class MakeImages(basetask.StandardTaskTemplate):
                     freq_list.append(imaging_metadata['freq'])
                     spwgroup_list.append(imaging_metadata['spw'])
                     flagpct_list.append(imaging_metadata['flagpct'])
-            tclean_result.imaging_metadata = imaging_metadata
+            tclean_result.imaging_metadata.update(imaging_metadata)
 
         # update tclean_result.imaging_metadata['keep'] based on the beam size and flagging percentage
         if bminor_list:
-            ref_idx = np.argsort(bminor_list)[len(bminor_list)//2]
 
-            bmajor_expected = bmajor_list[ref_idx]*freq_list[ref_idx]/np.array(freq_list)
-            bminor_expected = bminor_list[ref_idx]*freq_list[ref_idx]/np.array(freq_list)
-            c1 = (bmajor_expected*(1.-beamdev_thresh) < np.array(bmajor_list))
-            c2 = (bmajor_expected*(1.+beamdev_thresh) > np.array(bmajor_list))
-            c3 = (bminor_expected*(1.-beamdev_thresh) < np.array(bminor_list))
-            c4 = (bminor_expected*(1.+beamdev_thresh) > np.array(bminor_list))
+            bminor_array = np.array(bminor_list)
+            freq_array = np.array(freq_list)
+            weighted_values = bminor_array * freq_array
+            sorted_indices = np.argsort(weighted_values)
+            ref_idx = sorted_indices[len(bminor_list) // 2]
+
+            bmajor_expected = (
+                bmajor_list[ref_idx] * freq_list[ref_idx] / np.array(freq_list)
+            )
+            bminor_expected = (
+                bminor_list[ref_idx] * freq_list[ref_idx] / np.array(freq_list)
+            )
+            c1 = bmajor_expected * (1.0 - beamdev_thresh) < np.array(bmajor_list)
+            c2 = bmajor_expected * (1.0 + beamdev_thresh) > np.array(bmajor_list)
+            c3 = bminor_expected * (1.0 - beamdev_thresh) < np.array(bminor_list)
+            c4 = bminor_expected * (1.0 + beamdev_thresh) > np.array(bminor_list)
             c5 = (np.array(flagpct_list) < flagpct_thresh)
 
             spwgroup_keep = [False]*len(spwgroup_list)
@@ -483,11 +502,28 @@ class MakeImages(basetask.StandardTaskTemplate):
         array = ('%dm' % min(diameters))
 
         # Check if this sensitivity is for the representative source and SpW
-        _, repr_source, repr_spw, _, _, _, _, _, _, _ = heuristics.representative_target()
-        if str(repr_spw) in result.spw.split(',') and repr_source == utils.dequote(result.sourcename):
-            is_representative = True
-        else:
+        if heuristics.imaging_mode == 'VLA':
             is_representative = False
+        else:
+            _, repr_source, repr_spw, _, _, _, _, _, _, _ = heuristics.representative_target()
+            if str(repr_spw) in result.spw.split(',') and repr_source == utils.dequote(result.sourcename):
+                is_representative = True
+            else:
+                is_representative = False
+
+        # Sensitivities are currently reported for Stokes I only. For IQUV imaging the
+        # correct values have to be fetched from the new parameters since the previous
+        # ones will contain mixtures of I, Q, U and V due to the "axes" parameter in
+        # the ia.statistics() calls (PIPE-2464). TODO: Refactor the code to have just
+        # one set of statistical parameters.
+        if result.stokes == 'IQUV':
+            image_rms = result.image_rms_iquv[0]
+            image_min = result.image_min_iquv[0]
+            image_max = result.image_max_iquv[0]
+        else:
+            image_rms = result.image_rms
+            image_min = result.image_min
+            image_max = result.image_max
 
         return Sensitivity(array=array,
                            intent=target['intent'],
@@ -501,9 +537,10 @@ class MakeImages(basetask.StandardTaskTemplate):
                            cell=cell,
                            robust=target['robust'],
                            uvtaper=target['uvtaper'],
-                           sensitivity=cqa.quantity(result.image_rms, 'Jy/beam'),
-                           pbcor_image_min=cqa.quantity(result.image_min, 'Jy/beam'),
-                           pbcor_image_max=cqa.quantity(result.image_max, 'Jy/beam'),
+                           theoretical_sensitivity=cqa.quantity(result.sensitivity, 'Jy/beam'),
+                           observed_sensitivity=cqa.quantity(image_rms, 'Jy/beam'),
+                           pbcor_image_min=cqa.quantity(image_min, 'Jy/beam'),
+                           pbcor_image_max=cqa.quantity(image_max, 'Jy/beam'),
                            imagename=result.image.replace('.pbcor', ''),
                            datatype=result.datatype)
 
@@ -518,7 +555,7 @@ class CleanTaskFactory(object):
     def __enter__(self):
         # If there's a possibility that we'll submit MPI jobs, save the context
         # to disk ready for import by the MPI servers.
-        if mpihelpers.mpiclient:
+        if mpihelpers.mpiclient or daskhelpers.daskclient:
             # Use the tempfile module to generate a unique temporary filename,
             # which we use as the output path for our pickled context
             tmpfile = tempfile.NamedTemporaryFile(suffix='.context',
@@ -549,28 +586,25 @@ class CleanTaskFactory(object):
         """
         task_args = self.__get_task_args(target)
 
-        is_mpi_ready = mpihelpers.is_mpi_ready()
-        is_cal_image = 'TARGET' not in target['intent']
+        parallel_wanted = mpihelpers.parse_parallel_input_parameter(self.__inputs.parallel)
 
-        is_tier0_job = is_mpi_ready and is_cal_image
+        # exclude target imaging from tier0 in general
+        parallel_wanted = parallel_wanted and 'TARGET' not in target['intent']
+
         # PIPE-1923 asks to temporarily turn off Tier-0 mode for
         # POLARIZATION intent when imaging IQUV because of a
         # potential CASA bug. This should be undone when this
         # bug is fixed.
         if target['intent'] == 'POLARIZATION' and target['stokes'] == 'IQUV':
-            is_tier0_job = False
-            if is_mpi_ready:
-                LOG.info('Temporarily turning off Tier-0 parallelization for Stokes IQUV polarization calibrator imaging (PIPE-1923).')
-
-        parallel_wanted = mpihelpers.parse_mpi_input_parameter(self.__inputs.parallel)
+            parallel_wanted = False
+            LOG.info('Temporarily turning off Tier-0 parallelization for Stokes IQUV polarization calibrator imaging (PIPE-1923).')
 
         # PIPE-1401: turn on the tier0 parallelization for individuals planes in the VLASS coarse cube imaging
         # Also see the disscussions in PIPE-1357
         vlass_se_cube_tier0_wanted = True
         is_vlass_se_cube = 'TARGET' in target['intent'] and self.__context.imaging_mode == 'VLASS-SE-CUBE'
-        if all([vlass_se_cube_tier0_wanted, is_vlass_se_cube, is_mpi_ready]):
-            is_tier0_job = True
-            task_args['parallel'] = False
+        if vlass_se_cube_tier0_wanted and is_vlass_se_cube:
+            parallel_wanted = True
 
         # we check/remove the task_arg dictionary keys that are not required by Tclean.Inputs
         # then clean_targets objects would be free to carry extra metedata without causing problems during
@@ -578,7 +612,19 @@ class CleanTaskFactory(object):
         task_inputs_args = list(signature(Tclean.Inputs).parameters)
         task_args = {k: v for k, v in task_args.items() if k in task_inputs_args}
 
-        if is_tier0_job and parallel_wanted:
+        LOG.debug('MakeImages Parallelization Config:')
+        LOG.debug('parallel_wanted:             %s', parallel_wanted)
+        LOG.debug('daskhelpers.is_dask_ready(): %s', daskhelpers.is_dask_ready())
+        LOG.debug('mpihelpers.is_mpi_ready()    %s', mpihelpers.is_mpi_ready())
+
+        if parallel_wanted and daskhelpers.is_dask_ready():
+            task_args['parallel'] = False
+            executable = mpihelpers.Tier0PipelineTask(Tclean,
+                                                      task_args,
+                                                      self.__context_path)
+            return daskhelpers.FutureTask(executable)
+        elif parallel_wanted and mpihelpers.is_mpi_ready():
+            task_args['parallel'] = False
             executable = mpihelpers.Tier0PipelineTask(Tclean,
                                                       task_args,
                                                       self.__context_path)
@@ -643,13 +689,26 @@ class CleanTaskFactory(object):
 
         if inputs.hm_masking in (None, ''):
             if 'TARGET' in task_args['intent']:
-                task_args['hm_masking'] = 'auto'
+                if task_args['stokes'] == 'IQUV':
+                    if task_args['mask'] not in (None, ''):
+                        # "re-use" is a hidden mode just for the special use case
+                        # of re-using a previously computed Stokes I mask.
+                        task_args['hm_masking'] = 're-use'
+                    else:
+                        task_args['hm_masking'] = 'none'
+                elif task_args['mask'] not in (None, ''):
+                    task_args['hm_masking'] = 'manual'
+                else:
+                    task_args['hm_masking'] = 'auto'
             elif task_args['intent'] == 'POLARIZATION' and task_args['stokes'] == 'IQUV':
                 task_args['hm_masking'] = 'centralregion'
             else:
                 task_args['hm_masking'] = 'auto'
         else:
-            task_args['hm_masking'] = inputs.hm_masking
+            if inputs.hm_masking.lower() in ('auto', 'centralregion', 'manual', 'none'):
+                task_args['hm_masking'] = inputs.hm_masking.lower()
+            else:
+                raise Exception(f'Masking mode {inputs.hm_masking} unknown.')
 
         if inputs.hm_masking == 'auto':
             task_args['hm_sidelobethreshold'] = inputs.hm_sidelobethreshold
@@ -663,7 +722,10 @@ class CleanTaskFactory(object):
             task_args['hm_fastnoise'] = inputs.hm_fastnoise
 
         if inputs.hm_cleaning == '':
-            task_args['hm_cleaning'] = 'rms'
+            if task_args['threshold'] not in (None, ''):
+                task_args['hm_cleaning'] = 'manual'
+            else:
+                task_args['hm_cleaning'] = 'rms'
         else:
             task_args['hm_cleaning'] = inputs.hm_cleaning
 
@@ -689,7 +751,7 @@ class CleanTaskFactory(object):
             task_args['cyclefactor'] = inputs.hm_cyclefactor
 
         if inputs.hm_nmajor not in (None, -999.0):
-            task_args['nmajor'] = inputs.hm_nmajor        
+            task_args['nmajor'] = inputs.hm_nmajor
 
         if inputs.hm_minpsffraction not in (None, -999.0):
             task_args['hm_minpsffraction'] = inputs.hm_minpsffraction
@@ -700,7 +762,7 @@ class CleanTaskFactory(object):
         return task_args
 
 
-def _get_description_map(intent):
+def _get_description_map(intent, stokes):
     if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE'):
         return {
             'mfs': 'Make calibrator images',
@@ -722,18 +784,28 @@ def _get_description_map(intent):
             'cont': 'Make check source images'
         }
     elif intent == 'TARGET':
-        return {
-            'mfs': 'Make target per-spw continuum images',
-            'cont': 'Make target aggregate continuum images',
-            'cube': 'Make target cubes',
-            'repBW': 'Make representative bandwidth target cube'
+        if stokes.upper() in ('', 'I'):
+            return {
+                'mfs': 'Make target per-spw continuum images',
+                'cont': 'Make target aggregate continuum images',
+                'cube': 'Make target cubes',
+                'repBW': 'Make representative bandwidth target cube'
+            }
+        elif stokes.upper() == 'IQUV':
+            return {
+                'mfs': 'Make target fullpol per-spw continuum images',
+                'cont': 'Make target fullpol aggregate continuum images',
+                'cube': 'Make target fullpol cubes',
+                'repBW': 'Make fullpol representative bandwidth target cube'
+            }
+        else:
+            raise Exception(f'Unknown Stokes value "{stokes}"')
 
-        }
     else:
         return {}
 
 
-def _get_sidebar_map(intent):
+def _get_sidebar_map(intent, stokes):
     if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE', 'DIFFGAINREF', 'DIFFGAINSRC'):
         return {
             'mfs': 'cals',
@@ -750,11 +822,21 @@ def _get_sidebar_map(intent):
             'cont': 'checksrc'
         }
     elif intent == 'TARGET':
-        return {
-            'mfs': 'mfs',
-            'cont': 'cont',
-            'cube': 'cube',
-            'repBW': 'cube_repBW'
-        }
+        if stokes.upper() in ('', 'I'):
+            return {
+                'mfs': 'mfs',
+                'cont': 'cont',
+                'cube': 'cube',
+                'repBW': 'cube_repBW'
+            }
+        elif stokes.upper() == 'IQUV':
+            return {
+                'mfs': 'mfs_fullpol',
+                'cont': 'cont_fullpol',
+                'cube': 'cube_fullpol',
+                'repBW': 'cube_repBW_fullpol'
+            }
+        else:
+            raise Exception(f'Unknown Stokes value "{stokes}"')
     else:
         return {}

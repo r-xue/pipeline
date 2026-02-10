@@ -217,7 +217,7 @@ class ReductionGroupParameters(Parameters):
         self.member_list = None            # List[int]: List of reduction group ID
         self.members = None                # List[List[MeasurementSet, int, List[str]]]: Image group of reduction group
         self.msobjs = None                 # List[MeasurementSet]: List of MeasurementSet
-        self.name = None                   # str: Name of MeasurementSet
+        self.name = None                   # str: Name of reduction group
         self.nx = None                     # Union[int, numpy.int64]: X of image shape
         self.ny = None                     # Union[int, numpy.int64]: Y of image shape
         self.org_direction = None          # Direction: a direction of origin for ephemeris object

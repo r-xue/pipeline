@@ -382,13 +382,24 @@ class PerAntennaChart(Chart):
             result_table = {band: result_table for band in {band for spw, band in spw2band.items()}}
 
         for bandname, tabitem in result_table.items():
+            # PIPE-1729: check gaintable is present
+            if not os.path.exists(tabitem):
+                LOG.warning("{!s} not found".format(tabitem))
+                continue
             with casa_tools.TableReader(tabitem) as tb:
                 times.extend(tb.getcol('TIME'))
+
+        if len(times) == 0:
+            return []
         mintime = np.min(times)
         maxtime = np.max(times)
         for spw in spws:
             if not self.perSpwChart or spw.specline_window:
                 for bandname, tabitem in result_table.items():
+                    # PIPE-1729: check gaintable is present
+                    if not os.path.exists(tabitem):
+                        LOG.warning("{!s} not found".format(tabitem))
+                        continue
                     if self.perSpwChart and spw2band[spw.id] != bandname:
                         continue
                     if self.plottype == "bpsolamp" or self.plottype == "bpsolphase" or self.plottype == "bpsolamp_perspw" or self.plottype == "bpsolphase_perspw":

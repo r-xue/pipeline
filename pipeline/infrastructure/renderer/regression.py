@@ -35,34 +35,32 @@ from pipeline.h.tasks.applycal.applycal import ApplycalResults
 from pipeline.h.tasks.common.commonfluxresults import FluxCalibrationResults
 from pipeline.hif.tasks.applycal.ifapplycal import IFApplycal
 from pipeline.hifa.tasks.fluxscale.gcorfluxscale import GcorFluxscale
+from pipeline.hifa.tasks.gfluxscaleflag import Gfluxscaleflag
 from pipeline.hifa.tasks.gfluxscaleflag.resultobjects import GfluxscaleflagResults
+from pipeline.hifv.tasks.finalcals.applycals import Applycals
+from pipeline.hifv.tasks.finalcals.finalcals import Finalcals, FinalcalsResults
+from pipeline.hifv.tasks.flagging.checkflag import Checkflag, CheckflagResults
+from pipeline.hifv.tasks.flagging.flagdetervla import FlagDeterVLA, FlagDeterVLAResults
+from pipeline.hifv.tasks.flagging.targetflag import Targetflag, TargetflagResults
+from pipeline.hifv.tasks.fluxscale.fluxboot import Fluxboot, FluxbootResults
+from pipeline.hifv.tasks.fluxscale.solint import Solint, SolintResults
+from pipeline.hifv.tasks.importdata.importdata import VLAImportData, VLAImportDataResults
+from pipeline.hifv.tasks.priorcals import Priorcals
+from pipeline.hifv.tasks.priorcals.resultobjects import PriorcalsResults
+from pipeline.hifv.tasks.semiFinalBPdcals.semiFinalBPdcals import semiFinalBPdcals, semiFinalBPdcalsResults
+from pipeline.hifv.tasks.setmodel.vlasetjy import VLASetjy
+from pipeline.hifv.tasks.statwt.statwt import Statwt, StatwtResults
+from pipeline.hifv.tasks.testBPdcals.testBPdcals import testBPdcals, testBPdcalsResults
 from pipeline.hsd.tasks.applycal.applycal import SDApplycal
-from pipeline.hsd.tasks.baselineflag.baselineflag import SDBLFlagResults
-from pipeline.hsd.tasks.baselineflag.baselineflag import SDBLFlag
+from pipeline.hsd.tasks.baselineflag.baselineflag import SDBLFlag, SDBLFlagResults
 from pipeline.hsd.tasks.imaging.imaging import SDImaging
 from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResults
+from pipeline.hsd.tasks.restoredata.restoredata import SDRestoreData, SDRestoreDataResults
+from pipeline.hsdn.tasks.restoredata.restoredata import NRORestoreData, NRORestoreDataResults
+from pipeline.infrastructure import logging
 from pipeline.infrastructure.basetask import Results, ResultsList, StandardTaskTemplate
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.taskregistry import task_registry
-from pipeline.infrastructure import logging
-from pipeline.hsd.tasks.restoredata.restoredata import SDRestoreDataResults, SDRestoreData
-from pipeline.hsdn.tasks.restoredata.restoredata import NRORestoreDataResults, NRORestoreData
-from pipeline.hifv.tasks.fluxscale.fluxboot import Fluxboot, FluxbootResults
-from pipeline.hifv.tasks.fluxscale.solint import Solint, SolintResults
-from pipeline.hifv.tasks.priorcals import Priorcals
-from pipeline.hifv.tasks.priorcals.resultobjects import PriorcalsResults
-from pipeline.hifv.tasks.setmodel.vlasetjy import VLASetjy
-from pipeline.h.tasks.common.commonfluxresults import FluxCalibrationResults
-from pipeline.hifv.tasks.statwt.statwt import Statwt, StatwtResults
-from pipeline.hifv.tasks.importdata.importdata import VLAImportData, VLAImportDataResults
-from pipeline.hifv.tasks.flagging.flagdetervla import FlagDeterVLA, FlagDeterVLAResults
-from pipeline.hifv.tasks.testBPdcals.testBPdcals import testBPdcals, testBPdcalsResults
-from pipeline.hifv.tasks.semiFinalBPdcals.semiFinalBPdcals import semiFinalBPdcals, semiFinalBPdcalsResults
-from pipeline.hifv.tasks.finalcals.finalcals import Finalcals, FinalcalsResults
-from pipeline.hifv.tasks.finalcals.applycals import Applycals
-from pipeline.hifv.tasks.flagging.checkflag import Checkflag, CheckflagResults
-from pipeline.hifv.tasks.flagging.targetflag import Targetflag, TargetflagResults
-from pipeline.domain.measurementset import MeasurementSet
 
 LOG = logging.get_logger(__name__)
 
@@ -229,8 +227,7 @@ registry = RegressionExtractorRegistry()
 
 
 class FluxcalflagRegressionExtractor(RegressionExtractor):
-    """
-    Regression test result extractor for hifa_gfluxscaleflag.
+    """Regression test result extractor for hifa_gfluxscaleflag.
 
     The extracted values are:
        - the number of flagged rows before this task
@@ -240,10 +237,10 @@ class FluxcalflagRegressionExtractor(RegressionExtractor):
 
     result_cls = GfluxscaleflagResults
     child_cls = None
+    generating_task = Gfluxscaleflag
 
-    def handle(self, result:GfluxscaleflagResults) -> OrderedDict:
-        """
-        Extract values for testing.
+    def handle(self, result: GfluxscaleflagResults) -> OrderedDict:
+        """Extract values for testing.
 
         Args:
             result: GfluxscaleflagResults object
@@ -251,7 +248,7 @@ class FluxcalflagRegressionExtractor(RegressionExtractor):
         Returns:
             OrderedDict[str, float]
         """
-        prefix = get_prefix(result, result.task)
+        prefix = get_prefix(result, self.generating_task)
 
         summaries_by_name = {s['name']: s for s in result.cafresult.summaries}
 

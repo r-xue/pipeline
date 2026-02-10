@@ -8,8 +8,8 @@ from __future__ import annotations
 
 import collections
 import datetime
-import enum
 import functools
+import itertools
 import math
 import operator
 import os
@@ -17,17 +17,21 @@ import re
 import shutil
 import traceback
 from typing import TYPE_CHECKING, Any
+from xml.etree import ElementTree
 
 import numpy as np
 from scipy import interpolate, special
 
+import pipeline.hsd.heuristics.SDcalatmcorr as sdatm
 import pipeline.infrastructure.pipelineqa as pqa
+
 from pipeline import infrastructure
-from pipeline.domain import datatable, measures
-from pipeline.infrastructure import basetask, casa_tools, utils
+from pipeline.domain import measures
+from pipeline.infrastructure import basetask, casa_tasks, casa_tools, utils
 from pipeline.infrastructure.renderer import rendererutils
-from pipeline.qa import checksource
 from pipeline.infrastructure.utils import ous_parallactic_range
+from pipeline.hsd.tasks.common import utils as sdutils
+from pipeline.qa import checksource
 
 if TYPE_CHECKING:
     from casatools import coordsys
@@ -35,6 +39,7 @@ if TYPE_CHECKING:
     from pipeline.domain.singledish import MSReductionGroupMember
     from pipeline.hif.tasks.gaincal.common import GaincalResults
     from pipeline.hif.tasks.polcal.polcalworker import PolcalWorkerResults
+    from pipeline.hsd.tasks.applycal.applycal import SDApplycalResults
     from pipeline.hifa.tasks.importdata.almaimportdata import ALMAImportDataResults
     from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
     from pipeline.hsd.tasks.baseline.baseline import SDBaselineResults
@@ -65,6 +70,8 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_gfluxscale_k_spw',                          # ALMA specific
            'score_fluxservice',                               # ALMA specific
            'score_observing_modes',                           # ALMA specific
+           'score_diffgaincal_combine',                       # ALMA IF specific
+           'score_diffgaincal_residuals',                     # ALMA IF specific
            'score_renorm',                                    # ALMA IF specific
            'score_polcal_gain_ratio',                         # ALMA IF specific
            'score_polcal_gain_ratio_rms',                     # ALMA IF specific
@@ -101,7 +108,10 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_syspowerdata',
            'score_solint',
            'score_longsolint',
-           'score_flagged_ant_spw']
+           'score_flagged_ant_spw',
+           'score_testBPdcals_dts_ants',
+           'score_testBPdcals_refant',
+           'score_testBPdcals_delay']
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -239,22 +249,46 @@ def calc_frac_newly_flagged(summaries, agents=None, scanids=None):
     return frac_flagged
 
 
-def linear_score(x, x1, x2, y1=0.0, y2=1.0):
-    """
-    Calculate the score for the given data value, assuming the
-    score follows a linear gradient between the low and high values.
+def linear_score(x: float, x1: float, x2: float, y1: float = 0.0, y2: float = 1.0) -> float:
+    """Calculate the score for the given data value using linear scaling.
 
-    x values will be clipped to lie within the range x1->x2
-    """
-    x1 = float(x1)
-    x2 = float(x2)
-    y1 = float(y1)
-    y2 = float(y2)
+    Computes a linearly interpolated score between two boundary points (x1, y1) and (x2, y2).
+    The input value x is automatically clipped to lie within the range [min(x1, x2), max(x1, x2)].
 
-    clipped_x = sorted([x1, x, x2])[1]
-    m = (y2-y1) / (x2-x1)
-    c = y1 - m*x1
-    return m*clipped_x + c
+    Args:
+        x: The input data value to score.
+        x1: The first boundary x-coordinate.
+        x2: The second boundary x-coordinate.
+        y1: The score corresponding to x1.
+        y2: The score corresponding to x2.
+
+    Returns:
+        The linearly interpolated score value.
+
+    Examples:
+        >>> linear_score(0.5, 0.0, 1.0)  # Midpoint between 0 and 1
+        0.5
+        >>> linear_score(1.5, 0.0, 1.0)  # Clipped to upper bound
+        1.0
+        >>> linear_score(-0.5, 0.0, 1.0)  # Clipped to lower bound
+        0.0
+
+    Raises:
+        ZeroDivisionError: When x1 equals x2 (no valid interpolation range).
+    """
+    # Ensure all inputs are float type for consistent arithmetic
+    x, x1, x2, y1, y2 = map(float, [x, x1, x2, y1, y2])
+
+    # Handle edge case to prevent division by zero
+    if x1 == x2:
+        raise ZeroDivisionError('Cannot interpolate when x1 equals x2 (zero-width interval)')
+
+    # Clip x to valid interpolation range
+    x_min, x_max = (x1, x2) if x1 <= x2 else (x2, x1)
+    x_clipped = max(x_min, min(x_max, x))
+
+    # Linear interpolation formula: y = y1 + (y2 - y1) * (x - x1) / (x2 - x1)
+    return y1 + (y2 - y1) * (x_clipped - x1) / (x2 - x1)
 
 
 def score_data_flagged_by_agents(ms, summaries, min_frac, max_frac, agents=None, intents=None):
@@ -481,6 +515,167 @@ def score_observing_modes(mses: list[MeasurementSet]) -> list[pqa.QAScore]:
 
 
 @log_qa
+def score_diffgaincal_combine(vis: str, combine: str, qa_message: str, phaseup_type: str) -> pqa.QAScore:
+    """
+    Compute QA score based on whether the phase solution gaintable, computed as
+    part of the hifa_diffgaincal stage, used spectral window combination, and
+    whether any SpWs were missing (in case of no SpW combination).
+
+    Args:
+        vis: Name of measurement set to score.
+        combine: combine parameter used in diffgain gaincal.
+        qa_message: String representing QA message derived during task, included
+            when no SpW combination is used (presumably forced by user) even
+            though there were indicators that would have triggered SpW
+            combination in automatic mode.
+        phaseup_type: String representing the type of diffgain phase-up.
+
+    Returns:
+        QA score.
+    """
+    # If SpW combination was used, turn this into a blue QA score.
+    if 'spw' in combine:
+        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
+        shortmsg = f"SpW combination used."
+        longmsg = f"{vis}: Spectral window combination used for B2B {phaseup_type} to improve phase-up solution SNR."
+    # If no SpW combination was used and a SpW is missing, then turn this into a
+    # warning QA score.
+    elif qa_message:
+        score = rendererutils.SCORE_THRESHOLD_WARNING
+        shortmsg = f"SpWs missing or heavily flagged."
+        longmsg = (f"{vis}: No spectral window combination used for diffgain {phaseup_type} solution but"
+                   f" {qa_message}.")
+    # Otherwise, no missing SpWs or SpW combination, so return good score of 1.
+    else:
+        score = 1.0
+        shortmsg = f"No SpW combination used."
+        longmsg = f"{vis}: No spectral window combination used for diffgain {phaseup_type} solution."
+
+    origin = pqa.QAOrigin(metric_name='score_diffgaincal_combine',
+                          metric_score=score,
+                          metric_units='Score based on whether diffgain used combine')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
+
+@log_qa
+def score_diffgaincal_residuals(residuals_info: dict, score_type: str) -> pqa.QAScore:
+    """
+    Compute QA score for diffgain residual phase offsets for given score type
+    based on pre-computed statistics provided in residual_info dictionary.
+
+    The premise is:
+        - mean should be around 0.
+        - no outlier values above set limits.
+        - RMS at set limits.
+
+    Args:
+        residuals_info: Dictionary containing info on diffgain residual phase.
+        score_type: Type of statistic to compute QA score for. Valid options:
+
+            RESIDUAL:
+            - 'offsets': use mean.
+            - 'rms': use RMS
+            - 'outliers': use maximum (per antenna)
+
+    Returns:
+        QA score.
+    """
+    def get_expanded_message(dict_use: dict) -> str:
+        """Generate expanded QA message for selection of residuals dictionary."""
+        # Group antennas by (spw, corr).
+        spw_corr_to_ants = collections.defaultdict(set)
+        for (spw, corr, ant, _), _ in dict_use.items():
+            spw_corr_to_ants[(str(spw), str(corr))].add(str(ant))
+
+        # Group (spw, corr) pairs by shared antenna sets.
+        antset_to_spw_corr = collections.defaultdict(list)
+        for (spw, corr), ants in spw_corr_to_ants.items():
+            key = frozenset(ants)
+            antset_to_spw_corr[key].append((spw, corr))
+
+        # Build the full message.
+        full_msg = []
+        for antset, spw_corr_list in antset_to_spw_corr.items():
+            spws = sorted({spw for spw, _ in spw_corr_list})
+            corrs = sorted({corr for _, corr in spw_corr_list})
+
+            spw_msg = "all SpWs" if spws == ['all'] else f"SpW {','.join(spws)}"
+            ant_msg = "all antennas" if antset == {'all'} else f"antenna(s) {','.join(sorted(antset))}"
+            corr_msg = f"corr {','.join(corrs)}"
+
+            full_msg.append(f" {ant_msg}, in {spw_msg} {corr_msg}")
+
+        return ','.join(full_msg)
+
+    ms_name = residuals_info['ms_name']
+
+    # Use a message phrase based on score type.
+    # In the future, a b2b offset score will be added with a different `messph`
+    messph = 'phase difference for residual phase'
+
+    # If the diffgain residual phase offsets caltable had overall low SNR, then
+    # return a suboptimal (blue) score without scoring variability or outliers.
+    if residuals_info['low_snr']:
+        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
+        shortmsg = f"Low SNR in diffgaincal {messph} {score_type}"
+        longmsg = (f"Low SNR in diffgaincal {messph} {score_type} for {ms_name}: not scoring based on"
+                   f" variability or outliers.")
+    else:
+        # Get info from residuals statistics dict.
+        intent = residuals_info['intent']
+        field = residuals_info['field']
+        data = residuals_info['data']
+
+        # Convert score type to what statistic to score.
+        type_to_param = {
+            'offsets': 'mean',
+            'rms': 'rms',
+            'outliers': 'max',
+        }
+        param = type_to_param[score_type]
+
+        # Identify where the residual phase statistic is poor, elevated, or
+        # good, using pre-defined thresholds.
+        thresholds = {'good': 30., 'elevated': 50., 'poor': 70.}
+        good = {k: v for k, v in data.items() if param in k and thresholds['good'] < v <= thresholds['elevated']}
+        elevated = {k: v for k, v in data.items() if param in k and thresholds['elevated'] < v <= thresholds['poor']}
+        poor = {k: v for k, v in data.items() if param in k and v > thresholds['poor']}
+
+        # Poor phase statistics are scored as a yellow warning.
+        if poor:
+            score = rendererutils.SCORE_THRESHOLD_WARNING
+            shortmsg = f'High Diffgaincal {messph} {score_type}'
+            longmsg = (f'For {ms_name}, field={field} intent={intent} has high {messph} {score_type} >70 deg for'
+                       f' {get_expanded_message(poor)}.')
+        # Elevated phase statistics are scored as the lowest blue score.
+        elif elevated:
+            score = rendererutils.SCORE_THRESHOLD_WARNING + 0.01 # lowest blue score 
+            shortmsg = f'Elevated Diffgaincal {messph} {score_type}'
+            longmsg = (f'For {ms_name}, field={field} intent={intent} has elevated {messph} {score_type} between'
+                       f' 50-70 deg for {get_expanded_message(elevated)}.')
+        # Good phase statistics are scored as a blue suboptimal score.
+        elif good:
+            score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
+            shortmsg = f'Good Diffgaincal {messph} {score_type}'
+            longmsg = f'For {ms_name}, field={field} intent={intent} has good {messph} {score_type} between 30-50 deg.'
+        # Phase statistics better than "good" are excellent with green score of 1.
+        else:
+            score = 1.0
+            shortmsg = f'Excellent Diffgaincal {messph} {score_type}'
+            longmsg = f'For {ms_name}, field={field} intent={intent} has excellent {messph} {score_type} <30 deg.'
+
+    # Specify score type. In the future, a b2b offset score with a different
+    # `originmess` will be added
+    originmess = 'residual'
+    origin = pqa.QAOrigin(metric_name=f'score_diffgaincal_{originmess}',
+                          metric_score=score,
+                          metric_units=f'Score based on diffgain {originmess} analysis')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
+
+@log_qa
 def score_bands(mses):
     """
     Score a MeasurementSet object based on the presence of
@@ -561,6 +756,20 @@ def score_parallactic_range(
                             weblog_location=pqa.WebLogLocation.ACCORDION,
                             applies_to=pqa.TargetDataSelection(session={session_name}))
         return [score]
+
+    if coverage is None:
+        longmsg = (f'Cannot determine parallactic angle for '
+                   f'polarisation calibrator {field_name} in session {session_name}')
+        shortmsg = 'Parallactic angle'
+        origin = pqa.QAOrigin(
+            metric_name='ScoreParallacticAngle',
+            metric_score=0,
+        )
+        score = pqa.QAScore(0.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+                            weblog_location=pqa.WebLogLocation.ACCORDION,
+                            applies_to=pqa.TargetDataSelection(session={session_name}))
+        scores.append(score)
+        return scores
 
     # accordion message if coverage is adequate
     if coverage >= threshold:
@@ -927,21 +1136,90 @@ def score_lowtrans_flagcmds(ms, result):
 
 @log_qa
 def score_vla_agents(ms, summaries):
-    """
-    Get a score for the fraction of data flagged by online, shadow, and template agents.
+    """Get a score for the fraction of data flagged by online, shadow, and template agents.
 
     0 < score < 1 === 60% < frac_flagged < 5%
     """
-    score = score_vla_science_data_flagged_by_agents(ms, summaries, 0.05, 0.6,
-                                                     ['online', 'template', 'autocorr', 'edgespw',
-                                                      'clip', 'quack', 'baseband'])
+    qascore_list = []
 
-    new_origin = pqa.QAOrigin(metric_name='score_vla_agents',
-                              metric_score=score.origin.metric_score,
-                              metric_units='Fraction of data newly flagged by online, shadow, and template agents')
-    score.origin = new_origin
+    # PIPE-2576: Part-1: if flag template is used score < 0.5
+    for flag_stat in summaries:
+        if flag_stat['name'] == 'template':
+            score_val = 0.3
+            msg = 'Flag template is used for flagging.'
+            origin = pqa.QAOrigin(metric_name='score_flagdata', metric_score=score_val, metric_units='')
+            qascore_list.append(pqa.QAScore(score_val, longmsg=msg, shortmsg=msg, origin=origin))
 
-    return score
+    # PIPE-2576: Part-2: if clipping > 1% with spectral line window
+    # indentified, score < 0.5
+    is_continuum_only = True
+    for flag_stat in summaries:
+        if flag_stat['name'] == 'clip':
+            for spw_id in flag_stat['spw'].keys():
+                spw = ms.get_spectral_window(spw_id)
+                flag_fraction = flag_stat['spw'][spw_id]['flagged'] / flag_stat['spw'][spw_id]['total']
+                if spw.specline_window and is_continuum_only:
+                    is_continuum_only = False
+                if spw.specline_window and flag_fraction > 0.01:
+                    score_val = 0.3
+                    msg = f'Clipping {flag_fraction:.2%} in spectral line spw {spw_id}.'
+                    origin = pqa.QAOrigin(
+                        metric_name='score_flagdata',
+                        metric_score=score_val,
+                        metric_units='Fraction of data that is flagged in clipping',
+                    )
+                    qascore_list.append(pqa.QAScore(score_val, longmsg=msg, shortmsg=msg, origin=origin))
+
+    # PIPE-2576: Part-3:  if clipping > 5% with continuum line window
+    for flag_stat in summaries:
+        if flag_stat['name'] == 'clip' and is_continuum_only:
+            flag_fraction = flag_stat['flagged'] / flag_stat['total']
+            if flag_fraction > 0.05:
+                score_val = 0.3
+                msg = f'Clipping {flag_fraction:.2%} in continuum spw(s).'
+                origin = pqa.QAOrigin(
+                    metric_name='score_flagdata',
+                    metric_score=score_val,
+                    metric_units='Fraction of data that is flagged in clipping',
+                )
+                qascore_list.append(pqa.QAScore(score_val, longmsg=msg, shortmsg=msg, origin=origin))
+
+    # PIPE-2576: Part-4: if total flagging >30%, score < 0.5
+    if summaries:
+        flag_fraction = summaries[-1]['flagged'] / summaries[-1]['total']
+        score_val = max([(1 - flag_fraction / 0.60), 0.0])
+        msg = f'Total flag fraction is {flag_fraction:.2%}.'
+        origin = pqa.QAOrigin(
+            metric_name='score_flagdata', metric_score=score_val, metric_units='Total Fraction of data that is flagged'
+        )
+        qascore_list.append(pqa.QAScore(score_val, longmsg=msg, shortmsg=msg, origin=origin))
+    else:
+        score_val = 0.0
+        msg = 'No flag summaries found'
+        origin = pqa.QAOrigin(
+            metric_name='score_flagdata', metric_score=score_val, metric_units='Total Fraction of data that is flagged'
+        )
+        qascore_list.append(pqa.QAScore(score_val, longmsg=msg, shortmsg=msg, origin=origin))
+
+    # PIPE-2576: Part-5: endtime = 0 in flag.xml then score <0.5
+    flag_table = os.path.join(ms.name, 'Flag.xml')
+    if os.path.exists(flag_table):
+        source_element = ElementTree.parse(flag_table)
+        if source_element:
+            for flagset in source_element.findall('row'):
+                endtime = flagset.findtext('endTime')
+                if int(endtime):
+                    score_val = 0.3
+                    msg = 'In flag.xml for online flags, end time is 0'
+                    origin = pqa.QAOrigin(
+                        metric_name='score_flagdata',
+                        metric_score=score_val,
+                        metric_units='Total Fraction of data that is flagged',
+                    )
+                    qascore_list.append(pqa.QAScore(score_val, longmsg=msg, shortmsg=msg, origin=origin))
+                    break
+
+    return qascore_list
 
 
 @log_qa
@@ -1181,6 +1459,15 @@ def score_vla_flux_residual_rms(fractional_residuals, num_spws, spixl):
     spixl: list of a spectral index
     """
 
+    if len(fractional_residuals) == 0:
+        score = 0.0
+        longmsg = 'No fractional residuals available.'
+        shortmsg = longmsg
+        origin = pqa.QAOrigin(metric_name='score_vla_flux_residual_rms',
+                              metric_score=score,
+                              metric_units='')
+        return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
     # PIPE-119, part a
     max_res = max(max(res) for res in fractional_residuals)
     if max_res < 0.01:
@@ -1190,7 +1477,7 @@ def score_vla_flux_residual_rms(fractional_residuals, num_spws, spixl):
 
     # PIPE-119 part b
     for res in fractional_residuals:
-        if max(np.abs(res))> 0.3:
+        if max(np.abs(res)) > 0.3:
             LOG.warning("Fractional residuals are > 0.3")
             break
 
@@ -2718,7 +3005,6 @@ def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSRed
     antenna_id = reduction_group_member.antenna_id
     return deviation_masks[ms_name].get((field_id, antenna_id, spw_id), [])
 
-
 def channel_ranges_for_image(edge: tuple[int, int], nchan: int, sideband: int, ranges: list[tuple[int, int]]) -> list[tuple[int, int]]:
     """Convert channel ranges in MS coordinate to those in image coordinate.
 
@@ -2766,32 +3052,34 @@ def channel_ranges_for_image(edge: tuple[int, int], nchan: int, sideband: int, r
 
 @log_qa
 def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') -> list[pqa.QAScore]:
-    """Compute QA score based on the line detection result.
+    """Compute QA score based on detected lines and deviation/ATM mask overlaps.
 
     QA scores are evaluated based on the line detection result for
     each combination of spw and field individually. Scoring scheme of
     individual results are as follows:
 
-        - skip scoring if no lines were detected (no QAScore object)
-        - 0.55 if there are lines extends to edge channels
-        - 0.6 if there are lines that covers more than 1/3 of spw
-          bandwidth in total
-        - 1.0 otherwise
+        - Line detection:
+            - 0.55 if lines extend to edge channels
+            - 0.6 if lines cover more than 1/3 of SPW bandwidth
+            - 1.0 otherwise
+            - 0.8 if no lines were detected in any SPW/field (default)
 
-    If no lines were detected in any spws/fields so that no QAScore
-    objects were created, this function creates QAScore object with
-    the score of 0.8 and the message indicating that no lines were
-    detected. Therefore, returned list should contain at least one
-    QAScore object.
+        - Deviation masks:
+            - 0.65 if deviation masks are present but do not overlap with lines
+            - 0.88 if deviation masks overlap with detected spectral lines
 
-    In addition to the detected lines, deviation masks are also
-    examined. Score will be 0.65 if deviation masks with any widths
-    exist. Returned QAScore objects are the collection of scores from
-    both spectral lines and deviation masks but they can be
-    differentiated by the associated messages and/or metric units.
+        - Deviation mask and atmospheric lines:
+            - 0.88 if deviation masks overlap with atmospheric lines
+
+    Returned QAScore objects include metric values (channel ranges) and
+    informative messages that distinguish between spectral lines,
+    deviation masks, and atmospheric overlap. The function ensures that
+    at least one score is returned, even if no lines are detected.
 
     Relevant JIRA tickets:
         PIPE-2136
+        PIPE-2509
+        PIPE-2530
         PIPEREQ-304
 
     Args:
@@ -2800,22 +3088,88 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
 
     Returns:
         List of QAScore objects derived from line detection results
-        and/or deviation masks
+        and/or deviation masks, with atm lines, if available
     """
-    line_detection_scores = []
-    # deviation_mask_qa_data collects set of (spw_id, antenna_id, masked_ranges)
-    # data per field per EB
-    deviation_mask_qa_data = {}
-    deviation_mask_all = result.outcome['deviation_mask']
 
-    # edge parameter
-    # channels specified by edge will be excluded from resulting images
+    def mask_to_ranges(mask: np.ndarray) -> list[tuple[int,int]]:
+        """
+        Convert a boolean channel mask into a list of contiguous channel ranges.
+
+        Parameters:
+            mask (np.ndarray): 1D boolean array where True indicates
+                            channels to include.
+
+        Returns:
+            list[tuple[int, int]]: List of (start, end) tuples for each
+                                contiguous run of True values in the mask.
+        """
+        idx = np.where(mask)[0]
+        if idx.size == 0:
+            return []
+        groups = np.split(idx, np.where(np.diff(idx) != 1)[0] + 1)
+        return [(grp[0], grp[-1]) for grp in groups]
+
+    def make_score(score_val: float, msg: str, metric_val: str, metric_units: str,
+                   ms_name: str | None = None, field: str | None = None, spws: set[int] = set(), ants: set[str] = set()):
+
+        """
+        Build a QAScore object for score_sd_line_detection.
+
+        Parameters:
+            score_val (float): The numeric QA score.
+            msg (str): Description of the QA result.
+            metric_val (str): The metric value of score.
+            metric_units (str): Units for the metric_value.
+            ms_name (str): Name of the Measurement Set (EB). (optional)
+            field (str): Field name (optional).
+            spws (set[int]): Set of spectral window IDs (optional).
+            ants (set[str]): Set of antenna names (optional).
+
+        Returns:
+            pqa.QAScore: A fully populated QAScore with long and short messages,
+                        origin (metric name/score/units), and target selection.
+        """
+        ms_str = f'EB {ms_name}' if ms_name else ""
+        field_str = f', Field {field}' if field else ""
+        spw_str = ', Spw ' + ', '.join(map(str, sorted(spws))) if spws else ""
+        ant_str = ', Antenna ' + ', '.join(sorted(ants)) if ants else ""
+        shortmsg = f'{msg}.'
+        longmsg = f'{msg} in {ms_str}{field_str}{spw_str}{ant_str}.' if ms_name or field or spws or ants else shortmsg
+        origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
+                              metric_score=metric_val,
+                              metric_units=metric_units)
+        selection = pqa.TargetDataSelection(
+            vis={ms_name} if ms_name else None,
+            spw=spws,
+            field={field} if field else None,
+            ant=ants,
+            intent={'TARGET'})
+        return pqa.QAScore(score_val, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
+
+    # Precompute ATM masks per MS/SPW
+    atm_masks = {}
+    for bl in result.outcome['baselined']:
+        for mid in bl['members']:
+            rgm = reduction_group[bl['group_id']][mid]
+            ms = rgm.ms.origin_ms
+            if ms not in atm_masks:
+                if rgm.ms.antenna_array.name == 'NRO':
+                    atm_masks.setdefault(ms, {})
+                    continue
+
+                spwsetup = sdatm.getSpecSetup(rgm.ms.basename)
+                spws = list(map(int, spwsetup['spwlist']))
+                tau = sdatm.getCalAtmData(rgm.ms.basename, spws, spwsetup)[-2]
+                skylines = {spw: sdatm.getskylines(tau[spw], spw, spwsetup, fraclevel=0.3, minpeaklevel=0.05) for spw in spws}
+                atm_masks[ms] = {spw: sdatm.skysel(skylines[spw], linestouse='all') for spw in spws}
+
+    line_detection_scores, dm_scores = [], []
+
+    # edge parameter for image channel mapping
     _edge = result.outcome['edge']
     edge = (_edge, _edge) if isinstance(_edge, int) else tuple(_edge[:2])
 
-    # enumeration to represent overlap status
-    Overlap = enum.Enum('Overlap', [('NO', 0), ('PARTIAL', 1), ('FULL', 2)])
-
+    # Process each baseline for line detection and DM
     for bl in result.outcome['baselined']:
         reduction_group_id = bl['group_id']
         reduction_group_desc = reduction_group[reduction_group_id]
@@ -2829,45 +3183,10 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
 
         LOG.debug('Processing reduction group %s, field %s, spw %s', reduction_group_id, field_name, spw.id)
 
-        # line mask for checking overlap with deviation mask
-        # 1: channels detected as line, 0: line-free channels
-        line_mask = np.zeros(nchan, dtype=np.uint8)
-        for left, right in lines:
-            line_mask[max(0, left):right + 1] = 1
-
-        # deviation mask
-        for member_id in member_list:
-            LOG.debug('Processing member %s', member_id)
-
-            reduction_group_member = reduction_group_desc[member_id]
-            deviation_masks = select_deviation_masks(
-                deviation_mask_all, reduction_group_member
-            )
-
-            if deviation_masks:
-                data_per_field = deviation_mask_qa_data.setdefault(field_name, collections.defaultdict(list))
-                spw_id = reduction_group_member.spw_id
-                ms_name = reduction_group_member.ms.origin_ms
-                antenna_name = reduction_group_member.antenna_name
-                is_overlap = []
-                for left, right in deviation_masks:
-                    mask_range = line_mask[left:right + 1]
-                    if np.all(mask_range == 1):
-                        overlap = Overlap.FULL
-                    elif np.any(mask_range == 1):
-                        overlap = Overlap.PARTIAL
-                    else:
-                        overlap = Overlap.NO
-                    is_overlap.append(overlap)
-                    LOG.debug('Deviation mask [%s, %s], overlap is %s', left, right, overlap)
-
-                data_per_field[ms_name].append((spw_id, antenna_name, deviation_masks, is_overlap))
-
-        # spectral lines
+        # spectral-line scoring
         if len(lines) > 0:
             # sort lines by left channel
             lines.sort(key=operator.itemgetter(0))
-
             is_edge_line = examine_sd_edge_lines(lines, nchan, edge)
             is_wide_line = examine_sd_wide_lines(lines, nchan, edge)
 
@@ -2884,122 +3203,70 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                 # detected lines do not harm baseline subtraction
                 score = 1.0
                 msg = 'Line ranges were detected'
-
-            spw_ids = set(reduction_group_desc[m].spw_id for m in member_list)
-            spw_desc = ', '.join(map(str, spw_ids))
-            shortmsg = f'{msg}.'
-            longmsg = f'{msg} in Field {field_name}, Spw {spw_desc}.'
             lines_image = channel_ranges_for_image(edge, nchan, sideband, lines)
             metric_value = ';'.join([f'{left}~{right}' for left, right in lines_image])
-            origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
-                                  metric_score=metric_value,
-                                  metric_units='Channel range(s) of detected lines')
-            selection = pqa.TargetDataSelection(spw=set(spw_desc.split(', ')),
-                                                field=set([field_name]),
-                                                intent={'TARGET'})
-            line_detection_scores.append(
-                pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
-            )
+            line_detection_scores.append(make_score(score, msg, metric_value,
+                                          'Channel range(s) of detected lines',
+                                          reduction_group_desc[member_list[0]].ms.origin_ms, field_name,
+                                          {reduction_group_desc[m].spw_id for m in member_list},
+                                          {reduction_group_desc[m].antenna_name for m in member_list}))
+
+        # deviation-mask and ATM overlap
+        for mid in member_list:
+            rgm = reduction_group_desc[mid]
+            dmlist = select_deviation_masks(result.outcome['deviation_mask'], rgm)
+            if not dmlist:
+                continue
+            ndm = len(dmlist)
+            ms, spw = rgm.ms.origin_ms, rgm.spw_id
+            # build masks
+            dm_masks = np.zeros((ndm, nchan), bool)
+            for i, (l, r) in enumerate(dmlist):
+                dm_masks[i, l:r+1] = True
+            line_mask = np.zeros(nchan, bool)
+            for l, r in lines:
+                line_mask[l:r+1] = True
+            atm_mask = atm_masks[ms].get(spw, np.zeros(nchan, bool))
+
+            # DM scoring
+            for dm_mask in dm_masks:
+                ranges = mask_to_ranges(dm_mask)
+                unit = 'Channel range(s) of deviation mask'
+                dm_atm = dm_mask & atm_mask
+                if np.any(line_mask & dm_mask):
+                    score = 0.88
+                    msg = 'Deviation mask overlapped with spectral lines'
+                    LOG.debug(
+                        'Deviation masks overlap with lines. '
+                        'Set deviation mask QA score to %s', score
+                    )
+                # ATM-DM overlap
+                elif np.any(dm_atm):
+                    score = 0.88
+                    msg = 'Deviation mask overlapped with atmospheric lines'
+                    unit = 'Channel range(s) of DM/ATM/Spectral overlap'
+                    LOG.debug(
+                        'Deviation mask overlapped with atmospheric lines'
+                        'Set atm overlap QA score to %s', score
+                    )
+                else:
+                    score = 0.65
+                    msg = 'Deviation mask was triggered'
+                    LOG.debug(
+                        'Found deviation mask with no overlap'
+                        'Set deviation mask QA score to %s', score
+                    )
+                metric = ','.join(f'{l}~{r}' for l, r in ranges)
+                dm_scores.append(make_score(score, msg, metric, unit,
+                                        ms, field_name, {spw}, {rgm.antenna_name}))
 
     if len(line_detection_scores) == 0:
         # add new entry with score of 0.8 if no spectral lines
         # were detected in any spws/fields
-        score = 0.8
-        longmsg = 'No line ranges were detected in all SPWs.'
-        shortmsg = 'No line ranges were detected in all SPWs.'
+        line_detection_scores.append(make_score(0.8,  'No line ranges were detected in all SPWs',
+                                    'N/A', 'Channel range(s) of detected lines'))
 
-        origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
-                              metric_score='N/A',
-                              metric_units='Channel range(s) of detected lines')
-        selection = pqa.TargetDataSelection(intent={'TARGET'})
-        line_detection_scores.append(
-            pqa.QAScore(
-                score, longmsg=longmsg, shortmsg=shortmsg,
-                origin=origin, applies_to=selection
-            )
-        )
-
-    # dictionary for spw setup
-    spw_config_dict = {}
-    for reduction_group_desc in reduction_group.values():
-        for reduction_group_member in reduction_group_desc:
-            ms_name = reduction_group_member.ms.origin_ms
-            spw = reduction_group_member.spw
-            spw_id = spw.id
-            nchan = spw.num_channels
-            sideband = int(spw.sideband)
-            dict_for_ms = spw_config_dict.setdefault(ms_name, {})
-            dict_for_spw = dict_for_ms.setdefault(spw_id, {})
-            dict_for_spw['nchan'] = nchan
-            dict_for_spw['sideband'] = sideband
-
-    # generate deviation mask QA scores with merged spws and antennas
-    deviation_mask_scores = []
-    for field_name, data_per_ms in deviation_mask_qa_data.items():
-        for ms_name, data in data_per_ms.items():
-            spw_ids = {x[0] for x in data}
-            antenna_names = {x[1] for x in data}
-            is_overlaps = {y for x in data for y in x[3]}
-            LOG.debug('Field %s, MS %s, spw %s, is_overlaps: %s', field_name, ms_name, spw_ids, is_overlaps)
-
-            # score depends on whether deviation masks overlap with lines
-            # see PIPEREQ-293 for detail
-            if Overlap.NO in is_overlaps:
-                # by default score is 0.65
-                score = 0.65
-                msg = 'Deviation mask was triggered'
-                LOG.debug(
-                    'Found deviation mask with no overlap. '
-                    'Set deviation mask QA score to %s', score
-                )
-            elif is_overlaps.intersection({Overlap.PARTIAL, Overlap.FULL}):
-                # score is 0.88 if all deviation masks partially/fullly
-                # overlap with detected line
-                score = 0.88
-                msg = 'Deviation mask overlapped with spectral lines was triggered'
-                LOG.debug(
-                    'All deviation masks overlap with lines. '
-                    'Set deviation mask QA score to %s', score
-                )
-            else:
-                raise ValueError('Unexpected overlap status')
-
-            shortmsg = f'{msg}.'
-            spw_string = ', '.join(map(str, sorted(spw_ids)))
-            antenna_string = ', '.join(sorted(antenna_names))
-            longmsg = f'{msg} in EB {ms_name}, Field {field_name}, Spw {spw_string}, Antenna {antenna_string}.'
-
-            # get list of unique mask ranges per spw
-            deviation_masks_per_spw = collections.defaultdict(set)
-            for spw_id, _, deviation_mask, _ in data:
-                deviation_masks_per_spw[spw_id].update(map(tuple, deviation_mask))
-
-            # metric value format: spw0:c0~c1:c2~c3,spw1:c4~c5
-            deviation_masks_for_image = []
-            for spw_id, deviation_masks in deviation_masks_per_spw.items():
-                spw_config = spw_config_dict[ms_name][spw_id]
-                nchan = spw_config['nchan']
-                sideband = spw_config['sideband']
-                devmasks_image = channel_ranges_for_image(edge, nchan, sideband, sorted(deviation_masks))
-                deviation_masks_for_image.append((spw_id, devmasks_image))
-
-            metric_value = ','.join([
-                f'{spw_id}:' + ';'.join([f'{left}~{right}' for left, right in sorted(deviation_masks)])
-                for spw_id, deviation_masks in deviation_masks_for_image
-            ])
-            origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
-                                  metric_score=metric_value,
-                                  metric_units='Channel range(s) possibly affected by instrumental instabilities')
-            selection = pqa.TargetDataSelection(vis=set([ms_name]),
-                                                spw=spw_ids,
-                                                field=set([field_name]),
-                                                ant=antenna_names,
-                                                intent={'TARGET'})
-            deviation_mask_scores.append(
-                pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
-            )
-
-    return line_detection_scores + deviation_mask_scores
+    return line_detection_scores + dm_scores
 
 
 
@@ -3403,31 +3670,55 @@ def generate_metric_mask(
     vspw_list = np.asarray(outcome['assoc_spws'])
 
     mses = context.observing_run.measurement_sets
-    ms_list = [mses[i] for i in file_index]
-    spw_list = np.asarray([context.observing_run.virtual2real_spw_id(i, m) for i, m in zip(vspw_list, ms_list)])
+    # avoid processing the same MS multiple times
+    unique_file_index = np.unique(file_index)
 
     refval = cs.referencevalue()
     units = cs.units()
     metric_mask = np.zeros(imshape, dtype=bool)
 
-    for i in range(len(ms_list)):
-        origin_basename = os.path.basename(ms_list[i].origin_ms)
-        datatable_name = os.path.join(context.observing_run.ms_datatable_name, origin_basename)
+    for ms_id in unique_file_index:
+        target_ms = mses[ms_id]
+        origin_basename = os.path.basename(target_ms.origin_ms)
+        datatable_name = os.path.join(
+            context.observing_run.ms_datatable_name,
+            origin_basename
+        )
         rotable_name = os.path.join(datatable_name, 'RO')
-        rwtable_name = os.path.join(datatable_name, 'RW')
-        _index = np.where(file_index == file_index[i])
+        _index = np.where(file_index == ms_id)
         if len(_index[0]) == 0:
             continue
 
         _antlist = antenna_list[_index]
         _fieldlist = field_list[_index]
-        _spwlist = spw_list[_index]
+        _vspwlist = vspw_list[_index]
+
+        # Here, we are trying to process data with the same field
+        # and spw in one MS but from different antennas. Therefore,
+        # field and spw should be unique in the list.
+        field_id = _fieldlist[0]  # should be unique
+        if not np.all(_fieldlist == field_id):
+            LOG.warning(
+                f"Multiple fields found in MS {target_ms.basename}:"
+                f" {_fieldlist}. Skip evaluating."
+            )
+            continue
+        vspw_id = _vspwlist[0]  # should be unique
+        if not np.all(_vspwlist == vspw_id):
+            LOG.warning(
+                f"Multiple SPWs found in MS {target_ms.basename}:"
+                f" {_vspwlist}. Skip evaluating."
+            )
+            continue
+        spw_id = context.observing_run.virtual2real_spw_id(vspw_id, target_ms)
 
         with casa_tools.TableReader(rotable_name) as tb:
-            tsel = tb.query('SRCTYPE==0&&ANTENNA IN {}&&FIELD_ID IN {}&&IF IN {}'.format(utils.list_to_str(_antlist), utils.list_to_str(_fieldlist), utils.list_to_str(_spwlist)))
+            taql = f'SRCTYPE==0 && ANTENNA IN {utils.list_to_str(_antlist)} && FIELD_ID == {field_id} && IF == {spw_id}'
+            LOG.debug("MS: %s, TaQL string: %s", target_ms.basename, taql)
+            tsel = tb.query(taql)
             ofs_ra = tsel.getcol('OFS_RA')
             ofs_dec = tsel.getcol('OFS_DEC')
-            rows = tsel.rownumbers()
+            origin_ms_rows = tsel.getcol('ROW')
             tsel.close()
 
         if org_direction is None:
@@ -3441,14 +3732,46 @@ def generate_metric_mask(
                 ra_deg[i] = shift_ra
                 dec_deg[i] = shift_dec
 
-        with casa_tools.TableReader(rwtable_name) as tb:
-            permanent_flag = tb.getcol('FLAG_PERMANENT').take(rows, axis=2)
-            online_flag = permanent_flag[0, datatable.OnlineFlagIndex]
+        rowmap = sdutils.make_row_map_between_ms(
+            context.observing_run.get_ms(target_ms.origin_ms),
+            target_ms.name
+        )
+
+        with casa_tools.TableReader(target_ms.name) as tb:
+            flag = map(
+                lambda irow: tb.getcell('FLAG', rowmap[irow]),
+                origin_ms_rows
+            )
+            # invert flag: True for valid data
+            ms_mask = map(
+                lambda f: np.logical_not(f),
+                flag
+            )
+            # data will contribute to the image if all polarizations are valid
+            ms_mask_collapsed_pol = map(
+                lambda f: np.all(f, axis=0),
+                ms_mask
+            )
+            # data will contribute to the image if there are any valid channels
+            ms_mask_per_row = map(
+                lambda f: np.any(f),
+                ms_mask_collapsed_pol
+            )
+            # validity mask for each row: True for valid data
+            validity_mask = np.fromiter(ms_mask_per_row, dtype=bool)
 
         # world-pixel conversion using cs.topixelmany
-        validity_mask = online_flag == 1
         ra_deg = ra_deg[validity_mask]
         dec_deg = dec_deg[validity_mask]
+
+        # skip if no valid data exists
+        if len(ra_deg) == 0:
+            LOG.info(
+                f'No valid data in MS {target_ms.basename},'
+                f' field {field_id}, spw {spw_id}, antenna {_antlist}.'
+                f' Excluding the MS from mask evaluation.'
+            )
+            continue
 
         # unit should be either 'rad' or 'deg'
         deg2rad = np.pi / 180.0
@@ -3462,7 +3785,6 @@ def generate_metric_mask(
         py = pixel_array[1]
 
         for x, y in zip(map(int, np.round(px)), map(int, np.round(py))):
-            #print(x, y)
             if 0 <= x and x <= imshape[0] - 1 and 0 <= y and y <= imshape[1] - 1:
                 metric_mask[x, y, :, :] = True
 
@@ -3657,6 +3979,94 @@ def score_sdimage_masked_pixels(context: Context, result: SDImagingResultItem) -
                        longmsg=lmsg,
                        shortmsg=smsg,
                        origin=origin)
+
+
+def score_sd_line_emission_off_range_at_peak(context: Context, result: SDImagingResultItem) -> pqa.QAScore:
+    """Evaluate QA score based on the detection of off-line-range emission at peak.
+
+    Requirements (PIPE-2416):
+        - QA score should be
+          - 0.6 if significant off-line-range emission is detected at peak
+          - 1.0 if no significant off-line-range emission is detected at peak
+
+    Args:
+        context: Pipeline context
+        result: Imaging result instance
+
+    Returns:
+        QAScore -- QAScore instance holding the score based on the Requirements
+    """
+    emission_off_range_at_peak = result.outcome.get('line_emission_off_range_at_peak', False)
+    imageitem = result.outcome['image']
+    field = imageitem.sourcename
+    spw = ','.join(map(str, np.unique(imageitem.spwlist)))
+    if emission_off_range_at_peak:
+        lmsg = (f'Field {field} Spw {spw}: '
+                'Significant off-line-range emission is detected at peak.')
+        smsg = 'Significant off-line-range emission is detected at peak.'
+        score = 0.6
+    else:
+        lmsg = (f'Field {field} Spw {spw}: '
+                'No significant off-line-range emission is detected at peak.')
+        smsg = 'No significant off-line-range emission is detected at peak.'
+        score = 1.0
+
+    origin = pqa.QAOrigin(metric_name='line_emission_off_range_at_peak',
+                          metric_score=score,
+                          metric_units='')
+    selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
+                                        field=set(result.outcome['assoc_fields']),
+                                        intent={'TARGET'},
+                                        pol={'I'})
+    return pqa.QAScore(score,
+                       longmsg=lmsg,
+                       shortmsg=smsg,
+                       origin=origin,
+                       applies_to=selection)
+
+
+def score_sd_line_emission_off_range_extended(context: Context, result: SDImagingResultItem) -> pqa.QAScore:
+    """Evaluate QA score based on the detetion of off-line-range extended emission.
+
+    Requirements (PIPE-2416):
+        - QA score should be
+          - 0.6 if significant off-line-range extended emission is detected.
+          - 1.0 if no significant off-line-range extended emission is detected.
+
+    Args:
+        context: Pipeline context
+        result: Imaging result instance
+
+    Returns:
+        QAScore -- QAScore instance holding the score based on the Requirements
+    """
+    emission_off_range_extended = result.outcome.get('line_emission_off_range_extended', False)
+    imageitem = result.outcome['image']
+    field = imageitem.sourcename
+    spw = ','.join(map(str, np.unique(imageitem.spwlist)))
+    if emission_off_range_extended:
+        lmsg = (f'Field {field} Spw {spw}: '
+                'Significant off-line-range extended emission is detected.')
+        smsg = 'Significant off-line-range extended emission is detected.'
+        score = 0.6
+    else:
+        lmsg = (f'Field {field} Spw {spw}: '
+                'No significant off-line-range extended emission is detected.')
+        smsg = 'No significant off-line-range extended emission is detected.'
+        score = 1.0
+
+    origin = pqa.QAOrigin(metric_name='score_sd_line_emission_off_range_extended',
+                          metric_score=score,
+                          metric_units='')
+    selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
+                                        field=set(result.outcome['assoc_fields']),
+                                        intent={'TARGET'},
+                                        pol={'I'})
+    return pqa.QAScore(score,
+                       longmsg=lmsg,
+                       shortmsg=smsg,
+                       origin=origin,
+                       applies_to=selection)
 
 
 @log_qa
@@ -4082,7 +4492,7 @@ def score_fluxservice(result: ALMAImportDataResults) -> list[pqa.QAScore]:
     flux_qa_dict = {
         'FIRSTURL': (1.0, "Flux catalog service used."),
         'BACKUPURL': (0.9, "Backup flux catalog service used."),
-        'FAIL': (0.3, "Neither primary nor backup flux service could be queried. ASDM values used."),
+        'FAIL': (0.3, "Online flux catalog unavailable. Pipeline halted after weblog creation."),
         None: (1.0, "Flux catalog service not used.")
     }
 
@@ -4469,6 +4879,110 @@ def score_iersstate(mses: list[MeasurementSet]) -> list[pqa.QAScore]:
 
 
 @log_qa
+def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list[pqa.QAScore]:
+    """Calculate score about calibrated amplitude vs. time plot of Single Dish Applycal.
+
+    Calculate score according to the existence of plot file for each EB, spw and antenna
+    and the quality of it.
+    Requirement of PIPE-2168:
+      When the plot is created successfully, score = 1.
+      When the plot is generated but contains no data of target, score = 0.8.
+      When the plot generation failed, score = 0.65.
+    To give such score values, check the following:
+      1. Check whether the file of plot exists or not.
+      2. Check whether the number of flagged data is equal to that of total data or not.
+
+    Args:
+        context: Pipeline context object containing state information.
+        result: SDApplycalResults instance.
+
+    Returns:
+        list[pqa.QAScore]: List which contains QAScore objects.
+    """
+    vis = os.path.basename(result.inputs['vis'])
+    ms = context.observing_run.get_ms(vis)
+    spwids = [spw.id for spw in ms.get_spectral_windows()]
+    ants = ['all'] + [ant.name for ant in ms.get_antenna()]
+
+    stage_dir = os.path.join(context.report_dir, 'stage%s' % context.task_counter)
+
+    flagdata = {}
+    flagkwargs = [f"spw='{spwid}' fieldcnt=False antenna='*&&&' intent='OBSERVE_TARGET#ON_SOURCE' mode='summary' name='spw{spwid}'" for spwid in spwids]
+    flagdata_task = casa_tasks.flagdata(vis=vis, mode='list', inpfile=flagkwargs, flagbackup=False)
+    flagdata = flagdata_task.execute()
+    flagdata_summary = list(flagdata.values())
+    scores = []
+    PlotMetadata = collections.namedtuple(
+        'PlotMetadata', ['vis', 'spw', 'ant']
+    )
+    all_plots = itertools.chain(
+        result.amp_vs_time_summary_plots,
+        result.amp_vs_time_detail_plots
+    )
+    metadata_for_plots = [
+        PlotMetadata(
+            vis=x.parameters["vis"],
+            spw=x.parameters["spw"],
+            ant=x.parameters["ant"]
+        ) for x in all_plots
+    ]
+    for spwid in spwids:
+        shortmsg_success = 'Calibrated amplitude vs time plot is successfully created'
+        longmsg_success = f'{shortmsg_success} for EB {vis}, SPW {spwid}'
+        shortmsg_failed = 'Failed to create calibrated amplitude vs time plot'
+        longmsg_failed = f'{shortmsg_failed} for EB {vis}, SPW {spwid}'
+        shortmsg_empty = 'No target data about calibrated amplitude vs time plot'
+        longmsg_empty = f'{shortmsg_empty} for EB {vis}, SPW {spwid}'
+        sumflagged = 0
+        sumtotal = 0
+        key = f'spw{spwid}'
+        target_summary = [x for x in flagdata_summary if x['name'] == key]
+        assert len(target_summary) == 1
+        target_summary_for_spw = target_summary[0]
+
+        for ant in ants:
+            # Instead of checking the existence of a plot file,
+            # compare metadata for the plot object associated with
+            # the plot file.
+            plot_metadata = PlotMetadata(
+                vis=vis,
+                spw=str(spwid),
+                ant=ant
+            )
+            if plot_metadata not in metadata_for_plots:
+                shortmsg = shortmsg_failed
+                longmsg = f'{longmsg_failed}, Antenna {ant}.'
+                score = 0.65
+            else:
+                target_for_spw_ant = target_summary_for_spw['antenna']
+                if ant == 'all':
+                    for value in target_for_spw_ant.values():
+                        sumflagged += value['flagged']
+                        sumtotal += value['total']
+                    all_flagged = sumflagged == sumtotal
+                else:
+                    all_flagged = ant in target_for_spw_ant and target_for_spw_ant[ant]['flagged'] == target_for_spw_ant[ant]['total']
+                if all_flagged:
+                    shortmsg = shortmsg_empty
+                    longmsg = f'{longmsg_empty}, Antenna {ant}.'
+                    score = 0.8
+                else:
+                    shortmsg = shortmsg_success
+                    longmsg = f'{longmsg_success}, Antenna {ant}.'
+                    score = 1.0
+
+            origin = pqa.QAOrigin(metric_name='AmpVsTimePlotQuality',
+                                  metric_score=score,
+                                  metric_units='Score based on quality of calibrated amp vs time plots')
+            applies_to = pqa.TargetDataSelection(vis={vis},
+                                                 spw={spwid},
+                                                 intent={'OBSERVE_TARGET#ON_SOURCE'},
+                                                 ant={ant})
+            scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to))
+
+    return scores
+
+
 def score_parallactic_angle_range(
         mses: list[MeasurementSet],
         intents: set[str],
@@ -4513,9 +5027,10 @@ def score_parallactic_angle_range(
                 all_metrics['intents_found'] = True
             for cal_name in cal_names:
                 parallactic_range = ous_parallactic_range(session_mses, cal_name, intent)
-                all_metrics['sessions'][session_name][intent][cal_name] = parallactic_range
-                all_metrics['sessions'][session_name]['min_parang_range'] = min(
-                    all_metrics['sessions'][session_name]['min_parang_range'], parallactic_range)
+                if parallactic_range is not None:
+                    all_metrics['sessions'][session_name][intent][cal_name] = parallactic_range
+                    all_metrics['sessions'][session_name]['min_parang_range'] = min(
+                        all_metrics['sessions'][session_name]['min_parang_range'], parallactic_range)
                 LOG.info(f'Parallactic angle range for {cal_name} ({intent}) in session {session_name}: '
                          f'{parallactic_range}')
                 session_scores = score_parallactic_range(
@@ -4548,15 +5063,27 @@ def score_pointing_outlier(
         List of QAScore objects.
     """
     # If no pointing outliers are detected, return QAScore with score of 1.0
+    metric_name = "NumberOfPointingOutliers"
+    metric_units = "number of pointing outliers"
     if len(pointing_outlier_stats) == 0:
         score = 1.0
         longmsg = f'No pointing outliers detected in "{ms.basename}".'
         shortmsg = "No pointing outliers detected"
 
-        origin = pqa.QAOrigin(metric_name='NumberOfPointingOutliers',
-                              metric_score=score,
-                              metric_units='number of pointing outliers')
-        score = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+        origin = pqa.QAOrigin(metric_name=metric_name,
+                              metric_score=0,
+                              metric_units=metric_units)
+        applies_to = pqa.TargetDataSelection(
+            vis={ms.basename}
+        )
+        score = pqa.QAScore(
+            score,
+            longmsg=longmsg,
+            shortmsg=shortmsg,
+            vis=ms.basename,
+            origin=origin,
+            applies_to=applies_to
+        )
         return [score]
 
     # score is 0.83 when pointing outlier is detected (PIPEREQ-358/PIPE-2533)
@@ -4580,18 +5107,29 @@ def score_pointing_outlier(
             longmsg += " However, poinging flag was not applied."
             shortmsg += " (but not flagged)"
 
-        origin = pqa.QAOrigin(metric_name='NumberOfPointingOutliers',
-                              metric_score=score,
-                              metric_units='number of pointing outliers')
-
+        origin = pqa.QAOrigin(metric_name=metric_name,
+                              metric_score=num_outliers,
+                              metric_units=metric_units)
+        applies_to = pqa.TargetDataSelection(
+            vis={ms.basename},
+            field={field_id},
+            ant={antenna_id}
+        )
         qa_scores.append(
-            pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+            pqa.QAScore(
+                score,
+                longmsg=longmsg,
+                shortmsg=shortmsg,
+                vis=ms.basename,
+                origin=origin,
+                applies_to=applies_to
+            )
         )
 
     return qa_scores
 
 @log_qa
-def score_syspowerdata(data: dict) -> List[pqa.QAScore]:
+def score_syspowerdata(data: dict) -> list[pqa.QAScore]:
     """Calculates QA score as the minimum of per-band scores based on data points outside 0.7-1.2 range.
 
         For each band:
@@ -4626,7 +5164,7 @@ def score_syspowerdata(data: dict) -> List[pqa.QAScore]:
     return qascores
 
 @log_qa
-def score_solint(short_solint:dict, long_solint:dict) -> List[pqa.QAScore]:
+def score_solint(short_solint:dict, long_solint:dict) -> list[pqa.QAScore]:
     """Compute a QA score by comparing short and long solints for each band.
 
     If any band has a short solint value greater than the corresponding long solint,
@@ -4641,17 +5179,26 @@ def score_solint(short_solint:dict, long_solint:dict) -> List[pqa.QAScore]:
     """
     bandlist = []
     for band in short_solint:
-        if short_solint[band] >= long_solint[band]:
+        if isinstance(short_solint[band], str) or isinstance(long_solint[band], str):
+            # PIPE-2686: short-term workaround for the issue from the initial PIPE-2583 implementation.
+            LOG.warning(
+                f'Skip scoring solint band {band} due to string solint value: short_solint=%r, long_solint=%r',
+                short_solint[band],
+                long_solint[band],
+            )
             bandlist.append(band)
+        else:
+            if short_solint[band] >= long_solint[band]:
+                bandlist.append(band)
 
     if bandlist:
         score = 0.3
-        longmsg = f"band {', '.join(bandlist)} has short solint >= long solint"
-        shortmsg = "short solint >= long solint"
+        longmsg = f"band {', '.join(bandlist)} has short solint >= long solint, or short solint is 'inf'."
+        shortmsg = "short solint >= long solint or short solint is 'inf'"
     else:
         score = 1
-        longmsg = "short solint < long solint"
-        shortmsg = "short solint < long solint"
+        longmsg = 'short solint < long solint'
+        shortmsg = 'short solint < long solint'
 
     origin = pqa.QAOrigin(metric_name='score_solint',
                           metric_score=score,
@@ -4660,7 +5207,7 @@ def score_solint(short_solint:dict, long_solint:dict) -> List[pqa.QAScore]:
 
 
 @log_qa
-def score_longsolint(context, result) -> List[pqa.QAScore]:
+def score_longsolint(context, result) -> list[pqa.QAScore]:
     bandlist = []
     calscantime = []
     long_solint = result.longsolint
@@ -4687,6 +5234,82 @@ def score_longsolint(context, result) -> List[pqa.QAScore]:
                           metric_score=score,
                           metric_units='')
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
+@log_qa
+def score_testBPdcals_dts_ants(vis:str, amp_collection:dict, phase_collection:dict, bandname:str) -> pqa.QAScore:
+    """Evaluate QA score based on the number of antennas affected by DTS issues."""
+
+    bad_ants = []
+    bad_ants.extend([str(a) for a in amp_collection.keys()])
+    bad_ants.extend([str(p) for p in phase_collection.keys()])
+    num_bad_ants = len(set(bad_ants))
+    applies_to = pqa.TargetDataSelection(vis=vis)
+
+    # PIPE-2580: if > 4 antennas have DTS issue, QA score < 0.5
+    if num_bad_ants > 4:
+        score = rendererutils.SCORE_THRESHOLD_ERROR
+        longmsg = f"{num_bad_ants} antennas have DTS issue in {bandname} band"
+        shortmsg = f"{num_bad_ants} antennas have DTS issue in {bandname} band"
+    else:
+        score = 1.0
+        longmsg = f"Fewer than four antennas have DTS issue in {bandname} band"
+        shortmsg = f"Fewer than four antennas have DTS issue in {bandname} band"
+    origin = pqa.QAOrigin(metric_name='score_testBPdcals_dts_ants',
+                          metric_score=score,
+                          metric_units='')
+    qa_score = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to)
+
+    return qa_score
+
+@log_qa
+def score_testBPdcals_refant(vis:str, bad_refant:list, bandname:str) -> pqa.QAScore:
+    """Evaluate QA score based on reference antenna validity."""
+
+    applies_to = pqa.TargetDataSelection(vis=vis)
+    # PIPE-2580: if bad reference antenna found, QA score <0.5
+    if len(bad_refant) > 0  :
+        score = rendererutils.SCORE_THRESHOLD_ERROR
+        longmsg = f"Bad reference antenna ({', '.join(bad_refant)}) found in {bandname} band"
+        shortmsg = longmsg
+    else:
+        score = 1.0
+        longmsg = f"No bad reference antenna found in {bandname} band"
+        shortmsg = f"No bad reference antenna found in {bandname} band"
+    origin = pqa.QAOrigin(metric_name='score_testBPdcals_refant',
+                          metric_score=score,
+                          metric_units='')
+    qa_score = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to)
+
+    return qa_score
+
+@log_qa
+def score_testBPdcals_delay(vis:str, caltable:str, bandname:str) -> pqa.QAScore:
+    """Evaluate QA score based on median delay per baseband."""
+
+    applies_to = pqa.TargetDataSelection(vis=vis)
+    # PIPE-2580: if median delay per baseband > 15 ms, QA score < 0.5
+    with casa_tools.TableReader(caltable) as tb:
+        fpar = tb.getcol('FPARAM')
+        delays = np.abs(fpar)
+        median_delay = np.median(delays)
+    qa = casa_tools.quanta
+    median_delay_val = qa.convert(qa.quantity(median_delay, "ns"), "ms")["value"]
+
+    if median_delay_val > 15:
+        score = rendererutils.SCORE_THRESHOLD_ERROR
+        longmsg = f"Median delay > 15 ms for {bandname} band"
+        shortmsg = f"Median delay > 15 ms for {bandname} band"
+    else:
+        score = 1.0
+        longmsg = f"Median delay < 15 ms for {bandname} band"
+        shortmsg = f"Median delay < 15 ms for {bandname} band"
+
+    origin = pqa.QAOrigin(metric_name='score_testBPdcals_delay',
+                          metric_score=score,
+                          metric_units='')
+    qa_score = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to)
+
+    return qa_score
 
 @log_qa
 def score_flagged_ant_spw(vis:str, flaggedSolnApplycaldelay:dict) -> [pqa.QAScore]:

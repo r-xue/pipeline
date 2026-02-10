@@ -15,9 +15,9 @@ LOG = infrastructure.get_logger(__name__)
 class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile,
-                                       linesfile, imaging_params)
+                                       linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'ALMA'
 
     def robust(self, specmode=None):

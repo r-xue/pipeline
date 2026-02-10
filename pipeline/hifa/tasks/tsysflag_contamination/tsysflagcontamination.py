@@ -16,6 +16,7 @@ from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.basetask import StandardTaskTemplate
 from pipeline.infrastructure.exceptions import PipelineException
 from pipeline.infrastructure.pipelineqa import QAScore, TargetDataSelection
+import pipeline.infrastructure.sessionutils as sessionutils
 
 __all__ = ["TsysFlagContamination", "TsysFlagContaminationInputs"]
 
@@ -83,6 +84,8 @@ class TsysFlagContaminationInputs(vdp.StandardInputs):
     diagnostic_plots = vdp.VisDependentProperty(default=True)
     continue_on_failure = vdp.VisDependentProperty(default=True)
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
     # docstring and type hints: supplements hifa_tsysflagcontamination
     def __init__(
         self,
@@ -96,11 +99,12 @@ class TsysFlagContaminationInputs(vdp.StandardInputs):
         relative_detection_factor=None,
         diagnostic_plots=None,
         continue_on_failure=None,
+        parallel=None,
     ):
         """Initialize Inputs.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
 
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
@@ -134,8 +138,14 @@ class TsysFlagContaminationInputs(vdp.StandardInputs):
 
                 Default: True
 
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+
+                Options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
+
+                Default: ``None`` (equivalent to ``False``)
+
         """
-        super(TsysFlagContaminationInputs, self).__init__()
+        super().__init__()
 
         # pipeline inputs
         self.context = context
@@ -154,6 +164,7 @@ class TsysFlagContaminationInputs(vdp.StandardInputs):
         # heuristic parameter arguments
         self.remove_n_extreme = remove_n_extreme
         self.relative_detection_factor = relative_detection_factor
+        self.parallel = parallel
 
 
 @dataclasses.dataclass
@@ -200,11 +211,9 @@ class ExternFunctionArguments:
         )
 
 
-@task_registry.set_equivalent_casa_task("hifa_tsysflagcontamination")
-@task_registry.set_casa_commands_comment(
-    "Line contamination in the Tsys tables is detected and flagged."
-)
-class TsysFlagContamination(StandardTaskTemplate):
+
+
+class SerialTsysFlagContamination(StandardTaskTemplate):
     """
     Flag line contamination in the Tsys tables.
 
@@ -240,7 +249,7 @@ class TsysFlagContamination(StandardTaskTemplate):
         result.qascores_from_task.extend(preflight_qascores)
         if preflight_qascores:
             result.task_incomplete_reason = f"Preconditions for line contamination heuristic not met. See QA scores for details."
-            result.metric_order = "manual"  # required for renderer
+            result.metric_order = ["manual"]  # required for renderer
             return result
 
         # step 2: run extern heuristic
@@ -260,7 +269,7 @@ class TsysFlagContamination(StandardTaskTemplate):
                 )
                 result.qascores_from_task.append(s)
                 result.task_incomplete_reason = reason
-                result.metric_order = "manual"  # required for renderer
+                result.metric_order = ["manual"]  # required for renderer
 
                 LOG.exception(reason, exc_info=e)
                 return result
@@ -562,3 +571,13 @@ class TsysFlagContamination(StandardTaskTemplate):
             spw.receiver for spw in ms.get_spectral_windows(science_windows_only=True)
         ]
         return "DSB" in receivers
+
+
+@task_registry.set_equivalent_casa_task("hifa_tsysflagcontamination")
+@task_registry.set_casa_commands_comment(
+    "Line contamination in the Tsys tables is detected and flagged."
+)
+class TsysFlagContamination(sessionutils.ParallelTemplate):
+
+    Inputs = TsysFlagContaminationInputs
+    Task = SerialTsysFlagContamination

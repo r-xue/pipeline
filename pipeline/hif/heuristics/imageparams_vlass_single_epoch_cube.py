@@ -23,8 +23,8 @@ LOG = infrastructure.get_logger(__name__)
 
 class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristicsVlassSeContMosaic):
 
-    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None, linesfile=None, imaging_params={}):
-        super().__init__(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
+    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None, linesfile=None, imaging_params={}, processing_intents={}):
+        super().__init__(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CUBE'
         self.vlass_stage = 3
 
@@ -190,7 +190,7 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristicsVlassSeContMosaic):
                 )
 
         vlass_flag_stats = self._plane_rejection(cleantarget, vlass_plane_reject_ms)
-        cleantarget['misc_vlass'] = vlass_flag_stats
+        cleantarget['misc_vlass'] = (cleantarget['misc_vlass'] or {}) | vlass_flag_stats
 
         spwgroup_reject_list = []
         imlist_entries = []

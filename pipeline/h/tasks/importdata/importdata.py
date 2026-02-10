@@ -58,15 +58,14 @@ class ImportDataInputs(vdp.StandardInputs):
             ocorr_mode: str | None = None,
             datacolumns: dict[str, str] | None = None,
             ):
-        """
-        Initialize Inputs.
+        """Initialize Inputs.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
 
             vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSs, or tar files of MSs, If ASDM files are specified, they will be
                 converted to MS format.
-                example: vis=['X227.ms', 'asdms.tar.gz']
+                example: ``vis=['X227.ms', 'asdms.tar.gz']``
 
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
@@ -74,13 +73,13 @@ class ImportDataInputs(vdp.StandardInputs):
             asis: Creates verbatim copies of the ASDM tables in the output MS. The value given to this option must be a list of table names
                 separated by space characters.
                 default: 'Antenna Station Receiver CalAtmosphere'
-                example: 'Receiver', ''
+                example: ``'Receiver'``, ``''``
 
             process_caldevice: Ingest the ASDM caldevice table.
 
             session: List of sessions to which the visibility files belong. Defaults to a single session containing all the visibility files, otherwise
                 a session must be assigned to each vis file.
-                example: session=['session_1', 'session_2']
+                example: ``session=['session_1', 'session_2']``
 
             overwrite: Overwrite existing files on import. When converting ASDM to MS, if overwrite=False and the MS
                 already exists in output directory, then this existing MS
@@ -90,7 +89,7 @@ class ImportDataInputs(vdp.StandardInputs):
 
             save_flagonline: Save flag commands, flagging template, imaging targets, to text files。
 
-                Default: None (equivalent to True)
+                Default: ``None`` (equivalent to True)
 
             bdfflags: Apply BDF flags on import.
 
@@ -104,11 +103,11 @@ class ImportDataInputs(vdp.StandardInputs):
             datacolumns: Dictionary defining the data types of existing columns.
                 The format is:
 
-                    {'data': 'data type 1'}
+                    ``{'data': 'data type 1'}``
 
                 or
 
-                    {'data': 'data type 1', 'corrected': 'data type 2'}
+                    ``{'data': 'data type 1', 'corrected': 'data type 2'}``
 
                 For ASDMs the data type can only be RAW and one can only specify
                 it for the data column.
@@ -288,7 +287,9 @@ class ImportData(basetask.StandardTaskTemplate):
 
         # launch an import job for each ASDM we need to convert
         for asdm in to_convert:
+            utils.clear_time_cache()
             self._do_importasdm(asdm)
+            utils.clear_time_cache()
 
         # calculate the filenames of the resultant measurement sets
         asdms = [os.path.join(abs_output_dir, f) for f in to_convert]
@@ -333,8 +334,10 @@ class ImportData(basetask.StandardTaskTemplate):
             correcteddatacolumn_name = get_correcteddatacolumn_name(ms.name)
 
             # Try getting any saved data type information from the MS HISTORY table
-            ms_history = tablereader.MeasurementSetReader.get_history(ms)
-            data_type_per_column_from_ms, data_types_per_source_and_spw_from_ms = importdata_heuristics.get_ms_data_types_from_history(ms_history)
+            ms_history = tablereader.MeasurementSetReader.get_history(ms.name)
+            data_type_per_column_from_ms, data_types_per_source_and_spw_from_ms = (
+                importdata_heuristics.get_ms_data_types_from_history(ms_history)
+            )
 
             if inputs.datacolumns not in (None, {}):
                 # Parse user defined datatype information via task parameter
@@ -390,10 +393,16 @@ class ImportData(basetask.StandardTaskTemplate):
 
                 self._set_column_data_types(ms, data_types, datacolumn_name, correcteddatacolumn_name)
 
-                # Log a warning if the user defined datatype information differs from the MS HISTORY information (if available)
-                if ms.data_column != data_type_per_column_from_ms:
-                    LOG.warning(f'User supplied datatypes {dict((v, k.name) for k, v in ms.data_column.items())} differ from information found in the MS ({dict((v, k.name) for k, v in data_type_per_column_from_ms.items())}).')
-
+                # Log a warning if the user defined datatype information differs from the MS HISTORY
+                # information (when available)
+                if data_type_per_column_from_ms and ms.data_column != data_type_per_column_from_ms:
+                    user_datatypes = {v: k.name for k, v in ms.data_column.items()}
+                    ms_datatypes = {v: k.name for k, v in data_type_per_column_from_ms.items()}
+                    LOG.warning(
+                        'User supplied datatypes %s differ from information found in the MS (%s).',
+                        user_datatypes,
+                        ms_datatypes,
+                    )
             else:
                 if data_type_per_column_from_ms and data_types_per_source_and_spw_from_ms:
                     # Set the lookup dictionaries

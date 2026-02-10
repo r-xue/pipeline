@@ -498,7 +498,7 @@ class syspowerPerAntennaChart(object):
 
                     tabletype = self.tabletype
                     if self.tabletype == 'pdiff':
-                        tabletype = 'pdfif_{!s}'.format(self.band)
+                        tabletype = 'pdiff_{!s}'.format(self.band)
 
                     numspws = len(self.spw.split(','))
                     pindexlist = list(range(numspws))

@@ -3,9 +3,22 @@ import datetime
 
 import pytest
 
-from .conversion import commafy, dequote, flatten, format_datetime, format_timedelta, mjd_seconds_to_datetime,\
-    range_to_list, safe_split, unix_seconds_to_datetime, _parse_antenna, _parse_field, _parse_spw
-
+from .conversion import (
+    _parse_antenna,
+    _parse_field,
+    _parse_spw,
+    commafy,
+    convert_paths_to_basenames,
+    dequote,
+    flatten,
+    format_datetime,
+    format_timedelta,
+    mjd_seconds_to_datetime,
+    range_to_list,
+    safe_split,
+    unix_seconds_to_datetime,
+    phasecenter_to_skycoord
+)
 
 DomainMock = collections.namedtuple('DomainMock', ['id', 'name'])
 AntennaMock = DomainMock
@@ -230,3 +243,77 @@ def test__parse_spw(inp, expected):
             chan = getattr(rs, 'channels', set())
             assert id == ex[0]
             assert chan == ex[1]
+
+
+@pytest.mark.parametrize(
+    'input_str, expected_output',
+    [
+        # Test converting a single absolute path.
+        (
+            'task(vis=\'/lustre/data/my_file.ms\',field=\'NGC7771,"NGC7752/3",J2355+4950,,"5795"\')',
+            'task(vis=\'my_file.ms\',field=\'NGC7771,"NGC7752/3",J2355+4950,,"5795"\')',
+        ),
+        # Test converting a single relative path.
+        ('task(vis="..//working/output.ms")', 'task(vis="output.ms")'),
+        # Test converting a string with mixed absolute, relative paths, and quotes.
+        (
+            "task(vis='/full/path/to/my_file.ms', gaintable=['../some/caltable1.tbl', 'caltable2.tbl'])",
+            "task(vis='my_file.ms', gaintable=['caltable1.tbl', 'caltable2.tbl'])",
+        ),
+        # Test a multiline string with comments.
+        (
+            """
+# This is a comment and should be preserved.
+task(
+    vis = '/path/to/data.ms', # Another comment
+    output = "output_dir/final.ms",
+    param = 'some_text'
+)
+# A final comment.
+""",
+            """
+# This is a comment and should be preserved.
+task(
+    vis = 'data.ms', # Another comment
+    output = "final.ms",
+    param = 'some_text'
+)
+# A final comment.
+""",
+        ),
+        # Test that strings with nested quotes are ignored and not converted.
+        ('task(param=\'my_value with "nested" quotes\')', 'task(param=\'my_value with "nested" quotes\')'),
+    ],
+)
+def test_convert_paths(input_str, expected_output):
+    """Test various path conversion scenarios."""
+    assert convert_paths_to_basenames(input_str) == expected_output
+
+
+@pytest.mark.parametrize(
+    "phasecenter, ra_deg, dec_deg",
+    [
+        # explicit degrees
+        ("J2000 302.999666667deg -0.71deg", 302.999666667, -0.71),
+
+        # CASA sexagesimal RA + dd.mm.ss Dec
+        ("J2000 20:11:59.992 -000.42.36.0000", 302.9999666333333, -0.71),
+
+        # explicit hourangle RA
+        ("J2000 20h11m59.992s -0.71deg", 302.9999666333333, -0.71),
+
+        # explicit arcminutes
+        ("J2000 18179.998arcmin -42.6arcmin", 302.9999666333333, -0.71),
+
+        # explicit radians
+        ("J2000 5.288347rad -0.012394rad", 302.9999666333333, -0.71),
+
+        # no reference frame (defaults to ICRS)
+        ("20:11:59.992 -000.42.36.0000", 302.9999666333333, -0.71),
+    ],
+)
+def test_phasecenter_to_skycoord(phasecenter, ra_deg, dec_deg):
+    coord = phasecenter_to_skycoord(phasecenter)
+
+    assert abs(coord.ra.deg - ra_deg) < 1e-3
+    assert abs(coord.dec.deg - dec_deg) < 1e-3

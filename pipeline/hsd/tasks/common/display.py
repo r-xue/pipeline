@@ -163,7 +163,7 @@ class SingleDishDisplayInputs(object):
         """Construct SingleDishDisplayInputs instance.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
             result: Pipeline task execution result.
         """
         self.context = context
@@ -238,7 +238,7 @@ class SpectralImage(object):
             self.dec_max = top[direction_keys[1]]
             self._brightnessunit = ia.brightnessunit()
             beam = ia.restoringbeam()
-        self._beamsize_in_deg = qa.convert(qa.sqrt(qa.mul(beam['major'], beam['minor'])), 'deg')['value']
+        self._beamsize_in_deg = qa.convert(qa.sqrt(qa.mul(beam['major'], beam['minor'])), 'deg')['value'] if beam else None
 
     def _load_coordsys(self, coordsys: casa_coordsys) -> None:
         """Load axes information of coordinate system.
@@ -406,7 +406,7 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
         """Construct SDImageDisplayInputs instance.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
             result: Pipeline task execution result.
         """
         super(SDImageDisplayInputs, self).__init__(context, result)
@@ -559,6 +559,11 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
     def source(self) -> str:
         """Return name of the target source."""
         return self.result.outcome['image'].sourcename
+
+    @property
+    def missedlines_plot(self) -> str:
+        """Return file name of the missedlines plot."""
+        return self.imagename.rstrip('/') + '.missedlines.png'
 
     @property
     def contamination_plot(self) -> str:

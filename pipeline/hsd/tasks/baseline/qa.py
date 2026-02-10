@@ -58,7 +58,7 @@ class SDBaselineListQAHandler(pqa.QAPlugin):
     def handle(self, context: 'Context', result: result_cls) -> None:
         """Compute QA score for baseline subtraction task.
 
-        Collect and join QA scores from results instances included in the
+        Collate and join QA scores from results instances included in the
         ResultsList instance received as argument, result, and attach them to
         the result.
 

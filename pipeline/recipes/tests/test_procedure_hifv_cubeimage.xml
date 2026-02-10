@@ -46,13 +46,6 @@
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hifv_pbcor</Command> 
-        <!-- delibrately excluded ?-->
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>    
     
     <ProcessingCommand>
         <Command xmlns="">hifv_exportdata</Command>

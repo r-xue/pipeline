@@ -21,9 +21,9 @@ LOG = infrastructure.get_logger(__name__)
 class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile,
-                                       linesfile, imaging_params)
+                                       linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CONT'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
@@ -561,14 +561,20 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
             outmask_flux = image_outmask.statistics()['sum'].item()
             image_outmask.done()
 
+            mask_flux = inmask_flux + outmask_flux
+            # PIPE-2902: gracefully handling outmaskradio,
+            # if the model is empty for any reason, set ratio to None for mask_flux
             # calculate ratio of total flux inside and outside mask
-            outmaskratio = outmask_flux / (inmask_flux + outmask_flux)
-
-            if outmaskratio > frac_lim:
-                LOG.warning(f'Flux fraction outside cleanmask is {"%.3g" % outmaskratio}, '
-                            f'exceeds {frac_lim} limit!')
+            if mask_flux:
+                outmaskratio = outmask_flux / mask_flux
+                if outmaskratio > frac_lim:
+                    LOG.warning(f'Flux fraction outside cleanmask is {"%.3g" % outmaskratio}, '
+                                f'exceeds {frac_lim} limit!')
+                else:
+                    LOG.info(f'Flux fraction outside clean mask ({cleanmask}) is {"%.3g" % outmaskratio}')
             else:
-                LOG.info(f'Flux fraction outside clean mask ({cleanmask}) is {"%.3g" % outmaskratio}')
+                outmaskratio = None
+                LOG.warning('The total mask flux is zero, unable to compute outside mask ratio. Setting ratio to None')
 
             return outmaskratio
         else:
@@ -582,9 +588,9 @@ class ImageParamsHeuristicsVlassSeContAWPP001(ImageParamsHeuristicsVlassSeCont):
     """
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
-                                                  contfile, linesfile, imaging_params)
+                                                  contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CONT-AWP-P001'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
@@ -602,9 +608,9 @@ class ImageParamsHeuristicsVlassSeContAWP2(ImageParamsHeuristicsVlassSeCont):
     """Special heuristics case for AWP2 gridder with the default wprojplanes=32."""
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
-                                                  contfile, linesfile, imaging_params)
+                                                  contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CONT-AWP2'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
@@ -626,9 +632,9 @@ class ImageParamsHeuristicsVlassSeContAWP2P001(ImageParamsHeuristicsVlassSeCont)
     """Special heuristics case for AWP2 gridder with the default wprojplanes=1."""
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
-                                                  contfile, linesfile, imaging_params)
+                                                  contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CONT-AWP2-P001'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
@@ -654,9 +660,9 @@ class ImageParamsHeuristicsVlassSeContAWPHPG(ImageParamsHeuristicsVlassSeCont):
     """Special heuristics case for AWPHPG gridder with the default wprojplanes=32."""
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
-                                                  contfile, linesfile, imaging_params)
+                                                  contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CONT-AWPHPG'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
@@ -678,9 +684,9 @@ class ImageParamsHeuristicsVlassSeContAWPHPGP001(ImageParamsHeuristicsVlassSeCon
     """Special heuristics case for AWPHPG gridder with the default wprojplanes=1."""
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
-                                                  contfile, linesfile, imaging_params)
+                                                  contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CONT-AWPHPG-P001'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0
@@ -709,9 +715,9 @@ class ImageParamsHeuristicsVlassSeContMosaic(ImageParamsHeuristicsVlassSeCont):
     """
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
-                                                  contfile, linesfile, imaging_params)
+                                                  contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-CONT-MOSAIC'
         # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
         self.vlass_stage = 0

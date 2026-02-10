@@ -4,9 +4,9 @@ from .imageparams_alma import ImageParamsHeuristicsALMA
 class ImageParamsHeuristicsALMAScal(ImageParamsHeuristicsALMA):
     """Class for determining image parameters heuristics for ALMA-SCAL.
 
-    Inherits from ImageParamsHeuristicsALMA and offers specialized heuristics 
-    for the VLA-SCAL imaging mode. This class facilitates the initialization 
-    of Self-calibration CleanTarget objects used by the hif_selfcal(). 
+    Inherits from ImageParamsHeuristicsALMA and offers specialized heuristics
+    for the VLA-SCAL imaging mode. This class facilitates the initialization
+    of Self-calibration CleanTarget objects used by the hif_selfcal().
     It cannot be used directly with the hif_makeimages or hif_tclean.
 
     Attributes:
@@ -15,7 +15,7 @@ class ImageParamsHeuristicsALMAScal(ImageParamsHeuristicsALMA):
     """
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         """Initializes the class with the provided parameters.
 
         Args:
@@ -27,8 +27,9 @@ class ImageParamsHeuristicsALMAScal(ImageParamsHeuristicsALMA):
             contfile (str, optional): Continuum file. Defaults to None.
             linesfile (str, optional): Lines file. Defaults to None.
             imaging_params (dict, optional): Imaging parameters. Defaults to {}.
+            processing_intents (dict, optional): Processing intents. Defaults to {}.
         """
-        super().__init__(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
+        super().__init__(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'ALMA-SCAL'
         self.selfcal = True
 

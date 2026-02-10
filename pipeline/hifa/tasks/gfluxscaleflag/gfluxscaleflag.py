@@ -23,6 +23,7 @@ from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.callibrary import CalTo
 from pipeline.infrastructure.launcher import Context
 from .resultobjects import GfluxscaleflagResults
+import pipeline.infrastructure.sessionutils as sessionutils
 
 __all__ = [
     'GfluxscaleflagInputs',
@@ -118,14 +119,17 @@ class GfluxscaleflagInputs(vdp.StandardInputs):
     # tooManyIntegrationsFraction
     tmint = vdp.VisDependentProperty(default=0.085)
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
     # docstring and type hints: supplements hifa_gfluxscaleflag
     def __init__(self, context, output_dir=None, vis=None, intent=None, field=None, spw=None, solint=None,
                  phaseupsolint=None, minsnr=None, refant=None, antnegsig=None, antpossig=None, tmantint=None,
-                 tmint=None, tmbl=None, antblnegsig=None, antblpossig=None, relaxed_factor=None, niter=None):
+                 tmint=None, tmbl=None, antblnegsig=None, antblpossig=None, relaxed_factor=None, niter=None,
+                 parallel=None):
         """Initialize Inputs.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
 
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
@@ -133,7 +137,7 @@ class GfluxscaleflagInputs(vdp.StandardInputs):
             vis: The list of input MeasurementSets. Defaults to the list of
                 MeasurementSets specified in the pipeline context.
 
-                Example: vis=['M51.ms']
+                Example: ``vis=['M51.ms']``
 
             intent: A string containing a comma delimited list of intents against
                 which the selected fields are matched. If undefined (default), it
@@ -142,7 +146,7 @@ class GfluxscaleflagInputs(vdp.StandardInputs):
                 used for BANDPASS, then this task will select only data with PHASE
                 and CHECK intents.
 
-                Example: intent='`*PHASE*`'
+                Example: ``intent='*PHASE*'``
 
             field:
 
@@ -150,11 +154,11 @@ class GfluxscaleflagInputs(vdp.StandardInputs):
 
             solint: Time and channel solution intervals in CASA syntax.
 
-                Example: solint='inf,10ch', solint='inf'
+                Example: ``solint='inf,10ch'``, ``solint='inf'``
 
             phaseupsolint: The phase correction solution interval in CASA syntax.
 
-                Example: phaseupsolint='300s'
+                Example: ``phaseupsolint='300s'``
 
             minsnr: Solutions below this SNR are rejected.
 
@@ -162,58 +166,64 @@ class GfluxscaleflagInputs(vdp.StandardInputs):
                 pipeline context. If undefined in the pipeline context defaults to
                 the CASA reference antenna naming scheme.
 
-                Example: refant='DV01', refant='DV06,DV07'
+                Example: ``refant='DV01'``, ``refant='DV06,DV07'``
 
             antnegsig: Lower sigma threshold for identifying outliers as a result of
                 bad antennas within individual timestamps.
 
-                Example: antnegsig=4.0
+                Example: ``antnegsig=4.0``
 
             antpossig: Upper sigma threshold for identifying outliers as a result of
                 bad antennas within individual timestamps.
 
-                Example: antpossig=4.6
+                Example: ``antpossig=4.6``
 
             tmantint: Threshold for maximum fraction of timestamps that are allowed to
                 contain outliers.
 
-                Example: tmantint=0.063
+                Example: ``tmantint=0.063``
 
             tmint: Threshold for maximum fraction of "outlier timestamps" over
                 "total timestamps" that a baseline may be a part of.
 
-                Example: tmint=0.085
+                Example: ``tmint=0.085``
 
             tmbl: Initial threshold for maximum fraction of "bad baselines" over "all
                 baselines" that an antenna may be a part of.
 
-                Example: tmbl=0.175
+                Example: ``tmbl=0.175``
 
             antblnegsig: Lower sigma threshold for identifying outliers as a result of
                 "bad baselines" and/or "bad antennas" within baselines, across all
                 timestamps.
 
-                Example: antblnegsig=3.4
+                Example: ``antblnegsig=3.4``
 
             antblpossig: Threshold for identifying outliers as a result of
                 "bad baselines" and/or "bad antennas" within baselines, across all
                 timestamps.
 
-                Example: antblpossig=3.2
+                Example: ``antblpossig=3.2``
 
             relaxed_factor: Relaxed value to set the threshold scaling factor to under
                 certain conditions (see task description).
 
-                Example: relaxed_factor=2.0
+                Example: ``relaxed_factor=2.0``
 
             niter: Maximum number of times to iterate on evaluation of flagging
                 heuristics. If an iteration results in no new flags, then subsequent
                 iterations are skipped.
 
-                Example: niter=2
+                Example: ``niter=2``
+
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+
+                Options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
+
+                Default: ``None`` (equivalent to ``False``)
 
         """
-        super(GfluxscaleflagInputs, self).__init__()
+        super().__init__()
 
         # pipeline inputs
         self.context = context
@@ -242,15 +252,10 @@ class GfluxscaleflagInputs(vdp.StandardInputs):
         self.antblpossig = antblpossig
         self.relaxed_factor = relaxed_factor
         self.niter = niter
+        self.parallel = parallel
 
 
-@task_registry.set_equivalent_casa_task('hifa_gfluxscaleflag')
-@task_registry.set_casa_commands_comment(
-    'This task calls hif_correctedampflag to evaluate flagging heuristics on the phase calibrator and flux calibrator, '
-    'looking for outlier visibility points by statistically examining the scalar difference of corrected amplitudes '
-    'minus model amplitudes, and flagging those outliers.'
-)
-class Gfluxscaleflag(basetask.StandardTaskTemplate):
+class SerialGfluxscaleflag(basetask.StandardTaskTemplate):
     Inputs = GfluxscaleflagInputs
 
     def prepare(self):
@@ -479,14 +484,15 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
 
                 # Create modified CalApplication and replace CalApp in result
                 # with this new one.
-                original_calapp = result.final[0]
-                modified_calapp = callibrary.copy_calapplication(original_calapp, **calapp_overrides)
-                result.pool[0] = modified_calapp
-                result.final[0] = modified_calapp
+                if result.final:
+                    original_calapp = result.final[0]
+                    modified_calapp = callibrary.copy_calapplication(original_calapp, **calapp_overrides)
+                    result.pool[0] = modified_calapp
+                    result.final[0] = modified_calapp
 
-                # Merge the result to the local context to register new caltable
-                # in local context callibrary.
-                result.accept(inputs.context)
+                    # Merge the result to the local context to register new caltable
+                    # in local context callibrary.
+                    result.accept(inputs.context)
 
     def _do_phasecal(self):
         # Note: at present, phaseupsolint is specified as a fixed
@@ -527,6 +533,17 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
                 interp = 'linearPD,linear'
 
         return combine, interp, spwmap
+
+
+@task_registry.set_equivalent_casa_task('hifa_gfluxscaleflag')
+@task_registry.set_casa_commands_comment(
+    'This task calls hif_correctedampflag to evaluate flagging heuristics on the phase calibrator and flux calibrator, '
+    'looking for outlier visibility points by statistically examining the scalar difference of corrected amplitudes '
+    'minus model amplitudes, and flagging those outliers.'
+)
+class Gfluxscaleflag(sessionutils.ParallelTemplate):
+    Inputs = GfluxscaleflagInputs
+    Task = SerialGfluxscaleflag
 
 
 def create_plots(inputs, context, intents, suffix=''):
@@ -578,5 +595,5 @@ class AmpVsXChart(applycal_displays.PlotmsFieldSpwComposite):
         }
         plot_args.update(**overrides)
 
-        super(AmpVsXChart, self).__init__(context, output_dir, calto, xaxis=xaxis, yaxis='amp', intent=intent,
-                                          **plot_args)
+        super().__init__(context, output_dir, calto, xaxis=xaxis, yaxis='amp', intent=intent,
+                         **plot_args)

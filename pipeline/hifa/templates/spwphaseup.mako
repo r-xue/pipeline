@@ -38,14 +38,19 @@ and the caltable containing per spw phase offsets.</p>
 <h2 id="results">Results</h2>
 
 <table class="table table-bordered table-striped" summary="Narrow to wide spw mapping results">
-	<caption>Phase solution spwmap per measurement set and intent. If a
-	    measurement set is listed with no further information, this indicates
-	    that there were no valid fields for which to derive a SpW mapping (e.g.
-        because those fields also covered other calibrator intents).
-	    The calculated solution interval is the 'solint' to be used in phase
-	    based gaincal within stages 'gfluxscale' and 'timegaincal' and are based
-	    on reaching a solution SNR equal to the 'intphaseup' parameter.
-	    In some cases to improve SNR, the gaintype could change from 'G' to 'T'.
+	<caption>Phase solution spwmap per measurement set and intent. For each
+	    measurement set, separate SpW mapping entries may be produced for
+	    intents AMPLITUDE, BANDPASS, CHECK, DIFFGAINREF, DIFFGAINSRC, and PHASE.
+	    If an entry is missing for one of these intents, it indicates those were
+	    either missing or overlapping with polarization intents (that are not
+	    assessed). The calculated solution interval 'solint' is to be used in
+	    phase-up gaincal within stages 'hifa_gfluxscale' and 'hifa_timegaincal'
+	    and are based on reaching a solution SNR equal to 'phasesnr' over the
+	    scan duration (for PHASE and CHECK intents) or the 'intphaseup'
+	    parameter (for other intents). In cases that require SpW combination to
+	    improve the SNR, the gaintype will change from 'G' to 'T'. For the
+	    AMPLITUDE intent, if SpWs are combined then the SNR threshold will reduce
+	    to 'intphasesnrmin' before increasing 'solint'.
 	</caption>
     <thead>
 	    <tr>
@@ -77,23 +82,30 @@ and the caltable containing per spw phase offsets.</p>
 
 % if snr_table_rows:
 <table class="table table-bordered table-striped" summary="Estimated phase signal to noise ratios">
-	<caption>Estimated calibrator signal to noise ratios per intent. For
-	    spectral windows where the estimated SNR is below the specified
-	    threshold ('phasesnr' parameter for per Scan - PHASE/CHECK intents, or
-	    'intphasesnr' parameter for BANDPASS/AMPLITUDE/DIFFGAIN), the SNR value
-	    is indicated in <strong>bold</strong>. If a measurement set is listed
-	    with no further information, this indicates that there were no valid
-	    PHASE or CHECK fields for which to derive a SpW mapping (e.g. because
-	    those fields also covered other calibrator intents).
+	<caption>
+	    Estimated calibrator signal-to-noise ratios (SNR) per intent. The
+	    'SNR Calculated from Source Catalogue' values are derived from the source
+	    catalogue, T<sub>sys</sub>, and integration time. The 'SNR Used for
+	    Calibration Heuristics' values are measured using a temporary gain table
+	    when available; otherwise, the source catalogue-based SNR is used.<br>
+	    For spectral windows where the estimated SNR is below the specified
+	    threshold ('phasesnr' parameter for per-Scan PHASE/CHECK intents, or
+	    'intphasesnr' parameter for intents AMPLITUDE, BANDPASS, DIFFGAINREF,
+	    and DIFFGAINSRC), the SNR value is indicated in bold. If a measurement
+	    set is listed with no further information, this indicates that there
+	    were no valid intents for which to derive a SpW mapping because those
+	    were missing or overlapping with polarization intents (that are not
+	    assessed).
 	</caption>
     <thead>
 	    <tr>
 	        <th>Measurement Set</th>
-            <th>Phase SNR threshold</th>
+            <th>Phase SNR Threshold</th>
             <th>Field</th>
             <th>Intent</th>
             <th>Spectral Window</th>
-            <th>Estimated SNR</th>
+            <th>SNR Calculated from Source Catalogue</th>
+            <th>SNR Used for Calibration Heuristics</th>
         </tr>
 	</thead>
 	<tbody>

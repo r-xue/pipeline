@@ -392,7 +392,7 @@ class TimegaincalQAPool(pqa.QAScorePool):
                         mapping_msg = 'SPW mapping used for spw{}, so any offsets could affect calibration.'.format(
                             utils.commafy(sorted(mapped_spws_for_antennas), quotes=False, multi_prefix='s'))
                     else:
-                        mapping_msg = 'No SPW mapping used, so any offsets should calibrate out.'
+                        mapping_msg = 'This spw is not mapped, so any offsets should calibrate out.'
                     public_phase_offsets_scores.append(pqa.QAScore(
                         score=score,
                         longmsg='Potential phase offset outliers for {0}, spw{1}, antenna{2}. {3}'.format(

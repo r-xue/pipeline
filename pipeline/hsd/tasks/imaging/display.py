@@ -1,12 +1,13 @@
 """Set of plotting classes for hsd_imaging task."""
 import copy
 import datetime
+import functools
 import itertools
 import math
 from math import ceil, floor
 import os
 import time
-from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Union
+from typing import Callable, Dict, Generator, List, Optional, Tuple, Union
 
 import numpy
 from scipy import interpolate
@@ -23,10 +24,9 @@ import pipeline.infrastructure.renderer.logger as logger
 from pipeline.domain import DataType
 from pipeline.h.tasks.common import atmutil
 from pipeline.hsd.tasks.common.display import DPIDetail, SDImageDisplay, SDImageDisplayInputs
-from pipeline.hsd.tasks.common.display import sd_polmap as polmap, SpectralImage, ChannelSelection
+from pipeline.hsd.tasks.common.display import sd_polmap as polmap, SpectralImage
 from pipeline.hsd.tasks.common.display import SDSparseMapPlotter
 from pipeline.hsd.tasks.common.display import NoData
-from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.pointing import MapAxesManagerBase
@@ -812,6 +812,28 @@ class SDChannelMapDisplay(SDImageDisplay):
     NvPanel = 3
     NUM_CHANNELMAP = NhPanel * NvPanel
 
+    @functools.cached_property
+    def extended_velocity( self ) -> numpy.ndarray:
+        """
+        Extend self.velocity for 1 channel to cover edge cases
+
+        Added for PIPE-2683.
+        In some cases, the code tries to lookup the velocity value at 1 channel beyond
+        the array range, in order to determine the (upper) boundary of an edge channel.
+        To cover this case, an extended velocity array is prepared by extrapolating
+        for 1 channel.
+
+        Returns:
+            extended ndarray of velocities
+        """
+        assert len( self.velocity ) > 1
+
+        extended_velocity = numpy.append(
+            self.velocity,
+            self.velocity[-1] + ( self.velocity[-1] - self.velocity[-2] )
+        )
+        return extended_velocity
+
     def plot(self) -> List[logger.Plot]:
         """Create list of channel maps.
 
@@ -890,7 +912,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         Returns:
             List of Plot instances.
-        
+
         Raises:
             Exception: Unexpected Result object.
         """
@@ -999,7 +1021,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             plotting_objects.append(
                 axes_integsp1.axvline(x=self.frequency[chan1], linewidth=0.3, color='r')
             )
-            
+
             # Calculate red vertical lines for integrated spectrum #2
             # For detail, see the MEMO below.
             vel_vertlines = self.calc_velocity_lines(is_leftside, slice_width, idx_vertlines, velocity_line_center)
@@ -1101,14 +1123,14 @@ class SDChannelMapDisplay(SDImageDisplay):
                 # Draw Channel Map
                 NMap = 0
                 Vmax0 = Vmin0 = 0
-                Title = [] 
+                Title = []
                 for i in range(self.NUM_CHANNELMAP-1, -1, -1):
                     if len(idx_vertlines) - 2 < i:
                         continue
                     C0 = idx_vertlines[i]
                     C1 = idx_vertlines[i+1]
-                    velo = (self.velocity[C0] + self.velocity[C1 - 1]) / 2.0 - velocity_line_center
-                    width = abs(self.velocity[C0] - self.velocity[C1])
+                    velo = (self.extended_velocity[C0] + self.extended_velocity[C1 - 1]) / 2.0 - velocity_line_center
+                    width = abs(self.extended_velocity[C0] - self.extended_velocity[C1])
                     Title.append('(Vel,Wid) = (%.1f, %.1f) (km/s)' % (velo, width))
                     NMap += 1
                     _mask = masked_data[:, :, C0:C1].sum(axis=2) * velocity_per_channel
@@ -1196,7 +1218,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             Tuple[Union[bool, int, float, List[int]]]:
         """
         Digitize values and calculate related values.
-        
+
         This function digitizes the center of the feature line and indices of
         vertical red lines on a plot first, and invert it if the processing
         casaimage was from an lower side band, note that self.velocity and
@@ -1217,7 +1239,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             float, float: relative velocities with respect to the window center
                           at both edges of the red lines on the integrated spectrum #2
             bool: the flag whether the center of the feature line is at left side of the channel map
-        
+
         throws:
             ValueError: unexpected out-of-boundery access or too few red lines are detected.
         """
@@ -1234,7 +1256,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         def _invert(x):
             return self.nchan - 1 - x
-        
+
         # invert if LSB
         if is_lsb:
             f_line_center, i_line_center, neighbor_channel, _idx = \
@@ -1245,12 +1267,12 @@ class SDChannelMapDisplay(SDImageDisplay):
         # The indices of all vertical red lines
         # The red lines are drawn at the boundaries of NUM_CHANNELMAP slices, so the number of them is NUM_CHANNELMAP + 1
         i_idx_vertlines = [idx_1st_vertline + i * slice_width for i in range(self.NUM_CHANNELMAP + 1)]
-        
+
         if len(i_idx_vertlines) < 2:
             raise ValueError('Too few red lines: %s' % i_idx_vertlines)
-        
+
         LOG.info(f'line center: {f_line_center}, indice vertical lines: {i_idx_vertlines}, nchan: {self.nchan}')
-        
+
         # adjust neighbor channel at the edge
         if neighbor_channel < 0:
             neighbor_channel = 1
@@ -1279,17 +1301,17 @@ class SDChannelMapDisplay(SDImageDisplay):
         # calculate indices of the red lines on the integrated spectrum #1
         chan0 = max(i_idx_vertlines[0] - 1, 0)
         chan1 = min(i_idx_vertlines[-1], self.nchan - 1)
-        
+
         # calculate relative velocities of both edges of red lines on the integrated spectrum #2
         V0 = min(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
         V1 = max(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
-        
+
         LOG.debug(f'center velocity[{i_line_center}]: {velocity_line_center}')
         LOG.debug(f"center frequency[{i_line_center}]: {self.frequency[i_line_center]}")
         LOG.debug('chan0, chan1, V0, V1, velocity_line_center : '
                     f'{chan0}, {chan1}, {V0}, {V1}, {velocity_line_center}')
 
-        return (i_line_center, i_idx_vertlines, velocity_line_center, 
+        return (i_line_center, i_idx_vertlines, velocity_line_center,
                 velocity_per_channel, chan0, chan1, V0, V1, is_leftside)
 
     def _calc_slice_width(self, line_width: float, line_center: float) -> int:
@@ -1320,30 +1342,30 @@ class SDChannelMapDisplay(SDImageDisplay):
     def calc_velocity_lines(self, is_leftside:bool, slice_width: int, idx_vertlines: List[int], velocity_line_center:float) -> List[float]:
         """
         Calculate relative velocities for red vertical lines on the velocity plot using extrapolation.
-        
+
         Args:
             is_leftside (bool): the flag whether the center of the feature line is at left side of the channel map
             slice_width (int): width of a slice
             idx_vertlines (List[int]): indice of vertical red lines
             velocity_line_center (float): velocity value at the center of feature line
-            
+
         Returns:
             List[float]: relative velocities for red vertical lines
         """
         # interpolate function to calculate velocities using extrapolation
-        chan2vel = interpolate.interp1d(idx_vertlines, self.velocity[idx_vertlines],
+        chan2vel = interpolate.interp1d(idx_vertlines, self.extended_velocity[idx_vertlines],
                                         bounds_error=False, fill_value='extrapolate')
-        
+
         # get size of difference between the number of vertical lines and NUM_CHANNELMAP
         _diff_len = self.NUM_CHANNELMAP + 1 - len(idx_vertlines)
-        
+
         if is_leftside:
             # push the indices of the vertical lines for extrapolation to the left side
             idx_vertlines[len(idx_vertlines):]  = [idx_vertlines[-1] + i * slice_width for i in range(1, _diff_len+1)]
         else:
             # push the stuff to the right side
             idx_vertlines[:0] = [idx_vertlines[0] + i * slice_width for i in range(-_diff_len, 0)]
-        
+
         # calculate relative velocities for red vertical lines
         return chan2vel(numpy.array(idx_vertlines) - 0.5) - velocity_line_center
 
@@ -1884,28 +1906,34 @@ class SDSpectralImageDisplay(SDImageDisplay):
         t5 = time.time()
         LOG.debug('moment_map: elapsed time %s sec' % (t5-t4))
 
+        # missed-lines plots
+        plot_list.extend(self.add_plot( 'sd_missedlines_plot', self.inputs.missedlines_plot ))
+
         # contamination plots
-        plot_list.extend(self.add_contamination_plot())
+        plot_list.extend(self.add_plot( 'sd_contamination_map', self.inputs.contamination_plot ))
 
         return plot_list
 
-    def add_contamination_plot(self) -> List[logger.Plot]:
-        """Return list of Plot instances for contamination plot.
+    def add_plot( self, plot_type: str, filename: str ) -> List[logger.Plot]:
+        """Return list of Plot instances for plots created beforehand.
 
         Plot instance is created only when input has valid file
-        name of contamination plot for "combined" image.
+        name for a "combined" image.
 
+        Args:
+            plot_type : type of the plot
+            filename  : filename of the plot
         Returns:
             List of Plot instances.
         """
-        plotfile = os.path.join(self.stage_dir, self.inputs.contamination_plot)
+        plotfile = os.path.join( self.stage_dir, filename )
         if self.inputs.antenna == 'COMBINED' and os.path.exists(plotfile):
             parameters = {}
             parameters['intent'] = 'TARGET'
             parameters['spw'] = self.inputs.spw
             parameters['pol'] = 'I'
             parameters['ant'] = 'COMBINED'
-            parameters['type'] = 'sd_contamination_map'
+            parameters['type'] = plot_type
             parameters['file'] = self.inputs.imagename
             parameters['field'] = self.inputs.source
             parameters['vis'] = 'ALL'

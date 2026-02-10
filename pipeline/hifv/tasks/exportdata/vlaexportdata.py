@@ -53,11 +53,11 @@ class VLAExportDataInputs(exportdata.ExportDataInputs):
             session: List of sessions one per visibility file. Currently defaults to a single virtual session containing all the visibility files in vis.
                 In the future, this will default to the set of observing sessions defined
                 in the context.
-                example: session=['session1', 'session2']
+                example: ``session=['session1', 'session2']``
 
             vis: List of visibility data files for which flagging and calibration information will be exported. Defaults to the list maintained in the
                 pipeline context.
-                example: vis=['X227.ms', 'X228.ms']
+                example: ``vis=['X227.ms', 'X228.ms']``
 
             exportmses: Export the final MeasurementSets instead of the final flags, calibration tables, and calibration instructions.
 
@@ -66,16 +66,16 @@ class VLAExportDataInputs(exportdata.ExportDataInputs):
             exportcalprods: Export flags and caltables in addition to MeasurementSets. this parameter is only valid when exportmses = True.
 
             pprfile: Name of the pipeline processing request to be exported. Defaults to a file matching the template 'PPR_*.xml'.
-                example: pprfile=['PPR_GRB021004.xml']
+                example: ``pprfile=['PPR_GRB021004.xml']``
 
             calintents: List of calibrator image types to be exported. Defaults to all standard calibrator intents, 'BANDPASS', 'PHASE', 'FLUX'.
-                example: 'PHASE'
+                example: ``'PHASE'``
 
             calimages: List of calibrator images to be exported. Defaults to all calibrator images recorded in the pipeline context.
-                example: calimages=['3C454.3.bandpass', '3C279.phase']
+                example: ``calimages=['3C454.3.bandpass', '3C279.phase']``
 
             targetimages: List of science target images to be exported. Defaults to all science target images recorded in the pipeline context.
-                example: targetimages=['NGC3256.band3', 'NGC3256.band6']
+                example: ``targetimages=['NGC3256.band3', 'NGC3256.band6']``
 
             products_dir: Name of the data products subdirectory. Defaults to './' example: '../products'
 
@@ -94,52 +94,49 @@ class VLAExportDataInputs(exportdata.ExportDataInputs):
 
 @task_registry.set_equivalent_casa_task('hifv_exportdata')
 class VLAExportData(exportdata.ExportData):
-
     # link the accompanying inputs to this task
     Inputs = VLAExportDataInputs
 
     def prepare(self):
         results = super().prepare()
 
-        # PIPE-1205
-        PbcorFits = collections.namedtuple('PbcorFits', 'pbcorimage pbcorfits nonpbcor_fits')
-        # results.targetimages[0] is the same as self.inputs.context.sciimlist.get_imlist()
-
-        # for each target in the targetimages results
+        # PIPE-2710: export flat noise images
+        # The flat noise images are the same as the 'imagename` associated with each target, but without the
+        # '.pbcor' extension.
+        # note: results.targetimages[0] is the same as self.inputs.context.sciimlist.get_imlist()
         for target in results.targetimages[0]:
-            fitsqueue = []
+            if not target['imagename'].endswith('.pbcor') or '.cube.' in target['imagename']:
+                # skip images that are not pbcor images or are cubes.
+                continue
+            # process the flat noise images associated with this target pbcor image
             if target['multiterm']:
-                for nt in range(target['multiterm']):
-                    pbcorimage = target['imagename'] + f'.pbcor.tt{nt}'
-                    non_pbcorimage = target['imagename'] + f'.tt{nt}'
-                    fitsfile = fitsname(self.inputs.products_dir, pbcorimage)
-                    nonpbcor_fits = fitsname(self.inputs.products_dir, non_pbcorimage)
-                    if os.path.exists(pbcorimage) and fitsfile not in target['fitsfiles']:
-                        fitsqueue.append(PbcorFits(pbcorimage, fitsfile, nonpbcor_fits))
+                # if multiterm, add the extension to the image name
+                ext_list = [f'.tt{nt}' for nt in range(target['multiterm'])]
             else:
-                pbcorimage = target['imagename'] + '.pbcor'
-                fitsfile = fitsname(self.inputs.products_dir, pbcorimage)
-                nonpbcor_fits = fitsname(self.inputs.products_dir, target['imagename'])
-                if os.path.exists(pbcorimage) and fitsfile not in target['fitsfiles']:
-                    fitsqueue.append(PbcorFits(pbcorimage, fitsfile, nonpbcor_fits))
+                # if not multiterm, add the empty extension
+                ext_list = ['']
 
-            for ee in fitsqueue:
-                # make the pbcor FITS images
-                self._shorten_spwlist(ee.pbcorimage)
-                task = casa_tasks.exportfits(imagename=ee.pbcorimage, fitsimage=ee.pbcorfits, velocity=False, optical=False,
-                                        bitpix=-32, minpix=0, maxpix=-1, overwrite=True, dropstokes=False,
-                                        stokeslast=True)
-                self._executor.execute(task)
+            for nt in ext_list:
+                flatnoiseimage_basename = target['imagename'][:-6]
+                flatnoiseimage = flatnoiseimage_basename + nt
+                flatnoisefits = fitsname(self.inputs.products_dir, flatnoiseimage)
+                if os.path.exists(flatnoiseimage) and flatnoisefits not in target['fitsfiles']:
+                    self._shorten_spwlist(flatnoiseimage)
+                    task = casa_tasks.exportfits(
+                        imagename=flatnoiseimage,
+                        fitsimage=flatnoisefits,
+                        velocity=False,
+                        optical=False,
+                        bitpix=-32,
+                        minpix=0,
+                        maxpix=-1,
+                        overwrite=True,
+                        dropstokes=False,
+                        stokeslast=True,
+                    )
+                    self._executor.execute(task)
 
-                # add new pbcor fits to 'fitsfiles'
-                target['fitsfiles'].append(ee.pbcorfits)
-                # add new pbcor fits to fitslist
-                results.targetimages[1].append(ee.pbcorfits)
-
-                # if there's a non-pbcor image in 'fitsfiles' move it to 'auxfitsfiles'
-                if ee.nonpbcor_fits in target['fitsfiles']:
-                    target['auxfitsfiles'].append(ee.nonpbcor_fits)
-                    target['fitsfiles'].remove(ee.nonpbcor_fits)
+                    target['auxfitsfiles'].append(flatnoisefits)
 
         oussid = self.inputs.context.get_oussid()  # returns string of 'unknown' for VLA
 

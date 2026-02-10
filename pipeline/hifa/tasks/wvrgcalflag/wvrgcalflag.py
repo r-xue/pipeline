@@ -6,6 +6,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.vdp as vdp
+import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.h.tasks.common import viewflaggers
 from pipeline.hifa.tasks import bandpass
@@ -54,17 +55,19 @@ class WvrgcalflagInputs(wvrgcal.WvrgcalInputs):
         value_set.update(self.flag_intent.split(','))
         return ','.join(value_set)
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
     # docstring and type hints: supplements hifa_wvrgcalflag
     def __init__(self, context, output_dir=None, vis=None, caltable=None, offsetstable=None, hm_toffset=None,
                  toffset=None, segsource=None, hm_tie=None, tie=None, sourceflag=None, nsol=None, disperse=None,
                  wvrflag=None, hm_smooth=None, smooth=None, scale=None, maxdistm=None, minnumants=None,
                  mingoodfrac=None, refant=None, flag_intent=None, qa_intent=None, qa_bandpass_intent=None,
                  accept_threshold=None, flag_hi=None, fhi_limit=None, fhi_minsample=None, ants_with_wvr_thresh=None,
-                 ants_with_wvr_nr_thresh=None):
+                 ants_with_wvr_nr_thresh=None, parallel=None):
         """Initialize Inputs.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
 
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
@@ -73,20 +76,20 @@ class WvrgcalflagInputs(wvrgcal.WvrgcalInputs):
                 Default: none, in which case the vis files to be used
                 will be read from the context.
 
-                Example: vis=['ngc5921.ms']
+                Example: ``vis=['ngc5921.ms']``
 
             caltable: List of output gain calibration tables.
                 Default: none, in which case the names of the caltables
                 will be generated automatically.
 
-                Example: caltable='ngc5921.wvr'
+                Example: ``caltable='ngc5921.wvr'``
 
             offsetstable: List of input temperature offsets table files to
                 subtract from WVR measurements before calculating phase
                 corrections.
                 Default: none, in which case no offsets are applied.
 
-                Example: offsetstable=['ngc5921.cloud_offsets']
+                Example: ``offsetstable=['ngc5921.cloud_offsets']``
 
             hm_toffset: If 'manual', set the 'toffset' parameter to the user-specified
                 value. If 'automatic', set the 'toffset' parameter according to the
@@ -113,13 +116,13 @@ class WvrgcalflagInputs(wvrgcal.WvrgcalInputs):
                 the ``tie``. If ``tie`` is not empty then ``segsource``
                 is forced to be True. Ignored unless ``hm_tie`` = 'manual'.
 
-                Example: tie=['3C273,NGC253', 'IC433,3C279']
+                Example: ``tie=['3C273,NGC253', 'IC433,3C279']``
 
             sourceflag: Flag the WVR data for these source(s) as bad and do not
                 produce corrections for it. Requires
-                ``segsource`` = True.
+                ``segsource=True``.
 
-                Example: sourceflag=['3C273']
+                Example: ``sourceflag=['3C273']``
 
             nsol: Number of solutions for phase correction coefficients during this
                 observation, evenly distributed in time throughout the observation. It
@@ -133,7 +136,7 @@ class WvrgcalflagInputs(wvrgcal.WvrgcalInputs):
             wvrflag: Flag the WVR data for these antenna(s) as bad and replace its data
                 with interpolated values.
 
-                Example: wvrflag=['DV03','DA05','PM02']
+                Example: ``wvrflag=['DV03','DA05','PM02']``
 
             hm_smooth: If 'manual' set the 'smooth' parameter to the user-specified value.
                 If 'automatic', run the wvrgcal task with the range of 'smooth' parameters
@@ -141,7 +144,7 @@ class WvrgcalflagInputs(wvrgcal.WvrgcalInputs):
                 interferometric data in each spectral window.
 
             smooth: Smooth WVR data on this timescale before calculating the correction.
-                Ignored unless hm_smooth='manual'.
+                Ignored unless ``hm_smooth='manual'``.
 
             scale: Scale the entire phase correction by this factor.
 
@@ -151,20 +154,20 @@ class WvrgcalflagInputs(wvrgcal.WvrgcalInputs):
                 antennas are 7m antennas without WVR and otherwise set
                 to 500m).
 
-                Example: maxdistm=550
+                Example: ``maxdistm=550``
 
             minnumants: Minimum number of nearby antennas (up to 3) used for
                 interpolation from a flagged antenna.
 
-                Example: minnumants=3
+                Example: ``minnumants=3``
 
             mingoodfrac: Minimum fraction of good data per antenna.
 
-                Example: mingoodfrac=0.7
+                Example: ``mingoodfrac=0.7``
 
             refant: Ranked comma delimited list of reference antennas.
 
-                Example: refant='DV02,DV06'
+                Example: ``refant='DV02,DV06'``
 
             flag_intent: The data intent(s) on whose WVR correction results the
                 search for bad WVR antennas is to be based.
@@ -213,13 +216,18 @@ class WvrgcalflagInputs(wvrgcal.WvrgcalInputs):
                 same threshold is used to determine, after flagging, whether there remain
                 enough unflagged antennas with WVR data for the WVR calibration to be
                 applied.
-                Example: ants_with_wvr_thresh=0.5
+                Example: ``ants_with_wvr_thresh=0.5``
 
             ants_with_wvr_nr_thresh:
 
-        """
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
 
-        super(WvrgcalflagInputs, self).__init__(
+                Options: ``'automatic'``, ``'true'``, ``'false'``, ``True``, ``False``
+
+                Default: ``None`` (equivalent to ``False``)
+
+        """
+        super().__init__(
             context, output_dir=output_dir, vis=vis, caltable=caltable, offsetstable=offsetstable,
             hm_toffset=hm_toffset, toffset=toffset, segsource=segsource, hm_tie=hm_tie, tie=tie, sourceflag=sourceflag,
             nsol=nsol, disperse=disperse, wvrflag=wvrflag, hm_smooth=hm_smooth, smooth=smooth, scale=scale,
@@ -236,16 +244,11 @@ class WvrgcalflagInputs(wvrgcal.WvrgcalInputs):
         self.fhi_limit = fhi_limit
         self.fhi_minsample = fhi_minsample
 
+        self.parallel = parallel
 
-@task_registry.set_equivalent_casa_task('hifa_wvrgcalflag')
-@task_registry.set_casa_commands_comment(
-    'Water vapour radiometer corrections are calculated for each antenna. The quality of the correction is assessed by '
-    'comparing a phase gain solution calculated with and without the WVR correction. This requires calculation of a '
-    'temporary phase gain on the bandpass calibrator, a temporary bandpass using that temporary gain, followed by phase'
-    ' gains with the temporary bandpass, with and without the WVR correction. After that, some antennas are wvrflagged '
-    '(so that their WVR corrections are interpolated), and then the quality of the correction recalculated.'
-)
-class Wvrgcalflag(basetask.StandardTaskTemplate):
+
+
+class SerialWvrgcalflag(basetask.StandardTaskTemplate):
     Inputs = WvrgcalflagInputs
 
     def prepare(self):
@@ -489,15 +492,27 @@ class WvrgcalflagDataInputs(vdp.StandardInputs):
     def as_dict(self):
         skip = ['context', 'ms']
         return {dd_name: dd
-                for dd_name, dd in inspect.getmembers(self, lambda a: not(inspect.isroutine(a)))
+                for dd_name, dd in inspect.getmembers(self, lambda a: not (inspect.isroutine(a)))
                 if not (dd_name.startswith('_') or dd_name in skip)}
+
+
+@task_registry.set_equivalent_casa_task('hifa_wvrgcalflag')
+@task_registry.set_casa_commands_comment(
+    'Water vapour radiometer corrections are calculated for each antenna. The quality of the correction is assessed by '
+    'comparing a phase gain solution calculated with and without the WVR correction. This requires calculation of a '
+    'temporary phase gain on the bandpass calibrator, a temporary bandpass using that temporary gain, followed by phase'
+    ' gains with the temporary bandpass, with and without the WVR correction. After that, some antennas are wvrflagged '
+    '(so that their WVR corrections are interpolated), and then the quality of the correction recalculated.')
+class Wvrgcalflag(sessionutils.ParallelTemplate):
+    Inputs = WvrgcalflagInputs
+    Task = SerialWvrgcalflag
 
 
 class WvrgcalflagData(basetask.StandardTaskTemplate):
     Inputs = WvrgcalflagDataInputs
 
     def __init__(self, inputs):
-        super(WvrgcalflagData, self).__init__(inputs)
+        super().__init__(inputs)
 
         # Initialize parameters that should persist across multiple flagging
         # iterations. These will be populated by the output from Wvrgcal on

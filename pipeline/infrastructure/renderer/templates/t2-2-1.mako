@@ -118,10 +118,10 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 	</tbody>
 </table>
 
-% if mosaics:
-<h2>Mosaic Pointings</h2>
+% if pointings:
+<h2>Source Pointings</h2>
 <ul class="thumbnails">
-    % for source, plots in [(s, p) for s, p in mosaics if p]:
+    % for source, plots in [(s, p) for s, p in pointings if p]:
     <li>
         <div class="thumbnail">
             <div class="plot-container">
@@ -131,15 +131,15 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
                        data-fancybox>
                         <img class="lazyload"
                              data-src="${os.path.relpath(plot.thumbnail, pcontext.report_dir)}"
-                             title="Mosaic Pointings for ${source.name} in ${ms.basename}"
-                             alt="Mosaic Pointings for ${source.name} in ${ms.basename}" />
+                             title="Source Pointings for ${source.name} in ${ms.basename}"
+                             alt="Source Pointings for ${source.name} in ${ms.basename}" />
                     </a>
                 </div>
                 % endfor
             </div>
             <div class="caption">
                 <h4>${source.name}</h4>
-                <p>Mosaic pointings for Source #${source.id}: ${source.name}.</p>
+                <p>Source pointings for Source #${source.id}: ${source.name}.</p>
             </div>
         </div>
     </li>

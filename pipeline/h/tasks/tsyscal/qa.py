@@ -26,9 +26,7 @@ class TsyscalQAHandler(pqa.QAPlugin):
 
 
 class TsyscalListQAHandler(pqa.QAPlugin):
-    """
-    QA handler for a list containing TsyscalResults.
-    """
+    """QA handler for a list containing TsyscalResults."""
     result_cls = collections.abc.Iterable
     child_cls = resultobjects.TsyscalResults
 

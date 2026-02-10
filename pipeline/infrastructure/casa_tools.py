@@ -81,6 +81,10 @@ def create_logging_class(cls, level=logging.TRACE, to_log=None):
     bound_methods = {name: method
                      for (name, method) in inspect.getmembers(cls, inspect.isfunction)}
 
+    if 'done' in bound_methods and 'close' not in bound_methods:
+        # `close`` as an alias of `done` in case the `close` method is absent (e.g., casatools.measures)
+        bound_methods['close'] = bound_methods['done']
+
     if to_log:
         bound_methods = {name: method for name, method in bound_methods.items() if name in to_log}
 
@@ -136,7 +140,6 @@ table = _logging_table_cls()
 utils = _logging_utils_cls()
 
 log = casalog
-
 
 def post_to_log(comment='', echo_to_screen=True):
     log.post(comment)

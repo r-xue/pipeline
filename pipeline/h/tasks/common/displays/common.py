@@ -13,6 +13,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure.utils import caltable_tools
 from pipeline.domain import MeasurementSet
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -22,14 +23,19 @@ LOG = infrastructure.get_logger(__name__)
 COLSHAPE_FORMAT = re.compile(r'\[(?P<num_pols>\d+), (?P<num_rows>\d+)\]')
 
 
-class PlotbandpassDetailBase(object):
+class PlotbandpassDetailBase:
     def __init__(self, context, result, xaxis, yaxis, **kwargs):
-        # identify the bandpass solution for the target
-        calapps = [c for c in result.final
-                   if (c.intent == '' or 'TARGET' in c.intent)]
 
-        if len({c.gaintable for c in calapps}) > 1:
-            raise ValueError('Target solutions != 1')
+        # PIPE-2752: identify the bandpass/tsys for the target, falling back to PHASE/AMPLITUDE/BANDPASS
+        for intent in ['TARGET', 'PHASE', 'AMPLITUDE', 'BANDPASS']:
+            calapps = [c for c in result.final if not c.intent or intent in c.intent]
+            if not calapps:
+                continue
+            if len({c.gaintable for c in calapps}) > 1:
+                raise ValueError('Target solutions != 1')
+            LOG.debug('Using calapp - %s - for PlotbandpassDetail', calapps[0])
+            break
+
         calapp = calapps[0]
 
         self._vis = calapp.vis
@@ -458,7 +464,7 @@ class PolComposite(LeafComposite):
             num_pols = dd.num_polarizations
 
         else:
-            num_pols = utils.get_num_caltable_polarizations(calapp.gaintable)
+            num_pols = caltable_tools.get_num_caltable_polarizations(calapp.gaintable)
 
         children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
                                     spw=spw, ant=ant, pol=pol, **kwargs)

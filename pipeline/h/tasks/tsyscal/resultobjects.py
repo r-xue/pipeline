@@ -8,7 +8,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class TsyscalResults(basetask.Results):
     def __init__(self, final=None, pool=None, preceding=None, unmappedspws=None):
-        super(TsyscalResults, self).__init__()
+        super().__init__()
 
         if final is None:
             final = []
