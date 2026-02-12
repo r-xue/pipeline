@@ -154,7 +154,7 @@ class Circfeedpolcal(polarization.Polarization):
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
         # PIPE-1637: adding ',' in the manual and auto refantignore parameter
-        refantignore = self.inputs.refantignore + ','.join(['', *self.ignorerefant])
+        refantignore = ','.join(filter(None, [self.inputs.refantignore, self.ignorerefant]))
         refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
         # PIPE-595: if refant list is not provided, compute refants else use provided refant list.
         if len(self.inputs.refant) == 0:
