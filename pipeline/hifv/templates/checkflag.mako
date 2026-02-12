@@ -173,6 +173,8 @@ def percent_flagged_diff(flagsummary1, flagsummary2):
 	</tbody>
 </table>
 
+<br style="clear: both;">
+
 % endfor
 
 % endif
