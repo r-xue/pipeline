@@ -298,6 +298,43 @@ class ImageParamsHeuristics(object):
 
         return field_intent_result
 
+    def get_sourcename(
+        self, vislist: list[str] | str, fieldlist: list[str] | str, intent: str, as_list: bool = False
+    ) -> list[str] | str:
+        """Get source name(s) from a MS list for given field and intent selections.
+
+        This function helps you translated your MS, field, and intent selections into source names
+        that can be used for naming your images. If fieldlist is a field name string and applied to all
+        MSes, this function should yield the same name as outcome when as_list is False.
+
+        Args:
+            vislist: List of measurement set names or single MS name string.
+            fieldlist: List of field names (one element per MS) or single field name string.
+            intent: Intent string to filter fields.
+            as_list: If True, return deduplicated list; otherwise return comma-separated string.
+
+        Returns:
+            Deduplicated list of field names if as_list is True, otherwise comma-separated string.
+        """
+        vis_list: list[str] = vislist if isinstance(vislist, list) else [vislist]
+        field_list: list[str] = fieldlist if isinstance(fieldlist, list) else [fieldlist] * len(vis_list)
+
+        fieldname_list: list[str] = []
+        for i in range(len(vis_list)):
+            ms = self.observing_run.get_ms(name=vis_list[i])
+            list_of_field_per_ms = field_list[i].split(',')
+            fieldname_list += [
+                utils.dequote(field.name)
+                for field in ms.fields
+                if intent in field.intents
+                and (field.name in list_of_field_per_ms or str(field.id) in list_of_field_per_ms)
+            ]
+
+        if as_list:
+            return utils.deduplicate(fieldname_list)
+        else:
+            return ','.join(utils.deduplicate(fieldname_list))
+
     def get_scanidlist(self, vis, field, intent):
         # Use scanids to select data with the specified intent
         # Note CASA clean now supports intent selection but leave
@@ -306,9 +343,14 @@ class ImageParamsHeuristics(object):
         scanidlist = []
         visindexlist = []
 
+        # Construct a list of per-MS field selection string in case that
+        # the input field value is just a string e.g. a single source name, that is
+        # applicable to all MSs.
+        fieldlist: list[str] = [field] * len(vis) if isinstance(field, str) else field
+
         for i in range(len(vis)):
             allscanids = []
-            for fieldname in field.split(','):
+            for fieldname in fieldlist[i].split(','):
                 re_field = utils.dequote(fieldname)
                 ms = self.observing_run.get_ms(name=vis[i])
                 scanids = [scan.id for scan in ms.scans if
