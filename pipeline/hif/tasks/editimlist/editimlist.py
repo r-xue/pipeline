@@ -821,9 +821,6 @@ class Editimlist(basetask.StandardTaskTemplate):
                                            clean_no_mask=inpdict['clean_no_mask_selfcal_image']) if not inpdict['mask'] \
                 else inpdict['mask']
 
-            imlist_entry['spwsel_lsrk'] = {}
-            for spw_sel in imlist_entry['spw'].split(','):
-                imlist_entry['spwsel_lsrk'][f'spw{spw_sel}'] = 'ALLCONT'
 
         for key, value in imlist_entry.items():
             LOG.info("%s = %r", key, value)
