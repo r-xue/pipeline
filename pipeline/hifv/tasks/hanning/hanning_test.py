@@ -255,6 +255,118 @@ class TestHanningPrepare:
 
         assert results.task_successful is False
 
+    @patch('pipeline.hifv.tasks.hanning.hanning.os.rename')
+    @patch('pipeline.hifv.tasks.hanning.hanning.shutil.rmtree')
+    @patch('pipeline.hifv.tasks.hanning.hanning.os.path.exists')
+    @patch('pipeline.hifv.tasks.hanning.hanning.casa_tools.TableReader')
+    @patch('pipeline.hifv.tasks.hanning.hanning.casa_tasks.hanningsmooth')
+    def test_manual_spws_to_smooth_passed_to_casa_task(
+        self,
+        mock_hanningsmooth: MagicMock,
+        mock_table_reader: MagicMock,
+        mock_exists: MagicMock,
+        mock_rmtree: MagicMock,
+        mock_rename: MagicMock,
+    ) -> None:
+        """Test that manually set spws_to_smooth are passed to CASA task."""
+        mock_table = MagicMock()
+        mock_table.colnames.return_value = []
+        mock_table_reader.return_value.__enter__.return_value = mock_table
+
+        # Setup MS with multiple spectral windows
+        ms = MagicMock()
+        spw0 = MagicMock()
+        spw0.id = 0
+        spw0.sdm_num_bin = 0
+        spw0.specline_window = False
+        spw1 = MagicMock()
+        spw1.id = 1
+        spw1.sdm_num_bin = 0
+        spw1.specline_window = False
+        spw2 = MagicMock()
+        spw2.id = 2
+        spw2.sdm_num_bin = 0
+        spw2.specline_window = False
+        ms.get_spectral_windows.return_value = [spw0, spw1, spw2]
+        self.context.observing_run.get_ms.return_value = ms
+
+        # Manually set spws_to_smooth (user-provided)
+        self.inputs.spws_to_smooth = [0, 2]
+
+        # Mock file operations
+        mock_exists.return_value = True
+        mock_hanningsmooth.return_value = MagicMock()
+
+        hanning_task = Hanning(inputs=self.inputs)
+        hanning_task._executor = MagicMock()
+        hanning_task._executor.execute.return_value = MagicMock()
+
+        with patch.object(hanning_task, '_track_hsmooth'):
+            results = hanning_task.prepare()
+
+        # Verify hanningsmooth was called with manually set spws
+        mock_hanningsmooth.assert_called_once()
+        call_kwargs = mock_hanningsmooth.call_args[1]
+        assert call_kwargs['smooth_spw'] == [0, 2]
+        assert results.task_successful is True
+
+    @patch('pipeline.hifv.tasks.hanning.hanning.os.rename')
+    @patch('pipeline.hifv.tasks.hanning.hanning.shutil.rmtree')
+    @patch('pipeline.hifv.tasks.hanning.hanning.os.path.exists')
+    @patch('pipeline.hifv.tasks.hanning.hanning.casa_tools.TableReader')
+    @patch('pipeline.hifv.tasks.hanning.hanning.casa_tasks.hanningsmooth')
+    def test_automatic_spws_to_smooth_passed_to_casa_task(
+        self,
+        mock_hanningsmooth: MagicMock,
+        mock_table_reader: MagicMock,
+        mock_exists: MagicMock,
+        mock_rmtree: MagicMock,
+        mock_rename: MagicMock,
+    ) -> None:
+        """Test that automatically calculated spws_to_smooth are passed to CASA task."""
+        mock_table = MagicMock()
+        mock_table.colnames.return_value = []
+        mock_table_reader.return_value.__enter__.return_value = mock_table
+
+        # Setup MS with mixed spectral windows
+        ms = MagicMock()
+        spw0 = MagicMock()
+        spw0.id = 0
+        spw0.sdm_num_bin = 0
+        spw0.specline_window = False  # continuum -> should smooth
+        spw1 = MagicMock()
+        spw1.id = 1
+        spw1.sdm_num_bin = 0
+        spw1.specline_window = True  # spectral line, no maser -> should not smooth
+        spw2 = MagicMock()
+        spw2.id = 2
+        spw2.sdm_num_bin = 0
+        spw2.specline_window = False  # continuum -> should smooth
+        ms.get_spectral_windows.return_value = [spw0, spw1, spw2]
+        self.context.observing_run.get_ms.return_value = ms
+
+        # spws_to_smooth is None (automatic detection)
+        self.inputs.spws_to_smooth = None
+
+        # Mock file operations
+        mock_exists.return_value = True
+        mock_hanningsmooth.return_value = MagicMock()
+
+        hanning_task = Hanning(inputs=self.inputs)
+        hanning_task._executor = MagicMock()
+        hanning_task._executor.execute.return_value = MagicMock()
+
+        # Mock maser detection to return False for spw 1
+        with patch.object(hanning_task, '_checkmaserline', return_value=False):
+            with patch.object(hanning_task, '_track_hsmooth'):
+                results = hanning_task.prepare()
+
+        # Verify hanningsmooth was called with automatically calculated spws (0 and 2, not 1)
+        mock_hanningsmooth.assert_called_once()
+        call_kwargs = mock_hanningsmooth.call_args[1]
+        assert call_kwargs['smooth_spw'] == [0, 2]
+        assert results.task_successful is True
+
 
 class TestHanningAnalyse:
     """Unit tests for Hanning.analyse() method."""

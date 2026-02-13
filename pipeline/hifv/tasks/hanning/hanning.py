@@ -173,6 +173,10 @@ class Hanning(basetask.StandardTaskTemplate):
 
         hs_dict = {key: val[0] for key, val in smoothing_dict.items()}
 
+        # Update spws_to_smooth if it was automatically calculated (not user-provided)
+        if self.inputs.spws_to_smooth is None:
+            self.inputs.spws_to_smooth = [spw_id for spw_id, should_smooth in hs_dict.items() if should_smooth]
+
         task_successful = True
         qa_message = "Hanning smoothing task completed successfully."
 
