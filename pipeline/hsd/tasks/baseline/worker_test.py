@@ -8,7 +8,7 @@ SPWS = [17, 19, 23]
 DEF = "cspline"
 AUTO = "automatic"
 
-# Tests for get_fit_func_dict
+# Tests for build_fitting_configuration
 @pytest.mark.parametrize(
     "inp, expected, should_raise",
     [
@@ -26,12 +26,12 @@ AUTO = "automatic"
         (ValueError, {19:"invalid"}, True),
     ],
 )
-def test_get_fit_func_dict(inp, expected, should_raise):
+def test_build_fitting_configuration(inp, expected, should_raise):
     if should_raise:
         with pytest.raises(expected):
-            worker.get_fit_func_dict(inp, SPWS)
+            worker.build_fitting_configuration(inp, SPWS)
         return
-    cfg = worker.get_fit_func_dict(inp, SPWS)
+    cfg = worker.build_fitting_configuration(inp, SPWS)
     assert isinstance(cfg, dict) and set(cfg.keys()) == set(SPWS)
     assert all(isinstance(v, BaselineFitParamConfig) for v in cfg.values())
     plain = {k: v.fitfunc.blfunc for k, v in cfg.items()}
