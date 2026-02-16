@@ -13,23 +13,17 @@ AUTO = "automatic"
     "inp, expected, should_raise",
     [
         # valid inputs
-        (None,  {17: DEF,      19: DEF,      23: DEF},      False),
-        ({},    {17: DEF,      19: DEF,      23: DEF},      False),
-        ("spline",         
-                 {17: "cspline", 19: "cspline", 23: "cspline"},False), #   SPLINE = CSPLINE in the FittingFunction class of fitrorder.py
-        ({30: "poly"},     
-                 {17: DEF, 19: DEF, 23: DEF},               False),
-        ("poly",
-                 {17: "poly",   19: "poly",   23: "poly"},  False),
-        ({"23":"poly"},
-                 {17: DEF,      19: DEF,      23: "poly"},  False),
-        ({"17":"poly", 19:"spline"},
-                 {17:"poly",  19:"cspline",  23: DEF},     False),
-        ({17:"poly", 19:"spline", 23:"poly"},
-                 {17:"poly",    19:"cspline",  23:"poly"},   False),
+        ({17: DEF,      19: DEF,      23: DEF}, None, False),
+        ({17: DEF,      19: DEF,      23: DEF}, {}, False),
+        ({17: "cspline", 19: "cspline", 23: "cspline"}, "spline", False), #   SPLINE = CSPLINE in the FittingFunction class of fitrorder.py
+        ({17: DEF, 19: DEF, 23: DEF}, {30: "poly"}, False),
+        ({17: "poly",   19: "poly",   23: "poly"}, "poly", False),
+        ({17: DEF,      19: DEF,      23: "poly"}, {"23":"poly"}, False),
+        ({17:"poly",  19:"cspline",  23: DEF}, {"17":"poly", 19:"spline"}, False),
+        ({17:"poly",    19:"cspline",  23:"poly"}, {17:"poly", 19:"spline", 23:"poly"}, False),
         # error inputs 
-        ("badfunc",         ValueError,                     True),
-        ({19:"invalid"},  ValueError,                     True),
+        (ValueError, "badfunc", True),
+        (ValueError, {19:"invalid"}, True),
     ],
 )
 def test_get_fit_func_dict(inp, expected, should_raise):

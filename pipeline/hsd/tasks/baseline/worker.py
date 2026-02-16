@@ -361,14 +361,13 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         rowmap = sdutils.make_row_map_between_ms(origin_ms, vis)
         fit_order = self.inputs.fit_order
         fit_func = self.inputs.fit_func
-        wave_number = self.inputs.wave_number
         edge = self.inputs.edge
         args = self.inputs.to_casa_args()
         blparam = args['blparam']
         bloutput = args['bloutput']
         outfile = args['outfile']
         datacolumn = args['datacolumn']
-
+        wave_number = self.inputs.wave_number
         process_list = self.inputs.plan
         deviationmask_list = self.inputs.deviationmask
         LOG.info('deviationmask_list={}'.format(deviationmask_list))
@@ -387,8 +386,18 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         # Convert the fitting parameters into dictionaries mapping each SPW.
         fit_order_dict = SerialBaselineSubtractionWorker.get_fit_order_dict(
             fit_order, unique_spws, ms, self.inputs.context)
+
         spw_funcs_dict = SerialBaselineSubtractionWorker.get_fit_func_dict(
-            fit_func, unique_spws, ms, self.inputs.context, self.inputs.switchpoly)
+            fit_func=fit_func,
+            spw_id_list=unique_spws,
+            ms=ms,
+            context=self.inputs.context,
+            switchpoly=self.inputs.switchpoly
+        )
+
+        # Configures wave numbers according to the per spw inputs by users or distributes
+        # a single wave number list across each spw that uses `sinusoid` as a fit function.
+        SerialBaselineSubtractionWorker._configure_wave_number(spw_funcs_dict, wave_number)
 
         # initialization of blparam file.
         # blparam file needs to be removed before starting iteration through
@@ -406,7 +415,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
 
             formatted_edge = list(common.parseEdge(edge))
             heuristic = spw_funcs_dict[spw_id]
-            heuristic.wave_number = wave_number
+
             current_fit_order = fit_order_dict.get(spw_id, 'automatic')
 
             out_blparam = heuristic(
@@ -525,7 +534,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
     
 
     def get_fit_order_dict(fit_order: Optional[Union[int, Dict[Union[int, str], int]]],
-                    spw_id_list: List[int], ms: MeasurementSet = None, context: Context = None) -> Dict[int, Union[int, str]]:
+                    spw_id_list: Union[List[int], set[Any]], ms: MeasurementSet = None, context: Context = None) -> Dict[int, Union[int, str]]:
         """
         Convert the fit_order parameter into a dictionary mapping each SPW ID to its fit order.
         
@@ -573,8 +582,14 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             raise TypeError(f"Value of fit_order has wrong data type: {type(fit_order)}")
 
 
-    def get_fit_func_dict(fit_func: Optional[Union[str, Dict[Union[int, str], str]]],
-                        spw_id_list: List[int], ms: MeasurementSet = None, context: Context = None,  switchpoly=True) -> Dict[int, BaselineFitParamConfig]:
+    @staticmethod
+    def get_fit_func_dict(
+            spw_id_list: Union[List[int], set[Any]],
+            fit_func: Optional[Union[str, Dict[Union[int, str], str]]] = "cspline",
+            ms: MeasurementSet = None,
+            context: Context = None,
+            switchpoly=True
+    ) -> Dict[int, BaselineFitParamConfig]:
         """
         Convert the fit_func parameter into a dictionary mapping each SPW ID to its BaselineFitParamConfig.
 
@@ -591,46 +606,100 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
 
         Returns:
             A dictionary mapping each SPW ID (int) to a BaselineFitParamConfig instance.
-            
+
         """
-        if not fit_func:
-            fit_func_value = 'cspline'
 
-        else:
-            fit_func_value = fit_func
+        fit_functions = {'spline', 'cspline', 'poly', 'polynomial', 'sinusoid'}
 
-        valid_funcs = {'spline', 'cspline', 'poly', 'polynomial', 'sinusoid'}
-        if not isinstance(fit_func_value, dict):
-            # Validate string
-            if isinstance(fit_func_value, str) and fit_func_value not in valid_funcs:
-                raise ValueError(f"Unsupported fit_func value: {fit_func_value}")
-            # Single string: Create one instance for all SPWs.
+        if isinstance(fit_func, str):
+            if fit_func not in fit_functions:
+                raise ValueError(f"Unsupported fit_func value: {fit_func}")
+
+            # Distribute fit function across all spws.
             blparam_heuristic = BaselineFitParamConfig(
-                fitfunc=fit_func_value,
+                fitfunc=fit_func,
                 switchpoly=switchpoly
             )
             return {spw_id: blparam_heuristic for spw_id in spw_id_list}
+
+        if isinstance(fit_func, dict):
+
+            spw_function_map = dict.fromkeys(spw_id_list, "cspline")
+            spw_function_map.update(fit_func)
+            heuristics_out = {}
+
+            # Need to fill in the input fit functions. We could make this cleaner without
+            # the virtual2real section, but I'm not sure if the keys will match.
+            for key, value in spw_function_map.items():
+                # Check that all the functions are supported.
+                if not value in fit_functions:
+                    raise ValueError(f"Unsupported fit_func value: {value}")
+
+                _key = context.observing_run.virtual2real_spw_id(key, ms) if context else key
+
+                heuristics_out[_key] = BaselineFitParamConfig(
+                        fitfunc=spw_function_map[key],
+                        switchpoly=switchpoly
+                    )
+
+            return heuristics_out
+
         else:
-            processed_fit_func = {}
-            for k, v in fit_func_value.items():
-                if v not in valid_funcs:
-                    raise ValueError(f"Unsupported fit_func value for SPW {k}: {v}")
-                key = str(context.observing_run.virtual2real_spw_id(k, ms)) if context else str(k) # for unit tests
-                processed_fit_func[key] = v
+            raise ValueError(f"Unsupported fit_func type: {type(fit_func)}")
 
-            # For each spw, use it's provided value or default to 'cspline'
-            unique_fit_funcs = {processed_fit_func.get(str(spw_id), 'cspline') for spw_id in spw_id_list}
+    @staticmethod
+    def _process_list(
+            parameter_config: Dict[int, BaselineFitParamConfig],
+            wave_number: List[int] = None
+    ):
+        for config in parameter_config.values():
+            # We only need to set this if the fit function is sinusoid. Otherwise,
+            # it should already be set to None in the case of polynomials and cspline
+            if config.fitfunc.blfunc == "sinusoid":
+                config.wave_number = wave_number
 
-            # Create one BaselineFitParamConfig instance per unique function string.
-            heuristics_map = {
-                func_str: BaselineFitParamConfig(
-                    fitfunc=func_str,
-                    switchpoly=switchpoly
-                )
-                for func_str in unique_fit_funcs
-            }
-            return {spw_id: heuristics_map[processed_fit_func.get(str(spw_id), 'cspline')]
-                    for spw_id in spw_id_list}
+        return parameter_config
+
+    @staticmethod
+    def _process_dictionary(
+            parameter_config: Dict[int, BaselineFitParamConfig],
+            wave_number: Dict[int, List] = None
+    ):
+
+        spw_list = list(wave_number.keys())
+
+        for key, value in parameter_config.items():
+            if key in spw_list and value.fitfunc.blfunc == "sinusoid":
+                parameter_config[key].wave_number = wave_number[key]
+
+        return parameter_config
+
+    @staticmethod
+    def _configure_wave_number(
+            parameter_config: Dict[int, BaselineFitParamConfig],
+            wave_number: Union[List, Dict] = None,
+    )->None:
+        # Possible inputs, wave_number: list, Dict[int: List[int]]
+        # Check that wave number is a list or a dictionary
+        if isinstance(wave_number, list):
+            SerialBaselineSubtractionWorker._process_list(
+                parameter_config,
+                wave_number
+            )
+
+            return
+
+        elif isinstance(wave_number, dict):
+            SerialBaselineSubtractionWorker._process_dictionary(
+                parameter_config,
+                wave_number
+            )
+
+            return
+
+        else:
+            LOG.error("Couldn't determine wave_number data type. Choices are: list, dict{int, string}")
+            raise TypeError
         
 class BaselineSubtractionWorker(sessionutils.ParallelTemplate):
     """Template class for parallel baseline subtraction task.

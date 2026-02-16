@@ -843,7 +843,7 @@ def deviation_mask_heuristic(
         consider_flag: Consider flag when performing heuristics. Defaults to False.
         deviationmask_sigma_threshold: Threshold factor (F) to detect the deviation.
                                  (see SDBaselineInputs for detail)
-        parallel: Parallel execution or not. Currently disabled.
+        parallel: Parallel execution or not. Currently, disabled.
                   Task is always executed in serial mode. Defaults to None.
 
     Returns:
