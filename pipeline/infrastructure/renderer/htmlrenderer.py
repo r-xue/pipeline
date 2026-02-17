@@ -1702,14 +1702,17 @@ class T2_4MDetailsRenderer(object):
             # .. and write the renderer's interpretation of this result to
             # the file object
             try:
-                LOG.trace('Writing %s output to %s', renderer.__class__.__name__,
-                          path)
+                LOG.trace('Writing %s output to %s', renderer.__class__.__name__, path)
+                event = eventbus.WebLogStageRenderingStartedEvent(
+                    context_name=context.name, stage_number=result.stage_number
+                )
+                eventbus.send_message(event)
 
                 fileobj.write(renderer.render(context, result))
 
                 event = eventbus.WebLogStageRenderingCompleteEvent(
                     context_name=context.name, stage_number=result.stage_number
-                    )
+                )
                 eventbus.send_message(event)
             except:
                 LOG.warning('Template generation failed for %s', cls.__name__)
@@ -1836,7 +1839,7 @@ def group_by_root(context, task_results):
     return d
 
 
-class WebLogGenerator(object):
+class WebLogGenerator:
     renderers = [T1_2Renderer,         # observation summary
                  T1_3MRenderer,        # by topic page
                  T2_1Renderer,         # session tree
@@ -1857,12 +1860,8 @@ class WebLogGenerator(object):
                  T2_3_6MRenderer,      # miscellaneous topic
                  T2_4MRenderer,        # task tree
                  T2_4MDetailsRenderer,  # task details
-                 # PIPE-2014: place T1_4MRender (task summary) after other renderers for access to scores.
-                 # In addition, this guarantees that the weblog rendering duration of the last stage (T2_4MDetailsRenderer)
-                 # will be correctly reflected in the task duration.
+                 # place T1_4MRenderer (task summary) after other renderers for access to scores.
                  T1_4MRenderer,         # task summary
-                 # PIPE-2014: render the splash page last so the execution duration
-                 # timing includes most renderer calls.
                  T1_1Renderer,         # OUS splash page
                  ]
 
