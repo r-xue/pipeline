@@ -75,8 +75,8 @@ class SDK2JyCalInputs(vdp.StandardInputs):
         """
         return {'vis': self.vis,
                 'caltable': self.caltable,
-                'caltype': self.caltype,
-                'endpoint': self.endpoint}
+                'endpoint': self.endpoint,
+                'backup_hosts': self.backup_hosts}
 
     # docstring and type hints: supplements hsd_k2jycal
     def __init__(
@@ -87,7 +87,8 @@ class SDK2JyCalInputs(vdp.StandardInputs):
         caltable: Optional[Union[str, List[str]]] = None,
         reffile: Optional[str] = None,
         dbservice: Optional[bool] = None,
-        endpoint: Optional[str] = None
+        endpoint: Optional[str] = None,
+        backup_hosts: list[str] | None = None
     ) -> None:
         """Initialize SDK2JyCalInputs instance.
 
@@ -165,6 +166,12 @@ class SDK2JyCalInputs(vdp.StandardInputs):
 
                 Default: None (equivalent to 'asdm')
 
+            backup_hosts: List of backup URLs for DB query.
+                The primary endpoint URL should be defined in the
+                environment variable, JYPERKDB_URL. The URLs listed
+                here will be used in order when the query
+                to the primary endpoint fails.
+
         """
         super(SDK2JyCalInputs, self).__init__()
 
@@ -179,6 +186,7 @@ class SDK2JyCalInputs(vdp.StandardInputs):
         self.reffile = reffile
         self.dbservice = dbservice
         self.endpoint = endpoint
+        self.backup_hosts = backup_hosts
 
 
 class SDK2JyCalResults(basetask.Results):
@@ -441,34 +449,34 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         inputs = self.inputs
         status = None
 
-        gencal_args = common_params.copy()
-        gencal_args['caltype'] = 'jyperk'     # override to invoke gencal in jyperk mode
+        task_args = common_params.copy()
+        # gencal_args['caltype'] = 'jyperk'     # override to invoke gencal in jyperk mode
 
         # retrieve factors from DB
         if inputs.dbservice:
-            gencal_job = casa_tasks.gencal(**gencal_args)
+            job = casa_tasks.getjyperkalma(**task_args)
             try:
-                self._executor.execute(gencal_job)
+                self._executor.execute(job)
                 status = True
             except Exception as e:
                 if len(str(e)) == 0:
-                    LOG.warning( "Failed to get Jy/K factors from DB." )
+                    LOG.warning("Failed to get Jy/K factors from DB.")
                 else:
-                    LOG.warning( e )
-                LOG.warning( "{}: Query to Jy/K DB failed. Will fallback to read CSV file '{}'".format(inputs.vis, inputs.reffile) )
+                    LOG.warning(e)
+                LOG.warning(f"{inputs.vis}: Query to Jy/K DB failed. Will fallback to read CSV file '{inputs.reffile}'")
                 status = False
 
         # retrieve factors from file
         if not status:
-            gencal_args['infile'] = inputs.reffile
+            task_args['infile'] = inputs.reffile
 
             if not os.path.exists(inputs.reffile):
                 LOG.error( "Jy/K scaling factor file '{}' does not exist.".format(inputs.reffile) )
                 status = False
             else:
-                gencal_job = casa_tasks.gencal(**gencal_args)
+                job = casa_tasks.getjyperkalma(**task_args)
                 try:
-                    self._executor.execute(gencal_job)
+                    self._executor.execute(job)
                     status = None
                 except Exception as e:
                     LOG.error( "{}: Failed to create caltable from CSV file: {}".format(inputs.vis, e) )
