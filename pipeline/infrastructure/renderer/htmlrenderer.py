@@ -1,4 +1,3 @@
-# Do not evaluate type annotations at definition time.
 from __future__ import annotations
 
 import collections
@@ -15,7 +14,6 @@ import re
 import shelve
 import shutil
 import sys
-from contextlib import closing
 from importlib.resources import files
 from typing import TYPE_CHECKING, Any
 
@@ -777,9 +775,7 @@ class T1_3MRenderer(RendererBase):
 
 
 class T1_4MRenderer(RendererBase):
-    """
-    T1-4M renderer - Task Summary
-    """
+    """T1-4M renderer - Task Summary."""
     output_file = 't1-4.html'
     # TODO get template at run-time
     template = 't1-4m.mako'
@@ -793,34 +789,35 @@ class T1_4MRenderer(RendererBase):
 
         # PIPE-2014: obtain the task time duration from the timetracker event database.
         db_path = os.path.join(context.output_dir, f'{context.name}.timetracker')
-        r = {}
-        with closing(shelve.DbfilenameShelf(db_path)) as db:
+        r: dict[str, dict[str, datetime.timedelta]] = {}
+        with shelve.open(db_path, writeback=False) as db:
             for k, stages in db.items():
                 r[k] = {}
                 for e in stages.values():
                     if e.end == e.start and k == 'results':
-                        # the end time of the last task (open-ended) is tentatively defined
-                        # as the current time.
-                        dt = datetime.datetime.now()-e.start
+                        # The end time of the last task (open-ended) is tentatively
+                        # defined as the current time.
+                        dt = datetime.datetime.now() - e.start
                     else:
                         dt = e.end - e.start
                     r[k][e.stage] = datetime.timedelta(days=dt.days, seconds=dt.seconds)
         task_duration = [r['tasks'][r_stage] for r_stage in r['tasks']]
-        # the 'results' field in the timetrack db include the cost of QA and weblog.
+        # The 'results' field in the timetrack db includes the cost of QA and weblog.
         result_duration = [r['results'][r_stage] for r_stage in r['tasks']]
 
         # copy PPR for weblog
         pprfile = context.project_structure.ppr_file
         if pprfile != '' and os.path.exists(pprfile):
-            dest_path = os.path.join(context.report_dir,
-                                     os.path.basename(pprfile))
+            dest_path = os.path.join(context.report_dir, os.path.basename(pprfile))
             shutil.copy(pprfile, dest_path)
 
-        return {'pcontext': context,
-                'results': context.results,
-                'scores': scores,
-                'task_duration': task_duration,
-                'result_duration': result_duration}
+        return {
+            'pcontext': context,
+            'results': context.results,
+            'scores': scores,
+            'task_duration': task_duration,
+            'result_duration': result_duration,
+        }
 
 
 class T2_1Renderer(RendererBase):
