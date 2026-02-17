@@ -67,7 +67,7 @@ class SDK2JyCalInputs(vdp.StandardInputs):
                                              stage=self.context.stage,
                                              **casa_args))
 
-    def to_casa_args(self) -> Dict[str, str]:
+    def to_casa_args(self) -> dict[str, str | list[str]]:
         """Convert Inputs instance into dictionary.
 
         Returns:
@@ -362,7 +362,7 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
                                 factors=valid_factors, all_ok=factors_ok,
                                 dbstatus=caltable_status)
 
-    def _extract_factors( self, context: 'Context', vis: str, caltable: str, dbstatus: bool ) -> Optional[Dict[str, Dict[str, Dict[str, float]]]]:
+    def _extract_factors(self, context: 'Context', vis: str, caltable: str, dbstatus: bool) -> Optional[Dict[str, Dict[str, Dict[str, float]]]]:
         """
         extract Jy/K factors
 
@@ -376,8 +376,8 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         """
         # get list of antennas and science_windows from ms
         ms = context.observing_run.get_ms(vis)
-        antennas = [ x.name for x in ms.get_antenna() ]
-        science_windows = [ x.id for x in ms.get_spectral_windows(science_windows_only=True) ]
+        antennas = [x.name for x in ms.get_antenna()]
+        science_windows = [x.id for x in ms.get_spectral_windows(science_windows_only=True)]
 
         # get antenna list from caltable
         with casa_tools.TableReader(caltable+"/ANTENNA") as tb:
@@ -385,9 +385,9 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         antidx = {}   # index of antenna in caltable
         for ant in antennas:
             if ant not in caltable_antlist:
-                LOG.error( "{}: antenna {} does not exist in caltable".format(vis, ant) )
+                LOG.error(f"{vis}: antenna {ant} does not exist in caltable")
                 return None
-            antidx[ant] = np.where( caltable_antlist == ant )[0][0]
+            antidx[ant] = np.where(caltable_antlist == ant)[0][0]
 
         # fetch Jy/K factors from caltable file
         factors_table = {}
@@ -397,11 +397,14 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
                 ddid = ms.get_data_description(spw=spw)
                 pol_list = list(map(ddid.get_polarization_label, range(ddid.num_polarizations)))
                 for ant in antennas:
-                    subtb = tb.query( "ANTENNA1={} && SPECTRAL_WINDOW_ID={}".format(antidx[ant], spw) )
-                    factors = subtb.getcol("CPARAM")[:,0,0].real
+                    subtb = tb.query(f"ANTENNA1={antidx[ant]} && SPECTRAL_WINDOW_ID={spw}")
+                    factors = subtb.getcol("CPARAM")[:, 0, 0].real
                     subtb.close()
                     if len(factors) < len(pol_list):
-                        LOG.error( "{}: insufficient pols in caltable (MS:{} caltable:{})".format(vis, len(pol_list), len(factors)) )
+                        LOG.error(
+                            f"{vis}: insufficient pols in caltable "
+                            f"(MS: {len(pol_list)}, caltable: {len(factors)})"
+                        )
                         return None
                     else:
                         factors_table[spw][ant] = {}
@@ -419,7 +422,7 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
                 for ant in factors_table[spw].keys():
                     for pol in factors_table[spw][ant].keys():
                         found = False
-                        allowed_pol = [ pol, 'I' ]
+                        allowed_pol = [pol, 'I']
                         for factor in factors_list:
                             if factor[1:3] == [ant, str(spw)] and factor[3] in allowed_pol:
                                 found = True
@@ -431,7 +434,7 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
 
         return factors_used
 
-    def _create_caltable( self, common_params: Dict[str, str] ) -> Optional[bool]:
+    def _create_caltable(self, common_params: Dict[str, str]) -> Optional[bool]:
         """
         Invoke gencal and ceate the calibration table file
 
