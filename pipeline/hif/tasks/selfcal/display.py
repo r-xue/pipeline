@@ -1,23 +1,23 @@
 import collections
 import os
+import traceback
 
 import matplotlib.pyplot as plt
 import numpy as np
-import traceback
+from casaplotms import plotms
 
 import pipeline.infrastructure.logging as logging
 from pipeline.h.tasks.common.displays import sky
 from pipeline.hif.heuristics.auto_selfcal.selfcal_helpers import unflag_failed_antennas
 from pipeline.infrastructure import casa_tools, filenamer
-from pipeline.infrastructure.casa_tasks import CasaTasks
 from pipeline.infrastructure.displays.plotstyle import matplotlibrc_formal
 from pipeline.infrastructure.mpihelpers import TaskQueue
 from pipeline.infrastructure.renderer import logger
 
 LOG = logging.get_logger(__name__)
 
-ct = CasaTasks()
-tq = None # a module-level TaskQueue instance, intialized as None, but could be later set by the renderer
+tq = None  # a module-level TaskQueue instance, initialized as None, but could be later set by the renderer
+
 
 class SelfcalSummary:
     def __init__(self, context, r, target):
@@ -334,13 +334,13 @@ class SelfcalSummary:
             LOG.info(f'plotfile already exists: {figname}; skip plotting')
         else:
             title = os.path.basename(caltb_loc).replace('Target_', '')
-            ct.plotms(gridrows=2, gridcols=1, plotindex=0, rowindex=0, vis=caltb_loc, xaxis=xaxis, yaxis=yaxis,
+            plotms(gridrows=2, gridcols=1, plotindex=0, rowindex=0, vis=caltb_loc, xaxis=xaxis, yaxis=yaxis,
                       showgui=False, xselfscale=True, antenna=ant, plotrange=plotrange,
                       customflaggedsymbol=True, plotfile=figname,
                       title=f'{title} {ant}', xlabel=' ',
                       overwrite=True, clearplots=True,
                       titlefont=10, xaxisfont=10, yaxisfont=10)
-            ct.plotms(gridrows=2, gridcols=1, rowindex=1, plotindex=1, vis=caltb_loc, xaxis=xaxis, yaxis='SNR',
+            plotms(gridrows=2, gridcols=1, rowindex=1, plotindex=1, vis=caltb_loc, xaxis=xaxis, yaxis='SNR',
                       showgui=False, xselfscale=True, antenna=ant,
                       customflaggedsymbol=True, plotfile=figname,
                       title=' ',

@@ -551,6 +551,8 @@ def estimate_SNR(
             try:
                 good_mask = checkmask(imagename)
             except Exception:
+                # If mask checking fails, log the error and fall back to treating the mask as invalid.
+                LOG.debug("Failed to check mask for image %s", imagename, exc_info=True)
                 good_mask = False
 
         if os.path.exists(mask_image) and good_mask:
@@ -627,6 +629,9 @@ def estimate_near_field_SNR(
             - SNR: The estimated Signal-to-Noise Ratio. Returns -99.0 on failure.
             - RMS: The estimated Root Mean Square noise. Returns -99.0 on failure.
     """
+    mad_to_rms = 1.4826
+    snr, rms = np.float64(-99.0), np.float64(-99.0)
+
     if maskname is None:
         mask_image = imagename.replace('image', 'mask').replace('.tt0', '')
     else:
@@ -635,9 +640,6 @@ def estimate_near_field_SNR(
     if not os.path.exists(mask_image):
         LOG.info('mask file %s does not exist', mask_image)
         return np.float64(-99.0), np.float64(-99.0)
-
-    mad_to_rms = 1.4826
-    snr, rms = np.float64(-99.0), np.float64(-99.0)
 
     # Store tools to close at the end
     tools_to_close = []
