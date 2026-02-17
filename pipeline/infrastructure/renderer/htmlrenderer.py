@@ -797,10 +797,9 @@ class T1_4MRenderer(RendererBase):
                     if e.end == e.start and k == 'results':
                         # The end time of the last task (open-ended) is tentatively
                         # defined as the current time.
-                        dt = datetime.datetime.now(datetime.UTC) - e.start
+                        r[k][e.stage] = datetime.datetime.now(datetime.UTC) - e.start
                     else:
-                        dt = e.end - e.start
-                    r[k][e.stage] = datetime.timedelta(days=dt.days, seconds=dt.seconds)
+                        r[k][e.stage] = e.end - e.start
         task_duration = [r['tasks'][r_stage] for r_stage in r['tasks']]
         # The 'results' field in the timetrack db includes the cost of QA and weblog.
         result_duration = [r['results'][r_stage] for r_stage in r['tasks']]
