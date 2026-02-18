@@ -1,19 +1,25 @@
+from __future__ import annotations
+
 import abc
 import collections
 import enum
 import os
-from typing import Dict, List, Sequence, Tuple, Union
+from typing import TYPE_CHECKING
 
 import numpy
 
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
-from pipeline.domain import DataTable, MeasurementSet
 from pipeline.infrastructure import casa_tools
 from pipeline.hsd.heuristics import fitorder
 
-LOG = infrastructure.get_logger(__name__)
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from pipeline.domain import DataTable, MeasurementSet
+
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 def TRACE():
@@ -65,7 +71,7 @@ def do_switching(engine, nchan, edge, num_pieces, masklist):
     return engine(nchan, edge, num_pieces, masklist)
 
 
-class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
+class BaselineFitParamConfig(api.Heuristic, abc.ABC):
     """
     Generate/update BLParam file according to the input parameters.
     """
@@ -88,7 +94,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         Raises:
             RuntimeError: Invalid fitting function was specified.
         """
-        super(BaselineFitParamConfig, self).__init__()
+        super().__init__()
         self.fitfunc = fitorder.get_fitting_function(fitfunc)
         LOG.info(f'Baseline parameter is optimized for {self.fitfunc.description} fitting')
 
@@ -124,8 +130,8 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
     def calculate(self, datatable: DataTable, ms: MeasurementSet,
                   rowmap: dict, antenna_id: int, field_id: int,
-                  spw_id: int, fit_order: Union[str, int],
-                  edge: Tuple[int, int], deviation_mask: List[dict],
+                  spw_id: int, fit_order: str | int,
+                  edge: tuple[int, int], deviation_mask: list[dict],
                   blparam: str) -> str:
         """
         Generate/update BLParam file according to the input parameters.
@@ -323,7 +329,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         return blparam
 
-    def _configure_baseline_param(self, row_idx: int, pol: int, polyorder: int, nchan: int, edge: fitorder.EdgeChannels, mask: Sequence[bool], mask_list: [List[List[int]]]) -> dict:
+    def _configure_baseline_param(self, row_idx: int, pol: int, polyorder: int, nchan: int, edge: fitorder.EdgeChannels, mask: Sequence[bool], mask_list: list[list[int]]) -> dict:
         """Configure baseline parameter values for given row and polarization incides.
 
         Args:
@@ -378,7 +384,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         return outdata
 
-    def _dummy_baseline_param( self, row: int, pol: int ) -> Dict[BLP, Union[int, float, str]]:
+    def _dummy_baseline_param( self, row: int, pol: int ) -> dict[BLP, int | float | str]:
         """
         Create a dummy parameter dict for baseline parameters
 
@@ -394,7 +400,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                 BLP.ROW: row, BLP.POL: pol, BLP.MASK: '', BLP.NPIECE: 1,
                 BLP.FUNC: fitorder.FittingFunction.POLY.blfunc, BLP.ORDER: 1}
 
-    def __convert_flags_to_masklist(self, flags: 'numpy.ndarray[numpy.ndarray[numpy.int64]]') -> List[List[List[int]]]:
+    def __convert_flags_to_masklist(self, flags: 'numpy.ndarray[numpy.ndarray[numpy.int64]]') -> list[list[list[int]]]:
         """
         Converts flag list to masklist.
 
@@ -406,7 +412,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         """
         return [self.__convert_mask_to_masklist(flag, 1) for flag in flags]
 
-    def __convert_mask_to_masklist(self, mask: 'numpy.ndarray[numpy.int64]', end_offset: int=0) -> List[List[int]]:
+    def __convert_mask_to_masklist(self, mask: 'numpy.ndarray[numpy.int64]', end_offset: int=0) -> list[list[int]]:
         """
         Converts binary mask array to masklist / channellist for fitting.
 
@@ -446,7 +452,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
             r.append([idx[-1], len(mask)])
         return [[start, end - end_offset] for start, end in r]
 
-    def _get_fit_param(self, polyorder: int, nchan: int, edge: fitorder.EdgeChannels, nchan_without_edge: int, nchan_masked: int, masklist: List[List[int]]):
+    def _get_fit_param(self, polyorder: int, nchan: int, edge: fitorder.EdgeChannels, nchan_without_edge: int, nchan_masked: int, masklist: list[list[int]]):
         """Configure fitting parameter values except mask.
 
         This method constructs dictionary that holds baseline parameters

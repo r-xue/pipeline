@@ -77,7 +77,7 @@ class FluxscaleInputs(vdp.StandardInputs):
     transintent = vdp.VisDependentProperty(default='PHASE,BANDPASS,CHECK')
 
     def to_casa_args(self):
-        casa_args = super(FluxscaleInputs, self).to_casa_args()
+        casa_args = super().to_casa_args()
         # delete pipeline-only properties that shouldn't be passed to
         # the CASA task
         del casa_args['refintent']
@@ -86,7 +86,7 @@ class FluxscaleInputs(vdp.StandardInputs):
 
     def __init__(self, context, output_dir=None, vis=None, caltable=None, fluxtable=None, reference=None, transfer=None,
                  refspwmap=None, refintent=None, transintent=None):
-        super(FluxscaleInputs, self).__init__()
+        super().__init__()
         self.context = context
         self.vis = vis
         self.output_dir = output_dir

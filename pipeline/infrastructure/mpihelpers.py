@@ -33,7 +33,7 @@ BUFFER_LIMIT = 100*1024*1024  # 100 MiB
 LOG = logging.get_logger(__name__)
 
 
-class AsyncTask(object):
+class AsyncTask:
     def __init__(self, executable):
         """
         Create a new AsyncTask.
@@ -147,7 +147,7 @@ class AsyncTask(object):
             )
 
 
-class SyncTask(object):
+class SyncTask:
     def __init__(self, task, executor=None):
         """
         Create a new SyncTask object.
@@ -194,7 +194,7 @@ class SyncTask(object):
             raise exceptions.PipelineException(err_msg)
 
 
-class Executable(object):
+class Executable:
     def __init__(self):
         self.logs = {}
 

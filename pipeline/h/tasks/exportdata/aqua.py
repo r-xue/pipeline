@@ -44,24 +44,28 @@ Future Technical Solutions
     Add the euivalent of a  toAqua registration method similar to what is
     done with QA handlers already
 """
+from __future__ import annotations
+
 import datetime
 import itertools
 import operator
 import os
 import copy
-from typing import List, Optional
 import xml.etree.ElementTree as ElementTree
+from typing import TYPE_CHECKING
 from xml.dom import minidom
 
-import pipeline.infrastructure.logging as logging
+import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.renderer.qaadapter as qaadapter
 import pipeline.infrastructure.utils as utils
-import pipeline.infrastructure.pipelineqa as pqa
 from pipeline import environment
 from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.pipelineqa import QAScore
 
-LOG = logging.get_logger(__name__)
+if TYPE_CHECKING:
+    from pipeline.infrastructure.pipelineqa import QAScore
+
+LOG = infrastructure.logging.get_logger(__name__)
 
 # constant for an undefined value
 UNDEFINED = 'Undefined'
@@ -86,7 +90,7 @@ def register_aqua_metric(fn):
     return fn
 
 
-class AquaXmlGenerator(object):
+class AquaXmlGenerator:
     """
     Class to create the XML for an AQUA pipeline report.
     """
@@ -167,7 +171,7 @@ class AquaXmlGenerator(object):
         root = ElementTree.Element('QaSummary')
 
         # Generate the report date
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(datetime.timezone.utc)
         ElementTree.SubElement(root, 'ReportDate').text = now.strftime('%Y-%m-%d %H:%M:%S')
 
         # Processing time
@@ -292,14 +296,14 @@ class AquaXmlGenerator(object):
 
         return [ElementTree.Element('DataSelection', Asdm=Asdm, Session=Session, Spw=Spw, Intent=Intent, **extra_attributes)]
 
-    def _get_xml_for_qa_scores(self, items, registry) -> List[ElementTree.Element]:
+    def _get_xml_for_qa_scores(self, items, registry) -> list[ElementTree.Element]:
         """
         Generate the XML elements for a list of QA scores.
 
-        :param items: list of QAScores
-        :param registry: list of XML generator functions
-        :return: list of XML elements
-        :rtype: list of xml.etree.ElementTree
+        :param items: List of QAScores
+        :param registry: List of XML generator functions
+        :return: List of XML elements
+        :rtype: List of xml.etree.ElementTree
         """
         # group scores into a {<metric name>: [<QAScore, ...>]} dict
         metric_to_scores = {}
@@ -356,7 +360,7 @@ class AquaXmlGenerator(object):
         Get the XML for the calibration topic.
 
         :param context: pipeline context
-        :param topic_results: list of Results for this topic
+        :param topic_results: List of Results for this topic
         :return: XML for calibration topic
         :rtype: xml.etree.ElementTree.Element
         """
@@ -367,7 +371,7 @@ class AquaXmlGenerator(object):
         Get the XML for the dataset topic.
 
         :param context: pipeline context
-        :param topic_results: list of Results for this topic
+        :param topic_results: List of Results for this topic
         :return: XML for dataset topic
         :rtype: xml.etree.ElementTree.Element
         """
@@ -378,7 +382,7 @@ class AquaXmlGenerator(object):
         Get the XML for the flagging topic.
 
         :param context: pipeline context
-        :param topic_results: list of Results for this topic
+        :param topic_results: List of Results for this topic
         :return: XML for flagging topic
         :rtype: xml.etree.ElementTree.Element
         """
@@ -389,7 +393,7 @@ class AquaXmlGenerator(object):
         Get the XML for the imaging topic.
 
         :param context: pipeline context
-        :param topic_results: list of Results for this topic
+        :param topic_results: List of Results for this topic
         :return: XML for imaging topic
         :rtype: xml.etree.ElementTree.Element
         """
@@ -458,7 +462,7 @@ def xml_generator_for_metric(qa_label, value_spec):
     return MetricXmlGenerator(qa_label, formatters={'Value': value_formatter})
 
 
-class MetricXmlGenerator(object):
+class MetricXmlGenerator:
     """
     Creates a AQUA report XML element for QA scores.
     """
@@ -488,7 +492,7 @@ class MetricXmlGenerator(object):
         if formatters:
             self.attr_formatters.update(formatters)
 
-    def __call__(self, qa_scores: List[QAScore]) -> List[Optional[ElementTree.Element]]:
+    def __call__(self, qa_scores: list[QAScore]) -> list[ElementTree.Element | None]:
         scores_to_process = self.filter(qa_scores)
         return [self.to_xml(score) for score in scores_to_process]
 
@@ -501,16 +505,16 @@ class MetricXmlGenerator(object):
         """
         return metric_name == self.metric_name
 
-    def filter(self, qa_scores: List[QAScore]) -> List[QAScore]:
+    def filter(self, qa_scores: list[QAScore]) -> list[QAScore]:
         """
         Reduce a list of entries to those entries that require XML to be generated.
 
-        :param qa_scores: list of QAScores
-        :return: list of QAScores
+        :param qa_scores: List of QAScores
+        :return: List of QAScores
         """
         return qa_scores
 
-    def to_xml(self, qa_score: QAScore) -> Optional[ElementTree.Element]:
+    def to_xml(self, qa_score: QAScore) -> ElementTree.Element | None:
         """
         Return the XML representation of a QA score and associated metric.
 
@@ -541,7 +545,7 @@ class LowestScoreMetricXmlGenerator(MetricXmlGenerator):
     """
 
     def __init__(self, metric_name, formatters=None):
-        super(LowestScoreMetricXmlGenerator, self).__init__(metric_name, formatters)
+        super().__init__(metric_name, formatters)
 
     def filter(self, qa_scores):
         handled = [(vis, qa_score) for vis, qa_score in qa_scores
@@ -563,7 +567,7 @@ class GenericMetricXmlGenerator(MetricXmlGenerator):
     def __init__(self):
         # format all processed entries to 3dp
         formatters = {'Value': _create_value_formatter('{:0.3f}')}
-        super(GenericMetricXmlGenerator, self).__init__('Generic metric', formatters)
+        super().__init__('Generic metric', formatters)
 
     def handles(self, _):
         return True
