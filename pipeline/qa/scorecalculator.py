@@ -5319,6 +5319,20 @@ def score_flagged_ant_spw(vis:str, flaggedSolnApplycaldelay:dict) -> [pqa.QAScor
         Calcuates score for testBPdcals
         if > 50% of spws in a baseband on a majority of antennas newly flagged 
         then score < 0.5
+        The flaggedSolnApplycaldelay dictionary is structured as follows:
+        flaggedSolnApplycaldelay = {
+            'antspw': {
+                antenna: {
+                    spwid: {
+                        polid: {
+                            'flagged': <numeric_value>
+                            'total': <numeric_value>
+                            'fraction': <numeric_value>
+                        }
+                    }
+                }
+            }
+        }
     """
     badbandlist = []
     goodbandlist = []

@@ -32,7 +32,7 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
                 self._checkKandBsolution(result.flaggedSolnApplycaldelay[bandname], m)
                 self._checkKandBsolution(result.flaggedSolnApplycalbandpass[bandname], m)
                 score1 = qacalc.score_total_data_flagged_vla_bandpass(
-                    result.bpdgain_touse[bandname], result.flaggedSolnApplycalbandpass[bandname]['antmedian']['fraction'])
+                    bpdgain_touse, result.flaggedSolnApplycalbandpass[bandname]['antmedian']['fraction'])
                 score2 = qacalc.score_total_data_vla_delay(result.ktypecaltable[bandname], m, bandname)
                 scores.append(score1)
                 scores.append(score2)
@@ -46,7 +46,7 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
                 scores.extend(score3)
 
         for antenna, spwlist in self.antspw.items():
-            uniquespw = list(set(spwlist))
+            uniquespw = utils.deduplicate(spwlist)
             for spwid in uniquespw:
                 spw = m.get_spectral_window(spwid)
                 if spw.specline_window:
