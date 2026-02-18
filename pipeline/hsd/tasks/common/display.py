@@ -1098,7 +1098,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             if self._axes_atm is not None:
                 self._axes_atm.set_position(self.axes_integsp.get_position())
             self._axes_chan.set_xlabel('Channel', size=self.ticksize - 1)
-            self._axes_chan.xaxis.set_label_coords(0.5, 1.11)
+            self._axes_chan.xaxis.set_label_coords(0.5, 1.13)
             self._axes_chan.tick_params(axis='x', pad=0)
             xlabels = self._axes_chan.get_xticklabels()
             for label in xlabels:
@@ -1422,7 +1422,7 @@ class SDSparseMapPlotter:
         """Add channel axis to integrated spectrum.
 
         Args:
-            frequency: Frequency label.
+            frequency: Frequency label. Must be sorted.
         """
         axes = self.axes.axes_chan
         f = np.asarray(frequency)
