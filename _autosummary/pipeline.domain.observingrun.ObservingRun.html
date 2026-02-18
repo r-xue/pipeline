@@ -7,22 +7,22 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.observingrun.ObservingRun &mdash; Pipeline 
- (2025.1.1.61) 2025.1.0 documentation</title>
+ (2026.0.0.0) 2026.0.0.0+479-g5dead9ae80 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=047bd54c" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=872f755e" />
 
   
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=c91327a9"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=0729d509"></script>
     <script src="../_static/js/theme.js"></script>
@@ -42,7 +42,7 @@
           
           <a href="../index.html" class="icon icon-home">
             Pipeline 
- (2025.1.1.61)
+ (2026.0.0.0)
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -57,6 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interface.html">Interface Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
@@ -106,7 +107,7 @@
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.unitformat.html">pipeline.domain.unitformat</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html">pipeline.infrastructure.launcher.Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
@@ -122,7 +123,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Pipeline with Conda</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
@@ -141,7 +142,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline 
- (2025.1.1.61)</a>
+ (2026.0.0.0)</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -166,9 +167,9 @@
 <h1>pipeline.domain.observingrun.ObservingRun<a class="headerlink" href="#pipeline-domain-observingrun-observingrun" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ObservingRun</span></span><a class="reference internal" href="../_modules/pipeline/domain/observingrun.html#ObservingRun"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ObservingRun</span></span><a class="reference internal" href="../_modules/pipeline/domain/observingrun.html#ObservingRun"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Logical representation of an observing run.</p>
+<p>A logical representation of an observing run.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun.measurement_sets">
 <span class="sig-name descname"><span class="pre">measurement_sets</span></span><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.measurement_sets" title="Link to this definition"></a></dt>
@@ -314,7 +315,7 @@ each science spectral window name to its shortened version.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun.end_datetime">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">end_datetime</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.end_datetime" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">end_datetime</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.end_datetime" title="Link to this definition"></a></dt>
 <dd><p>Return end date and time of latest measurement set in this observing run.</p>
 <p>Returns latest MS end time as a datetime object, or None if there
 are no measurement sets registered in this observing run.</p>
@@ -322,7 +323,7 @@ are no measurement sets registered in this observing run.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun.end_time">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">end_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.end_time" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">end_time</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.end_time" title="Link to this definition"></a></dt>
 <dd><p>Return end time of latest measurement set in this observing run.</p>
 <p>Returns latest MS end time as a CASA 'epoch' measure dictionary, or
 None if there are no measurement sets registered in this observing run.</p>
@@ -330,7 +331,7 @@ None if there are no measurement sets registered in this observing run.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun.execblock_ids">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">execblock_ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.execblock_ids" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">execblock_ids</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.execblock_ids" title="Link to this definition"></a></dt>
 <dd><p>Return unique execution block ID(s) associated with the MSes in this observing run.</p>
 </dd></dl>
 
@@ -411,7 +412,7 @@ in measurement_sets list attribute.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun.get_real_spw_id_by_name">
-<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_real_spw_id_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spw_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet" title="pipeline.domain.MeasurementSet"><span class="pre">MeasurementSet</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/observingrun.html#ObservingRun.get_real_spw_id_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.get_real_spw_id_by_name" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_real_spw_id_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spw_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_ms</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet" title="pipeline.domain.MeasurementSet"><span class="pre">MeasurementSet</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/observingrun.html#ObservingRun.get_real_spw_id_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.get_real_spw_id_by_name" title="Link to this definition"></a></dt>
 <dd><p>Translate a (science) spw name to the real spw ID for a given MS.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -462,13 +463,13 @@ spw was found with given name.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun.observers">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">observers</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.observers" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">observers</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.observers" title="Link to this definition"></a></dt>
 <dd><p>Return unique observer(s) associated with the MSes in this observing run.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun.project_ids">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">project_ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.project_ids" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">project_ids</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.project_ids" title="Link to this definition"></a></dt>
 <dd><p>Return unique project ID(s) associated with the MSes in this observing run.</p>
 </dd></dl>
 
@@ -513,13 +514,13 @@ if the spectral window name was not found.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun.schedblock_ids">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">schedblock_ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.schedblock_ids" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">schedblock_ids</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.schedblock_ids" title="Link to this definition"></a></dt>
 <dd><p>Return unique scheduling block ID(s) associated with the MSes in this observing run.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun.start_datetime">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start_datetime</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.start_datetime" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">start_datetime</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.start_datetime" title="Link to this definition"></a></dt>
 <dd><p>Return start date and time of earliest measurement set in this observing run.</p>
 <p>Returns earliest MS start time as a datetime object, or None if there
 are no measurement sets registered in this observing run.</p>
@@ -527,7 +528,7 @@ are no measurement sets registered in this observing run.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.observingrun.ObservingRun.start_time">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.start_time" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">start_time</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#pipeline.domain.observingrun.ObservingRun.start_time" title="Link to this definition"></a></dt>
 <dd><p>Return start time of earliest measurement set in this observing run.</p>
 <p>Returns earliest MS start time as a CASA 'epoch' measure dictionary, or
 None if there are no measurement sets registered in this observing run.</p>
@@ -554,7 +555,7 @@ or the given virtual spw ID does not appear in given MS.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id0">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">virtual_science_spw_shortnames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">virtual_science_spw_shortnames</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
 <dd><p>Generate SPW shortnames derived from full SPW names.</p>
 <p>If the name contains 'ALMA', it attempts to remove any suffix starting
 from the last '#' character. Otherwise, the name is returned unchanged.
@@ -581,7 +582,7 @@ This was originally implemented from PIPE-59/PIPE-123.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.61+287-gd98d36e811-update-docs-build-and-packaging-setup.</p>
+    <p>&#169; Copyright 2020–2026, Pipeline Dev. Team, build: 2026.0.0.0+479-g5dead9ae80.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

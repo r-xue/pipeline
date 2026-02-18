@@ -6,32 +6,34 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.field &mdash; Pipeline 
- (2025.1.1.61) 2025.1.0 documentation</title>
+ (2026.0.0.0) 2026.0.0.0+479-g5dead9ae80 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=047bd54c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=872f755e" />
 
   
     <link rel="shortcut icon" href="../../../_static/favicon-16x16.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=e72a64b0"></script>
-      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/documentation_options.js?v=c91327a9"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../_static/copybutton.js?v=0729d509"></script>
-      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
-      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
-      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
       <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
       <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
 
-const defaultStyle = document.createElement('style');
-defaultStyle.textContent = `pre.mermaid {
+
+
+
+
+const initStyles = () => {
+    const defaultStyle = document.createElement('style');
+    defaultStyle.textContent = `pre.mermaid {
     /* Same as .mermaid-container > pre */
     display: block;
     width: 100%;
@@ -42,12 +44,11 @@ pre.mermaid > svg {
     height: 500px;
     width: 100%;
     max-width: 100% !important;
-}
-`;
-document.head.appendChild(defaultStyle);
+}`;
+    document.head.appendChild(defaultStyle);
 
-const fullscreenStyle = document.createElement('style');
-fullscreenStyle.textContent = `.mermaid-container {
+    const fullscreenStyle = document.createElement('style');
+    fullscreenStyle.textContent = `.mermaid-container {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -199,10 +200,32 @@ fullscreenStyle.textContent = `.mermaid-container {
 .mermaid-fullscreen-modal .mermaid-fullscreen-btn {
     display: none !important;
 }`;
-document.head.appendChild(fullscreenStyle);
+    document.head.appendChild(fullscreenStyle);
+}
 
 // Detect if page has dark background
 const isDarkTheme = () => {
+    // We use a set of heuristics:
+    // 1. Check for common dark mode classes or attributes
+    // 2. Check computed background color brightness
+    if (document.documentElement.classList.contains('dark') ||
+        document.documentElement.getAttribute('data-theme') === 'dark' ||
+        document.body.classList.contains('dark') ||
+        document.body.getAttribute('data-theme') === 'dark') {
+        // console.log("Dark theme detected via class/attribute");
+        return true;
+    }
+    if (document.documentElement.classList.contains('light') ||
+        document.documentElement.getAttribute('data-theme') === 'light' ||
+        document.body.classList.contains('light') ||
+        document.body.getAttribute('data-theme') === 'light') {
+        // console.log("Light theme detected via class/attribute");
+        return false;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // console.log("Dark theme detected via prefers-color-scheme");
+        return true;
+    }
     const bgColor = window.getComputedStyle(document.body).backgroundColor;
     const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
     if (match) {
@@ -210,15 +233,45 @@ const isDarkTheme = () => {
         const g = parseInt(match[2]);
         const b = parseInt(match[3]);
         const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        // console.log("Background color brightness:", brightness);
         return brightness < 128;
     }
+    // console.log("No dark or light theme detected, defaulting to light theme");
     return false;
 };
 
-const load = async () => {
-    await mermaid.run();
+let darkTheme = isDarkTheme();
+let modal = null;
+let modalContent = null;
+let previousScrollOffset = [window.scrollX, window.scrollY];
 
-    const all_mermaids = document.querySelectorAll(".mermaid");
+const runMermaid = async (rerun) => {
+    console.log("Running mermaid diagrams, rerun =", rerun);
+    // clear all existing mermaid charts
+    let all_mermaids = document.querySelectorAll(".mermaid");
+
+    if (rerun) {
+        all_mermaids.forEach((el) => {
+            if(!el.hasAttribute("data-original-code")) {
+                // store original code
+                // console.log(`Storing original code for first run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+            if(el.getAttribute("data-processed") === "true") {
+                // remove and restore original
+                el.removeAttribute("data-processed");
+                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
+                el.innerHTML = el.getAttribute('data-original-code');
+            } else {
+                // store original code
+                // console.log(`Storing original code for re-run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+        });
+        await mermaid.run();
+    }
+
+    all_mermaids = document.querySelectorAll(".mermaid");
     const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
 
     if ("True" === "True") {
@@ -226,10 +279,10 @@ const load = async () => {
         if(mermaids_to_add_zoom > 0) {
             var svgs = d3.selectAll(".mermaid svg");
             if(all_mermaids.length !== mermaids_processed.length) {
-                setTimeout(load, 200);
+                setTimeout(() => runMermaid(false), 200);
                 return;
             } else if(svgs.size() !== mermaids_to_add_zoom) {
-                setTimeout(load, 200);
+                setTimeout(() => runMermaid(false), 200);
                 return;
             } else {
                 svgs.each(function() {
@@ -245,16 +298,21 @@ const load = async () => {
         }
     } else if(all_mermaids.length !== mermaids_processed.length) {
         // Wait for mermaid to process all diagrams
-        setTimeout(load, 200);
+        setTimeout(() => runMermaid(false), 200);
         return;
     }
-
-    const darkTheme = isDarkTheme();
 
     // Stop here if not adding fullscreen capability
     if ("True" !== "True") return;
 
-    const modal = document.createElement('div');
+    if (modal !== null ) {
+        // Destroy existing modal
+        modal.remove();
+        modal = null;
+        modalContent = null;
+    }
+
+    modal = document.createElement('div');
     modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
     modal.setAttribute('role', 'dialog');
     modal.setAttribute('aria-modal', 'true');
@@ -265,10 +323,8 @@ const load = async () => {
     `;
     document.body.appendChild(modal);
 
-    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    modalContent = modal.querySelector('.mermaid-container-fullscreen');
     const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
-
-    let previousScrollOffset = [window.scrollX, window.scrollY];
 
     const closeModal = () => {
         modal.classList.remove('active');
@@ -287,11 +343,14 @@ const load = async () => {
         }
     });
 
-    const allButtons = [];
-
     document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
         if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
             mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            // Already processed, adjust button class if needed
+            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
+            if (existingBtn) {
+                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+            }
             return;
         }
 
@@ -349,46 +408,57 @@ const load = async () => {
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         });
-
         container.appendChild(fullscreenBtn);
-        allButtons.push(fullscreenBtn);
-    });
-
-    // Update theme classes when theme changes
-    const updateTheme = () => {
-        const dark = isDarkTheme();
-        allButtons.forEach(btn => {
-            if (dark) {
-                btn.classList.add('dark-theme');
-            } else {
-                btn.classList.remove('dark-theme');
-            }
-        });
-        if (dark) {
-            modal.classList.add('dark-theme');
-            modalContent.classList.add('dark-theme');
-            closeBtn.classList.add('dark-theme');
-        } else {
-            modal.classList.remove('dark-theme');
-            modalContent.classList.remove('dark-theme');
-            closeBtn.classList.remove('dark-theme');
-        }
-    };
-
-    // Watch for theme changes
-    const observer = new MutationObserver(updateTheme);
-    observer.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ['class', 'style', 'data-theme']
-    });
-    observer.observe(document.body, {
-        attributes: true,
-        attributeFilter: ['class', 'style']
     });
 };
 
-window.addEventListener("load", load);
-</script>
+const load = async () => {
+    initStyles();
+
+    await runMermaid(true);
+
+    const reRunIfThemeChanges = async () => {
+        const newDarkTheme = isDarkTheme();
+        if (newDarkTheme !== darkTheme) {
+            darkTheme = newDarkTheme;
+            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
+            await mermaid.initialize(
+                {...JSON.parse(
+                    `{"startOnLoad": false}`
+                ),
+                ...{ darkMode: darkTheme, theme: darkTheme ? 'dark' : 'default' },
+                }
+            );
+            await runMermaid(true);
+        }
+    };
+
+    // Update theme classes when theme changes
+    const themeObserver = new MutationObserver(reRunIfThemeChanges);
+    themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+};
+
+
+
+
+
+console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
+mermaid.initialize(
+    {...JSON.parse(
+        `{"startOnLoad": false}`
+    ),
+    ...{ darkMode: darkTheme, theme: darkTheme ? 'dark' : 'default' },
+    }
+);
+
+window.addEventListener("load", load);</script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -404,7 +474,7 @@ window.addEventListener("load", load);
           
           <a href="../../../index.html" class="icon icon-home">
             Pipeline 
- (2025.1.1.61)
+ (2026.0.0.0)
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -419,6 +489,7 @@ window.addEventListener("load", load);
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interface.html">Interface Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
@@ -440,7 +511,7 @@ window.addEventListener("load", load);
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Pipeline with Conda</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
@@ -459,7 +530,7 @@ window.addEventListener("load", load);
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">Pipeline 
- (2025.1.1.61)</a>
+ (2026.0.0.0)</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -480,37 +551,49 @@ window.addEventListener("load", load);
              
   <h1>Source code for pipeline.domain.field</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Provide a class to store logical representation of field.&quot;&quot;&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pprint</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">utils</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">DirectionDict</span><span class="p">,</span> <span class="n">EpochDict</span><span class="p">,</span> <span class="n">QuantityDict</span>
 
 <span class="n">_pprinter</span> <span class="o">=</span> <span class="n">pprint</span><span class="o">.</span><span class="n">PrettyPrinter</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mf">1e99</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Field">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.field.Field.html#pipeline.domain.Field">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">Field</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class to store logical representation of a field.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Field</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A logical representation of a field in a MeasurementSet.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        id: The numerical identifier of this field within the FIELD subtable of</span>
+<span class="sd">        id: Numerical identifier of this field within the FIELD subtable of</span>
 <span class="sd">            the MeasurementSet.</span>
-<span class="sd">        source_id: The ID of the source associated with this field.</span>
-<span class="sd">        time: List of the unique times for this field.</span>
-<span class="sd">        name: The name of this field.</span>
-<span class="sd">        intents: A list of unique scan intents associated with this field.</span>
-<span class="sd">        states: A list of unique State objects associated with this field.</span>
-<span class="sd">        valid_spws: A list of unique SpectralWindow objects associated with</span>
+<span class="sd">        source_id: ID of the source associated with this field.</span>
+<span class="sd">        time: Array of unique observation times for this field.</span>
+<span class="sd">        name: Name of this field, formatted for use as a CASA argument.</span>
+<span class="sd">        intents: Set of unique scan intents associated with this field.</span>
+<span class="sd">        states: Set of unique State objects associated with this field.</span>
+<span class="sd">        valid_spws: Set of unique SpectralWindow objects associated with</span>
 <span class="sd">            this field.</span>
-<span class="sd">        flux_densities: A list of unique flux measurements from setjy.</span>
+<span class="sd">        flux_densities: Set of unique flux measurements from setjy.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="Field.__init__">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.field.Field.html#pipeline.domain.Field.__init__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">field_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">source_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">time</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+            <span class="n">direction</span><span class="p">:</span> <span class="n">DirectionDict</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a Field object.</span>
 
@@ -541,7 +624,13 @@ window.addEventListener("load", load);
         <span class="c1"># populated in a separate step during importdata that retrieves fluxes</span>
         <span class="c1"># from multiple origins (Source.xml, user .CSV file). May also later be</span>
         <span class="c1"># updated by flux calibration pipeline tasks.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">flux_densities</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flux_densities</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="c1"># PIPE-2472: calculate zenith distance and telescope MJD of observation (TELMJD)</span>
+        <span class="c1"># These are set to None until the import of the measurement set (see </span>
+        <span class="c1"># MeasurementSetReader.set_field_zd_telmjd)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_zd</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_telmjd</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -585,17 +674,17 @@ window.addEventListener("load", load);
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">else</span> <span class="s1">&#39;#</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">latitude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">latitude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EpochDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return latitude for the phasecenter of the field.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mdirection</span><span class="p">[</span><span class="s1">&#39;m1&#39;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">longitude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">longitude</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EpochDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return longitude for the phasecenter of the field.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mdirection</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">mdirection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mdirection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DirectionDict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return direction measure dictionary for phasecenter of the field.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mdirection</span>
 
@@ -629,6 +718,16 @@ window.addEventListener("load", load);
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return declination for the phasecenter of the field.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dec</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">zd</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantityDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the zenith distance in a CASA `quantity` quanta dictionary.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_zd</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">telmjd</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QuantityDict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the Modified Julian Date in a CASA `epoch` measure dictionary&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_telmjd</span>
+
 <div class="viewcode-block" id="Field.set_source_type">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.field.Field.html#pipeline.domain.Field.set_source_type">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_source_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -658,6 +757,31 @@ window.addEventListener("load", load);
                 <span class="bp">self</span><span class="o">.</span><span class="n">intents</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="Field.set_zd_telmjd">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.field.Field.html#pipeline.domain.Field.set_zd_telmjd">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_zd_telmjd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observatory</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate and set the zenith distance at the observation mid-time.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            observatory: Name of the observatory (e.g., &#39;VLA&#39;, &#39;ALMA&#39;).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Mean observing time</span>
+        <span class="n">mjd_epoch</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1858</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">17</span><span class="p">)</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">mjd_epoch</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">))</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">mjd_epoch</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">))</span>
+        <span class="n">mid_time</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">obs_midtime</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
+
+        <span class="c1"># Calculate zenith distance using CASA measures</span>
+        <span class="n">zd_rad</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">compute_zenith_distance</span><span class="p">(</span>
+            <span class="n">field_direction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mdirection</span><span class="p">,</span>
+            <span class="n">epoch</span><span class="o">=</span><span class="n">mid_time</span><span class="p">,</span>
+            <span class="n">observatory</span><span class="o">=</span><span class="n">observatory</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_zd</span> <span class="o">=</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">zd_rad</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_telmjd</span> <span class="o">=</span> <span class="n">mid_time</span><span class="p">[</span><span class="s1">&#39;m0&#39;</span><span class="p">]</span></div>
+
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;&lt;Field </span><span class="si">{id}</span><span class="s1">: name=</span><span class="se">\&#39;</span><span class="si">{name}</span><span class="se">\&#39;</span><span class="s1"> intents=</span><span class="se">\&#39;</span><span class="si">{intents}</span><span class="se">\&#39;</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
@@ -672,7 +796,7 @@ window.addEventListener("load", load);
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.61+287-gd98d36e811-update-docs-build-and-packaging-setup.</p>
+    <p>&#169; Copyright 2020–2026, Pipeline Dev. Team, build: 2026.0.0.0+479-g5dead9ae80.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

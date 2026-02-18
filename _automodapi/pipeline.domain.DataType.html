@@ -7,22 +7,22 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DataType &mdash; Pipeline 
- (2025.1.1.61) 2025.1.0 documentation</title>
+ (2026.0.0.0) 2026.0.0.0+479-g5dead9ae80 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=047bd54c" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=872f755e" />
 
   
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=c91327a9"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=0729d509"></script>
     <script src="../_static/js/theme.js"></script>
@@ -42,7 +42,7 @@
           
           <a href="../index.html" class="icon icon-home">
             Pipeline 
- (2025.1.1.61)
+ (2026.0.0.0)
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -57,6 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interface.html">Interface Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
@@ -106,7 +107,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Pipeline with Conda</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
@@ -125,7 +126,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline 
- (2025.1.1.61)</a>
+ (2026.0.0.0)</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -148,67 +149,68 @@
 <h1>DataType<a class="headerlink" href="#datatype" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.domain.DataType">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DataType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/datatype.html#DataType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.DataType" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">DataType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/datatype.html#DataType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.DataType" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="../_autosummary/pipeline.domain.datatype.Enum.html#pipeline.domain.datatype.Enum" title="enum.Enum"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
-<p>A class to define DataType enum.</p>
+<p>Enumeration of data types used in the pipeline.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.domain.DataType.RAW">
 <span class="sig-name descname"><span class="pre">RAW</span></span><a class="headerlink" href="#pipeline.domain.DataType.RAW" title="Link to this definition"></a></dt>
-<dd><p>raw data</p>
+<dd><p>Raw, unprocessed data.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.domain.DataType.REGCAL_CONTLINE_ALL">
 <span class="sig-name descname"><span class="pre">REGCAL_CONTLINE_ALL</span></span><a class="headerlink" href="#pipeline.domain.DataType.REGCAL_CONTLINE_ALL" title="Link to this definition"></a></dt>
-<dd><p>calibrated data</p>
+<dd><p>Regular calibrated data for all scans.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.domain.DataType.BASELINED">
 <span class="sig-name descname"><span class="pre">BASELINED</span></span><a class="headerlink" href="#pipeline.domain.DataType.BASELINED" title="Link to this definition"></a></dt>
-<dd><p>data after spectral baseline subtraction</p>
+<dd><p>Data after spectral baseline subtraction.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.domain.DataType.ATMCORR">
 <span class="sig-name descname"><span class="pre">ATMCORR</span></span><a class="headerlink" href="#pipeline.domain.DataType.ATMCORR" title="Link to this definition"></a></dt>
-<dd><p>data corrected for residual ATM</p>
+<dd><p>Data corrected for residual atmospheric effects.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.domain.DataType.REGCAL_CONT_SCIENCE">
 <span class="sig-name descname"><span class="pre">REGCAL_CONT_SCIENCE</span></span><a class="headerlink" href="#pipeline.domain.DataType.REGCAL_CONT_SCIENCE" title="Link to this definition"></a></dt>
-<dd><p>calibrated data of target scans used for cont only</p>
+<dd><p>Regular calibrated continuum-only data for target scans.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.domain.DataType.SELFCAL_CONT_SCIENCE">
 <span class="sig-name descname"><span class="pre">SELFCAL_CONT_SCIENCE</span></span><a class="headerlink" href="#pipeline.domain.DataType.SELFCAL_CONT_SCIENCE" title="Link to this definition"></a></dt>
-<dd><p>self-calibrated data of target scans used for cont only</p>
+<dd><p>Self-calibrated continuum-only data for target scans.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.domain.DataType.REGCAL_CONTLINE_SCIENCE">
 <span class="sig-name descname"><span class="pre">REGCAL_CONTLINE_SCIENCE</span></span><a class="headerlink" href="#pipeline.domain.DataType.REGCAL_CONTLINE_SCIENCE" title="Link to this definition"></a></dt>
-<dd><p>calibrated data of target scans</p>
+<dd><p>Regular calibrated data for target scans.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.domain.DataType.SELFCAL_CONTLINE_SCIENCE">
 <span class="sig-name descname"><span class="pre">SELFCAL_CONTLINE_SCIENCE</span></span><a class="headerlink" href="#pipeline.domain.DataType.SELFCAL_CONTLINE_SCIENCE" title="Link to this definition"></a></dt>
-<dd><p>self-calibrated data of target scans</p>
+<dd><p>Self-calibrated data for target scans.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.domain.DataType.REGCAL_LINE_SCIENCE">
 <span class="sig-name descname"><span class="pre">REGCAL_LINE_SCIENCE</span></span><a class="headerlink" href="#pipeline.domain.DataType.REGCAL_LINE_SCIENCE" title="Link to this definition"></a></dt>
-<dd><p>calibrated spectral line data</p>
+<dd><p>Regular calibrated spectral line data.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">SELFCAL_LINE_SCIENCE</span> <span class="pre">self-calibrated</span> <span class="pre">spectral</span> <span class="pre">line</span> <span class="pre">data</span></span></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="pipeline.domain.DataType.SELFCAL_LINE_SCIENCE">
+<span class="sig-name descname"><span class="pre">SELFCAL_LINE_SCIENCE</span></span><a class="headerlink" href="#pipeline.domain.DataType.SELFCAL_LINE_SCIENCE" title="Link to this definition"></a></dt>
+<dd><p>Self-calibrated spectral line data.</p>
+</dd></dl>
 
 <p class="rubric">Attributes Summary</p>
 <table class="autosummary longtable docutils align-default">
@@ -240,7 +242,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="../_autosummary/pipeline.domain.DataType.html#pipeline.domain.DataType.SELFCAL_CONT_SCIENCE" title="pipeline.domain.DataType.SELFCAL_CONT_SCIENCE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SELFCAL_CONT_SCIENCE</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.DataType.SELFCAL_LINE_SCIENCE" title="pipeline.domain.DataType.SELFCAL_LINE_SCIENCE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SELFCAL_LINE_SCIENCE</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="../_autosummary/pipeline.domain.DataType.html#pipeline.domain.DataType.SELFCAL_LINE_SCIENCE" title="pipeline.domain.DataType.SELFCAL_LINE_SCIENCE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SELFCAL_LINE_SCIENCE</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -248,52 +250,52 @@
 <p class="rubric">Attributes Documentation</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id0">
-<span class="sig-name descname"><span class="pre">ATMCORR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">ATMCORR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></span><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id1">
-<span class="sig-name descname"><span class="pre">BASELINED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">BASELINED</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></span><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id2">
-<span class="sig-name descname"><span class="pre">RAW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">RAW</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></span><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id3">
-<span class="sig-name descname"><span class="pre">REGCAL_CONTLINE_ALL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">REGCAL_CONTLINE_ALL</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></span><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4">
-<span class="sig-name descname"><span class="pre">REGCAL_CONTLINE_SCIENCE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></em><a class="headerlink" href="#id4" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">REGCAL_CONTLINE_SCIENCE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">5</span></span><a class="headerlink" href="#id4" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id5">
-<span class="sig-name descname"><span class="pre">REGCAL_CONT_SCIENCE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7</span></em><a class="headerlink" href="#id5" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">REGCAL_CONT_SCIENCE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">7</span></span><a class="headerlink" href="#id5" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id6">
-<span class="sig-name descname"><span class="pre">REGCAL_LINE_SCIENCE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">9</span></em><a class="headerlink" href="#id6" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">REGCAL_LINE_SCIENCE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">9</span></span><a class="headerlink" href="#id6" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id7">
-<span class="sig-name descname"><span class="pre">SELFCAL_CONTLINE_SCIENCE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></em><a class="headerlink" href="#id7" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">SELFCAL_CONTLINE_SCIENCE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">6</span></span><a class="headerlink" href="#id7" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id8">
-<span class="sig-name descname"><span class="pre">SELFCAL_CONT_SCIENCE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></em><a class="headerlink" href="#id8" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">SELFCAL_CONT_SCIENCE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></span><a class="headerlink" href="#id8" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.domain.DataType.SELFCAL_LINE_SCIENCE">
-<span class="sig-name descname"><span class="pre">SELFCAL_LINE_SCIENCE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></em><a class="headerlink" href="#pipeline.domain.DataType.SELFCAL_LINE_SCIENCE" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="id9">
+<span class="sig-name descname"><span class="pre">SELFCAL_LINE_SCIENCE</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">10</span></span><a class="headerlink" href="#id9" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -311,7 +313,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.61+287-gd98d36e811-update-docs-build-and-packaging-setup.</p>
+    <p>&#169; Copyright 2020–2026, Pipeline Dev. Team, build: 2026.0.0.0+479-g5dead9ae80.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

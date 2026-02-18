@@ -7,22 +7,22 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.MeasurementSet &mdash; Pipeline 
- (2025.1.1.61) 2025.1.0 documentation</title>
+ (2026.0.0.0) 2026.0.0.0+479-g5dead9ae80 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=047bd54c" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=872f755e" />
 
   
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=c91327a9"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=0729d509"></script>
     <script src="../_static/js/theme.js"></script>
@@ -42,7 +42,7 @@
           
           <a href="../index.html" class="icon icon-home">
             Pipeline 
- (2025.1.1.61)
+ (2026.0.0.0)
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -57,6 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interface.html">Interface Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
@@ -103,7 +104,7 @@
 <li class="toctree-l3"><a class="reference internal" href="pipeline.domain.unitformat.html">pipeline.domain.unitformat</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="pipeline.infrastructure.launcher.Context.html">pipeline.infrastructure.launcher.Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline.infrastructure.launcher.html">pipeline.infrastructure.launcher</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../apisummary.html#pipeline-domain-infrastructure-modules-automodapi">Pipeline domain/infrastructure modules (automodapi)</a></li>
@@ -119,7 +120,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Pipeline with Conda</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
@@ -138,7 +139,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline 
- (2025.1.1.61)</a>
+ (2026.0.0.0)</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -162,9 +163,9 @@
 <h1>pipeline.domain.MeasurementSet<a class="headerlink" href="#pipeline-domain-measurementset" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MeasurementSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">MeasurementSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A class to store logical representation of a MeasurementSet (MS).</p>
+<p>A logical representation of a MeasurementSet (MS).</p>
 <p>The MeasurementSet class represents the metadata and relationships held in a
 measurement set on disk, acting as an in-memory representation so that
 metadata and relationships can be quickly queried without additional disk I/O.</p>
@@ -747,13 +748,13 @@ spectral windows; used in subsequent calibration tasks
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.antennas">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">antennas</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.domain.Antenna.html#pipeline.domain.Antenna" title="pipeline.domain.Antenna"><span class="pre">Antenna</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pipeline.domain.MeasurementSet.antennas" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">antennas</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.domain.Antenna.html#pipeline.domain.Antenna" title="pipeline.domain.Antenna"><span class="pre">Antenna</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.antennas" title="Link to this definition"></a></dt>
 <dd><p>Return list of Antenna objects for all antennas in the measurement set.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.basename">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">basename</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pipeline.domain.MeasurementSet.basename" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">basename</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.basename" title="Link to this definition"></a></dt>
 <dd><p>Return base path to the measurement set.</p>
 </dd></dl>
 
@@ -808,7 +809,7 @@ specified by the epoch and location of the observatory.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.end_time">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">end_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#pipeline.domain.MeasurementSet.end_time" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">end_time</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.end_time" title="Link to this definition"></a></dt>
 <dd><p>Return end time for this measurement set as CASA 'epoch' measure dictionary.</p>
 </dd></dl>
 
@@ -1273,7 +1274,7 @@ was found.</p>
 <dd class="field-odd"><p>NUM_CHAN column from spectral window table</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>channels</p>
+<dd class="field-even"><p><a class="reference internal" href="pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.channels" title="pipeline.domain.SpectralWindow.channels">channels</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1312,13 +1313,13 @@ when name parsing fails. Handles special cases for KU and KA band naming convent
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.intents">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">intents</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#pipeline.domain.MeasurementSet.intents" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">intents</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.intents" title="Link to this definition"></a></dt>
 <dd><p>Return unique intents in the measurement set.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.is_band_to_band">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_band_to_band</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#pipeline.domain.MeasurementSet.is_band_to_band" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">is_band_to_band</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.is_band_to_band" title="Link to this definition"></a></dt>
 <dd><p>Return whether this MS is for band-to-band interferometry.</p>
 <p>Criteria adopted from PIPE-2084: an MS is deemed to be for band-to-band
 interferometry if either the observing mode declares it as band-to-band,
@@ -1329,7 +1330,7 @@ their metadata.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.reference_antenna">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reference_antenna</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pipeline.domain.MeasurementSet.reference_antenna" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">reference_antenna</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.reference_antenna" title="Link to this definition"></a></dt>
 <dd><p>Get the reference antenna list for this MS. The refant value is
 a comma-separated string.</p>
 <p>Example: 'DV01,DV02,DV03'</p>
@@ -1337,7 +1338,7 @@ a comma-separated string.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id0">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">session</span></span><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">session</span></span><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
 <dd><p>Return name of session associated with this measurement set.</p>
 </dd></dl>
 
@@ -1394,7 +1395,7 @@ lookup dictionary.</p></li>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.domain.MeasurementSet.start_time">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#pipeline.domain.MeasurementSet.start_time" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">start_time</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></span><a class="headerlink" href="#pipeline.domain.MeasurementSet.start_time" title="Link to this definition"></a></dt>
 <dd><p>Return start time for this measurement set as CASA 'epoch' measure dictionary.</p>
 </dd></dl>
 
@@ -1427,7 +1428,7 @@ lookup dictionary.</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.61+287-gd98d36e811-update-docs-build-and-packaging-setup.</p>
+    <p>&#169; Copyright 2020–2026, Pipeline Dev. Team, build: 2026.0.0.0+479-g5dead9ae80.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

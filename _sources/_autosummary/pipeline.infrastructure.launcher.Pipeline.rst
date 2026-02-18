@@ -1,0 +1,25 @@
+pipeline.infrastructure.launcher.Pipeline
+=========================================
+
+.. currentmodule:: pipeline.infrastructure.launcher
+
+.. autoclass:: Pipeline
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+      :nosignatures:
+   
+      ~Pipeline.close
+   
+   
+
+   
+   
+   

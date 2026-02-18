@@ -17,6 +17,7 @@ pipeline.domain.Field
       :nosignatures:
    
       ~Field.set_source_type
+      ~Field.set_zd_telmjd
    
    
 
@@ -37,5 +38,7 @@ pipeline.domain.Field
       ~Field.mdirection
       ~Field.name
       ~Field.ra
+      ~Field.telmjd
+      ~Field.zd
    
    

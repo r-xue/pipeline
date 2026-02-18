@@ -1,7 +1,7 @@
-<map id="inheritancedd198c69e7" name="inheritancedd198c69e7">
+<map id="inheritance5eee939eab" name="inheritance5eee939eab">
 <area shape="rect" id="node1" title="ApplycalInputs defines the inputs for the Applycal pipeline task." alt="" coords="592,44,848,66"/>
 <area shape="rect" id="node121" title="ApplycalInputs defines the inputs for the Applycal pipeline task." alt="" coords="1120,44,1406,66"/>
-<area shape="rect" id="node2" href="_automodapi/pipeline.infrastructure.vdp.StandardInputs.html#pipeline.infrastructure.vdp.StandardInputs" target="_top" title="infrastructure.vdp.StandardInputs" alt="" coords="201,2291,419,2313"/>
+<area shape="rect" id="node2" href="_automodapi/pipeline.infrastructure.vdp.StandardInputs.html#pipeline.infrastructure.vdp.StandardInputs" target="_top" title="infrastructure.vdp.StandardInputs" alt="" coords="201,2271,419,2293"/>
 <area shape="rect" id="node5" title="ExportDataInputs manages the inputs for the ExportData task." alt="" coords="566,205,873,227"/>
 <area shape="rect" id="node6" title="FlagdataSetterInputs manages the inputs for the FlagdataSetter task." alt="" coords="556,285,883,307"/>
 <area shape="rect" id="node7" title="FlagDeterBaseInputs manages the inputs for the FlagDeterBase task." alt="" coords="557,325,883,347"/>
@@ -41,31 +41,30 @@
 <area shape="rect" id="node130" title="Inputs for imaging worker" alt="" coords="553,3815,886,3837"/>
 <area shape="rect" id="node134" title="Inputs for imaging task class." alt="" coords="579,3895,860,3918"/>
 <area shape="rect" id="node135" title="Inputs for image plane combination." alt="" coords="549,3935,890,3958"/>
-<area shape="rect" id="node136" title="Inputs for exporting data to MS" alt="" coords="577,3976,862,3998"/>
-<area shape="rect" id="node137" title="Inputs class for imaging worker." alt="" coords="561,4016,878,4038"/>
-<area shape="rect" id="node139" title="Inputs class for SDK2JyCal task." alt="" coords="588,4056,851,4078"/>
-<area shape="rect" id="node141" title="Inputs class for SDSkyCal task." alt="" coords="595,4096,845,4118"/>
-<area shape="rect" id="node145" title="Original is pipeline.hsd.tasks.k2jycal.k2jycal.py." alt="" coords="568,4136,872,4158"/>
-<area shape="rect" id="node151" title="Inputs class for SpwIdVsFreqChart." alt="" coords="540,4297,899,4319"/>
+<area shape="rect" id="node136" title="Inputs class for imaging worker." alt="" coords="561,3976,878,3998"/>
+<area shape="rect" id="node138" title="Inputs class for SDK2JyCal task." alt="" coords="588,4016,851,4038"/>
+<area shape="rect" id="node140" title="Inputs class for SDSkyCal task." alt="" coords="595,4056,845,4078"/>
+<area shape="rect" id="node144" title="Original is pipeline.hsd.tasks.k2jycal.k2jycal.py." alt="" coords="568,4096,872,4118"/>
+<area shape="rect" id="node150" title="Inputs class for SpwIdVsFreqChart." alt="" coords="540,4256,899,4279"/>
 <area shape="rect" id="node131" title="Inputs class for SDExportData." alt="" coords="1095,205,1431,227"/>
 <area shape="rect" id="node61" title="FlagDeterALMAInputs defines the inputs for the FlagDeterALMA pipeline task." alt="" coords="1089,245,1436,267"/>
 <area shape="rect" id="node95" title="FlagDeterVLAInputs defines the inputs for the FlagDeterVLA pipeline task." alt="" coords="1102,285,1424,307"/>
 <area shape="rect" id="node132" title="FlagDeterALMASingleDishInputs defines the inputs for the FlagDeterALMASingleDish pipeline task." alt="" coords="1053,325,1473,347"/>
-<area shape="rect" id="node138" title="Class of inputs of SDImportData." alt="" coords="1093,445,1433,468"/>
-<area shape="rect" id="node140" title="SDRestoreDataInputs manages the inputs for the SDRestoreData task." alt="" coords="1089,606,1437,628"/>
-<area shape="rect" id="node146" title="NRORestoreDataInputs manages the inputs for the NRORestoreData task." alt="" coords="1080,646,1446,668"/>
+<area shape="rect" id="node137" title="Class of inputs of SDImportData." alt="" coords="1093,445,1433,468"/>
+<area shape="rect" id="node139" title="SDRestoreDataInputs manages the inputs for the SDRestoreData task." alt="" coords="1089,606,1437,628"/>
+<area shape="rect" id="node145" title="NRORestoreDataInputs manages the inputs for the NRORestoreData task." alt="" coords="1080,646,1446,668"/>
 <area shape="rect" id="node79" title="TsysflagInputs defines the inputs for the Tsysflag pipeline task." alt="" coords="1133,686,1393,708"/>
-<area shape="rect" id="node142" title="TsysflagInputs defines the inputs for the Tsysflag pipeline task." alt="" coords="1134,726,1392,748"/>
+<area shape="rect" id="node141" title="TsysflagInputs defines the inputs for the Tsysflag pipeline task." alt="" coords="1134,726,1392,748"/>
 <area shape="rect" id="node54" title="ALMAAntposInputs defines the inputs for the ALMAAntpos pipeline task." alt="" coords="1109,766,1417,789"/>
 <area shape="rect" id="node108" title="VLAAntposInputs defines the inputs for the priorcals pipeline task." alt="" coords="1116,806,1410,829"/>
 <area shape="rect" id="node90" title="ApplycalInputs defines the inputs for the Applycal pipeline task." alt="" coords="1637,4,1918,26"/>
-<area shape="rect" id="node18" href="_automodapi/pipeline.infrastructure.vdp.ModeInputs.html#pipeline.infrastructure.vdp.ModeInputs" target="_top" title="ModeInputs is a facade for Inputs of a common task type, allowing the user" alt="" coords="211,4337,408,4359"/>
+<area shape="rect" id="node18" href="_automodapi/pipeline.infrastructure.vdp.ModeInputs.html#pipeline.infrastructure.vdp.ModeInputs" target="_top" title="ModeInputs is a facade for Inputs of a common task type, allowing the user" alt="" coords="211,4297,408,4319"/>
 <area shape="rect" id="node19" title="BandpassInputs defines the inputs required by the :class:`Bandpass`" alt="" coords="1593,766,1962,789"/>
 <area shape="rect" id="node20" title="CommonBandpassInputs is the base class for defines inputs that are common" alt="" coords="1083,846,1442,869"/>
 <area shape="rect" id="node29" title="CommonGaincalInputs is the base class for defines inputs that are common" alt="" coords="1097,887,1429,909"/>
-<area shape="rect" id="node57" title="BandpassflagInputs defines the inputs for the Bandpassflag pipeline task." alt="" coords="1597,4377,1958,4399"/>
+<area shape="rect" id="node57" title="BandpassflagInputs defines the inputs for the Bandpassflag pipeline task." alt="" coords="1597,4337,1958,4359"/>
 <area shape="rect" id="node84" title="WvrgcalflagInputs defines the inputs for the Wvrgcalflag pipeline task." alt="" coords="1098,2291,1427,2313"/>
-<area shape="rect" id="node143" title="Inputs class for NROExportData." alt="" coords="1600,205,1955,227"/>
-<area shape="rect" id="node144" title="Class of inputs of NROImportData." alt="" coords="1599,445,1956,468"/>
-<area shape="rect" id="node148" title="Inputs defines the interface used to create a constructor argument for a" alt="" coords="4,3314,164,3336"/>
+<area shape="rect" id="node142" title="Inputs class for NROExportData." alt="" coords="1600,205,1955,227"/>
+<area shape="rect" id="node143" title="Class of inputs of NROImportData." alt="" coords="1599,445,1956,468"/>
+<area shape="rect" id="node147" title="Inputs defines the interface used to create a constructor argument for a" alt="" coords="4,3294,164,3316"/>
 </map>

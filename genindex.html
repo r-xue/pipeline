@@ -6,32 +6,34 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Index &mdash; Pipeline 
- (2025.1.1.61) 2025.1.0 documentation</title>
+ (2026.0.0.0) 2026.0.0.0+479-g5dead9ae80 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="_static/custom_theme.css?v=047bd54c" />
+      <link rel="stylesheet" type="text/css" href="_static/custom_theme.css?v=872f755e" />
 
   
     <link rel="shortcut icon" href="_static/favicon-16x16.png"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=e72a64b0"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/documentation_options.js?v=c91327a9"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="_static/copybutton.js?v=0729d509"></script>
-      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
-      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
-      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
       <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
       <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
 
-const defaultStyle = document.createElement('style');
-defaultStyle.textContent = `pre.mermaid {
+
+
+
+
+const initStyles = () => {
+    const defaultStyle = document.createElement('style');
+    defaultStyle.textContent = `pre.mermaid {
     /* Same as .mermaid-container > pre */
     display: block;
     width: 100%;
@@ -42,12 +44,11 @@ pre.mermaid > svg {
     height: 500px;
     width: 100%;
     max-width: 100% !important;
-}
-`;
-document.head.appendChild(defaultStyle);
+}`;
+    document.head.appendChild(defaultStyle);
 
-const fullscreenStyle = document.createElement('style');
-fullscreenStyle.textContent = `.mermaid-container {
+    const fullscreenStyle = document.createElement('style');
+    fullscreenStyle.textContent = `.mermaid-container {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -199,10 +200,32 @@ fullscreenStyle.textContent = `.mermaid-container {
 .mermaid-fullscreen-modal .mermaid-fullscreen-btn {
     display: none !important;
 }`;
-document.head.appendChild(fullscreenStyle);
+    document.head.appendChild(fullscreenStyle);
+}
 
 // Detect if page has dark background
 const isDarkTheme = () => {
+    // We use a set of heuristics:
+    // 1. Check for common dark mode classes or attributes
+    // 2. Check computed background color brightness
+    if (document.documentElement.classList.contains('dark') ||
+        document.documentElement.getAttribute('data-theme') === 'dark' ||
+        document.body.classList.contains('dark') ||
+        document.body.getAttribute('data-theme') === 'dark') {
+        // console.log("Dark theme detected via class/attribute");
+        return true;
+    }
+    if (document.documentElement.classList.contains('light') ||
+        document.documentElement.getAttribute('data-theme') === 'light' ||
+        document.body.classList.contains('light') ||
+        document.body.getAttribute('data-theme') === 'light') {
+        // console.log("Light theme detected via class/attribute");
+        return false;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // console.log("Dark theme detected via prefers-color-scheme");
+        return true;
+    }
     const bgColor = window.getComputedStyle(document.body).backgroundColor;
     const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
     if (match) {
@@ -210,15 +233,45 @@ const isDarkTheme = () => {
         const g = parseInt(match[2]);
         const b = parseInt(match[3]);
         const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        // console.log("Background color brightness:", brightness);
         return brightness < 128;
     }
+    // console.log("No dark or light theme detected, defaulting to light theme");
     return false;
 };
 
-const load = async () => {
-    await mermaid.run();
+let darkTheme = isDarkTheme();
+let modal = null;
+let modalContent = null;
+let previousScrollOffset = [window.scrollX, window.scrollY];
 
-    const all_mermaids = document.querySelectorAll(".mermaid");
+const runMermaid = async (rerun) => {
+    console.log("Running mermaid diagrams, rerun =", rerun);
+    // clear all existing mermaid charts
+    let all_mermaids = document.querySelectorAll(".mermaid");
+
+    if (rerun) {
+        all_mermaids.forEach((el) => {
+            if(!el.hasAttribute("data-original-code")) {
+                // store original code
+                // console.log(`Storing original code for first run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+            if(el.getAttribute("data-processed") === "true") {
+                // remove and restore original
+                el.removeAttribute("data-processed");
+                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
+                el.innerHTML = el.getAttribute('data-original-code');
+            } else {
+                // store original code
+                // console.log(`Storing original code for re-run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+        });
+        await mermaid.run();
+    }
+
+    all_mermaids = document.querySelectorAll(".mermaid");
     const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
 
     if ("True" === "True") {
@@ -226,10 +279,10 @@ const load = async () => {
         if(mermaids_to_add_zoom > 0) {
             var svgs = d3.selectAll(".mermaid svg");
             if(all_mermaids.length !== mermaids_processed.length) {
-                setTimeout(load, 200);
+                setTimeout(() => runMermaid(false), 200);
                 return;
             } else if(svgs.size() !== mermaids_to_add_zoom) {
-                setTimeout(load, 200);
+                setTimeout(() => runMermaid(false), 200);
                 return;
             } else {
                 svgs.each(function() {
@@ -245,16 +298,21 @@ const load = async () => {
         }
     } else if(all_mermaids.length !== mermaids_processed.length) {
         // Wait for mermaid to process all diagrams
-        setTimeout(load, 200);
+        setTimeout(() => runMermaid(false), 200);
         return;
     }
-
-    const darkTheme = isDarkTheme();
 
     // Stop here if not adding fullscreen capability
     if ("True" !== "True") return;
 
-    const modal = document.createElement('div');
+    if (modal !== null ) {
+        // Destroy existing modal
+        modal.remove();
+        modal = null;
+        modalContent = null;
+    }
+
+    modal = document.createElement('div');
     modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
     modal.setAttribute('role', 'dialog');
     modal.setAttribute('aria-modal', 'true');
@@ -265,10 +323,8 @@ const load = async () => {
     `;
     document.body.appendChild(modal);
 
-    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    modalContent = modal.querySelector('.mermaid-container-fullscreen');
     const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
-
-    let previousScrollOffset = [window.scrollX, window.scrollY];
 
     const closeModal = () => {
         modal.classList.remove('active');
@@ -287,11 +343,14 @@ const load = async () => {
         }
     });
 
-    const allButtons = [];
-
     document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
         if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
             mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            // Already processed, adjust button class if needed
+            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
+            if (existingBtn) {
+                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+            }
             return;
         }
 
@@ -349,46 +408,57 @@ const load = async () => {
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         });
-
         container.appendChild(fullscreenBtn);
-        allButtons.push(fullscreenBtn);
-    });
-
-    // Update theme classes when theme changes
-    const updateTheme = () => {
-        const dark = isDarkTheme();
-        allButtons.forEach(btn => {
-            if (dark) {
-                btn.classList.add('dark-theme');
-            } else {
-                btn.classList.remove('dark-theme');
-            }
-        });
-        if (dark) {
-            modal.classList.add('dark-theme');
-            modalContent.classList.add('dark-theme');
-            closeBtn.classList.add('dark-theme');
-        } else {
-            modal.classList.remove('dark-theme');
-            modalContent.classList.remove('dark-theme');
-            closeBtn.classList.remove('dark-theme');
-        }
-    };
-
-    // Watch for theme changes
-    const observer = new MutationObserver(updateTheme);
-    observer.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ['class', 'style', 'data-theme']
-    });
-    observer.observe(document.body, {
-        attributes: true,
-        attributeFilter: ['class', 'style']
     });
 };
 
-window.addEventListener("load", load);
-</script>
+const load = async () => {
+    initStyles();
+
+    await runMermaid(true);
+
+    const reRunIfThemeChanges = async () => {
+        const newDarkTheme = isDarkTheme();
+        if (newDarkTheme !== darkTheme) {
+            darkTheme = newDarkTheme;
+            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
+            await mermaid.initialize(
+                {...JSON.parse(
+                    `{"startOnLoad": false}`
+                ),
+                ...{ darkMode: darkTheme, theme: darkTheme ? 'dark' : 'default' },
+                }
+            );
+            await runMermaid(true);
+        }
+    };
+
+    // Update theme classes when theme changes
+    const themeObserver = new MutationObserver(reRunIfThemeChanges);
+    themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+};
+
+
+
+
+
+console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
+mermaid.initialize(
+    {...JSON.parse(
+        `{"startOnLoad": false}`
+    ),
+    ...{ darkMode: darkTheme, theme: darkTheme ? 'dark' : 'default' },
+    }
+);
+
+window.addEventListener("load", load);</script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -404,7 +474,7 @@ window.addEventListener("load", load);
           
           <a href="index.html" class="icon icon-home">
             Pipeline 
- (2025.1.1.61)
+ (2026.0.0.0)
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -419,6 +489,7 @@ window.addEventListener("load", load);
 <li class="toctree-l1"><a class="reference internal" href="develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="interface.html">Interface Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
@@ -440,7 +511,7 @@ window.addEventListener("load", load);
 <li class="toctree-l1"><a class="reference internal" href="develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modular.html">Pipeline with Conda</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develdocmd/pipeline_tests.html">Pipeline testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develdocmd/DataType_Testing.html">DataType Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
@@ -459,7 +530,7 @@ window.addEventListener("load", load);
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">Pipeline 
- (2025.1.1.61)</a>
+ (2026.0.0.0)</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -503,6 +574,7 @@ window.addEventListener("load", load);
  | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
  | <a href="#W"><strong>W</strong></a>
+ | <a href="#Z"><strong>Z</strong></a>
  
 </div>
 <h2 id="_">_</h2>
@@ -543,6 +615,8 @@ window.addEventListener("load", load);
 </li>
         <li><a href="_autosummary/pipeline.domain.spectralwindow.ChannelList.html#pipeline.domain.spectralwindow.ChannelList.__init__">(ChannelList method)</a>
 </li>
+        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.__init__">(Context method)</a>
+</li>
         <li><a href="_autosummary/pipeline.domain.DataDescription.html#pipeline.domain.DataDescription.__init__">(DataDescription method)</a>, <a href="_autosummary/pipeline.domain.datadescription.DataDescription.html#pipeline.domain.datadescription.DataDescription.__init__">[1]</a>
 </li>
         <li><a href="_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.__init__">(DataTableImpl method)</a>
@@ -574,6 +648,8 @@ window.addEventListener("load", load);
         <li><a href="_autosummary/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.__init__">(MeasurementSet method)</a>, <a href="_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.measurementset.MeasurementSet.__init__">[1]</a>
 </li>
         <li><a href="_autosummary/pipeline.domain.ObservingRun.html#pipeline.domain.ObservingRun.__init__">(ObservingRun method)</a>, <a href="_autosummary/pipeline.domain.observingrun.ObservingRun.html#pipeline.domain.observingrun.ObservingRun.__init__">[1]</a>
+</li>
+        <li><a href="_autosummary/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline.__init__">(Pipeline method)</a>
 </li>
         <li><a href="_autosummary/pipeline.domain.Polarization.html#pipeline.domain.Polarization.__init__">(Polarization method)</a>, <a href="_autosummary/pipeline.domain.polarization.Polarization.html#pipeline.domain.polarization.Polarization.__init__">[1]</a>
 </li>
@@ -769,8 +845,6 @@ window.addEventListener("load", load);
 </li>
         <li><a href="_automodapi/pipeline.hif.tasks.SerialRefAnt.html#pipeline.hif.tasks.SerialRefAnt.analyse">(SerialRefAnt method)</a>
 </li>
-        <li><a href="_automodapi/pipeline.hsd.tasks.SerialSDATMCorrection.html#pipeline.hsd.tasks.SerialSDATMCorrection.analyse">(SerialSDATMCorrection method)</a>
-</li>
         <li><a href="_automodapi/pipeline.hifa.tasks.SessionALMAPhcorBandpass.html#pipeline.hifa.tasks.SessionALMAPhcorBandpass.analyse">(SessionALMAPhcorBandpass method)</a>
 </li>
         <li><a href="_automodapi/pipeline.hifa.tasks.SessionGcorFluxscale.html#pipeline.hifa.tasks.SessionGcorFluxscale.analyse">(SessionGcorFluxscale method)</a>
@@ -872,6 +946,8 @@ window.addEventListener("load", load);
 
       <ul>
         <li><a href="_autosummary/pipeline.domain.measures.Any.html#pipeline.domain.measures.Any">(class in pipeline.domain.measures)</a>
+</li>
+        <li><a href="_autosummary/pipeline.infrastructure.launcher.Any.html#pipeline.infrastructure.launcher.Any">(class in pipeline.infrastructure.launcher)</a>
 </li>
       </ul></li>
       <li><a href="_autosummary/pipeline.domain.singledish.MSReductionGroupDesc.html#pipeline.domain.singledish.MSReductionGroupDesc.append">append() (MSReductionGroupDesc method)</a>
@@ -990,17 +1066,11 @@ window.addEventListener("load", load);
 </li>
       <li><a href="_automodapi/pipeline.infrastructure.callibrary.CalFrom.html#pipeline.infrastructure.callibrary.CalFrom">CalFrom (class in pipeline.infrastructure.callibrary)</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.calimlist">calimlist (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.calimlist">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.calimlist">calimlist (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.calimlist">[1]</a>
 </li>
-      </ul></li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.callibrary">callibrary (Context attribute)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.callibrary">callibrary (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.callibrary">[1]</a>
 </li>
       <li><a href="_automodapi/pipeline.infrastructure.callibrary.CalLibrary.html#pipeline.infrastructure.callibrary.CalLibrary">CalLibrary (in module pipeline.infrastructure.callibrary)</a>
-</li>
-      <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.callibrary">callibrary (in module pipeline.infrastructure.launcher.Context)</a>
 </li>
       <li><a href="_automodapi/pipeline.infrastructure.callibrary.CalState.html#pipeline.infrastructure.callibrary.CalState">CalState (in module pipeline.infrastructure.callibrary)</a>
 </li>
@@ -1058,36 +1128,20 @@ window.addEventListener("load", load);
 </li>
       <li><a href="_automodapi/pipeline.hifv.tasks.Circfeedpolcal.html#pipeline.hifv.tasks.Circfeedpolcal">Circfeedpolcal (class in pipeline.hifv.tasks)</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_list_info">clean_list_info (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_list_info">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_list_info">clean_list_info (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_list_info">[1]</a>
 </li>
-      </ul></li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_list_pending">clean_list_pending (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_list_pending">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_list_pending">clean_list_pending (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_list_pending">[1]</a>
 </li>
-      </ul></li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_masks">clean_masks (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_masks">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_masks">clean_masks (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_masks">[1]</a>
 </li>
-      </ul></li>
       <li><a href="_automodapi/pipeline.domain.Field.html#pipeline.domain.Field.clean_name">clean_name (Field attribute)</a>
 
       <ul>
         <li><a href="_autosummary/pipeline.domain.Field.html#pipeline.domain.Field.clean_name">(Field property)</a>, <a href="_autosummary/pipeline.domain.field.Field.html#pipeline.domain.field.Field.clean_name">[1]</a>
 </li>
       </ul></li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_thresholds">clean_thresholds (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_thresholds">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_thresholds">clean_thresholds (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.clean_thresholds">[1]</a>
 </li>
-      </ul></li>
       <li><a href="_automodapi/pipeline.infrastructure.imagelibrary.ImageMetadata.html#pipeline.infrastructure.imagelibrary.ImageMetadata.clear">clear() (ImageMetadata method)</a>
 
       <ul>
@@ -1100,7 +1154,7 @@ window.addEventListener("load", load);
       </ul></li>
       <li><a href="_automodapi/pipeline.infrastructure.imagelibrary.ImageLibrary.html#pipeline.infrastructure.imagelibrary.ImageLibrary.clear_imlist">clear_imlist() (ImageLibrary method)</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline.close">close() (Pipeline method)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline.close">close() (Pipeline method)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline.close">[1]</a>
 </li>
       <li><a href="_automodapi/pipeline.infrastructure.callibrary.TimestampedData.html#pipeline.infrastructure.callibrary.TimestampedData.cmp">cmp() (TimestampedData method)</a>
 </li>
@@ -1112,14 +1166,14 @@ window.addEventListener("load", load);
 </li>
       <li><a href="_autosummary/pipeline.domain.fluxmeasurement.Decimal.html#pipeline.domain.fluxmeasurement.Decimal.compare_total">compare_total() (Decimal method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/pipeline.domain.fluxmeasurement.Decimal.html#pipeline.domain.fluxmeasurement.Decimal.compare_total_mag">compare_total_mag() (Decimal method)</a>
 </li>
       <li><a href="_autosummary/pipeline.domain.spectralwindow.compress.html#pipeline.domain.spectralwindow.compress">compress() (in module pipeline.domain.spectralwindow)</a>
 </li>
       <li><a href="_automodapi/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.compute_az_el_for_ms">compute_az_el_for_ms() (MeasurementSet method)</a>, <a href="_autosummary/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.compute_az_el_for_ms">[1]</a>, <a href="_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.measurementset.MeasurementSet.compute_az_el_for_ms">[2]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_automodapi/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.compute_az_el_to_field">compute_az_el_to_field() (MeasurementSet method)</a>, <a href="_autosummary/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.compute_az_el_to_field">[1]</a>, <a href="_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.measurementset.MeasurementSet.compute_az_el_to_field">[2]</a>
 </li>
       <li><a href="_autosummary/pipeline.domain.fluxmeasurement.Decimal.html#pipeline.domain.fluxmeasurement.Decimal.conjugate">conjugate() (Decimal method)</a>
@@ -1136,20 +1190,20 @@ window.addEventListener("load", load);
         <li><a href="_autosummary/pipeline.domain.measures.TimeInterval.html#pipeline.domain.measures.TimeInterval.contains">(TimeInterval method)</a>
 </li>
       </ul></li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context">Context (class in pipeline.infrastructure.launcher)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context">Context (class in pipeline.infrastructure.launcher)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context">[1]</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline.context">context (Pipeline attribute)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline.context">context (Pipeline attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline.context">[1]</a>
 
       <ul>
         <li><a href="_automodapi/pipeline.infrastructure.vdp.StandardInputs.html#pipeline.infrastructure.vdp.StandardInputs.context">(StandardInputs attribute)</a>
 </li>
       </ul></li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.contfile">contfile (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.contfile">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_autosummary/pipeline.infrastructure.launcher.ContextCreatedEvent.html#pipeline.infrastructure.launcher.ContextCreatedEvent">ContextCreatedEvent (class in pipeline.infrastructure.launcher)</a>
 </li>
-      </ul></li>
+      <li><a href="_autosummary/pipeline.infrastructure.launcher.ContextResumedEvent.html#pipeline.infrastructure.launcher.ContextResumedEvent">ContextResumedEvent (class in pipeline.infrastructure.launcher)</a>
+</li>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.contfile">contfile (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.contfile">[1]</a>
+</li>
       <li><a href="_automodapi/pipeline.infrastructure.callibrary.contiguous_sequences.html#pipeline.infrastructure.callibrary.contiguous_sequences">contiguous_sequences() (in module pipeline.infrastructure.callibrary)</a>
 </li>
       <li><a href="_automodapi/pipeline.infrastructure.vdp.VisDependentProperty.html#pipeline.infrastructure.vdp.VisDependentProperty.convert">convert() (VisDependentProperty method)</a>
@@ -1702,7 +1756,7 @@ window.addEventListener("load", load);
 </li>
       <li><a href="_automodapi/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.get_original_intent">get_original_intent() (MeasurementSet method)</a>, <a href="_autosummary/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.get_original_intent">[1]</a>, <a href="_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.measurementset.MeasurementSet.get_original_intent">[2]</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.get_oussid">get_oussid() (Context method)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.get_oussid">get_oussid() (Context method)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.get_oussid">[1]</a>
 </li>
       <li><a href="_automodapi/pipeline.domain.DataDescription.html#pipeline.domain.DataDescription.get_polarization_id">get_polarization_id() (DataDescription static method)</a>, <a href="_autosummary/pipeline.domain.DataDescription.html#pipeline.domain.DataDescription.get_polarization_id">[1]</a>, <a href="_autosummary/pipeline.domain.datadescription.DataDescription.html#pipeline.domain.datadescription.DataDescription.get_polarization_id">[2]</a>
 </li>
@@ -1714,7 +1768,7 @@ window.addEventListener("load", load);
 </li>
       <li><a href="_automodapi/pipeline.domain.ObservingRun.html#pipeline.domain.ObservingRun.get_real_spwsel">get_real_spwsel() (ObservingRun method)</a>, <a href="_autosummary/pipeline.domain.ObservingRun.html#pipeline.domain.ObservingRun.get_real_spwsel">[1]</a>, <a href="_autosummary/pipeline.domain.observingrun.ObservingRun.html#pipeline.domain.observingrun.ObservingRun.get_real_spwsel">[2]</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.get_recipe_name">get_recipe_name() (Context method)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.get_recipe_name">get_recipe_name() (Context method)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.get_recipe_name">[1]</a>
 </li>
       <li><a href="_automodapi/pipeline.h.tasks.ExportData.html#pipeline.h.tasks.ExportData.get_recipename">get_recipename() (ExportData method)</a>
 
@@ -2035,9 +2089,9 @@ window.addEventListener("load", load);
 </li>
         <li><a href="_automodapi/pipeline.domain.SpectralWindow.html#id7">(SpectralWindow attribute)</a>, <a href="_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.id">[1]</a>, <a href="_autosummary/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.id">[2]</a>, <a href="_autosummary/pipeline.domain.datadescription.SpectralWindow.html#pipeline.domain.datadescription.SpectralWindow.id">[3]</a>, <a href="_autosummary/pipeline.domain.spectralwindow.SpectralWindow.html#pipeline.domain.spectralwindow.SpectralWindow.id">[4]</a>
 </li>
-        <li><a href="_automodapi/pipeline.domain.SpectralWindowWithChannelSelection.html#pipeline.domain.SpectralWindowWithChannelSelection.id">(SpectralWindowWithChannelSelection attribute)</a>
+        <li><a href="_automodapi/pipeline.domain.SpectralWindowWithChannelSelection.html#id0">(SpectralWindowWithChannelSelection attribute)</a>, <a href="_automodapi/pipeline.domain.SpectralWindowWithChannelSelection.html#pipeline.domain.SpectralWindowWithChannelSelection.id">[1]</a>, <a href="_autosummary/pipeline.domain.SpectralWindowWithChannelSelection.html#pipeline.domain.SpectralWindowWithChannelSelection.id">[2]</a>, <a href="_autosummary/pipeline.domain.spectralwindow.SpectralWindowWithChannelSelection.html#pipeline.domain.spectralwindow.SpectralWindowWithChannelSelection.id">[3]</a>
 </li>
-        <li><a href="_autosummary/pipeline.domain.SpectralWindowWithChannelSelection.html#pipeline.domain.SpectralWindowWithChannelSelection.id">(SpectralWindowWithChannelSelection property)</a>, <a href="_autosummary/pipeline.domain.spectralwindow.SpectralWindowWithChannelSelection.html#pipeline.domain.spectralwindow.SpectralWindowWithChannelSelection.id">[1]</a>
+        <li><a href="_autosummary/pipeline.domain.SpectralWindowWithChannelSelection.html#id0">(SpectralWindowWithChannelSelection property)</a>, <a href="_autosummary/pipeline.domain.spectralwindow.SpectralWindowWithChannelSelection.html#id0">[1]</a>
 </li>
         <li><a href="_automodapi/pipeline.domain.State.html#id0">(State attribute)</a>, <a href="_automodapi/pipeline.domain.State.html#pipeline.domain.State.id">[1]</a>, <a href="_autosummary/pipeline.domain.State.html#pipeline.domain.State.id">[2]</a>, <a href="_autosummary/pipeline.domain.state.State.html#pipeline.domain.state.State.id">[3]</a>
 </li>
@@ -2074,18 +2128,10 @@ window.addEventListener("load", load);
 </li>
       <li><a href="_automodapi/pipeline.hifa.tasks.ImagePreCheck.html#pipeline.hifa.tasks.ImagePreCheck">ImagePreCheck (class in pipeline.hifa.tasks)</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.imaging_mode">imaging_mode (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.imaging_mode">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.imaging_mode">imaging_mode (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.imaging_mode">[1]</a>
 </li>
-      </ul></li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.imaging_parameters">imaging_parameters (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.imaging_parameters">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.imaging_parameters">imaging_parameters (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.imaging_parameters">[1]</a>
 </li>
-      </ul></li>
       <li><a href="_automodapi/pipeline.infrastructure.callibrary.IntervalCalLibrary.html#pipeline.infrastructure.callibrary.IntervalCalLibrary.import_state">import_state() (IntervalCalLibrary method)</a>
 </li>
       <li><a href="_automodapi/pipeline.h.tasks.ImportData.html#pipeline.h.tasks.ImportData">ImportData (class in pipeline.h.tasks)</a>
@@ -2320,12 +2366,8 @@ window.addEventListener("load", load);
 </li>
       <li><a href="_autosummary/pipeline.domain.measures.LinearVelocityUnits.html#pipeline.domain.measures.LinearVelocityUnits">LinearVelocityUnits (class in pipeline.domain.measures)</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.linesfile">linesfile (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.linesfile">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.linesfile">linesfile (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.linesfile">[1]</a>
 </li>
-      </ul></li>
       <li><a href="_autosummary/pipeline.domain.datatable.list_to_str.html#pipeline.domain.datatable.list_to_str">list_to_str() (in module pipeline.domain.datatable)</a>
 </li>
       <li><a href="_autosummary/pipeline.domain.fluxmeasurement.Decimal.html#pipeline.domain.fluxmeasurement.Decimal.ln">ln() (Decimal method)</a>
@@ -2358,12 +2400,8 @@ window.addEventListener("load", load);
 </li>
       <li><a href="_autosummary/pipeline.domain.fluxmeasurement.Decimal.html#pipeline.domain.fluxmeasurement.Decimal.logical_xor">logical_xor() (Decimal method)</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.logs">logs (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.logs">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.logs">logs (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.logs">[1]</a>
 </li>
-      </ul></li>
       <li><a href="_automodapi/pipeline.domain.Antenna.html#pipeline.domain.Antenna.longitude">longitude (Antenna attribute)</a>, <a href="_autosummary/pipeline.domain.Antenna.html#pipeline.domain.Antenna.longitude">[1]</a>, <a href="_autosummary/pipeline.domain.antenna.Antenna.html#pipeline.domain.antenna.Antenna.longitude">[2]</a>, <a href="_autosummary/pipeline.domain.antennaarray.Antenna.html#pipeline.domain.antennaarray.Antenna.longitude">[3]</a>
 
       <ul>
@@ -2554,9 +2592,7 @@ window.addEventListener("load", load);
 </li>
         <li><a href="apisummary.html#module-pipeline.infrastructure.imagelibrary">pipeline.infrastructure.imagelibrary</a>
 </li>
-        <li><a href="apisummary.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a>
-</li>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#module-pipeline.infrastructure.launcher.Context">pipeline.infrastructure.launcher.Context</a>
+        <li><a href="_autosummary/pipeline.infrastructure.launcher.html#module-pipeline.infrastructure.launcher">pipeline.infrastructure.launcher</a>, <a href="apisummary.html#module-pipeline.infrastructure.launcher">[1]</a>
 </li>
         <li><a href="apisummary.html#module-pipeline.infrastructure.project">pipeline.infrastructure.project</a>
 </li>
@@ -2598,13 +2634,11 @@ window.addEventListener("load", load);
 </li>
         <li><a href="_autosummary/pipeline.domain.AntennaArray.html#pipeline.domain.AntennaArray.name">(AntennaArray property)</a>, <a href="_autosummary/pipeline.domain.antennaarray.AntennaArray.html#pipeline.domain.antennaarray.AntennaArray.name">[1]</a>
 </li>
-        <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.name">(Context attribute)</a>
+        <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.name">(Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.name">[1]</a>
 </li>
         <li><a href="_automodapi/pipeline.domain.Field.html#id0">(Field attribute)</a>, <a href="_automodapi/pipeline.domain.Field.html#pipeline.domain.Field.name">[1]</a>, <a href="_autosummary/pipeline.domain.Field.html#pipeline.domain.Field.name">[2]</a>, <a href="_autosummary/pipeline.domain.field.Field.html#pipeline.domain.field.Field.name">[3]</a>
 </li>
         <li><a href="_autosummary/pipeline.domain.Field.html#id0">(Field property)</a>, <a href="_autosummary/pipeline.domain.field.Field.html#id0">[1]</a>
-</li>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.name">(in module pipeline.infrastructure.launcher.Context)</a>
 </li>
         <li><a href="_automodapi/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.name">(MeasurementSet attribute)</a>, <a href="_autosummary/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.name">[1]</a>, <a href="_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.measurementset.MeasurementSet.name">[2]</a>
 </li>
@@ -2669,7 +2703,7 @@ window.addEventListener("load", load);
         <li><a href="_autosummary/pipeline.domain.state.StateVLA.html#pipeline.domain.state.StateVLA.obs_mode">(StateVLA attribute)</a>
 </li>
       </ul></li>
-      <li><a href="_automodapi/pipeline.domain.State.html#pipeline.domain.State.obs_mode_mapping">obs_mode_mapping (State attribute)</a>
+      <li><a href="_automodapi/pipeline.domain.State.html#id2">obs_mode_mapping (State attribute)</a>, <a href="_automodapi/pipeline.domain.State.html#pipeline.domain.State.obs_mode_mapping">[1]</a>, <a href="_autosummary/pipeline.domain.State.html#pipeline.domain.State.obs_mode_mapping">[2]</a>, <a href="_autosummary/pipeline.domain.state.State.html#pipeline.domain.state.State.obs_mode_mapping">[3]</a>
 </li>
       <li><a href="_automodapi/pipeline.domain.DataDescription.html#pipeline.domain.DataDescription.obs_time">obs_time (DataDescription attribute)</a>, <a href="_autosummary/pipeline.domain.DataDescription.html#pipeline.domain.DataDescription.obs_time">[1]</a>, <a href="_autosummary/pipeline.domain.datadescription.DataDescription.html#pipeline.domain.datadescription.DataDescription.obs_time">[2]</a>
 </li>
@@ -2683,12 +2717,8 @@ window.addEventListener("load", load);
       </ul></li>
       <li><a href="_automodapi/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.observing_modes">observing_modes (MeasurementSet attribute)</a>, <a href="_autosummary/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.observing_modes">[1]</a>, <a href="_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.measurementset.MeasurementSet.observing_modes">[2]</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.observing_run">observing_run (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.observing_run">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.observing_run">observing_run (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.observing_run">[1]</a>
 </li>
-      </ul></li>
       <li><a href="_automodapi/pipeline.domain.ObservingRun.html#pipeline.domain.ObservingRun">ObservingRun (class in pipeline.domain)</a>, <a href="_autosummary/pipeline.domain.ObservingRun.html#pipeline.domain.ObservingRun">[1]</a>
 
       <ul>
@@ -2723,11 +2753,9 @@ window.addEventListener("load", load);
       </ul></li>
       <li><a href="_automodapi/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.origin_ms">origin_ms (MeasurementSet attribute)</a>, <a href="_autosummary/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.origin_ms">[1]</a>, <a href="_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.measurementset.MeasurementSet.origin_ms">[2]</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.output_dir">output_dir (Context attribute)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.output_dir">output_dir (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.output_dir">[1]</a>
 
       <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.output_dir">(in module pipeline.infrastructure.launcher.Context)</a>
-</li>
         <li><a href="_automodapi/pipeline.infrastructure.vdp.StandardInputs.html#pipeline.infrastructure.vdp.StandardInputs.output_dir">(StandardInputs attribute)</a>
 </li>
       </ul></li>
@@ -2753,12 +2781,8 @@ window.addEventListener("load", load);
       </ul></li>
       <li><a href="_automodapi/pipeline.hifv.tasks.Pbcor.html#pipeline.hifv.tasks.Pbcor">Pbcor (class in pipeline.hifv.tasks)</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.per_spw_cont_sensitivities_all_chan">per_spw_cont_sensitivities_all_chan (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.per_spw_cont_sensitivities_all_chan">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.per_spw_cont_sensitivities_all_chan">per_spw_cont_sensitivities_all_chan (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.per_spw_cont_sensitivities_all_chan">[1]</a>
 </li>
-      </ul></li>
       <li><a href="_automodapi/pipeline.infrastructure.project.PerformanceParameters.html#pipeline.infrastructure.project.PerformanceParameters">PerformanceParameters (class in pipeline.infrastructure.project)</a>
 </li>
       <li><a href="_autosummary/pipeline.domain.datatable.DataTableIndexer.html#pipeline.domain.datatable.DataTableIndexer.perms2serial">perms2serial() (DataTableIndexer method)</a>
@@ -2778,7 +2802,7 @@ window.addEventListener("load", load);
         <li><a href="_autosummary/pipeline.html#module-pipeline">module</a>
 </li>
       </ul></li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline">Pipeline (class in pipeline.infrastructure.launcher)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline">Pipeline (class in pipeline.infrastructure.launcher)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline">[1]</a>
 </li>
       <li>
     pipeline.domain
@@ -3008,14 +3032,7 @@ window.addEventListener("load", load);
     pipeline.infrastructure.launcher
 
       <ul>
-        <li><a href="apisummary.html#module-pipeline.infrastructure.launcher">module</a>
-</li>
-      </ul></li>
-      <li>
-    pipeline.infrastructure.launcher.Context
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#module-pipeline.infrastructure.launcher.Context">module</a>
+        <li><a href="_autosummary/pipeline.infrastructure.launcher.html#module-pipeline.infrastructure.launcher">module</a>, <a href="apisummary.html#module-pipeline.infrastructure.launcher">[1]</a>
 </li>
       </ul></li>
       <li>
@@ -3207,8 +3224,6 @@ window.addEventListener("load", load);
 </li>
         <li><a href="_automodapi/pipeline.hif.tasks.SerialRefAnt.html#pipeline.hif.tasks.SerialRefAnt.prepare">(SerialRefAnt method)</a>
 </li>
-        <li><a href="_automodapi/pipeline.hsd.tasks.SerialSDATMCorrection.html#pipeline.hsd.tasks.SerialSDATMCorrection.prepare">(SerialSDATMCorrection method)</a>
-</li>
         <li><a href="_automodapi/pipeline.hifa.tasks.SessionALMAPhcorBandpass.html#pipeline.hifa.tasks.SessionALMAPhcorBandpass.prepare">(SessionALMAPhcorBandpass method)</a>
 </li>
         <li><a href="_automodapi/pipeline.hifa.tasks.SessionGcorFluxscale.html#pipeline.hifa.tasks.SessionGcorFluxscale.prepare">(SessionGcorFluxscale method)</a>
@@ -3258,20 +3273,14 @@ window.addEventListener("load", load);
 </li>
       <li><a href="_automodapi/pipeline.infrastructure.vdp.StandardInputs.html#pipeline.infrastructure.vdp.StandardInputs.processing_data_type">processing_data_type (StandardInputs attribute)</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.processing_intents">processing_intents (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.processing_intents">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.processing_intents">processing_intents (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.processing_intents">[1]</a>
 </li>
-      </ul></li>
       <li><a href="_automodapi/pipeline.infrastructure.imagelibrary.ImageLibrary.html#pipeline.infrastructure.imagelibrary.ImageLibrary.product_in_list">product_in_list() (ImageLibrary method)</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#id0">products_dir (Context attribute)</a>, <a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.products_dir">[1]</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#id0">products_dir (Context attribute)</a>, <a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.products_dir">[1]</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.products_dir">[2]</a>
 
       <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.products_dir.html#pipeline.infrastructure.launcher.Context.products_dir">(Context property)</a>
-</li>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.products_dir">(in module pipeline.infrastructure.launcher.Context)</a>
+        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#id0">(Context property)</a>
 </li>
       </ul></li>
       <li><a href="_automodapi/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.project_id">project_id (MeasurementSet attribute)</a>, <a href="_autosummary/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.project_id">[1]</a>, <a href="_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.measurementset.MeasurementSet.project_id">[2]</a>
@@ -3282,24 +3291,12 @@ window.addEventListener("load", load);
         <li><a href="_autosummary/pipeline.domain.ObservingRun.html#pipeline.domain.ObservingRun.project_ids">(ObservingRun property)</a>, <a href="_autosummary/pipeline.domain.observingrun.ObservingRun.html#pipeline.domain.observingrun.ObservingRun.project_ids">[1]</a>
 </li>
       </ul></li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.project_performance_parameters">project_performance_parameters (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.project_performance_parameters">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.project_performance_parameters">project_performance_parameters (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.project_performance_parameters">[1]</a>
 </li>
-      </ul></li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.project_structure">project_structure (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.project_structure">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.project_structure">project_structure (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.project_structure">[1]</a>
 </li>
-      </ul></li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.project_summary">project_summary (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.project_summary">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.project_summary">project_summary (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.project_summary">[1]</a>
 </li>
-      </ul></li>
       <li><a href="_automodapi/pipeline.infrastructure.project.ProjectStructure.html#pipeline.infrastructure.project.ProjectStructure">ProjectStructure (class in pipeline.infrastructure.project)</a>
 </li>
       <li><a href="_automodapi/pipeline.infrastructure.project.ProjectSummary.html#pipeline.infrastructure.project.ProjectSummary">ProjectSummary (class in pipeline.infrastructure.project)</a>
@@ -3380,12 +3377,12 @@ window.addEventListener("load", load);
 </li>
       <li><a href="_automodapi/pipeline.domain.DataType.html#id3">REGCAL_CONTLINE_ALL (DataType attribute)</a>, <a href="_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.REGCAL_CONTLINE_ALL">[1]</a>, <a href="_autosummary/pipeline.domain.DataType.html#pipeline.domain.DataType.REGCAL_CONTLINE_ALL">[2]</a>, <a href="_autosummary/pipeline.domain.datatype.DataType.html#pipeline.domain.datatype.DataType.REGCAL_CONTLINE_ALL">[3]</a>, <a href="_autosummary/pipeline.domain.observingrun.DataType.html#pipeline.domain.observingrun.DataType.REGCAL_CONTLINE_ALL">[4]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_automodapi/pipeline.domain.DataType.html#id4">REGCAL_CONTLINE_SCIENCE (DataType attribute)</a>, <a href="_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.REGCAL_CONTLINE_SCIENCE">[1]</a>, <a href="_autosummary/pipeline.domain.DataType.html#pipeline.domain.DataType.REGCAL_CONTLINE_SCIENCE">[2]</a>, <a href="_autosummary/pipeline.domain.datatype.DataType.html#pipeline.domain.datatype.DataType.REGCAL_CONTLINE_SCIENCE">[3]</a>, <a href="_autosummary/pipeline.domain.observingrun.DataType.html#pipeline.domain.observingrun.DataType.REGCAL_CONTLINE_SCIENCE">[4]</a>
 </li>
       <li><a href="_automodapi/pipeline.domain.DataType.html#id6">REGCAL_LINE_SCIENCE (DataType attribute)</a>, <a href="_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.REGCAL_LINE_SCIENCE">[1]</a>, <a href="_autosummary/pipeline.domain.DataType.html#pipeline.domain.DataType.REGCAL_LINE_SCIENCE">[2]</a>, <a href="_autosummary/pipeline.domain.datatype.DataType.html#pipeline.domain.datatype.DataType.REGCAL_LINE_SCIENCE">[3]</a>, <a href="_autosummary/pipeline.domain.observingrun.DataType.html#pipeline.domain.observingrun.DataType.REGCAL_LINE_SCIENCE">[4]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="_autosummary/pipeline.domain.fluxmeasurement.Decimal.html#pipeline.domain.fluxmeasurement.Decimal.remainder_near">remainder_near() (Decimal method)</a>
 </li>
       <li><a href="_autosummary/pipeline.domain.singledish.MSReductionGroupDesc.html#pipeline.domain.singledish.MSReductionGroupDesc.remove">remove() (MSReductionGroupDesc method)</a>
@@ -3394,12 +3391,8 @@ window.addEventListener("load", load);
 </li>
       <li><a href="_automodapi/pipeline.hifa.tasks.Renorm.html#pipeline.hifa.tasks.Renorm">Renorm (class in pipeline.hifa.tasks)</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.report_dir">report_dir (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.report_dir">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.report_dir">report_dir (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.report_dir">[1]</a>
 </li>
-      </ul></li>
       <li><a href="_automodapi/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.representative_target">representative_target (MeasurementSet attribute)</a>, <a href="_autosummary/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.representative_target">[1]</a>, <a href="_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.measurementset.MeasurementSet.representative_target">[2]</a>
 </li>
       <li><a href="_automodapi/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.representative_window">representative_window (MeasurementSet attribute)</a>, <a href="_autosummary/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.representative_window">[1]</a>, <a href="_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.measurementset.MeasurementSet.representative_window">[2]</a>
@@ -3410,24 +3403,16 @@ window.addEventListener("load", load);
 </li>
       <li><a href="_automodapi/pipeline.hifv.tasks.Restorepims.html#pipeline.hifv.tasks.Restorepims">Restorepims (class in pipeline.hifv.tasks)</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.results">results (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.results">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.results">results (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.results">[1]</a>
 </li>
-      </ul></li>
       <li><a href="_autosummary/pipeline.domain.singledish.MSReductionGroupDesc.html#pipeline.domain.singledish.MSReductionGroupDesc.reverse">reverse() (MSReductionGroupDesc method)</a>
 </li>
       <li><a href="_automodapi/pipeline.hif.tasks.Tclean.html#pipeline.hif.tasks.Tclean.rm_iter_files">rm_iter_files() (Tclean method)</a>
 </li>
       <li><a href="_automodapi/pipeline.hif.tasks.Tclean.html#pipeline.hif.tasks.Tclean.rm_stage_files">rm_stage_files() (Tclean method)</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.rmsimlist">rmsimlist (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.rmsimlist">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.rmsimlist">rmsimlist (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.rmsimlist">[1]</a>
 </li>
-      </ul></li>
       <li><a href="_autosummary/pipeline.domain.datatable.RODataTableColumn.html#pipeline.domain.datatable.RODataTableColumn">RODataTableColumn (class in pipeline.domain.datatable)</a>
 </li>
       <li><a href="_autosummary/pipeline.domain.fluxmeasurement.Decimal.html#pipeline.domain.fluxmeasurement.Decimal.rotate">rotate() (Decimal method)</a>
@@ -3446,7 +3431,7 @@ window.addEventListener("load", load);
 </li>
       <li><a href="_autosummary/pipeline.domain.fluxmeasurement.Decimal.html#pipeline.domain.fluxmeasurement.Decimal.same_quantum">same_quantum() (Decimal method)</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.save">save() (Context method)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.save">save() (Context method)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.save">[1]</a>
 </li>
       <li><a href="_autosummary/pipeline.domain.fluxmeasurement.Decimal.html#pipeline.domain.fluxmeasurement.Decimal.scaleb">scaleb() (Decimal method)</a>
 </li>
@@ -3468,13 +3453,11 @@ window.addEventListener("load", load);
       </ul></li>
       <li><a href="_automodapi/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.science_goals">science_goals (MeasurementSet attribute)</a>, <a href="_autosummary/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.science_goals">[1]</a>, <a href="_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.measurementset.MeasurementSet.science_goals">[2]</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.sciimlist">sciimlist (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.sciimlist">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.sciimlist">sciimlist (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.sciimlist">[1]</a>
 </li>
-      </ul></li>
       <li><a href="_automodapi/pipeline.hsd.tasks.SDApplycal.html#pipeline.hsd.tasks.SDApplycal">SDApplycal (class in pipeline.hsd.tasks)</a>
+</li>
+      <li><a href="_automodapi/pipeline.hsd.tasks.SDATMCorrection.html#pipeline.hsd.tasks.SDATMCorrection">SDATMCorrection (class in pipeline.hsd.tasks)</a>
 </li>
       <li><a href="_automodapi/pipeline.hsd.tasks.SDBaseline.html#pipeline.hsd.tasks.SDBaseline">SDBaseline (class in pipeline.hsd.tasks)</a>
 </li>
@@ -3506,20 +3489,12 @@ window.addEventListener("load", load);
 </li>
       <li><a href="_automodapi/pipeline.domain.DataType.html#id7">SELFCAL_CONTLINE_SCIENCE (DataType attribute)</a>, <a href="_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.SELFCAL_CONTLINE_SCIENCE">[1]</a>, <a href="_autosummary/pipeline.domain.DataType.html#pipeline.domain.DataType.SELFCAL_CONTLINE_SCIENCE">[2]</a>, <a href="_autosummary/pipeline.domain.datatype.DataType.html#pipeline.domain.datatype.DataType.SELFCAL_CONTLINE_SCIENCE">[3]</a>, <a href="_autosummary/pipeline.domain.observingrun.DataType.html#pipeline.domain.observingrun.DataType.SELFCAL_CONTLINE_SCIENCE">[4]</a>
 </li>
-      <li><a href="_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.SELFCAL_LINE_SCIENCE">SELFCAL_LINE_SCIENCE (DataType attribute)</a>
+      <li><a href="_automodapi/pipeline.domain.DataType.html#id9">SELFCAL_LINE_SCIENCE (DataType attribute)</a>, <a href="_automodapi/pipeline.domain.DataType.html#pipeline.domain.DataType.SELFCAL_LINE_SCIENCE">[1]</a>, <a href="_autosummary/pipeline.domain.DataType.html#pipeline.domain.DataType.SELFCAL_LINE_SCIENCE">[2]</a>, <a href="_autosummary/pipeline.domain.datatype.DataType.html#pipeline.domain.datatype.DataType.SELFCAL_LINE_SCIENCE">[3]</a>, <a href="_autosummary/pipeline.domain.observingrun.DataType.html#pipeline.domain.observingrun.DataType.SELFCAL_LINE_SCIENCE">[4]</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.selfcal_resources">selfcal_resources (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.selfcal_resources">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.selfcal_resources">selfcal_resources (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.selfcal_resources">[1]</a>
 </li>
-      </ul></li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.selfcal_targets">selfcal_targets (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.selfcal_targets">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.selfcal_targets">selfcal_targets (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.selfcal_targets">[1]</a>
 </li>
-      </ul></li>
       <li><a href="_automodapi/pipeline.hifv.tasks.semiFinalBPdcals.html#pipeline.hifv.tasks.semiFinalBPdcals">semiFinalBPdcals (class in pipeline.hifv.tasks)</a>
 </li>
       <li><a href="_autosummary/pipeline.domain.measurementset.Sequence.html#pipeline.domain.measurementset.Sequence">Sequence (class in pipeline.domain.measurementset)</a>
@@ -3533,8 +3508,6 @@ window.addEventListener("load", load);
       <li><a href="_automodapi/pipeline.hif.tasks.SerialIFApplycal.html#pipeline.hif.tasks.SerialIFApplycal">SerialIFApplycal (class in pipeline.hif.tasks)</a>
 </li>
       <li><a href="_automodapi/pipeline.hif.tasks.SerialRefAnt.html#pipeline.hif.tasks.SerialRefAnt">SerialRefAnt (class in pipeline.hif.tasks)</a>
-</li>
-      <li><a href="_automodapi/pipeline.hsd.tasks.SerialSDATMCorrection.html#pipeline.hsd.tasks.SerialSDATMCorrection">SerialSDATMCorrection (class in pipeline.hsd.tasks)</a>
 </li>
       <li><a href="_automodapi/pipeline.domain.MeasurementSet.html#id0">session (MeasurementSet attribute)</a>, <a href="_automodapi/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.session">[1]</a>, <a href="_autosummary/pipeline.domain.MeasurementSet.html#pipeline.domain.MeasurementSet.session">[2]</a>, <a href="_autosummary/pipeline.domain.measurementset.MeasurementSet.html#pipeline.domain.measurementset.MeasurementSet.session">[3]</a>
 
@@ -3562,7 +3535,9 @@ window.addEventListener("load", load);
 </li>
       <li><a href="_automodapi/pipeline.domain.Field.html#pipeline.domain.Field.set_source_type">set_source_type() (Field method)</a>, <a href="_autosummary/pipeline.domain.Field.html#pipeline.domain.Field.set_source_type">[1]</a>, <a href="_autosummary/pipeline.domain.field.Field.html#pipeline.domain.field.Field.set_source_type">[2]</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.set_state">set_state() (Context method)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.set_state">set_state() (Context method)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.set_state">[1]</a>
+</li>
+      <li><a href="_automodapi/pipeline.domain.Field.html#pipeline.domain.Field.set_zd_telmjd">set_zd_telmjd() (Field method)</a>, <a href="_autosummary/pipeline.domain.Field.html#pipeline.domain.Field.set_zd_telmjd">[1]</a>, <a href="_autosummary/pipeline.domain.field.Field.html#pipeline.domain.field.Field.set_zd_telmjd">[2]</a>
 </li>
       <li><a href="_automodapi/pipeline.infrastructure.imagelibrary.ImageMetadata.html#pipeline.infrastructure.imagelibrary.ImageMetadata.setdefault">setdefault() (ImageMetadata method)</a>
 </li>
@@ -3576,12 +3551,8 @@ window.addEventListener("load", load);
 </li>
       <li><a href="_automodapi/pipeline.domain.SpectralWindow.html#id15">sideband (SpectralWindow attribute)</a>, <a href="_automodapi/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.sideband">[1]</a>, <a href="_autosummary/pipeline.domain.SpectralWindow.html#pipeline.domain.SpectralWindow.sideband">[2]</a>, <a href="_autosummary/pipeline.domain.datadescription.SpectralWindow.html#pipeline.domain.datadescription.SpectralWindow.sideband">[3]</a>, <a href="_autosummary/pipeline.domain.spectralwindow.SpectralWindow.html#pipeline.domain.spectralwindow.SpectralWindow.sideband">[4]</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.size_mitigation_parameters">size_mitigation_parameters (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.size_mitigation_parameters">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.size_mitigation_parameters">size_mitigation_parameters (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.size_mitigation_parameters">[1]</a>
 </li>
-      </ul></li>
       <li><a href="_automodapi/pipeline.hifv.tasks.Solint.html#pipeline.hifv.tasks.Solint">Solint (class in pipeline.hifv.tasks)</a>
 </li>
       <li><a href="_autosummary/pipeline.domain.singledish.MSReductionGroupDesc.html#pipeline.domain.singledish.MSReductionGroupDesc.sort">sort() (MSReductionGroupDesc method)</a>
@@ -3663,7 +3634,7 @@ window.addEventListener("load", load);
       <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.stage">stage (Context attribute)</a>
 
       <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.stage.html#pipeline.infrastructure.launcher.Context.stage">(Context property)</a>
+        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.stage">(Context property)</a>
 </li>
       </ul></li>
       <li><a href="_automodapi/pipeline.infrastructure.vdp.StandardInputs.html#pipeline.infrastructure.vdp.StandardInputs">StandardInputs (class in pipeline.infrastructure.vdp)</a>
@@ -3736,28 +3707,16 @@ window.addEventListener("load", load);
 </li>
       <li><a href="_autosummary/pipeline.domain.measures.Frequency.html#pipeline.domain.measures.Frequency.str_to_precision">str_to_precision() (Frequency method)</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.subimlist">subimlist (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.subimlist">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.subimlist">subimlist (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.subimlist">[1]</a>
 </li>
-      </ul></li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.subtask_counter">subtask_counter (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.subtask_counter">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.subtask_counter">subtask_counter (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.subtask_counter">[1]</a>
 </li>
-      </ul></li>
       <li><a href="_automodapi/pipeline.hifv.tasks.Swpowcal.html#pipeline.hifv.tasks.Swpowcal">Swpowcal (class in pipeline.hifv.tasks)</a>
 </li>
       <li><a href="_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.sync">sync() (DataTableImpl method)</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.synthesized_beams">synthesized_beams (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.synthesized_beams">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.synthesized_beams">synthesized_beams (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.synthesized_beams">[1]</a>
 </li>
-      </ul></li>
       <li><a href="_automodapi/pipeline.hifv.tasks.Syspower.html#pipeline.hifv.tasks.Syspower">Syspower (class in pipeline.hifv.tasks)</a>
 </li>
   </ul></td>
@@ -3774,16 +3733,18 @@ window.addEventListener("load", load);
       </ul></li>
       <li><a href="_automodapi/pipeline.infrastructure.callibrary.CalAppOrigin.html#pipeline.infrastructure.callibrary.CalAppOrigin.task">task (CalAppOrigin attribute)</a>
 </li>
-      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.task_counter">task_counter (Context attribute)</a>
-
-      <ul>
-        <li><a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.task_counter">(in module pipeline.infrastructure.launcher.Context)</a>
+      <li><a href="_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.task_counter">task_counter (Context attribute)</a>, <a href="_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.task_counter">[1]</a>
 </li>
-      </ul></li>
       <li><a href="_automodapi/pipeline.hif.tasks.Tclean.html#pipeline.hif.tasks.Tclean">Tclean (class in pipeline.hif.tasks)</a>
 </li>
       <li><a href="_automodapi/pipeline.hifv.tasks.TecMaps.html#pipeline.hifv.tasks.TecMaps">TecMaps (class in pipeline.hifv.tasks)</a>
 </li>
+      <li><a href="_automodapi/pipeline.domain.Field.html#pipeline.domain.Field.telmjd">telmjd (Field attribute)</a>
+
+      <ul>
+        <li><a href="_autosummary/pipeline.domain.Field.html#pipeline.domain.Field.telmjd">(Field property)</a>, <a href="_autosummary/pipeline.domain.field.Field.html#pipeline.domain.field.Field.telmjd">[1]</a>
+</li>
+      </ul></li>
       <li><a href="_automodapi/pipeline.hifv.tasks.testBPdcals.html#pipeline.hifv.tasks.testBPdcals">testBPdcals (class in pipeline.hifv.tasks)</a>
 </li>
       <li><a href="_automodapi/pipeline.domain.Field.html#pipeline.domain.Field.time">time (Field attribute)</a>, <a href="_autosummary/pipeline.domain.Field.html#pipeline.domain.Field.time">[1]</a>, <a href="_autosummary/pipeline.domain.field.Field.html#pipeline.domain.field.Field.time">[2]</a>
@@ -3985,6 +3946,18 @@ window.addEventListener("load", load);
   </ul></td>
 </tr></table>
 
+<h2 id="Z">Z</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_automodapi/pipeline.domain.Field.html#pipeline.domain.Field.zd">zd (Field attribute)</a>
+
+      <ul>
+        <li><a href="_autosummary/pipeline.domain.Field.html#pipeline.domain.Field.zd">(Field property)</a>, <a href="_autosummary/pipeline.domain.field.Field.html#pipeline.domain.field.Field.zd">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
 
 
            </div>
@@ -3994,7 +3967,7 @@ window.addEventListener("load", load);
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.61+287-gd98d36e811-update-docs-build-and-packaging-setup.</p>
+    <p>&#169; Copyright 2020–2026, Pipeline Dev. Team, build: 2026.0.0.0+479-g5dead9ae80.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

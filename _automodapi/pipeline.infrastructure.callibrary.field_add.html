@@ -7,22 +7,22 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>field_add &mdash; Pipeline 
- (2025.1.1.61) 2025.1.0 documentation</title>
+ (2026.0.0.0) 2026.0.0.0+479-g5dead9ae80 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=047bd54c" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=872f755e" />
 
   
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=c91327a9"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=0729d509"></script>
     <script src="../_static/js/theme.js"></script>
@@ -42,7 +42,7 @@
           
           <a href="../index.html" class="icon icon-home">
             Pipeline 
- (2025.1.1.61)
+ (2026.0.0.0)
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -57,6 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interface.html">Interface Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
@@ -135,7 +136,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Pipeline with Conda</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
@@ -154,7 +155,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline 
- (2025.1.1.61)</a>
+ (2026.0.0.0)</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -177,7 +178,7 @@
 <h1>field_add<a class="headerlink" href="#field-add" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.field_add">
-<span class="sig-name descname"><span class="pre">field_add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">td1:</span> <span class="pre">~pipeline.infrastructure.callibrary.TimestampedData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">td2:</span> <span class="pre">~pipeline.infrastructure.callibrary.TimestampedData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">join:</span> <span class="pre">~typing.Callable</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">merge_intervaltrees.&lt;locals&gt;.m&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pipeline.infrastructure.callibrary.TimestampedData.html#pipeline.infrastructure.callibrary.TimestampedData" title="pipeline.infrastructure.callibrary.TimestampedData"><span class="pre">TimestampedData</span></a></span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.field_add" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">field_add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">td1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.callibrary.TimestampedData.html#pipeline.infrastructure.callibrary.TimestampedData" title="pipeline.infrastructure.callibrary.TimestampedData"><span class="pre">TimestampedData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">td2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.callibrary.TimestampedData.html#pipeline.infrastructure.callibrary.TimestampedData" title="pipeline.infrastructure.callibrary.TimestampedData"><span class="pre">TimestampedData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">join</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;function</span> <span class="pre">merge_intervaltrees.&lt;locals&gt;.m&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pipeline.infrastructure.callibrary.TimestampedData.html#pipeline.infrastructure.callibrary.TimestampedData" title="pipeline.infrastructure.callibrary.TimestampedData"><span class="pre">TimestampedData</span></a></span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.field_add" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </section>
@@ -193,7 +194,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.61+287-gd98d36e811-update-docs-build-and-packaging-setup.</p>
+    <p>&#169; Copyright 2020–2026, Pipeline Dev. Team, build: 2026.0.0.0+479-g5dead9ae80.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -7,22 +7,22 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ways to run the Pipeline &mdash; Pipeline 
- (2025.1.1.61) 2025.1.0 documentation</title>
+ (2026.0.0.0) 2026.0.0.0+479-g5dead9ae80 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=047bd54c" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=872f755e" />
 
   
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=c91327a9"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=0729d509"></script>
     <script src="../_static/js/theme.js"></script>
@@ -42,7 +42,7 @@
           
           <a href="../index.html" class="icon icon-home">
             Pipeline 
- (2025.1.1.61)
+ (2026.0.0.0)
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -82,6 +82,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interface.html">Interface Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
@@ -103,7 +104,7 @@
 <li class="toctree-l1"><a class="reference internal" href="selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="building_the_pipeline.html">Building the pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Pipeline with Conda</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pipeline_tests.html">Pipeline testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="DataType_Testing.html">DataType Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
@@ -122,7 +123,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline 
- (2025.1.1.61)</a>
+ (2026.0.0.0)</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -212,7 +213,9 @@ like the following</p>
 CASA / Python, by instantiating a Pipeline <code class="docutils literal notranslate"><span class="pre">InputsContainer</span></code> object for the Pipeline Task, using it to instantiate a
 Pipeline Task object, and then running its <code class="docutils literal notranslate"><span class="pre">execute</span></code> method to get the task result, as shown in the example below. Here,
 the example should be run in a directory where the Pipeline has been partly run, i.e. a context already exists.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">context</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">launcher</span>
+
+<span class="n">context</span> <span class="o">=</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
 <span class="n">inputs</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">infrastructure</span><span class="o">.</span><span class="n">vdp</span><span class="o">.</span><span class="n">InputsContainer</span><span class="p">(</span><span class="n">pipeline</span><span class="o">.</span><span class="n">hifv</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">hanning</span><span class="o">.</span><span class="n">Hanning</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
 <span class="n">task</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">hifv</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">hanning</span><span class="o">.</span><span class="n">Hanning</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
@@ -222,12 +225,13 @@ the example should be run in a directory where the Pipeline has been partly run,
 </div>
 <p>If we don’t have a PPR or an executable script available.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="err">$</span> <span class="n">casa</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.recipes.hifv</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">hifv</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">launcher</span>
+
 <span class="c1"># the next line will only importevla and save a context, b/c importonly=True</span>
 <span class="n">hifv</span><span class="o">.</span><span class="n">hifv</span><span class="p">([</span><span class="s1">&#39;../rawdata/13A-537.foofoof.eb.barbar.2378.2934723984397&#39;</span><span class="p">],</span> <span class="n">importonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">context</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
 <span class="n">vis</span> <span class="o">=</span> <span class="s1">&#39;13A-537.foofoof.eb.barbar.2378.2934723984397.ms&#39;</span>
 <span class="c1"># get the domain object</span>
 <span class="n">m</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
@@ -309,9 +313,10 @@ stage number corresponds to.</p>
 </div>
 <p>Assuming the developer developed / debugged stage 4, once that is done, it is
 possible to use <code class="docutils literal notranslate"><span class="pre">recipereducer</span></code> to resume with the remainder of the recipe, with:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.recipereducer</span>
-<span class="n">context</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.recipereducer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">launcher</span>
+
+<span class="n">context</span> <span class="o">=</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">recipereducer</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
     <span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;../rawdata/yourasdm&#39;</span><span class="p">],</span>
     <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
@@ -385,9 +390,9 @@ the dataset), a recommended workflow for developers would be to:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">task_to_run</span> <span class="o">=</span> <span class="s1">&#39;hifa_tsysflag&#39;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span><span class="p">,</span> <span class="n">launcher</span>
 
-<span class="n">context</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
 
 <span class="n">taskclass</span> <span class="o">=</span> <span class="n">task_registry</span><span class="o">.</span><span class="n">get_pipeline_class_for_task</span><span class="p">(</span><span class="n">task_to_run</span><span class="p">)</span>
 <span class="n">inputs</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">infrastructure</span><span class="o">.</span><span class="n">vdp</span><span class="o">.</span><span class="n">InputsContainer</span><span class="p">(</span><span class="n">taskclass</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
@@ -503,8 +508,8 @@ All break/resume approaches use the <strong>current</strong> files (e.g. MSs/cal
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">task_to_run</span><span class="o">=</span><span class="s1">&#39;hif_checkproductsize&#39;</span>
 <span class="n">task_keywords</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;maxcubesize&#39;</span><span class="p">:</span><span class="mf">40.0</span><span class="p">,</span><span class="s1">&#39;maxcubelimit&#39;</span><span class="p">:</span><span class="mi">60</span><span class="p">,</span><span class="s1">&#39;maxproductsize&#39;</span><span class="p">:</span><span class="mf">500.0</span><span class="p">}</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
-<span class="n">context</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;pipeline-procedure_hifa_calimage/saved_state/context-stage24.pickle&#39;</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span><span class="p">,</span> <span class="n">launcher</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;pipeline-procedure_hifa_calimage/saved_state/context-stage24.pickle&#39;</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
 <span class="n">taskclass</span> <span class="o">=</span> <span class="n">task_registry</span><span class="o">.</span><span class="n">get_pipeline_class_for_task</span><span class="p">(</span><span class="n">task_to_run</span><span class="p">)</span>
 <span class="n">inputs</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">infrastructure</span><span class="o">.</span><span class="n">vdp</span><span class="o">.</span><span class="n">InputsContainer</span><span class="p">(</span><span class="n">taskclass</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_keywords</span><span class="p">)</span>
 <span class="n">task</span> <span class="o">=</span> <span class="n">taskclass</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
@@ -514,8 +519,8 @@ All break/resume approaches use the <strong>current</strong> files (e.g. MSs/cal
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">recipereducer</span></code> doesn’t offer the “breakpoint” feature built in <code class="docutils literal notranslate"><span class="pre">executeppr</span></code>. However, a calculated usage of <code class="docutils literal notranslate"><span class="pre">starttage</span></code>/ <code class="docutils literal notranslate"><span class="pre">exitstage</span></code>/<code class="docutils literal notranslate"><span class="pre">context</span></code> keywords may achieve the same workflow-level “break/resume”:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline</span>
-<span class="n">context</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;pipeline-procedure_hifa_calimage/saved_state/context-stage3.pickle&#39;</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span><span class="p">,</span> <span class="n">launcher</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;pipeline-procedure_hifa_calimage/saved_state/context-stage3.pickle&#39;</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.recipereducer</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">recipereducer</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;../rawdata/uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms&#39;</span><span class="p">],</span>
                               <span class="n">procedure</span><span class="o">=</span><span class="s1">&#39;procedure_hifa_calimage.xml&#39;</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span><span class="n">startstage</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">exitstage</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
@@ -534,13 +539,13 @@ existing context/result to test a small weblog-related change (e.g., minor tweak
 in mako templates). Note: this will only rerun the weblog rendering portion of a
 pipeline stage (therefore limits your testing scope).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.renderer.htmlrenderer</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">hr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">launcher</span>
 
 <span class="c1"># Modify this to select which stage number to re-render weblog for.</span>
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;WEBLOG_RERENDER_STAGES&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;16&quot;</span>
 
-<span class="n">context</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
 <span class="n">hr</span><span class="o">.</span><span class="n">WebLogGenerator</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -553,9 +558,8 @@ task <code class="docutils literal notranslate"><span class="pre">Results</span>
 <p>As such, after having run the task at least once, one can rapidly re-run the QA
 heuristic on the existing task result in the context to iterate more rapidly on
 the heuristic without having to re-run the time-consuming pipeline task itself.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">pipelineqa</span>
-<span class="n">context</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">pipelineqa</span><span class="p">,</span> <span class="n">launcher</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Pipeline</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="n">plotlevel</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">context</span>
 
 <span class="c1"># Modify this to select which stage to run QA for.</span>
 <span class="n">stage_number</span> <span class="o">=</span> <span class="mi">14</span>
@@ -617,7 +621,7 @@ but it doesn’t mean the pipeline was unsuccessful.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.61+287-gd98d36e811-update-docs-build-and-packaging-setup.</p>
+    <p>&#169; Copyright 2020–2026, Pipeline Dev. Team, build: 2026.0.0.0+479-g5dead9ae80.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

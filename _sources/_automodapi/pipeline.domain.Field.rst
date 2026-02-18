@@ -21,12 +21,15 @@ Field
       ~Field.mdirection
       ~Field.name
       ~Field.ra
+      ~Field.telmjd
+      ~Field.zd
 
    .. rubric:: Methods Summary
 
    .. autosummary::
 
       ~Field.set_source_type
+      ~Field.set_zd_telmjd
 
    .. rubric:: Attributes Documentation
 
@@ -41,7 +44,10 @@ Field
    .. autoattribute:: mdirection
    .. autoattribute:: name
    .. autoattribute:: ra
+   .. autoattribute:: telmjd
+   .. autoattribute:: zd
 
    .. rubric:: Methods Documentation
 
    .. automethod:: set_source_type
+   .. automethod:: set_zd_telmjd

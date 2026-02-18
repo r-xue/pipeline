@@ -6,32 +6,34 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.infrastructure.launcher &mdash; Pipeline 
- (2025.1.1.61) 2025.1.0 documentation</title>
+ (2026.0.0.0) 2026.0.0.0+479-g5dead9ae80 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=047bd54c" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=872f755e" />
 
   
     <link rel="shortcut icon" href="../../../_static/favicon-16x16.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=e72a64b0"></script>
-      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../_static/documentation_options.js?v=c91327a9"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../_static/copybutton.js?v=0729d509"></script>
-      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
-      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
-      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
       <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
       <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
 
-const defaultStyle = document.createElement('style');
-defaultStyle.textContent = `pre.mermaid {
+
+
+
+
+const initStyles = () => {
+    const defaultStyle = document.createElement('style');
+    defaultStyle.textContent = `pre.mermaid {
     /* Same as .mermaid-container > pre */
     display: block;
     width: 100%;
@@ -42,12 +44,11 @@ pre.mermaid > svg {
     height: 500px;
     width: 100%;
     max-width: 100% !important;
-}
-`;
-document.head.appendChild(defaultStyle);
+}`;
+    document.head.appendChild(defaultStyle);
 
-const fullscreenStyle = document.createElement('style');
-fullscreenStyle.textContent = `.mermaid-container {
+    const fullscreenStyle = document.createElement('style');
+    fullscreenStyle.textContent = `.mermaid-container {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -199,10 +200,32 @@ fullscreenStyle.textContent = `.mermaid-container {
 .mermaid-fullscreen-modal .mermaid-fullscreen-btn {
     display: none !important;
 }`;
-document.head.appendChild(fullscreenStyle);
+    document.head.appendChild(fullscreenStyle);
+}
 
 // Detect if page has dark background
 const isDarkTheme = () => {
+    // We use a set of heuristics:
+    // 1. Check for common dark mode classes or attributes
+    // 2. Check computed background color brightness
+    if (document.documentElement.classList.contains('dark') ||
+        document.documentElement.getAttribute('data-theme') === 'dark' ||
+        document.body.classList.contains('dark') ||
+        document.body.getAttribute('data-theme') === 'dark') {
+        // console.log("Dark theme detected via class/attribute");
+        return true;
+    }
+    if (document.documentElement.classList.contains('light') ||
+        document.documentElement.getAttribute('data-theme') === 'light' ||
+        document.body.classList.contains('light') ||
+        document.body.getAttribute('data-theme') === 'light') {
+        // console.log("Light theme detected via class/attribute");
+        return false;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // console.log("Dark theme detected via prefers-color-scheme");
+        return true;
+    }
     const bgColor = window.getComputedStyle(document.body).backgroundColor;
     const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
     if (match) {
@@ -210,15 +233,45 @@ const isDarkTheme = () => {
         const g = parseInt(match[2]);
         const b = parseInt(match[3]);
         const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        // console.log("Background color brightness:", brightness);
         return brightness < 128;
     }
+    // console.log("No dark or light theme detected, defaulting to light theme");
     return false;
 };
 
-const load = async () => {
-    await mermaid.run();
+let darkTheme = isDarkTheme();
+let modal = null;
+let modalContent = null;
+let previousScrollOffset = [window.scrollX, window.scrollY];
 
-    const all_mermaids = document.querySelectorAll(".mermaid");
+const runMermaid = async (rerun) => {
+    console.log("Running mermaid diagrams, rerun =", rerun);
+    // clear all existing mermaid charts
+    let all_mermaids = document.querySelectorAll(".mermaid");
+
+    if (rerun) {
+        all_mermaids.forEach((el) => {
+            if(!el.hasAttribute("data-original-code")) {
+                // store original code
+                // console.log(`Storing original code for first run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+            if(el.getAttribute("data-processed") === "true") {
+                // remove and restore original
+                el.removeAttribute("data-processed");
+                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
+                el.innerHTML = el.getAttribute('data-original-code');
+            } else {
+                // store original code
+                // console.log(`Storing original code for re-run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+        });
+        await mermaid.run();
+    }
+
+    all_mermaids = document.querySelectorAll(".mermaid");
     const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
 
     if ("True" === "True") {
@@ -226,10 +279,10 @@ const load = async () => {
         if(mermaids_to_add_zoom > 0) {
             var svgs = d3.selectAll(".mermaid svg");
             if(all_mermaids.length !== mermaids_processed.length) {
-                setTimeout(load, 200);
+                setTimeout(() => runMermaid(false), 200);
                 return;
             } else if(svgs.size() !== mermaids_to_add_zoom) {
-                setTimeout(load, 200);
+                setTimeout(() => runMermaid(false), 200);
                 return;
             } else {
                 svgs.each(function() {
@@ -245,16 +298,21 @@ const load = async () => {
         }
     } else if(all_mermaids.length !== mermaids_processed.length) {
         // Wait for mermaid to process all diagrams
-        setTimeout(load, 200);
+        setTimeout(() => runMermaid(false), 200);
         return;
     }
-
-    const darkTheme = isDarkTheme();
 
     // Stop here if not adding fullscreen capability
     if ("True" !== "True") return;
 
-    const modal = document.createElement('div');
+    if (modal !== null ) {
+        // Destroy existing modal
+        modal.remove();
+        modal = null;
+        modalContent = null;
+    }
+
+    modal = document.createElement('div');
     modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
     modal.setAttribute('role', 'dialog');
     modal.setAttribute('aria-modal', 'true');
@@ -265,10 +323,8 @@ const load = async () => {
     `;
     document.body.appendChild(modal);
 
-    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    modalContent = modal.querySelector('.mermaid-container-fullscreen');
     const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
-
-    let previousScrollOffset = [window.scrollX, window.scrollY];
 
     const closeModal = () => {
         modal.classList.remove('active');
@@ -287,11 +343,14 @@ const load = async () => {
         }
     });
 
-    const allButtons = [];
-
     document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
         if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
             mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            // Already processed, adjust button class if needed
+            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
+            if (existingBtn) {
+                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+            }
             return;
         }
 
@@ -349,46 +408,57 @@ const load = async () => {
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         });
-
         container.appendChild(fullscreenBtn);
-        allButtons.push(fullscreenBtn);
-    });
-
-    // Update theme classes when theme changes
-    const updateTheme = () => {
-        const dark = isDarkTheme();
-        allButtons.forEach(btn => {
-            if (dark) {
-                btn.classList.add('dark-theme');
-            } else {
-                btn.classList.remove('dark-theme');
-            }
-        });
-        if (dark) {
-            modal.classList.add('dark-theme');
-            modalContent.classList.add('dark-theme');
-            closeBtn.classList.add('dark-theme');
-        } else {
-            modal.classList.remove('dark-theme');
-            modalContent.classList.remove('dark-theme');
-            closeBtn.classList.remove('dark-theme');
-        }
-    };
-
-    // Watch for theme changes
-    const observer = new MutationObserver(updateTheme);
-    observer.observe(document.documentElement, {
-        attributes: true,
-        attributeFilter: ['class', 'style', 'data-theme']
-    });
-    observer.observe(document.body, {
-        attributes: true,
-        attributeFilter: ['class', 'style']
     });
 };
 
-window.addEventListener("load", load);
-</script>
+const load = async () => {
+    initStyles();
+
+    await runMermaid(true);
+
+    const reRunIfThemeChanges = async () => {
+        const newDarkTheme = isDarkTheme();
+        if (newDarkTheme !== darkTheme) {
+            darkTheme = newDarkTheme;
+            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
+            await mermaid.initialize(
+                {...JSON.parse(
+                    `{"startOnLoad": false}`
+                ),
+                ...{ darkMode: darkTheme, theme: darkTheme ? 'dark' : 'default' },
+                }
+            );
+            await runMermaid(true);
+        }
+    };
+
+    // Update theme classes when theme changes
+    const themeObserver = new MutationObserver(reRunIfThemeChanges);
+    themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+};
+
+
+
+
+
+console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
+mermaid.initialize(
+    {...JSON.parse(
+        `{"startOnLoad": false}`
+    ),
+    ...{ darkMode: darkTheme, theme: darkTheme ? 'dark' : 'default' },
+    }
+);
+
+window.addEventListener("load", load);</script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -404,7 +474,7 @@ window.addEventListener("load", load);
           
           <a href="../../../index.html" class="icon icon-home">
             Pipeline 
- (2025.1.1.61)
+ (2026.0.0.0)
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -419,6 +489,7 @@ window.addEventListener("load", load);
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interface.html">Interface Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
@@ -440,7 +511,7 @@ window.addEventListener("load", load);
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modular.html">Pipeline with Conda</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/DataType_Testing.html">DataType Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
@@ -459,7 +530,7 @@ window.addEventListener("load", load);
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../../index.html">Pipeline 
- (2025.1.1.61)</a>
+ (2026.0.0.0)</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -479,9 +550,14 @@ window.addEventListener("load", load);
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.infrastructure.launcher</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">The launcher module contains classes to initialize the pipeline, potentially</span>
-<span class="sd">from a saved context state.</span>
+<span></span><span class="sd">&quot;&quot;&quot;Pipeline initialization and context management.</span>
+
+<span class="sd">This module provides classes for initializing the pipeline and managing</span>
+<span class="sd">pipeline state, including loading and saving context from/to disk.</span>
+
+<span class="sd">Classes:</span>
+<span class="sd">    Context: Container for all pipeline state during execution.</span>
+<span class="sd">    Pipeline: Entry point for initializing and managing the pipeline.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">contextvars</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
@@ -507,94 +583,63 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="Context">
-<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Context</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Context holds all pipeline state, consisting of metadata describing the</span>
-<span class="sd">    data set, objects describing the pipeline calibration state, the tree of</span>
-<span class="sd">    Results objects summarising the results of each pipeline task, and a</span>
-<span class="sd">    small number of internal pipeline variables and objects.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A class holds all pipeline state for a given execution.</span>
 
-<span class="sd">    The aim of the Context class is to provide one central object to which all</span>
-<span class="sd">    pipeline state is attached. Keeping all state in one object makes it easy</span>
-<span class="sd">    to persist this one object, and thus all state, to disk as a Python pickle,</span>
-<span class="sd">    allowing pipeline sessions to be interrupted and resumed.</span>
+<span class="sd">    The Pipeline `Context` class acts as a centralized container and access point</span>
+<span class="sd">    for the pipeline&#39;s state, including dataset and observation project metadata,</span>
+<span class="sd">    pipeline calibration status, process stage results from task execution, and</span>
+<span class="sd">    other miscellaneous variables required and shared over a processing session.</span>
+<span class="sd">    By encapsulating all state within this object, the entire pipeline session</span>
+<span class="sd">    can be easily persisted to disk (e.g., via pickling) and later resumed.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        name: Name of the context; also forms the root of the filename used for</span>
-<span class="sd">            the pickled state.</span>
-
-<span class="sd">        output_dir: The working directory where pipeline output data should be saved.</span>
-<span class="sd">        products_dir: The directory where pipeline products should be exported to.</span>
-<span class="sd">        report_dir: The directory where pipeline HTML reports should be saved.</span>
-
-<span class="sd">        logs: Dictionary containing the filenames to use for standard output</span>
-<span class="sd">            files (CASA commands log, AQUA report, pipeline script, restore script).</span>
-
-<span class="sd">        results: The list of task result (proxy) objects containing summaries</span>
-<span class="sd">            of each executed task in the pipeline run.</span>
-<span class="sd">        task_counter: Index of the last task to complete.</span>
-<span class="sd">        subtask_counter: Index of the last subtask to complete.</span>
-
-<span class="sd">        observing_run: The top-level ObservingRun object through which all other</span>
-<span class="sd">            pipeline.domain objects can be accessed.</span>
-
-<span class="sd">        project_performance_parameters: ALMA OUS project performance information.</span>
+<span class="sd">        name: The name of the context instance, also forms the root of the</span>
+<span class="sd">            filename used for the pickled state.</span>
+<span class="sd">        output_dir: The working directory for pipeline output data.</span>
+<span class="sd">        products_dir: The directory for exported pipeline products.</span>
+<span class="sd">        report_dir: The directory for generated HTML reports.</span>
+<span class="sd">        logs: A dictionary mapping log types (CASA commands log, AQUA report,</span>
+<span class="sd">            pipeline script, restore script) to their respective output filenames.</span>
+<span class="sd">        results: A list of task result (proxy) objects containing summaries of</span>
+<span class="sd">            each executed task in the pipeline run.</span>
+<span class="sd">        task_counter: The index of the last completed task.</span>
+<span class="sd">        subtask_counter: The index of the last completed subtask.</span>
+<span class="sd">        observing_run: The top-level `ObservingRun` object, providing access to</span>
+<span class="sd">            all `pipeline.domain` objects.</span>
+<span class="sd">        project_performance_parameters: ALMA OUS project performance data.</span>
 <span class="sd">        project_structure: ALMA project structure information.</span>
 <span class="sd">        project_summary: Project summary information.</span>
-
-<span class="sd">        calimlist: The ImageLibrary object holding final images of calibrators.</span>
-<span class="sd">        callibrary: The CalLibrary object holding the calibration state for</span>
-<span class="sd">            registered measurement sets.</span>
-<span class="sd">        clean_list_info: Dictionary to store information about the target image</span>
-<span class="sd">            to-be-cleaned list; typically populated by hif_makeimlist.</span>
-<span class="sd">        clean_list_pending: List of hif.tasks.makeimlist.cleantarget.CleanTarget</span>
-<span class="sd">            objects representing what target images are to be cleaned; typically</span>
-<span class="sd">            populated by hif_makeimlist, or edited by hif_editimlist.</span>
-<span class="sd">        clean_masks: Dictionary to store the names of clean masks to be re-used</span>
-<span class="sd">            for TARGET IQUV imaging.</span>
-<span class="sd">        clean_thresholds: Dictionary to store thresholds to be re-used for</span>
-<span class="sd">            TARGET IQUV imaging.</span>
-<span class="sd">        contfile: Name of file with frequency ranges to use for continuum</span>
-<span class="sd">            images; typically populated by hif_makeimlist.</span>
-<span class="sd">        imaging_mode: Imaging mode string; may be used to switch between imaging</span>
-<span class="sd">            parameter heuristics; currently only used for deciding what products</span>
-<span class="sd">            to export.</span>
-<span class="sd">        imaging_parameters: Dictionary containing computed values to use for</span>
-<span class="sd">            certain parameters during imaging; typically populated by</span>
-<span class="sd">            hifa_imageprecheck.</span>
-<span class="sd">        linesfile: Name of file with line frequency ranges to exclude for</span>
-<span class="sd">            continuum images; typically populated by hif_makeimlist.</span>
-<span class="sd">        per_spw_cont_sensitivities_all_chan: Dictionary containing some imaging</span>
-<span class="sd">            parameters as well as sensitivity information; typically populated</span>
-<span class="sd">            by hifa_imageprecheck, and potentially updated by hif_makeimages or</span>
-<span class="sd">            hif_tclean.</span>
-<span class="sd">        processing_intents: Dictionary of processing intents for the current</span>
-<span class="sd">            pipeline run. Currently, the following options are known:</span>
-<span class="sd">            - {&#39;INTERFEROMETRY_STANDARD_OBSERVING_MODE&#39;: &#39;Undefined&#39;}</span>
-<span class="sd">            - {&#39;VLA_INTERFEROMETRY_STANDARD_OBSERVING_MODE&#39;: &#39;Undefined&#39;}</span>
-<span class="sd">            - {&#39;INTERFEROMETRY_FULL_POL_CUBE_IMAGING&#39;: True}</span>
-<span class="sd">            - {&#39;INTERFEROMETRY_HETEROGENEOUS_IMAGING&#39;: True}</span>
-<span class="sd">            - {&#39;SINGLEDISH_STANDARD_OBSERVING_MODE&#39;: &#39;Undefined&#39;}</span>
-<span class="sd">        rmsimlist: The ImageLibrary object holding RMS uncertainty images of the</span>
+<span class="sd">        calimlist: An `ImageLibrary` object for final calibrator images.</span>
+<span class="sd">        callibrary: A `CalLibrary` object managing the calibration state.</span>
+<span class="sd">        clean_list_info: A dictionary with information for the target image list.</span>
+<span class="sd">        clean_list_pending: A list of `CleanTarget` objects queued for cleaning.</span>
+<span class="sd">        clean_masks: A dictionary of clean mask names for reuse in IQUV imaging.</span>
+<span class="sd">        clean_thresholds: A dictionary of thresholds for reuse in IQUV imaging.</span>
+<span class="sd">        contfile: The filename for continuum frequency ranges.</span>
+<span class="sd">        imaging_mode: A string indicating the imaging mode, used to select</span>
+<span class="sd">            parameter heuristics and product export settings.</span>
+<span class="sd">        imaging_parameters: A dictionary of computed imaging parameters.</span>
+<span class="sd">        linesfile: The filename for line frequency ranges to be excluded from</span>
+<span class="sd">            continuum images.</span>
+<span class="sd">        per_spw_cont_sensitivities_all_chan: A dictionary containing sensitivity</span>
+<span class="sd">            and imaging parameters.</span>
+<span class="sd">        processing_intents: A dictionary of processing intents for the run.</span>
+<span class="sd">        rmsimlist: An `ImageLibrary` object for RMS uncertainty images of</span>
 <span class="sd">            science targets.</span>
-<span class="sd">        sciimlist: The ImageLibrary object holding final images of science targets.</span>
-<span class="sd">        selfcal_resources: List of files/tables required for the</span>
-<span class="sd">            self-calibration restoration.</span>
-<span class="sd">        selfcal_targets: List of targets for which self-calibration is performed.</span>
-<span class="sd">        size_mitigation_parameters: Dictionary containing imaging product size</span>
-<span class="sd">            mitigation parameters; typically populated by hif_checkproductsize,</span>
-<span class="sd">            and used by hif_makeimlist.</span>
-<span class="sd">        subimlist: The ImageLibrary object holding cut-out images of the science</span>
-<span class="sd">            targets.</span>
-<span class="sd">        synthesized_beams: Dictionary containing some imaging parameters as well</span>
-<span class="sd">            computed synthesized beam information; typically populated/updated</span>
-<span class="sd">            by hifa_imageprecheck, hif_checkproductsize, hif_makeimlist,</span>
-<span class="sd">            hif_makeimages, and hif_tclean.</span>
+<span class="sd">        sciimlist: An `ImageLibrary` object for final science target images.</span>
+<span class="sd">        selfcal_resources: A list of files needed for self-calibration restoration.</span>
+<span class="sd">        selfcal_targets: A list of targets designated for self-calibration.</span>
+<span class="sd">        size_mitigation_parameters: A dictionary of parameters for managing</span>
+<span class="sd">            imaging product size.</span>
+<span class="sd">        subimlist: An `ImageLibrary` object for cutout images of science targets.</span>
+<span class="sd">        synthesized_beams: A dictionary containing computed synthesized beam data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Context.__init__">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize a Context object.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a Context object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            name: Name of the context.</span>
@@ -644,8 +689,8 @@ window.addEventListener("load", load);
         <span class="bp">self</span><span class="o">.</span><span class="n">callibrary</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalLibrary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clean_list_info</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># CAS-9456</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clean_list_pending</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># CAS-10146</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">clean_masks</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># PIPE-2464</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">clean_thresholds</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># PIPE-2464</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clean_masks</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># PIPE-2464</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clean_thresholds</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># PIPE-2464</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">contfile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imaging_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># PIPE-592</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">imaging_parameters</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># CAS-10146</span>
@@ -661,7 +706,8 @@ window.addEventListener("load", load);
 
         <span class="c1"># Log context creation event.</span>
         <span class="n">event</span> <span class="o">=</span> <span class="n">ContextCreatedEvent</span><span class="p">(</span><span class="n">context_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
-        <span class="n">eventbus</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+        <span class="n">eventbus</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">stage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -675,8 +721,7 @@ window.addEventListener("load", load);
 
     <span class="nd">@products_dir</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">products_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set path to the products directory.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set path to the products directory.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            value: path to use for products directory; if None, it will default</span>
@@ -691,10 +736,9 @@ window.addEventListener("load", load);
         <span class="bp">self</span><span class="o">.</span><span class="n">_products_dir</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="Context.save">
-<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.save">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.save">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Save a pickle of the Context to a file with given filename.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save a pickle of the Context to a file with given filename.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            filename: Name of the context file. If None, this will be set to</span>
@@ -720,11 +764,9 @@ window.addEventListener("load", load);
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;Context(name=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;)&gt;&quot;</span>
 
 <div class="viewcode-block" id="Context.set_state">
-<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.set_state">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.set_state">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set a context property using the class name, property name and property</span>
-<span class="sd">        value.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set a context property using the class name, property name and property value.</span>
 
 <span class="sd">        The class name should be one of:</span>
 
@@ -750,12 +792,9 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="Context.get_oussid">
-<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.get_oussid">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.get_oussid">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_oussid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the parent OUS &#39;ousstatus&#39; name. This is the sanitized OUS</span>
-<span class="sd">        status UID.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the parent OUS &#39;ousstatus&#39; name. This is the sanitized OUS status UID.&quot;&quot;&quot;</span>
         <span class="n">ps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_structure</span>
         <span class="k">if</span> <span class="n">ps</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">ps</span><span class="o">.</span><span class="n">ousstatus_entity_id</span> <span class="o">==</span> <span class="s1">&#39;unknown&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39;unknown&#39;</span>
@@ -764,7 +803,7 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="Context.get_recipe_name">
-<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.get_recipe_name">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.launcher.Context.html#pipeline.infrastructure.launcher.Context.get_recipe_name">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_recipe_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the recipe name from project structure.&quot;&quot;&quot;</span>
         <span class="n">ps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_structure</span>
@@ -777,35 +816,44 @@ window.addEventListener("load", load);
 
 
 <div class="viewcode-block" id="Pipeline">
-<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Pipeline</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Pipeline is the entry point for initialising the pipeline. It is</span>
-<span class="sd">    responsible for the creation of new Context objects and for loading</span>
-<span class="sd">    saved Contexts from disk.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Entry point for initializing the pipeline.</span>
+
+<span class="sd">    Responsible for creating new Context objects and loading saved Contexts</span>
+<span class="sd">    from disk.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        context: Context object containing the Pipeline state information.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">loglevel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="n">casa_version_check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                 <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">plotlevel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">path_overrides</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">processing_intents</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialise the pipeline, creating a new Context or loading a saved</span>
-<span class="sd">        Context from disk.</span>
+<div class="viewcode-block" id="Pipeline.__init__">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">context</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">loglevel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span>
+        <span class="n">casa_version_check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">plotlevel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span>
+        <span class="n">path_overrides</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">processing_intents</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the pipeline.</span>
+
+<span class="sd">        Creates a new Context or loads a saved Context from disk.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            context: Filename of the pickled Context to load from disk.</span>
 <span class="sd">                Specifying &#39;last&#39; loads the last-saved Context, while passing</span>
 <span class="sd">                None creates a new Context.</span>
 <span class="sd">            loglevel: Pipeline log level.</span>
-<span class="sd">            casa_version_check: enable (True) or bypass (False) the CASA version</span>
-<span class="sd">                check. Default is True.</span>
-<span class="sd">            name: If not &quot;None&quot;, this overrides the name of the Pipeline Context</span>
+<span class="sd">            casa_version_check: Enable (True) or bypass (False) the CASA version</span>
+<span class="sd">                check.</span>
+<span class="sd">            name: If not `None`, this overrides the name of the Pipeline Context</span>
 <span class="sd">                if a new context needs to be created.</span>
 <span class="sd">            plotlevel: Pipeline plots level.</span>
 <span class="sd">            path_overrides: Optional dictionary containing context properties to</span>
-<span class="sd">                be redefined when loading existing context (e.g. &quot;name&quot;).</span>
+<span class="sd">                be redefined when loading existing context (e.g., &#39;name&#39;).</span>
 <span class="sd">            processing_intents: Dictionary of processing intents for the current</span>
 <span class="sd">                pipeline run.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -859,12 +907,13 @@ window.addEventListener("load", load);
         <span class="c1"># context, as we want it to be a session-wide setting and adjustable</span>
         <span class="c1"># mid-session for interactive use.</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
-        <span class="n">infrastructure</span><span class="o">.</span><span class="n">set_plot_level</span><span class="p">(</span><span class="n">plotlevel</span><span class="p">)</span>
+        <span class="n">infrastructure</span><span class="o">.</span><span class="n">set_plot_level</span><span class="p">(</span><span class="n">plotlevel</span><span class="p">)</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_link_casa_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Create a hard-link to the current CASA log in the report directory,</span>
-<span class="sd">        and add path to current CASA log to given Context.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a hard-link to the current CASA log in the report directory.</span>
+
+<span class="sd">        Also adds path to current CASA log to the given Context.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            context: Pipeline Context to update with path to current CASA log.</span>
@@ -895,8 +944,7 @@ window.addEventListener("load", load);
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_find_most_recent_session</span><span class="p">(</span><span class="n">directory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;./&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return filename for the most recently saved Pipeline Context in given directory.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return filename for the most recently saved Pipeline Context.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            directory: Path where to search for context files.</span>
@@ -905,7 +953,7 @@ window.addEventListener("load", load);
 <span class="sd">            Filename of most recently saved Pipeline Context file.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            FileNotFoundError if no Pipeline context files are found in given directory.</span>
+<span class="sd">            FileNotFoundError: If no Pipeline context files are found in given</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># list all the files in the directory..</span>
         <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.context&#39;</span><span class="p">)]</span>
@@ -927,7 +975,7 @@ window.addEventListener("load", load);
         <span class="k">return</span> <span class="s1">&#39;Pipeline(</span><span class="si">{0}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms_names</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Pipeline.close">
-<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline.close">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.launcher.Pipeline.html#pipeline.infrastructure.launcher.Pipeline.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Save a pickle of the Pipeline Context to a file.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
@@ -942,7 +990,7 @@ window.addEventListener("load", load);
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.61+287-gd98d36e811-update-docs-build-and-packaging-setup.</p>
+    <p>&#169; Copyright 2020–2026, Pipeline Dev. Team, build: 2026.0.0.0+479-g5dead9ae80.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

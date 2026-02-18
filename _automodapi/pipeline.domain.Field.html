@@ -7,22 +7,22 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Field &mdash; Pipeline 
- (2025.1.1.61) 2025.1.0 documentation</title>
+ (2026.0.0.0) 2026.0.0.0+479-g5dead9ae80 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=047bd54c" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=872f755e" />
 
   
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=e72a64b0"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=c91327a9"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=0729d509"></script>
     <script src="../_static/js/theme.js"></script>
@@ -42,7 +42,7 @@
           
           <a href="../index.html" class="icon icon-home">
             Pipeline 
- (2025.1.1.61)
+ (2026.0.0.0)
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -57,6 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/ways_to_run_the_pipeline.html">Ways to run the Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/recipes.html">Pipeline Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies of <code class="docutils literal notranslate"><span class="pre">Pipeline</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interface.html">Interface Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../releases.html">Releases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeline.html">Roadmap &amp; Branching Strategy</a></li>
 </ul>
@@ -106,7 +107,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/selfcal_workflow.html">VLASS Selfcal &amp; Restore workflows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/comparing_pipeline_executions.html">Comparing pipeline executions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/building_the_pipeline.html">Building the pipeline</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../modular.html">Run the Pipeline in a Conda environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modular.html">Pipeline with Conda</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/pipeline_tests.html">Pipeline testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/DataType_Testing.html">DataType Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/QA_scores.html">Pipeline Quality Assurance (QA) Score Class Design</a></li>
@@ -125,7 +126,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: gray" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Pipeline 
- (2025.1.1.61)</a>
+ (2026.0.0.0)</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -148,57 +149,57 @@
 <h1>Field<a class="headerlink" href="#field" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.domain.Field">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/field.html#Field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.Field" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DirectionDict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/field.html#Field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.Field" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A class to store logical representation of a field.</p>
+<p>A logical representation of a field in a MeasurementSet.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.domain.Field.id">
 <span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#pipeline.domain.Field.id" title="Link to this definition"></a></dt>
-<dd><p>The numerical identifier of this field within the FIELD subtable of
+<dd><p>Numerical identifier of this field within the FIELD subtable of
 the MeasurementSet.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.domain.Field.source_id">
 <span class="sig-name descname"><span class="pre">source_id</span></span><a class="headerlink" href="#pipeline.domain.Field.source_id" title="Link to this definition"></a></dt>
-<dd><p>The ID of the source associated with this field.</p>
+<dd><p>ID of the source associated with this field.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.domain.Field.time">
 <span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#pipeline.domain.Field.time" title="Link to this definition"></a></dt>
-<dd><p>List of the unique times for this field.</p>
+<dd><p>Array of unique observation times for this field.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.domain.Field.name">
 <span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pipeline.domain.Field.name" title="Link to this definition"></a></dt>
-<dd><p>The name of this field.</p>
+<dd><p>Name of this field, formatted for use as a CASA argument.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.domain.Field.intents">
 <span class="sig-name descname"><span class="pre">intents</span></span><a class="headerlink" href="#pipeline.domain.Field.intents" title="Link to this definition"></a></dt>
-<dd><p>A list of unique scan intents associated with this field.</p>
+<dd><p>Set of unique scan intents associated with this field.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.domain.Field.states">
 <span class="sig-name descname"><span class="pre">states</span></span><a class="headerlink" href="#pipeline.domain.Field.states" title="Link to this definition"></a></dt>
-<dd><p>A list of unique State objects associated with this field.</p>
+<dd><p>Set of unique State objects associated with this field.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.domain.Field.valid_spws">
 <span class="sig-name descname"><span class="pre">valid_spws</span></span><a class="headerlink" href="#pipeline.domain.Field.valid_spws" title="Link to this definition"></a></dt>
-<dd><p>A list of unique SpectralWindow objects associated with
+<dd><p>Set of unique SpectralWindow objects associated with
 this field.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.domain.Field.flux_densities">
 <span class="sig-name descname"><span class="pre">flux_densities</span></span><a class="headerlink" href="#pipeline.domain.Field.flux_densities" title="Link to this definition"></a></dt>
-<dd><p>A list of unique flux measurements from setjy.</p>
+<dd><p>Set of unique flux measurements from setjy.</p>
 </dd></dl>
 
 <p class="rubric">Attributes Summary</p>
@@ -237,6 +238,12 @@ this field.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="../_autosummary/pipeline.domain.Field.html#pipeline.domain.Field.ra" title="pipeline.domain.Field.ra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ra</span></code></a></p></td>
 <td><p>Return right ascension for the phasecenter of the field.</p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_autosummary/pipeline.domain.Field.html#pipeline.domain.Field.telmjd" title="pipeline.domain.Field.telmjd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">telmjd</span></code></a></p></td>
+<td><p>Return the Modified Julian Date in a CASA <cite>epoch</cite> measure dictionary</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../_autosummary/pipeline.domain.Field.html#pipeline.domain.Field.zd" title="pipeline.domain.Field.zd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zd</span></code></a></p></td>
+<td><p>Return the zenith distance in a CASA <cite>quantity</cite> quanta dictionary.</p></td>
+</tr>
 </tbody>
 </table>
 <p class="rubric">Methods Summary</p>
@@ -244,6 +251,9 @@ this field.</p>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="../_autosummary/pipeline.domain.Field.html#pipeline.domain.Field.set_source_type" title="pipeline.domain.Field.set_source_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_source_type</span></code></a>(source_type)</p></td>
 <td><p>Update the intent(s) associated with the field based on given source type(s).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../_autosummary/pipeline.domain.Field.html#pipeline.domain.Field.set_zd_telmjd" title="pipeline.domain.Field.set_zd_telmjd"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_zd_telmjd</span></code></a>(observatory)</p></td>
+<td><p>Calculate and set the zenith distance at the observation mid-time.</p></td>
 </tr>
 </tbody>
 </table>
@@ -316,6 +326,18 @@ as a CASA argument, should be enclosed in quotes.</p>
 <dd><p>Return right ascension for the phasecenter of the field.</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.Field.telmjd">
+<span class="sig-name descname"><span class="pre">telmjd</span></span><a class="headerlink" href="#pipeline.domain.Field.telmjd" title="Link to this definition"></a></dt>
+<dd><p>Return the Modified Julian Date in a CASA <cite>epoch</cite> measure dictionary</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pipeline.domain.Field.zd">
+<span class="sig-name descname"><span class="pre">zd</span></span><a class="headerlink" href="#pipeline.domain.Field.zd" title="Link to this definition"></a></dt>
+<dd><p>Return the zenith distance in a CASA <cite>quantity</cite> quanta dictionary.</p>
+</dd></dl>
+
 <p class="rubric">Methods Documentation</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.Field.set_source_type">
@@ -328,6 +350,17 @@ Pipeline intents.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>source_type</strong> -- String containing the source type(s) (aka intents)
 associated with the field.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.domain.Field.set_zd_telmjd">
+<span class="sig-name descname"><span class="pre">set_zd_telmjd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observatory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/field.html#Field.set_zd_telmjd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.Field.set_zd_telmjd" title="Link to this definition"></a></dt>
+<dd><p>Calculate and set the zenith distance at the observation mid-time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>observatory</strong> -- Name of the observatory (e.g., 'VLA', 'ALMA').</p>
 </dd>
 </dl>
 </dd></dl>
@@ -347,7 +380,7 @@ associated with the field.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2025.1.1.61+287-gd98d36e811-update-docs-build-and-packaging-setup.</p>
+    <p>&#169; Copyright 2020–2026, Pipeline Dev. Team, build: 2026.0.0.0+479-g5dead9ae80.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

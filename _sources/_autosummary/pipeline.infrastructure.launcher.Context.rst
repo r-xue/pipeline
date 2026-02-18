@@ -1,32 +1,35 @@
-﻿pipeline.infrastructure.launcher.Context
+pipeline.infrastructure.launcher.Context
 ========================================
 
-.. automodule:: pipeline.infrastructure.launcher.Context
+.. currentmodule:: pipeline.infrastructure.launcher
+
+.. autoclass:: Context
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
 
    
    
-   .. rubric:: Module attributes
+   .. rubric:: Methods
 
    .. autosummary::
-      :toctree:
+      :nosignatures:
    
-      products_dir
-      stage
-   
-   
-
-   
+      ~Context.get_oussid
+      ~Context.get_recipe_name
+      ~Context.save
+      ~Context.set_state
    
    
 
    
    
-   
+   .. rubric:: Attributes
 
+   .. autosummary::
    
-   
-   
-
-   
+      ~Context.products_dir
+      ~Context.stage
    
    
