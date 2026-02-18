@@ -33,7 +33,7 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
                 self._checkKandBsolution(result.flaggedSolnApplycalbandpass[bandname], m)
                 score1 = qacalc.score_total_data_flagged_vla_bandpass(
                     bpdgain_touse, result.flaggedSolnApplycalbandpass[bandname]['antmedian']['fraction'])
-                score2 = qacalc.score_total_data_vla_delay(result.ktypecaltable[bandname], m, bandname)
+                score2 = qacalc.score_total_data_vla_delay(result.ktypecaltable[bandname], result.inputs['vis'], bandname)
                 scores.append(score1)
                 scores.append(score2)
             else:

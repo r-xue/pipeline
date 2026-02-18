@@ -1444,8 +1444,7 @@ def score_total_data_vla_delay(filename, vis, bandname=None):
                           metric_score=score,
                           metric_units='Delays that exceed 15 ns')
 
-    applies_to = pqa.TargetDataSelection(vis=vis)
-
+    applies_to = pqa.TargetDataSelection(vis={vis})
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(filename), origin=origin, applies_to=applies_to)
 
 
