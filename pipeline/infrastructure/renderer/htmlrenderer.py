@@ -789,7 +789,7 @@ class T1_4MRenderer(RendererBase):
 
         # PIPE-2014: obtain the task time duration from the timetracker event database.
         db_path = os.path.join(context.output_dir, f'{context.name}.timetracker')
-        r: dict[str, dict[str, datetime.timedelta]] = {}
+        r: dict[str, dict[int, datetime.timedelta]] = {}
         with shelve.open(db_path, writeback=False) as db:
             for k, stages in db.items():
                 r[k] = {}
@@ -800,9 +800,13 @@ class T1_4MRenderer(RendererBase):
                         r[k][e.stage] = datetime.datetime.now(datetime.UTC) - e.start
                     else:
                         r[k][e.stage] = e.end - e.start
-        task_duration = [r['tasks'][r_stage] for r_stage in r['tasks']]
+
+        task_stage_map: dict[int, datetime.timedelta] = r.get('tasks', {})
+        result_stage_map: dict[int, datetime.timedelta] = r.get('results', {})
+        fallback_duration = datetime.timedelta(0)
+        task_duration = [task_stage_map.get(result.stage_number, fallback_duration) for result in context.results]
         # The 'results' field in the timetrack db includes the cost of QA and weblog.
-        result_duration = [r['results'][r_stage] for r_stage in r['tasks']]
+        result_duration = [result_stage_map.get(result.stage_number, fallback_duration) for result in context.results]
 
         # copy PPR for weblog
         pprfile = context.project_structure.ppr_file
