@@ -17,13 +17,21 @@ from pipeline.domain import Field, FluxMeasurement, MeasurementSet, SpectralWind
 from pipeline.domain.measures import FluxDensity, FluxDensityUnits, Frequency, FrequencyUnits
 from pipeline.h.tasks.common import commonfluxresults
 from pipeline.h.tasks.importdata.fluxes import ORIGIN_ANALYSIS_UTILS, ORIGIN_XML
-# This pulls all the defaults from the huristics/snr.py rather than hardcoding
-# half here and using from the module (vs <=PL2025) - PIPE-2901
-from pipeline.hifa.heuristics.snr import ALMA_BANDS, ALMA_SENSITIVITIES, ALMA_TSYS
-from pipeline.hifa.heuristics.snr import ALMA_FIDUCIAL_NUM_ANTENNAS, ALMA_FIDUCIAL_EXP_TIME, ALMA_FIDUCIAL_BANDWIDTH
+
+# PIPE-2901: import default values from the heuristics/snr.py instead of hardcoding in 
+# this module (vs <=PL2025)
+from pipeline.hifa.heuristics.snr import (
+    ALMA_BANDS,
+    ALMA_FIDUCIAL_BANDWIDTH,
+    ALMA_FIDUCIAL_EXP_TIME,
+    ALMA_FIDUCIAL_NUM_ANTENNAS,
+    ALMA_SENSITIVITIES,
+    ALMA_TSYS,
+)
 from pipeline.hifa.tasks.importdata.dbfluxes import ORIGIN_DB
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.launcher import Context
+
 from . import gcorfluxscale
 
 LOG = infrastructure.get_logger(__name__)
@@ -42,6 +50,7 @@ EXTERNAL_SOURCES = (ORIGIN_ANALYSIS_UTILS, ORIGIN_DB, ORIGIN_XML)
 
 # Trusted flux providers. Using untrusted providers will result in a warning.
 TRUSTED_SOURCES = (ORIGIN_ANALYSIS_UTILS, ORIGIN_DB)
+
 
 class GcorFluxscaleQAHandler(pqa.QAPlugin):
     result_cls = commonfluxresults.FluxCalibrationResults
