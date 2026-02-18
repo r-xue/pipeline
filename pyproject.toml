@@ -1,0 +1,221 @@
+[build-system]
+requires = [
+    "setuptools>=64.0",
+    "packaging>=22.0.0",
+    "wheel",
+    "csscompressor==0.9.5",
+    "jsmin==3.0.1",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Pipeline"
+description = "Pipeline"
+requires-python = ">= 3.10"
+dynamic = ["version", "dependencies", "optional-dependencies"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Astronomy",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+license = { text = "LGPL-3.0-or-later" }
+authors = [
+    { name = "Associated Universities, Inc." },
+    { name = "European Southern Observatory" },
+    { name = "National Astronomical Observatory of Japan" },
+]
+keywords = ["astronomy", "pipeline", "ALMA", "VLA", "radio-astronomy"]
+
+[project.urls]
+Documentation = "https://almascience.nrao.edu/processing/science-pipeline"
+Repository = "https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline"
+"Bug Tracker" = "https://open-jira.nrao.edu"                                # Adjust if applicable
+License = "https://www.gnu.org/licenses/lgpl-3.0.html"
+
+[tool.setuptools.packages.find]
+include = ["pipeline*"]
+
+[tool.setuptools.package-data]
+"*" = [
+    '*.css',
+    '*.js',
+    '*.html',
+    '*.mak',
+    '*.mako',  # Templates/web
+    '*.gif',
+    '*.jpg',
+    '*.png',
+    '*.svg',   # Images
+    '*.eot',
+    '*.otf',
+    '*.ttf',
+    '*.woff',
+    '*.woff2', # Fonts
+    '*.txt',
+    '*.xml',
+    '*.yaml',  # Data files
+    '*.egg',
+    'version', # Build/version files
+]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+optional-dependencies.dev = { file = ["requirements_dev.txt"] }
+optional-dependencies.docs = { file = ["requirements_docs.txt"] }
+optional-dependencies.exp = { file = ["requirements_exp.txt"] }
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    "build",
+    "dist",
+    "*.egg-info",
+]
+
+[tool.ruff.lint]
+select = [
+    "E4",
+    "E7",
+    "E9", # pycodestyle errors
+    "F",  # pyflakes
+    "D",  # pydocstyle
+    "I",  # isort
+]
+preview = true
+
+[tool.ruff.lint.pycodestyle]
+max-doc-length = 140
+max-line-length = 120
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+preview = true
+exclude = ["*.pyi"]
+docstring-code-format = true
+docstring-code-line-length = 140
+quote-style = "single"
+skip-magic-trailing-comma = false
+
+[tool.coverage.run]
+omit = ['pipeline/run*pipeline.py', 'tests/*']
+branch = true                                  # Same as --cov-branch
+source = ['pipeline']                          # Same as --cov=pipeline
+parallel = true                                # Enable parallel coverage collection for xdist
+concurrency = ["multiprocessing"]              # Handle xdist workers properly
+
+[tool.coverage.report]
+fail_under = 10 # Set the minimum coverage percentage required
+precision = 2 # Add decimal precision
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    'pragma: no cover',
+    'if TYPE_CHECKING:',
+    'if __name__ == "__main__":',
+    'from .* import .*',
+    'import .*',
+    'raise NotImplementedError',
+    'pass',
+    '@(abc\\.)?abstractmethod',
+]
+
+[tool.pytest.ini_options]
+markers = [
+    "regression: regression test",
+    "alma: alma test",
+    "nobeyama: nobeyama test",
+    "vla: vla test (does not include vlass)",
+    "vlass: vlass test",
+    "fast: shorter-running test",
+    "slow: longer-running test",
+    "twelve: 12m ALMA test",
+    "seven: 7m ALMA test",
+    "sd: single dish test",
+    "interferometry: interferometry test",
+    "component: component tests",
+    "importdata: importdata task(s)",
+    "selfcal: selfcal task(s)",
+    "makeimages: makeimages task(s)",
+    "unit: unit test",
+]
+addopts = [
+    "-ra", # show extra test summary info for (a)ll except passed
+    "-v",  # verbose output
+]
+junit_family = "legacy"
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-arm64"]
+
+# Dependencies common to all environments
+
+[tool.pixi.dependencies]
+conda-ecosystem-user-package-isolation = "*"
+ipython = "*"
+pip = ">=23.0"
+mpi4py = "*"
+certifi = "*"
+poppler = "*"
+imagemagick = "*"
+pandoc = "*"
+
+[tool.pixi.pypi-dependencies]
+# Install the current project in editable mode
+# This picks up dependencies from requirements.txt, which is still
+# used for monolithic installations.
+pipeline = { path = ".", editable = true, extras = ["dev"] }
+casampi = "*"
+protobuf = "~=3.20"
+casaplotms = "*"
+casaplotserver = "*"
+
+[tool.pixi.pypi-options]
+extra-index-urls = ["https://casa-pip.nrao.edu/repository/pypi-group/simple"]
+index-strategy = "unsafe-best-match"
+
+[tool.pixi.system-requirements]
+# Instruct pixi to target at macOS 14+ due to casatools availability
+macos = "14.0"
+
+# PL2026 ALMA/VLA featureset
+
+[tool.pixi.feature.pl2026]
+platforms = ["linux-64", "osx-arm64"]
+
+[tool.pixi.feature.pl2026.dependencies]
+python = "3.12.*"
+openmpi = "*"
+
+[tool.pixi.feature.pl2026.pypi-dependencies]
+# set to latest dev snapshot before ver 6.7.4 branching
+casashell = "~=6.7.5"
+
+# PL2026 VLASS featureset
+
+[tool.pixi.feature.pl2026vlass]
+platforms = ["linux-64"]
+
+[tool.pixi.feature.pl2026vlass.dependencies]
+python = "3.10.*"
+openmpi-mpicxx = "*"
+
+[tool.pixi.feature.pl2026vlass.pypi-dependencies]
+casashell = "==6.7.1.*"
+
+# Environment Definitions
+
+[tool.pixi.environments]
+default = ["pl2026"]    # Corresponds to environment.yml
+vlass = ["pl2026vlass"] # Corresponds to environment_vlass2026.yml

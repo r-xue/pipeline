@@ -163,7 +163,7 @@ class SingleDishDisplayInputs(object):
         """Construct SingleDishDisplayInputs instance.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
             result: Pipeline task execution result.
         """
         self.context = context
@@ -406,7 +406,7 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
         """Construct SDImageDisplayInputs instance.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
             result: Pipeline task execution result.
         """
         super(SDImageDisplayInputs, self).__init__(context, result)
@@ -1096,7 +1096,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             if self._axes_atm is not None:
                 self._axes_atm.set_position(self.axes_integsp.get_position())
             self._axes_chan.set_xlabel('Channel', size=self.ticksize - 1)
-            self._axes_chan.xaxis.set_label_coords(0.5, 1.11)
+            self._axes_chan.xaxis.set_label_coords(0.5, 1.13)
             self._axes_chan.tick_params(axis='x', pad=0)
             xlabels = self._axes_chan.get_xticklabels()
             for label in xlabels:
@@ -1420,7 +1420,7 @@ class SDSparseMapPlotter(object):
         """Add channel axis to integrated spectrum.
 
         Args:
-            frequency: Frequency label.
+            frequency: Frequency label. Must be sorted.
         """
         axes = self.axes.axes_chan
         f = np.asarray(frequency)

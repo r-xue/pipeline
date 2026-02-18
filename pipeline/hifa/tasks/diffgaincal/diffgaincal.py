@@ -1,3 +1,4 @@
+import os
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
@@ -90,7 +91,7 @@ class DiffGaincalInputs(vdp.StandardInputs):
         """Initialize Inputs.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
 
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
@@ -98,7 +99,7 @@ class DiffGaincalInputs(vdp.StandardInputs):
             vis: The list of input MeasurementSets. Defaults to the list of
                 MeasurementSets specified in the pipeline context.
 
-                Example: ['M32A.ms', 'M32B.ms']
+                Example: ``['M32A.ms', 'M32B.ms']``
 
             flagging_frac_limit: if the fraction of flagged data in the
                 temporary phase gaintable exceeds this limit then SpW
@@ -107,29 +108,29 @@ class DiffGaincalInputs(vdp.StandardInputs):
             hm_spwmapmode: The spectral window mapping heuristic mode. The
                 options are:
 
-                - 'all': SpW combination is forced for the diffgain
+                - ``'all'``: SpW combination is forced for the diffgain
                     low-frequency reference intent solutions, the diffgain
                     high-frequency source intent solutions (actual band-to-band
                     offsets), and for the diagnostic residual phase offsets on
                     the diffgain high-frequency source intent.
-                - 'auto': Assess need for SpW combination based on SpwMapping
+                - ``'auto'``: Assess need for SpW combination based on SpwMapping
                     from hifa_spwphaseup, and where necessary check the
                     gaintable for missing SpWs / too many flagged data / too few
                     scan solutions.
-                - 'both': SpW combination is forced for the diffgain
+                - ``'both'``: SpW combination is forced for the diffgain
                     low-frequency reference intent solutions and for the
                     diagnostic residual phase offsets on the diffgain
                     high-frequency source intent.
-                - 'offset': SpW combination is forced for the diffgain
+                - ``'offset'``: SpW combination is forced for the diffgain
                     high-frequency source intent solutions (actual band-to-band
                     offsets).
-                - 'reference': SpW combination is forced for the diffgain
+                - ``'reference'``: SpW combination is forced for the diffgain
                     low-frequency reference intent solutions.
-                - 'residual': SpW combination is forced for the diagnostic
+                - ``'residual'``: SpW combination is forced for the diagnostic
                     residual phase offsets on the diffgain high-frequency source
                     intent.
 
-                Example: hm_spwmapmode='auto'
+                Example: ``hm_spwmapmode='auto'``
 
             missing_scans_frac_limit: if the fraction of missing scans in the
                 temporary phase gaintable exceeds this limit then SpW
@@ -543,13 +544,31 @@ class DiffGaincal(basetask.StandardTaskTemplate):
             # Run gaincal for the first scan group.
             result = self._do_gaincal(intent=intent, spw=spwids_str, combine=combine, scan=scan_groups[0])
 
-            # Run gaincal for any additional scan groups, appending to the initial caltable.
+            # Only extract and reuse the caltable if there is more than one scan group.
             if len(scan_groups) > 1:
                 caltable = result.inputs['caltable']
-                for scan_group in scan_groups[1:]:
-                    self._do_gaincal(intent=intent, spw=spwids_str, combine=combine, caltable=caltable, scan=scan_group,
-                                     append=True)
 
+                # Loop the remaining scan groups - specifically diffgain_onsource 'b2b offset' solve.
+                # Should only be one 'more' as current operations as of 2024 use two diffgain 'blocks'.
+                for scan_group in scan_groups[1:]:
+                    # PIPE-2915: check if there was a gaintable made in the first instance, then append
+                    # If the first scan group solve did not get made (possibly due to flags),
+                    # we use the next group to make a fresh gaintable.
+                    # Note that in operations there is likely only ever two scan groups.
+                    table_exists = os.path.exists(caltable)
+
+                    if not table_exists:
+                        LOG.info('Diffgain B2B offset caltable not found for initial scan group')
+
+                    # If table_exists is True, we append. If False, we start a fresh solve.
+                    result = self._do_gaincal(
+                        intent=intent,
+                        spw=spwids_str,
+                        combine=combine,
+                        scan=scan_group,
+                        caltable=caltable,
+                        append=table_exists,
+                    )
         return result
 
     def _do_phasecal_for_diffgain_reference(self) -> tuple[common.GaincalResults, dict[IntentField, SpwMapping]]:

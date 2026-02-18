@@ -132,7 +132,7 @@ def get_solution_map(ms: MeasurementSet, is_single_dish: bool) -> list[Gainfield
             # the 'if o' test filters out results for intents that do not have
             # fields, e.g., PHASE for SD data
             # de-deuplicate list before joining as a string
-            tsys_fields = list(set((o for o in (f(head, exclude=exclude), f(tail, exclude=exclude)) if o)))
+            tsys_fields = utils.deduplicate(o for o in (f(head, exclude=exclude), f(tail, exclude=exclude)) if o)
             return ','.join(tsys_fields)
         return ','.join(str(s) for s in get_tsys_fields_for_intent(ms, intent, exclude_intents=exclude))
 

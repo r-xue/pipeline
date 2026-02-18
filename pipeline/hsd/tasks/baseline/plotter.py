@@ -976,8 +976,7 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
         plotter.set_edge(edge)
         plotter.set_atm_transmission(atm_transmission, atm_frequency)
         plotter.set_global_scaling()
-        if utils.is_nro(self.context):
-            plotter.set_channel_axis()
+        plotter.set_channel_axis()
         for ipol in range(npol):
             postfit_figfile = postfit_figfile_prefix + '_pol%s.png' % ipol
             # LOG.info('#TIMING# Begin SDSparseMapPlotter.plot(postfit,pol%s)'%(ipol))
@@ -1236,6 +1235,8 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
         ymin = -3*stddev
         ymax = 3*stddev
         plt.clf()
+        # PIPE-2806: set facecolor to default (white) explicitly
+        plt.gcf().set_facecolor(plt.rcParams['figure.facecolor'])
         plt.plot(frequency, spectrum, color='b', linestyle='-', linewidth=0.4)
         plt.axis((xmin, xmax, ymin, ymax))
         plt.gca().get_xaxis().get_major_formatter().set_useOffset(False)

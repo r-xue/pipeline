@@ -5,7 +5,6 @@ from __future__ import annotations
 import collections
 import contextlib
 import datetime
-import inspect
 import itertools
 import operator
 import os
@@ -17,17 +16,17 @@ import numpy as np
 from pipeline import infrastructure
 from pipeline.domain import measures, spectralwindow
 from pipeline.infrastructure import casa_tools, tablereader, utils
+from pipeline.infrastructure.launcher import current_task_name
 
 if TYPE_CHECKING:
-    from pipeline.domain import AntennaArray, Antenna, DataDescription, DataType, Field, Polarization, Scan, State
+    from pipeline.domain import Antenna, AntennaArray, DataDescription, DataType, Field, Polarization, Scan, State
     from pipeline.infrastructure.tablereader import RetrieveByIndexContainer
 
 LOG = infrastructure.logging.get_logger(__name__)
 
 
 class MeasurementSet:
-    """
-    A class to store logical representation of a MeasurementSet (MS).
+    """A logical representation of a MeasurementSet (MS).
 
     The MeasurementSet class represents the metadata and relationships held in a
     measurement set on disk, acting as an in-memory representation so that
@@ -369,8 +368,7 @@ class MeasurementSet:
             source_name: str | None = None,
             source_spwid: int | None = None,
             ) -> tuple[str | None, int | None]:
-        """
-        Get the representative target source object:
+        """Get the representative target source object.
 
         * Use user name if ``source_name`` is supplied by user and it has TARGET intent.
         * Otherwise, use the source defined in the ASDM SBSummary table if it has TARGET intent.
@@ -388,8 +386,9 @@ class MeasurementSet:
         qa = casa_tools.quanta
         cme = casa_tools.measures
 
-        # PIPE-1504: only issue certain messages at the WARNING level if they are executed by hifa_imageprecheck
-        if 'hifa_imageprecheck' in [fn_name for (_, _, _, fn_name, _, _) in inspect.stack()]:
+        # PIPE-1504/PIPE-2859: only issue certain messages at the WARNING level if they are executed by hifa_imageprecheck
+        if current_task_name.get() == 'hifa_imageprecheck':
+            # Only issue messages at the WARNING level if they are executed by hifa_imageprecheck
             log_level = infrastructure.logging.WARNING
         else:
             log_level = infrastructure.logging.INFO
@@ -461,11 +460,11 @@ class MeasurementSet:
                     break
             if found:
                 LOG.info('Selecting user defined representative spw %s for data set %s',
-                         str(source_spwid), self.basename)
+                         source_spwid, self.basename)
                 return target_source_name, source_spwid
             else:
                 LOG.warning('No target source data for representative spw %s in data set %s',
-                            str(source_spwid), self.basename)
+                            source_spwid, self.basename)
                 return target_source_name, None
 
         target_spwid = None
@@ -555,7 +554,7 @@ class MeasurementSet:
                         target_spwid = spw.id
                         max_freqdiff = freqdiff
                 LOG.info('Selecting spw %s which is closest to the representative frequency in data set %s',
-                         str(target_spwid), self.basename)
+                         target_spwid, self.basename)
             else:
                 min_chanwidth = None
                 for spw in target_spws_freq:
@@ -563,7 +562,7 @@ class MeasurementSet:
                     if not min_chanwidth or chanwidth < min_chanwidth:
                         target_spwid = spw.id
                 LOG.info('Selecting the narrowest chanwidth spw id %s which overlaps the representative frequency in data set %s',
-                         str(target_spwid), self.basename)
+                         target_spwid, self.basename)
 
             return target_source_name, target_spwid
 
@@ -862,28 +861,27 @@ class MeasurementSet:
         return set(itertools.chain(*obs_modes))
 
     def get_alma_cycle_number(self) -> int | None:
-        """
-        Get the ALMA cycle number from the observation start time.
+        """Get the ALMA cycle number from the observation start time.
 
         Returns:
             Cycle number or None if not found or not an ALMA dataset.
         """
         cycle_numbers = {
-            '0': ['2011-09-30', '2013-01-20'],
-            '1': ['2013-01-21', '2014-06-02'],
-            '2': ['2014-06-03', '2015-09-30'],
-            '3': ['2015-10-01', '2016-09-30'],
-            '4': ['2016-10-01', '2017-09-30'],
-            '5': ['2017-10-01', '2018-09-30'],
-            '6': ['2018-10-01', '2019-09-30'],
-            '7': ['2019-10-01', '2021-09-30'],
-            '8': ['2021-10-01', '2022-09-30'],
-            '9': ['2022-10-01', '2023-09-30'],
-            '10': ['2023-10-01', '2024-09-30'],
-            '11': ['2024-10-01', '2025-09-30'],
-            '12': ['2025-10-01', '2026-09-30'],
+            0: ['2011-09-30', '2013-01-20'],
+            1: ['2013-01-21', '2014-06-02'],
+            2: ['2014-06-03', '2015-09-30'],
+            3: ['2015-10-01', '2016-09-30'],
+            4: ['2016-10-01', '2017-09-30'],
+            5: ['2017-10-01', '2018-09-30'],
+            6: ['2018-10-01', '2019-09-30'],
+            7: ['2019-10-01', '2021-09-30'],
+            8: ['2021-10-01', '2022-09-30'],
+            9: ['2022-10-01', '2023-09-30'],
+            10: ['2023-10-01', '2024-09-30'],
+            11: ['2024-10-01', '2025-09-30'],
+            12: ['2025-10-01', '2026-09-30'],
         }
-        if self.antenna_array.name in ('VLA', 'EVLA', 'NRO'):
+        if self.antenna_array.name != 'ALMA':
             return None
         start_time = utils.get_epoch_as_datetime(self.start_time)
         for cycle, (start_str, end_str) in cycle_numbers.items():
@@ -908,7 +906,7 @@ class MeasurementSet:
         return latest.end_time
 
     def get_vla_corrstring(self) -> str:
-        """Get correlation string for VLA
+        """Get correlation string for VLA.
 
         Returns:
             corrstring: string value of correlation
@@ -933,7 +931,6 @@ class MeasurementSet:
         Returns:
             list: a list of correlation labels.
         """
-
         corrs = set()
         for dd in self.data_descriptions:
             if spw in ('', '*', None) or (isinstance(spw, str) and str(dd.spw.id) in spw.split(',')):
@@ -1037,10 +1034,7 @@ class MeasurementSet:
         return field_spws
 
     def get_vla_numchan(self):
-        """Get number of channels for VLA
-
-        Args:
-            None
+        """Get number of channels for VLA.
 
         Returns:
             channels:  NUM_CHAN column from spectral window table
@@ -1053,8 +1047,9 @@ class MeasurementSet:
         return channels
 
     def get_vla_tst_bpass_spw(self, spwlist=[]):
-        """Get VLA test bandpass or delay spws
-            This function replaced functionality for get_vla_tst_delay_spw - PIPE-1325
+        """Get VLA test bandpass or delay spws.
+
+        This function replaced functionality for get_vla_tst_delay_spw - PIPE-1325
 
         Args:
             spwlist (List, optional): list of string spws   ['1', '2', '3']
@@ -1080,7 +1075,7 @@ class MeasurementSet:
         return tst_bpass_spw
 
     def get_vla_critfrac(self) -> float:
-        """Identify bands/basebands/spws
+        """Identify bands/basebands/spws.
 
         Returns:
             critical fraction
@@ -1251,8 +1246,9 @@ class MeasurementSet:
         if band is not None:
             if self.antenna_array.name not in ('VLA', 'EVLA'):
                 LOG.warning(
-                    "The band parameter is only applicable to VLA data. For non-VLA datasets, "
-                    "it has no effect on the maximum integration time calculation.")
+                    'The band parameter is only applicable to VLA data. For non-VLA datasets, '
+                    'it has no effect on the maximum integration time calculation.'
+                )
             spw2band = self.get_vla_spw2band()
             spws = [spw_obj for spw_obj in spws if spw2band[spw_obj.id].lower() == band.lower()]
             science_spw_dd_ids = [self.get_data_description(spw).id for spw in spws]
@@ -1319,7 +1315,13 @@ class MeasurementSet:
         times_on_source_per_field_id = dict()
         for field_id in field_ids:
             with casa_tools.TableReader(self.name) as table:
-                taql = '(STATE_ID IN %s AND FIELD_ID IN [%s] AND DATA_DESC_ID in [%s] AND SCAN_NUMBER in %s AND ANTENNA1=%s AND ANTENNA2=%s)'.format(utils.list_to_str(state_ids), field_id, first_science_spw_dd_id, utils.list_to_str(scan_ids), ant1, ant2)
+                state_str = utils.list_to_str(state_ids)
+                scan_str = utils.list_to_str(scan_ids)
+                taql = (
+                    f'(STATE_ID IN {state_str} AND FIELD_ID IN [{field_id}] '
+                    f'AND DATA_DESC_ID IN [{first_science_spw_dd_id}] '
+                    f'AND SCAN_NUMBER IN {scan_str} AND ANTENNA1={ant1} AND ANTENNA2={ant2})'
+                )
                 with contextlib.closing(table.query(taql)) as subtable:
                     integration = subtable.getcol('INTERVAL')
                 times_on_source_per_field_id[field_id] = np.sum(integration)

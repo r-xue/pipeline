@@ -16,29 +16,6 @@
 # * This class performs all of the deterministic flagging types in the
 #   FlagDeterBase*() classes.
 
-# To test these classes by themselves without the rest of the pipeline, enter
-# these commands:
-#
-# import pipeline
-#
-# vis = [ '<MS name>' ]
-# context = pipeline.Pipeline( vis ).context
-#
-# inputs = pipeline.hifv.tasks.flagging.FlagDeterVLA.Inputs( context, vis=vis,
-#   output_dir='.', autocorr=True, shadow=True, scan=True, scannumber='4,5,8',
-#   intents='*AMPLI*', edgespw=True, fracspw=0.1, fracspwfps=0.1 )
-#
-# task = pipeline.hifv.tasks.flagging.FlagDeterVLA( inputs )
-# jobs = task.analyse()
-#
-# status = task.execute()
-#
-# In other words, create a context, create the inputs (which sets the public
-# variables to the correct values and creates the temporary flag command file),
-# convert the class arguments to arguments to the CASA task tflagdata), create
-# the FlatDeterVLA() instance, perform FlatDeterVLA.analyse(), and execute the
-# class.
-
 # Classes:
 # --------
 # FlagDeterVLA        - This class represents the pipeline interface to the
@@ -239,7 +216,7 @@ class FlagDeterVLAInputs(flagdeterbase.FlagDeterBaseInputs):
         """Initialize Inputs.
 
         Args:
-            context: Pipeline context.
+            context: Pipeline context object containing state information.
 
             vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
@@ -256,7 +233,7 @@ class FlagDeterVLAInputs(flagdeterbase.FlagDeterBaseInputs):
 
             scannumber: A string containing a  comma delimited list of scans to be flagged.
 
-                Example: '3,5,6'
+                Example: ``'3,5,6'``
 
             quack: Quack scans
 
@@ -266,7 +243,7 @@ class FlagDeterVLAInputs(flagdeterbase.FlagDeterBaseInputs):
 
             intents: A string containing a comma delimited list of intents against which the scans to be flagged are matched.
 
-                Example: `'*BANDPASS*'`
+                Example: ``'*BANDPASS*'``
 
             edgespw: Fraction of the baseline correlator TDM edge channels to be flagged.
 
