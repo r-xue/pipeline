@@ -18,7 +18,9 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
                                        linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-QL'
 
-    # niter
+    def is_eph_obj(self, field):
+        return False
+
     def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0, intent='TARGET') -> int:
         """Adjust niter value between cleaning iteration steps based on imaging parameters, mask and residual"""
         if niter:
