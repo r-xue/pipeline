@@ -53,6 +53,8 @@ from typing import List, Optional
 import xml.etree.ElementTree as ElementTree
 from xml.dom import minidom
 
+import numpy
+
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.qaadapter as qaadapter
 import pipeline.infrastructure.utils as utils
@@ -807,9 +809,13 @@ def xml_for_sensitivity(d, stage_name):
     try:
         theoretical_sens_val = d['theoretical_sensitivity']['value']
         # Handle array-to-scalar conversion for NumPy 1.25+ compatibility
-        if hasattr(theoretical_sens_val, 'item'):
-            theoretical_sens_val = theoretical_sens_val.item()
-        if d['theoretical_sensitivity'] is None or float(theoretical_sens_val) < 0:
+        # Ensure val is at least a 1-D array, then extract first element
+        val_arr = numpy.array(theoretical_sens_val, ndmin=1)
+        if val_arr.size > 1:
+            LOG.warning('Theoretical sensitivity array has %d elements; using first element only',
+                        val_arr.size)
+        theoretical_sens_val = val_arr[0]
+        if float(theoretical_sens_val) < 0:
             theoretical_sensitivity_jy_per_beam = 'N/A'
         else:
             theoretical_sensitivity = qa.quantity(d['theoretical_sensitivity'])
