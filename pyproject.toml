@@ -191,16 +191,15 @@ pandoc = "*"
 # used for monolithic installations.
 # Also install the 'dev' extras to ensure development dependencies are available.
 pipeline = { path = ".", editable = true, extras = ["dev"] }
-casampi = ">=0.5.5"
 protobuf = "==3.20.*"
 grpcio = ">=1.62"
 six = ">=1.17"
-casaplotms = ">=2.5.3"
-casaplotserver = ">=1.8.2"
 
-[tool.pixi.pypi-options]
-extra-index-urls = ["https://casa-pip.nrao.edu/repository/pypi-group/simple"]
-index-strategy = "unsafe-best-match"
+casampi = { version = ">=0.5.5", index = "https://casa-pip.nrao.edu/repository/pypi-group/simple" }
+casaplotms = { version = ">=2.5.3", index = "https://casa-pip.nrao.edu/repository/pypi-group/simple" }
+casaplotserver = { version = ">=1.8.2", index = "https://casa-pip.nrao.edu/repository/pypi-group/simple" }
+casatasks = { version = ">=6.6.6", index = "https://casa-pip.nrao.edu/repository/pypi-group/simple" }
+casatools = { version = ">=6.6.6", index = "https://casa-pip.nrao.edu/repository/pypi-group/simple" }
 
 [tool.pixi.system-requirements]
 # Instruct pixi to target at macOS 14+ due to casatools availability
@@ -222,6 +221,19 @@ fetch-casarundata = "python -c 'import casatools'"
 build-docs = { cmd = "make html_docs", cwd = "docs" }
 
 # --------------------------------------------------------------------------
+# Feature: CASA ver6.6.6-release — Python 3.10
+# --------------------------------------------------------------------------
+
+[tool.pixi.feature.casa666-py310]
+platforms = ["linux-64", "osx-arm64"]
+
+[tool.pixi.feature.casa666-py310.dependencies]
+python = "3.10.*"
+
+[tool.pixi.feature.casa666-py310.pypi-dependencies]
+casashell = { version = "==6.6.6.*", index = "https://casa-pip.nrao.edu/repository/pypi-group/simple" }
+
+# --------------------------------------------------------------------------
 # Feature: CASA ver6.7.1-dev/snapshot — Python 3.10/3.12
 # --------------------------------------------------------------------------
 
@@ -232,7 +244,7 @@ platforms = ["linux-64", "osx-arm64"]
 python = "3.10.*"
 
 [tool.pixi.feature.casa671-py310.pypi-dependencies]
-casashell = "==6.7.1.*"
+casashell = { version = "==6.7.1.*", index = "https://casa-pip.nrao.edu/repository/pypi-group/simple" }
 
 [tool.pixi.feature.casa671-py312]
 platforms = ["linux-64", "osx-arm64"]
@@ -241,7 +253,7 @@ platforms = ["linux-64", "osx-arm64"]
 python = "3.12.*"
 
 [tool.pixi.feature.casa671-py312.pypi-dependencies]
-casashell = "==6.7.1.*"
+casashell = { version = "==6.7.1.*", index = "https://casa-pip.nrao.edu/repository/pypi-group/simple" }
 
 # --------------------------------------------------------------------------
 # Feature: CASA ver6.7.5-dev/snapshot — Python 3.12/3.13
@@ -254,7 +266,7 @@ platforms = ["linux-64", "osx-arm64"]
 python = "3.12.*"
 
 [tool.pixi.feature.casa675-py312.pypi-dependencies]
-casashell = "==6.7.5.*"
+casashell = { version = "==6.7.5.*", index = "https://casa-pip.nrao.edu/repository/pypi-group/simple" }
 
 [tool.pixi.feature.casa675-py313]
 # Note: bdsf is currently only available for linux-64 for cp13
@@ -264,7 +276,7 @@ platforms = ["linux-64"]
 python = "3.13.*"
 
 [tool.pixi.feature.casa675-py313.pypi-dependencies]
-casashell = "==6.7.5.*"
+casashell = { version = "==6.7.5.*", index = "https://casa-pip.nrao.edu/repository/pypi-group/simple" }
 
 # --------------------------------------------------------------------------
 # Feature: Docs build extras
@@ -277,14 +289,14 @@ platforms = ["linux-64", "osx-arm64"]
 python = "3.12.*"
 
 [tool.pixi.feature.docs.pypi-dependencies]
-casashell = "==6.7.5.*"
+casashell = { version = "==6.7.5.*", index = "https://casa-pip.nrao.edu/repository/pypi-group/simple" }
 pipeline = { path = ".", editable = true, extras = ["docs"] }
 
-
 [tool.pixi.environments]
-default = { solve-group = "casa675-py312", features = ["casa675-py312"], solve-strategy = "highest"}
-casa671-py310 = { solve-group = "casa671-py310", features = ["casa671-py310"], solve-strategy = "highest" }
-casa671-py312 = { solve-group = "casa671-py312", features = ["casa671-py312"], solve-strategy = "highest" }
-casa675-py312 = { solve-group = "casa675-py312", features = ["casa675-py312"], solve-strategy = "highest" }
-casa675-py313 = { solve-group = "casa675-py313", features = ["casa675-py313"], solve-strategy = "highest" }
-docs = { solve-group = "casa675-py312", features = ["docs"], solve-strategy = "highest" }
+default = { features = ["casa675-py312"], solve-group = "casa675-py312" }
+docs = { features = ["docs"], solve-group = "casa675-py312" }
+casa666-py310 = { features = ["casa666-py310"], solve-group = "casa666-py310" }
+casa671-py310 = { features = ["casa671-py310"], solve-group = "casa671-py310" }
+casa671-py312 = { features = ["casa671-py312"], solve-group = "casa671-py312" }
+casa675-py312 = { features = ["casa675-py312"], solve-group = "casa675-py312" }
+casa675-py313 = { features = ["casa675-py313"], solve-group = "casa675-py313" }
