@@ -280,11 +280,13 @@ class MakeImages(basetask.StandardTaskTemplate):
                     # Note add_result() removes 'heuristics' from worker_result
                     heuristics = target['heuristics']
                     result.add_result(worker_result, target, outcome='success')
+
                     # Export RMS of  sources
                     if self._is_target_for_sensitivity(worker_result, heuristics):
                         s = self._get_image_rms_as_sensitivity(worker_result, target, heuristics)
                         if s is not None:
                             result.sensitivities_for_aqua.append(s)
+
                     del heuristics
 
         # set of descriptions
@@ -317,6 +319,7 @@ class MakeImages(basetask.StandardTaskTemplate):
 
     def _add_vlass_metadata(self, result):
         """Attach extra imaging metadata to Tclean results for the VLASS Coarse Cube imaging."""
+
         if self.inputs.context.imaging_mode != 'VLASS-SE-CUBE':
             for idx, tclean_result in enumerate(result.results):
                 target = result.targets[idx]
@@ -438,6 +441,7 @@ class MakeImages(basetask.StandardTaskTemplate):
         reject = None
         if 'keep' in tclean_result.imaging_metadata:
             reject = not tclean_result.imaging_metadata['keep']
+
         imlist = utils.glob_ordered(imagename.replace('.image', '.*'))
 
         vis_name = self.inputs.vis[0]
@@ -446,6 +450,7 @@ class MakeImages(basetask.StandardTaskTemplate):
         flag_stats = self._executor.execute(job)
         vlass_bw = 0
         spwobj = None
+        nominal_bw = 0.0
         for curspw in tclean_result.spw.split(","):
             flagged_by_spw = 0
             for spw_chan in flag_stats['spw:channel']:
@@ -456,19 +461,25 @@ class MakeImages(basetask.StandardTaskTemplate):
                     flagged_by_spw += 1
 
             spwobj = msobj.get_spectral_window(curspw)
+
+            if spwobj and spwobj.bandwidth is not None:
+                nominal_bw += float(spwobj.bandwidth.value)
+
             chan_diff = np.diff(spwobj.channels.chan_freqs)
             if len(spwobj.channels.chan_freqs) != 0 and np.allclose(chan_diff, chan_diff[0]):
                 chan_width = spwobj.channels.chan_widths[0]
             else:
                 chan_width = np.median(np.abs(chan_diff))
             vlass_bw += flagged_by_spw * chan_width
-        if spwobj:
-            nominal_bw = spwobj.bandwidth
+
+        if nominal_bw == 0.0:
+            nominal_bw = None
+
         epoch, tile, version = self._get_vlass_epoch_tile_version(imagename)
         for name in imlist:
             with casa_tools.ImageReader(name) as image:
                 info = image.miscinfo()
-                info['VLASSBWN'] = float(nominal_bw.value)
+                info['VLASSBWN'] = nominal_bw
                 if reject:
                     info['VLASSRJ'] = reject
                 LOG.info('mark the image %s as reject=%r', name, reject)
