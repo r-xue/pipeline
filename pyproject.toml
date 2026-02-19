@@ -295,8 +295,8 @@ pipeline = { path = ".", editable = true, extras = ["docs"] }
 [tool.pixi.environments]
 default = { features = ["casa675-py312"], solve-group = "casa675-py312" }
 docs = { features = ["docs"], solve-group = "casa675-py312" }
-casa666-py310 = { features = ["casa666-py310"], solve-group = "casa666-py310" }
-casa671-py310 = { features = ["casa671-py310"], solve-group = "casa671-py310" }
-casa671-py312 = { features = ["casa671-py312"], solve-group = "casa671-py312" }
+casa666-py310 = { features = ["casa666-py310"] }
+casa671-py310 = { features = ["casa671-py310"] }
+casa671-py312 = { features = ["casa671-py312"] }
 casa675-py312 = { features = ["casa675-py312"], solve-group = "casa675-py312" }
-casa675-py313 = { features = ["casa675-py313"], solve-group = "casa675-py313" }
+casa675-py313 = { features = ["casa675-py313"] }

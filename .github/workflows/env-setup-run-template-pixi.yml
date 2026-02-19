@@ -53,8 +53,15 @@ jobs:
         with:
           pixi-version: v0.63.2
           environments: ${{ inputs.pixi_env }}
-          cache: true
+          # Caching is disabled to always use the latest dev snapshots on demand.
+          cache: false
+          # To enable caching in future, set `cache: true` and define an appropriate cache key,
+          # for example: v1-${{ runner.os }}-${{ inputs.pixi_env }}.
           activate-environment: ${{ inputs.pixi_env }}
+
+      - name: Enable post-link scripts
+        shell: bash
+        run: pixi config set --local run-post-link-scripts insecure
 
       - name: Install System Dependencies (Ubuntu)
         if: runner.os == 'Linux'
@@ -74,16 +81,16 @@ jobs:
           brew install --cask xquartz
 
       - name: Configure CASA
-        shell: pixi run -e ${{ inputs.pixi_env }} bash -e {0}
+        shell: bash
         run: |
           mkdir -p ~/.casa
           mkdir -p casarundata
-          cat > ~/.casa/config.py << EOF
-          measurespath = '${{ github.workspace }}/casarundata'
-          datapath = [ '${{ github.workspace }}/casarundata', '${{ github.workspace }}/pipeline-testdata' ]
+          cat > ~/.casa/config.py << PYEOF
+          measurespath = "$GITHUB_WORKSPACE/casarundata"
+          datapath = [ "$GITHUB_WORKSPACE/casarundata", "$GITHUB_WORKSPACE/pipeline-testdata" ]
           measures_auto_update = True
           data_auto_update = True
-          EOF
+          PYEOF
 
       - name: Cache casarundata
         uses: actions/cache@v4
@@ -92,11 +99,11 @@ jobs:
           key: casarundata
 
       - name: Fetch casarundata
-        shell: pixi run -e ${{ inputs.pixi_env }} bash -e {0}
+        # Trigger casatools import to fetch or update casarundata under $GITHUB_WORKSPACE/casarundata.
+        # This may download or update measurement sets and related runtime data; fail explicitly if it does not succeed.
+        shell: bash
         run: |
-          # Trigger casatools import to fetch or update casarundata under $GITHUB_WORKSPACE/casarundata.
-          # This may download or update measurement sets and related runtime data; fail explicitly if it does not succeed.        
-          python -c "import casatools" || {
+          pixi run -e ${{ inputs.pixi_env }} python -c "import casatools" || {
             echo 'casatools import failed; casarundata may be incomplete.' >&2
             exit 1
           }
@@ -133,12 +140,16 @@ jobs:
 
       - name: Run Pixi Task
         if: inputs.task != ''
+        shell: bash
         run: pixi run -e ${{ inputs.pixi_env }} ${{ inputs.task }}
 
       - name: Run Custom Commands
         if: inputs.task == '' && inputs.run_command != ''
-        shell: pixi run -e ${{ inputs.pixi_env }} bash -e {0}
-        run: ${{ inputs.run_command }}
+        shell: bash
+        env:
+          RUN_COMMAND: ${{ inputs.run_command }}
+        run: |
+          pixi run -e ${{ inputs.pixi_env }} bash -c "$RUN_COMMAND"
 
       - name: Upload Artifacts
         if: inputs.artifact_name != ''
