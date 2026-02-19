@@ -131,7 +131,7 @@ class Hanning(basetask.StandardTaskTemplate):
         The original MS is removed from disk, and the temporary MS is renamed to the original MS.
         An exception in thrown if an error occurs.
 
-        Return:
+        Returns:
             HanningResults() type object
         """
 
@@ -205,7 +205,7 @@ class Hanning(basetask.StandardTaskTemplate):
             LOG.info("Removing original VIS %s", self.inputs.vis)
             shutil.rmtree(self.inputs.vis)
 
-            LOG.info("Renaming temphanning.ms to %s", self.inputs.vis)
+            LOG.info("Renaming %s to %s", temp_ms, self.inputs.vis)
             os.rename(temp_ms, self.inputs.vis)
 
         except Exception as ex:
@@ -214,17 +214,17 @@ class Hanning(basetask.StandardTaskTemplate):
             task_successful = False
 
             # Cleanup: if temp MS exists but original is gone, try to restore
-            if os.path.exists('temphanning.ms') and not os.path.exists(self.inputs.vis):
+            if os.path.exists(temp_ms) and not os.path.exists(self.inputs.vis):
                 try:
                     LOG.warning("Attempting to recover by renaming temporary MS")
-                    os.rename('temphanning.ms', self.inputs.vis)
+                    os.rename(temp_ms, self.inputs.vis)
                 except Exception as cleanup_ex:
                     LOG.error("Failed to recover MS: %s", cleanup_ex)
             # If both exist, remove temp to avoid confusion
-            elif os.path.exists('temphanning.ms') and os.path.exists(self.inputs.vis):
+            elif os.path.exists(temp_ms) and os.path.exists(self.inputs.vis):
                 try:
                     LOG.info("Removing incomplete temporary MS")
-                    shutil.rmtree('temphanning.ms')
+                    shutil.rmtree(temp_ms)
                 except Exception as cleanup_ex:
                     LOG.warning("Failed to cleanup temporary MS: %s", cleanup_ex)
 
@@ -239,7 +239,7 @@ class Hanning(basetask.StandardTaskTemplate):
         Args:
             results: Results object from the prepare() method.
 
-        Return:
+        Returns:
             The same Results object passed in, unmodified.
         """
         return results
@@ -247,7 +247,7 @@ class Hanning(basetask.StandardTaskTemplate):
     def _do_hanningsmooth(self) -> Callable[[JobRequest], Results]:
         """Execute the CASA task hanningsmooth
 
-        Return:
+        Returns:
             The `execute` function of an Executor class, which returns a result dictionary
         """
 
@@ -264,7 +264,7 @@ class Hanning(basetask.StandardTaskTemplate):
         Args:
             spw: spectral window number
 
-        Return:
+        Returns:
             True if maser line may exist in window; False otherwise
         """
         LOG.debug("Checking for maser line contamination in spw %s.", spw)
