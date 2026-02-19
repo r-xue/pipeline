@@ -223,7 +223,7 @@ class PhaseOffsetPlot(object):
                         dummy_data = numpy.ma.MaskedArray(data=[0, 1], mask=True)
 
                         axis.plot(dummy_time.time, dummy_data, '.')
-                        _, = axis.plot(dummy_time.time, dummy_data)
+                        _, = axis.plot(dummy_time.time, dummy_data, 'o')
 
                         self._plot_flagged_data(dummy_time, dummy_slice, axis,
                                                 True, annotation='NO DATA')
