@@ -333,7 +333,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                             irow = row
                             param = self._configure_baseline_param(irow, pol, polyorder, nchan, edge, mask_array, _masklist)
 
-                            # For some reason the fit function isn't pulled from the current class instance.
+                            # Set fit function from the current class instance.
                             param[BLP.FUNC] = self.fitfunc.blfunc
                             param[BLP.NWAVE] = self.wave_number
 
