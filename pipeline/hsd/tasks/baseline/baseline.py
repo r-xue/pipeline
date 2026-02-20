@@ -49,7 +49,7 @@ class SDBaselineInputs(vdp.StandardInputs):
     fitfunc = vdp.VisDependentProperty(default='cspline')
     switchpoly = vdp.VisDependentProperty(default=True)
     clusteringalgorithm = vdp.VisDependentProperty(default='hierarchy')
-    wave_number = vdp.VisDependentProperty(default=[0])
+    wave_number = vdp.VisDependentProperty(default=None)
     deviationmask = vdp.VisDependentProperty(default=True)
     deviationmask_sigma_threshold = vdp.VisDependentProperty(default=5.0)
 

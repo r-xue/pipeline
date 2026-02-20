@@ -44,7 +44,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
     vis = vdp.VisDependentProperty(default='', null_input=['', None, [], ['']])
     plan = vdp.VisDependentProperty(default=None)
     fit_func = vdp.VisDependentProperty(default='cspline')
-    wave_number = vdp.VisDependentProperty(default=[0])
+    wave_number = vdp.VisDependentProperty(default=None)
     fit_order = vdp.VisDependentProperty(default='automatic')
     switchpoly = vdp.VisDependentProperty(default=True)
     edge = vdp.VisDependentProperty(default=(0, 0))
@@ -176,7 +176,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         vis: Optional[Union[str, List[str]]] = None,
         plan: Optional[Union['RGAccumulator', List['RGAccumulator']]] = None,
         fit_func: Optional[FitFunc] = None,
-        wave_number: Optional[List[int]] = None,
+        wave_number: Optional[Union[List[int], None]] = None,
         fit_order: Optional[FitOrder] = None,
         switchpoly: Optional[bool] = None,
         edge: Optional[List[int]] = None,
@@ -399,7 +399,12 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
 
         # Configures wave numbers according to the per spw inputs by users or distributes
         # a single wave number list across each spw that uses `sinusoid` as a fit function.
-        SerialBaselineSubtractionWorker.configure_wave_number(spw_funcs_dict, wave_number)
+        #
+        # In this way the wave number is required to get a sinusoidal fit. Even if the
+        # function is set to `sinusoid`, the wave_number function will fail with an unknown
+        # wave number type if it isn't set.
+        if not wave_number is None:
+            SerialBaselineSubtractionWorker.configure_wave_number(parameter_config=spw_funcs_dict, wave_number=wave_number)
 
         # initialization of blparam file.
         # blparam file needs to be removed before starting iteration through
@@ -602,7 +607,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         Args:
             switchpoly:
             context:
-            ms:
+            ms: Measurement set
             fit_function: The fit function parameter (str, dict, or None).
             spw_id_list: List of spectral window IDs to process.
 
@@ -672,7 +677,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
     def _process_dictionary(
             parameter_config: Dict[int, BaselineFitParamConfig],
             wave_number: Dict[int, List] = None
-    ):
+    )->Dict[int, BaselineFitParamConfig]:
 
         spw_list = list(wave_number.keys())
 

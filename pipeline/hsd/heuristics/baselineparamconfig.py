@@ -133,11 +133,17 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                         break
         return colname
 
-    def calculate(self, datatable: DataTable, ms: MeasurementSet,
-                  rowmap: dict, antenna_id: int, field_id: int,
-                  spw_id: int, fit_order: Union[str, int],
-                  edge: Tuple[int, int], deviation_mask: List[dict],
-                  blparam: str) -> str:
+    def calculate(self, datatable: DataTable,
+                  ms: MeasurementSet,
+                  rowmap: dict,
+                  antenna_id: int,
+                  field_id: int,
+                  spw_id: int,
+                  fit_order: Union[str, int],
+                  edge: Tuple[int, int],
+                  deviation_mask: List[dict],
+                  blparam: str
+        ) -> str:
         """
         Generate/update BLParam file according to the input parameters.
 
@@ -323,16 +329,14 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                             # fitting
                             polyorder = min(averaged_polyorder, max_polyorder)
                             mask_array[:] = base_mask_array
-                            #LOG.info('mask_array = {}'.format(''.join(map(str, mask_array))))
-                            #irow = len(row_list_total)+len(row_list)
-                            #irow = len(index_list_total) + i
+
                             irow = row
                             param = self._configure_baseline_param(irow, pol, polyorder, nchan, edge, mask_array, _masklist)
 
-                            if self.fitfunc.blfunc == "sinusoid" and self.wave_number is not None:
-                                param[BLP.FUNC] = self.fitfunc.blfunc
-                                param[BLP.NWAVE] = self.wave_number
-                                param[BLP.USELF] = False
+                            # For some reason the fit function isn't pulled from the current class instance.
+                            param[BLP.FUNC] = self.fitfunc.blfunc
+                            param[BLP.NWAVE] = self.wave_number
+
 
                             if TRACE():
                                 LOG.trace('Row {}: param={}'.format(row, param))
