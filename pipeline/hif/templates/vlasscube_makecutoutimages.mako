@@ -67,7 +67,7 @@ def dev2color(x):
     return rgb_hex            
 
 def dev2shade(x):
-  cmap=colormaps.get_cmap('Reds')
+    cmap=colormaps.get_cmap('Reds')
     absx=abs(x)
     if absx<4 and absx>=3:
       rgb_hex=colors.to_hex(cmap(0.2))
@@ -80,7 +80,7 @@ def dev2shade(x):
     return rgb_hex  
 
 def pct2shade(x):
-  cmap=colormaps.get_cmap('Reds')
+    cmap=colormaps.get_cmap('Reds')
     if x>=0.5 and x<0.8:
       rgb_hex=colors.to_hex(cmap(0.2))
     if x>=0.2 and x<0.5:
