@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>enum &mdash; Pipeline 
- (2026.0.0.0) 2026.0.0.0+501-g56e111a89b documentation</title>
+ (2026.0.0.0) 2026.0.0.0+508-gedfa947e20 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=f8130f2b"></script>
+      <script src="../_static/documentation_options.js?v=dbddf07a"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -1325,10 +1325,15 @@ window.addEventListener("load", load);</script>
 <span class="sd">        `value` is in `cls` if:</span>
 <span class="sd">        1) `value` is a member of `cls`, or</span>
 <span class="sd">        2) `value` is the value of one of the `cls`&#39;s members.</span>
+<span class="sd">        3) `value` is a pseudo-member (flags)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_value2member_map_</span> <span class="ow">or</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_unhashable_values_</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_unhashable_values_</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__delattr__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="c1"># nicer error message when someone tries to delete an attribute</span>
@@ -2670,7 +2675,7 @@ window.addEventListener("load", load);</script>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2026, Pipeline Dev. Team, build: 2026.0.0.0+501-g56e111a89b.</p>
+    <p>&#169; Copyright 2020–2026, Pipeline Dev. Team, build: 2026.0.0.0+508-gedfa947e20.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
