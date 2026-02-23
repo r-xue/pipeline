@@ -259,7 +259,8 @@ class Solint(basetask.StandardTaskTemplate):
 
         self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
         # PIPE-1637: adding ',' in the manual and auto refantignore parameter
-        refantignore = ','.join(filter(None, [self.inputs.refantignore, self.ignorerefant]))
+        parts = ([self.inputs.refantignore.strip()] if self.inputs.refantignore.strip() else []) + self.ignorerefant
+        refantignore = ','.join(parts)
         # PIPE-595: if refant list is not provided, compute refants else use provided refant list.
         if len(self.inputs.refant) == 0:
             refantobj = findrefant.RefAntHeuristics(vis=calMs, field=refantfield,
