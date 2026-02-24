@@ -403,7 +403,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         # In this way the wave number is required to get a sinusoidal fit. Even if the
         # function is set to `sinusoid`, the wave_number function will fail with an unknown
         # wave number type if it isn't set.
-        if not wave_number is None:
+        if wave_number is not None:
             SerialBaselineSubtractionWorker.configure_wave_number(parameter_config=spw_funcs_dict, wave_number=wave_number)
 
         # initialization of blparam file.
@@ -626,8 +626,10 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             if fit_function not in valid_functions:
                 raise ValueError(f"Unsupported fitting function value: {fit_function}")
 
+            _spw_id_list = [context.observing_run.virtual2real_spw_id(key, ms) if
+                            context is not None else key for key in spw_id_list]
             heuristics_out = dict.fromkeys(
-                spw_id_list,
+                _spw_id_list,
                 BaselineFitParamConfig(
                         fitfunc=fit_function,
                         switchpoly=switchpoly
@@ -680,10 +682,8 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             wave_number: Dict[int, List] = None
     )->Dict[int, BaselineFitParamConfig]:
 
-        spw_list = list(wave_number.keys())
-
         for key, value in parameter_config.items():
-            if key in spw_list and value.fitfunc.blfunc == "sinusoid":
+            if key in wave_number.keys() and value.fitfunc.blfunc == "sinusoid":
                 parameter_config[key].wave_number = wave_number[key]
 
         return parameter_config
