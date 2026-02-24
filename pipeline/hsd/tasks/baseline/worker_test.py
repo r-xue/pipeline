@@ -29,9 +29,9 @@ AUTO = "automatic"
 def test_build_fitting_configuration(inp, expected, should_raise):
     if should_raise:
         with pytest.raises(expected):
-            worker.build_fitting_configuration(inp, SPWS)
+            worker.build_fitting_configuration(spw_id_list=SPWS, fit_function=inp)
         return
-    cfg = worker.build_fitting_configuration(inp, SPWS)
+    cfg = worker.build_fitting_configuration(spw_id_list=SPWS, fit_function=inp)
     assert isinstance(cfg, dict) and set(cfg.keys()) == set(SPWS)
     assert all(isinstance(v, BaselineFitParamConfig) for v in cfg.values())
     plain = {k: v.fitfunc.blfunc for k, v in cfg.items()}
