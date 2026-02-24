@@ -13,17 +13,37 @@ AUTO = "automatic"
     "inp, expected, should_raise",
     [
         # valid inputs
-        ({17: DEF,      19: DEF,      23: DEF}, None, False),
-        ({17: DEF,      19: DEF,      23: DEF}, {}, False),
-        ({17: "cspline", 19: "cspline", 23: "cspline"}, "cspline", False), #   SPLINE = CSPLINE in the FittingFunction class of fitrorder.py
-        ({17: DEF, 19: DEF, 23: DEF}, {30: "poly"}, False),
-        ({17: "poly",   19: "poly",   23: "poly"}, "poly", False),
-        ({17: DEF,      19: DEF,      23: "poly"}, {"23":"poly"}, False),
-        ({17:"poly",  19:"cspline",  23: DEF}, {"17":"poly", 19:"cspline"}, False),
-        ({17:"poly",    19:"cspline",  23:"poly"}, {17:"poly", 19:"cspline", 23:"poly"}, False),
+        (
+                {17: DEF,      19: DEF,      23: DEF},
+                {17: "cspline", 19: "cspline", 23: "cspline"},
+                False
+        ),
+        (
+                {17: "poly",   19: "poly",   23: "poly"},
+                {17: "poly",   19: "poly",   23: "poly"},
+                False
+        ),
+        (
+                {17: DEF,       19: DEF,       23: "poly"},
+                {17: "cspline", 19: "cspline", 23: "poly"},
+                False
+        ),
+        (
+                {17: "poly",  19: "cspline",  23: "poly"},
+                {17: "poly",  19: "cspline",  23: "poly"},
+                False
+        ),
         # error inputs 
-        (ValueError, "badfunc", True),
-        (ValueError, {19:"invalid"}, True),
+        (
+                "badfunc",
+                ValueError,
+                True
+        ),
+        (
+                {19: "invalid"},
+                ValueError,
+                True
+        ),
     ],
 )
 def test_build_fitting_configuration(inp, expected, should_raise):
