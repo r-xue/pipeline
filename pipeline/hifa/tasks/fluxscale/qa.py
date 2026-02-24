@@ -325,7 +325,7 @@ def _get_field_to_analyse(ms: MeasurementSet, intent: str) -> Field | None:
         intent: intent to find field for
 
     Returns:
-        Field to analyse.
+        Field to analyse, or None if no field found.
     """
     candidate_fields = [f for f in ms.get_fields(intent=intent) if 'TARGET' not in f.intents]
     if not candidate_fields:
