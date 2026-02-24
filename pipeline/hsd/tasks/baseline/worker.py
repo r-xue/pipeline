@@ -628,13 +628,13 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
 
             _spw_id_list = [context.observing_run.virtual2real_spw_id(key, ms) if
                             context is not None else key for key in spw_id_list]
-            heuristics_out = dict.fromkeys(
-                _spw_id_list,
-                BaselineFitParamConfig(
-                        fitfunc=fit_function,
-                        switchpoly=switchpoly
-                )
-            )
+
+            heuristics_out = {
+                spw_id: BaselineFitParamConfig(
+                    fitfunc=fit_function,
+                    switchpoly=switchpoly
+                ) for spw_id in _spw_id_list
+            }
 
             return heuristics_out
 
