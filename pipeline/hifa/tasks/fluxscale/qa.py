@@ -312,7 +312,7 @@ def _compute_k_spws_for_flux_measurements(field: Field, flux_measurements: Itera
     return k_spws
 
 
-def _get_field_to_analyse(ms: MeasurementSet, intent: str) -> Field:
+def _get_field_to_analyse(ms: MeasurementSet, intent: str) -> Field | None:
     """
     Identify and return which field to analyse for the "k_spw" score.
 
@@ -330,17 +330,12 @@ def _get_field_to_analyse(ms: MeasurementSet, intent: str) -> Field:
     candidate_fields = [f for f in ms.get_fields(intent=intent) if 'TARGET' not in f.intents]
     if not candidate_fields:
         candidate_fields = ms.get_fields(intent=intent)
-    # PIPE-2694
-    # above code forces the candiate_field to the passed intent
-    # but in rare cases, the intent is CHECK and the data did not
-    # observe it, thus below is an added protection to allow None
-    # as the return and allow subsequent no-field WARNING to trigger
-    if candidate_fields:
-        field = min(candidate_fields, key=lambda f: f.time.min())
+    # PIPE-2694 handle CHECK (or any) intent passed when not an observed field
+    if not candidate_fields:
+        return None
     else:
+        return min(candidate_fields, key=lambda f: f.time.min())
         
-        field = None
-    return field
 
 
 def _get_fluxes_for_field(ms: MeasurementSet, field: Field) -> List[Tuple[int, float, float]]:
