@@ -305,53 +305,66 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         if args['calmode'] in ['otf', 'otfraster']:
             args['intent'] = 'OBSERVE_TARGET#ON_SOURCE'
 
-        calapps = []
-        for target_id, reference_id in field_strategy.items():
-            myargs = copy.deepcopy(args)
+        myargs = copy.deepcopy(args)
 
-            # output file
-            reference_field_name = ms.get_fields(reference_id)[0].clean_name
-            if myargs['outfile'] is None or len(myargs['outfile']) == 0:
-                namer = caltable_heuristic.SDSkyCaltable()
-                # filenamer requires field name instead of id
-                myargs['field'] = reference_field_name
-                try:
-                    # we temporarily need 'vis'
-                    myargs['vis'] = myargs['infile']
-                    myargs['outfile'] = relative_path(namer.calculate(output_dir=self.inputs.output_dir,
-                                                                      stage=self.inputs.context.stage,
-                                                                      **myargs))
-                finally:
-                    del myargs['vis']
-            else:
-                myargs['outfile'] = myargs['outfile'] + '.{}'.format(reference_field_name)
-
-            # field
-            myargs['field'] = str(reference_id)
-
-            LOG.debug('args for sdcal: {}'.format(myargs))
-
-            # create job
-            job = casa_tasks.sdcal(**myargs)
-
-            # execute job
-            LOG.debug('Table cache before sdcal: {}'.format(casa_tools.table.showcache()))
+        # output file
+        if myargs["outfile"] is None or len(myargs["outfile"]) == 0:
+            namer = caltable_heuristic.SDSkyCaltable()
             try:
-                self._executor.execute(job)
+                # we temporarily need 'vis'
+                myargs['vis'] = myargs['infile']
+
+                full_path = namer.calculate(
+                    output_dir=self.inputs.output_dir,
+                    stage=self.inputs.context.stage,
+                    **myargs
+                )
             finally:
-                LOG.debug('Table cache after sdcal: {}'.format(casa_tools.table.showcache()))
+                del myargs['vis']
 
-            # check if caltable is empty
-            with casa_tools.TableReader(myargs['outfile']) as tb:
-                is_caltable_empty = tb.nrows() == 0
-            if is_caltable_empty:
-                continue
+            myargs['outfile'] = relative_path(full_path)
+        else:
+            myargs['outfile'] = myargs['outfile']
 
-            # make a note of the current inputs state before we start fiddling
-            # with it. This origin will be attached to the final CalApplication.
-            origin = callibrary.CalAppOrigin(task=SerialSDSkyCal,
-                                             inputs=args)
+        # field
+        myargs["field"] = ",".join(sorted(map(str, field_strategy.values())))
 
+        LOG.debug('args for sdcal: {}'.format(myargs))
+
+        # create job
+        job = casa_tasks.sdcal(**myargs)
+
+        # execute job
+        LOG.debug('Table cache before sdcal: {}'.format(casa_tools.table.showcache()))
+        try:
+            self._executor.execute(job)
+        except Exception as e:
+            LOG.warning(f"Error occurred during sdcal execution: {e}")
+            LOG.warning(
+                f"All ON_SOURCE data in {os.path.basename(myargs['infile'])} "
+                "will be flagged in the applycal stage."
+            )
+        finally:
+            LOG.debug('Table cache after sdcal: {}'.format(casa_tools.table.showcache()))
+
+        # make a note of the current inputs state before we start fiddling
+        # with it. This origin will be attached to the final CalApplication.
+        origin = callibrary.CalAppOrigin(task=SerialSDSkyCal,
+                                         inputs=myargs)
+
+        # check if caltable is empty
+        with casa_tools.TableReader(myargs['outfile']) as tb:
+            is_caltable_empty = tb.nrows() == 0
+        if is_caltable_empty:
+            LOG.warning(
+                f"Caltable {os.path.basename(myargs['outfile'])} is empty. "
+                f"All ON_SOURCE data in {os.path.basename(myargs['infile'])} "
+                "will be flagged in the applycal stage."
+            )
+
+        calapps = []
+
+        for target_id, reference_id in field_strategy.items():
             calto = callibrary.CalTo(vis=myargs['infile'],
                                      spw=myargs['spw'],
                                      field=str(target_id),

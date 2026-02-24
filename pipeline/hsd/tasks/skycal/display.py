@@ -452,8 +452,6 @@ class SingleDishPlotmsLeaf(object):
         spw: str = '',
         ant: str = '',
         coloraxis: str = '',
-        plotindex: int = 0,
-        flush_plot: bool = False,
         **kwargs: Any
     ) -> None:
         """Construct SingleDishPlotmsLeaf instance.
@@ -470,8 +468,6 @@ class SingleDishPlotmsLeaf(object):
             spw: Spectral window selection. Defaults to '' (all spw).
             ant: Antenna selection. Defaults to '' (all antenna).
             coloraxis: Color axis type. Defaults to ''.
-            plotindex: Index of plot to show the field (actually calapp).
-            flush_plot: Flag to flush plot.
         Raises:
             RuntimeError: Invalid field selection in calapp
         """
@@ -484,8 +480,6 @@ class SingleDishPlotmsLeaf(object):
         self.spw = str(spw)
         self.antenna = str(ant)
         self.coloraxis = coloraxis
-        self.plotindex = plotindex
-        self.flush_plot = flush_plot
         self.field = calapp.gainfield
 
         ms = context.observing_run.get_ms(self.vis)
@@ -527,16 +521,10 @@ class SingleDishPlotmsLeaf(object):
             except Exception as e:
                 LOG.error(str(e))
                 LOG.debug(traceback.format_exc())
-                if self.flush_plot:
-                    LOG.error('Failed to generate plot "{}"'.format(figfile))
-                else:
-                    LOG.error('Failed to generate plot for field "{}"'.format(self.field))
+                LOG.error('Failed to generate plot "{}"'.format(figfile))
                 return []
 
-        if self.flush_plot:
-            return [self._get_plot_object(figfile, task)]
-        else:
-            return []
+        return [self._get_plot_object(figfile, task)]
 
     def _create_task(self, title: str, figfile: str) -> JobRequest:
         """Create task of CASA plotms.
@@ -547,9 +535,6 @@ class SingleDishPlotmsLeaf(object):
         Return:
             Instance of JobRequest.
         """
-        clearplots = True if self.plotindex == 0 else False
-        if not self.flush_plot:
-            figfile = ""
         task_args = {'vis': self.caltable,
                      'xaxis': self.xaxis,
                      'yaxis': self.yaxis,
@@ -562,8 +547,6 @@ class SingleDishPlotmsLeaf(object):
                      'legendposition': 'exteriorRight',
                      'averagedata': True,
                      'avgchannel': '1e8',
-                     'plotindex': self.plotindex,
-                     'clearplots': clearplots,
                      'plotfile': figfile
                      }
 
@@ -605,12 +588,14 @@ class SingleDishPlotmsSpwComposite(common.LeafComposite):
         table_spws = sorted(dict_calapp_spws.keys())
         children = []
         for spw in table_spws:
-            children_field = []
-            for plotindex, cal in enumerate(calapp):
-                final_field = plotindex == len(calapp)-1
-                item = self.leaf_class(context, result, cal, xaxis, yaxis, spw=int(spw), ant=ant, pol=pol, plotindex=plotindex, flush_plot=final_field, **kwargs)
-                children_field.append(item)
-            children.extend(children_field)
+            # generate plot per caltable for each spw
+            calapp_unique = []
+            for cal in calapp:
+                if cal.gaintable not in [c.gaintable for c in calapp_unique]:
+                    calapp_unique.append(cal)
+            for cal in calapp_unique:
+                item = self.leaf_class(context, result, cal, xaxis, yaxis, spw=int(spw), ant=ant, pol=pol, **kwargs)
+                children.append(item)
 
         super().__init__(children)
 
@@ -628,7 +613,7 @@ class SingleDishPlotmsAntSpwComposite(common.LeafComposite):
         children = [self.leaf_class(context, result, dict_calapp_ants[ant], xaxis, yaxis,
                     ant=int(ant), pol=pol, **kwargs)
                     for ant in table_ants]
-        super(SingleDishPlotmsAntSpwComposite, self).__init__(children)
+        super().__init__(children)
 
 
 class SingleDishPlotmsAntComposite(common.AntComposite):
@@ -652,9 +637,10 @@ class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
             result: SDSkyCalResults instance.
             calapp: List of CalApplication instances.
         """
-        super(SingleDishSkyCalAmpVsTimeSummaryChart, self).__init__(context, result, calapp,
-                                                                    xaxis='time', yaxis='amp',
-                                                                    coloraxis='field')
+        super().__init__(
+            context, result, calapp,
+            xaxis='time', yaxis='amp', coloraxis='field'
+        )
 
 
 class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
@@ -673,9 +659,10 @@ class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
             result: SDSkyCalResults instance.
             calapp: List of CalApplication instances.
         """
-        super(SingleDishSkyCalAmpVsTimeDetailChart, self).__init__(context, result, calapp,
-                                                                   xaxis='time', yaxis='amp',
-                                                                   coloraxis='field')
+        super().__init__(
+            context, result, calapp,
+            xaxis='time', yaxis='amp', coloraxis='field'
+        )
 
 
 @casa5style_plot
