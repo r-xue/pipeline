@@ -333,8 +333,7 @@ def _get_field_to_analyse(ms: MeasurementSet, intent: str) -> Field | None:
     # PIPE-2694 handle CHECK (or any) intent passed when not an observed field
     if not candidate_fields:
         return None
-    else:
-        return min(candidate_fields, key=lambda f: f.time.min())
+    return min(candidate_fields, key=lambda f: f.time.min())
         
 
 
