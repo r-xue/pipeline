@@ -677,8 +677,8 @@ class StandardTaskTemplate(api.Task, metaclass=abc.ABCMeta):
                 # get our result
                 result = self.prepare(**prepare_parameters)
 
-            # analyse them
-            result = self.analyse(result)
+                # analyse them
+                result = self.analyse(result)
 
                 # tag the result with the class of the originating task
                 result.task = self.__class__
