@@ -26,8 +26,13 @@ class SDSkyCalQAHandler(pqa.QAPlugin):
             context: Pipeline context object containing state information.
             result: SDSkyCalResults instance.
         """
-        calapps = result.outcome
+        calapps = result.final
         resultdict = skycal.compute_elevation_difference(context, result)
+
+        if len(calapps) == 0:
+            LOG.warning('No calibratable skycal results found, skipping QA score calculation.')
+            return
+
         vis = calapps[0].calto.vis
         ms = context.observing_run.get_ms(vis)
         threshold = skycal.ELEVATION_DIFFERENCE_THRESHOLD

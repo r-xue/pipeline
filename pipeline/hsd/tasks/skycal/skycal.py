@@ -224,7 +224,7 @@ class SDSkyCalResults(SingleDishResults):
             outcome: Outcome of the task.
         """
         super(SDSkyCalResults, self).__init__(task, success, outcome)
-        self.final = self.outcome
+        self.final = [calapp for calapp, is_calibratable in self.outcome if is_calibratable]
 
     def merge_with_context(self, context: Context) -> None:
         """Merge result instance into context.
@@ -240,8 +240,11 @@ class SDSkyCalResults(SingleDishResults):
         if self.outcome is None:
             return
 
-        for calapp in self.outcome:
-            context.callibrary.add(calapp.calto, calapp.calfrom)
+        for calapp, is_calibratable in self.outcome:
+            if is_calibratable:
+                context.callibrary.add(calapp.calto, calapp.calfrom)
+            else:
+                continue
 
     def _outcome_name(self) -> str:
         """Return string representing the outcome.
@@ -338,12 +341,10 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         LOG.debug('Table cache before sdcal: {}'.format(casa_tools.table.showcache()))
         try:
             self._executor.execute(job)
+            is_caltable_exist = True
         except Exception as e:
             LOG.warning(f"Error occurred during sdcal execution: {e}")
-            LOG.warning(
-                f"All ON_SOURCE data in {os.path.basename(myargs['infile'])} "
-                "will be flagged in the applycal stage."
-            )
+            is_caltable_exist = False
         finally:
             LOG.debug('Table cache after sdcal: {}'.format(casa_tools.table.showcache()))
 
@@ -352,19 +353,33 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         origin = callibrary.CalAppOrigin(task=SerialSDSkyCal,
                                          inputs=myargs)
 
-        # check if caltable is empty
-        with casa_tools.TableReader(myargs['outfile']) as tb:
-            is_caltable_empty = tb.nrows() == 0
-        if is_caltable_empty:
-            LOG.warning(
-                f"Caltable {os.path.basename(myargs['outfile'])} is empty. "
-                f"All ON_SOURCE data in {os.path.basename(myargs['infile'])} "
-                "will be flagged in the applycal stage."
-            )
-
-        calapps = []
+        calapps_with_status = []
 
         for target_id, reference_id in field_strategy.items():
+            # check if caltable is empty
+            if is_caltable_exist:
+                with casa_tools.TableReader(myargs['outfile']) as tb:
+                    taql = f"FIELD_ID=={reference_id}"
+                    try:
+                        selected = tb.query(taql)
+                        nrows = selected.nrows()
+                        selected.close()
+                    except Exception as e:
+                        nrows = 0
+                    is_caltable_empty = nrows == 0
+            else:
+                is_caltable_empty = True
+
+            is_calibratable = is_caltable_exist and not is_caltable_empty
+            if not is_calibratable:
+                LOG.warning(
+                    "No calibration data for "
+                    f"MS {os.path.basename(myargs['outfile'])}, "
+                    f"field {reference_id}."
+                    f"Corresponding data in {os.path.basename(myargs['infile'])} "
+                    "should be excluded from the processing."
+                )
+
             calto = callibrary.CalTo(vis=myargs['infile'],
                                      spw=myargs['spw'],
                                      field=str(target_id),
@@ -378,11 +393,11 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
 
             # create CalApplication object
             calapp = callibrary.CalApplication(calto, calfrom, origin)
-            calapps.append(calapp)
+            calapps_with_status.append((calapp, is_calibratable))
 
         results = SDSkyCalResults(task=self.__class__,
                                   success=True,
-                                  outcome=calapps)
+                                  outcome=calapps_with_status)
         return results
 
     def analyse(self, result: SDSkyCalResults) -> SDSkyCalResults:
@@ -488,7 +503,7 @@ def compute_elevation_difference(context: Context, results: SDSkyCalResults) -> 
     if not isinstance(results, SDSkyCalResults):
         raise TypeError('Results type should be SDSkyCalResults')
 
-    calapps = results.outcome
+    calapps = results.final
 
     resultdict = {}
 
@@ -535,9 +550,20 @@ def compute_elevation_difference(context: Context, results: SDSkyCalResults) -> 
 
                     # get timestamp from caltable
                     with casa_tools.TableReader(caltable) as tb:
-                        selected = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}'.format(spw_id, antenna_id))
+                        selected = tb.query("&&".join([
+                            f'FIELD_ID=={field_id_off}',
+                            f'SPECTRAL_WINDOW_ID=={spw_id}',
+                            f'ANTENNA1=={antenna_id}'
+                        ]))
                         timecal = selected.getcol('TIME') / 86400.0  # sec -> day
                         selected.close()
+
+                    if len(timecal) == 0:
+                        LOG.info(
+                            f"No calibration data for field {field_id_off}, "
+                            f"spw {spw_id}, antenna {antenna_id}. "
+                        )
+                        continue
 
                     # access DataTable to get elevation
                     datatable_name = os.path.join(
