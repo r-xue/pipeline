@@ -30,7 +30,7 @@ class SDSkyCalQAHandler(pqa.QAPlugin):
         resultdict = skycal.compute_elevation_difference(context, result)
 
         if len(calapps) == 0:
-            LOG.warning('No calibratable skycal results found, skipping QA score calculation.')
+            LOG.warning('No skycal solution found, skipping QA score calculation.')
             return
 
         vis = calapps[0].calto.vis

@@ -362,11 +362,12 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
                 is_calibratable = False
 
             if not is_calibratable:
+                _infile = os.path.basename(args['infile'])
                 LOG.warning(
-                    "No calibration data for "
+                    "No calibration solution found for "
                     f"MS {os.path.basename(args['outfile'])}, "
-                    f"field {reference_id}."
-                    f"Corresponding data in {os.path.basename(args['infile'])} "
+                    f"field {reference_id}. "
+                    f"Corresponding data in {_infile} "
                     "should be excluded from the processing."
                 )
 
