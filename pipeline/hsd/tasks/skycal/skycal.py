@@ -334,10 +334,10 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         # execute job
         try:
             self._executor.execute(job)
-            is_caltable_exist = True
         except Exception as e:
             LOG.warning(f"Error occurred during sdcal execution: {e}")
-            is_caltable_exist = False
+
+        has_caltable = os.path.exists(args['outfile'])
 
         # make a note of the current inputs state before we start fiddling
         # with it. This origin will be attached to the final CalApplication.
@@ -348,7 +348,7 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
 
         for target_id, reference_id in field_strategy.items():
             # check if caltable is empty
-            if is_caltable_exist:
+            if has_caltable:
                 with casa_tools.TableReader(args['outfile']) as tb:
                     taql = f"FIELD_ID=={reference_id}"
                     try:
@@ -357,11 +357,10 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
                         selected.close()
                     except Exception as e:
                         nrows = 0
-                    is_caltable_empty = nrows == 0
+                    is_calibratable = nrows > 0
             else:
-                is_caltable_empty = True
+                is_calibratable = False
 
-            is_calibratable = is_caltable_exist and not is_caltable_empty
             if not is_calibratable:
                 LOG.warning(
                     "No calibration data for "
