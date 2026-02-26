@@ -589,10 +589,9 @@ class SingleDishPlotmsSpwComposite(common.LeafComposite):
         children = []
         for spw in table_spws:
             # generate plot per caltable for each spw
-            calapp_unique = []
-            for cal in calapp:
-                if cal.gaintable not in [c.gaintable for c in calapp_unique]:
-                    calapp_unique.append(cal)
+            calapp_unique = list(
+                {c.gaintable: c for c in dict_calapp_spws[spw]}.values()
+            )
             for cal in calapp_unique:
                 item = self.leaf_class(context, result, cal, xaxis, yaxis, spw=int(spw), ant=ant, pol=pol, **kwargs)
                 children.append(item)
