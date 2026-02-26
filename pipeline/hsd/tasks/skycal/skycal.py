@@ -332,15 +332,12 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         job = casa_tasks.sdcal(**args)
 
         # execute job
-        LOG.debug('Table cache before sdcal: {}'.format(casa_tools.table.showcache()))
         try:
             self._executor.execute(job)
             is_caltable_exist = True
         except Exception as e:
             LOG.warning(f"Error occurred during sdcal execution: {e}")
             is_caltable_exist = False
-        finally:
-            LOG.debug('Table cache after sdcal: {}'.format(casa_tools.table.showcache()))
 
         # make a note of the current inputs state before we start fiddling
         # with it. This origin will be attached to the final CalApplication.
