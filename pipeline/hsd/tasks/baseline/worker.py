@@ -592,8 +592,8 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
 
     @staticmethod
     def build_fitting_configuration(
-            spw_id_list: Union[List[int], set[Any]],
-            fit_function: Optional[Union[str, Dict[Union[int, str], str]]] = "cspline",
+            spw_id_list: List[int] | set[Any],
+            fit_function: str | Dict[int | str, str] | None = "cspline",
             ms: MeasurementSet = None,
             context: Context = None,
             switchpoly=True
