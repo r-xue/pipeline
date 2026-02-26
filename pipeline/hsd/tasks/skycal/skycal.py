@@ -308,34 +308,28 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         if args['calmode'] in ['otf', 'otfraster']:
             args['intent'] = 'OBSERVE_TARGET#ON_SOURCE'
 
-        myargs = copy.deepcopy(args)
-
         # output file
-        if myargs["outfile"] is None or len(myargs["outfile"]) == 0:
+        if args["outfile"] is None or len(args["outfile"]) == 0:
             namer = caltable_heuristic.SDSkyCaltable()
-            try:
-                # we temporarily need 'vis'
-                myargs['vis'] = myargs['infile']
+            # we temporarily need 'vis'
+            myargs = copy.deepcopy(args)
+            myargs['vis'] = args['infile']
 
-                full_path = namer.calculate(
-                    output_dir=self.inputs.output_dir,
-                    stage=self.inputs.context.stage,
-                    **myargs
-                )
-            finally:
-                del myargs['vis']
+            full_path = namer.calculate(
+                output_dir=self.inputs.output_dir,
+                stage=self.inputs.context.stage,
+                **myargs
+            )
 
-            myargs['outfile'] = relative_path(full_path)
-        else:
-            myargs['outfile'] = myargs['outfile']
+            args['outfile'] = relative_path(full_path)
 
         # field
-        myargs["field"] = ",".join(sorted(map(str, field_strategy.values())))
+        args["field"] = ",".join(sorted(map(str, field_strategy.values())))
 
-        LOG.debug('args for sdcal: {}'.format(myargs))
+        LOG.debug(f'args for sdcal: {args}')
 
         # create job
-        job = casa_tasks.sdcal(**myargs)
+        job = casa_tasks.sdcal(**args)
 
         # execute job
         LOG.debug('Table cache before sdcal: {}'.format(casa_tools.table.showcache()))
@@ -351,14 +345,14 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         # make a note of the current inputs state before we start fiddling
         # with it. This origin will be attached to the final CalApplication.
         origin = callibrary.CalAppOrigin(task=SerialSDSkyCal,
-                                         inputs=myargs)
+                                         inputs=args)
 
         calapps_with_status = []
 
         for target_id, reference_id in field_strategy.items():
             # check if caltable is empty
             if is_caltable_exist:
-                with casa_tools.TableReader(myargs['outfile']) as tb:
+                with casa_tools.TableReader(args['outfile']) as tb:
                     taql = f"FIELD_ID=={reference_id}"
                     try:
                         selected = tb.query(taql)
@@ -374,22 +368,22 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
             if not is_calibratable:
                 LOG.warning(
                     "No calibration data for "
-                    f"MS {os.path.basename(myargs['outfile'])}, "
+                    f"MS {os.path.basename(args['outfile'])}, "
                     f"field {reference_id}."
-                    f"Corresponding data in {os.path.basename(myargs['infile'])} "
+                    f"Corresponding data in {os.path.basename(args['infile'])} "
                     "should be excluded from the processing."
                 )
 
-            calto = callibrary.CalTo(vis=myargs['infile'],
-                                     spw=myargs['spw'],
+            calto = callibrary.CalTo(vis=args['infile'],
+                                     spw=args['spw'],
                                      field=str(target_id),
                                      intent='TARGET')
 
             # create SDCalFrom object
-            calfrom = callibrary.CalFrom(gaintable=myargs['outfile'],
+            calfrom = callibrary.CalFrom(gaintable=args['outfile'],
                                          gainfield=str(reference_id),
                                          interp='linear,linear',
-                                         caltype=myargs['calmode'])
+                                         caltype=args['calmode'])
 
             # create CalApplication object
             calapp = callibrary.CalApplication(calto, calfrom, origin)
