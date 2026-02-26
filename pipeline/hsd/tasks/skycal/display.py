@@ -615,12 +615,6 @@ class SingleDishPlotmsAntSpwComposite(common.LeafComposite):
         super().__init__(children)
 
 
-class SingleDishPlotmsAntComposite(common.AntComposite):
-    """Class to create a PlotLeaf for each antenna."""
-
-    leaf_class = SingleDishPlotmsLeaf
-
-
 class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
     """Class for plotting Amplitude vs. Time summary chart.
 
