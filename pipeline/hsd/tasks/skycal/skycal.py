@@ -577,6 +577,13 @@ def compute_elevation_difference(context: Context, results: SDSkyCalResults) -> 
                     flagoff = data_off['online_flag']
                     eloff_valid = eloff[np.logical_not(flagoff)]
                     timeoff_valid = timeoff[np.logical_not(flagoff)]
+                    if len(timeoff_valid) == 0:
+                        LOG.info(
+                            f"No valid off-source data for field {field_id_off}, "
+                            f"spw {spw_id}, antenna {antenna_id}. "
+                        )
+                        continue
+
                     elcal = eloff_valid[
                         [np.argmin(np.abs(timeoff_valid - t)) for t in timecal]
                     ]
