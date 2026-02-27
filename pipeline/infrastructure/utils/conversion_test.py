@@ -16,7 +16,6 @@ from .conversion import (
     mjd_seconds_to_datetime,
     range_to_list,
     safe_split,
-    unix_seconds_to_datetime,
     phasecenter_to_skycoord
 )
 
@@ -107,8 +106,10 @@ def test_format_timedelta_raises_exception_too_high_precision():
 
 
 @pytest.mark.parametrize("inp, expected", [
-    ([1, 2], [datetime.datetime(1858, 11, 17, 0, 0, 1), datetime.datetime(1858, 11, 17, 0, 0, 2)]),
-    ([1, 1.5], [datetime.datetime(1858, 11, 17, 0, 0, 1), datetime.datetime(1858, 11, 17, 0, 0, 1, 500000)]),
+    ([1, 2], [datetime.datetime(1858, 11, 17, 0, 0, 1, tzinfo=datetime.timezone.utc),
+     datetime.datetime(1858, 11, 17, 0, 0, 2, tzinfo=datetime.timezone.utc)]),
+    ([1, 1.5], [datetime.datetime(1858, 11, 17, 0, 0, 1, tzinfo=datetime.timezone.utc),
+     datetime.datetime(1858, 11, 17, 0, 0, 1, 500000, tzinfo=datetime.timezone.utc)]),
 ])
 def test_mjd_seconds_to_datetime(inp, expected):
     """Test mjd_seconds_to_datetime()"""
@@ -135,14 +136,6 @@ def test_range_to_list(inp, expected):
 def test_safe_split(inp, expected):
     """Test safe_split()"""
     assert safe_split(inp) == expected
-
-
-@pytest.mark.parametrize("inp, expected", [
-    ([1, 1.5], [datetime.datetime(1970, 1, 1, 0, 0, 1), datetime.datetime(1970, 1, 1, 0, 0, 1, 500000)]),
-])
-def test_unix_seconds_to_datetime(inp, expected):
-    """Test unix_seconds_to_datetime()"""
-    assert unix_seconds_to_datetime(inp) == expected
 
 
 @pytest.mark.parametrize("inp, expected", [

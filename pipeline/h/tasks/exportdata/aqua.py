@@ -167,7 +167,7 @@ class AquaXmlGenerator(object):
         root = ElementTree.Element('QaSummary')
 
         # Generate the report date
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(datetime.timezone.utc)
         ElementTree.SubElement(root, 'ReportDate').text = now.strftime('%Y-%m-%d %H:%M:%S')
 
         # Processing time
