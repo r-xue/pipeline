@@ -1711,21 +1711,6 @@ class T2_4MDetailsRenderer(object):
                 )
                 eventbus.send_message(event)
 
-                # TESTING ONLY: Simulate weblog rendering failure for regression testing
-                # Set SIMULATE_WEBLOG_FAILURE='2,5' to fail stages 2 and 5
-                fail_stages = os.environ.get('SIMULATE_WEBLOG_FAILURE', '')
-                if fail_stages:
-                    try:
-                        stages_to_fail = [int(s.strip()) for s in fail_stages.split(',')]
-                        if result.stage_number in stages_to_fail:
-                            LOG.warning('SIMULATE_WEBLOG_FAILURE: Raising exception for stage %s', 
-                                        result.stage_number)
-                            raise RuntimeError(f'Simulated weblog rendering failure for stage {result.stage_number} '
-                                               f'(triggered by SIMULATE_WEBLOG_FAILURE environment variable)')
-                    except ValueError:
-                        LOG.warning('Invalid SIMULATE_WEBLOG_FAILURE value: %s (expected comma-separated integers)', 
-                                    fail_stages)
-
                 fileobj.write(renderer.render(context, result))
 
                 event = eventbus.WebLogStageRenderingCompleteEvent(

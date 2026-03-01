@@ -56,10 +56,12 @@ Notes for contributors
   Keep new tests deterministic by patching these accordingly.
 - If you change filename patterns or selection rules in
   `PipelineTester`, update tests here first to codify the intended behavior.
-- To simulate weblog rendering failures in integration tests, raise an exception
-  within a renderer's `render()` method. The `htmlrenderer` will catch it and
-  emit a `WebLogStageRenderingAbnormalExitEvent`, which the timetracker records
-  with state='abnormal exit'. This is what the failure detection mechanism checks.
+- To simulate weblog rendering failures in integration tests, set
+  `SIMULATE_WEBLOG_FAILURE` to comma-separated stage numbers.
+  A test-only wrapper installed from `conftest.py` raises from renderer
+  `render()` for those stages. The `htmlrenderer` catches this and emits a
+  `WebLogStageRenderingAbnormalExitEvent`, which the timetracker records with
+  state='abnormal exit'. This is what the failure detection mechanism checks.
 """
 from __future__ import annotations
 
