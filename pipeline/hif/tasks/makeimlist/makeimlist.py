@@ -1265,7 +1265,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                     all_continuum_spwsel_dict = {}
                     low_bandwidth_spwsel_dict = {}
                     low_spread_spwsel_dict = {}
-
+                    target_heuristics = copy.deepcopy(self.heuristics)
                     cont_ranges_spwsel_dict, all_continuum_spwsel_dict, low_bandwidth_spwsel_dict, low_spread_spwsel_dict = target_heuristics.cont_ranges_spwsel()
 
                     for field_intent in sorted_field_intent_list:
