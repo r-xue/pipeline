@@ -271,15 +271,15 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
             spw_id: Spw ID
         """
         figfile = self._figfile[spw_id]
-        if os.path.exists(figfile):
-            return
-
         prefix, extension = os.path.splitext(self._figroot)
         pattern = f'{prefix}.spw{spw_id}.t*{extension}'
         figures = sorted(glob.glob(pattern))
         if len(figures) == 0:
             return
-        os.rename(figures[0], figfile)
+
+        if figures[0] != figfile:
+            os.rename(figures[0], figfile)
+
         for fig in figures[1:]:
             os.remove(fig)
 
