@@ -126,11 +126,11 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
             result: SDSkyCalResults instance
             field: Field string. Either field id or field name.
         """
-        super(SingleDishSkyCalAmpVsFreqSummaryChart, self).__init__(context, result,
-                                                                    'freq', 'amp',
-                                                                    showatm=True,
-                                                                    overlay='antenna',
-                                                                    solutionTimeThresholdSeconds=3600.)
+        super().__init__(context, result,
+                         'freq', 'amp',
+                         showatm=True,
+                         overlay='antenna',
+                         solutionTimeThresholdSeconds=3600.)
 
         self.context = context
         # self._figfile structure: {spw_id: {antenna_id: filename}}
@@ -150,30 +150,15 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
                    for spw_id in self.spw_ids
                    if not os.path.exists(self._figfile[spw_id])]
         if missing:
-            LOG.trace('Executing new plotbandpass job for missing figures')
             for spw_id in missing:
                 # PIPE-110: show image sideband for DSB receivers.
                 showimage = self._rxmap.get(spw_id, "") == "DSB"
                 try:
-                    task = self.create_task(spw_id, '', showimage=showimage)
-                    commands[spw_id] = str(task)
-                    task.execute()
-                except Exception as ex:
-                    LOG.error('Could not create plotbandpass summary plots')
-                    LOG.exception(ex)
-
-        # workaround for CAS-13863
-        # So far, missing plots issue happens only for TP Spectral Scan data
-        missing = [spw_id
-                   for spw_id in self.spw_ids
-                   if not os.path.exists(self._figfile[spw_id])]
-        if missing:
-            LOG.info('Executing plotbandpass again for missing figures')
-            for spw_id in missing:
-                # PIPE-110: show image sideband for DSB receivers.
-                showimage = self._rxmap.get(spw_id, "") == "DSB"
-                try:
-                    task = self.create_task_for_tp_spectral_scan(spw_id, '', showimage=showimage)
+                    task = self.tweak_param_and_create_task(
+                        spw_id,
+                        '',
+                        showimage=showimage
+                    )
                     commands[spw_id] = str(task)
                     task.execute()
                     self.rename_and_clear_figure(spw_id)
@@ -215,14 +200,14 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
             pieces = self._figfile[spw_id].split('.')
             try:
                 spw_index = pieces.index(spw_indicator)
-            except:
+            except Exception:
                 spw_index = -3
             # remove antenna name from the filename
             pieces.pop(spw_index - 1)
             self._figfile[spw_id] = '.'.join(pieces)
 
-    def create_task_for_tp_spectral_scan(self, spw_arg: int, antenna_arg: str,
-                                         showimage: bool = False) -> JobRequest:
+    def tweak_param_and_create_task(self, spw_arg: int, antenna_arg: str,
+                                    showimage: bool = False) -> JobRequest:
         """
         Return plotbandpass task job with a tweaked parameter value.
 
@@ -240,8 +225,11 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
         kwargs_org = self._kwargs.copy()
         try:
             ms = self.context.observing_run.get_ms(self._vis)
-            def __get_sorted_reference_scans(msobj: MeasurementSet,
-                                             spw: int | str | Sequence | None = None) -> list[Scan]:
+
+            def __get_sorted_reference_scans(
+                    msobj: MeasurementSet,
+                    spw: int | str | Sequence | None = None
+            ) -> list[Scan]:
                 """
                 Return a list of REFERENCE Scan objects sorted by scan IDs.
                 Args:
@@ -249,7 +237,11 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
                     spw: Spw selection
                 Returns: a list of REFERENCE scan objects sorted by scan ID.
                 """
-                scans = msobj.get_scans(scan_intent='REFERENCE', spw=spw)
+                scans = msobj.get_scans(
+                    scan_intent='REFERENCE',
+                    field=self.field_id,
+                    spw=spw
+                )
                 return sorted(scans, key=lambda s: s.id)
 
             # The solutionTimeThresholdSeconds should be equal to or smaller than
@@ -265,7 +257,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
                 self._kwargs['solutionTimeThresholdSeconds'] = start_time_scan_spw - end_time_previous_scan
             else:  # I don't think this should happen but defining a reasonable value to avoid failure.
                 self._kwargs['solutionTimeThresholdSeconds'] = scan_spw.exposure_time(spw_arg).seconds / 2
-            self._kwargs['scans'] = scan_spw.id
+            self._kwargs['scans'] = str(scan_spw.id)
             task = super().create_task(spw_arg, antenna_arg, showimage)
         finally:
             self._kwargs = kwargs_org
