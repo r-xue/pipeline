@@ -334,7 +334,6 @@ def _get_field_to_analyse(ms: MeasurementSet, intent: str) -> Field | None:
     if not candidate_fields:
         return None
     return min(candidate_fields, key=lambda f: f.time.min())
-        
 
 
 def _get_fluxes_for_field(ms: MeasurementSet, field: Field) -> List[Tuple[int, float, float]]:
