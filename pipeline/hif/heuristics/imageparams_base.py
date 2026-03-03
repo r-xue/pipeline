@@ -60,7 +60,7 @@ class ImageParamsHeuristics(object):
         )
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}, processing_intents={}):
+                 linesfile=None, imaging_params=None, processing_intents=None):
         """
         :param vislist: the list of MS names
         :type vislist: list of strings
@@ -82,8 +82,9 @@ class ImageParamsHeuristics(object):
         self.contfile = contfile
         self.linesfile = linesfile
 
-        self.imaging_params = imaging_params
-        self.processing_intents = processing_intents
+        # Avoid mutable default arguments
+        self.imaging_params = imaging_params or {}
+        self.processing_intents = processing_intents or {}
 
         # split spw into list of spw parameters for 'clean'
         spwlist = spw.replace('[', '').replace(']', '').strip()
@@ -223,7 +224,7 @@ class ImageParamsHeuristics(object):
                     for source_name in [s.name for s in ms.sources]:
                         cont_ranges_spwsel[source_name][str(spwid)] = '%s LSRK' % (spw_selection)
                 except Exception as e:
-                    LOG.warning(f'Could not determine continuum ranges for spw {spwid}. Exception: {str(e)}')
+                    LOG.warning('Could not determine continuum ranges for spw %s. Exception: %s', spwid, str(e))
 
         return cont_ranges_spwsel, all_continuum_spwsel, low_bandwidth_spwsel, low_spread_spwsel
 
@@ -380,7 +381,7 @@ class ImageParamsHeuristics(object):
             try:
                 largest_primary_beam_size = max(largest_primary_beam_size, self.primary_beam_size(spwid, intent))
             except Exception as e:
-                LOG.warning(f'Could not determine primary beam size for spw {spwid}. Exception: {str(e)}')
+                LOG.warning('Could not determine primary beam size for spw %s. Exception: %s', spwid, str(e))
 
         return largest_primary_beam_size
 
@@ -688,7 +689,7 @@ class ImageParamsHeuristics(object):
                         nchan = min_nchan
                         width = str(bandwidth / nchan)
             except Exception as e:
-                LOG.warning(f'Could not determine nchan and width for spw {spwids[0]}. Exception: {str(e)}')
+                LOG.warning('Could not determine nchan and width for spw %s. Exception: %s', spwids[0], str(e))
                 nchan = -1
                 width = ''
         else:
@@ -908,10 +909,12 @@ class ImageParamsHeuristics(object):
             if primary_beam:
                 pb_dist = 0.408
                 if cqa.getvalue(cqa.convert(cme.separation(center, nearest), 'arcsec'))[0] > pb_dist * primary_beam:
-                    LOG.info('The nearest pointing is > {pb_dist}pb away from image center.  '
-                             'Shifting the PSF phase center to the '
-                             'nearest field (id = {nf})'.format(pb_dist=pb_dist, nf=nearest_field_to_center))
-                    LOG.info('Old phasecenter: {}'.format(phase_center))
+                    LOG.info(
+                        'The nearest pointing is > %spb away from image center.  Shifting the PSF phase center to the nearest field (id = %s)',
+                        pb_dist,
+                        nearest_field_to_center,
+                    )
+                    LOG.info('Old phasecenter: %s', phase_center)
                     # convert to strings (CASA 4.0 returns as list for some reason hence 0 index)
                     m0 = cme.getvalue(nearest)['m0']
                     m1 = cme.getvalue(nearest)['m1']
@@ -921,7 +924,7 @@ class ImageParamsHeuristics(object):
                         m0 = cqa.angle(m0, prec=9)[0]
                     m1 = cqa.angle(m1, prec=9)[0]
                     psf_phase_center = '%s %s %s' % (ref, m0, m1)
-                    LOG.info('New PSF phasecenter: {}'.format(phase_center))
+                    LOG.info('New PSF phasecenter: %s', psf_phase_center)
             else:
                 LOG.warning('No primary beam supplied.  Will not attempt to shift PSF phasecenter to '
                             'nearest field w/o a primary beam distance check.')
@@ -1128,10 +1131,10 @@ class ImageParamsHeuristics(object):
                     # LF spws. So here just trying the first in the list.
                     checkMS = self.observing_run.get_ms(self.vislist[0])
                     b2bMode = checkMS.is_band_to_band
-                except:
+                except Exception:
                     b2bMode = False
                 if not b2bMode:
-                    LOG.warning(f'Could not determine aggregate bandwidth frequency range for spw {spwid}. Exception: {str(e)}')
+                    LOG.warning('Could not determine aggregate bandwidth frequency range for spw %s. Exception: %s', spwid, str(e))
 
         aggregate_bandwidth_Hz = np.sum([r[1] - r[0] for r in utils.merge_ranges(spw_frequency_ranges)])
 
@@ -1399,7 +1402,7 @@ class ImageParamsHeuristics(object):
             # width = decimal.Decimal('1.0001') * width
             width = str(width)
         except Exception as e:
-            LOG.warning(f'Could not determine width for spw {spwid}. Exception: {str(e)}')
+            LOG.warning('Could not determine width for spw %s. Exception: %s', spwid, str(e))
             width = ''
 
         return width
@@ -1425,7 +1428,7 @@ class ImageParamsHeuristics(object):
                 ncorr = 0
 
         except Exception as e:
-            LOG.warning(f'Could not determine ncorr for spw {spwid}. Exception: {str(e)}')
+            LOG.warning('Could not determine ncorr for spw %s. Exception: %s', spwid, str(e))
             ncorr = 0
 
         return ncorr
@@ -1506,7 +1509,7 @@ class ImageParamsHeuristics(object):
                     abs_max_frequency = max_frequency
                     max_freq_spwid = spwid
             except Exception as e:
-                LOG.warning(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
+                LOG.warning('Could not determine min/max frequency for spw %s. Exception: %s', spwid, str(e))
 
         return {'abs_min_freq': abs_min_frequency, 'abs_max_freq': abs_max_frequency,
                 'min_freq_spwid': min_freq_spwid, 'max_freq_spwid': max_freq_spwid}
@@ -1646,7 +1649,7 @@ class ImageParamsHeuristics(object):
                     if (inputs.intent == 'TARGET') and (inputs.specmode in ('mfs', 'cont') and self.warn_missing_cont_ranges()):
                         LOG.warning('No continuum frequency selection for Target Field %s SPW %s' % (inputs.field, spwid))
             except Exception as e:
-                LOG.warning(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
+                LOG.warning('Could not determine min/max frequency for spw %s. Exception: %s', spwid, str(e))
 
             aggregate_lsrk_bw = qaTool.add(aggregate_lsrk_bw, aggregate_spw_lsrk_bw)
 
@@ -2591,7 +2594,7 @@ class ImageParamsHeuristics(object):
             if len(validbeamchans) > 0:
                 chanid = validbeamchans[0][0]
             else:
-                LOG.error('No valid beams in {!s}'.format(psf_filename))
+                LOG.error('No valid beams in %s', psf_filename)
                 return None, np.arange(nchan)
 
             # Fill all flagged channels with the largest/first valid beam
