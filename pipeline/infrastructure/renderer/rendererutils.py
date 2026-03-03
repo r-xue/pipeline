@@ -476,8 +476,8 @@ def make_parang_plots(
 
     for session_name, session_data in sessions.items():
         num_ms = len(sessions[session_name]['vis'])
-        intents_to_plot = [intent_lookup[key] for key in intent_lookup
-                           if key in session_data and session_data[key]]
+        intents_to_plot_session = [intent_lookup[key] for key in intent_lookup
+                                   if key in session_data and session_data[key]]
 
         plot_title = f'MOUS {ous_id}, session {session_name}'
         filename_component = filenamer.sanitize(f'{ous_id}_{session_name}')
@@ -487,8 +487,14 @@ def make_parang_plots(
         for i, msname in enumerate(sessions[session_name]['vis']):
             symbolcolor = plot_colors[i % len(plot_colors)]
 
-            science_spws = context.observing_run.get_ms(msname).get_spectral_windows()
+            ms = context.observing_run.get_ms(msname)
+            science_spws = ms.get_spectral_windows()
             spwspec = ','.join(f'{s.id}:{s.num_channels // 2}' for s in science_spws)
+
+            # Filter intents to only include those present in this specific MS.
+            # `intents_to_plot_session` already uses mapped pipeline intents.
+            intents_to_plot = [intent for intent in intents_to_plot_session
+                               if any(intent in field.intents for field in ms.get_fields())]
 
             plot_name = plot_path if i == num_ms - 1 else ''
 
