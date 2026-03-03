@@ -303,7 +303,7 @@ class ImageParamsHeuristics(object):
     ) -> list[str] | str:
         """Get source name(s) from a MS list for given field and intent selections.
 
-        This function helps you translated your MS, field, and intent selections into source names
+        This function helps you translate your MS, field, and intent selections into source names
         that can be used for naming your images. If fieldlist is a field name string and applied to all
         MSes, this function should yield the same name as outcome when as_list is False.
 
@@ -1051,8 +1051,16 @@ class ImageParamsHeuristics(object):
 
         return self._is_mosaic(field_str_list)
 
-    def is_eph_obj(self, field):
+    def is_eph_obj(self, field: str) -> bool:
+        """Determine whether a field is an ephemeris (moving) object.
 
+        Args:
+            field: Name of the field to check.
+
+        Returns:
+            bool: True if the field corresponds to an ephemeris (moving) object,
+            otherwise False.
+        """
         ms = None
         for msname in self.vislist:
             ms = self.observing_run.get_ms(msname)

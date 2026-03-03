@@ -18,7 +18,18 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
                                        linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-QL'
 
-    def is_eph_obj(self, field):
+    def is_eph_obj(self, field: str) -> bool:
+        """Determine whether a field is an ephemeris (moving) object.
+
+        The VLASS heuristic does not handle ephemeris (moving)
+        objects, so this method always returns False.
+
+        Args:
+            field: Field identifier (name or index). Ignored by this heuristic.
+
+        Returns:
+            Always False for this heuristic.
+        """
         return False
 
     def niter_correction(self, niter, cell, imsize, residual_max, threshold, residual_robust_rms, mask_frac_rad=0.0, intent='TARGET') -> int:
