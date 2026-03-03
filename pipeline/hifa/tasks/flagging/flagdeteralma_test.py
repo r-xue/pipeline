@@ -1,7 +1,6 @@
 from types import SimpleNamespace
 
 import numpy as np
-import numpy.testing as nt
 import pytest
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.tablereader import MeasurementSetReader

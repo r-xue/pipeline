@@ -169,6 +169,9 @@ class FlagDeterALMAInputs(flagdeterbase.FlagDeterBaseInputs):
 class SerialFlagDeterALMA(flagdeterbase.FlagDeterBase):
     Inputs = FlagDeterALMAInputs
 
+    # PIPE-2320: cache FDM spws from CASA metadata
+    _fdm_spws: set[int] = set()
+
     # PIPE-425: define allowed bandwidths of ACA spectral windows for which to
     # perform the ACA FDM edge channel flagging heuristic, and define
     # corresponding thresholds.
