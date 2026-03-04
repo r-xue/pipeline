@@ -1448,7 +1448,8 @@ class FieldTable:
         # Determine which field IDs have scans first, so we can skip
         # expensive per-field msmd calls for fields without scans.
         fields_with_scans = {
-            field_id for field_id in range(num_fields)
+            field_id
+            for field_id in range(num_fields)
             if len(msmd.scansforfield(field_id)) != 0
         }
 
@@ -1474,9 +1475,8 @@ class FieldTable:
                 source_types[field_id] if source_types is not None else None,
                 msmd.phasecenter(field_id),
             )
-            for field_id in range(num_fields)
-            if field_id in fields_with_scans
-        ]        
+            for field_id in sorted(fields_with_scans)
+        ]
 
     @staticmethod
     def get_fields(msmd: Any) -> list[Field]:
