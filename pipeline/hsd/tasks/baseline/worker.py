@@ -606,8 +606,10 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         If a dictionary is provided, keys are normalized to integers; SPWs not specified default to 'cspline'.
 
         Args:
-            switchpoly:
-            context:
+            switchpoly: Whether to fall back the fits from cubic spline to 1st or
+                        2nd order polynomial when large masks exist at the edges
+                        of the spw.
+            context:Pipeline context
             ms: MeasurementSet
             fit_function: The fit function parameter (str, dict, or None).
             spw_id_list: List of spectral window IDs to process.
