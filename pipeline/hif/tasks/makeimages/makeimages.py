@@ -318,7 +318,8 @@ class MakeImages(basetask.StandardTaskTemplate):
         return result
 
     def _add_vlass_metadata(self, result):
-        """Attach extra imaging metadata to Tclean results for the VLASS Coarse Cube imaging."""
+        """Attach extra imaging metadata to Tclean results for the VLASS Coarse Cube imaging and add
+        VLASS specific header keywords."""
 
         if self.inputs.context.imaging_mode != 'VLASS-SE-CUBE':
             for idx, tclean_result in enumerate(result.results):
@@ -432,7 +433,7 @@ class MakeImages(basetask.StandardTaskTemplate):
         return result
 
     def _vlass_set_miscinfo(self, tclean_result):
-        """Add the VLASS cube plane rejection header keyword."""
+        """Add the VLASS specific header keyword."""
         imagename = tclean_result.image
 
         if imagename is None:
@@ -441,6 +442,8 @@ class MakeImages(basetask.StandardTaskTemplate):
         reject = None
         if 'keep' in tclean_result.imaging_metadata:
             reject = not tclean_result.imaging_metadata['keep']
+        else:
+            reject = False
 
         imlist = utils.glob_ordered(imagename.replace('.image', '.*'))
 
@@ -452,13 +455,13 @@ class MakeImages(basetask.StandardTaskTemplate):
         spwobj = None
         nominal_bw = 0.0
         for curspw in tclean_result.spw.split(","):
-            flagged_by_spw = 0
+            unflaged_chan_per_spw = 0
             for spw_chan in flag_stats['spw:channel']:
                 spw, _ = spw_chan.split(':')
-                if spw != curspw and self.inputs.context.imaging_mode == 'VLASS-SE-CUBE':
+                if spw != curspw:
                     continue
                 if flag_stats['spw:channel'][spw_chan].get('flagged', 0) != flag_stats['spw:channel'][spw_chan].get('total', 0):
-                    flagged_by_spw += 1
+                    unflaged_chan_per_spw += 1
 
             spwobj = msobj.get_spectral_window(curspw)
 
@@ -470,7 +473,7 @@ class MakeImages(basetask.StandardTaskTemplate):
                 chan_width = spwobj.channels.chan_widths[0]
             else:
                 chan_width = np.median(np.abs(chan_diff))
-            vlass_bw += flagged_by_spw * chan_width
+            vlass_bw += unflaged_chan_per_spw * chan_width
 
         if nominal_bw == 0.0:
             nominal_bw = None
@@ -480,8 +483,7 @@ class MakeImages(basetask.StandardTaskTemplate):
             with casa_tools.ImageReader(name) as image:
                 info = image.miscinfo()
                 info['VLASSBWN'] = nominal_bw
-                if reject:
-                    info['VLASSRJ'] = reject
+                info['VLASSRJ'] = reject
                 LOG.info('mark the image %s as reject=%r', name, reject)
                 info['VLASSSPW'] = tclean_result.spw
                 info['VLASSPC'] = tclean_result.inputs["phasecenter"]

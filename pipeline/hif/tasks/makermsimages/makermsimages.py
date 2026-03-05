@@ -108,6 +108,7 @@ class Makermsimages(basetask.StandardTaskTemplate):
         rmsimagenames = []
         queued_job_rmsimagename = []
         rmsstats = {}
+        stats_summary = {}
         for imagename in imagenames:
             rmsimagename = imagename + '.rms'
             if not os.path.exists(rmsimagename) and 'residual' not in imagename:
@@ -125,9 +126,6 @@ class Makermsimages(basetask.StandardTaskTemplate):
                 else:
                     queued_job = mpihelpers.SyncTask(job_to_execute, self._executor)
                 queued_job_rmsimagename.append((queued_job, rmsimagename))
-
-        rmsstats = {}
-        stats_summary = {}
 
         for queue_job, rmsimagename in queued_job_rmsimagename:
             queue_job.get_result()
@@ -156,13 +154,13 @@ class Makermsimages(basetask.StandardTaskTemplate):
                 # PIPE-2461: adding rms values to image header
                 imagename, _ = os.path.splitext(rmsimagename)
                 basename = imagename.split('.image')[0] + ".image"
-                imagenames = utils.glob_ordered(basename + "*")
-                for imagename in imagenames:
+                imagefiles = utils.glob_ordered(basename + "*")
+                for imagefile in imagefiles:
                     if rmsval is None:
                         LOG.warning(f"RMS value is None for {rmsimagename}, skipping header update for {imagename}")
                         continue
 
-                    with casa_tools.ImageReader(imagename) as image:
+                    with casa_tools.ImageReader(imagefile) as image:
                         info = image.miscinfo()
                         info["VLASSRMS"] = rmsval
                         image.setmiscinfo(info)
