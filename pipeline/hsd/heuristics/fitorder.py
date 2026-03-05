@@ -63,6 +63,14 @@ def is_cubic_spline_fit(value: FittingFunction) -> bool:
     return value is FittingFunction.CSPLINE
 
 
+def is_sinuoid_fit(value: FittingFunction) -> bool:
+    """Determine if fitting function is cubic spline.
+
+    Returns:
+        True if fitting function is cubic spline, False otherwise.
+    """
+    return value is FittingFunction.SINUSOID
+
 class FitOrderHeuristics(api.Heuristic):
     """
     Determine fitting order from a set of spectral data.

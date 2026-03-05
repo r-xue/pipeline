@@ -333,11 +333,6 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                             irow = row
                             param = self._configure_baseline_param(irow, pol, polyorder, nchan, edge, mask_array, _masklist)
 
-                            # Set fit function from the current class instance.
-                            param[BLP.FUNC] = self.fitfunc.blfunc
-                            param[BLP.NWAVE] = self.wave_number
-
-
                             if TRACE():
                                 LOG.trace('Row {}: param={}'.format(row, param))
                             write_blparam(blparamfileobj, param)
@@ -495,6 +490,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         if fitorder.is_polynomial_fit(self.fitfunc):
             self.paramdict[BLP.FUNC] = self.fitfunc.blfunc
             self.paramdict[BLP.ORDER] = polyorder
+
         elif fitorder.is_cubic_spline_fit(self.fitfunc):
             num_nomask = nchan_without_edge - nchan_masked
             num_pieces = max(int(min(polyorder * num_nomask / float(nchan_without_edge) + 0.5, 0.1 * num_nomask)), 1)
@@ -509,9 +505,16 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                 num_pieces,
                 masklist
             )
+
             self.paramdict[BLP.FUNC] = fitfunc.blfunc
             self.paramdict[BLP.ORDER] = order
+
+        elif fitorder.is_sinuoid_fit(self.fitfunc):
+            # Set fit function from the current class instance.
+            self.paramdict[BLP.FUNC] = self.fitfunc.blfunc
+            self.paramdict[BLP.NWAVE] = self.wave_number
+
         else:
-            RuntimeError('Should not happen!')
+            raise RuntimeError(f"Invalid fit function found: {self.fitfunc.blfunc}")
 
         return self.paramdict
