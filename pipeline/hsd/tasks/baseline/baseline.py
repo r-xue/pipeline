@@ -367,11 +367,11 @@ class SDBaselineResults(common.SingleDishResults):
         Merge of the result instance of baseline subtraction task includes
         the following updates to Pipeline context,
 
-          - register measurement set domain object for the output of sdbaseline
+          - register MeasurementSet domain object for the output of sdbaseline
             task to Pipeline context, namely measurement_sets list and
             reduction_group
           - register detected spectral lines to reduction group
-          - register deviation mask to each measurement set domain object
+          - register deviation mask to each MeasurementSet domain object
 
         Args:
             context: Pipeline context object containing state information.

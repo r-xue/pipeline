@@ -608,7 +608,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         Args:
             switchpoly:
             context:
-            ms: Measurement set
+            ms: MeasurementSet
             fit_function: The fit function parameter (str, dict, or None).
             spw_id_list: List of spectral window IDs to process.
 
