@@ -685,10 +685,18 @@ def plot_elevation_difference(
     figroot = os.path.join(context.report_dir,
                            'stage%s' % result.stage_number)
 
-    start_time = np.min([np.min(x.timeon) for z in eldiff.values() for y in z.values()
-                            for x in y.values() if len(x.timeon) > 0])
-    end_time = np.max([np.max(x.timeon) for z in eldiff.values() for y in z.values()
-                          for x in y.values() if len(x.timeon) > 0])
+    start_time_list = [np.min(x.timeon) for z in eldiff.values()
+                       for y in z.values()
+                       for x in y.values() if len(x.timeon) > 0]
+
+    if len(start_time_list) == 0:
+        LOG.info('No valid ON-SOURCE pointings found. Skipping elevation difference plot.')
+        return []
+
+    start_time = np.min(start_time_list)
+    end_time = np.max([np.max(x.timeon) for z in eldiff.values()
+                       for y in z.values()
+                       for x in y.values() if len(x.timeon) > 0])
 
     def init_figure(figure: Figure) -> tuple[Axes, Axes]:
         """Initialize the figure.
