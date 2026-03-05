@@ -617,15 +617,18 @@ def gaincalSNR(context: Context, ms: MeasurementSet, tsysTable: str, flux: Itera
 
     # 6) compute the expected channel-averaged SNR
     # Update w.r.t. PIPE-2901
-    # please see longer explaintion in /hifa/heursitics/snr.py (searching PIPE-2901)
-    num_eff_antennas = num_antennas -3
-    # for an antenna-based solution need number effective antennas, was miss-named nbaselines
+    # please see longer explanation in /hifa/heuristics/snr.py (searching PIPE-2901)
+    num_eff_antennas = num_antennas - 3
+    # for an antenna-based solution need number of effective antennas, was misnamed nbaselines
+    if num_eff_antennas <= 0:
+        LOG.warning('%s: Cannot compute gaincal SNR; fewer than 3 antennas (%d) present.', ms.basename, num_antennas)
+        return {}
 
     diffgain_mode = {}
     mydict = {}
 
-    # PIPE-2901 have to set ALMA_FIDUCIAL_BANDWIDTH to a frequency domain type for computating with spw params already coded
-    ALMA_FIDUCIAL_BANDWIDTH_FREQ = Frequency(ALMA_FIDUCIAL_BANDWIDTH, FrequencyUnits.HERTZ) # 8e9 Hz 
+    # PIPE-2901: set ALMA_FIDUCIAL_BANDWIDTH as a Frequency type for computing with spw params already coded
+    alma_fiducial_bandwidth_freq = Frequency(ALMA_FIDUCIAL_BANDWIDTH, FrequencyUnits.HERTZ)  # 8e9 Hz
     for spw in all_target_spws:
         obsspw = spw
         if spw not in all_gaincal_spws:
@@ -642,7 +645,7 @@ def gaincalSNR(context: Context, ms: MeasurementSet, tsysTable: str, flux: Itera
         diffgain_mode[obsspw] = spw
         band_info = [b for b in BAND_INFOS if b.name == spw.band].pop()
         relative_tsys = median_tsys[spw.id] / band_info.nominal_tsys
-        # PIPE-2901 aligmend with snr.py
+        # PIPE-2901 aligned with snr.py
         time_factor = sqrt(ALMA_FIDUCIAL_EXP_TIME / (time_on_source[spw].total_seconds() / 60.0))
         array_size_factor = sqrt(ALMA_FIDUCIAL_NUM_ANTENNAS * (ALMA_FIDUCIAL_NUM_ANTENNAS-1) / (2.0 * num_eff_antennas))
 
@@ -652,15 +655,15 @@ def gaincalSNR(context: Context, ms: MeasurementSet, tsysTable: str, flux: Itera
             area_factor = (12./7.)**2
 
         # scale by chan bandwidth - PIPE-2901 alignment with snr.py
-        bandwidth_factor = sqrt(ALMA_FIDUCIAL_BANDWIDTH_FREQ / min([spw.bandwidth, max_effective_bandwidth_per_baseband]))
+        bandwidth_factor = sqrt(alma_fiducial_bandwidth_freq / min([spw.bandwidth, max_effective_bandwidth_per_baseband]))
         # scale to single polarization solutions
         polarization_factor = sqrt(2)
         factor = relative_tsys * time_factor * array_size_factor * area_factor * bandwidth_factor * polarization_factor
         sensitivity = band_info.sensitivity * Decimal(factor)
 
         # PIPE-2901
-        aggregate_bandwidth_factor = sqrt(ALMA_FIDUCIAL_BANDWIDTH_FREQ / aggregate_bandwidth)
-        
+        aggregate_bandwidth_factor = sqrt(alma_fiducial_bandwidth_freq / aggregate_bandwidth)
+
         factor = relative_tsys * time_factor * array_size_factor * area_factor * aggregate_bandwidth_factor * polarization_factor
         aggregate_bandwidth_sensitivity = band_info.sensitivity * Decimal(factor)
 
@@ -700,7 +703,7 @@ def gaincalSNR(context: Context, ms: MeasurementSet, tsysTable: str, flux: Itera
             # Then it is not a DIFFGAIN mode (B2B or BWSW) dataset, so compute
             # snr in widest spw.
             # PIPE-2901
-            widest_spw_bandwidth_factor = sqrt(ALMA_FIDUCIAL_BANDWIDTH_FREQ / widest_spw.bandwidth)
+            widest_spw_bandwidth_factor = sqrt(alma_fiducial_bandwidth_freq / widest_spw.bandwidth)
             factor = relative_tsys * time_factor * array_size_factor * area_factor * widest_spw_bandwidth_factor * polarization_factor
             widest_spw_bandwidth_sensitivity = band_info.sensitivity * Decimal(factor)
             if numpy.isnan(median_tsys.get(spw.id)):
