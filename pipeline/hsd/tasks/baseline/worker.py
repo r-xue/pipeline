@@ -601,7 +601,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         """
         Convert the fit_function parameter into a dictionary mapping each SPW ID to its BaselineFitParamConfig.
 
-        If fit_function is None or falsy, the default 'cspline' is used.
+        If fit_function is None, the default 'cspline' is used.
         If a single string is provided, one BaselineFitParamConfig instance is created and applied to all SPWs.
         If a dictionary is provided, keys are normalized to integers; SPWs not specified default to 'cspline'.
 
@@ -623,6 +623,9 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         """
 
         valid_functions = {'spline', 'cspline', 'poly', 'polynomial', 'sinusoid'}
+
+        if fit_function is None:
+            fit_function = 'cspline'
 
         if isinstance(fit_function, str):
             if fit_function not in valid_functions:
