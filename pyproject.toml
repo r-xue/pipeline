@@ -223,6 +223,9 @@ build-docs = { cmd = "make html_docs", cwd = "docs" }
 # Incremental docs build — reuses doctrees and autosummary stubs (much faster for dev)
 build-docs-fast = { cmd = "make html_fast", cwd = "docs" }
 
+# Build PDF (LaTeX) docs
+build-pdf = { cmd = "make latexpdf", cwd = "docs" }
+
 # --------------------------------------------------------------------------
 # Feature: CASA ver6.6.6-release — Python 3.10
 # --------------------------------------------------------------------------

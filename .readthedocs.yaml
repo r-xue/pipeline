@@ -1,12 +1,10 @@
 version: 2
 
-# Build tools and environment setup
 build:
   os: ubuntu-24.04
   tools:
-    python: miniconda-latest # use miniconda-latest before miniforge3 becomes available.
+    python: "latest"
   apt_packages:
-    - git
     - xvfb
     - imagemagick
     - poppler-utils
@@ -14,13 +12,19 @@ build:
     - texlive-latex-recommended
     - texlive-latex-extra
     - texlive-fonts-recommended
-  # Build commands for HTML and PDF
-  commands:
-    - conda env update --file=environment.yml
-    - conda run -n pipeline python -m pip install .[docs]
-    - mkdir -p ~/.casa/data
-    - cd docs && conda run -n pipeline make html_docs
-    - cd docs && conda run -n pipeline make latexpdf
-    - mkdir --parents _readthedocs/html/ _readthedocs/pdf/
-    - cp --recursive docs/_build/html/* _readthedocs/html/
-    - cp --recursive docs/_build/latex/*.pdf _readthedocs/pdf/
+  jobs:
+    create_environment:
+      - asdf plugin add pixi
+      - asdf install pixi latest
+      - asdf global pixi latest
+      - mkdir -p ~/.casa/data
+    install:
+      - pixi install -e docs
+    build:
+      html:
+        - pixi run -e docs --frozen sphinx-build -T -b html docs/source $READTHEDOCS_OUTPUT/html
+      pdf:
+        - pixi run -e docs --frozen sphinx-build -T -b latex docs/source docs/_build/latex
+        - cd docs/_build/latex && latexmk -pdf -interaction=nonstopmode *.tex
+        - mkdir -p $READTHEDOCS_OUTPUT/pdf/
+        - cp docs/_build/latex/*.pdf $READTHEDOCS_OUTPUT/pdf/
