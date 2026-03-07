@@ -321,14 +321,14 @@ class ImageParamsHeuristics(object):
         field_list: list[str] = fieldlist if isinstance(fieldlist, list) else [fieldlist] * len(vis_list)
 
         fieldname_list: list[str] = []
-        for i in range(len(vis_list)):
-            ms = self.observing_run.get_ms(name=vis_list[i])
-            list_of_field_per_ms = field_list[i].split(',')
+        for vis, fields_str in zip(vis_list, field_list):
+            ms = self.observing_run.get_ms(name=vis)
+            selected_fields = fields_str.split(',')
             fieldname_list += [
-                utils.dequote(field.name)
-                for field in ms.fields
-                if intent in field.intents
-                and (field.name in list_of_field_per_ms or str(field.id) in list_of_field_per_ms)
+                utils.dequote(fld.name)
+                for fld in ms.fields
+                if intent in fld.intents
+                and (fld.name in selected_fields or str(fld.id) in selected_fields)
             ]
 
         if as_list:
