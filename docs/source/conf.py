@@ -146,7 +146,8 @@ version = build_version.split('+')[0]
 build_version_short = build_version.removesuffix('-detached')
 
 # General information about the project.
-project = f'Pipeline \n ({version})'
+project = f'Pipeline ({version})'
+html_title = f'Pipeline ({version})'
 author = 'Pipeline Dev. Team'
 copyright = f'2020–{datetime.now().year}, {author}, build: {build_version_short}'
 
@@ -192,7 +193,9 @@ copybutton_only_copy_prompt_lines = True
 html_theme = 'furo'
 
 # Theme options for furo; empty dict means all defaults (including default fonts).
-html_theme_options = {}
+html_theme_options = {
+    'footer_icons': [],
+}
 # html_logo = "_static/favicon.ico"
 html_favicon = '_static/favicon-16x16.png'
 # Add any paths that contain custom static files (such as style sheets) here,

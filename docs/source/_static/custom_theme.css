@@ -97,3 +97,13 @@ div.nboutput.container div.output_area {
 .contents {
     margin-bottom: 1em;
 }
+
+/* Hide Sphinx/Furo attribution in footer, keep copyright */
+.bottom-of-page .left-details {
+    font-size: 0 !important;
+    visibility: hidden !important;
+}
+.bottom-of-page .left-details .copyright {
+    font-size: 0.81rem !important;
+    visibility: visible !important;
+}
