@@ -26,19 +26,6 @@ Pipeline Tasks (autosummary)
    pipeline.hsd.cli
    pipeline.hsdn.cli
 
-Pipeline domain/context (autosummary)
-=====================================
-
-.. autosummary::
-   :toctree: _autosummary
-   :caption: Pipeline Domain/Context (autosummary)
-   :template: custom-module-template.rst
-   :recursive:
-   
-   pipeline.domain
-   pipeline.infrastructure.launcher
-
-
 Pipeline domain/infrastructure modules (automodapi)
 ===================================================
 
