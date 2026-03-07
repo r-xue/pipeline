@@ -19,4 +19,10 @@
    :caption: API Reference
 
    apisummary
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+   :caption: Misc.
+
    devnotes

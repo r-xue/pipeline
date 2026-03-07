@@ -1,15 +1,3 @@
-Full APIs (autosummary)
-============================
-
-.. autosummary::
-   :toctree: _autosummary
-   :caption: APIs (autosummary)
-
-   :template: custom-module-template.rst
-
-   pipeline
-
-
 Pipeline Tasks (autosummary)
 ============================
 
@@ -168,4 +156,15 @@ Inheritance Diagrams for Pipeline ``Task``/``Inputs``/``Results`` Classes
 ``Results`` Classes
 -----------------------
 
-|resultsclasses_diagram|   
+|resultsclasses_diagram|
+
+
+Full APIs (autosummary)
+=======================
+
+.. autosummary::
+   :toctree: _autosummary
+   :caption: APIs (autosummary)
+   :template: custom-module-template.rst
+
+   pipeline
