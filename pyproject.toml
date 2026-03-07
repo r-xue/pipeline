@@ -217,8 +217,11 @@ PYTHONNOUSERSITE=1 python -m pytest -n logical \
 # Fetch/update CASA runtime data
 fetch-casarundata = "python -c 'import casatools'"
 
-# Build docs
+# Build docs (full clean rebuild)
 build-docs = { cmd = "make html_docs", cwd = "docs" }
+
+# Incremental docs build — reuses doctrees and autosummary stubs (much faster for dev)
+build-docs-fast = { cmd = "make html_fast", cwd = "docs" }
 
 # --------------------------------------------------------------------------
 # Feature: CASA ver6.6.6-release — Python 3.10
@@ -291,6 +294,7 @@ python = "3.12.*"
 [tool.pixi.feature.docs.pypi-dependencies]
 casashell = { version = "==6.7.5.*", index = "https://casa-pip.nrao.edu/repository/pypi-group/simple" }
 pipeline = { path = ".", editable = true, extras = ["docs"] }
+furo = ">=2024.1.29"
 
 [tool.pixi.environments]
 default = { features = ["casa675-py312"], solve-group = "casa675-py312" }

@@ -94,7 +94,6 @@ extensions = [
     'sphinxcontrib.mermaid',
     'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',
-    'sphinx.ext.coverage',
     'sphinx.ext.githubpages',
     # 'sphinx.ext.intersphinx',
     'sphinx.ext.inheritance_diagram',
@@ -190,29 +189,10 @@ copybutton_only_copy_prompt_lines = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'furo'
 
-# Theme options are theme-specific and customize the look and feel of a
-# theme further.  For a list of options available for each theme, see the
-# documentation.
-#
-html_theme_options = {
-    'logo_only': False,
-    'prev_next_buttons_location': 'bottom',
-    'style_external_links': False,
-    'vcs_pageview_mode': '',
-    'style_nav_header_background': 'gray',
-    'flyout_display': 'attached',
-    'version_selector': True,
-    'language_selector': True,
-    # 'display_version': True, # deprecated
-    # Toc options
-    'collapse_navigation': True,
-    'sticky_navigation': True,
-    'navigation_depth': 4,
-    'includehidden': True,
-    'titles_only': False,
-}
+# Theme options for furo; empty dict means all defaults (including default fonts).
+html_theme_options = {}
 # html_logo = "_static/favicon.ico"
 html_favicon = '_static/favicon-16x16.png'
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -220,6 +200,7 @@ html_favicon = '_static/favicon-16x16.png'
 # so a file named "default.css" will override the builtin "default.css".
 html_static_path = ['_static']
 html_css_files = ['custom_theme.css']
+html_js_files = ['furo_layout.js']
 
 # -- Options for Mermaid output ---------------------------------------
 
@@ -296,12 +277,8 @@ texinfo_documents = [
 
 # -- Sidebars
 
-html_sidebars = {
-    '**': ['localtoc.html'],  # not allowed if using the 'furo' theme
-    'search': [],
-    'genindex': [],
-    'py-modindex': [],
-}
+# furo provides its own sidebar; custom per-page sidebars are not supported
+html_sidebars = {}
 
 # -- napoleon
 
@@ -322,7 +299,7 @@ napoleon_attr_annotations = True
 verbatimwrapslines = False
 html_show_sourcelink = True
 autosummary_generate = True
-autosummary_generate_overwrite = autosummary_generate
+autosummary_generate_overwrite = False  # only write stubs that don't exist yet; speeds up incremental builds
 
 # https://www.sphinx-doc.org/en/master/usage/extensions/autosummary.html#confval-autosummary_ignore_module_all
 autosummary_imported_members = True
