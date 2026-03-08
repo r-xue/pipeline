@@ -14,11 +14,14 @@ Pipeline Tasks
    pipeline.hsd.cli
    pipeline.hsdn.cli
 
-Pipeline domain/infrastructure modules
-======================================
+Pipeline Modules
+================
+
+domain/infrastructure
+---------------------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    automodapi_src/pipeline.domain
    automodapi_src/pipeline.infrastructure.launcher
@@ -27,11 +30,11 @@ Pipeline domain/infrastructure modules
    automodapi_src/pipeline.infrastructure.imagelibrary
    automodapi_src/pipeline.infrastructure.vdp
 
-``pipeline.h*.tasks`` modules
-=============================
+``pipeline.h*.tasks``
+---------------------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    automodapi_src/pipeline.h.tasks
    automodapi_src/pipeline.hif.tasks
@@ -64,12 +67,12 @@ Inheritance Diagrams for Pipeline ``Task``/``Inputs``/``Results`` Classes
 |resultsclasses_diagram|
 
 
-Full APIs (autosummary)
-=======================
+Complete API Reference
+======================
 
 .. autosummary::
    :toctree: _autosummary
-   :caption: APIs (autosummary)
+   :caption: Complete API Reference
    :template: custom-module-template.rst
 
    pipeline

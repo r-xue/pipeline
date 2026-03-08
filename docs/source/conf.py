@@ -69,6 +69,14 @@ except ImportError as error:
     print(error.__class__.__name__ + ': ' + error.message)
     pass
 
+
+def setup(app):
+    # Raise docutils substitution line-length limit (default 10 000) so that
+    # the Task inheritance diagram substitution (~14 500 chars) is not dropped.
+    app.connect('builder-inited',
+                lambda app: app.env.settings.update({'line_length_limit': 20_000}))
+
+
 # -- General configuration ---------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
