@@ -29,6 +29,9 @@ else:
     # Use the ancestry path if "pipeline_src" is not set.
     sys.path.insert(0, os.path.abspath('../../'))
 
+# Make local extensions importable.
+sys.path.insert(0, os.path.abspath('_extension'))
+
 try:
     import pipeline
     from pipeline.h.tasks import ImportData
@@ -106,6 +109,7 @@ extensions = [
     'sphinx_copybutton',
     'IPython.sphinxext.ipython_console_highlighting',
     'IPython.sphinxext.ipython_directive',
+    'cli_function_stubs',
 ]
 
 add_module_names = False
