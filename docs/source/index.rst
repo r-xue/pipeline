@@ -11,8 +11,7 @@
    dependencies
    interface
    releases
-   timeline
-   
+
 .. toctree::
    :hidden:
    :maxdepth: 3
@@ -26,3 +25,4 @@
    :caption: Misc.
 
    devnotes
+   timeline
