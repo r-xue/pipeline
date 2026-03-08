@@ -143,5 +143,5 @@ div.nboutput.container div.output_area {
 /* --- Slightly reduce global font size ------------------------------------ */
 /* Setting on :root scales all rem-based sizes (Furo uses rem extensively).   */
 :root {
-    font-size: 81.25%;  /* browser default 16px × 81.25% ≈ 13px */
+    font-size: 93.75%;  /* browser default 16px × 93.75% ≈ 15px */
 }
