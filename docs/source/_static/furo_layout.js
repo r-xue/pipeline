@@ -79,11 +79,8 @@
             btn.addEventListener('click', function () {
                 var svg = container.querySelector('svg');
                 if (!svg) return;
-                // d3-zoom stores its transform on the <g> child; reset by
-                // removing the transform attribute and resetting d3's state.
                 var g = svg.querySelector('g');
                 if (g) g.setAttribute('transform', 'translate(0,0) scale(1)');
-                // If d3 zoom is attached, reset via its stored __zoom property.
                 if (svg.__zoom) svg.__zoom = window.d3 ? window.d3.zoomIdentity : {k:1, x:0, y:0};
             });
 

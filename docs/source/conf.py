@@ -221,6 +221,7 @@ html_js_files = ['furo_layout.js']
 # -- Options for Mermaid output ---------------------------------------
 
 mermaid_d3_zoom = True
+myst_fence_as_directive = ['mermaid']
 
 # -- Options for HTMLHelp output ---------------------------------------
 

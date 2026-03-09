@@ -1,5 +1,7 @@
 # CalLibrary Overview
 
+*Originally written by Stewart Williams (UKATC).*
+
 An overview of the callibrary module and how it tracks calibration state.
 
 ## Purpose and Introduction

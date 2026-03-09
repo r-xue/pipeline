@@ -4,7 +4,7 @@
 
 The following Gantt chart illustrates the complete PL2026 development timeline, including management activities, development phases, ALMA testing cycles, and delivery milestones.
 
-```{mermaid}
+```mermaid
 gantt
     title PL2026 Timeline
     dateFormat  YYYY-MM-DD
@@ -87,7 +87,7 @@ The branching diagram below illustrates the development workflow across PL2025 a
 - **release/2026.1.0**: VLASS-focused release (CASA 6.7.1-py3.10+hpg)
 - **release/2026.2.0**: ALMA Cycle-13 and VLA release (CASA 6.7.x-py3.12)
 
-```{mermaid}
+```mermaid
 %%{init: {'logLevel': 'debug', 'theme': 'base', 'gitGraph': {'showBranches': true, 'showCommitLabel': true, 'mainBranchOrder': 1}}}%%
 gitGraph
     %% === Initial 2025 Development on Main ===
