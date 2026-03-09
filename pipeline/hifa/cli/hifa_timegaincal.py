@@ -81,15 +81,15 @@ def hifa_timegaincal(vis=None, calamptable=None, calphasetable=None, offsetstabl
     Notes:
         QA scores for the spw phase offset assessment (per spw, per antenna/polarisation):
 
-        - If the standard deviation of all offsets over all antennas (σ_off) for a spw > 15°: QA = 0.82
+        - If the standard deviation of all offsets over all antennas (sigma_off) for a spw > 15 deg: QA = 0.82
           (too noisy to assess; no further tests).
         - Otherwise, QA = 0.5 if any of the following holds:
 
-          - Maximum offset > 30° or > 6 × σ_off
-          - Mean offset > 30° or > 6 × σ_off / √N_ant
-          - Number of scan solutions > 3 and standard deviation of offsets > 30° or > 4 × σ_off
+          - Maximum offset > 30 deg or > 6 x sigma_off
+          - Mean offset > 30 deg or > 6 x sigma_off / sqrt(N_ant)
+          - Number of scan solutions > 3 and standard deviation of offsets > 30 deg or > 4 x sigma_off
 
-        - Otherwise, QA = 0.8 if any of the same tests hold using relaxed limits (15°, 5°, 15° for
+        - Otherwise, QA = 0.8 if any of the same tests hold using relaxed limits (15 deg, 5 deg, 15 deg for
           max, mean, and std respectively).
         - The above scores are decreased by 0.1 if the spw was mapped (phase offsets may affect
           calibration). If the spw is not mapped, offsets should calibrate out, and a corresponding

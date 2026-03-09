@@ -77,7 +77,7 @@ def hifa_gfluxscale(vis=None, reference=None, transfer=None, refintent=None, tra
            score is based on max(|1 - K_spw|):
 
            - QA = 1.0 if max deviation < 0.1
-           - QA = 0.75 if max deviation 0.1–0.2
+           - QA = 0.75 if max deviation 0.1-0.2
            - QA = 0.5 if max deviation > 0.2
 
         The spectral consistency score can be low for reasons unrelated to the flux scale (e.g., low SNR

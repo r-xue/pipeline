@@ -11,8 +11,8 @@ def hsd_importdata(vis=None, session=None, hm_rasterscan=None, parallel=None, as
     as necessary. The WebLog shows the summary of imported MSs, grouping of spws to be reduced
     together, and spw matching between Tsys and science spws.
 
-    Telescope pointing plots are generated and available from the MS Summary page (Home → MS name
-    → ``Telescope Pointing``). Two plot types are shown:
+    Telescope pointing plots are generated and available from the MS Summary page (Home -- MS name
+    -- ``Telescope Pointing``). Two plot types are shown:
 
     - On-source positions only.
     - All positions including OFF positions.

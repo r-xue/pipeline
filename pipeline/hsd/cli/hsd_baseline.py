@@ -28,10 +28,10 @@ def hsd_baseline(fitfunc=None, fitorder=None, switchpoly=None,
     spline segments (``N_segment``) is determined via FFT analysis of the power spectrum of
     grouped spectra:
 
-    1. ``1 < P_FFT < 3`` → ``N_segment = 4``
-    2. ``3 <= P_FFT < 5`` → ``N_segment = 5``
-    3. ``5 <= P_FFT < 10`` → ``N_segment = 6``
-    4. ``P_FFT >= 10`` → ``N_segment = F_FFT * 2 + 2``
+    1. ``1 < P_FFT < 3`` -- ``N_segment = 4``
+    2. ``3 <= P_FFT < 5`` -- ``N_segment = 5``
+    3. ``5 <= P_FFT < 10`` -- ``N_segment = 6``
+    4. ``P_FFT >= 10`` -- ``N_segment = F_FFT * 2 + 2``
 
     The final ``N_segment`` is scaled by ``(Nch - N_mask) / Nch`` to account for masked channels.
     Specifying a non-negative integer for ``fitorder`` disables auto-determination.

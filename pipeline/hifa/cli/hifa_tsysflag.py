@@ -24,7 +24,7 @@ def hifa_tsysflag(vis=None, caltable=None,
     (default: ``'nmedian, derivative, edgechans, fieldshape, birdies, toomany'``):
 
     **1. nmedian** — Flag time/antenna points with anomalously high median Tsys.
-    A time × antenna matrix view is built per polarisation and spw. Points are flagged if their value exceeds
+    A time x antenna matrix view is built per polarisation and spw. Points are flagged if their value exceeds
     ``fnm_limit`` (default: 2.0) times the median of all non-flagged data points. Individual sources are evaluated
     separately when ``fnm_byfield=True`` (default) to prevent elevation differences from causing spurious flags at
     high frequencies.
@@ -54,7 +54,7 @@ def hifa_tsysflag(vis=None, caltable=None,
        twice the median channel-to-channel difference.
 
     **6. toomany** — Flag entire timestamps or spws when too many antennas are already flagged.
-    Uses the same time × antenna matrix as 'nmedian'. Two sub-rules are applied:
+    Uses the same time x antenna matrix as 'nmedian'. Two sub-rules are applied:
 
     - ``tmf`` (too many flags): Flag an entire timestamp if the fraction of flagged antennas exceeds
       ``tmf1_limit`` (default: 0.666).
@@ -62,7 +62,7 @@ def hifa_tsysflag(vis=None, caltable=None,
       the fraction of entirely flagged antennas exceeds ``tmef1_limit`` (default: 0.666).
 
     Notes:
-        QA = 0.0 if additional flagging fraction ≥ 50%, QA = 1.0 if ≤ 5%, linearly interpolated between 0 and 1
+        QA = 0.0 if additional flagging fraction >= 50%, QA = 1.0 if <= 5%, linearly interpolated between 0 and 1
         for fractions between 5% and 50%. An additional score of 0.8 is assigned if any spw has an antenna that is
         fully flagged.
 

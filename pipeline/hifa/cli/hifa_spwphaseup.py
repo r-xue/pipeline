@@ -128,9 +128,9 @@ def hifa_spwphaseup(vis=None, caltable=None, field=None, intent=None, spw=None, 
     the entire bandpass scan (total-time) and also over a period equal to the phase referencing cycle time.
     The median phase RMS of all baselines longer than the 80th percentile is reported in the WebLog table.
 
-    Outlier antennas (phase RMS > 180°, or > 4 × MAD + median when median > 50°, or > max(6 × MAD + median,
-    2 × median) when median ≤ 50°) are identified and shown as semi-transparent symbols in the plot. When
-    outliers are found above 50°, a reassessment is made excluding them.
+    Outlier antennas (phase RMS > 180 deg, or > 4 x MAD + median when median > 50 deg, or > max(6 x MAD + median,
+    2 x median) when median <= 50 deg) are identified and shown as semi-transparent symbols in the plot. When
+    outliers are found above 50 deg, a reassessment is made excluding them.
 
     .. figure:: /figures/hifa_spwphaseup_phasedeco_PL2022.png
        :scale: 60%
@@ -138,17 +138,17 @@ def hifa_spwphaseup(vis=None, caltable=None, field=None, intent=None, spw=None, 
 
        Example phase decoherence plots (phase RMS vs. baseline length). Semi-transparent
        points indicate excluded outlier antennas. Horizontal coloured lines show the
-       decoherence thresholds at 30°, 50°, and 70°.
+       decoherence thresholds at 30 deg, 50 deg, and 70 deg.
 
     Notes:
         QA scores for phase decoherence:
 
-        - Phase RMS < 30° (excellent stability): QA = 1.0 (or 0.9 if outlier antennas detected).
-        - Phase RMS 30–50° (good stability): QA = 0.9.
-        - Phase RMS 50–70° (notably elevated): QA between 0.3 and 0.5.
-        - Phase RMS > 70° (poor stability): QA between 0.0 and 0.3.
+        - Phase RMS < 30 deg (excellent stability): QA = 1.0 (or 0.9 if outlier antennas detected).
+        - Phase RMS 30-50 deg (good stability): QA = 0.9.
+        - Phase RMS 50-70 deg (notably elevated): QA between 0.3 and 0.5.
+        - Phase RMS > 70 deg (poor stability): QA between 0.0 and 0.3.
 
-        Phase RMS of 30°, 50°, and 70° correspond to flux decoherence of ~13%, ~32%, and ~53% respectively.
+        Phase RMS of 30 deg, 50 deg, and 70 deg correspond to flux decoherence of ~13%, ~32%, and ~53% respectively.
         These thresholds are shown as coloured horizontal lines in the phase decoherence plots.
 
         The overall stage score is the lowest of the gain calibration QA and the phase decoherence QA.

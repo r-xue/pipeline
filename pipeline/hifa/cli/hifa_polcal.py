@@ -7,7 +7,7 @@ def hifa_polcal(vis=None, minpacov=None, solint_chavg=None, vs_stats=None, vs_th
     """Perform per-session polarization calibration for ALMA.
 
     Derives the instrumental polarization calibrations using the polarization calibrators. This task is
-    called once per session (which for ALMA polarization observations is typically 2–3 execution blocks).
+    called once per session (which for ALMA polarization observations is typically 2-3 execution blocks).
 
     The WebLog displays the following tables:
 
@@ -37,9 +37,9 @@ def hifa_polcal(vis=None, minpacov=None, solint_chavg=None, vs_stats=None, vs_th
 
         - Residual polarization: QA = 0.5 (yellow) if residual polarization > 0.1%; QA = 1.0 otherwise.
         - Gain ratio RMS: QA = 0.6 (yellow) if gain ratio RMS after calibration > 2%; QA = 1.0 otherwise.
-        - D-terms: QA = 0.75 (blue) if D-terms 0.10–0.15; QA = 0.55 (yellow) if > 0.15; QA = 1.0
+        - D-terms: QA = 0.75 (blue) if D-terms 0.10-0.15; QA = 0.55 (yellow) if > 0.15; QA = 1.0
           otherwise.
-        - Gain ratio: QA = 0.65 (yellow) if any antenna/spw gain ratio outside 0.9–1.10; QA = 1.0
+        - Gain ratio: QA = 0.65 (yellow) if any antenna/spw gain ratio outside 0.9-1.10; QA = 1.0
           otherwise.
 
         Only used in polarization recipes.

@@ -31,7 +31,7 @@ def hifa_gfluxscaleflag(vis=None, intent=None, phaseupsolint=None, solint=None, 
     Notes:
         For each intent, the QA sub-score = 1 - (fraction of data newly flagged). The final stage QA score
         is the product of all per-intent sub-scores. For example, if AMPLITUDE has 10% newly flagged and
-        PHASE has 40% newly flagged, the total score is (1 - 0.1) × (1 - 0.4) = 0.54.
+        PHASE has 40% newly flagged, the total score is (1 - 0.1) x (1 - 0.4) = 0.54.
 
     Returns:
         The results object for the pipeline task is returned.

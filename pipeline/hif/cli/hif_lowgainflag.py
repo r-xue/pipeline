@@ -20,7 +20,7 @@ def hif_lowgainflag(vis=None, intent=None, spw=None, refant=None, flag_nmedian=N
     5. Uses the gain amplitude table to identify antennas with outlier gains per spw.
     6. Applies flagging commands for the identified outlier antennas to the entire MS.
 
-    A separate time × antenna matrix view is created per spw. Each point is the absolute gain amplitude for
+    A separate time x antenna matrix view is created per spw. Each point is the absolute gain amplitude for
     that antenna/timestamp. Antennas are flagged if their gain is:
 
     - Below ``fnm_lo_limit`` (default: 0.5) times the median of all non-flagged data points, or
@@ -30,7 +30,7 @@ def hif_lowgainflag(vis=None, intent=None, spw=None, refant=None, flag_nmedian=N
     antennas moved to the end; an 'Attention' notification appears at the top of the WebLog page.
 
     Notes:
-        QA = 0.0 if additional flagging fraction ≥ 50%, QA = 1.0 if ≤ 5%, linearly interpolated between 0
+        QA = 0.0 if additional flagging fraction >= 50%, QA = 1.0 if <= 5%, linearly interpolated between 0
         and 1 for fractions between 5% and 50%. An additional score of 0.8 is assigned if any spw has an
         antenna that is fully flagged.
 

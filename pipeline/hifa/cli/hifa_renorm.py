@@ -61,9 +61,9 @@ def hifa_renorm(vis=None, createcaltable=None, threshold=None, spw=None, exclude
         The QA score reflects the magnitude of the maximum scaling factor R_f found, relative to
         the threshold R_th (default: 1.02):
 
-        - R_f < R_th:  QA = 1.0 - (1.0 - 0.90) × (R_f - 1.0) / (R_th - 1.0)  → green, 0.90–1.0
-        - R_th ≤ R_f < 2.5:  QA = 0.9 - (0.9 - 0.66) × (R_f - R_th) / (2.5 - R_th)  → blue, 0.67–0.9
-        - R_f ≥ 2.5:  QA = 0.66  → yellow
+        - R_f < R_th:  QA = 1.0 - (1.0 - 0.90) x (R_f - 1.0) / (R_th - 1.0) -- green, 0.90-1.0
+        - R_th <= R_f < 2.5:  QA = 0.9 - (0.9 - 0.66) x (R_f - R_th) / (2.5 - R_th) -- blue, 0.67-0.9
+        - R_f >= 2.5:  QA = 0.66 -- yellow
         - Bands 9 and 10 receive a fixed QA = 0.9 (blue) regardless of R_f.
         - If R_f is erroneous or unrealistic (< 1 or > 2.5), an additional QA message is issued.
 

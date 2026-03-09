@@ -18,8 +18,8 @@ def hif_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, para
     An additional per-antenna QA score is computed from the calibrated Amplitude vs. Frequency and Phase
     vs. Frequency plots for each calibrator. For each antenna a linear function is fitted to the data per
     scan per polarisation, and the slope/offset is compared to the equivalent fit for all antennas. As of
-    PL2025 outliers must exceed set thresholds (10% or 10% per 2 GHz for amplitude offset/slope, or 6° or
-    6° per 2 GHz for phase offset/slope) to generate a QA message. Details of deviant antennas are reported
+    PL2025 outliers must exceed set thresholds (10% or 10% per 2 GHz for amplitude offset/slope, or 6 deg or
+    6 deg per 2 GHz for phase offset/slope) to generate a QA message. Details of deviant antennas are reported
     in the expandable QA messages at the top of the page and in an ``applycalQA_outliers.txt`` file. Note
     that amplitude-frequency offsets symmetric in XX/YY and phase-frequency offsets for CHECK sources are
     excluded from the outlier QA.
@@ -28,7 +28,7 @@ def hif_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, para
     spw.
 
     Notes:
-        Flagging QA: 0.0 if the additional flag fraction on the science target ≥ 50%; 1.0 if ≤ 5%;
+        Flagging QA: 0.0 if the additional flag fraction on the science target >= 50%; 1.0 if <= 5%;
         linearly interpolated between 0 and 1 for fractions between 5% and 50%.
 
     Returns:

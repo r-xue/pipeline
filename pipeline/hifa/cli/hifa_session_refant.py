@@ -20,7 +20,7 @@ def hifa_session_refant(vis=None, phase_threshold=None):
     4. If none of the top-3 candidates qualify (which should be rare), choose the antenna with the most
        solutions as refant and display the number of phase-solution outliers (integrations where the refant
        phase was non-zero, meaning another refant was used). The total number of possible solutions is
-       N_EBs × N_spws × N_integrations × N_pol.
+       N_EBs x N_spws x N_integrations x N_pol.
 
     If a single refant was requested via `hif_refant` in the PPR, a warning is generated indicating that
     only one antenna is common across all MSes.
