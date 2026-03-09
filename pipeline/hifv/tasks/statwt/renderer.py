@@ -21,11 +21,10 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         weblog_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
         summary_plots = {}
-        plotter = None
+        plotters = {}
         ant_table_rows = None
         spw_table_rows = None
         scan_table_rows = None
-
         for result in results:
 
             if result.inputs['statwtmode'] == 'VLASS-SE':
@@ -40,6 +39,7 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             # Only VLASS-SE has 'before' and 'after' available
             if result.inputs['statwtmode'] == 'VLASS-SE':
                 summary_plots[ms] = plots
+                plotters[ms] = plotter
                 is_same = True
                 try:
                     weight_stats = plotter.result.weight_stats
@@ -50,7 +50,6 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         is_same &= before_by_ant[idx]['mean'] == after_by_ant[idx]['mean']
                         is_same &= before_by_ant[idx]['med'] == after_by_ant[idx]['med']
                         is_same &= before_by_ant[idx]['stdev'] == after_by_ant[idx]['stdev']
-                    
                 except:
                     is_same = False
 
@@ -81,7 +80,7 @@ class T2_4MDetailsstatwtRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     summary_plots[band][ms].append(plot)
 
         ctx.update({'summary_plots': summary_plots,
-                    'plotter': plotter,
+                    'plotters': plotters,
                     'dirname': weblog_dir,
                     'ant_table_rows': ant_table_rows, # only populated for VLA-PI
                     'spw_table_rows': spw_table_rows, # only populated for VLA-PI
