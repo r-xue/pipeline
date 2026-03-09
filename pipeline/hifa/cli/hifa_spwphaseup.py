@@ -15,6 +15,14 @@ def hifa_spwphaseup(vis=None, caltable=None, field=None, intent=None, spw=None, 
 
     `hifa_spwphaseup` performs two functions:
 
+    .. figure:: /figures/PL2025_lowSNR_spwphaseup_v1.png
+       :scale: 60%
+       :alt: Logic flowchart for spw phase-up strategy
+
+       Logic flowchart for determining the temporal gain strategy. Extends
+       phase-up mapping/combine, ``solint`` and ``gaintype`` calculation to
+       all intents except the Polarization calibrator.
+
     - Determines the spectral window mapping or combination mode, gaintype and
       solint, for each independent bandpass, amplitude, diffgain, phase and check
       source, to use when solving the phaseup (phase as a function of time) in
@@ -113,18 +121,48 @@ def hifa_spwphaseup(vis=None, caltable=None, field=None, intent=None, spw=None, 
     was used for BANDPASS or AMPLITUDE).  Finally, for CHECK intent the QA score
     is always blue, but scales depending on achieved SNR relative to ``phasesnr``.
 
+    **Phase decoherence assessment**
+
+    Using the bandpass phase-up solutions from `hifa_bandpass`, the baseline-based phase RMS is reconstructed
+    for each antenna relative to the reference antenna. For each baseline the phase RMS is calculated over
+    the entire bandpass scan (total-time) and also over a period equal to the phase referencing cycle time.
+    The median phase RMS of all baselines longer than the 80th percentile is reported in the WebLog table.
+
+    Outlier antennas (phase RMS > 180°, or > 4 × MAD + median when median > 50°, or > max(6 × MAD + median,
+    2 × median) when median ≤ 50°) are identified and shown as semi-transparent symbols in the plot. When
+    outliers are found above 50°, a reassessment is made excluding them.
+
+    .. figure:: /figures/hifa_spwphaseup_phasedeco_PL2022.png
+       :scale: 60%
+       :alt: Phase decoherence plots
+
+       Example phase decoherence plots (phase RMS vs. baseline length). Semi-transparent
+       points indicate excluded outlier antennas. Horizontal coloured lines show the
+       decoherence thresholds at 30°, 50°, and 70°.
+
+    Notes:
+        QA scores for phase decoherence:
+
+        - Phase RMS < 30° (excellent stability): QA = 1.0 (or 0.9 if outlier antennas detected).
+        - Phase RMS 30–50° (good stability): QA = 0.9.
+        - Phase RMS 50–70° (notably elevated): QA between 0.3 and 0.5.
+        - Phase RMS > 70° (poor stability): QA between 0.0 and 0.3.
+
+        Phase RMS of 30°, 50°, and 70° correspond to flux decoherence of ~13%, ~32%, and ~53% respectively.
+        These thresholds are shown as coloured horizontal lines in the phase decoherence plots.
+
+        The overall stage score is the lowest of the gain calibration QA and the phase decoherence QA.
 
     Returns:
         The results object for the pipeline task is returned.
 
     Examples:
-        1. Compute the default spectral window map and the per spectral window phase
-        offsets:
+        1. Compute the default spectral window map and the per spectral window phase offsets:
 
         >>> hifa_spwphaseup()
 
-        2. Compute the default spectral window map and the per spectral window phase
-        offsets set the spectral window mapping mode to 'combine':
+        2. Compute the default spectral window map and the per spectral window phase offsets set the spectral
+        window mapping mode to 'combine':
 
         >>> hifa_spwphaseup(hm_spwmapmode='combine')
 
