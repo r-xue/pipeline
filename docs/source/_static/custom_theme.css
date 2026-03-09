@@ -4,12 +4,12 @@
 
 /* --- Right TOC collapse toggle -------------------------------------------- */
 
-/* The toggle button sits on the left edge of the TOC drawer. */
+/* The toggle button sits on the left edge of the TOC drawer.
+   position: fixed keeps it vertically centred while scrolling. */
 .toc-toggle-btn {
-    position: absolute;
-    left: 0;
+    position: fixed;
     top: 50vh;
-    transform: translateX(-100%) translateY(-50%);
+    transform: translateY(-50%);
     z-index: 51;
 
     width: 1.1rem;

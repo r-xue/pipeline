@@ -24,7 +24,16 @@
         btn.setAttribute('title', 'Toggle table of contents');
         // chevron pointing right = TOC is visible, click to collapse
         btn.textContent = '\u276F';
-        tocDrawer.appendChild(btn);
+        // Append to body so fixed positioning is straightforward.
+        document.body.appendChild(btn);
+
+        // Position the button at the left edge of the TOC drawer.
+        function positionBtn() {
+            var rect = tocDrawer.getBoundingClientRect();
+            btn.style.right = (document.documentElement.clientWidth - rect.left) + 'px';
+        }
+        positionBtn();
+        window.addEventListener('resize', positionBtn);
 
         // Restore saved state.
         if (localStorage.getItem('furo-toc-collapsed') === 'true') {
@@ -32,6 +41,8 @@
             var mainEl = tocDrawer.parentElement;
             if (mainEl) mainEl.classList.add('toc-collapsed');
             btn.textContent = '\u276E';  // chevron left = click to expand
+            // Re-position after layout change.
+            requestAnimationFrame(positionBtn);
         }
 
         btn.addEventListener('click', function () {
@@ -40,6 +51,8 @@
             if (mainEl) mainEl.classList.toggle('toc-collapsed', collapsed);
             localStorage.setItem('furo-toc-collapsed', collapsed);
             btn.textContent = collapsed ? '\u276E' : '\u276F';
+            // Re-position after layout change.
+            requestAnimationFrame(positionBtn);
         });
     }
 
