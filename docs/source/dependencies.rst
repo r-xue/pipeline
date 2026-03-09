@@ -1,27 +1,33 @@
 Dependencies of ``Pipeline``
 ============================
 
-
-Runtime
---------
-
 .. _Pipeline: https://open-bitbucket.nrao.edu/projects/PIPE
 .. _casaconfig: https://github.com/casangi/casaconfig
 .. _pipeline-testdata: https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline-testdata/browse
 .. _casatasks.wvrgcal: https://casadocs.readthedocs.io/en/stable/api/tt/casatasks.calibration.wvrgcal.html#casatasks.calibration.wvrgcal
 
+Runtime
+-------
 
-A CASA6-equivalent Python environment
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+CASA6-equivalent Python environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. note:: 
+.. note::
 
-    `Pipeline`_ is a Python-based package with CASA6 components and other general-purpose Python libraries as dependencies. As with any python package, it's only compatible and supported with certain Python and 3rd-party libraries versions. In reality, each release is only tested and validated against an ALMA-cycle-specific monolithic CASA6 release (a self-contained Python environment with a built-in portable Python interpreter and associated libraries in other languages). CASA6 distribution itself has limited platform support (see the `CASA6 compatibility matrix <https://casadocs.readthedocs.io/en/stable/notebooks/introduction.html#Compatibility>`_).; users are encouraged to check the OS/libraries compatibility and requirements for running CASA6.
+    `Pipeline`_ is a Python package that depends on CASA6 components and various
+    general-purpose Python libraries. Like any Python package, it is only compatible
+    with specific versions of Python and its third-party dependencies. In practice,
+    each release is tested and validated solely against a monolithic CASA6 release
+    tied to a particular ALMA/VLA cycle. That monolithic release is a self-contained
+    Python environment bundling a portable interpreter and all required libraries.
+    CASA6 itself has limited platform support; see the
+    `CASA6 compatibility matrix <https://casadocs.readthedocs.io/en/stable/notebooks/introduction.html#Compatibility>`_
+    for OS and library requirements.
 
-For transparency and encouraging the use and development of ``Pipeline`` in a standard Python environment (e.g. conda), we break down the essential components for a CASA6-equivalent environment as below. In reality, all of them are included in Pipeline-dedicated CASA releases with built-in portable Python interpreter. 
-
-
-
+To encourage the use and development of ``Pipeline`` in a standard Python
+environment (e.g. conda), the essential components for a CASA6-equivalent
+setup are listed below. All of these are included in the Pipeline-dedicated
+CASA releases.
 
 - python3
 - ipython
@@ -35,73 +41,79 @@ For transparency and encouraging the use and development of ``Pipeline`` in a st
 - casampi
 
 .. note::
-    
-    ``casadata`` and ``almatasks`` are no longer required for ``CASA6>=6.6.1`` due to the introduction of casaconfig and refactor and migration of the `casatasks.wvrgcal`_ task. `casaconfig` is implicitly required by ``casatasks``
 
-Other Pipeline Dependencies
+    ``casadata`` and ``almatasks`` are no longer required as of ``CASA6 >= 6.6.1``
+    thanks to the introduction of `casaconfig`_ and the migration of the
+    `casatasks.wvrgcal`_ task. ``casaconfig`` is implicitly required by
+    ``casatasks``.
+
+Other Pipeline dependencies
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Here we list other dependency libraries required by Pipeline but not offered in the CASA6 monolithic environment
-:
 
- - Python packages/libraries (also see ``requirements.txt`` in the source code repository)
+The following libraries are required by Pipeline but are **not** included in
+the CASA6 monolithic distribution.
 
- - cachetools
- - mako
- - pypubsub
- - intervaltree
- - logutils
- - ps_mem
- - astropy
- - bdsf (for VLASS source detection & mask creation)
+Python packages (see also ``requirements.txt`` in the source repository):
 
- - \*unix-cmd tools
+- cachetools
+- mako
+- pypubsub
+- intervaltree
+- logutils
+- ps_mem
+- astropy
+- bdsf (VLASS source detection and mask creation)
 
- - ImageMagick
- - the "convert" cmd:
- - Linux only for generating thumbnails; macOS uses "sips" which comes with OS.
- - Also used by ImageMagickWriter from matplotlib.animation in hsd/tasks/common/rasterutil.py (only for developers)
- - the "montage" cmd: required from hifa_renorm
- - poppler-utils
- - the "pdfunite" cmd: required from hifa_renorm
- - Git: for obtaining the Pipeline revision description string.
- - Xvfb/xvfb-run: xvfb from OS is required for the casampi module, which is mandatory for running 
- - uncompress: used by tec_maps.py in CASA for VLA pipeline task hifv_priorcals
+Unix command-line tools:
+
+- **ImageMagick**
+
+  - ``convert``: generates thumbnails on Linux; macOS uses the built-in ``sips``
+    instead. Also used by ``ImageMagickWriter`` from ``matplotlib.animation``
+    in ``hsd/tasks/common/rasterutil.py`` (developer use only).
+  - ``montage``: required by ``hifa_renorm``.
+
+- **poppler-utils**
+
+  - ``pdfunite``: required by ``hifa_renorm``.
+
+- **Git**: used to obtain the Pipeline revision description string.
+- **Xvfb / xvfb-run**: required by the ``casampi`` module for headless
+  execution.
+- **uncompress**: used by ``tec_maps.py`` in CASA for the VLA task
+  ``hifv_priorcals``.
 
 
 Development Tools
 -----------------
 
-
 Packaging
 ^^^^^^^^^
 
- - ``wheel``: for installing older Python packages
- - ``csscompressor``: minify CSS during installation
+- ``wheel``: for installing older Python packages.
+- ``csscompressor``: minifies CSS during installation.
 
 Testing
 ^^^^^^^
 
- - ``pytest``
- - ``pytest-cov``
+- ``pytest``
+- ``pytest-cov``
 
+Code quality
+^^^^^^^^^^^^
 
-
-Development tools
-^^^^^^^^^^^^^^^^^
-
- - ``pydocstyle``
- - ``pycodestyle``
- - ``memory_profiler``
- - ``line_pofiler``
+- ``pydocstyle``
+- ``pycodestyle``
+- ``memory_profiler``
+- ``line_profiler``
 
 Documentation
 ^^^^^^^^^^^^^
 
- - ``sphinx``
+- ``sphinx``
 
+Version control
+^^^^^^^^^^^^^^^
 
-Version Controls
-^^^^^^^^^^
-
- - ``Git LFS``: for managing the `pipeline-testdata`_ repo
+- ``Git LFS``: for managing the `pipeline-testdata`_ repository.
 
