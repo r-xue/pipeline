@@ -74,7 +74,7 @@ class DiffGaincalResults(basetask.Results):
 class DiffGaincalInputs(vdp.StandardInputs):
 
     # PIPE-2932 stop diffgain flagging targets when offset solns missing
-    # change flagging_frac_limit such that if 1 (of 2) scans are flagged combine='spw' occurs
+    # change flagging_frac_limit such that if 1 (of 2) scans are flagged, combine='spw' occurs
     flagging_frac_limit = vdp.VisDependentProperty(default=0.5)
     hm_spwmapmode = vdp.VisDependentProperty(default='auto')
 
