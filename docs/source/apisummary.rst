@@ -74,5 +74,21 @@ Complete API Reference
    :toctree: _autosummary
    :caption: Complete API Reference
    :template: custom-module-template.rst
+   :recursive:
 
-   pipeline
+   pipeline.cli
+   pipeline.config
+   pipeline.environment
+   pipeline.recipereducer
+   pipeline.runpipeline
+   pipeline.runvlapipeline
+   pipeline.domain
+   pipeline.h
+   pipeline.hif
+   pipeline.hifa
+   pipeline.hifv
+   pipeline.hsd
+   pipeline.hsdn
+   pipeline.infrastructure
+   pipeline.qa
+   pipeline.recipes
