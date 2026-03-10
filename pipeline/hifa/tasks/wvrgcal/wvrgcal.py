@@ -9,6 +9,7 @@ import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
+import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.h.tasks.common import commonhelpermethods
@@ -503,18 +504,25 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         else:
             qa_spw_list = inputs.qa_spw.split(',')
 
+        # PIPE-3006 get string of all spws required and pass to the bandpass to run lowSNR heuristics       
+        # for a spectral scan we want to avoid passing all spws as this will take unnecessary time
+        # thus loop the spectral specs and use those of the spectral spec matching the top ranked qa_spw_list
+        spspec_to_spwid = utils.get_spectralspec_to_spwid_map(inputs.ms.get_spectral_windows(','.join(sorted(qa_spw_list))))
+        for spwids in spspec_to_spwid.values():
+            if int(qa_spw_list[0]) in spwids:
+                spws = ','.join(sorted([qa_spw for qa_spw in qa_spw_list if int(qa_spw) in spwids]))
+        
+        # Do a bandpass calibration
+        LOG.info('qa: calculating bandpass calibration')
+        bp_result = self._do_qa_bandpass(inputs, spws)
+        if not bp_result.final:
+            LOG.warning('qa: calculating phase calibration without bandpass applied')
+        else:
+            LOG.info('qa: calculating phase calibration with bandpass applied')      
+            
         for qa_spw in qa_spw_list:
             LOG.info(f'qa: {inputs.ms.basename} attempting to calculate wvrgcal QA using spw {qa_spw}')
             inputs.qa_spw = qa_spw
-
-            # Do a bandpass calibration
-            LOG.info('qa: calculating bandpass calibration')
-            bp_result = self._do_qa_bandpass(inputs)
-            # Do a gain calibration
-            if not bp_result.final:
-                LOG.warning('qa: calculating phase calibration without bandpass applied')
-            else:
-                LOG.info('qa: calculating phase calibration with bandpass applied')
             nowvr_result = self._do_nowvr_gaincal(inputs)
             if not nowvr_result.final:
                 continue
@@ -599,7 +607,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
                     LOG.info(f"Ant #{antid} ({ant_names[antid]}), time {timestamp}: {qa_result.data[xid, yid]:.2f}"
                              f" {'(flagged)' if qa_result.flag[xid, yid] else ''}")
 
-    def _do_qa_bandpass(self, inputs: WvrgcalInputs) -> BandpassResults:
+    def _do_qa_bandpass(self, inputs: WvrgcalInputs, spws: str) -> BandpassResults:
         """
         Create a bandpass caltable for QA analysis, returning the result of
         the worker bandpass task.
@@ -613,7 +621,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
             return self._do_user_qa_bandpass(inputs)
         else:
             LOG.info('Calculating new bandpass for QA analysis')
-            result = self._do_new_qa_bandpass(inputs)
+            result = self._do_new_qa_bandpass(inputs, spws)
             return result
 
     @staticmethod
@@ -628,7 +636,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         bp_result.accept(inputs.context)
         return bp_result
 
-    def _do_new_qa_bandpass(self, inputs: WvrgcalInputs) -> BandpassResults:
+    def _do_new_qa_bandpass(self, inputs: WvrgcalInputs, spws:str) -> BandpassResults:
         """
         Create a new bandpass caltable by spawning a bandpass worker task,
         merging the results with the context.
@@ -643,13 +651,12 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         else:
             intent = None
 
+        # PIPE-3006 allow lowSNR heuristics for phaseup and bandpass 
         args = {'vis': inputs.vis,
                 'mode': 'channel',
                 'intent': intent,
-                'spw': inputs.qa_spw,
-                'hm_phaseup': 'manual',
-                'hm_bandpass': 'fixed',
-                'solint': 'inf,7.8125MHz'}
+                'spw': spws,
+                'phaseupsnr': 5.0}
 
         inputs = bandpass.SerialALMAPhcorBandpass.Inputs(inputs.context, **args)
         task = bandpass.SerialALMAPhcorBandpass(inputs)
