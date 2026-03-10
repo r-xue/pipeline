@@ -510,16 +510,18 @@ class Wvrgcal(basetask.StandardTaskTemplate):
         spspec_to_spwid = utils.get_spectralspec_to_spwid_map(inputs.ms.get_spectral_windows(','.join(sorted(qa_spw_list))))
         for spwids in spspec_to_spwid.values():
             if int(qa_spw_list[0]) in spwids:
-                spws = ','.join(sorted([qa_spw for qa_spw in qa_spw_list if int(qa_spw) in spwids]))
+                #spws = ','.join(sorted([qa_spw for qa_spw in qa_spw_list if int(qa_spw) in spwids]))
+                qa_spw_list = [qa_spw for qa_spw in qa_spw_list if int(qa_spw) in spwids]
+        LOG.info(f'filtered spw rank: {qa_spw_list}')
         
         # Do a bandpass calibration
         LOG.info('qa: calculating bandpass calibration')
-        bp_result = self._do_qa_bandpass(inputs, spws)
+        bp_result = self._do_qa_bandpass(inputs, ','.join(sorted(qa_spw_list)))
         if not bp_result.final:
             LOG.warning('qa: calculating phase calibration without bandpass applied')
         else:
             LOG.info('qa: calculating phase calibration with bandpass applied')      
-            
+
         for qa_spw in qa_spw_list:
             LOG.info(f'qa: {inputs.ms.basename} attempting to calculate wvrgcal QA using spw {qa_spw}')
             inputs.qa_spw = qa_spw
