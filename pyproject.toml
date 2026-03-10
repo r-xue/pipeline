@@ -252,8 +252,8 @@ python = "3.12.*"
 casashell = { version = "==6.7.5.*", index = "https://casa-pip.nrao.edu/repository/pypi-group/simple" }
 
 [tool.pixi.feature.casa675-py313]
-# Note: bdsf is currently only available for linux-64 for cp13
-platforms = ["linux-64"]
+# Note: bdsf is not available on osx-arm64 for cp313; skipped via requirements.txt marker
+platforms = ["linux-64", "osx-arm64"]
 
 [tool.pixi.feature.casa675-py313.dependencies]
 python = "3.13.*"
