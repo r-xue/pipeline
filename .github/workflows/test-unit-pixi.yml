@@ -30,8 +30,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         pixi_env:
-          - casa666-py310
-          - casa671-py310
           - casa671-py312
           - casa675-py312
           - casa675-py313
