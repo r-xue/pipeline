@@ -16,6 +16,7 @@ import os
 import re
 import shutil
 import traceback
+from collections import defaultdict
 from typing import TYPE_CHECKING, Any
 from xml.etree import ElementTree
 
@@ -5251,6 +5252,34 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
             qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin, applies_to=applies_to))
             break
 
+    setup_scans = defaultdict(list)
+    for scan in context.evla['msinfo'][result.vis].calibrator_scan_select_string.split(","):
+        sc = ms.get_scans(int(scan))[0]
+
+        spw_ids = sorted(spw.id for spw in sc.spws)
+        setup_key = frozenset(spw_ids)
+
+        setup_scans[setup_key].append(sc.id)
+    for spws, scans in setup_scans.items():
+        for spw in spws:
+            flagged_all = True
+            for sc in scans:
+                taql = f"SCAN_NUMBER={sc} and DATA_DESC_ID =={spw} and FLAG_ROW==False"
+                numrows = utils.get_row_count(calms, taql)
+                if numrows > 0:
+                    flagged_all = False
+                    break
+
+            if flagged_all:
+                score = rendererutils.SCORE_THRESHOLD_ERROR
+                longmsg = f"SPW {spw} flagged in scans {', '.join(str(int(s)) for s in scans)}"
+                shortmsg = f"SPW {spw} flagged in all scans"
+                origin = pqa.QAOrigin(metric_name='score_fluxboot',
+                                      metric_score=score,
+                                      metric_units='')
+                applies_to = pqa.TargetDataSelection(vis={result.vis}, spw=spw)
+                qascores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to))
+
     # PIPE-2584, part-4: Ensure flux density is measured.
     # If not measured, model_data column will be filled up with 1.
 
@@ -5271,45 +5300,24 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
 
         return qascores
 
-    spws = ms.get_spectral_windows()
-    str_spws = [str(spw.id) for spw in spws]
-
-    no_data_spws = {}
-    for scan in context.evla['msinfo'][result.vis].calibrator_scan_select_string.split(","):
-
-        for spw in str_spws:
-            # PIPE-2166: setting doquantiles to false
-            taql = f"SCAN_NUMBER={scan} and DATA_DESC_ID =={spw} and FLAG_ROW==False"
-            numrows = utils.get_row_count(calms, taql)
-            if numrows == 0:
-                no_data_spws.setdefault(scan, []).append(spw)
-                continue
-
-            job = casa_tasks.visstat(vis=calms,scan=scan, useflags=True,
-                                     spw=spw, datacolumn='model',
-                                     correlation='LL,RR', doquantiles=False)
-            vis_stats = job.execute()
-            for desc_id,stats in vis_stats.items():
-                if all(stats.get(key) == 1 for key in ["min","max","mean","median"]):
-                    score = rendererutils.SCORE_THRESHOLD_ERROR
-                    msg = f"Model column is set to one for {spw} and {scan}"
-                    origin = pqa.QAOrigin(metric_name='score_fluxboot',
-                                          metric_score=score,
-                                          metric_units='')
-                    applies_to = pqa.TargetDataSelection(vis={result.vis}, scan=scan)
-                    qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin, applies_to=applies_to))
-    if no_data_spws:
-        score = rendererutils.SCORE_THRESHOLD_ERROR
-        scan_parts = []
-        for scan, spws in sorted(no_data_spws.items()):
-            spw_list = ",".join(map(str, spws))
-            scan_parts.append(f"scan {scan}: spws {spw_list}")
-
-        msg = f"No data found in {calms} for {'; '.join(scan_parts)}"
-        origin = pqa.QAOrigin(metric_name='score_fluxboot',
-                                metric_score=score,
-                                metric_units='')
-        applies_to = pqa.TargetDataSelection(vis={result.vis}, scan=scan)
-        qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin, applies_to=applies_to))
+    for spws, scans in setup_scans.items():
+        for sc in scans:
+            spwlist = []
+            for spw in spws:
+                taql = f"SCAN_NUMBER={sc} and DATA_DESC_ID =={spw} and FLAG_ROW==False"
+                numrows = utils.get_row_count(calms, taql)
+                if numrows == 0:
+                    continue
+                job = casa_tasks.visstat(vis=calms,scan=str(sc), useflags=True, spw=str(spw), datacolumn='model', correlation='LL,RR', doquantiles=False)
+                vis_stats = job.execute()
+                for desc_id, stats in vis_stats.items():
+                    if all(stats.get(key) == 1 for key in ["min","max","mean"]):
+                        spwlist.append(str(spw))
+            if spwlist:
+                score = rendererutils.SCORE_THRESHOLD_ERROR
+                msg = f"Model column is set to one for scan {sc} and spw {', '.join(spwlist)}"
+                origin = pqa.QAOrigin(metric_name='score_fluxboot', metric_score=score, metric_units='')
+                applies_to = pqa.TargetDataSelection(vis={result.vis}, scan=sc)
+                qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin, applies_to=applies_to))
 
     return qascores
