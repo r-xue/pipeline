@@ -477,7 +477,7 @@ def _plot_masked_averaged_spectrum(plot: 'Axes',
     plot.legend()
 
     # Add a warning text if the minimum of the masked averaged spectrum is below the threshold
-    if np.nanmin(masked_average_spectrum) <= STDDEV_THRESHOLD_FACTOR * stddev:
+    if _detect_deep_absorption_feature(masked_average_spectrum, channel_mask):
         plot.text(minabc + w * 2. / 5., -5. * stddev, "Warning!!", fontsize=25, color="Orange")
 
 
