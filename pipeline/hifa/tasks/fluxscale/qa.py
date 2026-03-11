@@ -331,7 +331,7 @@ def _compute_k_spws_for_flux_measurements(field: Field, flux_measurements: Itera
     return k_spws
 
 
-def _get_field_to_analyse(ms: MeasurementSet, intent: str) -> Field:
+def _get_field_to_analyse(ms: MeasurementSet, intent: str) -> Field | None:
     """
     Identify and return which field to analyse for the "k_spw" score.
 
@@ -344,13 +344,15 @@ def _get_field_to_analyse(ms: MeasurementSet, intent: str) -> Field:
         intent: intent to find field for
 
     Returns:
-        Field to analyse.
+        Field to analyse, or None if no field found.
     """
     candidate_fields = [f for f in ms.get_fields(intent=intent) if 'TARGET' not in f.intents]
     if not candidate_fields:
         candidate_fields = ms.get_fields(intent=intent)
-    field = min(candidate_fields, key=lambda f: f.time.min())
-    return field
+    # PIPE-2694 handle CHECK (or any) intent passed when not an observed field
+    if not candidate_fields:
+        return None
+    return min(candidate_fields, key=lambda f: f.time.min())
 
 
 def _get_fluxes_for_field(ms: MeasurementSet, field: Field) -> list[tuple[int, float, float]]:

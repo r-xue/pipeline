@@ -5,10 +5,10 @@ import itertools
 import os
 from typing import TYPE_CHECKING
 
-import matplotlib.cm as cm
 import numpy as np
-from matplotlib.figure import Figure
+from matplotlib import colormaps
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
@@ -139,7 +139,7 @@ class K2JyBoxScatterDisplay:
         ms_styles = {
             ms: (marker, color)
             for ms, marker, color in zip(self.ms_labels, itertools.cycle('osDv^<>'),
-                                        itertools.cycle(cm.get_cmap('tab10').colors))
+                                        itertools.cycle(colormaps.get_cmap('tab10').colors))
         }
 
         # CASE 1: Scatter Plot for MS count < MS_THRESHOLD
