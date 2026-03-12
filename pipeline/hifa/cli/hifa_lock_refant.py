@@ -4,16 +4,20 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifa.tasks.lock_refant.lock_refant.LockRefAntInputs.__init__
 @utils.cli_wrapper
 def hifa_lock_refant(vis=None):
-    """Lock reference antenna list.
+    """Lock the reference antenna to a single antenna with ``refantmode='fixed'``.
 
-    hifa_lock_refant marks the reference antenna list as "locked" for specified
-    MeasurementSets, preventing modification of the refant list by subsequent
-    tasks.
+    Sets the reference antenna to a single antenna and sets ``refantmode='fixed'`` for all subsequent
+    calibration tasks, preventing any subsequent modification of the refant list.
 
-    After executing hifa_lock_refant, all subsequent gaincal calls will by
-    default be executed with refantmode='strict'.
+    In the polarization (polcal and polcalimage) recipes, `hifa_bandpass` and `hifa_spwphaseup` are each
+    called a second time after this stage to ensure those calibration tables are computed using the fixed
+    reference antenna.
 
-    The refant list can be unlocked with the hifa_unlock_refant task.
+    The refant list can be unlocked with the `hifa_unlock_refant` task, although that is not needed in the
+    standard polcal and polcalimage recipes.
+
+    Notes:
+        Only used in polarization recipes.
 
     Returns:
         The results object for the pipeline task is returned.

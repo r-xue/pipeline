@@ -29,6 +29,9 @@ else:
     # Use the ancestry path if "pipeline_src" is not set.
     sys.path.insert(0, os.path.abspath('../../'))
 
+# Make local extensions importable.
+sys.path.insert(0, os.path.abspath('_extension'))
+
 try:
     import pipeline
     from pipeline.h.tasks import ImportData
@@ -66,6 +69,14 @@ except ImportError as error:
     print(error.__class__.__name__ + ': ' + error.message)
     pass
 
+
+def setup(app):
+    # Raise docutils substitution line-length limit (default 10 000) so that
+    # the Task inheritance diagram substitution (~14 500 chars) is not dropped.
+    app.connect('builder-inited',
+                lambda app: app.env.settings.update({'line_length_limit': 20_000}))
+
+
 # -- General configuration ---------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -94,7 +105,6 @@ extensions = [
     'sphinxcontrib.mermaid',
     'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',
-    'sphinx.ext.coverage',
     'sphinx.ext.githubpages',
     # 'sphinx.ext.intersphinx',
     'sphinx.ext.inheritance_diagram',
@@ -107,9 +117,11 @@ extensions = [
     'sphinx_copybutton',
     'IPython.sphinxext.ipython_console_highlighting',
     'IPython.sphinxext.ipython_directive',
+    'cli_function_stubs',
 ]
 
 add_module_names = False
+autosectionlabel_prefix_document = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -147,7 +159,8 @@ version = build_version.split('+')[0]
 build_version_short = build_version.removesuffix('-detached')
 
 # General information about the project.
-project = f'Pipeline \n ({version})'
+project = f'Pipeline ({version})'
+html_title = f'Pipeline ({version})'
 author = 'Pipeline Dev. Team'
 copyright = f'2020–{datetime.now().year}, {author}, build: {build_version_short}'
 
@@ -190,28 +203,11 @@ copybutton_only_copy_prompt_lines = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'furo'
 
-# Theme options are theme-specific and customize the look and feel of a
-# theme further.  For a list of options available for each theme, see the
-# documentation.
-#
+# Theme options for furo; empty dict means all defaults (including default fonts).
 html_theme_options = {
-    'logo_only': False,
-    'prev_next_buttons_location': 'bottom',
-    'style_external_links': False,
-    'vcs_pageview_mode': '',
-    'style_nav_header_background': 'gray',
-    'flyout_display': 'attached',
-    'version_selector': True,
-    'language_selector': True,
-    # 'display_version': True, # deprecated
-    # Toc options
-    'collapse_navigation': True,
-    'sticky_navigation': True,
-    'navigation_depth': 4,
-    'includehidden': True,
-    'titles_only': False,
+    'footer_icons': [],
 }
 # html_logo = "_static/favicon.ico"
 html_favicon = '_static/favicon-16x16.png'
@@ -220,10 +216,12 @@ html_favicon = '_static/favicon-16x16.png'
 # so a file named "default.css" will override the builtin "default.css".
 html_static_path = ['_static']
 html_css_files = ['custom_theme.css']
+html_js_files = ['furo_layout.js']
 
 # -- Options for Mermaid output ---------------------------------------
 
 mermaid_d3_zoom = True
+myst_fence_as_directive = ['mermaid']
 
 # -- Options for HTMLHelp output ---------------------------------------
 
@@ -296,12 +294,8 @@ texinfo_documents = [
 
 # -- Sidebars
 
-html_sidebars = {
-    '**': ['localtoc.html'],  # not allowed if using the 'furo' theme
-    'search': [],
-    'genindex': [],
-    'py-modindex': [],
-}
+# furo provides its own sidebar; custom per-page sidebars are not supported
+html_sidebars = {}
 
 # -- napoleon
 
@@ -315,14 +309,14 @@ napoleon_use_admonition_for_notes = False
 napoleon_use_admonition_for_references = False
 napoleon_use_ivar = False
 napoleon_use_param = True
-napoleon_use_rtype = True
+napoleon_use_rtype = False
 napoleon_attr_annotations = True
 
 
 verbatimwrapslines = False
 html_show_sourcelink = True
 autosummary_generate = True
-autosummary_generate_overwrite = autosummary_generate
+autosummary_generate_overwrite = False  # only write stubs that don't exist yet; speeds up incremental builds
 
 # https://www.sphinx-doc.org/en/master/usage/extensions/autosummary.html#confval-autosummary_ignore_module_all
 autosummary_imported_members = True
