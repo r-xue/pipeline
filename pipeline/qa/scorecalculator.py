@@ -3791,7 +3791,7 @@ def generate_metric_mask(
     # exclude edge channels
     imagename = outcome['image'].imagename
     nchan = metric_mask.shape[3]
-    edge_count_lower, edge_count_upper = outcome["edge_channels"]
+    edge_count_lower, edge_count_upper = outcome.get("edge_channels", (0, 0))
     log_edge_channels(imagename, nchan, edge_count_lower, edge_count_upper)
     if edge_count_lower > 0:
         metric_mask[:, :, :, :edge_count_lower] = False

@@ -1331,17 +1331,33 @@ class SDImaging(basetask.StandardTaskTemplate):
         """
         ctx = self.inputs.context
 
+        # edge channel detection for combined images
+        results_for_edge_channel_detection = [
+            r for r in results if r.outcome["image"].antenna == "COMBINED"
+        ]
+
+        for r in results_for_edge_channel_detection:
+            image_item = r.outcome['image']
+
+            # detect edge channels
+            # edge_channels is a two tuple of integers
+            edge_channels = detect_edge_channels(image_item.imagename)
+            LOG.debug(
+                "edge channels for %s are %s",
+                image_item.imagename,
+                edge_channels
+            )
+            r.outcome["edge_channels"] = edge_channels
+
         # contamination analysis for Stokes I combined images
         results_for_contamination_analysis = filter(
-            lambda r: (r.outcome["image"].antenna == "COMBINED"
-                       and r.outcome["image"].stokes == "I"),
-            results
+            lambda r: r.outcome["image"].stokes == "I",
+            results_for_edge_channel_detection
         )
 
         for r in results_for_contamination_analysis:
             image_item = r.outcome['image']
-            is_LSB = r.frequency_channel_reversed
-
+            edge_channels = r.outcome["edge_channels"]
             with casa_tools.ImageReader(image_item.imagename) as ia:
                 image_shape = ia.shape()
                 cs = ia.coordsys()
@@ -1350,8 +1366,12 @@ class SDImaging(basetask.StandardTaskTemplate):
                 nchan = image_shape[freq_axis]
 
             # detect range of ATM feature
-            ms_index_list, unique_indices = numpy.unique(r.outcome['file_index'], return_index=True)
-            vspw_list = numpy.asarray(r.outcome['assoc_spws'])[unique_indices]
+            ms_index_list, unique_indices = numpy.unique(
+                r.outcome['file_index'], return_index=True
+            )
+            vspw_list = numpy.asarray(
+                r.outcome['assoc_spws']
+            )[unique_indices]
 
             atm_channels = numpy.zeros(nchan, dtype=bool)
             for ms_id, vspw in zip(ms_index_list, vspw_list):
@@ -1363,6 +1383,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                     atm_channels = numpy.logical_or(
                         atm_channels, _detected_chans
                     )
+
+            is_LSB = r.frequency_channel_reversed
             if is_LSB:
                 # mask needs to be reversed
                 atm_channels = atm_channels[::-1]
@@ -1371,16 +1393,6 @@ class SDImaging(basetask.StandardTaskTemplate):
                 "ATM feature range: %s",
                 numpy.where(atm_channels)[0].tolist()
             )
-
-            # detect edge channels
-            # edge_channels is a two tuple of integers
-            edge_channels = detect_edge_channels(image_item.imagename)
-            LOG.debug(
-                "edge channels for %s are %s",
-                image_item.imagename,
-                edge_channels
-            )
-            r.outcome["edge_channels"] = edge_channels
 
             contaminated = self._detect_contamination(
                 image_item,
