@@ -445,11 +445,32 @@ def _plot_masked_averaged_spectrum(plot: 'Axes',
     plot.set_ylim(stddev * LOWER_INTENSITY_LIMIT_FACTOR, stddev * UPPER_INTENSITY_LIMIT_FACTOR)
 
     # Plot the spectrum at the peak and the masked averaged spectrum
-    ma_mask = np.logical_not(channel_mask)
-    ma_spectrum_at_peak = np.ma.masked_array(spectrum_at_peak, ma_mask)
-    ma_masked_average_spectrum = np.ma.masked_array(masked_average_spectrum, ma_mask)
-    plot.plot(abc, ma_spectrum_at_peak, "-", color="grey", label="spectrum at peak", alpha=0.5)
-    plot.plot(abc, ma_masked_average_spectrum, "-", color="red", label="masked averaged")
+    if channel_mask is None:
+        ma_mask = np.zeros_like(masked_average_spectrum, dtype=bool)
+    else:
+        ma_mask = np.logical_not(channel_mask)
+    ma_masked_average_spectrum = np.ma.masked_array(
+        masked_average_spectrum, ma_mask
+    )
+    plot.plot(abc, spectrum_at_peak, "-", color="grey",
+              label="spectrum at peak", alpha=0.5)
+    plot.plot(abc, ma_masked_average_spectrum, "-", color="red",
+              label="masked averaged")
+    if np.any(ma_mask):
+        assert channel_mask is not None
+        mask_for_plot = channel_mask.copy()
+        # extend False (valid) channels by 1 to make the line continuous
+        mask_for_plot[1:] = np.logical_and(
+            mask_for_plot[1:], channel_mask[:-1]
+        )
+        mask_for_plot[:-1] = np.logical_and(
+            mask_for_plot[:-1], channel_mask[1:]
+        )
+        masked_region = np.ma.masked_array(
+            masked_average_spectrum, mask_for_plot
+        )
+        plot.plot(abc, masked_region, "-", color="indigo",
+                  label="edge/ATM (ignored)", alpha=0.5)
 
     # Define the edges for horizontal lines
     _edge = [abc[0], abc[-1]]
