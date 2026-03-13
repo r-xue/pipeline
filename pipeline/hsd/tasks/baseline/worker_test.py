@@ -2,7 +2,9 @@ import pytest
 from pipeline.hsd.tasks.baseline.worker import (
     SerialBaselineSubtractionWorker as worker,
     BaselineFitParamConfig,
+
 )
+
 
 SPWS = [17, 19, 23]
 DEF = "cspline"
@@ -31,6 +33,11 @@ AUTO = "automatic"
         (
                 {17: "poly",  19: "cspline",  23: "poly"},
                 {17: "poly",  19: "cspline",  23: "poly"},
+                False
+        ),
+(
+                {17: "poly",  19: "cspline",  23: "sinusoid"},
+                {17: "poly",  19: "cspline",  23: "sinusoid"},
                 False
         ),
         # error inputs 
@@ -86,3 +93,27 @@ def test_get_fit_order_dict(inp, expected, should_raise):
     cfg = worker.get_fit_order_dict(inp, SPWS)
     assert isinstance(cfg, dict) and set(cfg.keys()) == set(SPWS)
     assert cfg == expected
+
+@pytest.mark.parametrize(
+    "inp, expected, should_raise",
+    [
+        ((17, "sinusoid", [3, 5, 7], False),
+        [3, 5, 7],
+        False),
+    ]
+)
+def test_configure_wave_number(inp, expected, should_raise):
+
+    spw_id, fit_function, wave_number, switchpoly = inp
+    heuristic = {
+        spw_id: BaselineFitParamConfig(
+            fitfunc=fit_function,
+            switchpoly=switchpoly
+        )
+    }
+
+    worker.configure_wave_number(heuristic, wave_number)
+
+    assert heuristic[spw_id].wave_number == expected
+
+
