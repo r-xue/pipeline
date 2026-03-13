@@ -573,16 +573,6 @@ class InputsContainer(object):
     def __methods__(self):
         raise NotImplemented
 
-    @property
-    def context(self):
-        """
-        Return the context for this InputsContainer.
-
-        The context is the same for all active Inputs instances and is stored
-        at container initialization time.
-        """
-        return self._context
-
     def __getattr__(self, name):
         # __getattr__ is only called when this object's __dict__ does not
         # contain the requested property. When this happens, we delegate to
