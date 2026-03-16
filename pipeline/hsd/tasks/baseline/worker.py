@@ -592,8 +592,8 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
 
     @staticmethod
     def build_fitting_configuration(
-            spw_id_list: List[int] | set[Any],
-            fit_function: str | Dict[int | str, str] | None = "cspline",
+            spw_id_list: list[int] | set[Any],
+            fit_function: str | list[int | str, str] | None = "cspline",
             ms: MeasurementSet = None,
             context: Context = None,
             switchpoly=True
@@ -683,9 +683,9 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
 
     @staticmethod
     def _process_dictionary(
-            parameter_config: Dict[int, BaselineFitParamConfig],
-            wave_number: Dict[int, List] = None
-    )->Dict[int, BaselineFitParamConfig]:
+            parameter_config: dict[int, BaselineFitParamConfig],
+            wave_number: dict[int, list] = None
+    )->dict[int, BaselineFitParamConfig]:
 
         for key, value in parameter_config.items():
             if key in wave_number.keys() and value.fitfunc.blfunc == "sinusoid":
@@ -695,8 +695,8 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
 
     @staticmethod
     def configure_wave_number(
-            parameter_config: Dict[int, BaselineFitParamConfig],
-            wave_number: Union[List, Dict] = None,
+            parameter_config: dict[int, BaselineFitParamConfig],
+            wave_number: list | dict = None,
     )->None:
         # Possible inputs, wave_number: list, Dict[int: List[int]]
         # Check that wave number is a list or a dictionary
