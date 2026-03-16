@@ -5253,13 +5253,19 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
             break
 
     setup_scans = defaultdict(list)
+    valid_intents = {'TARGET', 'AMPLITUDE', 'BANDPASS', 'PHASE', 'POLANGLE'}
     for scan in context.evla['msinfo'][result.vis].calibrator_scan_select_string.split(","):
         sc = ms.get_scans(int(scan))[0]
-
-        spw_ids = sorted(spw.id for spw in sc.spws)
+        spw_ids = sorted(
+            spw.id for spw in sc.spws
+            if spw.intents & valid_intents
+            )
         setup_key = frozenset(spw_ids)
 
         setup_scans[setup_key].append(sc.id)
+
+    missing_spws = 0
+    missing_spws_scans = {}
     for spws, scans in setup_scans.items():
         for spw in spws:
             flagged_all = True
@@ -5269,16 +5275,21 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
                 if numrows > 0:
                     flagged_all = False
                     break
-
             if flagged_all:
-                score = rendererutils.SCORE_THRESHOLD_ERROR
-                longmsg = f"SPW {spw} flagged in scans {', '.join(str(int(s)) for s in scans)}"
-                shortmsg = f"SPW {spw} flagged in all scans"
-                origin = pqa.QAOrigin(metric_name='score_fluxboot',
-                                      metric_score=score,
-                                      metric_units='')
-                applies_to = pqa.TargetDataSelection(vis={result.vis}, spw=spw)
-                qascores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to))
+                missing_spws += 1
+                missing_spws_scans[spw] = ', '.join(str(int(s)) for s in scans)
+
+
+    if missing_spws / total_sci_spws > 0.5:
+        score = rendererutils.SCORE_THRESHOLD_ERROR
+        for spw, scans in missing_spws_scans.items():
+            longmsg = f"SPW {spw} flagged in scans {scans}"
+            shortmsg = f"SPW {spw} flagged in all scans"
+            origin = pqa.QAOrigin(metric_name='score_fluxboot',
+                                    metric_score=score,
+                                    metric_units='')
+            applies_to = pqa.TargetDataSelection(vis={result.vis}, spw=spw)
+            qascores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to))
 
     # PIPE-2584, part-4: Ensure flux density is measured.
     # If not measured, model_data column will be filled up with 1.
@@ -5315,7 +5326,7 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
                         spwlist.append(str(spw))
             if spwlist:
                 score = rendererutils.SCORE_THRESHOLD_ERROR
-                msg = f"Model column is set to one for scan {sc} and spw {', '.join(spwlist)}"
+                msg = f"Model column is set to 1.0 for scan {sc} and spw {', '.join(spwlist)}"
                 origin = pqa.QAOrigin(metric_name='score_fluxboot', metric_score=score, metric_units='')
                 applies_to = pqa.TargetDataSelection(vis={result.vis}, scan=sc)
                 qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin, applies_to=applies_to))
