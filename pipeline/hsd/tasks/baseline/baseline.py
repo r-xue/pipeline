@@ -103,7 +103,7 @@ class SDBaselineInputs(vdp.StandardInputs):
                  fitorder: Optional[FitOrder] = None,
                  switchpoly: Optional[bool] = None,
                  clusteringalgorithm: Optional[str] = None,
-                 wave_number: Optional[List[int]] = None,
+                 wave_number: list[int] | None = None,
                  deviationmask: Optional[bool] = None,
                  deviationmask_sigma_threshold: Optional[bool] = None,
                  parallel: Optional[str] = None) -> None:
