@@ -176,7 +176,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         vis: Optional[Union[str, List[str]]] = None,
         plan: Optional[Union['RGAccumulator', List['RGAccumulator']]] = None,
         fit_func: Optional[FitFunc] = None,
-        wave_number: List[int] |  None = None,
+        wave_number: list[int] |  None = None,
         fit_order: FitOrder | None = None,
         switchpoly: Optional[bool] = None,
         edge: Optional[List[int]] = None,
