@@ -670,8 +670,8 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
 
     @staticmethod
     def _process_list(
-            parameter_config: Dict[int, BaselineFitParamConfig],
-            wave_number: List[int] = None
+            parameter_config: dict[int, BaselineFitParamConfig],
+            wave_number: list[int] = None
     ):
         for config in parameter_config.values():
             # We only need to set this if the fit function is sinusoid. Otherwise,
