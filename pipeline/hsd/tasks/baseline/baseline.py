@@ -90,11 +90,11 @@ class SDBaselineInputs(vdp.StandardInputs):
     # docstring and type hints: supplements hsd_baseline
     def __init__(self,
                  context: 'Context',
-                 infiles: Optional[List[str]] = None,
-                 antenna: Optional[List[str]] = None,
-                 spw: Optional[List[str]] = None,
-                 pol: Optional[List[str]] = None,
-                 field: Optional[List[str]] = None,
+                 infiles: Optional[list[str]] = None,
+                 antenna: Optional[list[str]] = None,
+                 spw: Optional[list[str]] = None,
+                 pol: Optional[list[str]] = None,
+                 field: Optional[list[str]] = None,
                  linewindow: Optional[LineWindow] = None,
                  linewindowmode: Optional[str] = None,
                  edge: Optional[Tuple[int, int]] = None,
@@ -777,9 +777,9 @@ class DeviationMaskHeuristicsTask(HeuristicsTask):
     def __init__(self,
                  heuristics_cls: Type[MaskDeviationHeuristic],
                  vis: str,
-                 field_list: List[int],
-                 antenna_list: List[int],
-                 spw_list: List[int],
+                 field_list: list[int],
+                 antenna_list: list[int],
+                 spw_list: list[int],
                  deviationmask_sigma_threshold: float,
                  consider_flag: bool = False) -> None:
         """Construct DeviationMaskHeuristicsTask instance.
@@ -827,9 +827,9 @@ class DeviationMaskHeuristicsTask(HeuristicsTask):
 
 def deviation_mask_heuristic(
         vis: str,
-        field_list: List[int],
-        antenna_list: List[int],
-        spw_list: List[int],
+        field_list: list[int],
+        antenna_list: list[int],
+        spw_list: list[int],
         deviationmask_sigma_threshold: float,
         consider_flag: bool = False,
         parallel: Optional[bool] = None) -> Tuple[str, Union[mpihelpers.SyncTask, mpihelpers.AsyncTask]]:

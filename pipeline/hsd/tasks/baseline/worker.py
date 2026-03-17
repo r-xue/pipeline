@@ -75,7 +75,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         return self.prefix + '_blparam.txt'
 
     @vdp.VisDependentProperty(readonly=True)
-    def field(self) -> List[int]:
+    def field(self) -> list[int]:
         """Return list of field ids to process.
 
         Returned list should conform with the list of MS and
@@ -83,12 +83,12 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         MS in the list.
 
         Returns:
-            List of field ids to process
+            list of field ids to process
         """
         return self.plan.get_field_id_list()
 
     @vdp.VisDependentProperty(readonly=True)
-    def antenna(self) -> List[int]:
+    def antenna(self) -> list[int]:
         """Return list of antenna ids to process.
 
         Returned list should conform with the list of MS and
@@ -96,12 +96,12 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         MS in the list.
 
         Returns:
-            List of antenna ids to process
+            list of antenna ids to process
         """
         return self.plan.get_antenna_id_list()
 
     @vdp.VisDependentProperty(readonly=True)
-    def spw(self) -> List[int]:
+    def spw(self) -> list[int]:
         """Return list of spectral window (spw) ids to process.
 
         Returned list should conform with the list of MS and
@@ -109,12 +109,12 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         MS in the list.
 
         Returns:
-            List of spw ids to process
+            list of spw ids to process
         """
         return self.plan.get_spw_id_list()
 
     @vdp.VisDependentProperty(readonly=True)
-    def grid_table(self) -> List[Union[int, float, 'np.ndarray']]:
+    def grid_table(self) -> list[Union[int, float, 'np.ndarray']]:
         """Return list of grid tables to process.
 
         Returned list should conform with the list of MS and
@@ -127,7 +127,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         return self.plan.get_grid_table_list()
 
     @vdp.VisDependentProperty(readonly=True)
-    def channelmap_range(self) -> List[List[List[Union[int, bool]]]]:
+    def channelmap_range(self) -> list[list[list[Union[int, bool]]]]:
         """Return list of line ranges to process.
 
         Returned list should conform with the list of MS and
@@ -173,16 +173,16 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
     def __init__(
         self,
         context: 'Context',
-        vis: Optional[Union[str, List[str]]] = None,
-        plan: Optional[Union['RGAccumulator', List['RGAccumulator']]] = None,
+        vis: Optional[Union[str, list[str]]] = None,
+        plan: Optional[Union['RGAccumulator', list['RGAccumulator']]] = None,
         fit_func: Optional[FitFunc] = None,
         wave_number: list[int] |  None = None,
         fit_order: FitOrder | None = None,
         switchpoly: Optional[bool] = None,
-        edge: Optional[List[int]] = None,
-        deviationmask: Optional[Union[dict, List[dict]]] = None,
-        blparam: Optional[Union[str, List[str]]] = None,
-        bloutput: Optional[Union[str, List[str]]] = None,
+        edge: Optional[list[int]] = None,
+        deviationmask: Optional[Union[dict, list[dict]]] = None,
+        blparam: Optional[Union[str, list[str]]] = None,
+        bloutput: Optional[Union[str, list[str]]] = None,
         org_directions_dict: Optional[dict] = None,
         parallel: Optional[Union[bool, str]] = None
     ) -> None:
@@ -541,8 +541,8 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         return results
     
 
-    def get_fit_order_dict(fit_order: Optional[Union[int, Dict[Union[int, str], int]]],
-                    spw_id_list: Union[List[int], set[Any]], ms: MeasurementSet = None, context: Context = None) -> Dict[int, Union[int, str]]:
+    def get_fit_order_dict(fit_order: Optional[Union[int, dict[Union[int, str], int]]],
+                    spw_id_list: Union[list[int], set[Any]], ms: MeasurementSet = None, context: Context = None) -> dict[int, Union[int, str]]:
         """
         Convert the fit_order parameter into a dictionary mapping each SPW ID to its fit order.
         
@@ -597,7 +597,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             ms: MeasurementSet = None,
             context: Context = None,
             switchpoly=True
-    ) -> Dict[int, BaselineFitParamConfig]:
+    ) -> dict[int, BaselineFitParamConfig]:
         """
         Convert the fit_function parameter into a dictionary mapping each SPW ID to its BaselineFitParamConfig.
 
@@ -612,7 +612,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             context:Pipeline context
             ms: MeasurementSet
             fit_function: The fit function parameter (str, dict, or None).
-            spw_id_list: List of spectral window IDs to process.
+            spw_id_list: list of spectral window IDs to process.
 
         Raises:
             ValueError: fit_function has unsupported value.
@@ -698,7 +698,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             parameter_config: dict[int, BaselineFitParamConfig],
             wave_number: list | dict = None,
     )->None:
-        # Possible inputs, wave_number: list, Dict[int: List[int]]
+        # Possible inputs, wave_number: list, dict[int: list[int]]
         # Check that wave number is a list or a dictionary
         if isinstance(wave_number, list):
             SerialBaselineSubtractionWorker._process_list(
