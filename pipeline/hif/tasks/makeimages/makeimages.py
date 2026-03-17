@@ -10,6 +10,7 @@ import pipeline.infrastructure.daskhelpers as daskhelpers
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
+import pipeline.infrastructure.utils.imaging as imaging_utils
 import pipeline.infrastructure.vdp as vdp
 
 from pipeline.domain import DataType
@@ -494,9 +495,8 @@ class MakeImages(basetask.StandardTaskTemplate):
                 if len(pipever) > 68:
                     pipever = pipever[0:67]
                 info['VLASSPV'] = pipever
-                info['VLASSPK'] = tclean_result.image_max
                 info['VLASSBW'] = vlass_bw
-                info['VLASSITY'] = self._get_vlass_image_type(name)
+                info['VLASSITY'] = imaging_utils.get_vlass_image_type(name)
                 info['VLASSTN'] = tile
                 info['VLASSEP'] = epoch
                 info['VLASSVR'] = version
@@ -511,32 +511,20 @@ class MakeImages(basetask.StandardTaskTemplate):
         if epoch_match:
             epoch = epoch_match.group(1)
         else:
-            LOG.warning(f"Unable to get epoch given the filename {filename}, setting epoch to None")
-            epoch = None
+            LOG.warning(f"Unable to get epoch given the filename {filename}, setting epoch to ''")
+            epoch = ''
         if tilename_match:
             tile = tilename_match.group(1)
         else:
-            LOG.warning(f"Unable to get tile name given the filename {filename}, setting tile name to None")
-            tile = None
+            LOG.warning(f"Unable to get tile name given the filename {filename}, setting tile name to ''")
+            tile = ''
         if version_match:
             version = version_match.group(1)
         else:
-            LOG.warning(f"Unable to get version number given the filename {filename}, setting version number to None")
-            version = None
+            LOG.warning(f"Unable to get version number given the filename {filename}, setting version number to ''")
+            version = ''
 
         return epoch, tile, version
-
-    def _get_vlass_image_type(self, filename):
-        """Determine the VLASS image type based on specific substrings in the filename."""
-        return (
-            "ALPHAERR" if ".alphaerr." in filename else
-            "ALPHA" if ".alpha." in filename else
-            "RMS" if ".rms." in filename else
-            "INTENSITY_PBCOR" if ".pbcor." in filename else
-            "WEIGHT" if ".weight." in filename else
-            "SUMWT" if ".sumwt." in filename else
-            "UNKNOWN"
-        )
 
     def _is_target_for_sensitivity(self, clean_result, heuristics):
         """

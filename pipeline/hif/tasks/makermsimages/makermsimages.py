@@ -9,6 +9,7 @@ import pipeline.infrastructure.daskhelpers as daskhelpers
 import pipeline.infrastructure.imagelibrary as imagelibrary
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure.utils import imaging as imaging_utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
@@ -141,7 +142,6 @@ class Makermsimages(basetask.StandardTaskTemplate):
                             rmsval = float(np.median(rmsstats[rmsimagename]['madrms']))
                 else:
                     # PIPE-1163: avoid saving stats from .tt1
-
                     if '.tt1.' in rmsimagename:
                         continue
                     with casa_tools.ImageReader(rmsimagename) as image:
@@ -149,7 +149,7 @@ class Makermsimages(basetask.StandardTaskTemplate):
                         medabsdevmed = rmsstats[rmsimagename].get('medabsdevmed')
                         if medabsdevmed is not None:
                             rmsstats[rmsimagename]['madrms'] = medabsdevmed[0] * 1.4826  # see CAS-9631
-                            rmsval = float(rmsstats[rmsimagename]['madrms'])
+                            rmsval = float(rmsstats[rmsimagename]['median'])
 
                 # PIPE-2461: adding rms values to image header
                 imagename, _ = os.path.splitext(rmsimagename)
@@ -163,6 +163,7 @@ class Makermsimages(basetask.StandardTaskTemplate):
                     with casa_tools.ImageReader(imagefile) as image:
                         info = image.miscinfo()
                         info["VLASSRMS"] = rmsval
+                        info['VLASSITY'] = imaging_utils.get_vlass_image_type(imagefile)
                         image.setmiscinfo(info)
 
         if self.inputs.context.imaging_mode == "VLASS-SE-CUBE" and rmsstats:
