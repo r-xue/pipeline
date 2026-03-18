@@ -17,8 +17,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class LockRefAntInputs(vdp.StandardInputs):
-    #PIPE-3016 default usecase of lock_refant is for polcal data
-    # prior to second loop of calibratons, where spwphaseup offsets need to be unregisterd
+    # PIPE-3016 the default use case of lock_refant is in a polcal recipe
+    # prior to second loop of calibratons. Before that second loop,
+    # the spwphaseup caltables need to be unregistered
     unregister_spwphaseup =  vdp.VisDependentProperty(default=True)
     
     def to_casa_args(self):
@@ -40,8 +41,9 @@ class LockRefAntInputs(vdp.StandardInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            unregister_spwphaseup: Boolean option to remove the offset gaintable
-                created in the initial pre-lock-refant loop. Defaults to True
+            unregister_spwphaseup: Boolean option to remove the offset caltable
+                created in the initial spwhphaseup stage, prior to lock_refant.
+                Defaults to True
 
         """
         self.context = context
@@ -50,7 +52,7 @@ class LockRefAntInputs(vdp.StandardInputs):
         self.unregister_spwphaseup = unregister_spwphaseup
 
         # PIPE-3016: if requested, unregister previous spwphaseup caltables from
-        # the context before merging in the newly derived caltable.
+        # the context.
         if self.unregister_spwphaseup:
             # Identify the MS to process
             vis: str = os.path.basename(self._vis)
