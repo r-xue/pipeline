@@ -3,7 +3,6 @@ import collections
 import os
 
 import numpy
-from typing import TYPE_CHECKING, Any, Callable, List, Optional, Tuple, Type, Union
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -11,17 +10,21 @@ import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
+
+from pipeline.hsd.tasks.common.inspection_util import generate_ms, inspect_reduction_group, merge_reduction_group
+
 from pipeline.domain import DataType
 from pipeline.hsd.heuristics import MaskDeviationHeuristic
 from pipeline.infrastructure import task_registry
+
 from . import maskline
 from . import worker
 from .. import common
 from ..common import compress
-from pipeline.hsd.tasks.common.inspection_util import generate_ms, inspect_reduction_group, merge_reduction_group
 from ..common import utils
 
 from .typing import FitFunc, FitOrder, LineWindow
+from typing import TYPE_CHECKING, Any, Callable, Optional, Tuple, Type, Union
 
 if TYPE_CHECKING:
     from pipeline.infrastructure.api import Heuristic

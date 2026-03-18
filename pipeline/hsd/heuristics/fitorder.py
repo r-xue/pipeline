@@ -1,11 +1,11 @@
 import collections
 import enum
-from typing import List, Optional, Tuple
-
 import numpy
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.api as api
+
+from typing import List, Optional, Tuple
 
 LOG = infrastructure.get_logger(__name__)
 

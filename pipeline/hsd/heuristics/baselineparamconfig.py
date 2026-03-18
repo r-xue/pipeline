@@ -12,6 +12,7 @@ import pipeline.infrastructure.logging as logging
 from pipeline.domain import DataTable, MeasurementSet
 from pipeline.infrastructure import casa_tools
 from pipeline.hsd.heuristics import fitorder
+
 from typing import Sequence, Tuple, Union
 
 LOG = infrastructure.get_logger(__name__)
