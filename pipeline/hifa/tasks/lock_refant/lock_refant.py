@@ -1,6 +1,7 @@
-# import os
+import os
 
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import task_registry
@@ -16,12 +17,16 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class LockRefAntInputs(vdp.StandardInputs):
+    #PIPE-3016 default usecase of lock_refant is for polcal data
+    # prior to second loop of calibratons, where spwphaseup offsets need to be unregisterd
+    unregister_spwphaseup =  vdp.VisDependentProperty(default=True)
+    
     def to_casa_args(self):
         # refant does not use CASA tasks
         raise NotImplementedError
 
     # docstring and type hints: supplements hifa_lock_refant
-    def __init__(self, context, vis=None, output_dir=None):
+    def __init__(self, context, output_dir=None, vis=None, unregister_spwphaseup=None):
         """Initialize Inputs.
 
         Args:
@@ -35,11 +40,31 @@ class LockRefAntInputs(vdp.StandardInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
+            unregister_spwphaseup: Boolean option to remove the offset gaintable
+                created in the initial pre-lock-refant loop. Defaults to True
+
         """
         self.context = context
         self.vis = vis
         self.output_dir = output_dir
+        self.unregister_spwphaseup = unregister_spwphaseup
 
+        # PIPE-3016: if requested, unregister previous spwphaseup caltables from
+        # the context before merging in the newly derived caltable.
+        if self.unregister_spwphaseup:
+            # Identify the MS to process
+            vis: str = os.path.basename(self._vis)
+
+            # predicate function that triggers when the spwphaseup caltable is
+            # detected for this MS
+            def spwphaseup_matcher(calto: callibrary.CalToArgs, calfrom: callibrary.CalFrom) -> bool:
+                calto_vis = {os.path.basename(v) for v in calto.vis}
+                do_delete = 'hifa_spwphaseup' in calfrom.gaintable and vis in calto_vis
+                if do_delete:
+                    LOG.info(f'Unregistering previous spwphaseup offset table for {vis}')
+                return do_delete
+
+            context.callibrary.unregister_calibrations(spwphaseup_matcher)           
 
 class LockRefAntResults(basetask.Results):
     def __init__(self, vis: str):
