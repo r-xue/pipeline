@@ -2,25 +2,26 @@
 import numpy
 import os
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, Union
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.sessionutils as sessionutils
+import pipeline.infrastructure.vdp as vdp
+
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.utils import relative_path
-import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataTable, DataType, MeasurementSet
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.hsd.heuristics import BaselineFitParamConfig
 from pipeline.hsd.tasks.common import utils as sdutils
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
+
 from . import plotter
 from .. import common
 from ..common import utils
-
 from .typing import FitFunc, FitOrder
+
+from typing import TYPE_CHECKING, Any, Optional, Type, Union
 
 if TYPE_CHECKING:
     import numpy as np
@@ -83,7 +84,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         MS in the list.
 
         Returns:
-            list of field ids to process
+            List of field ids to process
         """
         return self.plan.get_field_id_list()
 
@@ -96,7 +97,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         MS in the list.
 
         Returns:
-            list of antenna ids to process
+            List of antenna ids to process
         """
         return self.plan.get_antenna_id_list()
 
@@ -109,7 +110,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         MS in the list.
 
         Returns:
-            list of spw ids to process
+            List of spw ids to process
         """
         return self.plan.get_spw_id_list()
 
