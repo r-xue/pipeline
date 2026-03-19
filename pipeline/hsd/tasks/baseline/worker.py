@@ -391,8 +391,8 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         # This function will handle the per spw fitting functions and build a dictionary
         # of instance BaselineParamConfig() fitting class for each spw.
         spw_funcs_dict = SerialBaselineSubtractionWorker.build_fitting_configuration(
-            fit_function=fit_func,
             spw_id_list=unique_spws,
+            fit_function=fit_func,
             ms=ms,
             context=self.inputs.context,
             switchpoly=self.inputs.switchpoly
