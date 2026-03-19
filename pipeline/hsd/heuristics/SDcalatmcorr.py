@@ -373,7 +373,7 @@ def skysel(skylines, linestouse = 'all', avoidpeak = 0.0):
             skysel[startrange:endrange] = np.zeros(endrange-startrange, dtype=bool)
 
     return skysel
- 
+
 def calcmetric(rawsample, rawsigmasample, metrictype = 'intsqdiff', smoothbox = 1):
     '''Function that calculates a metric value for a given piece of spectrum (time-averaged data), typically
     a section around the skyline selected by its "grade".
@@ -1477,7 +1477,7 @@ def getJyperKfromCaltable(mslist, context):
         output[ms] = {str(thisspw): np.mean(jyperk[(spw == thisspw)]) for thisspw in spw if thisspw in spwsetup['spwlist']}
     return output
 
-def selectModelParams(mslist, context = None, jyperkfactor = None, decisionmetric = 'intabsdiff',
+def selectModelParams(mslist, context = None, jyperkfactor = None, decisionmetric = 'intsqdiff',
                       iant = 'auto', atmtype = [1,2,3,4], maxalt = [120],
                       lapserate = [-5.6], scaleht = [2.0], resultsfile = None, plotsfolder = None,
                       forcespws = None, forcefield = None, forcemetricline = None, maxonlyspw = False, minpeaklevel = 0.05,
