@@ -494,6 +494,10 @@ def _plot_masked_averaged_spectrum(plot: 'Axes',
     plot.text(minabc + w * 0.1, np.nanmean(rms_map) * (-1.), "-1.0 x rms", fontsize=18, color="blue", va='top')
     plot.text(minabc + w * 0.6, STDDEV_THRESHOLD_FACTOR * stddev, f"{STDDEV_THRESHOLD_FACTOR} x std", fontsize=18, color="red")
 
+    # restrict number of major ticks for readability
+    plot.xaxis.get_major_locator().set_params(nbins=8)
+    plot.ticklabel_format(axis="x", style="plain", useOffset=False)
+
     # Display the legend
     plot.legend()
 
