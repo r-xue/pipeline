@@ -215,10 +215,25 @@ def enlargesel(sel, box):
 
 def smooth(y, box_pts):
     '''Smooth using boxcar convolution.
+
+    To mitigate boundary effect, this function extrapolates
+    the data by box_pts / 2 in both edges with "nearest"
+    method. This will be harmless in the context of this
+    heuristics since we are interested in the gradient
+    (diff) between adjuscent channels.
     '''
     box = np.ma.ones(box_pts)/box_pts
-    y_smooth = np.ma.convolve(y, box, mode='same')
-    return y_smooth
+    if box_pts % 2 == 0:
+        extra_chans = box_pts // 2
+    else:
+        extra_chans = (box_pts + 1) // 2
+    y_expand = np.empty(len(y) + 2 * extra_chans)
+    y_expand[extra_chans:-extra_chans] = y
+    y_expand[:extra_chans] = y[0]
+    y_expand[-extra_chans:] = y[-1]
+    print(f"box_pts {box_pts} extra_chans {extra_chans}")
+    y_smooth = np.ma.convolve(y_expand, box, mode='same')
+    return y_smooth[extra_chans:-extra_chans]
 
 def getskylines(tauspec, spw, spwsetup, fraclevel = 0.5, minpeaklevel = 0.0, spwbordertoavoid = 0.025, taudeg = 2):
     '''Get position of sky lines and line widths from the optical depth.
