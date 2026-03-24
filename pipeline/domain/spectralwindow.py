@@ -309,6 +309,7 @@ class SpectralWindow:
         receiver: Receiver type, e.g., 'TSB'.
         ref_frequency: The reference frequency.
         sideband: Side band.
+        spectralspec: SpectralSpec name.
         transitions: Spectral transitions recorded associated with spectral window.
         type: Spectral window type, e.g., 'TDM'.
         sdm_num_bin: Number of bins for online spectral averaging.
@@ -322,7 +323,7 @@ class SpectralWindow:
     __slots__ = ('id', 'band', 'bandwidth', 'type', 'intents', 'ref_frequency', 'name', 'baseband', 'sideband',
                  'receiver', 'freq_lo', 'mean_frequency', '_min_frequency', '_max_frequency', '_centre_frequency',
                  'channels', '_ref_frequency_frame', 'spectralspec', 'transitions', 'sdm_num_bin', 'correlation_bits',
-                 'median_receptor_angle', 'specline_window', 'grouping_id', '_chan_resolutions')
+                 'median_receptor_angle', 'specline_window', 'grouping_id', 'chan_resolutions')
 
     def __init__(
             self,
@@ -420,7 +421,7 @@ class SpectralWindow:
         self.median_receptor_angle = median_receptor_angle
         self.specline_window = specline_window
         self.grouping_id = grouping_id
-        self._chan_resolutions = chan_resolutions
+        self.chan_resolutions = chan_resolutions
 
     def __getstate__(self) -> tuple:
         """Define what to pickle as a class instance."""
@@ -428,7 +429,7 @@ class SpectralWindow:
                 self.baseband, self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency,
                 self._max_frequency, self._centre_frequency, self.channels, self._ref_frequency_frame,
                 self.spectralspec, self.transitions, self.sdm_num_bin, self.correlation_bits, self.median_receptor_angle,
-                self.specline_window, self.grouping_id, self._chan_resolutions)
+                self.specline_window, self.grouping_id, self.chan_resolutions)
 
     def __setstate__(self, state: tuple) -> None:
         """Define how to unpickle a class instance."""
@@ -436,7 +437,7 @@ class SpectralWindow:
          self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency, self._max_frequency,
          self._centre_frequency, self.channels, self._ref_frequency_frame, self.spectralspec, self.transitions,
          self.sdm_num_bin, self.correlation_bits, self.median_receptor_angle, self.specline_window, self.grouping_id,
-         self._chan_resolutions) = state
+         self.chan_resolutions) = state
 
     def __repr__(self) -> str:
         chan_freqs = self.channels.chan_freqs
@@ -489,9 +490,9 @@ class SpectralWindow:
         subtable, present in ALMA Cycle 3+ data. Returns None for older data and VLA,
         where the column is absent.
         """
-        if self._chan_resolutions is None:
+        if self.chan_resolutions is None:
             return None
-        return measures.Frequency(float(self._chan_resolutions[0]), measures.FrequencyUnits.HERTZ)
+        return measures.Frequency(float(self.chan_resolutions[0]), measures.FrequencyUnits.HERTZ)
 
     def channel_range(self, minfreq: measures.Frequency, maxfreq: measures.Frequency) \
             -> tuple[int, int] | tuple[None, None]:
