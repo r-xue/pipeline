@@ -63,6 +63,8 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
         antenna_names = [a.name for a in m.antennas]
 
         for antenna in table['antspw']:
+            if table['ant'][antenna]['fraction'] == 1.0:
+                continue
             spwcollect = []
             for spw in table['antspw'][antenna]:
                 for pol in table['antspw'][antenna][spw]:
