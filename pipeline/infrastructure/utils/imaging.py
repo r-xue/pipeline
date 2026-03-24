@@ -512,8 +512,8 @@ def get_vlass_image_type(filename):
 
     filename = filename.lower()
     base = (
-        "ALPHAERR" if ".alphaerr." in filename else
-        "ALPHA" if ".alpha." in filename else
+        "ALPHAERR" if ".alpha.error" in filename else
+        "ALPHA" if ".alpha" in filename else
         "RMS" if ".rms" in filename else
         "INTENSITY_PBCOR" if "image.pbcor." in filename else
         "WEIGHT" if ".weight." in filename else
