@@ -694,7 +694,8 @@ class SerialSDATMCorrection(basetask.StandardTaskTemplate):
                 defatmtype=default_model.atmtype,
                 defmaxalt=default_model.maxalt,
                 deflapserate=default_model.dtem_dh,
-                defscaleht=default_model.h0
+                defscaleht=default_model.h0,
+                diffsmooth=0.004
             )
             best_model = ATMModelParam(*heuristics_result[0][ms_name])
 
