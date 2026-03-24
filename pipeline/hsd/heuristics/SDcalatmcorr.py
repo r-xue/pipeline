@@ -389,7 +389,7 @@ def skysel(skylines, linestouse = 'all', avoidpeak = 0.0):
 
     return skysel
 
-def calcmetric(rawsample, rawsigmasample, metrictype = 'intsqdiff', smoothbox = 1):
+def calcmetric(rawsample: np.ndarray, rawsigmasample: np.ndarray, metrictype_list: str | list[str] = 'intsqdiff', smoothbox: int = 1) -> dict[str, tuple[float, float]]:
     '''Function that calculates a metric value for a given piece of spectrum (time-averaged data), typically
     a section around the skyline selected by its "grade".
     param:
@@ -419,99 +419,108 @@ def calcmetric(rawsample, rawsigmasample, metrictype = 'intsqdiff', smoothbox = 
     if not type(sample) == np.ma.core.MaskedArray:
         sample = np.ma.MaskedArray(sample)
         sigmasample = np.ma.MaskedArray(sigmasample)
-    if metrictype == 'intabs':
-        auxval = []
-        auxerr = []
-        for i in range(npols):
-            goodsample = (sample.data[i])[~sample.mask[i]]
-            sigmagoodsample = (sigmasample[i])[~sample.mask[i]]
-            if len(goodsample) > 0:
-                auxval.append(np.ma.sum(np.ma.abs(sample[i,:])))
-                auxerr.append(np.ma.sqrt(np.ma.sum(sigmasample[i,:]*sigmasample[i,:])))
-        if len(auxval) > 0:
-            value = np.sum(auxval)
-            error = np.sqrt(np.sum(np.array(auxerr)*np.array(auxerr)))
+
+    resultdict = {}
+
+    if isinstance(metrictype_list, str):
+        metrictype_list = [metrictype_list]
+
+    for metrictype in metrictype_list:
+        if metrictype == 'intabs':
+            auxval = []
+            auxerr = []
+            for i in range(npols):
+                goodsample = (sample.data[i])[~sample.mask[i]]
+                sigmagoodsample = (sigmasample[i])[~sample.mask[i]]
+                if len(goodsample) > 0:
+                    auxval.append(np.ma.sum(np.ma.abs(sample[i,:])))
+                    auxerr.append(np.ma.sqrt(np.ma.sum(sigmasample[i,:]*sigmasample[i,:])))
+            if len(auxval) > 0:
+                value = np.sum(auxval)
+                error = np.sqrt(np.sum(np.array(auxerr)*np.array(auxerr)))
+            else:
+                value = np.nan
+                error = np.nan
+            resultdict[metrictype] = (value, error)
+        elif metrictype == 'maxabs':
+            auxval = []
+            auxerr = []
+            for i in range(npols):
+                goodsample = (sample.data[i])[~sample.mask[i]]
+                sigmagoodsample = (sigmasample[i])[~sample.mask[i]]
+                if len(goodsample) > 0:
+                    idx = np.argsort(np.abs(goodsample))[-1]
+                    auxval.append(np.abs(goodsample[idx]))
+                    auxerr.append(sigmagoodsample[idx])
+            if len(auxval) > 0:
+                idx = np.argsort(np.abs(auxval))[-1]
+                value = auxval[idx]
+                error = auxerr[idx]
+            else:
+                value = np.nan
+                error = np.nan
+            resultdict[metrictype] = (value, error)
+        elif metrictype == 'maxabsdiff':
+            auxval = []
+            auxerr = []
+            for i in range(npols):
+                goodsample = (sample.data[i])[~sample.mask[i]]
+                sigmagoodsample = (sigmasample[i])[~sample.mask[i]]
+                if len(goodsample) > 0:
+                    absdiff = np.abs(np.diff(goodsample))
+                    idx = np.argsort(absdiff)[-1]
+                    auxval.append(absdiff[idx])
+                    auxerr.append(np.sqrt(sigmagoodsample[idx]**2+sigmagoodsample[idx+1]**2))
+            if len(auxval) > 0:
+                idx = np.argsort(np.abs(auxval))[-1]
+                value = auxval[idx]
+                error = auxerr[idx]
+            else:
+                value = np.nan
+                error = np.nan
+            resultdict[metrictype] = (value, error)
+        elif metrictype == 'intabsdiff':
+            auxval = []
+            auxerr = []
+            for i in range(npols):
+                goodsample = (sample.data[i])[~sample.mask[i]]
+                sigmasqgoodsample = np.square((sigmasample[i])[~sample.mask[i]])
+                if len(goodsample) > 0:
+                    absdiff = np.abs(np.diff(goodsample))
+                    absdiffsqerr = sigmasqgoodsample + np.roll(sigmasqgoodsample, 1)
+                    auxval.append(np.sum(absdiff))
+                    auxerr.append(np.sqrt(np.sum(absdiffsqerr)))
+            if len(auxval) > 0:
+                value = np.sum(auxval)
+                error = np.sqrt(np.sum(np.array(auxerr)*np.array(auxerr)))
+            else:
+                value = np.nan
+                error = np.nan
+            resultdict[metrictype] = (value, error)
+        elif metrictype == 'intsqdiff':
+            auxval = []
+            auxerr = []
+            for i in range(npols):
+                goodsample = (sample.data[i])[~sample.mask[i]]
+                sigmasqgoodsample = np.square((sigmasample[i])[~sample.mask[i]])
+                if len(goodsample) > 0:
+                    absdiff = np.abs(np.diff(goodsample))
+                    sqdiff = np.square(absdiff)
+                    absdiffsqerr = sigmasqgoodsample + np.roll(sigmasqgoodsample, 1)
+                    sqdifferr = 4*absdiff*absdiff*(absdiffsqerr[0:-1])
+                    auxval.append(np.sum(sqdiff))
+                    auxerr.append(np.sqrt(np.sum(sqdifferr)))
+            if len(auxval) > 0:
+                value = np.sum(auxval)
+                error = np.sqrt(np.sum(np.array(auxerr)*np.array(auxerr)))
+            else:
+                value = np.nan
+                error = np.nan
+            resultdict[metrictype] = (value, error)
         else:
-            value = np.nan
-            error = np.nan
-        return (value, error)
-    elif metrictype == 'maxabs':
-        auxval = []
-        auxerr = []
-        for i in range(npols):
-            goodsample = (sample.data[i])[~sample.mask[i]]
-            sigmagoodsample = (sigmasample[i])[~sample.mask[i]]
-            if len(goodsample) > 0:
-                idx = np.argsort(np.abs(goodsample))[-1]
-                auxval.append(np.abs(goodsample[idx]))
-                auxerr.append(sigmagoodsample[idx])
-        if len(auxval) > 0:
-            idx = np.argsort(np.abs(auxval))[-1]
-            value = auxval[idx]
-            error = auxerr[idx]
-        else:
-            value = np.nan
-            error = np.nan
-        return (value, error)
-    elif metrictype == 'maxabsdiff':
-        auxval = []
-        auxerr = []
-        for i in range(npols):
-            goodsample = (sample.data[i])[~sample.mask[i]]
-            sigmagoodsample = (sigmasample[i])[~sample.mask[i]]
-            if len(goodsample) > 0:
-                absdiff = np.abs(np.diff(goodsample))
-                idx = np.argsort(absdiff)[-1]
-                auxval.append(absdiff[idx])
-                auxerr.append(np.sqrt(sigmagoodsample[idx]**2+sigmagoodsample[idx+1]**2))
-        if len(auxval) > 0:
-            idx = np.argsort(np.abs(auxval))[-1]
-            value = auxval[idx]
-            error = auxerr[idx]
-        else:
-            value = np.nan
-            error = np.nan
-        return (value, error)
-    elif metrictype == 'intabsdiff':
-        auxval = []
-        auxerr = []
-        for i in range(npols):
-            goodsample = (sample.data[i])[~sample.mask[i]]
-            sigmasqgoodsample = np.square((sigmasample[i])[~sample.mask[i]])
-            if len(goodsample) > 0:
-                absdiff = np.abs(np.diff(goodsample))
-                absdiffsqerr = sigmasqgoodsample + np.roll(sigmasqgoodsample, 1)
-                auxval.append(np.sum(absdiff))
-                auxerr.append(np.sqrt(np.sum(absdiffsqerr)))
-        if len(auxval) > 0:
-            value = np.sum(auxval)
-            error = np.sqrt(np.sum(np.array(auxerr)*np.array(auxerr)))
-        else:
-            value = np.nan
-            error = np.nan
-        return (value, error)
-    elif metrictype == 'intsqdiff':
-        auxval = []
-        auxerr = []
-        for i in range(npols):
-            goodsample = (sample.data[i])[~sample.mask[i]]
-            sigmasqgoodsample = np.square((sigmasample[i])[~sample.mask[i]])
-            if len(goodsample) > 0:
-                absdiff = np.abs(np.diff(goodsample))
-                sqdiff = np.square(absdiff)
-                absdiffsqerr = sigmasqgoodsample + np.roll(sigmasqgoodsample, 1)
-                sqdifferr = 4*absdiff*absdiff*(absdiffsqerr[0:-1])
-                auxval.append(np.sum(sqdiff))
-                auxerr.append(np.sqrt(np.sum(sqdifferr)))
-        if len(auxval) > 0:
-            value = np.sum(auxval)
-            error = np.sqrt(np.sum(np.array(auxerr)*np.array(auxerr)))
-        else:
-            value = np.nan
-            error = np.nan
-        return (value, error)
-    else:
-        return -1.0
+            resultdict[metrictype] = (-1.0, -1.0)
+
+    return resultdict
 
 #Copied over from analysisUtils
 def getSpwList(msmd,intent='OBSERVE_TARGET#ON_SOURCE',tdm=True,fdm=True, sqld=False):
@@ -1393,15 +1402,12 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
             skysample = tmavedataonk[:,skychansel]/metricnorm
             skysamplesigma = tmstddataonk[:,skychansel]/(metricnorm*np.sqrt(nrowk))
             #Calculate metrics
-            (maxabsdiff, maxabsdifferr) = calcmetric(skysample, skysamplesigma, metrictype='maxabsdiff', smoothbox = diffsmoothbox)
-            metrics[fieldid][spwid]['maxabsdiff'][k] = maxabsdiff
-            metrics[fieldid][spwid]['maxabsdifferr'][k] = maxabsdifferr
-            (intabsdiff, intabsdifferr) = calcmetric(skysample, skysamplesigma, metrictype='intabsdiff', smoothbox = diffsmoothbox)
-            metrics[fieldid][spwid]['intabsdiff'][k] = intabsdiff
-            metrics[fieldid][spwid]['intabsdifferr'][k] = intabsdifferr
-            (intsqdiff, intsqdifferr) = calcmetric(skysample, skysamplesigma, metrictype='intsqdiff', smoothbox = diffsmoothbox)
-            metrics[fieldid][spwid]['intsqdiff'][k] = intsqdiff
-            metrics[fieldid][spwid]['intsqdifferr'][k] = intsqdifferr
+            metricdtype_list = ["maxabsdiff", "intabsdiff", "intsqdiff"]
+            resultdict = calcmetric(skysample, skysamplesigma, metrictype_list=metricdtype_list, smoothbox = diffsmoothbox)
+            for metric_key, metric_result in resultdict.items():
+                metric_value, metric_error = metric_result
+                metrics[fieldid][spwid][metric_key][k] = metric_value
+                metrics[fieldid][spwid][f"{metric_key}err"][k] = metric_error
 
     #Pick best model
     chosenspw = spwstoprocess[0]
