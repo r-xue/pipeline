@@ -90,7 +90,8 @@ def detect_contamination(context: 'Context',
             by the imaging process (see worker.py). Defaults to False.
         do_plot (bool): Set True to make figure. Default is True.
         channel_mask: predefined boolean mask for channel axis. False means that the channel is
-                      excluded from the analysis.
+                      excluded from the analysis. None means that all channels are valid,
+                      equivalent to setting channel mask True to all channels. Default is None.
 
     Returns:
         True if potential contamination is detected, False otherwise.
@@ -228,7 +229,8 @@ def _make_figures(peak_sn_map: 'sdtyping.NpArray2D',
         freq_spec (FrequencySpec, optional): Frequency specification. Defaults to None.
         dir_spec (DirectionSpec, optional): Direction specification. Defaults to None.
         channel_mask: predefined boolean mask for channel axis. False means that the channel is
-                      excluded from the analysis.
+                      excluded from the analysis. None means that all channels are valid,
+                      equivalent to setting channel mask True to all channels. Default is None.
     """
 
     # Initialize the figure with a specified size
@@ -420,7 +422,8 @@ def _plot_masked_averaged_spectrum(plot: 'Axes',
         spectrum_at_peak (NpArray1D): The spectrum data at the peak.
         freq_spec (Optional[FrequencySpec]): Frequency specifications. Defaults to None.
         channel_mask: predefined boolean mask for channel axis. False means that the channel is
-                      excluded from the analysis.
+                      excluded from the analysis. None means that all channels are valid,
+                      equivalent to setting channel mask True to all channels. Default is None.
     """
     # Calculate the standard deviation of the masked averaged spectrum
     stddev = np.nanstd(masked_average_spectrum)
@@ -558,7 +561,8 @@ def _detect_deep_absorption_feature(masked_average_spectrum: 'sdtyping.NpArray1D
     Args:
         masked_average_spectrum (NpArray1D): 1D array of the average spectrum of the masked regions.
         channel_mask: predefined boolean mask for channel axis. False means that the channel is
-                      excluded from the analysis.
+                      excluded from the analysis. None means that all channels are valid,
+                      equivalent to setting channel mask True to all channels. Default is None.
 
     Returns:
         True if contamination was detected, False otherwise.
