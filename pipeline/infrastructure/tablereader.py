@@ -671,6 +671,9 @@ class SpectralWindowTable:
         # Read in information about the SDM_NUM_BIN column for the current ms
         sdm_num_bins = SpectralWindowTable.get_sdm_num_bin_info(ms, msmd)
 
+        # PIPE-117: Read per-channel spectral resolution from the RESOLUTION column.
+        resolution_info = SpectralWindowTable.get_resolution_info(ms, msmd)
+
         # PIPE-1538: Compute median feed receptor angle.
         receptor_angle_info = SpectralWindowTable.get_receptor_angle(ms)
 
@@ -738,10 +741,13 @@ class SpectralWindowTable:
                 median_receptor_angle = None
 
             # If the earlier get_sdm_num_bin_info call returned None, need to set sdm_num_bin value to None for each spw
-            if sdm_num_bins is None: 
+            if sdm_num_bins is None:
                 sdm_num_bin = None
-            else: 
+            else:
                 sdm_num_bin = sdm_num_bins[i]
+
+            # PIPE-117: Extract per-channel resolutions for current spw if available.
+            chan_resolutions = None if resolution_info is None else resolution_info[i]
 
             # Fetch and add correlation bits information
             correlation_bits = msmd.corrbit(i)
@@ -749,7 +755,7 @@ class SpectralWindowTable:
             spw = domain.SpectralWindow(i, spw_name, spw_type, bandwidth, ref_freq, mean_freq, chan_freqs, chan_widths,
                                         chan_effective_bws, sideband, baseband, receiver, freq_lo,
                                         transitions=transitions, sdm_num_bin=sdm_num_bin, correlation_bits=correlation_bits,
-                                        median_receptor_angle=median_receptor_angle)
+                                        median_receptor_angle=median_receptor_angle, chan_resolutions=chan_resolutions)
             spws.append(spw)
 
         return spws
@@ -815,6 +821,28 @@ class SpectralWindowTable:
                 else:
                     LOG.info(f"SDM_NUM_BIN does not exist in the SPECTRAL_WINDOW Table of MS {_get_ms_basename(ms)}")
         return sdm_num_bin
+
+    @staticmethod
+    def get_resolution_info(ms: MeasurementSet, msmd: Any) -> dict | None:
+        """
+        Extract per-channel spectral resolution from the SPECTRAL_WINDOW table's
+        RESOLUTION column. Present in ALMA Cycle 3+ measurement sets.
+
+        The RESOLUTION column contains variable-length arrays (one value per channel),
+        so it must be read row-by-row with getcell rather than getcol.
+
+        :param ms: measurement set to inspect
+        :param msmd: msmetadata (casa_tools.MSMDReader) for the measurement set.
+        :return: dict mapping SPW index to numpy array of channel resolutions (Hz),
+                 or None if the column is absent or the observatory is not ALMA.
+        """
+        if 'ALMA' not in msmd.observatorynames():
+            return None
+        with casa_tools.TableReader(ms.name + '/SPECTRAL_WINDOW') as table:
+            if 'RESOLUTION' not in table.colnames():
+                LOG.info(f'RESOLUTION does not exist in the SPECTRAL_WINDOW table of MS {_get_ms_basename(ms)}')
+                return None
+            return {i: table.getcell('RESOLUTION', i) for i in range(table.nrows())}
 
     @staticmethod
     def get_receiver_info(ms: MeasurementSet, get_band_info: bool = False) -> dict:

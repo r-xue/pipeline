@@ -62,6 +62,8 @@ from pipeline.infrastructure import utils
 					    % endif
 			        	<th>Frequency Width</th>
 			        	<th>Velocity Width</th>
+			        	<th>Frequency Resolution</th>
+			        	<th>Velocity Resolution</th>
 			        </tr>
 			    </thead>
 				<tbody>
@@ -103,6 +105,13 @@ from pipeline.infrastructure import utils
 					  % endif
 					  <td>${spw.channels[0].getWidth()}</td>
 					  <td>${str(measures.LinearVelocity(299792458 * spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
+					  % if spw.resolution is not None:
+					  <td>${spw.resolution}</td>
+					  <td>${str(measures.LinearVelocity(299792458 * spw.resolution.to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
+					  % else:
+					  <td>N/A</td>
+					  <td>N/A</td>
+					  % endif
 					  <td>${', '.join(sorted(ms.get_data_description(spw=spw).corr_axis))}</td>
 					  <!-- Omit Correlation Bits column for the ACA Spectrometer and set to BITS_4x4 for the ACA correlator. See PIPE-1993/4 -->
 						% if ms.correlator_name != 'ALMA_ACASPEC':
@@ -198,6 +207,8 @@ from pipeline.infrastructure import utils
 					    % endif
 			        	<th>Frequency Width</th>
 			        	<th>Velocity Width</th>
+			        	<th>Frequency Resolution</th>
+			        	<th>Velocity Resolution</th>
 			        </tr>
 			    </thead>
 				<tbody>
@@ -236,6 +247,13 @@ from pipeline.infrastructure import utils
 
 						<td>${spw.channels[0].getWidth()}</td>
 						<td>${str(measures.LinearVelocity(299792458 * spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
+						% if spw.resolution is not None:
+						<td>${spw.resolution}</td>
+						<td>${str(measures.LinearVelocity(299792458 * spw.resolution.to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
+						% else:
+						<td>N/A</td>
+						<td>N/A</td>
+						% endif
 						<%
 							dd = ms.get_data_description(spw=spw)
 							if dd is None:
