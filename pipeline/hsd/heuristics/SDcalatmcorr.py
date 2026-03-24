@@ -1319,6 +1319,9 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     tb_on.close()
     tb.close()
 
+    metricnorm_per_spw = {}
+    revised_skychansel_per_spw = {}
+
     for spwid in spwstoprocess:
         LOG.info('Processing spw '+str(spwid))
         nu = spwsetup[spwid]['chanfreqs']/(1.e+09)
@@ -1334,6 +1337,8 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
             ms, datacolumn, spwsetup[spwid]['ddi'], fieldid, state_ids_on,
             skychansel
         )
+        metricnorm_per_spw[spwid] = metricnorm
+        revised_skychansel_per_spw[spwid] = skychansel
         LOG.debug("Done reading_data_spw%d", spwid)
 
         npol = precorravedataon.shape[0]
@@ -1376,6 +1381,7 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
             LOG.debug("Done reading_data_spw%d_model%d", spwid, k)
 
             #Plot corrected data with baseline fit, etc.
+            skychansel = revised_skychansel_per_spw[spwid]
             plotlist.append({'nu': nu, 'tmavedata': tmavedataonk, 'skychansel': skychansel,
                              'tau': tau[spwid], 'title': 'Model '+strmodel, 'diffsmoothbox': 1,
                              'takediff': False, 'ischosen': False,
@@ -1383,6 +1389,7 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
                              'output': plotsfolder+'/'+ms+'.field'+str(fieldid)+'.spw'+str(spwid)+'.model.'+str(k)+'.png'})
 
             #Select sample data for metrics
+            metricnorm = metricnorm_per_spw[spwid]
             skysample = tmavedataonk[:,skychansel]/metricnorm
             skysamplesigma = tmstddataonk[:,skychansel]/(metricnorm*np.sqrt(nrowk))
             #Calculate metrics
