@@ -62,7 +62,7 @@ from typing import Generator
 import glob
 import numpy as np
 import pylab as pl
-from itertools import product
+from itertools import pairwise, product
 from matplotlib import pyplot as plt
 import time as systime
 from scipy.interpolate import CubicSpline
@@ -1401,15 +1401,21 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
 
             #Select sample data for metrics
             metricnorm = metricnorm_per_spw[spwid]
-            skysample = tmavedataonk[:,skychansel]/metricnorm
-            skysamplesigma = tmstddataonk[:,skychansel]/(metricnorm*np.sqrt(nrowk))
-            #Calculate metrics
-            metricdtype_list = ["maxabsdiff", "intabsdiff", "intsqdiff"]
-            resultdict = calcmetric(skysample, skysamplesigma, metrictype_list=metricdtype_list, smoothbox = diffsmoothbox)
-            for metric_key, metric_result in resultdict.items():
-                metric_value, metric_error = metric_result
-                metrics[fieldid][spwid][metric_key][k] = metric_value
-                metrics[fieldid][spwid][f"{metric_key}err"][k] = metric_error
+            selected_channels = np.where(skychansel)[0]
+            boundary = np.append([0], np.where(np.diff(selected_channels) > 1)[0] + 1)
+            if boundary[-1] < len(selected_channels):
+                boundary = np.append(boundary, [len(selected_channels)])
+            for b_i, b_j in pairwise(boundary):
+                _chansel = selected_channels[b_i:b_j]
+                skysample = tmavedataonk[:,_chansel]/metricnorm
+                skysamplesigma = tmstddataonk[:,_chansel]/(metricnorm*np.sqrt(nrowk))
+                #Calculate metrics
+                metricdtype_list = ["maxabsdiff", "intabsdiff", "intsqdiff"]
+                resultdict = calcmetric(skysample, skysamplesigma, metrictype_list=metricdtype_list, smoothbox = diffsmoothbox)
+                for metric_key, metric_result in resultdict.items():
+                    metric_value, metric_error = metric_result
+                    metrics[fieldid][spwid][metric_key][k] += metric_value
+                    metrics[fieldid][spwid][f"{metric_key}err"][k] += metric_error
 
     #Pick best model
     chosenspw = spwstoprocess[0]
