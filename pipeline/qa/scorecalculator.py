@@ -4123,6 +4123,73 @@ def score_sdimage_contamination(context: Context, result: SDImagingResultItem) -
 
 
 @log_qa
+def score_sdimage_sensitivity(result: SDImagingResultItem) -> pqa.QAScore:
+    """Evaluate QA score based on Observed and Theoretical Sensitivity estimated from the image
+
+    Requirements (PIPE-2958):
+        - QA score should be
+          - 1.0 if 0.9 < observed sensitivity / theoretical sensitivity < 1.6
+          - 0.5 for others
+
+    Args:
+        context: Pipeline context
+        result: Imaging result instance
+
+    Returns:
+        QAScore -- QAScore instance holding the score based on the sensitivity estimates
+
+    Raises:
+        ValueError: when the unit of Observed and Theoretical sensitivies do not match
+                    when the Theoretical sensitivity is not a positive number.
+    """
+    imageitem = result.outcome['image']
+    field = imageitem.sourcename
+    spw = ','.join(map(str, np.unique(imageitem.spwlist)))
+
+    # fetch sensitivities
+    observed    = result.sensitivity_info.sensitivity['observed_sensitivity']
+    theoretical = result.theoretical_rms['theoretical_sensitivity']
+
+    # theshold values
+    x1, x2 = 0.9, 1.6
+
+    if theoretical['unit'] != observed['unit']:
+        msg = (f"Field {field} Spw {spw}: "
+               "Unit mismatch between Observed and Theoretical sensitivities")
+        raise ValueError( msg )
+
+    if theoretical['value'] <= 0.0:
+        msg = (f"Field {field} Spw {spw}: "
+               "Invalid Theoretical sensitivity of {theoretical['value']} {theoretical['unit']}")
+        raise ValueError( msg )
+
+    x = observed['value'] / theoretical['value']
+    if x1 < x and x < x2:
+        score = 1.0
+        lmsg = (f'Field {field} Spw {spw}: '
+                'Observed sensitivity agrees with the theoretical estimate.')
+        smsg =  'Observed sensitivity agrees with the theoretical estimate.'
+    else:
+        score = 0.5
+        lmsg = (f'Field {field} Spw {spw}: '
+                'Observed sensitivity does not agree with the theoretical estimate.')
+        smsg =  'Observed sensitivity does not agree with the theoretical estimate.'
+
+    origin = pqa.QAOrigin(metric_name='SingleDishImageSensitivity',
+                          metric_score=score,
+                          metric_units='')
+    selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
+                                        field=set(result.outcome['assoc_fields']),
+                                        intent={'TARGET'},
+                                        pol={'I'})
+    return pqa.QAScore(score,
+                       longmsg=lmsg,
+                       shortmsg=smsg,
+                       origin=origin,
+                       applies_to=selection)
+
+
+@log_qa
 def score_gfluxscale_k_spw(vis, field, spw_id, k_spw, ref_spw):
     """ Convert internal spw_id-spw_id consistency ratio to a QA score.
 
