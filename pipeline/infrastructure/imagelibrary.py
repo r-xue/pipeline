@@ -20,8 +20,8 @@ class ImageLibrary(object):
         del self._images[:]
 
     # Add image item to the list as a dictionary
-    def add_item(self, imageitem, overwrite=True):
-        if overwrite:
+    def add_item(self, imageitem, overwrite_on_export=True):
+        if overwrite_on_export:
             if self.find_imageitem(imageitem) < 0:
                 self._images.append(dict(imageitem))
             else:
