@@ -141,20 +141,21 @@ class Makermsimages(basetask.StandardTaskTemplate):
                             rmsstats[rmsimagename]['madrms'] = rmsstats[rmsimagename]['medabsdevmed'] * 1.4826  # see CAS-9631
                             rmsval = float(np.median(rmsstats[rmsimagename]['madrms']))
                 else:
-                    # PIPE-1163: avoid saving stats from .tt1
-                    if '.tt1.' in rmsimagename:
-                        continue
                     with casa_tools.ImageReader(rmsimagename) as image:
-                        rmsstats[rmsimagename] = image.statistics(robust=True)
-                        medabsdevmed = rmsstats[rmsimagename].get('medabsdevmed')
-                        if medabsdevmed is not None:
-                            rmsstats[rmsimagename]['madrms'] = medabsdevmed[0] * 1.4826  # see CAS-9631
-                            rmsval = float(rmsstats[rmsimagename]['median'])
+                        stats = image.statistics(robust=True)
+
+                        medianval = stats.get('median')
+                        rmsval = float(medianval) if medianval is not None else None
+
+                        if '.tt1.' not in rmsimagename:
+                            rmsstats[rmsimagename] = stats
+                            medabsdevmed = stats.get('medabsdevmed')
+                            if medabsdevmed is not None:
+                                rmsstats[rmsimagename]['madrms'] = medabsdevmed[0] * 1.4826  # see CAS-9631
 
                 # PIPE-2461: adding rms values to image header
                 imagename, _ = os.path.splitext(rmsimagename)
-                basename = imagename.split('.image')[0] + ".image"
-                imagefiles = utils.glob_ordered(basename + "*")
+                imagefiles = utils.glob_ordered(imagename + "*")
                 for imagefile in imagefiles:
                     if rmsval is None:
                         LOG.warning(f"RMS value is None for {rmsimagename}, skipping header update for {imagename}")
