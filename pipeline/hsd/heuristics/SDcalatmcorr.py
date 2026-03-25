@@ -406,6 +406,8 @@ def calcmetric(rawsample: np.ndarray, rawsigmasample: np.ndarray, metrictype_lis
     '''
 
     (npols, nch) = np.shape(rawsample)
+    # limit smoothing box size to 20% of nch
+    smoothbox = max(1, min(nch // 5, smoothbox))
     #Smooth if requested
     if (smoothbox > 1) and (type(smoothbox) == int):
         sample = 0.0*rawsample
