@@ -495,6 +495,7 @@ class MakeImages(basetask.StandardTaskTemplate):
                 if len(pipever) > 68:
                     pipever = pipever[0:67]
                 info['VLASSPV'] = pipever
+                info['VLASSPK'] = tclean_result.image_max
                 info['VLASSBW'] = vlass_bw
                 info['VLASSITY'] = imaging_utils.get_vlass_image_type(name)
                 info['VLASSTN'] = tile

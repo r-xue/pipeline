@@ -152,7 +152,6 @@ class Makermsimages(basetask.StandardTaskTemplate):
                             medabsdevmed = stats.get('medabsdevmed')
                             if medabsdevmed is not None:
                                 rmsstats[rmsimagename]['madrms'] = medabsdevmed[0] * 1.4826  # see CAS-9631
-
                 # PIPE-2461: adding rms values to image header
                 imagename, _ = os.path.splitext(rmsimagename)
                 imagefiles = utils.glob_ordered(imagename + "*")
@@ -166,6 +165,17 @@ class Makermsimages(basetask.StandardTaskTemplate):
                         info["VLASSRMS"] = rmsval
                         info['VLASSITY'] = imaging_utils.get_vlass_image_type(imagefile)
                         image.setmiscinfo(info)
+                if '.tt0.' in rmsimagename:
+                    base_name = rmsimagename.split(".image.pbcor")[0]
+                    for suffix in [".alpha", ".alpha.error"]:
+                        alpha_file = base_name + suffix
+                        if not os.path.exists(alpha_file):
+                            LOG.warning(f"Alpha image {alpha_file} not found, skipping header update.")
+                            continue
+                        with casa_tools.ImageReader(alpha_file) as image:
+                            info = image.miscinfo()
+                            info["VLASSRMS"] = rmsval
+                            image.setmiscinfo(info)
 
         if self.inputs.context.imaging_mode == "VLASS-SE-CUBE" and rmsstats:
             for item in ['max', 'min', 'mean', 'median', 'sigma', 'madrms']:
