@@ -831,6 +831,48 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             if object_name != '' and header['object'].upper() != object_name.upper():
                 header['object'] = object_name
 
+            tt_type = "TT0" if "tt0" in fitsname.lower() else "TT1" if "tt1" in fitsname.lower() else None
+            header_comments = {
+                "VLASSITY": "VLASS image type",
+                "VLASSPT": "VLASS product type",
+                "VLASSTN": "VLASS tile name",
+                "VLASSPC": "VLASS phasecenter",
+                "VLASSEP": "VLASS epoch",
+                "VLASSVR": "VLASS version number",
+                "VLASSPV": "VLASS CASA+pipeline processing version",
+                "VLASSPL": "VLASS Stokes/polarization parameter",
+                "VLASSRJ": "Rejected plane relevant for VLASS CC processing",
+                "VLASSSPW": "Spectral windows used for image",
+                "VLASSBWN": "Nominal bandwidth",
+                "VLASSBW": "Actual bandwidth after flagging",
+                "VLASSRMS": None,
+                "VLASSPK": None
+            }
+            if tt_type == "TT0" or 'alpha' in fitsname.lower():
+                header_comments["VLASSRMS"] = (
+                    "Median rms calculated from RMS_TT0 image"
+                )
+                header_comments["VLASSPK"] = (
+                    "Peak flux density of INTENSITY_PBCOR_TT0 image"
+                )
+            elif tt_type == "TT1":
+                header_comments["VLASSRMS"] = (
+                    "Median rms calculated from RMS_TT1 image"
+                )
+                header_comments["VLASSPK"] = (
+                    "Peak flux density of INTENSITY_PBCOR_TT1 image"
+                )
+            else:
+                header_comments["VLASSRMS"] = "Median RMS calculated from RMS image"
+                header_comments["VLASSPK"] = "Peak flux density of INTENSITY_PBCOR image"
+
+            for key, comment in header_comments.items():
+                value = header.get(key, None)
+                if value is None:
+                    LOG.warning(f'Keyword {key} not found in FITS header of {fitsname}')
+                    continue
+                header[key] = (value, comment)
+
             # Save changes and inform log
             hdulist.flush()
             LOG.info("Header updated in {}".format(fitsname))

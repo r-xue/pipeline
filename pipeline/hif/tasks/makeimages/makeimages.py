@@ -486,14 +486,12 @@ class MakeImages(basetask.StandardTaskTemplate):
                 info['VLASSBWN'] = nominal_bw
                 info['VLASSRJ'] = reject
                 LOG.info('mark the image %s as reject=%r', name, reject)
-                info['VLASSSPW'] = tclean_result.spw
+                info['VLASSSPW'] = utils.find_ranges(tclean_result.spw)
                 info['VLASSPC'] = tclean_result.inputs["phasecenter"]
                 info['VLASSPL'] = tclean_result.stokes
                 info['VLASSPT'] = tclean_result.imaging_mode
                 # trim pipeline version to 68 chars
                 pipever = environment.pipeline_revision
-                if len(pipever) > 68:
-                    pipever = pipever[0:67]
                 info['VLASSPV'] = pipever
                 info['VLASSPK'] = tclean_result.image_max
                 info['VLASSBW'] = vlass_bw
