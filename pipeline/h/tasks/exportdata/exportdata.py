@@ -322,11 +322,17 @@ class ExportData(basetask.StandardTaskTemplate):
         _, exportmses_session_names, exportmses_session_vislists, exportmses_vislist = self._make_lists(
             inputs.context, inputs.session, None, imaging_only_mses=None)
 
+        _is_imaging_done = any([self._has_imaging_data(inputs.context, vis) for vis in exportmses_vislist])
+
+        flag_version_name = 'Pipeline_Final'
+        if not _is_imaging_done:
+            flag_version_name = 'Pipeline_Final_PreImaging'
+
         if not inputs.imaging_products_only:
             if inputs.exportmses:
                 msvisdict = self._do_ms_products(inputs.context, exportmses_vislist, inputs.products_dir)
             if inputs.exportcalprods:
-                calvisdict = self._do_standard_ms_products(inputs.context, vislist, inputs.products_dir)
+                calvisdict = self._do_standard_ms_products(inputs.context, vislist, inputs.products_dir, flag_version_name)
         result.msvisdict = msvisdict
         result.calvisdict = calvisdict
 
@@ -508,14 +514,13 @@ class ExportData(basetask.StandardTaskTemplate):
 
         return visdict
 
-    def _do_standard_ms_products(self, context, vislist, products_dir):
+    def _do_standard_ms_products(self, context, vislist, products_dir, flag_version_name='Pipeline_Final'):
         """
         Generate the per ms standard products
         """
 
         # Loop over the measurements sets in the working directory and
         # save the final flags using the flag manager.
-        flag_version_name = 'Pipeline_Final'
         for visfile in vislist:
             self._save_final_flagversion(visfile, flag_version_name)
 
