@@ -839,7 +839,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 "VLASSPC": "VLASS phasecenter",
                 "VLASSEP": "VLASS epoch",
                 "VLASSVR": "VLASS version number",
-                "VLASSPV": "VLASS CASA+pipeline processing version",
+                "VLASSPIP": "Pipeline version",
                 "VLASSPL": "VLASS Stokes/polarization parameter",
                 "VLASSRJ": "Rejected plane relevant for VLASS CC processing",
                 "VLASSSPW": "Spectral windows used for image",

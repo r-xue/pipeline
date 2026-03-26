@@ -492,7 +492,7 @@ class MakeImages(basetask.StandardTaskTemplate):
                 info['VLASSPT'] = tclean_result.imaging_mode
                 # trim pipeline version to 68 chars
                 pipever = environment.pipeline_revision
-                info['VLASSPV'] = pipever
+                info['VLASSPIP'] = pipever
                 info['VLASSPK'] = tclean_result.image_max
                 info['VLASSBW'] = vlass_bw
                 info['VLASSITY'] = imaging_utils.get_vlass_image_type(name)
