@@ -4124,23 +4124,22 @@ def score_sdimage_contamination(context: Context, result: SDImagingResultItem) -
 
 @log_qa
 def score_sdimage_sensitivity(result: SDImagingResultItem) -> pqa.QAScore:
-    """Evaluate QA score based on Observed and Theoretical Sensitivity estimated from the image
+    """Evaluate QA score based on observed and theoretical sensitivities estimated from the image
 
     Requirements (PIPE-2958):
         - QA score should be
-          - 1.0 if 0.9 < observed sensitivity / theoretical sensitivity < 1.6
-          - 0.5 for others
+          - 1.0  if 0.9 < observed sensitivity / theoretical sensitivity < 1.6
+          - 0.5  for others
 
     Args:
-        context: Pipeline context
         result: Imaging result instance
 
     Returns:
         QAScore -- QAScore instance holding the score based on the sensitivity estimates
 
     Raises:
-        ValueError: when the unit of Observed and Theoretical sensitivies do not match
-                    when the Theoretical sensitivity is not a positive number.
+        ValueError: when the unit of observed and theoretical sensitivies do not match
+                    when the theoretical sensitivity is not a positive
     """
     imageitem = result.outcome['image']
     field = imageitem.sourcename
