@@ -1,24 +1,12 @@
-Full APIs (autosummary)
-============================
+Pipeline Tasks
+==============
 
 .. autosummary::
    :toctree: _autosummary
-   :caption: APIs (autosummary)
-
-   :template: custom-module-template.rst
-
-   pipeline
-
-
-Pipeline Tasks (autosummary)
-============================
-
-.. autosummary::
-   :toctree: _autosummary
-   :caption: Pipeline Task CLIs (autosummary)
+   :caption: Pipeline Task CLIs
    :nosignatures:
    :template: custom-module-template.rst
-   
+
    pipeline.h.cli
    pipeline.hif.cli
    pipeline.hifa.cli
@@ -26,139 +14,34 @@ Pipeline Tasks (autosummary)
    pipeline.hsd.cli
    pipeline.hsdn.cli
 
-Pipeline domain/context (autosummary)
-=====================================
+Pipeline Modules
+================
 
-.. autosummary::
-   :toctree: _autosummary
-   :caption: Pipeline Domain/Context (autosummary)
-   :template: custom-module-template.rst
-   :recursive:
-   
-   pipeline.domain
-   pipeline.infrastructure.launcher
+domain/infrastructure
+---------------------
 
+.. toctree::
+   :maxdepth: 2
 
-Pipeline domain/infrastructure modules (automodapi)
-===================================================
+   automodapi_src/pipeline.domain
+   automodapi_src/pipeline.infrastructure.launcher
+   automodapi_src/pipeline.infrastructure.project
+   automodapi_src/pipeline.infrastructure.callibrary
+   automodapi_src/pipeline.infrastructure.imagelibrary
+   automodapi_src/pipeline.infrastructure.vdp
 
-``pipeline.domain``
--------------------
+``pipeline.h*.tasks``
+---------------------
 
-.. automodapi:: pipeline.domain
-   :no-inheritance-diagram:
-   :include-all-objects:
-   :inherited-members:
-   :no-heading:
-   :sort:
+.. toctree::
+   :maxdepth: 2
 
-``pipeline.infrastructure.launcher``
-------------------------------------
-
-.. automodapi:: pipeline.infrastructure.launcher
-   :no-inheritance-diagram:
-   :include-all-objects:
-   :inherited-members:
-   :no-heading:
-   :sort:
-
-``pipeline.infrastructure.project``
-------------------------------------
-
-.. automodapi:: pipeline.infrastructure.project
-   :no-inheritance-diagram:
-   :include-all-objects:
-   :inherited-members:
-   :no-heading:
-   :sort:      
-
-``pipeline.infrastructure.callibrary``
-------------------------------------
-
-.. automodapi:: pipeline.infrastructure.callibrary
-   :no-inheritance-diagram:
-   :include-all-objects:
-   :inherited-members:
-   :no-heading:
-   :sort:
-
-``pipeline.infrastructure.imagelibrary``
-------------------------------------   
-
-.. automodapi:: pipeline.infrastructure.imagelibrary
-   :no-inheritance-diagram:
-   :include-all-objects:
-   :inherited-members:
-   :no-heading:
-   :sort:   
-
-``pipeline.infrastructure.vdp``
-------------------------------------
-
-.. automodapi:: pipeline.infrastructure.vdp
-   :no-inheritance-diagram:
-   :include-all-objects:
-   :inherited-members: 
-   :no-heading:
-   :sort:      
-
-``pipeline.h*.tasks`` modules (autmodapi)
-========================================
-
-pipeline.h.tasks
-----------------
-
-.. automodapi:: pipeline.h.tasks
-   :inheritance-diagram:
-   :include-all-objects:
-   :no-heading: 
-   :sort:
-
-
-pipeline.hif.tasks
-------------------
-
-.. automodapi:: pipeline.hif.tasks
-   :inheritance-diagram:
-   :include-all-objects:
-   :no-heading: 
-   :sort:
-
-pipeline.hifa.tasks
--------------------
-
-.. automodapi:: pipeline.hifa.tasks
-   :inheritance-diagram:
-   :include-all-objects:
-   :no-heading:  
-   :sort:
-
-pipeline.hifv.tasks
--------------------
-
-.. automodapi:: pipeline.hifv.tasks
-   :inheritance-diagram:
-   :include-all-objects:
-   :no-heading:  
-   :sort:   
-
-pipeline.hsd.tasks
-------------------
-
-.. automodapi:: pipeline.hsd.tasks
-   :inheritance-diagram:
-   :include-all-objects:
-   :no-heading:  
-   :sort:
-
-pipeline.hsdn.tasks
--------------------
-
-.. automodapi:: pipeline.hsdn.tasks
-   :inheritance-diagram:
-   :include-all-objects:
-   :no-heading:  
-   :sort:
+   automodapi_src/pipeline.h.tasks
+   automodapi_src/pipeline.hif.tasks
+   automodapi_src/pipeline.hifa.tasks
+   automodapi_src/pipeline.hifv.tasks
+   automodapi_src/pipeline.hsd.tasks
+   automodapi_src/pipeline.hsdn.tasks
 
 Inheritance Diagrams for Pipeline ``Task``/``Inputs``/``Results`` Classes
 =============================================================
@@ -181,4 +64,31 @@ Inheritance Diagrams for Pipeline ``Task``/``Inputs``/``Results`` Classes
 ``Results`` Classes
 -----------------------
 
-|resultsclasses_diagram|   
+|resultsclasses_diagram|
+
+
+Complete API Reference
+======================
+
+.. autosummary::
+   :toctree: _autosummary
+   :caption: Complete API Reference
+   :template: custom-module-template.rst
+   :recursive:
+
+   pipeline.cli
+   pipeline.config
+   pipeline.environment
+   pipeline.recipereducer
+   pipeline.runpipeline
+   pipeline.runvlapipeline
+   pipeline.domain
+   pipeline.h
+   pipeline.hif
+   pipeline.hifa
+   pipeline.hifv
+   pipeline.hsd
+   pipeline.hsdn
+   pipeline.infrastructure
+   pipeline.qa
+   pipeline.recipes

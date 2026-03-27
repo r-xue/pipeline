@@ -6,9 +6,9 @@ Pipeline
 
 .. important::
 
-  This is a **demonstration** of the new internal documentation framework for the Pipeline development.
-  It is designed to provide *up-to-date and version-controlled* supplementary technical information to complement the official Pipeline documentatios from the `ALMA <https://almascience.nrao.edu/processing/science-pipeline>`_ and `VLA <https://science.nrao.edu/facilities/vla/data-processing>`_ science portals.
-  Pipeline development is a collaborative effort led by `NRAO`_, `ESO`_, and `NAOJ`_.
+  This is the **internal developer documentation** for the Pipeline project.
+  It provides *up-to-date and version-controlled* supplementary technical information to complement the official Pipeline portals from `ALMA <https://almascience.nrao.edu/processing/science-pipeline>`_ and `VLA <https://science.nrao.edu/facilities/vla/data-processing>`_.
+  Pipeline development is a collaborative effort led by `NRAO`_, `ESO`_, and `NAOJ`_, with additional contributions from `MPIfR`_, `NOVA`_, and `UKATC`_ under contract to `ESO`_.
 
 
 Official Repository
@@ -20,8 +20,7 @@ The official public repository is accessible here:
 Highlights
 ----------
 
-`This demo <pipe-docs.readthedocs.io>`_ is automatically generated from `a development branch <https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse?at=refs%2Fheads%2FPIPE-1669-run-dev-pipeline-with-modular-casa6>`_ of the official repository and remains under active restructuring
-Some sections are highlighted below:
+This documentation is automatically generated from the main repository and includes:
  
   * `Past Pipeline Releases <https://pipe-docs.readthedocs.io/en/latest/releases.html#>`_
   * `Pipeline Dependencies <https://pipe-docs.readthedocs.io/en/latest/dependencies.html>`_
@@ -32,6 +31,7 @@ Some sections are highlighted below:
 .. _ESO: https://www.eso.org  
 .. _UKATC: https://www.ukatc.stfc.ac.uk  
 .. _MPIfR: https://www.mpifr-bonn.mpg.de  
+.. _NOVA: https://nova-astronomy.nl/  
 .. _NAOJ: https://www.nao.ac.jp  
 
 .. |Docs Pages| image:: https://img.shields.io/github/actions/workflow/status/r-xue/pipeline/build-gh-pages.yml?style=plastic&logo=githubactions&label=docs-pages
