@@ -1,3 +1,4 @@
+import os
 from unicodedata import name
 
 import pipeline.infrastructure as infrastructure
@@ -103,7 +104,19 @@ class Pbcor(basetask.StandardTaskTemplate):
                                           outfile=basename + '.image.residual.pbcor'+term_ext, mode='divide', cutoff=-1.0, stretch=False)
                 self._executor.execute(task)
                 pbcor_images.append(basename + '.image.residual.pbcor'+term_ext)
-
+                if term_ext == '.tt0':
+                    for suffix in [".alpha", ".alpha.error"]:
+                        alpha_file = basename + suffix
+                        if not os.path.exists(alpha_file):
+                            LOG.warning(f"Alpha image {alpha_file} not found, skipping header update.")
+                            continue
+                        with casa_tools.ImageReader(alpha_file) as image:
+                            info = image.miscinfo()
+                            if len(stats.get('max', [])) > 0:
+                                info["VLASSPK"] = float(stats["max"][0])
+                            else:
+                                info["VLASSPK"] = ''
+                            image.setmiscinfo(info)
             pbcor_images.append(pbname+pb_term_ext)
 
             LOG.info("PBCOR image names: " + ','.join(pbcor_images))
