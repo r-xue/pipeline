@@ -845,7 +845,8 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 "VLASSBWN": "Nominal bandwidth",
                 "VLASSBW": "Actual bandwidth after flagging",
                 "VLASSRMS": None,
-                "VLASSPK": None
+                "VLASSPK": None,
+                "VLASSWP": "Number of w-projection planes"
             }
             if tt_type == "TT0" or 'alpha' in fitsname.lower():
                 header_comments["VLASSRMS"] = (

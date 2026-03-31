@@ -496,6 +496,10 @@ class MakeImages(basetask.StandardTaskTemplate):
                 info['VLASSTN'] = tile
                 info['VLASSEP'] = epoch
                 info['VLASSVR'] = version
+                if tclean_result.inputs['gridder'].lower() in ('awp2', 'awphpg'):
+                    info['VLASSWP'] = tclean_result.inputs['wprojplanes']
+                else:
+                    info['VLASSWP'] = 0
                 image.setmiscinfo(info)
 
     def _get_vlass_epoch_tile_version(self, filename):
