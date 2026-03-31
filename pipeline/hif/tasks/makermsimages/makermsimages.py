@@ -1,4 +1,7 @@
+import numpy as np
 import os
+from scipy.stats import median_abs_deviation
+
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -6,24 +9,34 @@ import pipeline.infrastructure.daskhelpers as daskhelpers
 import pipeline.infrastructure.imagelibrary as imagelibrary
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure.utils import imaging as imaging_utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
-from pipeline.infrastructure import casa_tasks, task_registry
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
 
 class MakermsimagesResults(basetask.Results):
-    def __init__(self, rmsimagelist=None, rmsimagenames=None):
+    def __init__(self, rmsimagelist=None, rmsimagenames=None, rmsstats=None, stats_summary=None):
         super().__init__()
 
         if rmsimagelist is None:
             rmsimagelist = []
+
         if rmsimagenames is None:
             rmsimagenames = []
 
+        if rmsstats is None:
+            rmsstats = {}
+
+        if stats_summary is None:
+            stats_summary = {}
+
         self.rmsimagelist = rmsimagelist[:]
         self.rmsimagenames = rmsimagenames[:]
+        self.rmsstats = rmsstats
+        self.stats_summary = stats_summary
 
     def merge_with_context(self, context):
         """
@@ -95,7 +108,8 @@ class Makermsimages(basetask.StandardTaskTemplate):
         tier0_imdev_enabled = True
         rmsimagenames = []
         queued_job_rmsimagename = []
-
+        rmsstats = {}
+        stats_summary = {}
         for imagename in imagenames:
             rmsimagename = imagename + '.rms'
             if not os.path.exists(rmsimagename) and 'residual' not in imagename:
@@ -117,13 +131,69 @@ class Makermsimages(basetask.StandardTaskTemplate):
         for queue_job, rmsimagename in queued_job_rmsimagename:
             queue_job.get_result()
             if os.path.exists(rmsimagename):
+                rmsval = None
                 rmsimagenames.append(rmsimagename)
+                if self.inputs.context.imaging_mode == "VLASS-SE-CUBE":
+                    with casa_tools.ImageReader(rmsimagename) as image:
+                        rmsstats[rmsimagename] = image.statistics(robust=True, axes=[0, 1, 3])
+                        medabsdevmed = rmsstats[rmsimagename].get('medabsdevmed')
+                        if medabsdevmed is not None:
+                            rmsstats[rmsimagename]['madrms'] = rmsstats[rmsimagename]['medabsdevmed'] * 1.4826  # see CAS-9631
+                            rmsval = float(np.median(rmsstats[rmsimagename]['madrms']))
+                else:
+                    with casa_tools.ImageReader(rmsimagename) as image:
+                        stats = image.statistics(robust=True)
 
+                        medianval = stats.get('median')
+                        rmsval = float(medianval) if medianval is not None else None
+
+                        if '.tt1.' not in rmsimagename:
+                            rmsstats[rmsimagename] = stats
+                            medabsdevmed = stats.get('medabsdevmed')
+                            if medabsdevmed is not None:
+                                rmsstats[rmsimagename]['madrms'] = medabsdevmed[0] * 1.4826  # see CAS-9631
+                # PIPE-2461: adding rms values to image header
+                imagename, _ = os.path.splitext(rmsimagename)
+                imagefiles = utils.glob_ordered(imagename + "*")
+                for imagefile in imagefiles:
+                    if rmsval is None:
+                        LOG.warning(f"RMS value is None for {rmsimagename}, skipping header update for {imagename}")
+                        continue
+
+                    with casa_tools.ImageReader(imagefile) as image:
+                        info = image.miscinfo()
+                        info["VLASSRMS"] = rmsval
+                        info['VLASSITY'] = imaging_utils.get_vlass_image_type(imagefile)
+                        image.setmiscinfo(info)
+                if '.tt0.' in rmsimagename:
+                    base_name = rmsimagename.split(".image.pbcor")[0]
+                    for suffix in [".alpha", ".alpha.error"]:
+                        alpha_file = base_name + suffix
+                        if not os.path.exists(alpha_file):
+                            LOG.warning(f"Alpha image {alpha_file} not found, skipping header update.")
+                            continue
+                        with casa_tools.ImageReader(alpha_file) as image:
+                            info = image.miscinfo()
+                            info["VLASSRMS"] = rmsval
+                            image.setmiscinfo(info)
+
+        if self.inputs.context.imaging_mode == "VLASS-SE-CUBE" and rmsstats:
+            for item in ['max', 'min', 'mean', 'median', 'sigma', 'madrms']:
+                value_arr = np.array([rmsstats[rmsimage][item] for rmsimage in rmsstats if item in rmsstats[rmsimage]])
+                if value_arr.size == 0:
+                    continue
+                stats_summary[item] = {
+                    'range': np.percentile(value_arr, (0, 100)),
+                    'spwwise_madrms': median_abs_deviation(
+                        value_arr, axis=0, scale='normal'),
+                    'spwwise_median': np.median(value_arr, axis=0)
+                    }
         LOG.info("RMS image list: " + ','.join(rmsimagenames))
 
-        return MakermsimagesResults(rmsimagelist=imlist, rmsimagenames=rmsimagenames)
+        return MakermsimagesResults(rmsimagelist=imlist, rmsimagenames=rmsimagenames, rmsstats=rmsstats, stats_summary=stats_summary)
 
     def analyse(self, results):
+
         return results
 
     def _get_imdev_args(self, imagename):

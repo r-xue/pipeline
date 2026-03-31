@@ -170,6 +170,7 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
         subimagenames = []
         subimage_size = None
         for imagename in imagenames:
+
             subimagename = f'{imagename}.subim'
             if not os.path.exists(subimagename):
                 LOG.info('Make a cutout image under the image name: %s', subimagename)
@@ -178,6 +179,12 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
                     LOG.info('Using cutout_imsize from imlist metadata: %s', cutout_imsize)
                 self._do_subim(imagename, cutout_imsize=cutout_imsize)
                 subimagenames.append(subimagename)
+                # PIPE-2461: updating stokes in the image header
+                with casa_tools.ImageReader(subimagename) as image:
+                    stokes = get_stokes(subimagename)
+                    info = image.miscinfo()
+                    info['stokes'] = stokes
+                    image.setmiscinfo(info)
             else:
                 LOG.info('A cutout image named %s already exists, and we will reuse this image for weblog.',
                          subimagename)
@@ -326,6 +333,7 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
 
                 image_miscinfo = image.miscinfo()
                 virtspw = image_miscinfo['virtspw']
+
                 if virtspw not in stats:
                     stats[virtspw] = collections.OrderedDict()
 
