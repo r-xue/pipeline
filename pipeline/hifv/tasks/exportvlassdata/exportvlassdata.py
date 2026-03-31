@@ -896,6 +896,11 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                     job = casa_tasks.imsubimage(imagename, outfile=outfile,
                                                 stokes=stokes_select, overwrite=True, dropdeg=False)
                     self._executor.execute(job)
+                    # PIPE-2461: updating stokes in the image header
+                    with casa_tools.ImageReader(outfile) as image:
+                        info = image.miscinfo()
+                        info['VLASSPL'] = stokes_select
+                        image.setmiscinfo(info)
                     LOG.info(f'Wrote {outfile}')
                     new_image_list.append(outfile)
             else:
