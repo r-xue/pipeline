@@ -1,5 +1,4 @@
 import os
-from unicodedata import name
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask

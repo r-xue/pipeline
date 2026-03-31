@@ -507,7 +507,7 @@ def predict_kernel(beam, target_beam, pstol=1e-6, patol=1e-3):
     return rt_kernel, rt_code
 
 
-def get_vlass_image_type(filename):
+def get_vlass_image_type(filename:str) -> str:
     """Determine the VLASS image type based on specific substrings in the filename."""
 
     filename = filename.lower()

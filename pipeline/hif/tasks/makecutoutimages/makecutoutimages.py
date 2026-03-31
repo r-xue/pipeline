@@ -181,7 +181,9 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
                 subimagenames.append(subimagename)
                 # PIPE-2461: updating stokes in the image header
                 with casa_tools.ImageReader(subimagename) as image:
-                    stokes = get_stokes(subimagename)
+                    cs = image.coordsys()
+                    stokes_labels = cs.stokes()
+                    stokes = [stokes_labels[idx] for idx in range(image.shape()[2])]
                     info = image.miscinfo()
                     info['stokes'] = stokes
                     image.setmiscinfo(info)

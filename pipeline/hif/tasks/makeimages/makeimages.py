@@ -3,7 +3,6 @@ import re
 import tempfile
 from inspect import signature
 
-import pipeline.environment as environment
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.daskhelpers as daskhelpers
@@ -455,6 +454,7 @@ class MakeImages(basetask.StandardTaskTemplate):
         vlass_bw = 0
         spwobj = None
         nominal_bw = 0.0
+        chan_diff = 0.0
         for curspw in tclean_result.spw.split(","):
             unflaged_chan_per_spw = 0
             for spw_chan in flag_stats['spw:channel']:
@@ -468,9 +468,9 @@ class MakeImages(basetask.StandardTaskTemplate):
 
             if spwobj and spwobj.bandwidth is not None:
                 nominal_bw += float(spwobj.bandwidth.value)
-
-            chan_diff = np.diff(spwobj.channels.chan_freqs)
-            if len(spwobj.channels.chan_freqs) != 0 and np.allclose(chan_diff, chan_diff[0]):
+            if spwobj and len(spwobj.channels.chan_freqs) > 1:
+                chan_diff = np.diff(spwobj.channels.chan_freqs)
+            if spwobj and len(spwobj.channels.chan_freqs) != 0 and np.allclose(chan_diff, chan_diff[0]):
                 chan_width = spwobj.channels.chan_widths[0]
             else:
                 chan_width = np.median(np.abs(chan_diff))

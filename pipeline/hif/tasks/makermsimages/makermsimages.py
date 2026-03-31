@@ -145,7 +145,7 @@ class Makermsimages(basetask.StandardTaskTemplate):
                         stats = image.statistics(robust=True)
 
                         medianval = stats.get('median')
-                        rmsval = float(medianval) if medianval is not None else None
+                        rmsval = float(np.median(medianval)) if medianval is not None else None
 
                         if '.tt1.' not in rmsimagename:
                             rmsstats[rmsimagename] = stats
