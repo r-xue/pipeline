@@ -274,6 +274,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                                                                obs_lat=observatory['m1'])
                 # Update FITS header
                 self._fix_vlass_fits_header(self.inputs.context, fitsfile)
+            self._update_vlass_fits_header(fitsfile)
 
         # SE Cont imaging mode export for VLASS
         if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
@@ -378,6 +379,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 image_rgd.setmiscinfo(info)
                 image_rgd.tofits(fits_name, region=region, overwrite=True)
                 self._fix_vlass_fits_header(self.inputs.context, fits_name)
+                self._update_vlass_fits_header(fits_name)
                 LOG.info(f'write the commom beam/frame FITS image: {fits_name}')
 
             image_smo.done()
@@ -835,6 +837,24 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             if object_name != '' and header['object'].upper() != object_name.upper():
                 header['object'] = object_name
 
+            # Save changes and inform log
+            hdulist.flush()
+            LOG.info("Header updated in {}".format(fitsname))
+
+            # Close FITS file
+            hdulist.close()
+
+        else:
+            LOG.warning('FITS header cannot be updated: image {} does not exist.'.format(fitsname))
+
+        return
+
+    def _update_vlass_fits_header(self, fitsname):
+        """PIPE-2461: Updates VLASS fits keywords and adds comment to the keywords."""
+        if os.path.exists(fitsname):
+            # Open FITS image and obtain header
+            hdulist = apfits.open(fitsname, mode='update')
+            header = hdulist[0].header
             tt_type = "TT0" if "tt0" in fitsname.lower() else "TT1" if "tt1" in fitsname.lower() else None
             header_comments = {
                 "VLASSITY": "VLASS image type",
@@ -876,18 +896,8 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                     LOG.warning(f'Keyword {key} not found in FITS header of {fitsname}')
                     continue
                 header[key] = (value, comment)
-
-            # Save changes and inform log
             hdulist.flush()
-            LOG.info("Header updated in {}".format(fitsname))
-
-            # Close FITS file
             hdulist.close()
-
-        else:
-            LOG.warning('FITS header cannot be updated: image {} does not exist.'.format(fitsname))
-
-        return
 
     def _split_vlass_cube_stokes(self, image_list):
         """Split full-Stokes images into the IQU and V images and return a new image list."""
