@@ -107,7 +107,8 @@ class Pbcor(basetask.StandardTaskTemplate):
                     for suffix in [".alpha", ".alpha.error"]:
                         alpha_file = basename + suffix
                         if not os.path.exists(alpha_file):
-                            LOG.warning(f"Alpha image {alpha_file} not found, skipping header update.")
+                            if sci_im['multiterm'] > 1 or sci_im['specmode'] == 'cube':
+                                LOG.warning(f"Alpha image {alpha_file} not found, skipping header update.")
                             continue
                         with casa_tools.ImageReader(alpha_file) as image:
                             info = image.miscinfo()
