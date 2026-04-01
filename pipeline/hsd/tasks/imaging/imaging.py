@@ -1276,7 +1276,7 @@ class SDImaging(basetask.StandardTaskTemplate):
     def _detect_contamination(
             self,
             image_item: ImageItem,
-            is_LSB: bool,
+            is_lsb: bool,
             edge_channels: tuple[int, int] = (0, 0),
             atm_channels: numpy.ndarray | list[bool] = []
     ) -> bool:
@@ -1284,7 +1284,8 @@ class SDImaging(basetask.StandardTaskTemplate):
 
         Args:
             image_item: Image item to be checked for contamination
-            is_LSB: A boolean flag whether the image is for LSB spw or not
+            is_lsb: A boolean flag whether the image is for lower sideband
+                    (LSB) spw or not
             edge_channels: Two tuple of integers for the number of
                            edge channels to be excluded from the analysis
             atm_channels: Channel mask for ATM feature. True means that the
@@ -1304,7 +1305,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         if edge_count_upper > 0:
             channel_mask[-edge_count_upper:] = False
         contaminated = detectcontamination.detect_contamination(
-            self.inputs.context, image_item, is_LSB, do_plot, channel_mask
+            self.inputs.context, image_item, is_lsb, do_plot, channel_mask
         )
         return contaminated
 
@@ -1384,8 +1385,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                         atm_channels, _detected_chans
                     )
 
-            is_LSB = r.frequency_channel_reversed
-            if is_LSB:
+            is_lsb = r.frequency_channel_reversed
+            if is_lsb:
                 # mask needs to be reversed
                 atm_channels = atm_channels[::-1]
 
@@ -1396,7 +1397,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
             contaminated = self._detect_contamination(
                 image_item,
-                is_LSB,
+                is_lsb,
                 edge_channels=edge_channels,
                 atm_channels=atm_channels
             )
