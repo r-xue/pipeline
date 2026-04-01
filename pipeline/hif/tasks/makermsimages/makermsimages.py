@@ -98,7 +98,9 @@ class Makermsimages(basetask.StandardTaskTemplate):
         imlist = self.inputs.context.sciimlist.get_imlist()
 
         imagenames = []
+        imageinfo = {}
         for imageitem in imlist:
+            imageinfo[imageitem['imagename']] = {'multiterm': imageitem['multiterm'], 'specmode': imageitem['specmode']}
             if imageitem['multiterm']:
                 imagenames.extend(utils.glob_ordered(imageitem['imagename'] + '.pbcor.tt0'))
                 imagenames.extend(utils.glob_ordered(imageitem['imagename'] + '.pbcor.tt1'))
@@ -170,7 +172,10 @@ class Makermsimages(basetask.StandardTaskTemplate):
                     for suffix in [".alpha", ".alpha.error"]:
                         alpha_file = base_name + suffix
                         if not os.path.exists(alpha_file):
-                            LOG.warning(f"Alpha image {alpha_file} not found, skipping header update.")
+                            imageprop = imageinfo.get(base_name+".image", None)
+                            if imageprop:
+                                if imageprop['multiterm'] > 1 or imageprop['specmode'] == 'cube':
+                                    LOG.warning(f"Alpha image {alpha_file} not found, skipping header update.")
                             continue
                         with casa_tools.ImageReader(alpha_file) as image:
                             info = image.miscinfo()
