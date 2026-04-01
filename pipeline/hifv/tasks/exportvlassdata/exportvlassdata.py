@@ -372,6 +372,10 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                         beam0 = beam['beams']['*0']['*0']
                         image_rgd.setrestoringbeam(remove=True)
                         image_rgd.setrestoringbeam(beam=beam0)
+
+                info = image_rgd.miscinfo()
+                info['VLASSPL'] = stokes
+                image_rgd.setmiscinfo(info)
                 image_rgd.tofits(fits_name, region=region, overwrite=True)
                 self._fix_vlass_fits_header(self.inputs.context, fits_name)
                 LOG.info(f'write the commom beam/frame FITS image: {fits_name}')
