@@ -4154,25 +4154,25 @@ def score_sdimage_sensitivity(result: SDImagingResultItem) -> pqa.QAScore:
 
     if theoretical['unit'] != observed['unit']:
         msg = (f"Field {field} Spw {spw}: "
-               "Unit mismatch between Observed and Theoretical sensitivities")
+               "Unit mismatch between Observed sensitivity and Expected noise level")
         raise ValueError( msg )
 
     if theoretical['value'] <= 0.0:
         msg = (f"Field {field} Spw {spw}: "
-               "Invalid Theoretical sensitivity of {theoretical['value']} {theoretical['unit']}")
+               "Invalid Expected noise level of {theoretical['value']} {theoretical['unit']}")
         raise ValueError( msg )
 
     x = observed['value'] / theoretical['value']
     if x1 < x and x < x2:
         score = 1.0
         lmsg = (f'Field {field} Spw {spw}: '
-                'Observed sensitivity agrees with the theoretical estimate.')
-        smsg =  'Observed sensitivity agrees with the theoretical estimate.'
+                'Observed sensitivity agrees with the Expected noise level.')
+        smsg =  'Observed sensitivity agrees with the Expected noise level.'
     else:
         score = 0.5
         lmsg = (f'Field {field} Spw {spw}: '
-                'Observed sensitivity does not agree with the theoretical estimate.')
-        smsg =  'Observed sensitivity does not agree with the theoretical estimate.'
+                'Observed sensitivity deviates from the Expected noise level.')
+        smsg =  'Observed sensitivity deviates from the Expected noise level.'
 
     origin = pqa.QAOrigin(metric_name='SingleDishImageSensitivity',
                           metric_score=score,
