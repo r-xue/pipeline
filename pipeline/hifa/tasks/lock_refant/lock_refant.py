@@ -20,8 +20,8 @@ class LockRefAntInputs(vdp.StandardInputs):
     # PIPE-3016 the default use case of lock_refant is in a polcal recipe
     # prior to second loop of calibratons. Before that second loop,
     # the spwphaseup caltables need to be unregistered
-    unregister_spwphaseup =  vdp.VisDependentProperty(default=True)
-    
+    unregister_spwphaseup = vdp.VisDependentProperty(default=True)
+
     def to_casa_args(self):
         # refant does not use CASA tasks
         raise NotImplementedError
@@ -55,18 +55,19 @@ class LockRefAntInputs(vdp.StandardInputs):
         # the context.
         if self.unregister_spwphaseup:
             # Identify the MS to process
-            vis: str = os.path.basename(self._vis)
+            ms_basename = os.path.basename(str(self.vis))
 
             # predicate function that triggers when the spwphaseup caltable is
             # detected for this MS
             def spwphaseup_matcher(calto: callibrary.CalToArgs, calfrom: callibrary.CalFrom) -> bool:
                 calto_vis = {os.path.basename(v) for v in calto.vis}
-                do_delete = 'hifa_spwphaseup' in calfrom.gaintable and vis in calto_vis
+                do_delete = 'hifa_spwphaseup' in calfrom.gaintable and ms_basename in calto_vis
                 if do_delete:
-                    LOG.info(f'Unregistering previous spwphaseup offset table for {vis}')
+                    LOG.info('Unregistering previous spwphaseup offset table for %s', ms_basename)
                 return do_delete
 
-            context.callibrary.unregister_calibrations(spwphaseup_matcher)           
+            context.callibrary.unregister_calibrations(spwphaseup_matcher)
+
 
 class LockRefAntResults(basetask.Results):
     def __init__(self, vis: str):
