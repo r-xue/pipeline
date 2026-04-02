@@ -12,33 +12,40 @@ gantt
     excludes weekends
 
     section Management
-    Stakeholder Planning & Prioritization       :active, des1, 2025-10-01, 2025-12-31
-    Team F2F Meeting, Charlottesville, VA       :active,       2025-10-13, 5d
+    %% Stakeholder Planning & Prioritization       :active, des1, 2025-10-01, 2025-12-31
+    %% Team F2F Meeting, Charlottesville, VA       :active,       2025-10-13, 5d
     Inform ALMA AQUA/Archive of New Products    :active, milestone, 2026-05-01, 1d
 
     section Development
-    New Features, Bugfixes, Refactoring, Testing, Documentation :active,       2026-01-01, 2026-07-01
-    VLASS Feature Dev Complete            :active, milestone, 2026-02-01, 1d
-    VLASS Branch release/2026.1.0         :active, milestone, 2026-02-15, 1d
+    New Features, Bugfixes, Refactoring, Testing, Documentation :active,       2026-02-01, 2026-07-01
+    %% VLASS Feature Dev Complete            :active, milestone, 2026-02-01, 1d
+    VLASS Branch release/2026.1.0         :active, milestone, 2026-03-06, 1d
     CASA Branch PL2026                    :active, milestone, 2026-02-15, 1d
-    ALMA/VLA Feature Dev Complete         :active, milestone, 2026-07-01, 1d
+    %% ALMA/VLA Feature Dev Complete         :active, milestone, 2026-07-01, 1d
     ALMA/VLA Branch release/2026.2.0      :active, milestone, 2026-07-01, 1d
     Optimization & Bugfixes               :active, 2026-07-01, 2026-07-31
 
     section ALMA Testing
-    Ref. Benchmark (late-PL2025)         :active, 2025-10-01, 2025-11-15
+    %% Ref. Benchmark (late-PL2025)         :active, 2025-10-01, 2025-11-15
     Ref. Benchmark (early-PL2026)        :active, 2026-02-15, 2026-03-31
     Validation Benchmark (PL2026)        :active, 2026-06-15, 2026-07-31
-    TRR1                                 :test2, 2026-05-15, 2026-05-29
-    TRR2                                 :test3, 2026-07-10, 2026-07-24
-    Accept. Rev.                         :test4, 2026-08-14, 2026-09-02
-    JAO-ARC Validation Test              :test5, 2026-09-05, 2026-09-14
+    TRR1 (pre-E2E) Observations          :milestone, 2026-05-14, 1d
+    TRR1                                 :test1, 2026-05-14, 2026-05-22
+    TRR1 Report on Data Reduction        :milestone, 2026-05-22, 1d
+    TRR2 (24h) Observations              :milestone, 2026-07-09, 1d
+    TRR2                                 :test2, 2026-07-09, 2026-07-23
+    TRR2 Report on Data Reduction        :milestone, 2026-07-23, 1d
+    Acceptance (48h) Observations        :milestone, 2026-08-18, 2d
+    Acceptance                           :test3, 2026-08-18, 2026-09-02
+    Acceptance Report on Data Reduction  :milestone, 2026-09-03, 1d
+    JAO-ARC Validation Test              :test4, 2026-09-03, 2026-09-14
 
     section Delivery
-    ALMA Cycle-12 and VLA/SRDP Pipeline (2025.1.0.35, CASA 6.6.6-17-py3.10)  :done, crit, milestone, 2025-10-01, 1d
-    VLASS Pipeline (2026.1.0, CASA 6.7.1-py3.10+gpu)             :active, crit, milestone, 2026-03-15, 1d
+    %% ALMA Cycle-12 and VLA/SRDP Pipeline (2025.1.0.35, CASA 6.6.6-17-py3.10)  :done, crit, milestone, 2025-10-01, 1d  
+    ALMA Cycle-12 and VLA/SRDP Pipeline patch-1 (2025.1.0.36, CASA 6.6.6-18-py3.10)  :done, crit, milestone, 2026-03-01, 1d      
+    VLASS Pipeline (2026.1.0.1, CASA 6.7.1-13-py3.10+gpu)             :active, crit, milestone, 2026-04-10, 1d
     ALMA E2E13 Pre-release                :active, crit, milestone, 2026-07-10, 1d
-    ALMA Cycle-13 and VLA/SRDP Pipeline (2026.2.0, CASA 6.7.x-py3.12)     :active, crit, milestone, 2026-08-01, 1d
+    ALMA Cycle-13 and VLA/SRDP Pipeline (2026.2.0, CASA 6.7.4-py3.12)     :active, crit, milestone, 2026-08-01, 1d
 ```
 
 ---
@@ -73,6 +80,26 @@ August 2026
   - Version: 2026.2.0
   - CASA: 6.7.x-py3.12
   - Status: Planned
+
+### ALMA Testing Schedule
+
+May 14, 2026
+: **TRR1 (pre-E2E) Observations**
+
+May 22, 2026
+: **TRR1 Report on Data Reduction**
+
+July 9, 2026
+: **TRR2 (24h) Observations**
+
+July 23, 2026
+: **TRR2 Report on Data Reduction**
+
+Aug 18–19, 2026
+: **Acceptance (48h) Observations**
+
+Sep 3, 2026
+: **Acceptance Report on Data Reduction**
 
 ---
 
