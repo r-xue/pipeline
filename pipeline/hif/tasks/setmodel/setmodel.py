@@ -49,8 +49,8 @@ class SetModelsInputs(vdp.StandardInputs):
 
         transfer_names = sorted(f.name for f in diff)
         fields_with_name = self.ms.get_fields(name=transfer_names)
-        if len(fields_with_name) is not len(diff) or len(diff) is not len(transfer_names):
-            return ','.join(sorted(str(f.id) for f in diff))
+        if len(fields_with_name) != len(diff) or len(diff) != len(transfer_names):
+            return ','.join(str(f.id) for f in sorted(diff, key=lambda f: f.id))
         else:
             return ','.join(transfer_names)
 
