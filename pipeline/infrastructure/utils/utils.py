@@ -1295,10 +1295,9 @@ def clear_time_cache():
     LOG.debug('Successfully cleared the CASA measures tool time cache.')
 
 
-def build_refantignore(refantignore: str = "", ignorerefant: list = []) -> str:
+def build_refantignore(refantignore: str = "", ignorerefant: list | None = None) -> str:
     """Return a comma-separated string from refantignore
     and ignorerefant, ignoring empty strings."""
 
-    parts = ([refantignore.strip()] if refantignore.strip() else []) + ignorerefant
-
-    return ",".join(parts)
+    parts = ([refantignore.strip()] if refantignore.strip() else []) + (ignorerefant or [])
+    return ",".join(parts).strip(",")
