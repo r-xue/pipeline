@@ -203,10 +203,10 @@ class StateALMACycle0(StateALMA):
             LOG.trace('After: %s' % self.__repr__())
 
 
-class StateAPEX(State):
-    """State representation for APEX Observatory measurement sets.
+class StateVLA(State):
+    """State representation for VLA Observatory measurement sets.
 
-    Extends State with APEX-specific obs_mode to pipeline intent mappings.
+    Extends State with VLA-specific obs_mode to pipeline intent mappings.
 
     Attributes:
         id: Numerical identifier of this State.
