@@ -1261,13 +1261,13 @@ class MakeImList(basetask.StandardTaskTemplate):
                     if 'TARGET' in inputs.intent:
                         sorted_field_intent_list = utils.place_repr_source_first(sorted_field_intent_list, repr_source)
 
-                    cont_ranges_spwsel_dict = {}
-                    all_continuum_spwsel_dict = {}
-                    low_bandwidth_spwsel_dict = {}
-                    low_spread_spwsel_dict = {}
                     target_heuristics = copy.deepcopy(self.heuristics)
-                    cont_ranges_spwsel_dict, all_continuum_spwsel_dict, low_bandwidth_spwsel_dict, low_spread_spwsel_dict = target_heuristics.cont_ranges_spwsel()
-
+                    (
+                        cont_ranges_spwsel_dict,
+                        all_continuum_spwsel_dict,
+                        low_bandwidth_spwsel_dict,
+                        low_spread_spwsel_dict
+                    ) = target_heuristics.cont_ranges_spwsel()
                     for field_intent in sorted_field_intent_list:
                         mosweight = self.heuristics.mosweight(field_intent[1], field_intent[0])
                         for spwspec in filtered_spwlist_local:
