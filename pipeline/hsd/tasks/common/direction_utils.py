@@ -30,7 +30,7 @@ Direction = NewType( 'Direction', Dict )
 Epoch     = NewType( 'Epoch',     Dict )
 Position  = NewType( 'Position',  Dict )
 
-__all__ = { 'direction_shift', 'direction_offset', 'direction_recover', 'direction_convert' }
+__all__ = ['direction_shift', 'direction_offset', 'direction_recover', 'direction_convert']
 
 
 def direction_shift( direction:Direction, reference:Direction, origin:Direction ) -> Direction:

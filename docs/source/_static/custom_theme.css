@@ -1,37 +1,77 @@
-/* === Layout === */
-.wy-nav-content {
-    max-width: none;
+/* =============================================================================
+   Furo theme customisations
+   =========================================================================== */
+
+/* --- Right TOC collapse toggle -------------------------------------------- */
+
+/* The toggle button sits on the left edge of the TOC drawer.
+   position: fixed keeps it vertically centred while scrolling. */
+.toc-toggle-btn {
+    position: fixed;
+    top: 50vh;
+    transform: translateY(-50%);
+    z-index: 51;
+
+    width: 1.1rem;
+    height: 2.5rem;
+    padding: 0;
+
+    border: 1px solid var(--color-background-border);
+    border-right: none;
+    border-radius: 0.3rem 0 0 0.3rem;
+
+    background: var(--color-background-secondary);
+    color: var(--color-foreground-secondary);
+    cursor: pointer;
+    font-size: 0.65rem;
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: background 0.15s ease, color 0.15s ease;
 }
 
-.wy-nav-top,
-.wy-nav-search {
-    background: #a09f9f;
+.toc-toggle-btn:hover {
+    background: var(--color-background-hover);
+    color: var(--color-foreground-primary);
 }
 
-.wy-nav-side {
-    background: #ffffff;
+/* The toggle button sits on the left edge of the TOC drawer. */
+.toc-drawer {
+    position: relative;
+    transition: width 0.2s ease, min-width 0.2s ease;
 }
 
-.wy-menu-vertical a {
-    color: black;
-}
-
-.wy-menu-vertical a:hover {
-    background-color: #e6e6e6;
-}
-
-ul {
-    display: inline;
-}
-
-/* === Table Overrides === */
-@media screen and (min-width: 767px) {
-    .wy-table-responsive table td {
-        white-space: normal !important;
+/* Wide-screen collapse logic — only on screens where Furo shows the inline TOC
+   (>82em). On smaller screens Furo uses its own overlay; the toggle is hidden. */
+@media (min-width: 83em) {
+    /* Shrink the drawer to zero; keep overflow visible so the toggle button
+       remains clickable outside the collapsed zero-width box. */
+    .toc-drawer.toc-collapsed {
+        width: 0 !important;
+        min-width: 0 !important;
+        overflow: visible;
     }
 
-    .wy-table-responsive {
-        overflow: visible !important;
+    .toc-drawer.toc-collapsed .toc-sticky {
+        display: none;
+    }
+
+    /* Grow content by exactly the TOC width (15em) so the freed space is
+       absorbed into the text area.  Nothing else moves — the sidebar, the
+       remaining viewport space, and the content's own padding (0 3em) all
+       stay identical. */
+    .main.toc-collapsed .content {
+        width: calc(46em + 15em);
+    }
+}
+
+/* Hide the toggle on small screens — Furo handles the TOC via overlay there. */
+@media (max-width: 82em) {
+    .toc-toggle-btn {
+        display: none !important;
     }
 }
 
@@ -58,55 +98,50 @@ div.nboutput.container div.output_area {
     margin-bottom: 1em;
 }
 
-/* === Typography === */
-/* Base font size and line height */
-body {
-    font-size: 14px;
-    line-height: 1.5;
+/* === Mermaid reset-zoom button === */
+.mermaid-zoom-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
 }
 
-/* Target the pre tag inside the Pygments highlight div */
-.highlight pre {
-    font-size: 14px !important;
-    line-height: 1.5 !important;
+.mermaid-reset-btn {
+    position: absolute;
+    top: 0.4rem;
+    right: 1.0rem;
+    z-index: 10;
+
+    width: 1.6rem;
+    height: 1.6rem;
+    padding: 0;
+
+    border: 1px solid var(--color-background-border);
+    border-radius: 0.25rem;
+    background: var(--color-background-secondary);
+    color: var(--color-foreground-secondary);
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    opacity: 0.5;
+    transition: opacity 0.15s ease;
 }
 
-/* Headings - proportional sizing */
-h1 {
-    font-size: 1.8em;
+.mermaid-zoom-wrapper:hover .mermaid-reset-btn {
+    opacity: 1;
 }
 
-h2 {
-    font-size: 1.5em;
+/* Hide Sphinx/Furo attribution in footer, keep copyright */
+.bottom-of-page .left-details {
+    font-size: 0 !important;
+    visibility: hidden !important;
+}
+.bottom-of-page .left-details .copyright {
+    font-size: 0.81rem !important;
+    visibility: visible !important;
 }
 
-h3 {
-    font-size: 1.3em;
-}
-
-h4 {
-    font-size: 1.1em;
-}
-
-
-/* Body text, Paragraphs, and List items */
-.rst-content,
-.rst-content p,
-.rst-content li,
-.rst-content dd,
-.rst-content blockquote {
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-/* Code Blocks - needing !important to override Pygments */
-.rst-content .highlight pre {
-    font-size: 12px !important;
-    line-height: 1.5 !important;
-}
-
-/* Inline code literals */
-.rst-content code,
-.rst-content tt {
-    font-size: 85%;
+/* --- Slightly reduce global font size ------------------------------------ */
+/* Setting on :root scales all rem-based sizes (Furo uses rem extensively).   */
+:root {
+    font-size: 93.75%;  /* browser default 16px × 93.75% ≈ 15px */
 }
