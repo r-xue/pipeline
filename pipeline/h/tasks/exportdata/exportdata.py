@@ -322,7 +322,7 @@ class ExportData(basetask.StandardTaskTemplate):
         _, exportmses_session_names, exportmses_session_vislists, exportmses_vislist = self._make_lists(
             inputs.context, inputs.session, None, imaging_only_mses=None)
 
-        _is_imaging_done = any([self._has_imaging_data(inputs.context, vis) for vis in exportmses_vislist])
+        _is_imaging_done = any(self._has_imaging_data(inputs.context, vis) for vis in exportmses_vislist)
 
         flag_version_name = 'Pipeline_Final'
         if not _is_imaging_done:
