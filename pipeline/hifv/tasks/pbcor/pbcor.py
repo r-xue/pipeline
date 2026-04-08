@@ -87,36 +87,7 @@ class Pbcor(basetask.StandardTaskTemplate):
                                           outfile=basename+'.image.pbcor'+term_ext, mode='divide', cutoff=-1.0, stretch=False)
                 self._executor.execute(task)
                 pbcor_images.append(basename+'.image.pbcor'+term_ext)
-                # PIPE-2461: adding vlass fits keywords to pbcor images
-                imagename = basename + '.image.pbcor' + term_ext
-                with casa_tools.ImageReader(imagename) as image:
-                    info = image.miscinfo()
-                    info['VLASSITY'] = imaging_utils.get_vlass_image_type(imagename)
-                    stats = image.statistics(robust=False)
-                    if len(stats.get('max', [])) > 0:
-                        info["VLASSPK"] = float(stats["max"][0])
-                    else:
-                        info["VLASSPK"] = ''
-                    image.setmiscinfo(info)
 
-                task = casa_tasks.impbcor(imagename=basename + '.residual'+term_ext, pbimage=pbname+pb_term_ext,
-                                          outfile=basename + '.image.residual.pbcor'+term_ext, mode='divide', cutoff=-1.0, stretch=False)
-                self._executor.execute(task)
-                pbcor_images.append(basename + '.image.residual.pbcor'+term_ext)
-                if term_ext == '.tt0':
-                    for suffix in [".alpha", ".alpha.error"]:
-                        alpha_file = basename + suffix
-                        if not os.path.exists(alpha_file):
-                            if sci_im['multiterm'] > 1:
-                                LOG.warning(f"Alpha image {alpha_file} not found, skipping header update.")
-                            continue
-                        with casa_tools.ImageReader(alpha_file) as image:
-                            info = image.miscinfo()
-                            if len(stats.get('max', [])) > 0:
-                                info["VLASSPK"] = float(stats["max"][0])
-                            else:
-                                info["VLASSPK"] = ''
-                            image.setmiscinfo(info)
             pbcor_images.append(pbname+pb_term_ext)
 
             LOG.info("PBCOR image names: " + ','.join(pbcor_images))

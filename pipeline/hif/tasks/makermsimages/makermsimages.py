@@ -133,7 +133,6 @@ class Makermsimages(basetask.StandardTaskTemplate):
         for queue_job, rmsimagename in queued_job_rmsimagename:
             queue_job.get_result()
             if os.path.exists(rmsimagename):
-                rmsval = None
                 rmsimagenames.append(rmsimagename)
                 if self.inputs.context.imaging_mode == "VLASS-SE-CUBE":
                     with casa_tools.ImageReader(rmsimagename) as image:
@@ -141,46 +140,14 @@ class Makermsimages(basetask.StandardTaskTemplate):
                         medabsdevmed = rmsstats[rmsimagename].get('medabsdevmed')
                         if medabsdevmed is not None:
                             rmsstats[rmsimagename]['madrms'] = rmsstats[rmsimagename]['medabsdevmed'] * 1.4826  # see CAS-9631
-                            rmsval = float(np.median(rmsstats[rmsimagename]['madrms']))
                 else:
                     with casa_tools.ImageReader(rmsimagename) as image:
                         stats = image.statistics(robust=True)
-
-                        medianval = stats.get('median')
-                        rmsval = float(np.median(medianval)) if medianval is not None else None
-
                         if '.tt1.' not in rmsimagename:
                             rmsstats[rmsimagename] = stats
                             medabsdevmed = stats.get('medabsdevmed')
                             if medabsdevmed is not None:
                                 rmsstats[rmsimagename]['madrms'] = medabsdevmed[0] * 1.4826  # see CAS-9631
-                # PIPE-2461: adding rms values to image header
-                imagename, _ = os.path.splitext(rmsimagename)
-                imagefiles = utils.glob_ordered(imagename + "*")
-                for imagefile in imagefiles:
-                    if rmsval is None:
-                        LOG.warning(f"RMS value is None for {rmsimagename}, skipping header update for {imagename}")
-                        continue
-
-                    with casa_tools.ImageReader(imagefile) as image:
-                        info = image.miscinfo()
-                        info["VLASSRMS"] = rmsval
-                        info['VLASSITY'] = imaging_utils.get_vlass_image_type(imagefile)
-                        image.setmiscinfo(info)
-                if '.tt0.' in rmsimagename:
-                    base_name = rmsimagename.split(".image.pbcor")[0]
-                    for suffix in [".alpha", ".alpha.error"]:
-                        alpha_file = base_name + suffix
-                        if not os.path.exists(alpha_file):
-                            imageprop = imageinfo.get(base_name+".image", None)
-                            if imageprop:
-                                if imageprop['multiterm'] > 1 or imageprop['specmode'] == 'cube':
-                                    LOG.warning(f"Alpha image {alpha_file} not found, skipping header update.")
-                            continue
-                        with casa_tools.ImageReader(alpha_file) as image:
-                            info = image.miscinfo()
-                            info["VLASSRMS"] = rmsval
-                            image.setmiscinfo(info)
 
         if self.inputs.context.imaging_mode == "VLASS-SE-CUBE" and rmsstats:
             for item in ['max', 'min', 'mean', 'median', 'sigma', 'madrms']:

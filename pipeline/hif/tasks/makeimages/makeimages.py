@@ -490,7 +490,6 @@ class MakeImages(basetask.StandardTaskTemplate):
                 info['VLASSPC'] = tclean_result.inputs["phasecenter"]
                 info['VLASSPL'] = tclean_result.stokes
                 info['VLASSPT'] = tclean_result.imaging_mode
-                info['VLASSPK'] = tclean_result.image_max
                 info['VLASSBW'] = vlass_bw
                 info['VLASSITY'] = imaging_utils.get_vlass_image_type(name)
                 info['VLASSTN'] = tile

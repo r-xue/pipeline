@@ -507,9 +507,10 @@ def predict_kernel(beam, target_beam, pstol=1e-6, patol=1e-3):
     return rt_kernel, rt_code
 
 
-def get_vlass_image_type(filename:str) -> str:
-    """Determine the VLASS image type based on specific substrings in the filename."""
-
+def get_vlass_image_type(filename:str, append_tt: bool = True) -> str:
+    """
+        Determine the VLASS image type based on specific substrings in the filename.
+    """
     filename = filename.lower()
     base = (
         "ALPHAERR" if ".alpha.error" in filename else
@@ -521,7 +522,7 @@ def get_vlass_image_type(filename:str) -> str:
         "PSF" if ".psf." in filename else
         "UNKNOWN"
     )
-    if base == "UNKNOWN":
+    if base == "UNKNOWN" or not append_tt:
         return base
 
     tt = ("_TT0" if "tt0" in filename else "_TT1" if "tt1" in filename else "")
