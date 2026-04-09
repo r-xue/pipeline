@@ -698,6 +698,15 @@ class CleanBase(basetask.StandardTaskTemplate):
                         tclean_niter, sourcename,
                         inputs.spw, iter))
 
+            if tclean_stopcode == 9:
+                result.error = CleanBaseError('tclean reached nmajor limit. Field: %s SPW: %s' %
+                                              (sourcename, inputs.spw), 'Reached nmajor limit')
+                LOG.log(
+                    logging.INFO if tclean_stopcode in tclean_stopcode_ignore else logging.WARNING,
+                    'tclean reached nmajor limit of {} for {} / spw{} / iter{} !'.format(
+                        tclean_nmajordone, sourcename,
+                        inputs.spw, iter))
+
             if tclean_stopcode in [5, 6]:
                 result.error = CleanBaseError('tclean stopped to prevent divergence (stop code %d). Field: %s SPW: %s' %
                                               (tclean_stopcode, sourcename, inputs.spw),
