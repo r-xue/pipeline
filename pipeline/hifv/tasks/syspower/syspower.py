@@ -378,7 +378,13 @@ class Syspower(basetask.StandardTaskTemplate):
                 for j, this_spw in enumerate(spws):
                     hits = np.where((sp_ant == this_ant) & (sp_spw == this_spw))[0]
                     times, ind = np.unique(sp_time[hits], return_index=True)
-                    hits2 = np.where(np.in1d(sorted_time, times))[0]
+                    # Both arrays passed to np.isin are unique:
+                    #  - `times` is made unique explicitly via np.unique above.
+                    #  - `sorted_time` is constructed as the global, deduplicated time axis
+                    #    (sorted list of distinct times) earlier in this task.
+                    # Given these invariants, it is safe to set assume_unique=True here
+                    # to avoid the overhead of additional uniqueness checks.
+                    hits2 = np.where(np.isin(sorted_time, times, assume_unique=True))[0]
                     flux_hits = np.where((times >= np.min(flux_times)) & (times <= np.max(flux_times)))[0]
                     if len(hits) != len(hits2):
                         spw_problems.append(this_spw)
@@ -548,7 +554,7 @@ class Syspower(basetask.StandardTaskTemplate):
                             if j in subarray:
                                 bband = bband_common_indices.index(subarray)
 
-                        hits2 = np.where(np.in1d(sorted_time, rq_time[hits]))[0]
+                        hits2 = np.where(np.isin(sorted_time, rq_time[hits]))[0]
 
                         for pol in [0, 1]:
                             try:
@@ -584,7 +590,7 @@ class Syspower(basetask.StandardTaskTemplate):
                         for subarray in bband_common_indices:
                             if j in subarray:
                                 bband = bband_common_indices.index(subarray)
-                        hits2 = np.where(np.in1d(sorted_time, rq_time[hits]))[0]
+                        hits2 = np.where(np.isin(sorted_time, rq_time[hits]))[0]
 
                         for pol in [0, 1]:
                             try:
@@ -709,7 +715,7 @@ class Syspower(basetask.StandardTaskTemplate):
         else:
             resid = (x - temp[np.newaxis, :]).ravel()
         new_flags = self.medfilt(resid, k, threshold=threshold, flag_only=True, **kwargs)
-        x.mask = np.reshape(new_flags.mask, newshape=x.shape)
+        x.mask = np.reshape(new_flags.mask, x.shape)
         flag_percent = 100.0 * np.sum(x.mask) / x.size
         x.mask[x == 0] = True
         return x, flag_percent
