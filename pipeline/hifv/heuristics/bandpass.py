@@ -212,12 +212,14 @@ def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypec
     if os.path.exists(caltable):
         timestamp = time.strftime("%Y%m%d_%H%M%S")
         os.rename(caltable, f"{caltable}.allspws.{timestamp}.bak")
-
-    # Run bandpass using high-SNR SPWs only
-    bandpass_task_args['spw'] = ','.join(map(str, good_snr_spws))
-    bandpass_task_args['append'] = False
-    job = casa_tasks.bandpass(**bandpass_task_args)
-    executor.execute(job)
+    if len(good_snr_spws) != 0:
+        # Run bandpass using high-SNR SPWs only
+        bandpass_task_args['spw'] = ','.join(map(str, good_snr_spws))
+        bandpass_task_args['append'] = False
+        job = casa_tasks.bandpass(**bandpass_task_args)
+        executor.execute(job)
+    else:
+        LOG.warning("No SPWs with median S/N ≥ 50, so skipping bandpass run.")
 
     # re-run the low-SNR SPWs individually with smoothing
     for bad_spw in low_snr_spws:
