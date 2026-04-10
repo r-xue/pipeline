@@ -167,9 +167,7 @@ It generates an image combined spectral data from whole antenna as well as image
         <li><a href="#${plots['title'].replace(" ", "")}">${plots['title']}</a></li>
     %endif
 % endfor
-%if missedlines_plots is not None:
-    <li><a href="#missedlinesplot">Diagnostic plots for possible missed line channels</a></li>
-%endif
+<li><a href="#missedlinesplot">Diagnostic plots for possible missed line channels</a></li>
 %if contaminationmap_plots is not None:
     <li><a href="#contaminationplot">Contamination Plots</a></li>
 %endif
@@ -315,8 +313,15 @@ It generates an image combined spectral data from whole antenna as well as image
 	<div class="clearfix"></div><!--  flush plots, break to next row -->
 % endfor
 
-%if missedlines_plots is not None:
 <h3 id="missedlinesplot" class="jumptarget">Diagnostic plots for possible missed line channels</h3>
+
+%if missedlines_plots is not None:
+    <p>There are two types of diagnostic methods: "single peak" and "extended".
+    The thresholds for "single peak" and "extended" are 7&sigma; and 5&sigma;, respectively,
+    as indicated by the blue dashed lines. The cyan region indicates the line range detected
+    at the hsd_baseline stage, and the magenta line indicates the deviation masked regions.
+    The red point indicates peaks detected as missed line channels.</p>
+
     % for field, plot_list in missedlines_plots.items():
       <h4>${field}</h4>
           % for plot in plot_list:
@@ -339,6 +344,8 @@ It generates an image combined spectral data from whole antenna as well as image
           %endfor
           <div class="clearfix"></div><!--  flush plots, break to next row -->
     %endfor
+%else:
+    <p>No significant missed line is detected.</p>
 %endif
 
 %if contaminationmap_plots is not None:
