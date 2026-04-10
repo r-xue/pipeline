@@ -16,7 +16,7 @@ from pipeline.infrastructure.utils import caltable_tools
 from .utils import find_ranges, dict_merge, are_equal, approx_equal, flagged_intervals, \
     get_casa_quantity, fieldname_for_casa, fieldname_clean, \
     get_field_accessor, get_field_identifiers, get_receiver_type_for_spws, place_repr_source_first, \
-    get_taskhistory_fromimage, list_to_str
+    get_taskhistory_fromimage, list_to_str, build_refantignore
 
 if TYPE_CHECKING:
     from typing import Any
@@ -317,3 +317,17 @@ def test_list_to_str_py310(value: Any, expected: str | Callable):
     svalue = list_to_str(value)
     expected = expected() if isinstance(expected, Callable) else expected
     assert svalue == expected
+
+
+@pytest.mark.parametrize(
+    "refantignore, ignorerefant, expected",
+    [
+        ("ea01", ["ea02", "ea03"], "ea01,ea02,ea03"),   # normal case
+        ("ea01", [], "ea01"),                             # only refantignore
+        ("", ["ea02", "ea03"], "ea02,ea03"),             # only ignorerefant
+        ("", [], ""),                                     # both empty
+    ]
+)
+def test_build_refantignore(refantignore, ignorerefant, expected):
+
+    assert build_refantignore(refantignore, ignorerefant) == expected

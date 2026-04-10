@@ -53,6 +53,7 @@ __all__ = [
     'absolute_path',
     'approx_equal',
     'are_equal',
+    'build_refantignore',
     'clear_time_cache',
     'compute_zenith_distance',
     'deduplicate',
@@ -89,6 +90,9 @@ __all__ = [
     'remove_trailing_string',
     'string_to_val',
     'validate_url',
+    'DirectionDict',
+    'EpochDict',
+    'QuantityDict',
 ]
 
 # Import TypedDict definitions from centralized module for type checking only
@@ -1280,3 +1284,11 @@ def clear_time_cache():
         measures_tool.measure(rf='ICRS', v=dummy_direction)
 
     LOG.debug('Successfully cleared the CASA measures tool time cache.')
+
+
+def build_refantignore(refantignore: str = "", ignorerefant: list | None = None) -> str:
+    """Return a comma-separated string from refantignore
+    and ignorerefant, ignoring empty strings."""
+
+    parts = ([refantignore.strip()] if refantignore.strip() else []) + (ignorerefant or [])
+    return ",".join(parts).strip(",")
