@@ -428,8 +428,8 @@ class InputsContainer(object):
         scope_is_null = scope_null == scope_null.convert(scope_value)
 
         if scope_is_null:
-            if hasattr(current_inputs_cls, 'processing_data_type'):
-                data_types = current_inputs_cls.processing_data_type
+            if hasattr(current_inputs_cls, 'processing_data_types'):
+                data_types = current_inputs_cls.processing_data_types
                 ms_pool = self._context.observing_run.get_measurement_sets_of_type(data_types)
                 for ms in ms_pool:
                     LOG.debug('{}: {}'.format(ms.basename, ms.data_column))
@@ -715,7 +715,7 @@ def get_properties(inputs_cls):
 class StandardInputs(api.Inputs, metaclass=PipelineInputsMeta):
 
     # - standard non-vis-dependent properties --------------------------------
-    processing_data_type = [DataType.RAW]
+    processing_data_types = [DataType.RAW]
 
     @property
     def context(self):

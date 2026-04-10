@@ -112,7 +112,7 @@ class DataType(Enum):
         elif 'SELFCAL' in datatype_str:
             return '<span style="background-color:palegreen;">SELFCAL</span>'
         elif 'IM' in datatype_str:
-            return '<span style="background-color:palegreen;">IMAGING</span>'
+            return '<span style="background-color:turquoise;">IMAGING</span>'
         else:
             return 'UNKNOWN'
 

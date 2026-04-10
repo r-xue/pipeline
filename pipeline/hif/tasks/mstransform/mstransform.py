@@ -19,16 +19,81 @@ LOG = infrastructure.get_logger(__name__)
 
 # Define the minimum set of parameters required to split out
 # the TARGET data from the complete and fully calibrated
-# original MS. Other parameters will be added here as more
+# original MS or the best calibrated data from a _targets MS.
+# Other parameters will be added here as more
 # capabilities are added to hif_mstransform.
 class MstransformInputs(vdp.StandardInputs):
-    # Search order of input vis
-    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+    # This task is special in the sense that it may need to process multiple
+    # data types at once. Changing the framework is not a good option since it
+    # could only return *all* MSes which would include duplication of names for
+    # different datatypes. So we set the default data types to [].
+    processing_data_types = [
+        DataType.SELFCAL_LINE_SCIENCE,
+        DataType.SELFCAL_CONTLINE_SCIENCE,
+        DataType.REGCAL_LINE_SCIENCE,
+        DataType.REGCAL_CONTLINE_SCIENCE,
+        DataType.REGCAL_CONTLINE_ALL
+        ]
+    in_to_out_data_types = {
+        DataType.REGCAL_CONTLINE_ALL: DataType.REGCAL_CONTLINE_SCIENCE,
+        DataType.REGCAL_CONTLINE_SCIENCE: DataType.IM_CONTLINE_SCIENCE,
+        DataType.REGCAL_LINE_SCIENCE: DataType.IM_LINE_SCIENCE,
+        DataType.SELFCAL_CONTLINE_SCIENCE: DataType.IM_CONTLINE_SCIENCE,
+        DataType.SELFCAL_LINE_SCIENCE: DataType.IM_LINE_SCIENCE,
+        DataType.REGCAL_CONTLINE_SCIENCE: DataType.IM_CONTLINE_SCIENCE,
+        DataType.REGCAL_LINE_SCIENCE: DataType.IM_LINE_SCIENCE,
+        None: None
+        }
+
+    @vdp.VisDependentProperty
+    def input_data_type(self):
+        return None
+
+    @vdp.VisDependentProperty
+    def datacolumn(self):
+        if self.input_data_type:
+            pl_datacolumn = self.context.observing_run.get_ms(self.vis).data_column[self.input_data_type]
+            # The CASA mstransform command wants 'data' or 'corrected' while PL
+            # uses 'DATA' and 'CORRECTED_DATA' in the domain objects.
+            mstransform_datacolumn = 'data' if pl_datacolumn == 'DATA' else 'corrected'
+            return mstransform_datacolumn
+        else:
+            return None
 
     @vdp.VisDependentProperty
     def outputvis(self):
         vis_root = os.path.splitext(self.vis)[0]
-        return vis_root + '_targets.ms'
+        if self.input_data_type == DataType.REGCAL_CONTLINE_ALL:
+            return vis_root + '_targets.ms'
+        elif self.input_data_type in [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE]:
+            return vis_root.replace('_targets', '_imaging') + '.ms'
+        elif self.input_data_type in [DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE]:
+            return vis_root.replace('_targets_line', '_imaging_line') + '.ms'
+        else:
+            return None
+
+    @vdp.VisDependentProperty
+    def output_data_type(self):
+        vis_root = os.path.splitext(self.vis)[0]
+        return self.in_to_out_data_types[self.input_data_type]
+
+    @vdp.VisDependentProperty
+    def outframe(self):
+        if self.input_data_type == DataType.REGCAL_CONTLINE_ALL: # or ephemeris targets
+            return None
+        else:
+            # PIPE-3003 requests native frames for the imaging MSes. This could be
+            # LSRK or SOURCE. CASA's mstransform has a bug for SOURCE, so we do not
+            # create any such MSes except if time binning is done as part of this
+            # ticket. In that case it would need to be a TOPO MS.
+            return 'LSRK'
+
+    @vdp.VisDependentProperty
+    def regridms(self):
+        if self.input_data_type == DataType.REGCAL_CONTLINE_ALL: # or ephemeris targets
+            return None
+        else:
+            return True
 
     # By default find all the fields with TARGET intent
     @vdp.VisDependentProperty
@@ -111,8 +176,8 @@ class MstransformInputs(vdp.StandardInputs):
     parallel = sessionutils.parallel_inputs_impl(default=False)
 
     # docstring and type hints: supplements hif_mstransform
-    def __init__(self, context, output_dir=None, vis=None, outputvis=None, field=None, intent=None, spw=None,
-                 chanbin=None, timebin=None, per_spw=None, parallel=None):
+    def __init__(self, context, output_dir=None, vis=None, input_data_type=None, datacolumn=None, outputvis=None, output_data_type=None,
+                 outframe=None, regridms=None, field=None, intent=None, spw=None, chanbin=None, timebin=None, per_spw=None, parallel=None):
         """Initialize Inputs.
 
         Args:
@@ -126,15 +191,28 @@ class MstransformInputs(vdp.StandardInputs):
 
                 Examples: ``'ngc5921.ms'``, ``['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']``
 
+            input_data_type: The input data type to be used.
+
+            datacolumn: The data column to use from the input MeasurementSets. Depending on the processing datatype this can be ``'data'`` or ``'corrected'``.
+
             outputvis: A list of output MeasurementSets for line detection and imaging,. This list must have
                 the same length as the input list.
 
                 Default Naming: By default, an input MS named `<msrootname>.ms`
                 will produce an output named `<msrootname>_targets.ms`.
+                An input MS named `<msrootname>_targets.ms` will produce an
+                an output named `<msrootname>_imaging.ms`.
 
                 Examples:
                     - ``outputvis='ngc5921_targets.ms'``
                     - ``outputvis=['ngc5921a_targets.ms', 'ngc5921b_targets.ms', 'ngc5921c_targets.ms']``
+                    - ``outputvis='ngc5921_imaging.ms'``
+
+            output_data_type: The new data type of the output MeasurementSets
+
+            outframe: The frequency frame of the output MeasurementSets
+
+            regridms: Flag for frame changes
 
             field: Select fields name(s) or id(s) to transform. Only fields with data matching the intent will be selected.
 
@@ -166,8 +244,13 @@ class MstransformInputs(vdp.StandardInputs):
         # set the properties to the values given as input arguments
         self.context = context
         self.vis = vis
+        self.input_data_type = input_data_type
+        self.datacolumn = datacolumn
         self.output_dir = output_dir
         self.outputvis = outputvis
+        self.output_data_type = output_data_type
+        self.outframe = outframe
+        self.regridms = regridms
         self.field = field
         self.intent = intent
         self.spw = spw
@@ -181,9 +264,7 @@ class MstransformInputs(vdp.StandardInputs):
         # Get parameter dictionary.
         d = super().to_casa_args()
 
-        # Force the data column to be 'corrected' and the
-        # new (with casa 4.6) reindex parameter to be False
-        d['datacolumn'] = 'corrected'
+        # Force the new (with casa 4.6) reindex parameter to be False
         d['reindex'] = False
 
         if self.chanbin > 1:
@@ -211,7 +292,7 @@ class SerialMstransform(basetask.StandardTaskTemplate):
         inputs = self.inputs
 
         # Create the results structure
-        result = MstransformResults(vis=inputs.vis, outputvis=inputs.outputvis)
+        result = MstransformResults(vis=inputs.vis, outputvis=inputs.outputvis, output_data_type=inputs.output_data_type)
 
         # Run CASA task
         mstransform_args = inputs.to_casa_args()
@@ -246,7 +327,7 @@ class SerialMstransform(basetask.StandardTaskTemplate):
             ms.session = self.inputs.ms.session
             LOG.debug('Setting data_column and origin_ms.')
             ms.origin_ms = self.inputs.ms.origin_ms
-            ms.set_data_column(DataType.REGCAL_CONTLINE_SCIENCE, 'DATA')
+            ms.set_data_column(result.output_data_type, 'DATA')
 
         result.mses.extend(observing_run.measurement_sets)
 
@@ -268,10 +349,11 @@ class SerialMstransform(basetask.StandardTaskTemplate):
 
 
 class MstransformResults(basetask.Results):
-    def __init__(self, vis, outputvis):
+    def __init__(self, vis, outputvis, output_data_type):
         super().__init__()
         self.vis = vis
         self.outputvis = outputvis
+        self.output_data_type = output_data_type
         self.mses = []
 
     def merge_with_context(self, context):
@@ -330,11 +412,34 @@ class Mstransform(sessionutils.ParallelTemplate):
         valid_args_list = []
         inputs = self.inputs
         original_vis = inputs.vis
+
+        # hif_mstransform needs to work on multiple datatypes at once.
+        # Therefore the auto-selected vis list needs to be modified.
+        data_types_groups = [
+            [DataType.SELFCAL_LINE_SCIENCE, DataType.SELFCAL_CONTLINE_SCIENCE],
+            [DataType.REGCAL_LINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE],
+            [DataType.REGCAL_CONTLINE_ALL]
+            ]
+        vis_list = []
+        data_type_list = []
+        found_group = False
+        for data_type_group in data_types_groups:
+            for data_type in data_type_group:
+                ms_objects = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=[data_type], msonly=True)
+                if ms_objects:
+                    found_group = True
+                    vis_list.extend([ms_object.name for ms_object in ms_objects])
+                    data_type_list.extend(len(ms_objects)*[data_type])
+            if found_group:
+                break
         try:
-            vis_list = inputs.vis if isinstance(inputs.vis, list) else [inputs.vis]
-            for vis in vis_list:
-                inputs.vis = vis
+            for i in range(len(vis_list)):
+                inputs.vis = vis_list[i]
+                inputs.input_data_type = data_type_list[i]
                 task_args = inputs.as_dict()
+                # Remove parameters that mstransform does not understand. Not here? Later? Removing here causes inputs losing input_data_type.
+                #task_args.pop('input_data_type', None)
+                #task_args.pop('output_data_type', None)
                 valid_args_list.append(task_args)
         finally:
             inputs.vis = original_vis
@@ -376,14 +481,15 @@ class Mstransform(sessionutils.ParallelTemplate):
         assessed = []
         parallel = mpihelpers.parse_parallel_input_parameter(self.inputs.parallel)
         task_args_list = self._get_task_args_list()
+
         taskqueue_parallel_request = len(task_args_list) > 1 and parallel
 
         with TaskQueue(parallel=taskqueue_parallel_request, executor=self._executor) as tq:
-            
+
             for task_args in task_args_list:
                 tq.add_pipelinetask(SerialMstransform, task_args, self.inputs.context)
             task_results_list = tq.get_results()
-        
+
         for task_args, worker_result in zip(task_args_list, task_results_list):
             vis = task_args['vis']
             try:

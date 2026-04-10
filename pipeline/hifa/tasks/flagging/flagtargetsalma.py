@@ -60,7 +60,7 @@ class FlagTargetsALMAInputs(vdp.StandardInputs):
         The filename of the ASCII file that contains the flagging template
     """
     # Search order of input vis
-    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+    processing_data_types = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     flagbackup = vdp.VisDependentProperty (default=False)
     template = vdp.VisDependentProperty(default=True)
@@ -74,7 +74,7 @@ class FlagTargetsALMAInputs(vdp.StandardInputs):
     def inpfile(self):
         vis_root = sanitize_for_ms(self.vis)
         return os.path.join(self.output_dir, vis_root + '.flagtargetscmds.txt')
-    
+
     parallel = sessionutils.parallel_inputs_impl(default=False)
 
     # docstring and type hints: supplements hifa_flagtargets

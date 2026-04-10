@@ -20,7 +20,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class UVcontSubInputs(vdp.StandardInputs):
     # Search order of input vis
-    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+    processing_data_types = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     fitorder = vdp.VisDependentProperty(default={})
     intent = vdp.VisDependentProperty(default='TARGET')
@@ -147,7 +147,7 @@ class SerialUVcontSub(basetask.StandardTaskTemplate):
         known_synthesized_beams = inputs.context.synthesized_beams
 
         datatype = None
-        for possible_datatype in inputs.processing_data_type:
+        for possible_datatype in inputs.processing_data_types:
             if possible_datatype in inputs.ms.data_column:
                 datatype = possible_datatype.name
                 break

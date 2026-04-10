@@ -20,7 +20,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class StatwtInputs(vdp.StandardInputs):
     # Search order of input vis
-    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+    processing_data_types = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     datacolumn = vdp.VisDependentProperty(default='corrected')
     overwrite_modelcol = vdp.VisDependentProperty(default=False)

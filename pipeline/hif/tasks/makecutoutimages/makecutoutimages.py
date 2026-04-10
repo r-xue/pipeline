@@ -71,7 +71,7 @@ class MakecutoutimagesResults(basetask.Results):
 
 class MakecutoutimagesInputs(vdp.StandardInputs):
 
-    processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+    processing_data_types = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     @vdp.VisDependentProperty
     def offsetblc(self):
