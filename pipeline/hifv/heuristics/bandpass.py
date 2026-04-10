@@ -115,20 +115,21 @@ def _compute_median_snr(caltable: str) -> dict:
         for spw in uniq_spws:
             # Query the subtable for this SPW
             query_str = f'SPECTRAL_WINDOW_ID=={spw}'
-            with table.query(query=query_str) as subtable:
-                # Read SNR and FLAG columns
-                snr = subtable.getcol('SNR')
-                flag = subtable.getcol('FLAG')
-                # Compute median SNR
-                if snr.size == 0:
-                    median_snr[spw] = 0
-                    continue
-                valid_snr = snr[(~flag) & (~np.isnan(snr))].ravel()
-                # if there are no valid SNR values, set median to 0
-                if valid_snr.size:
-                    median_snr[spw] = np.median(valid_snr)
-                else:
-                    median_snr[spw] = 0
+            subtable = table.query(query=query_str)
+            # Read SNR and FLAG columns
+            snr = subtable.getcol('SNR')
+            flag = subtable.getcol('FLAG')
+            # Compute median SNR
+            if snr.size == 0:
+                median_snr[spw] = 0
+                continue
+            valid_snr = snr[(~flag) & (~np.isnan(snr))].ravel()
+            # if there are no valid SNR values, set median to 0
+            if valid_snr.size:
+                median_snr[spw] = np.median(valid_snr)
+            else:
+                median_snr[spw] = 0
+            subtable.close()
 
     return median_snr
 
