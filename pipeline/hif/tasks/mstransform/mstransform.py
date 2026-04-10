@@ -372,7 +372,7 @@ class MstransformResults(basetask.Results):
         # Create targets flagging template file if it does not already exist
         for ms in self.mses:
             template_flagsfile = os.path.join(
-                self.inputs['output_dir'], os.path.splitext(os.path.basename(self.vis))[0] + '.flagtargetstemplate.txt')
+                self.inputs['output_dir'], os.path.splitext(os.path.basename(ms.name))[0] + '.flagtargetstemplate.txt')
             self._make_template_flagfile(template_flagsfile, 'User flagging commands file for the imaging pipeline')
 
         # Initialize callibrary
