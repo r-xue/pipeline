@@ -84,6 +84,7 @@ __all__ = [
     'DirectionDict',
     'EpochDict',
     'QuantityDict',
+    'build_refantignore',
 ]
 
 
@@ -1292,3 +1293,11 @@ def clear_time_cache():
         measures_tool.measure(rf='ICRS', v=dummy_direction)
 
     LOG.debug('Successfully cleared the CASA measures tool time cache.')
+
+
+def build_refantignore(refantignore: str = "", ignorerefant: list | None = None) -> str:
+    """Return a comma-separated string from refantignore
+    and ignorerefant, ignoring empty strings."""
+
+    parts = ([refantignore.strip()] if refantignore.strip() else []) + (ignorerefant or [])
+    return ",".join(parts).strip(",")
