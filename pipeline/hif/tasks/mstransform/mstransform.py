@@ -28,11 +28,14 @@ class MstransformInputs(vdp.StandardInputs):
     # could only return *all* MSes which would include duplication of names for
     # different datatypes. So we set the default data types to [].
     processing_data_types = [
+        DataType.IM_LINE_SCIENCE,
+        DataType.IM_CONTLINE_SCIENCE,
         DataType.SELFCAL_LINE_SCIENCE,
         DataType.SELFCAL_CONTLINE_SCIENCE,
         DataType.REGCAL_LINE_SCIENCE,
         DataType.REGCAL_CONTLINE_SCIENCE,
-        DataType.REGCAL_CONTLINE_ALL
+        DataType.REGCAL_CONTLINE_ALL,
+        DataType.RAW
         ]
     in_to_out_data_types = {
         DataType.REGCAL_CONTLINE_ALL: DataType.REGCAL_CONTLINE_SCIENCE,
@@ -422,20 +425,24 @@ class Mstransform(sessionutils.ParallelTemplate):
             ]
         vis_list = []
         data_type_list = []
-        found_group = False
+        found_data_type_group = False
         for data_type_group in data_types_groups:
             for data_type in data_type_group:
                 ms_objects = inputs.context.observing_run.get_measurement_sets_of_type(dtypes=[data_type], msonly=True)
                 if ms_objects:
-                    found_group = True
+                    found_data_type_group = True
                     vis_list.extend([ms_object.name for ms_object in ms_objects])
                     data_type_list.extend(len(ms_objects)*[data_type])
-            if found_group:
+            if found_data_type_group:
                 break
+
+        if not found_data_type_group:
+            return []
+
         try:
-            for i in range(len(vis_list)):
-                inputs.vis = vis_list[i]
-                inputs.input_data_type = data_type_list[i]
+            for vis, data_type in zip(vis_list, data_type_list):
+                inputs.vis = vis
+                inputs.input_data_type = data_type
                 task_args = inputs.as_dict()
                 # Remove parameters that mstransform does not understand. Not here? Later? Removing here causes inputs losing input_data_type.
                 #task_args.pop('input_data_type', None)
@@ -443,6 +450,7 @@ class Mstransform(sessionutils.ParallelTemplate):
                 valid_args_list.append(task_args)
         finally:
             inputs.vis = original_vis
+            inputs.input_data_type = None
 
         if inputs.per_spw:
             valid_args_list_per_spw = []
@@ -481,6 +489,9 @@ class Mstransform(sessionutils.ParallelTemplate):
         assessed = []
         parallel = mpihelpers.parse_parallel_input_parameter(self.inputs.parallel)
         task_args_list = self._get_task_args_list()
+
+        if not task_args_list:
+            return []
 
         taskqueue_parallel_request = len(task_args_list) > 1 and parallel
 
