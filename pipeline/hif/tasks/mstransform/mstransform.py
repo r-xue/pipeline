@@ -189,10 +189,10 @@ class MstransformInputs(vdp.StandardInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the <hifa,hifv>_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets defined in the data type fallback heuristics.
+                First, any '*_targets' MSes are searched. If none is in available in the context, the original MSes of the importdata
+                steps are used.
                 '': use all MeasurementSets in the context
-
-                Examples: ``'ngc5921.ms'``, ``['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']``
 
             input_data_type: The input data type to be used.
 
@@ -320,7 +320,7 @@ class SerialMstransform(basetask.StandardTaskTemplate):
 
         # Check for existence of the output vis.
         if not os.path.exists(result.outputvis):
-            LOG.debug('Error creating science targets cont+line MS %s' % (os.path.basename(result.outputvis)))
+            LOG.debug('Error creating output MS %s' % (os.path.basename(result.outputvis)))
             return result
 
         # Import the new measurement set.
@@ -491,7 +491,7 @@ class Mstransform(sessionutils.ParallelTemplate):
         task_args_list = self._get_task_args_list()
 
         if not task_args_list:
-            return []
+            return [('', {}, MstransformResults(vis='', outputvis='', output_data_type=None))]
 
         taskqueue_parallel_request = len(task_args_list) > 1 and parallel
 
