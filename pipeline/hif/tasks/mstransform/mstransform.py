@@ -299,6 +299,9 @@ class SerialMstransform(basetask.StandardTaskTemplate):
 
         # Run CASA task
         mstransform_args = inputs.to_casa_args()
+        # Remove inputs parameters that CASA's mstransform does not understand.
+        mstransform_args.pop('input_data_type', None)
+        mstransform_args.pop('output_data_type', None)
         mstransform_job = casa_tasks.mstransform(**mstransform_args)
         try:
             self._executor.execute(mstransform_job)
@@ -444,9 +447,6 @@ class Mstransform(sessionutils.ParallelTemplate):
                 inputs.vis = vis
                 inputs.input_data_type = data_type
                 task_args = inputs.as_dict()
-                # Remove parameters that mstransform does not understand. Not here? Later? Removing here causes inputs losing input_data_type.
-                #task_args.pop('input_data_type', None)
-                #task_args.pop('output_data_type', None)
                 valid_args_list.append(task_args)
         finally:
             inputs.vis = original_vis
