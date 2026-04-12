@@ -3316,8 +3316,14 @@ def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
     origin = pqa.QAOrigin(metric_name='score_sd_baseline_quality',
                           metric_score=len(stat),
                           metric_units='Statistics of binned spectra')
+    selection = pqa.TargetDataSelection(vis={vis},
+                                        field={source},
+                                        spw={vspw},
+                                        ant={ant},
+                                        pol={pol},
+                                        intent={'TARGET'})
 
-    return pqa.QAScore(final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
 
 
 @log_qa

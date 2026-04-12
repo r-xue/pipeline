@@ -11,6 +11,7 @@ import pipeline.qa.scorecalculator as qacalc
 
 from ..common import compress
 from . import baseline
+from pipeline.hsd.tasks.common.qautils import QAScoreAggregator
 
 if TYPE_CHECKING:
     from pipeline.infrastructure.launcher import Context
@@ -46,7 +47,12 @@ class SDBaselineQAHandler(pqa.QAPlugin):
             qacalc.score_sd_line_detection(context.observing_run.ms_reduction_group, result)
         )
 
-        result.qa.pool.extend(scores)
+        keys_to_aggregate = [ 'vis', 'field', 'spw', 'ant', 'pol' ]
+        aggregator = QAScoreAggregator( keys_to_aggregate = keys_to_aggregate,
+                                        longmsg_keys = keys_to_aggregate )
+        aggregated = aggregator.aggregate_qascores( scores )
+
+        result.qa.pool.extend(aggregated)
 
 
 class SDBaselineListQAHandler(pqa.QAPlugin):
