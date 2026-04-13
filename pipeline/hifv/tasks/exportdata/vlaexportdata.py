@@ -42,7 +42,7 @@ class VLAExportDataInputs(exportdata.ExportDataInputs):
     def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None,
                  tarms=None, exportcalprods=None,
                  pprfile=None, calintents=None, calimages=None, targetimages=None, products_dir=None, gainmap=None,
-                 imaging_products_only=None):
+                 imaging_products_only=None, flag_version_name=None):
         """Initialize the Inputs.
 
         Args:
@@ -83,11 +83,14 @@ class VLAExportDataInputs(exportdata.ExportDataInputs):
 
             imaging_products_only: Export science target imaging products only
 
+            flag_version_name: Name of the flag version to export. Defaults to ``'Pipeline_Final'``
+
         """
         super().__init__(context, output_dir=output_dir, session=session, vis=vis,
                          exportmses=exportmses, tarms=tarms, pprfile=pprfile, calintents=calintents,
                          calimages=calimages, targetimages=targetimages,
-                         products_dir=products_dir, imaging_products_only=imaging_products_only)
+                         products_dir=products_dir, imaging_products_only=imaging_products_only,
+                         flag_version_name=flag_version_name)
         self.gainmap = gainmap
         self.exportcalprods = exportcalprods
 

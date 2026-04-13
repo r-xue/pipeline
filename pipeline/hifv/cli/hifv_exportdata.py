@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, tarms=None, exportcalprods=None,
                     pprfile=None, calintents=None, calimages=None, targetimages=None, products_dir=None,
-                    gainmap=None):
+                    gainmap=None, flag_version_name=None):
     """Prepare and export interferometry and imaging data.
 
     The hifv_exportdata task for the VLA CASA pipeline exports the data defined
