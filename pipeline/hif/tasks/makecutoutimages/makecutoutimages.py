@@ -209,9 +209,9 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
                 subimagenames.append(subimagename)
             subimage_size = self._get_image_size(subimagename)
         for subim in images_to_update:
-            if 'rms' in subim:
+            if '.rms' in subim:
                 key = subim.split('.rms')[0]
-            elif 'alpha' in subim:
+            elif '.alpha' in subim:
                 key = subim.split('.alpha')[0]+".image.pbcor.tt0"
             else:
                 key = subim.split('.subim')[0]

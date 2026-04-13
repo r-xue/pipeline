@@ -98,9 +98,7 @@ class Makermsimages(basetask.StandardTaskTemplate):
         imlist = self.inputs.context.sciimlist.get_imlist()
 
         imagenames = []
-        imageinfo = {}
         for imageitem in imlist:
-            imageinfo[imageitem['imagename']] = {'multiterm': imageitem['multiterm'], 'specmode': imageitem['specmode']}
             if imageitem['multiterm']:
                 imagenames.extend(utils.glob_ordered(imageitem['imagename'] + '.pbcor.tt0'))
                 imagenames.extend(utils.glob_ordered(imageitem['imagename'] + '.pbcor.tt1'))

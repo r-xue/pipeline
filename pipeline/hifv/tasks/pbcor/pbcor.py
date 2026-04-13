@@ -1,12 +1,8 @@
-import os
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks, task_registry
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.utils import imaging as imaging_utils
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -87,6 +83,11 @@ class Pbcor(basetask.StandardTaskTemplate):
                                           outfile=basename+'.image.pbcor'+term_ext, mode='divide', cutoff=-1.0, stretch=False)
                 self._executor.execute(task)
                 pbcor_images.append(basename+'.image.pbcor'+term_ext)
+
+                task = casa_tasks.impbcor(imagename=basename + '.residual'+term_ext, pbimage=pbname+pb_term_ext,
+                                          outfile=basename + '.image.residual.pbcor'+term_ext, mode='divide', cutoff=-1.0, stretch=False)
+                self._executor.execute(task)
+                pbcor_images.append(basename + '.image.residual.pbcor'+term_ext)
 
             pbcor_images.append(pbname+pb_term_ext)
 
