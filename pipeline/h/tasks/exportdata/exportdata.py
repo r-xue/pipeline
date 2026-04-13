@@ -14,6 +14,7 @@ import os
 import shutil
 import sys
 import tarfile
+import time
 import uuid
 from typing import TYPE_CHECKING
 
@@ -35,6 +36,7 @@ LOG = infrastructure.logging.get_logger(__name__)
 
 StdFileProducts = collections.namedtuple('StdFileProducts', 'ppr_file weblog_file casa_commands_file casa_pipescript casa_restore_script')
 
+FINAL_FLAG_VERSION = 'Pipeline_Final'
 
 class ExportDataInputs(vdp.StandardInputs):
     """
@@ -95,6 +97,7 @@ class ExportDataInputs(vdp.StandardInputs):
     calimages = vdp.VisDependentProperty(default=[])
     calintents = vdp.VisDependentProperty(default='')
     exportmses = vdp.VisDependentProperty(default=False)
+    flag_version_name = vdp.VisDependentProperty(default=FINAL_FLAG_VERSION)
     pprfile = vdp.VisDependentProperty(default='')
     session = vdp.VisDependentProperty(default=[])
     targetimages = vdp.VisDependentProperty(default=[])
@@ -127,6 +130,7 @@ class ExportDataInputs(vdp.StandardInputs):
             targetimages: list[str] = None,
             products_dir: str = None,
             imaging_products_only: bool = None,
+            flag_version_name: str = None,
             ):
         """Initialise the Inputs, initialising any property values to those given here.
 
@@ -183,6 +187,10 @@ class ExportDataInputs(vdp.StandardInputs):
                 Example: ``products_dir='../products'``
 
             imaging_products_only: Export the science target image products only.
+
+            flag_version_name: Name of the flag version to export. Defaults to ``'Pipeline_Final'``.
+
+                Example: ``flag_version_name='Pipeline_Final'``
         """
         super().__init__()
         self.context = context
@@ -198,6 +206,7 @@ class ExportDataInputs(vdp.StandardInputs):
         self.targetimages = targetimages
         self.products_dir = products_dir
         self.imaging_products_only = imaging_products_only
+        self.flag_version_name = flag_version_name
 
 
 class ExportDataResults(basetask.Results):
@@ -322,11 +331,7 @@ class ExportData(basetask.StandardTaskTemplate):
         _, exportmses_session_names, exportmses_session_vislists, exportmses_vislist = self._make_lists(
             inputs.context, inputs.session, None, imaging_only_mses=None)
 
-        _is_imaging_done = any(self._has_imaging_data(inputs.context, vis) for vis in exportmses_vislist)
-
-        flag_version_name = 'Pipeline_Final'
-        if not _is_imaging_done:
-            flag_version_name = 'Pipeline_Final_PreImaging'
+        flag_version_name = inputs.flag_version_name
 
         if not inputs.imaging_products_only:
             if inputs.exportmses:
@@ -514,7 +519,7 @@ class ExportData(basetask.StandardTaskTemplate):
 
         return visdict
 
-    def _do_standard_ms_products(self, context, vislist, products_dir, flag_version_name='Pipeline_Final'):
+    def _do_standard_ms_products(self, context, vislist, products_dir, flag_version_name):
         """
         Generate the per ms standard products
         """
@@ -875,9 +880,19 @@ class ExportData(basetask.StandardTaskTemplate):
         """
         Save the final flags to a final flag version.
         """
+        if flag_version_name != FINAL_FLAG_VERSION:
+            LOG.info('Saving a copy of final flags for %s in flag version %s', os.path.basename(vis), flag_version_name)
+            task = casa_tasks.flagmanager(vis=vis, mode='save', versionname=flag_version_name, comment=f"Final pipeline flags (copy {int(time.time())})")
+            self._executor.execute(task)
 
-        LOG.info('Saving final flags for %s in flag version %s', os.path.basename(vis), flag_version_name)
-        task = casa_tasks.flagmanager(vis=vis, mode='save', versionname=flag_version_name, comment="Final pipeline flags")
+        LOG.info('Saving final flags for %s in flag version %s', os.path.basename(vis), FINAL_FLAG_VERSION)
+
+        flag_version_dir = vis+'.flagversions/flags.'+FINAL_FLAG_VERSION
+        if os.path.exists(flag_version_dir):
+            task = casa_tasks.flagmanager(vis=vis, mode='delete', versionname=FINAL_FLAG_VERSION)
+            self._executor.execute(task)
+        
+        task = casa_tasks.flagmanager(vis=vis, mode='save', versionname=FINAL_FLAG_VERSION, comment="Final pipeline flags")
         self._executor.execute(task)
 
     def _export_final_flagversion(self, context, vis, flag_version_name, products_dir):
