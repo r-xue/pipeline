@@ -17,7 +17,7 @@ LOG = logging.get_logger(__name__)
 __all__ = ['chan_selection_to_frequencies', 'freq_selection_to_channels', 'spw_intersect', 'update_sens_dict',
            'update_beams_dict', 'set_nested_dict', 'intersect_ranges', 'intersect_ranges_by_weight', 'merge_ranges', 'equal_to_n_digits',
            'velocity_to_frequency', 'frequency_to_velocity',
-           'predict_kernel']
+           'predict_kernel', 'get_vlass_image_type']
 
 
 def _get_cube_freq_axis(img: str) -> Tuple[float, float, str, float, int]:
@@ -505,3 +505,25 @@ def predict_kernel(beam, target_beam, pstol=1e-6, patol=1e-3):
 
 
     return rt_kernel, rt_code
+
+
+def get_vlass_image_type(filename:str, append_tt: bool = True) -> str:
+    """
+        Determine the VLASS image type based on specific substrings in the filename.
+    """
+    filename = filename.lower()
+    base = (
+        "ALPHAERR" if ".alpha.error" in filename else
+        "ALPHA" if ".alpha" in filename else
+        "RMS" if ".rms" in filename else
+        "INTENSITY_PBCOR" if "image.pbcor." in filename else
+        "WEIGHT" if ".weight." in filename else
+        "SUMWT" if ".sumwt." in filename else
+        "PSF" if ".psf." in filename else
+        "UNKNOWN"
+    )
+    if base == "UNKNOWN" or not append_tt:
+        return base
+
+    tt = ("_TT0" if "tt0" in filename else "_TT1" if "tt1" in filename else "")
+    return base + tt

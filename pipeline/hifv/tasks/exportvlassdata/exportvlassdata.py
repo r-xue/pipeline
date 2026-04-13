@@ -280,6 +280,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                                                                obs_lat=observatory['m1'])
                 # Update FITS header
                 self._fix_vlass_fits_header(self.inputs.context, fitsfile)
+            self._update_vlass_fits_header(fitsfile)
 
         # SE Cont imaging mode export for VLASS
         if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
@@ -378,8 +379,13 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                         beam0 = beam['beams']['*0']['*0']
                         image_rgd.setrestoringbeam(remove=True)
                         image_rgd.setrestoringbeam(beam=beam0)
+
+                info = image_rgd.miscinfo()
+                info['VLASSPL'] = stokes
+                image_rgd.setmiscinfo(info)
                 image_rgd.tofits(fits_name, region=region, overwrite=True)
                 self._fix_vlass_fits_header(self.inputs.context, fits_name)
+                self._update_vlass_fits_header(fits_name)
                 LOG.info(f'write the commom beam/frame FITS image: {fits_name}')
 
             image_smo.done()
@@ -849,6 +855,56 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         return
 
+    def _update_vlass_fits_header(self, fitsname):
+        """PIPE-2461: Updates VLASS fits keywords and adds comment to the keywords."""
+        if os.path.exists(fitsname):
+            # Open FITS image and obtain header
+            hdulist = apfits.open(fitsname, mode='update')
+            header = hdulist[0].header
+            tt_type = "TT0" if "tt0" in fitsname.lower() else "TT1" if "tt1" in fitsname.lower() else None
+            header_comments = {
+                "VLASSITY": "VLASS image type",
+                "VLASSPT": "VLASS product type",
+                "VLASSTN": "VLASS tile name",
+                "VLASSPC": "VLASS phasecenter",
+                "VLASSEP": "VLASS epoch",
+                "VLASSVR": "VLASS version number",
+                "VLASSPL": "VLASS Stokes/polarization parameter",
+                "VLASSRJ": "Rejected plane relevant for VLASS CC processing",
+                "VLASSSPW": "Spectral windows used for image",
+                "VLASSBWN": "Nominal bandwidth",
+                "VLASSBW": "Actual bandwidth after flagging",
+                "VLASSRMS": None,
+                "VLASSPK": None,
+                "VLASSWP": "Number of w-projection planes"
+            }
+            if tt_type == "TT0" or 'alpha' in fitsname.lower():
+                header_comments["VLASSRMS"] = (
+                    "Median rms calculated from RMS_TT0 image"
+                )
+                header_comments["VLASSPK"] = (
+                    "Peak flux density of INTENSITY_PBCOR_TT0 image"
+                )
+            elif tt_type == "TT1":
+                header_comments["VLASSRMS"] = (
+                    "Median rms calculated from RMS_TT1 image"
+                )
+                header_comments["VLASSPK"] = (
+                    "Peak flux density of INTENSITY_PBCOR_TT1 image"
+                )
+            else:
+                header_comments["VLASSRMS"] = "Median RMS calculated from RMS image"
+                header_comments["VLASSPK"] = "Peak flux density of INTENSITY_PBCOR image"
+
+            for key, comment in header_comments.items():
+                value = header.get(key, None)
+                if value is None:
+                    LOG.warning(f'Keyword {key} not found in FITS header of {fitsname}')
+                    continue
+                header[key] = (value, comment)
+            hdulist.flush()
+            hdulist.close()
+
     def _split_vlass_cube_stokes(self, image_list):
         """Split full-Stokes images into the IQU and V images and return a new image list."""
 
@@ -861,6 +917,11 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                     job = casa_tasks.imsubimage(imagename, outfile=outfile,
                                                 stokes=stokes_select, overwrite=True, dropdeg=False)
                     self._executor.execute(job)
+                    # PIPE-2461: updating stokes in the image header
+                    with casa_tools.ImageReader(outfile) as image:
+                        info = image.miscinfo()
+                        info['VLASSPL'] = stokes_select
+                        image.setmiscinfo(info)
                     LOG.info(f'Wrote {outfile}')
                     new_image_list.append(outfile)
             else:
