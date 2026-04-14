@@ -17,9 +17,10 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class LockRefAntInputs(vdp.StandardInputs):
-    # PIPE-3016 the default use case of lock_refant is in a polcal recipe
-    # prior to second loop of calibratons. Before that second loop,
-    # the spwphaseup caltables need to be unregistered
+    # PIPE-3016 the default use case of lock_refant is within the polcal
+    # recipe prior to second loop of calibration stages. Before that second loop,
+    # the spwphaseup caltables need to be unregistered. This will be
+    # unregistered by default (i.e. unregister_spwphaseup = True).
     unregister_spwphaseup = vdp.VisDependentProperty(default=True)
 
     def to_casa_args(self):
@@ -41,8 +42,10 @@ class LockRefAntInputs(vdp.StandardInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            unregister_spwphaseup: Boolean option to remove the offset caltable
-                created in the initial spwhphaseup stage, prior to lock_refant.
+            unregister_spwphaseup: Boolean option to remove any caltable created by
+                any hifa_spwphaseup stage run prior to lock_refant.
+                In the current Pipeline use case, hifa_spwphaseup makes phase
+                offset tables (per spectral spec) to align spws.
                 Defaults to True
 
         """
@@ -51,11 +54,29 @@ class LockRefAntInputs(vdp.StandardInputs):
         self.output_dir = output_dir
         self.unregister_spwphaseup = unregister_spwphaseup
 
-        # PIPE-3016: if requested, unregister previous spwphaseup caltables from
-        # the context.
+        
+class LockRefAntResults(basetask.Results):
+    def __init__(self, vis: str, unregister_spwphaseup: bool):
+        super().__init__()
+        self._vis = vis
+        self.unregister_spwphaseup = unregister_spwphaseup
+
+    def merge_with_context(self, context: Context):
+        if self._vis is None:
+            LOG.error('No results to merge')
+            return
+
+        ms = context.observing_run.get_ms(name=self._vis)
+        if ms:
+            LOG.debug('Locking refant for %s', ms.basename)
+            ms.reference_antenna_locked = True
+
+        # PIPE-3016: if requested (True by default), unregister previous
+        # hifa_spwphaseup caltables from the context upon completion of
+        # the hifa_lock_refant stage.
         if self.unregister_spwphaseup:
             # Identify the MS to process
-            ms_basename = os.path.basename(str(self.vis))
+            ms_basename = os.path.basename(str(self._vis))
 
             # predicate function that triggers when the spwphaseup caltable is
             # detected for this MS
@@ -68,21 +89,6 @@ class LockRefAntInputs(vdp.StandardInputs):
 
             context.callibrary.unregister_calibrations(spwphaseup_matcher)
 
-
-class LockRefAntResults(basetask.Results):
-    def __init__(self, vis: str):
-        super().__init__()
-        self._vis = vis
-
-    def merge_with_context(self, context: Context):
-        if self._vis is None:
-            LOG.error('No results to merge')
-            return
-
-        ms = context.observing_run.get_ms(name=self._vis)
-        if ms:
-            LOG.debug('Locking refant for %s', ms.basename)
-            ms.reference_antenna_locked = True
 
     def __str__(self):
         return 'Lock reference antenna results: refant list locked'
@@ -99,7 +105,7 @@ class LockRefAnt(basetask.StandardTaskTemplate):
     Inputs = LockRefAntInputs
 
     def prepare(self, **parameters):
-        return LockRefAntResults(self.inputs.vis)
+        return LockRefAntResults(self.inputs.vis, self.inputs.unregister_spwphaseup)
 
     def analyse(self, results):
         return results

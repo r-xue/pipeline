@@ -13,11 +13,14 @@ def hifa_lock_refant(vis=None, unregister_spwphaseup=None):
     After executing hifa_lock_refant, all subsequent gaincal calls will by
     default be executed with refantmode='strict'.
 
-    By default, executing hifa_lock_refant will unregister the initial (pre-
-    lock_refant) hifa_spwphaseup generated 'phase offsets' table which
-    will be resolved with the new, locked, antenna list.
+    By default, executing hifa_lock_refant will unregister any caltable
+    made by any hifa_spwphaseup stage run prior to hifa_lock_refant. In
+    the current Pipeline use case these are 'phase offset' caltable(s). 
+    For the polarization recipe where hifa_lock_refant is used, the
+    hifa_spwphaseup stage will be called again.
 
-    The refant list can be unlocked with the hifa_unlock_refant task.
+    The refant list can be unlocked with the hifa_unlock_refant task, but 
+    the unregistered hifa_spwphaseup caltables cannot be 're' registered.
 
     Returns:
         The results object for the pipeline task is returned.
