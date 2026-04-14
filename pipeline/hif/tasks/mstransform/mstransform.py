@@ -64,6 +64,10 @@ class MstransformInputs(vdp.StandardInputs):
             return None
 
     @vdp.VisDependentProperty
+    def all_eph_obj(self):
+        return None
+
+    @vdp.VisDependentProperty
     def outputvis(self):
         vis_root = os.path.splitext(self.vis)[0]
         if self.input_data_type == DataType.REGCAL_CONTLINE_ALL:
@@ -82,14 +86,17 @@ class MstransformInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def outframe(self):
-        if self.input_data_type == DataType.REGCAL_CONTLINE_ALL: # or ephemeris targets
+        if self.input_data_type == DataType.REGCAL_CONTLINE_ALL:
+            # For the first mode of hif_mstransform the specified data (usually TARGET intent)
+            # is just split out without changing the frequency frame.
             return None
         else:
-            # PIPE-3003 requests native frames for the imaging MSes. This could be
-            # LSRK or SOURCE. CASA's mstransform has a bug for SOURCE, so we do not
-            # create any such MSes except if time binning is done as part of this
-            # ticket. In that case it would need to be a TOPO MS.
-            return 'LSRK'
+            # For the second mode that produces imaging MSes, the frequency frame
+            # is changed to the target native one. There are ephemeris and other objects.
+            if self.all_eph_obj:
+                return 'SOURCE'
+            else:
+                return 'LSRK'
 
     @vdp.VisDependentProperty
     def regridms(self):
@@ -179,7 +186,7 @@ class MstransformInputs(vdp.StandardInputs):
     parallel = sessionutils.parallel_inputs_impl(default=False)
 
     # docstring and type hints: supplements hif_mstransform
-    def __init__(self, context, output_dir=None, vis=None, input_data_type=None, datacolumn=None, outputvis=None, output_data_type=None,
+    def __init__(self, context, output_dir=None, vis=None, input_data_type=None, datacolumn=None, all_eph_obj=None, outputvis=None, output_data_type=None,
                  outframe=None, regridms=None, field=None, intent=None, spw=None, chanbin=None, timebin=None, per_spw=None, parallel=None):
         """Initialize Inputs.
 
@@ -197,6 +204,8 @@ class MstransformInputs(vdp.StandardInputs):
             input_data_type: The input data type to be used.
 
             datacolumn: The data column to use from the input MeasurementSets. Depending on the processing datatype this can be ``'data'`` or ``'corrected'``.
+
+            all_eph_obj: Boolean to tell if all selected fields are ephemeris objects. Needed for heuristics of other parameters.
 
             outputvis: A list of output MeasurementSets for line detection and imaging,. This list must have
                 the same length as the input list.
@@ -249,6 +258,7 @@ class MstransformInputs(vdp.StandardInputs):
         self.vis = vis
         self.input_data_type = input_data_type
         self.datacolumn = datacolumn
+        self.all_eph_obj = all_eph_obj
         self.output_dir = output_dir
         self.outputvis = outputvis
         self.output_data_type = output_data_type
@@ -280,9 +290,9 @@ class MstransformInputs(vdp.StandardInputs):
         else:
             d['timeaverage'] = False
 
-        # Remove parallel and per_spw if they exist,
-        # as casatasks/mstransform does not support them.
-        for key in ('parallel', 'per_spw'):
+        # Remove a number of inputs parameters that
+        # casatasks/mstransform does not support.
+        for key in ('parallel', 'per_spw', 'input_data_type', 'output_data_type', 'all_eph_obj'):
             d.pop(key, None)
 
         return d
@@ -299,9 +309,6 @@ class SerialMstransform(basetask.StandardTaskTemplate):
 
         # Run CASA task
         mstransform_args = inputs.to_casa_args()
-        # Remove inputs parameters that CASA's mstransform does not understand.
-        mstransform_args.pop('input_data_type', None)
-        mstransform_args.pop('output_data_type', None)
         mstransform_job = casa_tasks.mstransform(**mstransform_args)
         try:
             self._executor.execute(mstransform_job)
@@ -413,11 +420,43 @@ class Mstransform(sessionutils.ParallelTemplate):
     Inputs = MstransformInputs
     Task = SerialMstransform
 
+    def _get_eph_frames(self, vis_list):
+        """
+        Return a list of booleans telling if the field frame is SOURCE/REST or not.
+        """
+
+        inputs = self.inputs
+        fields_are_eph_obj = []
+        for vis in vis_list:
+            fields_are_eph_obj.extend([f.source.is_eph_obj for f in inputs.context.observing_run.get_ms(vis).get_fields(intent=inputs.intent)])
+        return fields_are_eph_obj
+
+    def _frames_consistent(self, vis_list):
+        """
+        Check if all selected sources use the same frequency frame.
+        """
+
+        fields_are_eph_obj = self._get_eph_frames(vis_list)
+        return all(fields_are_eph_obj) or not any(fields_are_eph_obj)
+
+    def _conversion_possible(self, vis_list, data_type_list):
+        """
+        Check if the requested mstransform conversion can be done. For ephemeris objects
+        we can not convert to SOURCE/REST frame due to a bug in CASA's mstransform command for
+        PL 2026 (status as of 04/2026).
+        """
+
+        inputs = self.inputs
+        fields_are_eph_obj = self._get_eph_frames(vis_list)
+        return not(DataType.REGCAL_CONTLINE_ALL not in data_type_list and any(fields_are_eph_obj))
+
     def _get_task_args_list(self):
 
         valid_args_list = []
         inputs = self.inputs
         original_vis = inputs.vis
+        original_input_data_type = inputs.input_data_type
+        original_all_eph_obj = inputs.all_eph_obj
 
         # hif_mstransform needs to work on multiple datatypes at once.
         # Therefore the auto-selected vis list needs to be modified.
@@ -442,15 +481,23 @@ class Mstransform(sessionutils.ParallelTemplate):
         if not found_data_type_group:
             return []
 
+        if not self._frames_consistent(vis_list):
+            raise Exception('Cannot handle mixture of ephemeris and non-ephemeris objects.')
+
+        if not self._conversion_possible(vis_list, data_type_list):
+            return []
+
         try:
             for vis, data_type in zip(vis_list, data_type_list):
                 inputs.vis = vis
                 inputs.input_data_type = data_type
+                inputs.all_eph_obj = all(self._get_eph_frames([vis]))
                 task_args = inputs.as_dict()
                 valid_args_list.append(task_args)
         finally:
             inputs.vis = original_vis
-            inputs.input_data_type = None
+            inputs.input_data_type = original_input_data_type
+            inputs.all_eph_obj = original_all_eph_obj
 
         if inputs.per_spw:
             valid_args_list_per_spw = []
