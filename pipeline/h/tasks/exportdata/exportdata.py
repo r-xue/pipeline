@@ -874,12 +874,19 @@ class ExportData(basetask.StandardTaskTemplate):
         """
         Save the final flags to a final flag version.
         """
-        LOG.info('Saving final flags for %s in flag version %s', os.path.basename(vis), flag_version_name)
 
         flag_version_dir = vis+'.flagversions/flags.'+flag_version_name
         if os.path.exists(flag_version_dir):
-            task = casa_tasks.flagmanager(vis=vis, mode='delete', versionname=flag_version_name)
+            tt = int(time.time())
+            tmpname = flag_version_name+'.old.'+str(tt)
+
+            LOG.info('Updating final flags for %s in flag version %s', os.path.basename(vis), flag_version_name)
+            LOG.info('A backup copy of the previous flag version %s will be saved as %s', flag_version_name, tmpname)
+
+            task = casa_tasks.flagmanager(vis=vis, mode='rename',oldname=flag_version_name, versionname=tmpname, comment=f"Backup of final pipeline flags (backup {tt})")
             self._executor.execute(task)
+        else:
+            LOG.info('Saving final flags for %s in flag version %s', os.path.basename(vis), flag_version_name)
         
         task = casa_tasks.flagmanager(vis=vis, mode='save', versionname=flag_version_name, comment="Final pipeline flags")
         self._executor.execute(task)
