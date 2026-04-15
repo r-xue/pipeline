@@ -3,6 +3,7 @@ The imaging module contains utility functions used by the imaging tasks.
 
 TODO These utility functions should migrate to hif.tasks.common
 """
+import os
 import re
 
 from .. import casa_tools
@@ -511,7 +512,7 @@ def get_vlass_image_type(filename:str, append_tt: bool = True) -> str:
     """
         Determine the VLASS image type based on specific substrings in the filename.
     """
-    filename = filename.lower()
+    filename = os.path.basename(filename).lower()
     base = (
         "ALPHAERR" if ".alpha.error" in filename else
         "ALPHA" if ".alpha" in filename else

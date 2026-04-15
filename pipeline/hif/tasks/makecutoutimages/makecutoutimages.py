@@ -209,9 +209,10 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
                 subimagenames.append(subimagename)
             subimage_size = self._get_image_size(subimagename)
         for subim in images_to_update:
-            if '.rms' in subim:
+            image_type = imaging_utils.get_vlass_image_type(subim, append_tt=False).lower()
+            if image_type == 'rms':
                 key = subim.split('.rms')[0]
-            elif '.alpha' in subim:
+            elif image_type == 'alpha':
                 key = subim.split('.alpha')[0]+".image.pbcor.tt0"
             else:
                 key = subim.split('.subim')[0]
@@ -220,6 +221,7 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
                 with casa_tools.ImageReader(subim) as image:
                     cs = image.coordsys()
                     stokes_labels = cs.stokes()
+                    cs.done()
                     stokes = [stokes_labels[idx] for idx in range(image.shape()[2])]
                     stokes = ''.join(stokes)
                     info = image.miscinfo()

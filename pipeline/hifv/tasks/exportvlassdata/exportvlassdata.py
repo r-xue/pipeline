@@ -814,41 +814,37 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
         if os.path.exists(fitsname):
             # Open FITS image and obtain header
-            hdulist = apfits.open(fitsname, mode='update')
-            header = hdulist[0].header
+            with apfits.open(fitsname, mode='update') as hdulist:
+                header = hdulist[0].header
+                # DATE-OBS and DATE-END keywords
+                # Note: the new DATE-OBS value (first scan start time) might differ from the original value
+                # (first un-flagged scan start time).
+                header['date-obs'] = (infrastructure.utils.get_epoch_as_datetime(
+                    context.observing_run.start_time).isoformat(), 'First scan started')
+                date_end = ('date-end', infrastructure.utils.get_epoch_as_datetime(
+                    context.observing_run.end_time).isoformat(), 'Last scan finished')
+                if 'date-end' in [k.lower() for k in header.keys()]:
+                    header['date-end'] = date_end[1:]
+                else:
+                    pos = header.index('date-obs')
+                    header.insert(pos, date_end, after=True)
 
-            # DATE-OBS and DATE-END keywords
-            # Note: the new DATE-OBS value (first scan start time) might differ from the original value
-            # (first un-flagged scan start time).
-            header['date-obs'] = (infrastructure.utils.get_epoch_as_datetime(
-                context.observing_run.start_time).isoformat(), 'First scan started')
-            date_end = ('date-end', infrastructure.utils.get_epoch_as_datetime(
-                context.observing_run.end_time).isoformat(), 'Last scan finished')
-            if 'date-end' in [k.lower() for k in header.keys()]:
-                header['date-end'] = date_end[1:]
-            else:
-                pos = header.index('date-obs')
-                header.insert(pos, date_end, after=True)
+                # RADESYS
+                if header['radesys'].upper() == 'FK5':
+                    header['radesys'] = 'ICRS'
 
-            # RADESYS
-            if header['radesys'].upper() == 'FK5':
-                header['radesys'] = 'ICRS'
+                # OBJECT
+                # We assume that the FITS name follows the convention described in PIPE-968 (minus the stage
+                #    prefixes) and directly extract the 'OBJECT' name (first FIELD name of the image) from it.
 
-            # OBJECT
-            # We assume that the FITS name follows the convention described in PIPE-968 (minus the stage
-            #    prefixes) and directly extract the 'OBJECT' name (first FIELD name of the image) from it.
+                filename_components = os.path.basename(fitsname).split('.')
+                object_name = filename_components[4]
+                if object_name != '' and header['object'].upper() != object_name.upper():
+                    header['object'] = object_name
 
-            filename_components = os.path.basename(fitsname).split('.')
-            object_name = filename_components[4]
-            if object_name != '' and header['object'].upper() != object_name.upper():
-                header['object'] = object_name
-
-            # Save changes and inform log
-            hdulist.flush()
-            LOG.info("Header updated in {}".format(fitsname))
-
-            # Close FITS file
-            hdulist.close()
+                # Save changes and inform log
+                hdulist.flush()
+                LOG.info("Header updated in {}".format(fitsname))
 
         else:
             LOG.warning('FITS header cannot be updated: image {} does not exist.'.format(fitsname))
@@ -859,51 +855,50 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         """PIPE-2461: Updates VLASS fits keywords and adds comment to the keywords."""
         if os.path.exists(fitsname):
             # Open FITS image and obtain header
-            hdulist = apfits.open(fitsname, mode='update')
-            header = hdulist[0].header
-            tt_type = "TT0" if "tt0" in fitsname.lower() else "TT1" if "tt1" in fitsname.lower() else None
-            header_comments = {
-                "VLASSITY": "VLASS image type",
-                "VLASSPT": "VLASS product type",
-                "VLASSTN": "VLASS tile name",
-                "VLASSPC": "VLASS phasecenter",
-                "VLASSEP": "VLASS epoch",
-                "VLASSVR": "VLASS version number",
-                "VLASSPL": "VLASS Stokes/polarization parameter",
-                "VLASSRJ": "Rejected plane relevant for VLASS CC processing",
-                "VLASSSPW": "Spectral windows used for image",
-                "VLASSBWN": "Nominal bandwidth",
-                "VLASSBW": "Actual bandwidth after flagging",
-                "VLASSRMS": None,
-                "VLASSPK": None,
-                "VLASSWP": "Number of w-projection planes"
-            }
-            if tt_type == "TT0" or 'alpha' in fitsname.lower():
-                header_comments["VLASSRMS"] = (
-                    "Median rms calculated from RMS_TT0 image"
-                )
-                header_comments["VLASSPK"] = (
-                    "Peak flux density of INTENSITY_PBCOR_TT0 image"
-                )
-            elif tt_type == "TT1":
-                header_comments["VLASSRMS"] = (
-                    "Median rms calculated from RMS_TT1 image"
-                )
-                header_comments["VLASSPK"] = (
-                    "Peak flux density of INTENSITY_PBCOR_TT1 image"
-                )
-            else:
-                header_comments["VLASSRMS"] = "Median RMS calculated from RMS image"
-                header_comments["VLASSPK"] = "Peak flux density of INTENSITY_PBCOR image"
+            with apfits.open(fitsname, mode='update') as hdulist:
+                header = hdulist[0].header
+                tt_type = "TT0" if "tt0" in fitsname.lower() else "TT1" if "tt1" in fitsname.lower() else None
+                header_comments = {
+                    "VLASSITY": "VLASS image type",
+                    "VLASSPT": "VLASS product type",
+                    "VLASSTN": "VLASS tile name",
+                    "VLASSPC": "VLASS phasecenter",
+                    "VLASSEP": "VLASS epoch",
+                    "VLASSVR": "VLASS version number",
+                    "VLASSPL": "VLASS Stokes/polarization parameter",
+                    "VLASSRJ": "Rejected plane relevant for VLASS CC processing",
+                    "VLASSSPW": "Spectral windows used for image",
+                    "VLASSBWN": "Nominal bandwidth",
+                    "VLASSBW": "Actual bandwidth after flagging",
+                    "VLASSRMS": None,
+                    "VLASSPK": None,
+                    "VLASSWP": "Number of w-projection planes"
+                }
+                if tt_type == "TT0" or 'alpha' in fitsname.lower():
+                    header_comments["VLASSRMS"] = (
+                        "Median rms calculated from RMS_TT0 image"
+                    )
+                    header_comments["VLASSPK"] = (
+                        "Peak flux density of INTENSITY_PBCOR_TT0 image"
+                    )
+                elif tt_type == "TT1":
+                    header_comments["VLASSRMS"] = (
+                        "Median rms calculated from RMS_TT1 image"
+                    )
+                    header_comments["VLASSPK"] = (
+                        "Peak flux density of INTENSITY_PBCOR_TT1 image"
+                    )
+                else:
+                    header_comments["VLASSRMS"] = "Median RMS calculated from RMS image"
+                    header_comments["VLASSPK"] = "Peak flux density of INTENSITY_PBCOR image"
 
-            for key, comment in header_comments.items():
-                value = header.get(key, None)
-                if value is None:
-                    LOG.warning(f'Keyword {key} not found in FITS header of {fitsname}')
-                    continue
-                header[key] = (value, comment)
-            hdulist.flush()
-            hdulist.close()
+                for key, comment in header_comments.items():
+                    value = header.get(key, None)
+                    if value is None:
+                        LOG.warning(f'Keyword {key} not found in FITS header of {fitsname}')
+                        continue
+                    header[key] = (value, comment)
+                hdulist.flush()
 
     def _split_vlass_cube_stokes(self, image_list):
         """Split full-Stokes images into the IQU and V images and return a new image list."""
