@@ -12,13 +12,14 @@ import numpy
 from typing import Union, Tuple, List, Dict, Any, Generator
 
 from .. import utils
+from pipeline.infrastructure import casa_tasks
 
 LOG = logging.get_logger(__name__)
 
 __all__ = ['chan_selection_to_frequencies', 'freq_selection_to_channels', 'spw_intersect', 'update_sens_dict',
            'update_beams_dict', 'set_nested_dict', 'intersect_ranges', 'intersect_ranges_by_weight', 'merge_ranges', 'equal_to_n_digits',
            'velocity_to_frequency', 'frequency_to_velocity',
-           'predict_kernel', 'get_vlass_image_type']
+           'predict_kernel', 'get_vlass_image_type', 'get_stats']
 
 
 def _get_cube_freq_axis(img: str) -> Tuple[float, float, str, float, int]:
@@ -528,3 +529,13 @@ def get_vlass_image_type(filename:str, append_tt: bool = True) -> str:
 
     tt = ("_TT0" if "tt0" in filename else "_TT1" if "tt1" in filename else "")
     return base + tt
+
+
+def get_stats(image_name: str, metrics: list, stokes: str = 'I') -> dict:
+    """Return a dict of requested statistics for the given image."""
+
+    if not os.path.exists(image_name):
+        return {m: None for m in metrics}
+    job = casa_tasks.imstat(imagename=image_name, stokes=stokes)
+    stats = job.execute()
+    return {m: (float(stats.get(m)[0]) if stats.get(m) is not None else None) for m in metrics}

@@ -11,6 +11,7 @@ import numpy as np
 
 import xml.etree.ElementTree as eltree
 import astropy.io.fits as apfits
+from collections import defaultdict
 
 import pipeline as pipeline
 import pipeline.infrastructure as infrastructure
@@ -23,6 +24,7 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import utils
+import pipeline.infrastructure.utils.imaging as imaging_utils
 from pipeline.domain import DataType
 
 from pipeline.infrastructure.utils import predict_kernel
@@ -876,17 +878,17 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 }
                 if tt_type == "TT0" or 'alpha' in fitsname.lower():
                     header_comments["VLASSRMS"] = (
-                        "Median rms calculated from RMS_TT0 image"
+                        "Median rms calculated from RMS_TT0 (Stokes I) image"
                     )
                     header_comments["VLASSPK"] = (
-                        "Peak flux density of INTENSITY_PBCOR_TT0 image"
+                        "Peak flux density of INTENSITY_PBCOR_TT0 (Stokes I) image"
                     )
                 elif tt_type == "TT1":
                     header_comments["VLASSRMS"] = (
-                        "Median rms calculated from RMS_TT1 image"
+                        "Median rms calculated from RMS_TT1 (Stokes I) image"
                     )
                     header_comments["VLASSPK"] = (
-                        "Peak flux density of INTENSITY_PBCOR_TT1 image"
+                        "Peak flux density of INTENSITY_PBCOR_TT1 (Stokes I) image"
                     )
                 else:
                     header_comments["VLASSRMS"] = "Median RMS calculated from RMS image"
@@ -904,6 +906,11 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         """Split full-Stokes images into the IQU and V images and return a new image list."""
 
         new_image_list = []
+        subim_stats = defaultdict(dict)
+        stats_mapping = {
+            'rms': ('rms', ['median']),
+            'intensity_pbcor': ('peak', ['max'])
+        }
 
         for imagename in image_list:
             if '.IQUV.' in imagename:
@@ -912,15 +919,41 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                     job = casa_tasks.imsubimage(imagename, outfile=outfile,
                                                 stokes=stokes_select, overwrite=True, dropdeg=False)
                     self._executor.execute(job)
-                    # PIPE-2461: updating stokes in the image header
-                    with casa_tools.ImageReader(outfile) as image:
-                        info = image.miscinfo()
-                        info['VLASSPL'] = stokes_select
-                        image.setmiscinfo(info)
-                    LOG.info(f'Wrote {outfile}')
+
                     new_image_list.append(outfile)
+
+                    if stokes_select == 'V':
+                        continue
+                    image_type = imaging_utils.get_vlass_image_type(outfile, append_tt=False).lower()
+                    if image_type == 'rms':
+                        stats_key = outfile.replace('.rms', '')
+                    else:
+                        stats_key = outfile
+
+                    metrics_key, stat_metrics = stats_mapping[image_type]
+                    stat_values = imaging_utils.get_stats(outfile, metrics=stat_metrics, stokes='I')
+                    subim_stats[stats_key][metrics_key] = stat_values.get(stat_metrics[0])
+                    LOG.info(f'Wrote {outfile}')
             else:
                 new_image_list.append(imagename)
+        for new_image in new_image_list:
+            image_type = imaging_utils.get_vlass_image_type(new_image, append_tt=False).lower()
+            if image_type == 'rms':
+                stats_key = new_image.replace('.rms', '')
+            else:
+                stats_key = new_image
+            if stats_key in subim_stats:
+                with casa_tools.ImageReader(new_image) as image:
+                    info = image.miscinfo()
+                    cs = image.coordsys()
+                    stokes_labels = cs.stokes()
+                    cs.done()
+                    stokes = [stokes_labels[idx] for idx in range(image.shape()[2])]
+                    stokes = ''.join(stokes)
+                    info['VLASSPL'] = stokes
+                    info['VLASSRMS'] = subim_stats[stats_key].get('rms', '')
+                    info['VLASSPK'] = subim_stats[stats_key].get('peak', '')
+                    image.setmiscinfo(info)
 
         return new_image_list
 
