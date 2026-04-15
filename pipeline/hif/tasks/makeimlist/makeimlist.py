@@ -1261,7 +1261,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                     if 'TARGET' in inputs.intent:
                         sorted_field_intent_list = utils.place_repr_source_first(sorted_field_intent_list, repr_source)
 
-                    target_heuristics = copy.deepcopy(self.heuristics)
+                    target_heuristics = self.heuristics
                     (
                         cont_ranges_spwsel_dict,
                         all_continuum_spwsel_dict,
