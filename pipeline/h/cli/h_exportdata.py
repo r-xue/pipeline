@@ -4,7 +4,7 @@ from . import utils
 # docstring and type hints: inherits from h.tasks.exportdata.exportdata.ExportDataInputs.__init__
 @utils.cli_wrapper
 def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, tarms=None, pprfile=None, calintents=None,
-                 calimages=None, targetimages=None, products_dir=None, flag_version_name=None):
+                 calimages=None, targetimages=None, products_dir=None):
     """Prepare interferometry data for export.
 
     The hif_exportdata task exports the data defined in the pipeline context

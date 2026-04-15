@@ -39,7 +39,6 @@ class ALMAExportDataInputs(exportdata.ExportDataInputs):
             targetimages: list[str] = None,
             products_dir: str = None,
             imaging_products_only: bool = None,
-            flag_version_name: str = None,
             ):
         """Initialize the Inputs.
 
@@ -85,15 +84,12 @@ class ALMAExportDataInputs(exportdata.ExportDataInputs):
 
             imaging_products_only: Export science target imaging products only
 
-            flag_version_name: Name of the flag version to export. Defaults to ``'Pipeline_Final'``
-
         """
         super().__init__(context, output_dir=output_dir, session=session, vis=vis,
                          exportmses=exportmses, tarms=tarms, pprfile=pprfile, calintents=calintents,
                          calimages=calimages, targetimages=targetimages,
                          products_dir=products_dir,
-                         imaging_products_only=imaging_products_only,
-                         flag_version_name=flag_version_name)
+                         imaging_products_only=imaging_products_only)
 
 
 @task_registry.set_equivalent_casa_task('hifa_exportdata')

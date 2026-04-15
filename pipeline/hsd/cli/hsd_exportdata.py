@@ -3,7 +3,7 @@ import pipeline.h.cli.utils as utils
 
 # docstring and type hints: inherits from h.tasks.exportdata.exportdata.ExportDataInputs.__init__
 @utils.cli_wrapper
-def hsd_exportdata(pprfile=None, targetimages=None, products_dir=None, flag_version_name=None):
+def hsd_exportdata(pprfile=None, targetimages=None, products_dir=None):
     """Prepare single dish data for export.
 
     The hsd_exportdata task exports the data defined in the pipeline context
