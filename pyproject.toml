@@ -156,6 +156,7 @@ markers = [
     "importdata: importdata task(s)",
     "selfcal: selfcal task(s)",
     "makeimages: makeimages task(s)",
+    "mpi: test requires mpicasa sessions; automatically skipped in a serial session",
     "unit: unit test",
 ]
 addopts = [

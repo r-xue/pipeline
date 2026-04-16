@@ -78,6 +78,9 @@ def pytest_addoption(parser: Parser) -> None:
     parser.addoption("--longtests", action="store_true", default=False, help="Run longer tests.")
     parser.addoption("--compare-only", action="store_true", default=False, help="Skip running the recipe and do the comparison using the working directories from a previous test run.")
     parser.addoption("--data-directory", action="store", default="/lustre/cv/projects/pipeline-test-data/regression-test-data/", help="Specify directory where larger test data files are stored.")
+    parser.addoption("--ignore-mpi-markers", action="store_true", default=False,
+                     help="Disable automatic skipping of @pytest.mark.mpi tests based on session type. "
+                          "Use this to run mpi-marked tests in a serial CASA session.")
 
 
 def pytest_sessionstart(session: Session) -> None:
@@ -203,6 +206,15 @@ def pytest_collection_modifyitems(config: Config, items: list[Item]) -> None:
         for item in items:
             if "slow" in item.keywords:
                 item.add_marker(skip_slow)
+
+    # 3) Skip @pytest.mark.mpi tests when not running under mpicasa
+    if not config.getoption("--ignore-mpi-markers"):
+        from pipeline.infrastructure.mpihelpers import MPIEnvironment
+        if not MPIEnvironment.is_mpi_enabled:
+            skip_mpi = pytest.mark.skip(reason="requires mpicasa (MPI-enabled CASA session)")
+            for item in items:
+                if "mpi" in item.keywords:
+                    item.add_marker(skip_mpi)
 
 
 def _auto_mark(item: Item) -> None:
