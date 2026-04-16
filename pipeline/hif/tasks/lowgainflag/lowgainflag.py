@@ -6,12 +6,17 @@ import pipeline.domain as domain
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
+import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.common import calibrationtableaccess as caltableaccess
 from pipeline.h.tasks.common import commonresultobjects
 from pipeline.h.tasks.common import viewflaggers
 from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
 from pipeline.hif.tasks import bandpass
+from pipeline.hifa.tasks import bandpass as bandpass_alma
 from pipeline.hif.tasks import gaincal
+from pipeline.hifa.heuristics.phasespwmap import combine_spwmap
+from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import callibrary
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.refantflag import identify_fully_flagged_antennas_from_flagview, \
     mark_antennas_for_refant_update, aggregate_fully_flagged_antenna_notifications
@@ -37,9 +42,16 @@ class LowgainflagInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def intent(self):
-        # default to the intent that would be used for bandpass
-        # calibration
-        bp_inputs = bandpass.PhcorBandpass.Inputs(context=self.context, vis=self.vis, intent=None)
+        # PIPE-2601
+        # for ALMA data we want to use almaphcorbandpass method
+        # which will allow SpW combine, solint time averaging, channel binning in bandpass
+        with casa_tools.MSMDReader(self.vis) as msmd:
+            if 'ALMA' in msmd.observatorynames():
+                bp_inputs = bandpass_alma.SerialALMAPhcorBandpass.Inputs(context=self.context, vis=self.vis, intent=None) 
+            else:
+                bp_inputs = bandpass.PhcorBandpass.Inputs(context=self.context, vis=self.vis, intent=None) 
+            
+        # function is to default to the intent that would be used for bandpass calibration (BANDPASS)
         return bp_inputs.intent
 
     # Flagging view is created if number of antennas in a set equals-or-exceeds
@@ -157,8 +169,10 @@ class LowgainflagInputs(vdp.StandardInputs):
 @task_registry.set_casa_commands_comment(
     'Sometimes antennas have significantly lower gain than nominal. Even when calibrated, it is better for ALMA data to'
     ' flag these antennas. The pipeline detects this by calculating a long solint amplitude gain on the bandpass '
-    'calibrator.  First, temporary phase and bandpass solutions are calculated, and then that temporary bandpass is '
-    'used to calculate a short solint phase and long solint amplitude solution.'
+    'calibrator.  First, temporary phase and bandpass solutions are calculated, these use the ALMA methodology '
+    'where SpWs can be combined, the solint can be longer than the integration time Second the bandpass solve '
+    'can also use channel binning to maintain SNR, and finally the bandpass is pre-applied and the solint and '
+    'combine parameters are forwarded to the -short- solint phase and long (inf) solint amplitude solution.'  
 )
 class Lowgainflag(basetask.StandardTaskTemplate):
     Inputs = LowgainflagInputs
@@ -304,27 +318,140 @@ class LowgainflagData(basetask.StandardTaskTemplate):
         result = LowgainflagDataResults()
         result.vis = inputs.vis
 
-        # Calculate a phased-up bpcal
-        bpcal_inputs = bandpass.PhcorBandpass.Inputs(
-            context=inputs.context, vis=inputs.vis, intent=inputs.intent,
-            spw=inputs.spw, refant=inputs.refant, solint='inf,7.8125MHz')
-        bpcal_task = bandpass.PhcorBandpass(bpcal_inputs)
-        bpcal = self._executor.execute(bpcal_task, merge=False)
-        if not bpcal.final:
+        # PIPE-2601 refactor to not have working direct in 'prepare'
+        # but separated out into the respective functions
+
+        # Do the bandpass steps
+        bpcal_result, solint, combine = self._do_initial_bandpass()
+
+        # Do the phase-up
+        gpcal_result = self._do_postbandpass_phaseup(solint, combine)
+
+
+        # Do the amplitude gains
+        gacal_result, gatable, table_available = self._do_postbandpass_ampgains()
+
+        # Result passed back is the gaintable and boolean
+        # if it was correctly made
+        result.table = gatable
+        result.table_available = table_available
+
+        return result
+
+    def analyse(self, result):
+        return result
+
+
+    def _do_initial_bandpass(self):
+        """
+        This method is responsible for doing the 
+        calls to make a bandpass table. The method will call
+        either of the PhcorBandpass, or SerialALMAPhcorBandpass
+        processes for non-ALMA and ALMA data respecitvely.
+
+        With ALMA data, the PIPE-2442 process is used, i.e. an 
+        SNR check is used to combine spw and change solint time for 
+        the pre-bandpass phase-up, and thereafter the bandpass solver 
+        will also bin channels for a suitable SNR bandpass solutions
+ 
+        For other data, the default process (as <=PL2025) will 
+        not combine spw, and uses int for all phase-up solves
+        while using a default 7.8125MHz channel binning for bandpass
+        """
+
+        inputs = self.inputs
+
+        # PIPE-2601 check ALMA or not
+        with casa_tools.MSMDReader(inputs.vis) as msmd:
+            if 'ALMA' in msmd.observatorynames(): 
+                bpcal_inputs = bandpass_alma.SerialALMAPhcorBandpass.Inputs(
+                    context=inputs.context, vis=inputs.vis, intent=inputs.intent,
+                    spw=inputs.spw, refant=inputs.refant)
+                bpcal_task = bandpass_alma.SerialALMAPhcorBandpass(bpcal_inputs)
+                bpcal_result = self._executor.execute(bpcal_task, merge=False)
+
+            else:
+                # Not ALMA
+                bpcal_inputs = bandpass.PhcorBandpass.Inputs(
+                context=inputs.context, vis=inputs.vis, intent=inputs.intent,
+                spw=inputs.spw, refant=inputs.refant, solint='inf,7.8125MHz')
+                bpcal_task = bandpass.PhcorBandpass(bpcal_inputs)
+                bpcal_result = self._executor.execute(bpcal_task, merge=False)
+        
+        if not bpcal_result.final: 
             LOG.warning("No bandpass solution computed for {}".format(inputs.ms.basename))
         else:
-            bpcal.accept(inputs.context)
+            bpcal_result.accept(inputs.context)
+            # PIPE-2601 get the phase-up solution interval and combine paramaters
+            # as these need to be passed to the subsequent gaincal to avoid loss of data
+            # the function returns 'int','' for non-ALMA data
+            solint, combine = self._get_prebandpass_phaseup_params(bpcal_result)
+
+        return bpcal_result, solint, combine
+        
+    def _do_postbandpass_phaseup(self, solint, combine):
+        """ 
+        This method is responsible for doing the post
+        bandpass solve phaseup. The bandpass in local context
+        will be applied and then a phase gain caltable is made.
+        Inputs are solint and combine, as to use values previously 
+        found that will get a sufficient SNR and not cause 
+        undue lost solutions due to low SNR for e.g. High Freq and
+        ACA data where SNR is intrinsically low and an assumed per
+        SpW, solint = 'int' solution will not gurantee enough SNR
+       
+        returns the gpcal result but it is registered here
+        """
+
+        inputs = self.inputs
 
         # Calculate gain phases
+        # PIPE-2601 added to use solint and combine found in pre-phaseup done before bandpass
+        # required to have high enough SNR and avoid flags due to this solve
+        # if combine used need to add spw mapping for ALMA data.
+        # Otherwise, 'int' and '' are passes for solint and combine such as to make
+        # the default phase-up
         gpcal_inputs = gaincal.GTypeGaincal.Inputs(context=inputs.context, vis=inputs.vis, intent=inputs.intent,
                                                    spw=inputs.spw, refant=inputs.refant, calmode='p', minsnr=2.0,
-                                                   solint='int')
+                                                   solint=solint, combine=combine)
         gpcal_task = gaincal.GTypeGaincal(gpcal_inputs)
-        gpcal = self._executor.execute(gpcal_task, merge=False)
-        if not gpcal.final:
+        gpcal_result = self._executor.execute(gpcal_task, merge=False)
+        if not gpcal_result.final:
             LOG.warning("No phase time solution computed for {}".format(inputs.ms.basename))
+
         else:
-            gpcal.accept(inputs.context)
+            # PIPE-2601 before accepting to context
+            # need to set the spwmap such that the pre-apply when solving amp gains
+            # will map correctly. Can only trigger for ALMA data where combine has an entry
+            if combine:
+                spwmap = inputs.ms.get_spectral_windows(task_arg=inputs.spw, science_windows_only=True)
+                combspwmapheur = combine_spwmap(spwmap)
+
+                LOG.info(f'Using combined spw map {combspwmapheur} ALMA phaseup')
+
+                calapp_overrides = {
+                    'spwmap':combspwmapheur,
+                    }
+                modified_calapp = callibrary.copy_calapplication(gpcal_result.pool[0], **calapp_overrides)
+                gpcal_result.pool[0] = modified_calapp
+                gpcal_result.final[0] = modified_calapp                
+            gpcal_result.accept(inputs.context)
+
+        # pass the result back in case any subsequent or future code want this
+        return gpcal_result
+
+        
+    def _do_postbandpass_ampgains(self):
+        """
+        This method is responsible for creating the amp gain
+        caltable for the BANDPASS intent and making a fixed 'inf' 
+        solution amplitude gains solve.
+ 
+        The resulting caltable will be locally registered and 
+        investigated for low gain values
+        """
+        
+        inputs = self.inputs
 
         # Calculate gain amplitudes
         gacal_inputs = gaincal.GTypeGaincal.Inputs(
@@ -333,25 +460,63 @@ class LowgainflagData(basetask.StandardTaskTemplate):
             refant=inputs.refant,
             calmode='a', minsnr=2.0, solint='inf', gaintype='T')
         gacal_task = gaincal.GTypeGaincal(gacal_inputs)
-        gacal = self._executor.execute(gacal_task, merge=False)
-        if not gacal.final:
-            gatable = list(gacal.error)
+        gacal_result = self._executor.execute(gacal_task, merge=False)
+        if not gacal_result.final:
+            gatable = list(gacal_result.error)
             gatable = gatable[0].gaintable
             LOG.warning("No amplitude time solution computed for {}".format(inputs.ms.basename))
-            result.table = gatable
-            result.table_available = False
+            table_available = False
         else:
-            gacal.accept(inputs.context)
-            gatable = gacal.final
+            gacal_result.accept(inputs.context)
+            gatable = gacal_result.final
             gatable = gatable[0].gaintable
-            result.table = gatable
-            result.table_available = True
+            table_available = True
 
-        return result
+        return gacal_result, gatable, table_available
+            
+    def _get_prebandpass_phaseup_params(self, result):
+        """
+        Read the result object passed from the bandpass task for ALMA data
+        as to loop the pre-applied gaintables, and to extract the input args used
+        for solint and combine so these can be output, and will later propagate to 
+        the phase-up _post_ bandpass and _pre_ amp gains
 
-    def analyse(self, result):
-        return result
+        :param: result, the bpcal result from bandpass.SerialALMAPhCorBandpass
+        :return: solint, combine as strings to gaincal input
+        """
 
+        # PIPE+2601 protection here to only work on ALMA data
+        with casa_tools.MSMDReader(self.inputs.vis) as msmd:
+            if 'ALMA' in msmd.observatorynames():
+                      
+                phaseup_calapps = []
+                # loop applies that 'preceded' the bandpass solve, i.e. the phaseup/phase-offset
+                for previous_result in result.preceding:
+                    for calapp in previous_result:
+                        l = [cf for cf in calapp.calfrom if cf.caltype == 'gaincal']
+                        if l and calapp not in phaseup_calapps:
+                            phaseup_calapps.append(calapp)
+
+                # extract solint and combine from the calapp applied            
+                for calapp in phaseup_calapps:
+                    solint = utils.get_origin_input_arg(calapp, 'solint')
+                    combine = utils.get_origin_input_arg(calapp, 'combine')
+
+                    # there will be a maximum of two calapps for ALMA
+                    # if spw combination was triggered in the ALMAPhcorBandpass method
+                    # the first calapp is the phase offset with solint=inf
+                    # the second is the phase-up with solint = 'time', this is what we extract here
+                    if solint != 'inf': 
+                        solint_use = solint  # can only be 'int' or a time values, e.g. 12s
+                        combine_use = combine  # can be empty string or can be 'spw'         
+                return solint_use, combine_use
+
+            else:
+                # Not ALMA data
+                return 'int', ''
+    
+
+    
 
 class LowgainflagView(object):
 
@@ -470,3 +635,4 @@ class LowgainflagView(object):
                     # add the view results and their children results to the
                     # class result structure
                     self.result.addview(viewresult.description, viewresult)
+
