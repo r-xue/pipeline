@@ -163,7 +163,7 @@ class VDPTaskFactory(object):
 
     The correctness of this task is dependent on the correct mapping of
     Inputs arguments to measurement set, hence it is dependent on
-    Inputs objects that sub-class VDP StandardInputs.
+    Inputs objects that subclass VDP StandardInputs.
     """
 
     def __init__(self, inputs, executor, task):
@@ -268,15 +268,18 @@ class VDPTaskFactory(object):
     def __get_task_args(self, vis):
         inputs = self.__inputs
 
-        original_vis = inputs.vis
+        if isinstance(inputs, vdp.InputsContainer):
+            # scope_attr is either "vis" or "infiles"
+            scope_attr = inputs._scope_attr
+        else:
+            scope_attr = "vis"
+
+        original_vis = getattr(inputs, scope_attr)
         try:
-            inputs.vis = vis
+            setattr(inputs, scope_attr, vis)
             task_args = inputs.as_dict()
-            # support for single-dish tasks
-            if 'infiles' in task_args:
-                task_args['infiles'] = task_args['vis']
         finally:
-            inputs.vis = original_vis
+            setattr(inputs, scope_attr, original_vis)
 
         return task_args
 
