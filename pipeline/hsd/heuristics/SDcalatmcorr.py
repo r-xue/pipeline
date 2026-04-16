@@ -213,15 +213,26 @@ def enlargesel(sel, box):
         newsel[i] = np.ma.max(sel[startrange:endrange])
     return newsel
 
-def smooth(y, box_pts):
+def smooth(y: np.ndarray, box_pts: int):
     '''Smooth using boxcar convolution.
 
     To mitigate boundary effect, this function extrapolates
-    the data by box_pts / 2 in both edges with "nearest"
+    the data by box_pts // 2 in both edges with "nearest"
     method. This will be harmless in the context of this
     heuristics since we are interested in the gradient
     (diff) between adjuscent channels.
+
+    Args:
+        y: 1D array to be smoothed.
+        box_pts: Width of the boxcar kernel. Must be a positive integer.
+
+    Returns:
+        Smoothed 1D array of the same length as y.
     '''
+    if box_pts < 2:
+        # no smoothing is applied
+        return y
+
     box = np.ma.ones(box_pts)/box_pts
     if box_pts % 2 == 0:
         extra_chans = box_pts // 2
