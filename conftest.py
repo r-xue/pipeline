@@ -1,6 +1,7 @@
 """This file contains some pipeline-specific pytest configuration settings."""
 from __future__ import annotations
 
+import gc
 import logging
 import os
 import pathlib
@@ -55,6 +56,13 @@ def clear_module_level_caches() -> Iterator[None]:
         get_calstate_shape.cache_clear()
     except (ImportError, AttributeError):
         pass
+
+    # Both caches above can hold references into the Context object graph.
+    # Now that they are cleared and the test function has fully returned
+    # (so the 'context' local in PipelineTester.run() is gone), trigger a
+    # full GC cycle to collect the cyclic Context → ResultsProxy → Context
+    # chain that CPython's reference counting alone cannot free (PIPE-3061).
+    gc.collect()
 
 
 def pytest_addoption(parser: Parser) -> None:

@@ -346,15 +346,22 @@ class PipelineTester:
                 # be cleaned up (see PIPE-3061).
                 context = launcher.Pipeline(context='last').context
 
-                # Do sanity checks
-                self.__do_sanity_checks(context)
+                try:
+                    # Do sanity checks
+                    self.__do_sanity_checks(context)
 
-                # Copy the reference results file to current working directory for record
-                if self.expectedoutput_file and os.path.exists(self.expectedoutput_file):
-                    shutil.copyfile(self.expectedoutput_file, os.path.basename(self.expectedoutput_file))
+                    # Copy the reference results file to current working directory for record
+                    if self.expectedoutput_file and os.path.exists(self.expectedoutput_file):
+                        shutil.copyfile(self.expectedoutput_file, os.path.basename(self.expectedoutput_file))
 
-                # Get new results
-                new_results = self.__get_results_of_from_current_context(context)
+                    # Get new results
+                    new_results = self.__get_results_of_from_current_context(context)
+                finally:
+                    # Release context before _cleanup()'s gc.collect() so the cyclic
+                    # Context → ResultsProxy → Context chain is actually collectable.
+                    # Without this, gc.collect() fires while 'context' is still a live
+                    # local variable and cannot free the cycle (PIPE-3061).
+                    del context
 
                 # new results file path
                 if self.mode == 'component':
