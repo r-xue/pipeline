@@ -1,6 +1,14 @@
 """procedure_add_parallel.py - Add parallel=True to procedure XML tasks that support it.
 
-For each calibration task in the procedure, probes whether it accepts a
+Background
+----------
+When re-processing data (e.g. for regression testing), pipeline runs can be
+significantly faster by enabling parallel execution in tasks that support it.
+Procedure XML files and PPRs delivered by the observatory typically do not set
+``parallel=True``, so this script provides a quick way to produce a
+parallel-enabled copy without manually editing every task entry.
+
+For each pipeline task in the procedure, probes whether it accepts a
 "parallel" CLI parameter.  If so, and the parameter is not already set,
 ``parallel=True`` is injected into the task's ParameterSet.  The result
 is written to a new XML file without modifying the original.
@@ -318,7 +326,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description=(
             'Convert a pipeline procedure XML file by adding parallel=True '
-            'to every calibration task that supports the parallel CLI parameter.'
+            'to every pipeline task that supports the parallel CLI parameter.'
         )
     )
     parser.add_argument(
