@@ -15,11 +15,13 @@ from pipeline.hif.tasks import bandpass
 from pipeline.hifa.tasks import bandpass as bandpass_alma
 from pipeline.hif.tasks import gaincal
 from pipeline.hifa.heuristics.phasespwmap import combine_spwmap
-from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import callibrary
 from pipeline.infrastructure import task_registry
-from pipeline.infrastructure.refantflag import identify_fully_flagged_antennas_from_flagview, \
-    mark_antennas_for_refant_update, aggregate_fully_flagged_antenna_notifications
+from pipeline.infrastructure.refantflag import (
+    identify_fully_flagged_antennas_from_flagview,
+    mark_antennas_for_refant_update,
+    aggregate_fully_flagged_antenna_notifications,
+)
 from .resultobjects import LowgainflagDataResults
 from .resultobjects import LowgainflagResults
 from .resultobjects import LowgainflagViewResults
@@ -45,12 +47,11 @@ class LowgainflagInputs(vdp.StandardInputs):
         # PIPE-2601
         # for ALMA data we want to use almaphcorbandpass method
         # which will allow SpW combine, solint time averaging, channel binning in bandpass
-        with casa_tools.MSMDReader(self.vis) as msmd:
-            if 'ALMA' in msmd.observatorynames():
-                bp_inputs = bandpass_alma.SerialALMAPhcorBandpass.Inputs(context=self.context, vis=self.vis, intent=None) 
-            else:
-                bp_inputs = bandpass.PhcorBandpass.Inputs(context=self.context, vis=self.vis, intent=None) 
-            
+        if self.ms.antenna_array.name == 'ALMA':
+            bp_inputs = bandpass_alma.SerialALMAPhcorBandpass.Inputs(context=self.context, vis=self.vis, intent=None)
+        else:
+            bp_inputs = bandpass.PhcorBandpass.Inputs(context=self.context, vis=self.vis, intent=None)
+
         # function is to default to the intent that would be used for bandpass calibration (BANDPASS)
         return bp_inputs.intent
 
@@ -362,21 +363,19 @@ class LowgainflagData(basetask.StandardTaskTemplate):
         inputs = self.inputs
 
         # PIPE-2601 check ALMA or not
-        with casa_tools.MSMDReader(inputs.vis) as msmd:
-            if 'ALMA' in msmd.observatorynames(): 
-                bpcal_inputs = bandpass_alma.SerialALMAPhcorBandpass.Inputs(
-                    context=inputs.context, vis=inputs.vis, intent=inputs.intent,
-                    spw=inputs.spw, refant=inputs.refant)
-                bpcal_task = bandpass_alma.SerialALMAPhcorBandpass(bpcal_inputs)
-                bpcal_result = self._executor.execute(bpcal_task, merge=False)
-
-            else:
-                # Not ALMA
-                bpcal_inputs = bandpass.PhcorBandpass.Inputs(
+        if inputs.ms.antenna_array.name == 'ALMA':
+            bpcal_inputs = bandpass_alma.SerialALMAPhcorBandpass.Inputs(
+                context=inputs.context, vis=inputs.vis, intent=inputs.intent,
+                spw=inputs.spw, refant=inputs.refant)
+            bpcal_task = bandpass_alma.SerialALMAPhcorBandpass(bpcal_inputs)
+            bpcal_result = self._executor.execute(bpcal_task, merge=False)
+        else:
+            # Not ALMA
+            bpcal_inputs = bandpass.PhcorBandpass.Inputs(
                 context=inputs.context, vis=inputs.vis, intent=inputs.intent,
                 spw=inputs.spw, refant=inputs.refant, solint='inf,7.8125MHz')
-                bpcal_task = bandpass.PhcorBandpass(bpcal_inputs)
-                bpcal_result = self._executor.execute(bpcal_task, merge=False)
+            bpcal_task = bandpass.PhcorBandpass(bpcal_inputs)
+            bpcal_result = self._executor.execute(bpcal_task, merge=False)
         
         if not bpcal_result.final: 
             LOG.warning("No bandpass solution computed for {}".format(inputs.ms.basename))
@@ -485,40 +484,36 @@ class LowgainflagData(basetask.StandardTaskTemplate):
         :return: solint, combine as strings to gaincal input
         """
 
-        # PIPE+2601 protection here to only work on ALMA data
-        with casa_tools.MSMDReader(self.inputs.vis) as msmd:
-            if 'ALMA' in msmd.observatorynames():
-                      
-                phaseup_calapps = []
-                # loop applies that 'preceded' the bandpass solve, i.e. the phaseup/phase-offset
-                for previous_result in result.preceding:
-                    for calapp in previous_result:
-                        l = [cf for cf in calapp.calfrom if cf.caltype == 'gaincal']
-                        if l and calapp not in phaseup_calapps:
-                            phaseup_calapps.append(calapp)
+        # PIPE-2601 protection here to only work on ALMA data
+        if self.inputs.ms.antenna_array.name == 'ALMA':
+            phaseup_calapps = []
+            # loop applies that 'preceded' the bandpass solve, i.e. the phaseup/phase-offset
+            for previous_result in result.preceding:
+                for calapp in previous_result:
+                    l = [cf for cf in calapp.calfrom if cf.caltype == 'gaincal']
+                    if l and calapp not in phaseup_calapps:
+                        phaseup_calapps.append(calapp)
 
-                # extract solint and combine from the calapp applied            
-                for calapp in phaseup_calapps:
-                    solint = utils.get_origin_input_arg(calapp, 'solint')
-                    combine = utils.get_origin_input_arg(calapp, 'combine')
+            # extract solint and combine from the calapp applied
+            for calapp in phaseup_calapps:
+                solint = utils.get_origin_input_arg(calapp, 'solint')
+                combine = utils.get_origin_input_arg(calapp, 'combine')
 
-                    # there will be a maximum of two calapps for ALMA
-                    # if spw combination was triggered in the ALMAPhcorBandpass method
-                    # the first calapp is the phase offset with solint=inf
-                    # the second is the phase-up with solint = 'time', this is what we extract here
-                    if solint != 'inf': 
-                        solint_use = solint  # can only be 'int' or a time values, e.g. 12s
-                        combine_use = combine  # can be empty string or can be 'spw'         
-                return solint_use, combine_use
+                # there will be a maximum of two calapps for ALMA
+                # if spw combination was triggered in the ALMAPhcorBandpass method
+                # the first calapp is the phase offset with solint=inf
+                # the second is the phase-up with solint = 'time', this is what we extract here
+                if solint != 'inf':
+                    solint_use = solint  # can only be 'int' or a time values, e.g. 12s
+                    combine_use = combine  # can be empty string or can be 'spw'
+            return solint_use, combine_use
 
-            else:
-                # Not ALMA data
-                return 'int', ''
-    
+        else:
+            # Not ALMA data
+            return 'int', ''
 
-    
 
-class LowgainflagView(object):
+class LowgainflagView:
 
     def __init__(self, context, vis=None, intent=None, spw=None, refant=None,
                  min_nants_threshold=None):
