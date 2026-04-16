@@ -234,10 +234,7 @@ def smooth(y: np.ndarray, box_pts: int):
         return y
 
     box = np.ma.ones(box_pts)/box_pts
-    if box_pts % 2 == 0:
-        extra_chans = box_pts // 2
-    else:
-        extra_chans = (box_pts + 1) // 2
+    extra_chans = (box_pts + 1) // 2
     y_expand = np.empty(len(y) + 2 * extra_chans)
     y_expand[extra_chans:-extra_chans] = y
     y_expand[:extra_chans] = y[0]
