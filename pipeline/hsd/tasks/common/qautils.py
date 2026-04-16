@@ -89,6 +89,29 @@ class QAScoreAggregator():
                                            ant=', '.join( sorted(qascore.applies_to.ant) ),
                                            pol=', '.join( sorted(qascore.applies_to.pol) ) )
 
+    def update_origin( self, destination: pqa.QAScore, qascores: list[pqa.QAScore], matched_idxes: list[int] ):
+        """
+        Update orogin of a QA score to accommodate aggregated metric_scores
+
+        The aggregation will simply concatinate the metric scores
+
+        Args:
+            destination:   QA score to update origin field
+            qascores:      List of QA scores
+            matched_idxes: List of indexes of QA scores to aggregate
+        """
+        names   = [ qascores[idx].origin.metric_name for idx in matched_idxes ]
+        mscores = [ qascores[idx].origin.metric_score for idx in matched_idxes ]
+        units   = [ qascores[idx].origin.metric_units for idx in matched_idxes ]
+
+        assert len(set(names)) == 1
+        assert len(set(units)) == 1
+        newscore = ", ".join( str(s) for s in mscores )
+        new_origin = pqa.QAOrigin( metric_name = names[0],
+                                   metric_score = newscore,
+                                   metric_units = units[0] )
+        destination.origin = new_origin
+
     def compare_applies_to( self, qascore1: pqa.QAScore, qascore2: pqa.QAScore, keys_to_compare: list[str] ) -> bool:
         """
         Compare the specific attribute in applies_to of qascores
@@ -138,19 +161,21 @@ class QAScoreAggregator():
                 if idx < target_idx:  # always search forward
                     continue
                 if math.fabs(qascore.score - target_qascore.score) < eps \
-                   and qascore.origin.metric_name == target_qascore.origin.metric_name:
+                   and qascore.origin.metric_name == target_qascore.origin.metric_name \
+                   and qascore.origin.metric_units == target_qascore.origin.metric_units:
                     if self.compare_applies_to( qascore, target_qascore, keys_to_compare ):
                         matched_keys.append( getattr( qascore.applies_to, key ) )
                         matched_idxes.append( idx )
             if len(matched_idxes) > 1:
                 # replace the first QAScore with the aggregated one, remove the other matches from qascores
                 setattr( qascores[matched_idxes[0]].applies_to, key, set().union(*matched_keys) )
+                self.update_origin(qascores[matched_idxes[0]], qascores, matched_idxes )
                 self.update_longmsg(qascores[matched_idxes[0]])
+                # remove
                 for idx in reversed(matched_idxes[1:]):   # removing should happen in reversed order
                     qascores.pop(idx)
             if self.always_update_longmsg:
                 self.update_longmsg(target_qascore)
-
         return qascores
 
     def aggregate_qascores( self,
