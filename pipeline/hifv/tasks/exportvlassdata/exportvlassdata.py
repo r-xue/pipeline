@@ -241,10 +241,10 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
             # Create list for tar file
             self.masks = [QLmask, secondmask, finalmask]
-
+        subim_stats = defaultdict(dict)
         if type(img_mode) is str and img_mode.startswith('VLASS-SE-CUBE'):
             # PIPE-1434: split VLASS-SE-CUBE full-Stokes images into IQU and V.
-            images_list = self._split_vlass_cube_stokes(images_list)
+            images_list, subim_stats = self._split_vlass_cube_stokes(images_list)
 
         fits_list = []
         for image in images_list:
@@ -312,7 +312,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 try:
                     LOG.info('')
                     LOG.info(f'start to smooth and regrid {imagename}, and split it into IQU and V.')
-                    self._smooth_and_regrid(imagename, refimagename, common_beam)
+                    self._smooth_and_regrid(imagename, refimagename, common_beam, subim_stats)
                 except Exception as e:
                     LOG.warning(f'Exception while getting the common beam image(s) for {imagename}: {e}')
                     LOG.info(traceback.format_exc())
@@ -320,7 +320,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
         # Return the results object, which will be used for the weblog
         return result
 
-    def _smooth_and_regrid(self, imagename, ref_imagename, target_beam):
+    def _smooth_and_regrid(self, imagename, ref_imagename, target_beam, subim_stats):
         """Perform the operation to get a sci image in the commom beam/WCS."""
 
         cme = casa_tools.measures
@@ -367,8 +367,13 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 f'crval separation: {sep_arcsec} arcsec, with a regridding tolerence warning at {sptol} arcsec = 0.1 * pixdiag_size')
 
             image_rgd = image_smo.regrid(csys=cs_nominal.torecord(), overwrite=True, axes=[0, 1])
-
             rgTool = casa_tools.regionmanager
+            subim_key = imagename.replace('.IQUV.', '.IQU.')
+            subim_peak = ''
+            subim_rms = ''
+            if subim_key in subim_stats:
+                subim_peak = subim_stats[subim_key]['peak']
+                subim_rms = subim_stats[subim_key]['rms']
             for stokes in ['IQU', 'V']:
                 region = rgTool.frombcs(csys=image_rgd.coordsys().torecord(), shape=image_rgd.shape(),
                                         stokes=stokes, stokescontrol='a')
@@ -384,6 +389,8 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
 
                 info = image_rgd.miscinfo()
                 info['VLASSPL'] = stokes
+                info['VLASSPK'] = subim_peak
+                info['VLASSRMS'] = subim_rms
                 image_rgd.setmiscinfo(info)
                 image_rgd.tofits(fits_name, region=region, overwrite=True)
                 self._fix_vlass_fits_header(self.inputs.context, fits_name)
@@ -942,20 +949,26 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                 stats_key = new_image.replace('.rms', '')
             else:
                 stats_key = new_image
-            if stats_key in subim_stats:
-                with casa_tools.ImageReader(new_image) as image:
-                    info = image.miscinfo()
-                    cs = image.coordsys()
-                    stokes_labels = cs.stokes()
-                    cs.done()
-                    stokes = [stokes_labels[idx] for idx in range(image.shape()[2])]
-                    stokes = ''.join(stokes)
-                    info['VLASSPL'] = stokes
+
+            with casa_tools.ImageReader(new_image) as image:
+                info = image.miscinfo()
+                cs = image.coordsys()
+                stokes_labels = cs.stokes()
+                cs.done()
+                stokes = [stokes_labels[idx] for idx in range(image.shape()[2])]
+                stokes = ''.join(stokes)
+                info['VLASSPL'] = stokes
+                if stokes == 'V':
+                    stats_key = stats_key.replace('.V.','.IQU.')
+                if stats_key in subim_stats:
                     info['VLASSRMS'] = subim_stats[stats_key].get('rms', '')
                     info['VLASSPK'] = subim_stats[stats_key].get('peak', '')
-                    image.setmiscinfo(info)
+                else:
+                    info['VLASSRMS'] = ''
+                    info['VLASSPK'] = ''
+                image.setmiscinfo(info)
 
-        return new_image_list
+        return new_image_list, subim_stats
 
     def _get_common_beam(self, image_list):
         """Get the common beam from the supplied "cube" image list."""
