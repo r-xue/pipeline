@@ -352,7 +352,7 @@ class SerialMstransform(basetask.StandardTaskTemplate):
             vis_source = os.path.join(vis, xml_filename)
             outputvis_targets_contline = os.path.join(outputvis, xml_filename)
             if os.path.exists(vis_source) and os.path.exists(outputvis):
-                LOG.info('Copying %s from original MS to science targets cont+line MS', xml_filename)
+                LOG.info('Copying %s from original MS to transformed MS', xml_filename)
                 LOG.trace('Copying %s: %s to %s', xml_filename, vis_source, outputvis_targets_contline)
                 shutil.copyfile(vis_source, outputvis_targets_contline)
 
