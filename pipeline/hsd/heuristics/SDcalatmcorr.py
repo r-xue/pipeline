@@ -62,7 +62,7 @@ from typing import Generator
 import glob
 import numpy as np
 from itertools import pairwise, product
-from matplotlib import pyplot as plt
+import matplotlib
 import time as systime
 from scipy.interpolate import CubicSpline
 
@@ -857,10 +857,8 @@ def makePlot(nu = None, tmavedata = None, skychansel = None, scisrcsel = None, b
     xmax = np.max(xdata) + 0.02*(np.max(xdata)-np.min(xdata))
 
     #Plot data before correction
-    plt.clf()
-    #Data axis ax1
-    fig, ax1 = plt.subplots()
-    fig.set_size_inches(8, 6)
+    fig = matplotlib.figure.Figure(figsize=(8, 6), dpi=isize)
+    ax1 = fig.add_subplot(111)
     ax1.set_title(title)
     for ipol in range(npol):
         thisstyle = ('blue' if (ipol == 0) else 'red')
@@ -918,8 +916,8 @@ def makePlot(nu = None, tmavedata = None, skychansel = None, scisrcsel = None, b
         ax2.set_yticks([mintr, 0.5*(maxtr+mintr), maxtr])
         ax2.set_ylabel('% ATM Transmission', color = 'magenta')
 
-    plt.savefig(output, dpi=isize)
-    plt.close(fig)
+    fig.savefig(output, dpi=isize)
+    fig.clear()
 
     return
 
