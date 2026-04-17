@@ -33,31 +33,29 @@ from pipeline.infrastructure import logging
 LOG = logging.get_logger(__name__)
 
 # Set the command used to shrink plots down to thumbnails. If set to None, no
-# thumbnails will be generated 
-THUMBNAIL_CMD = None 
+# thumbnails will be generated
+THUMBNAIL_CMD = None
 
 
 # first try to find ImageMagick's 'mogrify' command. We assume that
 # ImageMagick's 'convert' command can be found in the same directory. We
 # do not search for 'convert' directly as some utilities also provide a
-# 'convert' command which may come earlier on the PATH. 
+# 'convert' command which may come earlier on the PATH.
 mogrify_path = shutil.which('mogrify')
 if mogrify_path:
     bin_dir = os.path.dirname(mogrify_path)
     convert_path = os.path.join(bin_dir, 'convert')
     if os.path.exists(convert_path):
-        LOG.trace('Using convert executable at \'%s\' to generate '
-                  'thumbnails' % convert_path)
-        THUMBNAIL_CMD = lambda full, thumb : (convert_path, full, '-thumbnail', '250x188', thumb)
+        LOG.trace("Using convert executable at '%s' to generate thumbnails", convert_path)
+        THUMBNAIL_CMD = lambda full, thumb: (convert_path, full, '-thumbnail', '250x188', thumb)
 
 if THUMBNAIL_CMD is None and platform.system() == 'Darwin':
     # macOS only: fallback to sips if ImageMagick, e.g. from MacPorts or Homebrew is not found on macOS. sips is a system
     # executable that should be available on all macOS systems.
     sips_path = shutil.which('sips')
     if sips_path:
-        LOG.trace('Using sips executable at \'%s\' to generate thumbnails'
-                  % sips_path)
-        THUMBNAIL_CMD = lambda full, thumb : (sips_path, '-Z', '250', '--out', thumb, full)
+        LOG.trace("Using sips executable at '%s' to generate thumbnails", sips_path)
+        THUMBNAIL_CMD = lambda full, thumb: (sips_path, '-Z', '250', '--out', thumb, full)
 
 if THUMBNAIL_CMD is None:
     LOG.warning('Could not find the ImageMagick \'convert\' or macOS \'sips\' command. '

@@ -370,8 +370,7 @@ class StateFactory:
     observation start time.
     """
     def __init__(self, observatory: str, start: datetime.datetime | None = None) -> None:
-        """
-        Initialize a StateFactory object.
+        """Initialize a StateFactory object.
 
         Args:
             observatory: name of observatory to create State(s) for.
@@ -379,7 +378,7 @@ class StateFactory:
                 to distinguish between Cycle 0 and later ALMA datasets.
         """
         if observatory == 'ALMA':
-            if start and start < datetime.datetime(2013, 1, 21):
+            if start and start < datetime.datetime(2013, 1, 21, tzinfo=datetime.timezone.utc):
                 self._constructor = StateALMACycle0
             else:
                 self._constructor = StateALMA
