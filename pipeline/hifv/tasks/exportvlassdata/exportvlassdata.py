@@ -372,8 +372,10 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             subim_peak = ''
             subim_rms = ''
             if subim_key in subim_stats:
-                subim_peak = subim_stats[subim_key]['peak']
-                subim_rms = subim_stats[subim_key]['rms']
+                if 'peak' in subim_stats[subim_key]:
+                    subim_peak = subim_stats[subim_key]['peak']
+                if 'rms' in subim_stats[subim_key]:
+                    subim_rms = subim_stats[subim_key]['rms']
             for stokes in ['IQU', 'V']:
                 region = rgTool.frombcs(csys=image_rgd.coordsys().torecord(), shape=image_rgd.shape(),
                                         stokes=stokes, stokescontrol='a')
@@ -907,7 +909,6 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                         LOG.warning(f'Keyword {key} not found in FITS header of {fitsname}')
                         continue
                     header[key] = (value, comment)
-                hdulist.flush()
 
     def _split_vlass_cube_stokes(self, image_list):
         """Split full-Stokes images into the IQU and V images and return a new image list."""
@@ -934,8 +935,10 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                     image_type = imaging_utils.get_vlass_image_type(outfile, append_tt=False).lower()
                     if image_type == 'rms':
                         stats_key = outfile.replace('.rms', '')
-                    else:
+                    elif image_type == 'intensity_pbcor':
                         stats_key = outfile
+                    else:
+                        continue
 
                     metrics_key, stat_metrics = stats_mapping[image_type]
                     stat_values = imaging_utils.get_stats(outfile, metrics=stat_metrics, stokes='I')
