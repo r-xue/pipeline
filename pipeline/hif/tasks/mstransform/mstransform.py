@@ -372,7 +372,7 @@ class MstransformResults(basetask.Results):
     def merge_with_context(self, context):
         # Check for an output vis
         if not self.mses:
-            LOG.error('No hif_mstransform results to merge')
+            LOG.info('No hif_mstransform results to merge')
             return
 
         target = context.observing_run
@@ -405,14 +405,18 @@ class MstransformResults(basetask.Results):
     def __str__(self):
         # Format the Mstransform results.
         s = 'MstransformResults:\n'
-        s += '\tOriginal MS {vis} transformed to {outputvis}\n'.format(
-            vis=os.path.basename(self.vis),
-            outputvis=os.path.basename(self.outputvis))
+        if self.vis:
+            s += '\tOriginal MS {vis} transformed to {outputvis}\n'.format(
+                vis=os.path.basename(self.vis),
+                outputvis=os.path.basename(self.outputvis))
 
         return s
 
     def __repr__(self):
-        return 'MstranformResults({}, {})'.format(os.path.basename(self.vis), os.path.basename(self.outputvis))
+        if self.vis:
+            return 'MstranformResults({}, {})'.format(os.path.basename(self.vis), os.path.basename(self.outputvis))
+        else:
+            return 'MstranformResults(N/A, N/A)'
 
 
 @task_registry.set_equivalent_casa_task('hif_mstransform')
@@ -538,7 +542,11 @@ class Mstransform(sessionutils.ParallelTemplate):
         task_args_list = self._get_task_args_list()
 
         if not task_args_list:
-            return [('', {}, MstransformResults(vis='', outputvis='', output_data_type=None))]
+            emptyResults = MstransformResults(vis=None, outputvis=None, output_data_type=None)
+            emptyResults.task = self.__class__
+            emptyResults.inputs = self.inputs.as_dict()
+            emptyResults.stage_number = self.inputs.context.task_counter
+            return [('', {}, emptyResults)]
 
         taskqueue_parallel_request = len(task_args_list) > 1 and parallel
 
