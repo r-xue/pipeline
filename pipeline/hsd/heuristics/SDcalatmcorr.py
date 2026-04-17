@@ -61,7 +61,6 @@ from typing import Generator
 
 import glob
 import numpy as np
-import pylab as pl
 from itertools import pairwise, product
 from matplotlib import pyplot as plt
 import time as systime
@@ -1169,9 +1168,9 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     else:
         #We could not receive the fieldid from calling method, default to first field
         fieldid = spwsetup['fieldid']['*OBSERVE_TARGET#ON_SOURCE*'][0]
-    bnd = (pl.diff(tmoffsource)>1)
-    w1 = pl.append([True], bnd)
-    w2 = pl.append(bnd, [True])
+    bnd = (np.diff(tmoffsource)>1)
+    w1 = np.append([True], bnd)
+    w2 = np.append(bnd, [True])
     tmoffsource = (tmoffsource[w1]+tmoffsource[w2])/2.  ### midpoint of OFF subscan
 
     ################################################################
@@ -1188,7 +1187,7 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
 
     #Open CALATMOSPHERE table
     (tground_all, pground_all, hground_all, tmatm_all, tsys, trec, tau, antatm) = getCalAtmData(ms, spws, spwsetup)
-    tmatm = pl.unique(tmatm_all[spws[0]])
+    tmatm = np.unique(tmatm_all[spws[0]])
 
     #Search for sky lines
     skylines = {}
@@ -1268,10 +1267,10 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     pwv, tground, pground, hground = [], [], [], []
     for tt in tmatm:
         deltat = abs(tmpwv_all-tt)
-        pwv.append(pl.median(pwv_all[deltat==deltat.min()]))
-        tground.append(pl.median(tground_all[tmatm_all==tt]))
-        pground.append(pl.median(pground_all[tmatm_all==tt]))
-        hground.append(pl.median(hground_all[tmatm_all==tt]))
+        pwv.append(np.median(pwv_all[deltat==deltat.min()]))
+        tground.append(np.median(tground_all[tmatm_all==tt]))
+        pground.append(np.median(pground_all[tmatm_all==tt]))
+        hground.append(np.median(hground_all[tmatm_all==tt]))
         LOG.info('PWV = %fm, T = %fK, P = %fPa, H = %f%% at %s' % (pwv[-1], tground[-1], pground[-1], hground[-1], qa.time('%fs' % tt, form='fits')[0]))
 
     ################################################################
