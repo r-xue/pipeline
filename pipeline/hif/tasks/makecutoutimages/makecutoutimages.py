@@ -214,6 +214,8 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
                 key = subim.split('.rms')[0]
             elif image_type == 'alpha':
                 key = subim.split('.alpha')[0]+".image.pbcor.tt0"
+            elif image_type == 'alphaerr':
+                key = subim.split('.alpha.error')[0]+".image.pbcor.tt0"
             else:
                 key = subim.split('.subim')[0]
             if key in pbcor_stats:
