@@ -235,10 +235,7 @@ def smooth(y: np.ndarray, box_pts: int):
 
     box = np.ma.ones(box_pts)/box_pts
     extra_chans = (box_pts + 1) // 2
-    y_expand = np.empty(len(y) + 2 * extra_chans)
-    y_expand[extra_chans:-extra_chans] = y
-    y_expand[:extra_chans] = y[0]
-    y_expand[-extra_chans:] = y[-1]
+    y_expand = np.pad(y, extra_chans, mode='edge')
     print(f"box_pts {box_pts} extra_chans {extra_chans}")
     y_smooth = np.ma.convolve(y_expand, box, mode='same')
     return y_smooth[extra_chans:-extra_chans]
