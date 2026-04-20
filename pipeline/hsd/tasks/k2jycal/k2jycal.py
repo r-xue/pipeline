@@ -32,6 +32,7 @@ class SDK2JyCalInputs(vdp.StandardInputs):
     dbservice = vdp.VisDependentProperty(default=True)
     endpoint = vdp.VisDependentProperty(default='asdm')
     caltype = vdp.VisDependentProperty(default='amp', readonly=True)
+    backup_hosts = vdp.VisDependentProperty(default=[])
 
     @vdp.VisDependentProperty
     def infiles(self) -> str:
