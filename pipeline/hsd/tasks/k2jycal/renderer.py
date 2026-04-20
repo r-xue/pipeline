@@ -127,9 +127,7 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
 
         # analyse getjyperkalma log and emit warnings if needed
         extra_logrecords_handler = logging.CapturingHandler(logging.WARNING)
-        extra_logrecords_handler.addFilter(lambda record: record.levelno >= logging.WARNING)
         logging.add_handler(extra_logrecords_handler)
-
         try:
             casalog_path = os.path.join(stage_dir, "casapy.log")
             if casalog_path and os.path.exists(casalog_path):
@@ -150,6 +148,11 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
                                 f"Jy/K DB access failed for EB {asdm_uid}, "
                                 f"endpoint URL {endpoint_url}"
                             )
+        except Exception as e:
+            LOG.warning(
+                "Error occurred while analyzing casapy.log "
+                f"for Jy/K DB access errors: {e}"
+            )
         finally:
             logging.remove_handler(extra_logrecords_handler)
             extra_logrecords = extra_logrecords_handler.buffer
