@@ -9,7 +9,6 @@ import pipeline.infrastructure.daskhelpers as daskhelpers
 import pipeline.infrastructure.imagelibrary as imagelibrary
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure.utils import imaging as imaging_utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry

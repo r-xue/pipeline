@@ -201,7 +201,7 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
                         pbcor_key = imagename
                     if pbcor_key in pbcor_stats:
                         stat_key, stat_metrics = stats_mapping[image_type]
-                        stat_values = self._get_stats(subimagename, stat_metrics)
+                        stat_values = imaging_utils.get_stats(subimagename, metrics=stat_metrics, stokes='I')
                         pbcor_stats[pbcor_key][stat_key] = stat_values.get(stat_metrics[0])
             else:
                 LOG.info('A cutout image named %s already exists, and we will reuse this image for weblog.',
@@ -209,10 +209,13 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
                 subimagenames.append(subimagename)
             subimage_size = self._get_image_size(subimagename)
         for subim in images_to_update:
-            if '.rms' in subim:
+            image_type = imaging_utils.get_vlass_image_type(subim, append_tt=False).lower()
+            if image_type == 'rms':
                 key = subim.split('.rms')[0]
-            elif '.alpha' in subim:
+            elif image_type == 'alpha':
                 key = subim.split('.alpha')[0]+".image.pbcor.tt0"
+            elif image_type == 'alphaerr':
+                key = subim.split('.alpha.error')[0]+".image.pbcor.tt0"
             else:
                 key = subim.split('.subim')[0]
             if key in pbcor_stats:
@@ -220,6 +223,7 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
                 with casa_tools.ImageReader(subim) as image:
                     cs = image.coordsys()
                     stokes_labels = cs.stokes()
+                    cs.done()
                     stokes = [stokes_labels[idx] for idx in range(image.shape()[2])]
                     stokes = ''.join(stokes)
                     info = image.miscinfo()
@@ -416,11 +420,3 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
                     pass
 
         return stats
-
-    def _get_stats(self, image_name: str, metrics: list) -> dict:
-        """Return a dict of requested statistics for the given image."""
-        if not os.path.exists(image_name):
-            return {m: None for m in metrics}
-        with casa_tools.ImageReader(image_name) as image:
-            stats = image.statistics(robust=True)
-            return {m: (float(stats.get(m)[0]) if stats.get(m) is not None else None) for m in metrics}
