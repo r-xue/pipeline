@@ -454,34 +454,29 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
         status = None
 
         task_args = common_params.copy()
-        # gencal_args['caltype'] = 'jyperk'     # override to invoke gencal in jyperk mode
+        task_args['infile'] = inputs.reffile
 
-        # retrieve factors from DB
         if inputs.dbservice:
+            # retrieve factors from Jy/K DB, fallback to file if all DB access fails
             job = casa_tasks.getjyperkalma(**task_args)
             try:
                 self._executor.execute(job)
-                status = True
+                status = os.path.exists(task_args['caltable'])
             except Exception as e:
-                if len(str(e)) == 0:
-                    LOG.warning("Failed to get Jy/K factors from DB.")
-                else:
-                    LOG.warning(e)
-                LOG.warning(f"{inputs.vis}: Query to Jy/K DB failed. Will fallback to read CSV file '{inputs.reffile}'")
+                LOG.warning(f"{inputs.vis}: Query to Jy/K DB failed.")
                 status = False
-
-        # retrieve factors from file
-        if not status:
-            task_args['infile'] = inputs.reffile
-
+        else:
+            # retrieve factors from file
             if not os.path.exists(inputs.reffile):
                 LOG.error( "Jy/K scaling factor file '{}' does not exist.".format(inputs.reffile) )
                 status = False
             else:
-                job = casa_tasks.getjyperkalma(**task_args)
+                task_args["caltype"] = "jyperk"
+                task_args.pop("backup_hosts")
+                job = casa_tasks.gencal(**task_args)
                 try:
                     self._executor.execute(job)
-                    status = None
+                    status = os.path.exists(task_args['caltable'])
                 except Exception as e:
                     LOG.error( "{}: Failed to create caltable from CSV file: {}".format(inputs.vis, e) )
                     status = False
