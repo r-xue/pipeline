@@ -720,7 +720,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
 
         for real_spw_id, value in parameter_config.items():
             if real_spw_id in _wave_number.keys() and value.fitfunc.blfunc == "sinusoid":
-                parameter_config[real_spw_id].wave_number = wave_number[real_spw_id]
+                parameter_config[real_spw_id].wave_number = _wave_number[real_spw_id]
 
         return parameter_config
 
