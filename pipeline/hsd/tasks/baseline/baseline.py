@@ -324,7 +324,7 @@ class SDBaselineInputs(vdp.StandardInputs):
         self.fitfunc = fitfunc
         self.switchpoly = switchpoly
         self.clusteringalgorithm = clusteringalgorithm
-        self.wave_number = wave_number,
+        self.wave_number = wave_number
         self.deviationmask = deviationmask
         self.deviationmask_sigma_threshold = deviationmask_sigma_threshold
         self.parallel = parallel
