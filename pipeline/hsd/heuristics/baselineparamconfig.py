@@ -174,16 +174,39 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         Returns:
             Name of the BLParam file
         """
-        LOG.debug('Starting BaselineFitParamConfig')
+        # construct configuration report
+        config_report = [
+            f'Starting BaselineFitParamConfig for EB {ms.basename},  '
+            f'field {field_id}, spw {spw_id}, antenna {antenna_id}\n'
+        ]
+
+        # fitting function
+        fitfunc_report = f"Baseline-Fitting function is set to {self.fitfunc.blfunc}"
+        if self.switching_heuristic == do_switching:
+            fitfunc_report += " (can switch to low-order polynomial)"
+        config_report.append(fitfunc_report)
 
         # fitting order
-        if fit_order == 'automatic':
-            # fit order heuristics
-            LOG.info('Baseline-Fitting order was automatically determined')
-            self.fitorder_heuristic = fitorder.FitOrderHeuristics()
+        if self.fitfunc != fitorder.FittingFunction.SINUSOID:
+            if fit_order == 'automatic':
+                # fit order heuristics
+                config_report.append(
+                    'Baseline-Fitting order was automatically determined'
+                )
+                self.fitorder_heuristic = fitorder.FitOrderHeuristics()
+            else:
+                config_report.append(
+                    'Baseline-Fitting order was fixed to {}'.format(fit_order)
+                )
+                self.fitorder_heuristic = lambda *args, **kwargs: fit_order
         else:
-            LOG.info('Baseline-Fitting order was fixed to {}'.format(fit_order))
-            self.fitorder_heuristic = lambda *args, **kwargs: fit_order #self.inputs.fit_order
+            wave_number = self.wave_number
+            config_report.append(
+                "List of wave numbers for sinusoidal fitting "
+                f"is set to {list(wave_number)}"
+            )
+            self.fitorder_heuristic = lambda *args, **kwargs: 0
+        LOG.info("\n".join(config_report))
 
         vis = ms.name
         if DEBUG() or TRACE():
