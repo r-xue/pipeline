@@ -4,6 +4,7 @@ import abc
 import collections
 import enum
 import os
+import re
 from typing import TYPE_CHECKING
 
 import numpy
@@ -55,7 +56,13 @@ def write_blparam(fileobj, param):
     for key in BLP:
         if key in param:
             param_values[key] = param[key]
+
     line = ','.join(map(str, [param_values[k] for k in BLP]))
+
+    # Because casa's reader for the blparam file doesn't do spaces and
+    # wave number list always ends up with spaces when written to file.
+    line = re.sub(r'\s+', '', line)
+
     fileobj.write(line+'\n')
 
 
@@ -77,7 +84,7 @@ class BaselineFitParamConfig(api.Heuristic, abc.ABC):
     """
 
     ApplicableDuration = 'raster'  # 'raster' | 'subscan'
-    MaxPolynomialOrder = 'none'  # 'none', 0, 1, 2,...
+    MaxPolynomialOrder = 'none'    # 'none', 0, 1, 2,...
     PolynomialOrder = 'automatic'  # 'automatic', 0, 1, 2, ...
 
     def __init__(self, fitfunc: str = 'cspline', switchpoly: bool = True):
@@ -87,7 +94,7 @@ class BaselineFitParamConfig(api.Heuristic, abc.ABC):
             fitfunc: Fit function to use. Cubic spline ('spline' or 'cspline')
                      and polynomial ('poly' or 'polynomial') are available.
                      Default is 'cspline'.
-            switchpoly: Whether or not fall back to low order polynomial fit
+            switchpoly: Whether to fall back to low order polynomial fit
                         when large mask exist at the edge of spw if fitfunc
                         is either 'cspline' or 'spline'. Defaults to True.
 
@@ -99,9 +106,12 @@ class BaselineFitParamConfig(api.Heuristic, abc.ABC):
         LOG.info(f'Baseline parameter is optimized for {self.fitfunc.description} fitting')
 
         self.paramdict = {}
+        self.wave_number = None
         self.heuristics_engine = fitorder.SwitchPolynomialWhenLargeMaskAtEdgeHeuristic()
+
         if switchpoly is True:
             self.switching_heuristic = do_switching
+
         else:
             self.switching_heuristic = no_switching
 
@@ -128,11 +138,17 @@ class BaselineFitParamConfig(api.Heuristic, abc.ABC):
                         break
         return colname
 
-    def calculate(self, datatable: DataTable, ms: MeasurementSet,
-                  rowmap: dict, antenna_id: int, field_id: int,
-                  spw_id: int, fit_order: str | int,
-                  edge: tuple[int, int], deviation_mask: list[dict],
-                  blparam: str) -> str:
+    def calculate(self, datatable: DataTable,
+                  ms: MeasurementSet,
+                  rowmap: dict,
+                  antenna_id: int,
+                  field_id: int,
+                  spw_id: int,
+                  fit_order: str | int,
+                  edge: tuple[int, int],
+                  deviation_mask: list[dict],
+                  blparam: str
+        ) -> str:
         """
         Generate/update BLParam file according to the input parameters.
 
@@ -145,17 +161,17 @@ class BaselineFitParamConfig(api.Heuristic, abc.ABC):
             antenna_id: Antenna ID to process
             field_id: Field ID to process
             spw_id: Spw ID to process
-            fit_order: Fiting order ('automatic' or number)
+            fit_order: Fitting order ('automatic' or number)
             edge: Number of edge channels to be excluded from the heuristics
                 (format: [L, R])
             deviation_mask: Deviation mask
-            blparam: Name of the BLParam file
+            blparam: Name of the BLParam file.
                 File contents will be updated by this heuristics
 
         Note:
             In this method, the boundaries of channel ranges are indicated by a list [start, end].
             Basically, the treatment of pythonic range is [start, end+1], but it is not intuitive for
-            dealing with channels and masks of MeasurementSet. Therefore these are written as [start, end]
+            dealing with channels and masks of MeasurementSet. Therefore, these are written as [start, end]
             in this source. Pythonic range-lists as boundaries for MS are only used in local processing
             scopes like a local function or loop block. Other than these scopes, we should write
             the channel/mask range as [start, end].
@@ -318,18 +334,26 @@ class BaselineFitParamConfig(api.Heuristic, abc.ABC):
                             # fitting
                             polyorder = min(averaged_polyorder, max_polyorder)
                             mask_array[:] = base_mask_array
-                            #LOG.info('mask_array = {}'.format(''.join(map(str, mask_array))))
-                            #irow = len(row_list_total)+len(row_list)
-                            #irow = len(index_list_total) + i
+
                             irow = row
                             param = self._configure_baseline_param(irow, pol, polyorder, nchan, edge, mask_array, _masklist)
+
                             if TRACE():
                                 LOG.trace('Row {}: param={}'.format(row, param))
                             write_blparam(blparamfileobj, param)
 
         return blparam
 
-    def _configure_baseline_param(self, row_idx: int, pol: int, polyorder: int, nchan: int, edge: fitorder.EdgeChannels, mask: Sequence[bool], mask_list: list[list[int]]) -> dict:
+    def _configure_baseline_param(
+            self,
+            row_idx: int,
+            pol: int,
+            polyorder: int,
+            nchan: int,
+            edge: fitorder.EdgeChannels,
+            mask: Sequence[bool],
+            mask_list: list[list[int]]
+    ) -> dict:
         """Configure baseline parameter values for given row and polarization incides.
 
         Args:
@@ -480,6 +504,7 @@ class BaselineFitParamConfig(api.Heuristic, abc.ABC):
         if fitorder.is_polynomial_fit(self.fitfunc):
             self.paramdict[BLP.FUNC] = self.fitfunc.blfunc
             self.paramdict[BLP.ORDER] = polyorder
+
         elif fitorder.is_cubic_spline_fit(self.fitfunc):
             num_nomask = nchan_without_edge - nchan_masked
             num_pieces = max(int(min(polyorder * num_nomask / float(nchan_without_edge) + 0.5, 0.1 * num_nomask)), 1)
@@ -494,9 +519,16 @@ class BaselineFitParamConfig(api.Heuristic, abc.ABC):
                 num_pieces,
                 masklist
             )
+
             self.paramdict[BLP.FUNC] = fitfunc.blfunc
             self.paramdict[BLP.ORDER] = order
+
+        elif fitorder.is_sinuoid_fit(self.fitfunc):
+            # Set fit function from the current class instance.
+            self.paramdict[BLP.FUNC] = self.fitfunc.blfunc
+            self.paramdict[BLP.NWAVE] = self.wave_number
+
         else:
-            RuntimeError('Should not happen!')
+            raise RuntimeError(f"Invalid fit function found: {self.fitfunc.blfunc}")
 
         return self.paramdict
