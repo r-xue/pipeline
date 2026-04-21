@@ -1123,8 +1123,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                         MaxDistance = max(distance * ((distance < Threshold) * (category == Nc)))
                         indices = [x for x in range(len(category)) if category[x] == Nc and Region[x][5] != 0]
                         properties = Region2.take(indices, axis=0)
-                        median_props = numpy.median(properties, axis=0)
-                        lines.append([median_props[1], median_props[0], True, MaxDistance])
+                        rep_width = numpy.percentile(properties[:, 0], 75)
+                        rep_center = numpy.median(properties[:, 1])
+                        lines.append([rep_center, rep_width, True, MaxDistance])
                     MemberRate = (len(Region) - Outlier)/float(len(Region))
                     MeanDistance = (distance * numpy.transpose(numpy.array(Region))[5]).mean()
                     LOG.trace('lines = %s, MemberRate = %s', lines, MemberRate)
