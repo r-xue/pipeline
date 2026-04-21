@@ -596,8 +596,14 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             raise TypeError(f"Value of fit_order has wrong data type: {type(fit_order)}")
 
 
-    def get_fit_func_dict(fit_func: str | dict[int | str, str | None],
-                        spw_id_list: list[int], ms: MeasurementSet = None, context: Context = None,  switchpoly=True) -> dict[int, BaselineFitParamConfig]:
+    @staticmethod
+    def build_fitting_configuration(
+            spw_id_list: list[int] | set[Any],
+            fit_function: str | list[int | str, str] | None = "cspline",
+            ms: MeasurementSet = None,
+            context: Context = None,
+            switchpoly=True
+    ) -> dict[int, BaselineFitParamConfig]:
         """
         Convert the fit_function parameter into a dictionary mapping each SPW ID to its BaselineFitParamConfig.
 
@@ -609,7 +615,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             switchpoly: Whether to fall back the fits from cubic spline to 1st or
                         2nd order polynomial when large masks exist at the edges
                         of the spw.
-            context:Pipeline context
+            context: Pipeline context
             ms: MeasurementSet
             fit_function: The fit function parameter (str, dict, or None).
             spw_id_list: list of spectral window IDs to process.
