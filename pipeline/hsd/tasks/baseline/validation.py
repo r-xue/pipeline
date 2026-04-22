@@ -6,7 +6,7 @@ from math import sqrt
 from numbers import Integral
 from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Type, Union
 
-import numpy
+import numpy as np
 import numpy.linalg as LA
 import scipy.cluster.hierarchy as HIERARCHY
 import scipy.cluster.vq as VQ
@@ -348,9 +348,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         clustering_result: ClusteringResult,
         index_list: List[int],
         detect_signal: dict,
-        PosList: numpy.ndarray,
-        Region2: numpy.ndarray
-    ) -> Tuple[dict, List[List[Union[int, bool]]], List[List[Union[int, bool]]], numpy.ndarray]:
+        PosList: np.ndarray,
+        Region2: np.ndarray
+    ) -> Tuple[dict, List[List[Union[int, bool]]], List[List[Union[int, bool]]], np.ndarray]:
         """Validate cluster detected by clustering analysis.
 
         This method validates clusters detected in line center vs line width space.
@@ -439,7 +439,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             Grid2SpectrumID[int((PosList[0][i] - x0)/grid_ra)][int((PosList[1][i] - y0)/grid_dec)].append(i)
 
         # Sort lines and Category by LineCenter: lines[][0]
-        LineIndex = numpy.argsort([line[0] for line in Bestlines[:Ncluster]])
+        LineIndex = np.argsort([line[0] for line in Bestlines[:Ncluster]])
         lines = [Bestlines[i] for i in LineIndex]
         print('Ncluster, lines: {} {}'.format(Ncluster, lines))
         print('LineIndex: {}'.format(LineIndex))
@@ -448,7 +448,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         for Nc in range(Ncluster):
             lines[Nc][1] *= self.CLUSTER_WHITEN
 
-        LineIndex2 = numpy.argsort(LineIndex)
+        LineIndex2 = np.argsort(LineIndex)
         print('LineIndex2: {}'.format(LineIndex2))
         print('BestCategory: {}'.format(BestCategory))
 
@@ -506,8 +506,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
     def prepare(self,
                 datatable_dict: dict,
-                index_list: numpy.ndarray,
-                grid_table: List[Union[int, float, numpy.ndarray]],
+                index_list: np.ndarray,
+                grid_table: List[Union[int, float, np.ndarray]],
                 detect_signal: collections.OrderedDict
     ) -> ValidateLineResults:
         """Validate spectral lines detected by detection module.
@@ -629,7 +629,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                         Region.append([row, line[0], line[1], detect_signal[row][0], detect_signal[row][1], flag, line[2]])
                         ### 2011/05/17 make cluster insensitive to the line width: Whiten
                         dummy.append([float(line[1] - line[0]) / self.CLUSTER_WHITEN, 0.5 * float(line[0] + line[1])])
-        Region2 = numpy.array(dummy) # [FullWidth, Center]
+        Region2 = np.array(dummy) # [FullWidth, Center]
         ### 2015/04/22 save Region to file for test
         if infrastructure.logging.logging_level == infrastructure.logging.LOGGING_LEVELS['trace'] or \
            infrastructure.logging.logging_level == infrastructure.logging.LOGGING_LEVELS['debug']:
@@ -668,9 +668,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 origin_vis, j = indexer.serial2perms(i)
                 datatable = datatable_dict[origin_vis]
                 yield datatable.getcell(colname, j)
-        ras = numpy.fromiter(_g('OFS_RA'), dtype=numpy.float64)
-        decs = numpy.fromiter(_g('OFS_DEC'), dtype=numpy.float64)
-        PosList = numpy.asarray([ras, decs])
+        ras = np.fromiter(_g('OFS_RA'), dtype=np.float64)
+        decs = np.fromiter(_g('OFS_DEC'), dtype=np.float64)
+        PosList = np.asarray([ras, decs])
         ProcEndTime = time.time()
         LOG.info('Clustering: Initialization End: Elapsed time = %s sec', ProcEndTime - ProcStartTime)
 
@@ -814,7 +814,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         self,
         algorithm: str,
         cluster_score: List[List[int]],
-        detected_lines: numpy.ndarray,
+        detected_lines: np.ndarray,
         cluster_property: List[List[Union[int, bool]]],
         cluster_scale: float) -> None:
         """Merge information on clustering analysis into "cluster_info" attribute.
@@ -853,8 +853,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
     def _merge_cluster_result(
         self,
-        result_list: List[Tuple[dict, List[List[Union[int, bool]]], List[List[Union[int, bool]]], numpy.ndarray]]
-    ) -> Tuple[dict, List[List[Union[int, bool]]], List[List[Union[int, bool]]], numpy.ndarray]:
+        result_list: List[Tuple[dict, List[List[Union[int, bool]]], List[List[Union[int, bool]]], np.ndarray]]
+    ) -> Tuple[dict, List[List[Union[int, bool]]], List[List[Union[int, bool]]], np.ndarray]:
         """Merge multiple clustering analysis results into one.
 
         Take union on detected clusters. If length of result_list is 1, simply return
@@ -876,7 +876,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 merged_RealSignal[k][2].extend(v[2])
         merged_lines = [l for r in result_list for l in r[1]]
         merged_channelmap_ranges = [l for r in result_list for l in r[2]]
-        merged_flag = numpy.concatenate([r[3] for r in result_list], axis=0)
+        merged_flag = np.concatenate([r[3] for r in result_list], axis=0)
 
         return merged_RealSignal, merged_lines, merged_channelmap_ranges, merged_flag
 
@@ -1030,7 +1030,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         else:
             return False
 
-    def clustering_kmean(self, Region: DetectedLineList, Region2: numpy.ndarray) -> ClusteringResult:
+    def clustering_kmean(self, Region: DetectedLineList, Region2: np.ndarray) -> ClusteringResult:
         """Perform k-mean clustering analysis on detected lines.
 
         Perform k-mean clustering analysis on detected lines with various
@@ -1059,7 +1059,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         """
         # Region = [[row, chan0, chan1, RA, DEC, flag, Binning],[],[],,,[]]
         # Region2 = [[Width, Center],[],[],,,[]]
-        MedianWidth = numpy.median(Region2[:, 0])
+        MedianWidth = np.median(Region2[:, 0])
         LOG.trace('MedianWidth = %s', MedianWidth)
 
         MaxCluster = int(rules.ClusterRule['MaxCluster'])
@@ -1083,7 +1083,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
             index0=len(ListScore)
             # Fix the random seed 2008/5/23
-            numpy.random.seed((1234, 567))
+            np.random.seed((1234, 567))
             # Try multiple times to supress random selection effect 2007/09/04
             for Multi in range(min(Ncluster+1, 10)):
                 codebook, diff = VQ.kmeans(Region2, Ncluster, iter=50)
@@ -1123,11 +1123,11 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                         MaxDistance = max(distance * ((distance < Threshold) * (category == Nc)))
                         indices = [x for x in range(len(category)) if category[x] == Nc and Region[x][5] != 0]
                         properties = Region2.take(indices, axis=0)
-                        rep_width = numpy.percentile(properties[:, 0], 75)
-                        rep_center = numpy.median(properties[:, 1])
+                        rep_width = np.percentile(properties[:, 0], 75)
+                        rep_center = np.median(properties[:, 1])
                         lines.append([rep_center, rep_width, True, MaxDistance])
                     MemberRate = (len(Region) - Outlier)/float(len(Region))
-                    MeanDistance = (distance * numpy.transpose(numpy.array(Region))[5]).mean()
+                    MeanDistance = (distance * np.transpose(np.array(Region))[5]).mean()
                     LOG.trace('lines = %s, MemberRate = %s', lines, MemberRate)
 
                     # 2010/6/15 Plot the score along the number of the clusters
@@ -1185,7 +1185,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
     def clustering_hierarchy(
         self,
         Region: DetectedLineList,
-        Region2: numpy.ndarray,
+        Region2: np.ndarray,
         nThreshold: float = 3.0,
         nThreshold2: float = 4.5,
         method: str = 'single'
@@ -1241,7 +1241,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             coordinate (which is same format as Region).
         """
         # Data: numpy[[width, center],[w,c],,,]
-        Data = numpy.asarray(Region2, dtype=float)[:, [0, 1]]
+        Data = np.asarray(Region2, dtype=float)[:, [0, 1]]
         Repeat = 3  # Number of artificial detection points to normalize the cluster distance
         # Calculate LinkMatrix from given data set
         if method.lower() == 'single': # nearest point linkage method
@@ -1257,14 +1257,14 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         else: # Ward's linkage method: default
             H_Clustering = HIERARCHY.ward
         # temporaly add artificial detection points to normalize the cluster distance
-        tmp = numpy.zeros((Data.shape[0]+Repeat*2, Data.shape[1]), float)
+        tmp = np.zeros((Data.shape[0]+Repeat*2, Data.shape[1]), float)
         tmp[Repeat*2:] = Data.copy()
         for i in range(Repeat):
             tmp[i] = [self.nchan//2, 0]
             tmp[Repeat+i] = [self.nchan//2, self.nchan-1]
         #LOG.debug('tmp[:10] = {}', tmp[:10])
         tmpLinkMatrix = H_Clustering(tmp)
-        MedianDistance = numpy.median(tmpLinkMatrix.T[2])
+        MedianDistance = np.median(tmpLinkMatrix.T[2])
         MeanDistance = tmpLinkMatrix.T[2].mean()
         Stddev = tmpLinkMatrix.T[2].std()
         del tmp, tmpLinkMatrix
@@ -1275,7 +1275,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         # LinkMatrix[n][2]: distance between two data/clusters
         # 1st classification
         LinkMatrix = H_Clustering(Data)
-        #MedianDistance = numpy.median(LinkMatrix.T[2])
+        #MedianDistance = np.median(LinkMatrix.T[2])
         #Stddev = LinkMatrix.T[2].std()
         Nthreshold = nThreshold
         #Threshold = MedianDistance + Nthreshold * Stddev
@@ -1287,7 +1287,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         print('Init Threshold: {}'.format(Threshold), end=' ')
         print('\tInit Ncluster: {}'.format(Ncluster))
 
-        IDX = numpy.array([x for x in range(len(Data))])
+        IDX = np.array([x for x in range(len(Data))])
         for k in range(Ncluster):
             C = Category.max()
             NewData = Data[Category==(k+1)] # Category starts with 1 (not 0)
@@ -1297,7 +1297,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             NewIDX = IDX[Category==(k+1)]
             LinkMatrix = H_Clustering(NewData) # selected linkage method
             #print LinkMatrix
-            MedianDistance = numpy.median(LinkMatrix.T[2])
+            MedianDistance = np.median(LinkMatrix.T[2])
             MeanDistance = LinkMatrix.T[2].mean()
             #print 'MedianD', MedianDistance
             Stddev = LinkMatrix.T[2].std()
@@ -1342,12 +1342,12 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         return (Ncluster, Bestlines, Category, Region)
 
     def clean_cluster(self,
-                      Data: numpy.ndarray,
+                      Data: np.ndarray,
                       Category: List[int],
                       Region: DetectedLineList,
                       Nthreshold: float,
                       NumParam: int
-    ) -> Tuple[List[Union[int, float, bool]], numpy.ndarray, numpy.ndarray, List[int]]:
+    ) -> Tuple[List[Union[int, float, bool]], np.ndarray, np.ndarray, List[int]]:
         """Clean-up cluster by eliminating outliers.
 
          Radius = StandardDeviation * nThreshold (circle/sphere)
@@ -1371,27 +1371,27 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 Category: renumbered category
         """
         assert NumParam in [2, 3, 4]
-        IDX = numpy.array([x for x in range(len(Data))])
+        IDX = np.array([x for x in range(len(Data))])
         Ncluster = Category.max()
         C = Ncluster + 1
         ValidClusterID = []
         ValidRange = []
         ValidStdev = []
         ReNumber = {}
-        Range = numpy.zeros((C, 5), float)
-        Stdev = numpy.zeros((C, 5), float)
+        Range = np.zeros((C, 5), float)
+        Stdev = np.zeros((C, 5), float)
         for k in range(Ncluster):
             NewData = Data[Category == k+1]
             NewIDX = IDX[Category == k+1]
             Range[k][:NumParam] = NewData.mean(axis=0)
             Stdev[k][:NumParam] = NewData.std(axis=0)
-            percentile75 = numpy.percentile(NewData, 75, axis=0)
+            percentile75 = np.percentile(NewData, 75, axis=0)
             # compute distance from the center of the cluster
-            # distance = numpy.sqrt(numpy.square((NewData - Range[k][:NumParam]) / Stdev[k][:NumParam]).sum(axis=1))
-            distance = numpy.sqrt(
-                numpy.square(NewData - Range[k][:NumParam]).sum(axis=1)
+            # distance = np.sqrt(np.square((NewData - Range[k][:NumParam]) / Stdev[k][:NumParam]).sum(axis=1))
+            distance = np.sqrt(
+                np.square(NewData - Range[k][:NumParam]).sum(axis=1)
             )
-            Threshold = numpy.median(distance) + distance.std() * Nthreshold
+            Threshold = np.median(distance) + distance.std() * Nthreshold
             #Threshold = Tmp.mean() + Tmp.std() * Nthreshold
             Range[k][4] = Threshold
             LOG.trace('Threshold(%s) = %s', k, Threshold)
@@ -1416,13 +1416,13 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 f"Replace representative line width: mean {Range[k][0]} -> "
                 f"75% percentile {percentile75[0]}"
             )
-            _range = numpy.append(percentile75[0:1], Range[k][1:])
+            _range = np.append(percentile75[0:1], Range[k][1:])
             ValidRange.append(_range)
             ValidStdev.append(Stdev[k])
         LOG.debug('ReNumbering Table: %s', ReNumber)
         for j in range(len(Category)): Category[j] = ReNumber[Category[j]]
         #return (Region, Range, Stdev)
-        return (Region, numpy.array(ValidRange), numpy.array(ValidStdev), Category)
+        return (Region, np.array(ValidRange), np.array(ValidStdev), Category)
 
     def clustering_kmean_score(self, MeanDistance: float, MedianWidth: float, Ncluster: int, MemberRate: float) -> float:
         """Compute score of the clusters.
@@ -1440,7 +1440,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         ### 2011/05/12 modified for (distance==0)
         ### 2014/11/28 further modified for (distance==0)
         ### 2017/07/05 modified to be sensitive to MemberRate
-        # (distance * numpy.transpose(Region[5])).mean(): average distance from each cluster center
+        # (distance * np.transpose(Region[5])).mean(): average distance from each cluster center
         return(math.sqrt(MeanDistance**2.0 + (MedianWidth/2.0)**2.0) * (Ncluster+ 1.0/Ncluster) * ((1.0 - MemberRate) * 100.0 + 1.0))
 
     def detection_stage(
@@ -1452,7 +1452,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         category: List[int],
         Region: DetectedLineList,
         detect_signal: dict
-    ) -> Tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray]:
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Classify cluster members by their location on celestial coordinate.
 
         This method implements the first phase of cluster validation process,
@@ -1497,9 +1497,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         # Create Grid Parameter Space (Ncluster * nra * ndec)
         MinChanBinSp = 50.0
         BinningVariation = 1 + int(math.ceil(math.log(self.nchan/MinChanBinSp)/math.log(4)))
-        GridClusterWithBinning = numpy.zeros((Ncluster, BinningVariation, nra, ndec), dtype=numpy.float32)
-        #GridCluster = numpy.zeros((Ncluster, nra, ndec), dtype=numpy.float32)
-        GridMember = numpy.zeros((nra, ndec))
+        GridClusterWithBinning = np.zeros((Ncluster, BinningVariation, nra, ndec), dtype=np.float32)
+        #GridCluster = np.zeros((Ncluster, nra, ndec), dtype=np.float32)
+        GridMember = np.zeros((nra, ndec))
 
         # Set the number of spectra belong to each gridding positions
         for row in range(len(detect_signal)):
@@ -1542,9 +1542,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         #     exceeded two (out of three) thresholds in smoothing, and
         #     exceeded three (out of four) thresholds in final.
         #
-        #self.cluster_info['cluster_flag'] = numpy.zeros(GridCluster.shape, dtype=numpy.uint16)
+        #self.cluster_info['cluster_flag'] = np.zeros(GridCluster.shape, dtype=np.uint16)
         threshold = [1.5, 0.5]
-        cluster_flag = numpy.zeros(GridCluster.shape, dtype=numpy.uint16)
+        cluster_flag = np.zeros(GridCluster.shape, dtype=np.uint16)
         flag_digit = self.flag_digits['detection']
         cluster_flag = self.__update_cluster_flag(cluster_flag, 'detection', GridCluster, threshold, flag_digit)
 
@@ -1552,11 +1552,11 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
     def validation_stage(
         self,
-        GridCluster: numpy.ndarray,
-        GridMember: numpy.ndarray,
+        GridCluster: np.ndarray,
+        GridMember: np.ndarray,
         lines: List[List[Union[float, bool]]],
-        cluster_flag: numpy.ndarray
-    ) -> Tuple[numpy.ndarray, numpy.ndarray, List[List[Union[float, bool]]], numpy.ndarray]:
+        cluster_flag: np.ndarray
+    ) -> Tuple[np.ndarray, np.ndarray, List[List[Union[float, bool]]], np.ndarray]:
         """Validate clusters by their detection fraction on each grid.
 
         This method implements the second phase of cluster validation process,
@@ -1632,10 +1632,10 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
     def smoothing_stage(
         self,
-        GridCluster: numpy.ndarray,
+        GridCluster: np.ndarray,
         lines: List[List[Union[float, bool]]],
-        cluster_flag: numpy.ndarray
-    ) -> Tuple[numpy.ndarray, List[List[Union[float, bool]]], numpy.ndarray]:
+        cluster_flag: np.ndarray
+    ) -> Tuple[np.ndarray, List[List[Union[float, bool]]], np.ndarray]:
         """Smooth cluster distribution.
 
         This method implements the third phase of cluster validation process,
@@ -1685,7 +1685,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         #          [0.0, 0.2, 0.3, 0.2, 0.0]
         # NewRating = 1.0 / (Dx**2 + Dy**2) : if (Dx, Dy) == (0, 0) rating = 6.0
         (Ncluster, nra, ndec) = GridCluster.shape
-        GridScore = numpy.zeros((2, nra, ndec), dtype=numpy.float32)
+        GridScore = np.zeros((2, nra, ndec), dtype=np.float32)
         LOG.trace('GridCluster = %s', GridCluster)
         LOG.trace('lines = %s', lines)
         for Nc in range(Ncluster):
@@ -1739,10 +1739,10 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
     def final_stage(
         self,
-        GridCluster: numpy.ndarray,
-        GridMember: numpy.ndarray,
+        GridCluster: np.ndarray,
+        GridMember: np.ndarray,
         Region: DetectedLineList,
-        Region2: numpy.ndarray,
+        Region2: np.ndarray,
         lines: List[List[Union[int, bool]]],
         category: List[int],
         grid_ra: float,
@@ -1754,9 +1754,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         y0: float,
         Grid2SpectrumID: List[List[int]],
         index_list: List[int],
-        PosList: numpy.ndarray,
-        cluster_flag: numpy.ndarray
-    ) -> Tuple[collections.OrderedDict, List[List[Union[int, bool]]], List[List[Union[int, bool]]], numpy.ndarray]:
+        PosList: np.ndarray,
+        cluster_flag: np.ndarray
+    ) -> Tuple[collections.OrderedDict, List[List[Union[int, bool]]], List[List[Union[int, bool]]], np.ndarray]:
         """Distribute validated lines to each observed spectra.
 
         This method implements the final phase of cluster validation process,
@@ -1849,7 +1849,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             # Set-up SubCluster
             for Ns in range(len(MemberList)):  # Ns: SubCluster number
                 LOG.trace('------01------ Ns=%s', Ns)
-                SubPlane = numpy.zeros((nra, ndec), dtype=numpy.float32)
+                SubPlane = np.zeros((nra, ndec), dtype=np.float32)
                 for (x, y) in MemberList[Ns]: SubPlane[x][y] = Original[x][y]
                 ValidPlane, BlurPlane = self.DoBlur(Realmember[Ns], nra, ndec, SubPlane, ratio)
 
@@ -1869,8 +1869,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 (ylen, xlen) = self.GridClusterValidation[Nc].shape
                 # 2017/9/21 GridClusterValidation should not be used for order determination
                 # 0 <= xorder0,yorder0 <= 5, swap xorder0 and yorder0
-                if xorder < 0: xorder0 = max(min(numpy.sum(ValidPlane, axis=0).max()-1, 5), 0)
-                if yorder < 0: yorder0 = max(min(numpy.sum(ValidPlane, axis=1).max()-1, 5), 0)
+                if xorder < 0: xorder0 = max(min(np.sum(ValidPlane, axis=0).max()-1, 5), 0)
+                if yorder < 0: yorder0 = max(min(np.sum(ValidPlane, axis=1).max()-1, 5), 0)
                 LOG.trace('(X,Y)order, order0 = (%s, %s) (%s, %s)', xorder, yorder, xorder0, yorder0)
 
                 # clear Flag
@@ -1928,20 +1928,20 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                             # Instantiate SVD solver
                             solver = SVDSolver2D(xorder0, yorder0)
                             # prepare data for SVD fit
-                            xdata = numpy.array([FitData[i][2] for i in effective], dtype=numpy.float64)
-                            ydata = numpy.array([FitData[i][3] for i in effective], dtype=numpy.float64)
-                            lmindata = numpy.array([FitData[i][0] for i in effective], dtype=numpy.float64)
-                            lmaxdata = numpy.array([FitData[i][1] for i in effective], dtype=numpy.float64)
+                            xdata = np.array([FitData[i][2] for i in effective], dtype=np.float64)
+                            ydata = np.array([FitData[i][3] for i in effective], dtype=np.float64)
+                            lmindata = np.array([FitData[i][0] for i in effective], dtype=np.float64)
+                            lmaxdata = np.array([FitData[i][1] for i in effective], dtype=np.float64)
                         else:
                             # 2017/9/28 old code is incerted for validation purpose
                             # make arrays for coefficient calculation
                             # Matrix    MM x A = B  ->  A = MM^-1 x B
-                            M0 = numpy.zeros((xorder0 * 2 + 1) * (yorder0 * 2 + 1), dtype=numpy.float64)
-                            M1 = numpy.zeros((xorder0 * 2 + 1) * (yorder0 * 2 + 1), dtype=numpy.float64)
-                            B0 = numpy.zeros((xorder0 + 1) * (yorder0 + 1), dtype=numpy.float64)
-                            B1 = numpy.zeros((xorder0 + 1) * (yorder0 + 1), dtype=numpy.float64)
-                            MM0 = numpy.zeros([(xorder0 + 1) * (yorder0 + 1), (xorder0 + 1) * (yorder0 + 1)], dtype=numpy.float64)
-                            MM1 = numpy.zeros([(xorder0 + 1) * (yorder0 + 1), (xorder0 + 1) * (yorder0 + 1)], dtype=numpy.float64)
+                            M0 = np.zeros((xorder0 * 2 + 1) * (yorder0 * 2 + 1), dtype=np.float64)
+                            M1 = np.zeros((xorder0 * 2 + 1) * (yorder0 * 2 + 1), dtype=np.float64)
+                            B0 = np.zeros((xorder0 + 1) * (yorder0 + 1), dtype=np.float64)
+                            B1 = np.zeros((xorder0 + 1) * (yorder0 + 1), dtype=np.float64)
+                            MM0 = np.zeros([(xorder0 + 1) * (yorder0 + 1), (xorder0 + 1) * (yorder0 + 1)], dtype=np.float64)
+                            MM1 = np.zeros([(xorder0 + 1) * (yorder0 + 1), (xorder0 + 1) * (yorder0 + 1)], dtype=np.float64)
                             for (Width, Center, x, y, flag) in FitData:
                                 if flag == 1:
                                     for k in range(yorder0 * 2 + 1):
@@ -2012,9 +2012,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                         Fit1 -= Width
                         Diff.append(sqrt(Fit0*Fit0 + Fit1*Fit1))
                     if len(effective) > 1:
-                        npdiff = numpy.array(Diff)[effective]
+                        npdiff = np.array(Diff)[effective]
                         Threshold = npdiff.mean()
-                        Threshold += sqrt(numpy.square(npdiff - Threshold).mean()) * self.nsigma
+                        Threshold += sqrt(np.square(npdiff - Threshold).mean()) * self.nsigma
                     else:
                         Threshold = Diff[effective[0]] * 2.0
                     LOG.trace('Diff = %s', [Diff[i] for i in effective])
@@ -2097,7 +2097,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                             Nearest = []
                             square_aspect = grid_ra / grid_dec
                             square_aspect *= square_aspect
-                            Dist2 = numpy.inf
+                            Dist2 = np.inf
                             for xx in range(nra):
                                 for yy in range(ndec):
                                     if ValidPlane[xx][yy] == 1:
@@ -2165,7 +2165,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         return (RealSignal, lines, channelmap_range, cluster_flag)
 
-    def CleanIsolation(self, nra: int, ndec: int, Original: numpy.ndarray, Plane: numpy.ndarray, GridMember):
+    def CleanIsolation(self, nra: int, ndec: int, Original: np.ndarray, Plane: np.ndarray, GridMember):
         """Clean spatially isolated cluster.
 
         Pick up only Valid detections, and check if there are enough
@@ -2248,9 +2248,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                Realmember: int,
                nra: int,
                ndec: int,
-               SubPlane: numpy.ndarray,
+               SubPlane: np.ndarray,
                ratio: Integral
-        ) -> Tuple[numpy.ndarray, numpy.ndarray]:
+        ) -> Tuple[np.ndarray, np.ndarray]:
         """Blur cluster subplane.
 
         Convolve subplane data with two-dimensional boxcar kernal whose
@@ -2278,7 +2278,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         # caution: if nra < (Blur*2+1) and ndec < (Blur*2+1)
         #  => dimension of SPC.convolve2d(Sub,kernel) gets not (nra,ndec) but (Blur*2+1,Blur*2+1)
         if nra < (Blur * 2 + 1) and ndec < (Blur * 2 + 1): Blur = int((max(nra, ndec) - 1) // 2)
-        kernel = numpy.zeros((Blur * 2 + 1, Blur * 2 + 1), dtype=int)
+        kernel = np.zeros((Blur * 2 + 1, Blur * 2 + 1), dtype=int)
         for x in range(Blur * 2 + 1):
             dx = Blur - x
             for y in range(Blur * 2 + 1):
@@ -2337,7 +2337,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             # length of nchan+2. It will be faster if nchan is large while
             # it would be slow when number of lines is (extremely) large.
             nlines *= 2
-            flat_lines = numpy.array(lines).reshape((nlines))
+            flat_lines = np.array(lines).reshape((nlines))
             sorted_index = flat_lines.argsort()
             flag = -1
             left_edge = flat_lines[sorted_index[0]]
@@ -2360,12 +2360,12 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
     def __update_cluster_flag(
         self,
-        cluster_flag: numpy.ndarray,
+        cluster_flag: np.ndarray,
         stage: str,
-        GridCluster: numpy.ndarray,
+        GridCluster: np.ndarray,
         threshold: List[Integral],
         factor: int
-    ) -> numpy.ndarray:
+    ) -> np.ndarray:
         """Update cluster flag array.
 
         Set integer flag to cluster flag array (cluster_flag) according
@@ -2414,7 +2414,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         return cluster_flag
 
 
-def convolve2d(data: numpy.ndarray, kernel: numpy.ndarray, mode: str = 'nearest', cval: float = 0.0) -> numpy.ndarray:
+def convolve2d(data: np.ndarray, kernel: np.ndarray, mode: str = 'nearest', cval: float = 0.0) -> np.ndarray:
     """Perform two-dimensional convolution.
 
     Perform two-dimensional convolution. This implements direct convolution
@@ -2438,7 +2438,7 @@ def convolve2d(data: numpy.ndarray, kernel: numpy.ndarray, mode: str = 'nearest'
     (nkx, nky) = kernel.shape
     edgex = int(0.5 * (nkx - 1))
     edgey = int(0.5 * (nky - 1))
-    dummy = numpy.ones((ndx+2*edgex, ndy+2*edgey), dtype=numpy.float64) * cval
+    dummy = np.ones((ndx+2*edgex, ndy+2*edgey), dtype=np.float64) * cval
     dummy[edgex:ndx+edgex, edgey:ndy+edgey] = data
     if mode == 'nearest':
         dummy[0:edgex, 0:edgey] = data[0][0]
@@ -2451,7 +2451,7 @@ def convolve2d(data: numpy.ndarray, kernel: numpy.ndarray, mode: str = 'nearest'
         for i in range(ndy):
             dummy[0:edgex, i+edgey] = data[0][i]
             dummy[edgex+ndx:, i+edgey] = data[ndx-1][i]
-    cdata = numpy.zeros((ndx, ndy), dtype=numpy.float64)
+    cdata = np.zeros((ndx, ndy), dtype=np.float64)
     for ix in range(ndx):
         for iy in range(ndy):
             for jx in range(nkx):
@@ -2554,15 +2554,15 @@ class SVDSolver2D(object):
         self.L = (self.xorder + 1) * (self.yorder + 1)
 
         # design matrix
-        self.storage = numpy.empty(self.N * self.L, dtype=numpy.float64)
+        self.storage = np.empty(self.N * self.L, dtype=np.float64)
         self.G = None
 
         # for SVD
-        self.Vs = numpy.empty((self.L, self.L), dtype=numpy.float64)
-        self.B = numpy.empty(self.L, dtype=numpy.float64)
+        self.Vs = np.empty((self.L, self.L), dtype=np.float64)
+        self.B = np.empty(self.L, dtype=np.float64)
         self.U = None
 
-    def set_data_points(self, x: Union[List[Integral], numpy.ndarray], y: Union[List[Integral], numpy.ndarray]) -> None:
+    def set_data_points(self, x: Union[List[Integral], np.ndarray], y: Union[List[Integral], np.ndarray]) -> None:
         """Set data array.
 
         Configure design matrix from the input data arrays.
@@ -2576,7 +2576,7 @@ class SVDSolver2D(object):
         LOG.trace('nx, ny = %s, %s', nx, ny)
         assert nx == ny
         if self.N < nx:
-            self.storage = numpy.resize(self.storage, nx * self.L)
+            self.storage = np.resize(self.storage, nx * self.L)
         self.N = nx
         assert self.L <= self.N
 
@@ -2586,7 +2586,7 @@ class SVDSolver2D(object):
         self._set_design_matrix(x, y)
         #self._svd()
 
-    def _set_design_matrix(self, x: Union[List[Integral], numpy.ndarray], y: Union[List[Integral], numpy.ndarray]) -> None:
+    def _set_design_matrix(self, x: Union[List[Integral], np.ndarray], y: Union[List[Integral], np.ndarray]) -> None:
         """Configure design matrix.
 
         The design matrix G is a basis array that stores gj(xi)
@@ -2699,7 +2699,7 @@ class SVDSolver2D(object):
             for irow in range(self.L):
                 self.Vs[irow, icol] = Vh[icol, irow] * s[icol]
 
-    def _eval_poly_from_G(self, row: int, coeff: numpy.ndarray) -> float:
+    def _eval_poly_from_G(self, row: int, coeff: np.ndarray) -> float:
         """Evaluate polynomial with given coefficients.
 
         Args:
@@ -2719,10 +2719,10 @@ class SVDSolver2D(object):
 
     def solve_with_mask(
         self,
-        z: Union[List[Integral], numpy.ndarray],
-        out: Optional[numpy.ndarray] = None,
+        z: Union[List[Integral], np.ndarray],
+        out: Optional[np.ndarray] = None,
         nmask: int = 0
-    ) -> numpy.ndarray:
+    ) -> np.ndarray:
         """Solve least-square problem with SVD.
 
         Find x which minimizes ||A x - b||^2 where A is design matrix and
@@ -2746,7 +2746,7 @@ class SVDSolver2D(object):
         self._svd_with_mask(nmask)
 
         if out is None:
-            A = numpy.zeros(self.L, dtype=numpy.float64)
+            A = np.zeros(self.L, dtype=np.float64)
         else:
             A = out
             A[:] = 0
@@ -2763,10 +2763,10 @@ class SVDSolver2D(object):
 
     def solve_with_eps(
         self,
-        z: Union[List[Integral], numpy.ndarray],
-        out: Optional[numpy.ndarray] = None,
+        z: Union[List[Integral], np.ndarray],
+        out: Optional[np.ndarray] = None,
         eps: float = 1.0e-7
-    ) -> numpy.ndarray:
+    ) -> np.ndarray:
         """Solve least-square problem with SVD.
 
         Find x which minimizes ||A x - b||^2 where A is design matrix and
@@ -2791,7 +2791,7 @@ class SVDSolver2D(object):
         self._svd_with_eps(eps)
 
         if out is None:
-            A = numpy.zeros(self.L, dtype=numpy.float64)
+            A = np.zeros(self.L, dtype=np.float64)
         else:
             A = out
             A[:] = 0
@@ -2808,10 +2808,10 @@ class SVDSolver2D(object):
 
     def solve_for(
         self,
-        z: Union[List[Integral], numpy.ndarray],
-        out: Optional[numpy.ndarray] = None,
+        z: Union[List[Integral], np.ndarray],
+        out: Optional[np.ndarray] = None,
         eps: float = 1.0e-7
-    ) -> numpy.ndarray:
+    ) -> np.ndarray:
         """Solve least-square problem with SVD.
 
         Find x which minimizes ||A x - b||^2 where A is design matrix and
@@ -2836,7 +2836,7 @@ class SVDSolver2D(object):
         self._svd(eps)
 
         if out is None:
-            A = numpy.zeros(self.L, dtype=numpy.float64)
+            A = np.zeros(self.L, dtype=np.float64)
         else:
             A = out
             A[:] = 0
@@ -2853,9 +2853,9 @@ class SVDSolver2D(object):
 
     def find_good_solution(
         self,
-        z: Union[List[Integral], numpy.ndarray],
+        z: Union[List[Integral], np.ndarray],
         threshold: float = 0.05
-    ) -> numpy.ndarray:
+    ) -> np.ndarray:
         """Find the best least-square solution from candidate SVD solutions.
 
         Find x which minimizes ||A x - b||^2 where A is design matrix and
@@ -2887,10 +2887,10 @@ class SVDSolver2D(object):
 
         best_score = 1e30
         best_eps = eps_list[0]
-        intlog = lambda x: int(numpy.log10(x))
-        ans = numpy.empty(self.L, dtype=numpy.float64)
-        best_ans = numpy.empty(self.L, dtype=numpy.float64)
-        diff = numpy.empty(self.N, dtype=numpy.float64)
+        intlog = lambda x: int(np.log10(x))
+        ans = np.empty(self.L, dtype=np.float64)
+        best_ans = np.empty(self.L, dtype=np.float64)
+        diff = np.empty(self.N, dtype=np.float64)
 
         # do SVD
         self._do_svd()
