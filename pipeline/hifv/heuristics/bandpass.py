@@ -122,6 +122,7 @@ def _compute_median_snr(caltable: str) -> dict:
             # Compute median SNR
             if snr.size == 0:
                 median_snr[spw] = 0
+                subtable.close()
                 continue
             valid_snr = snr[(~flag) & (~np.isnan(snr))].ravel()
             # if there are no valid SNR values, set median to 0
@@ -226,6 +227,8 @@ def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypec
     for bad_spw in low_snr_spws:
         snr = median_snrs[bad_spw]
         nchan = m.get_spectral_window(bad_spw).num_channels
+        if nchan < 16:
+            continue
         Nbin = nchan / 16 if snr <= 0 else min((50.0 / snr) ** 2, nchan / 16)
         solint_smooth = f"inf,{int(Nbin)}ch"
 
