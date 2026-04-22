@@ -1361,7 +1361,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 [[row, chan0, chan1, RA, DEC, flag, Binning],[],[],,,[]]
 
             Nthreshold: Threshold factor for detecting outlier
-            NumParam: Number of cluster properties
+            NumParam: Number of cluster properties. Must be 2, 3, or 4.
 
         Returns:
             4-tuple of the following values.
@@ -1370,6 +1370,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                 Stdev: Stdev[Ncluster][5]: [ClusterStddevX, ClusterStddevY, 0, 0, 0]
                 Category: renumbered category
         """
+        assert NumParam in [2, 3, 4]
         IDX = numpy.array([x for x in range(len(Data))])
         Ncluster = Category.max()
         C = Ncluster + 1
@@ -1380,22 +1381,21 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         Range = numpy.zeros((C, 5), float)
         Stdev = numpy.zeros((C, 5), float)
         for k in range(Ncluster):
-            NewData = Data[Category == k+1].T
+            NewData = Data[Category == k+1]
             NewIDX = IDX[Category == k+1]
-            for i in range(NumParam):
-                Range[k][i] = NewData[i].mean()
-                Stdev[k][i] = NewData[i].std()
-            if(NumParam == 4):
-                Tmp = ((NewData - numpy.array([[Range[k][0]], [Range[k][1]], [Range[k][2]], [Range[k][3]]]))**2).sum(axis=0)**0.5
-            elif(NumParam == 3):
-                Tmp = ((NewData - numpy.array([[Range[k][0]], [Range[k][1]], [Range[k][2]]]))**2).sum(axis=0)**0.5
-            else: # NumParam == 2
-                Tmp = ((NewData - numpy.array([[Range[k][0]], [Range[k][1]]]))**2).sum(axis=0)**0.5
-            Threshold = numpy.median(Tmp) + Tmp.std() * Nthreshold
+            Range[k][:NumParam] = NewData.mean(axis=0)
+            Stdev[k][:NumParam] = NewData.std(axis=0)
+            percentile75 = numpy.percentile(NewData, 75, axis=0)
+            # compute distance from the center of the cluster
+            # distance = numpy.sqrt(numpy.square((NewData - Range[k][:NumParam]) / Stdev[k][:NumParam]).sum(axis=1))
+            distance = numpy.sqrt(
+                numpy.square(NewData - Range[k][:NumParam]).sum(axis=1)
+            )
+            Threshold = numpy.median(distance) + distance.std() * Nthreshold
             #Threshold = Tmp.mean() + Tmp.std() * Nthreshold
             Range[k][4] = Threshold
             LOG.trace('Threshold(%s) = %s', k, Threshold)
-            Out = NewIDX[Tmp > Threshold]
+            Out = NewIDX[distance > Threshold]
             #if (len(NewIDX) - len(Out)) < 6: # max 3 detections for each binning: detected in two binning pattern
             if (len(NewIDX) - len(Out)) < 3: # max 3 detections for each binning: detected in at least one binning pattern: sensitive to very narrow lines
                 LOG.trace('Non Cluster: %s', len(NewIDX))
@@ -1412,7 +1412,12 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             ReNumber[k+1] = len(ValidClusterID)
             ValidClusterID.append(k)
         for k in ValidClusterID:
-            ValidRange.append(Range[k])
+            LOG.info(
+                f"Replace representative line width: mean {Range[k][0]} -> "
+                f"75% percentile {percentile75[0]}"
+            )
+            _range = numpy.append(percentile75[0:1], Range[k][1:])
+            ValidRange.append(_range)
             ValidStdev.append(Stdev[k])
         LOG.debug('ReNumbering Table: %s', ReNumber)
         for j in range(len(Category)): Category[j] = ReNumber[Category[j]]
