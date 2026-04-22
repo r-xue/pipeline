@@ -1240,7 +1240,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             cluster, and list of line properties with associated spatial
             coordinate (which is same format as Region).
         """
-        Data = self.set_data(Region2, ordering=[0, 1])  # Data: numpy[[width, center],[w,c],,,]
+        # Data: numpy[[width, center],[w,c],,,]
+        Data = numpy.asarray(Region2, dtype=float)[:, [0, 1]]
         Repeat = 3  # Number of artificial detection points to normalize the cluster distance
         # Calculate LinkMatrix from given data set
         if method.lower() == 'single': # nearest point linkage method
@@ -1339,54 +1340,6 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         self._merge_cluster_info(**cluster_info)
 
         return (Ncluster, Bestlines, Category, Region)
-
-    def set_data(self, Observation: numpy.ndarray, ordering: Union[str,List[int]] = 'none') -> numpy.ndarray:
-        """Transpose axes of two-dimensional array data.
-
-        Observation: numpy.array([[val1, val2, val3,..,valN],
-                                  [val1, val2, val3,..,valN],
-                                   ........................
-                                  [val1, val2, val3,..,valN]], float)
-        where N is a max dimensions of parameter space
-            ordering: 'none' or list of ordering of columns
-              e.g., ordering=[2,3,1,0] => [col3,col2,col0,col1]
-
-        self.Data: Observation data
-        self.NumParam: Number of dimensions to be used for Clustering Analysis
-        self.Factor: Set default Whitening factor (to be 1.0)
-
-        Args:
-            Observation: Two-dimensional array data
-            ordering: Axis order for output array
-
-        Raises:
-            ValueError: Given array is not two-dimensional
-
-        Returns:
-            Transposed array
-        """
-        if ordering != 'none':
-            NumParam = len(ordering)
-            OrderList = ordering
-        else:
-            NumParam = len(Observation[0])
-            OrderList = list(range(NumParam))
-        if isinstance(Observation, list):
-            Obs = numpy.array(Observation, float)
-        else:
-            Obs = Observation.copy()
-        if len(Obs.shape) == 2:
-            Data = numpy.zeros((Obs.shape[0], NumParam), float)
-            for i in range(Obs.shape[0]):
-                for j in range(NumParam):
-                    Data[i][j] = Obs[i][OrderList[j]]
-            Factor = numpy.ones(NumParam, float)
-            Ndata = len(Data)
-        else:
-            LOG.error("Data should be 2-dimensional. {}-dimensional data was given".format(len(Obs.shape)))
-            raise ValueError('Data should be 2-dimensional!')
-        del Obs, OrderList
-        return Data
 
     def clean_cluster(self,
                       Data: numpy.ndarray,
