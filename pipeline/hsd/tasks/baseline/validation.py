@@ -1052,7 +1052,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         Returns:
             4-tuple representing clustering results, number of clusters,
-            list of cluster properties (Center, Width/WHITEN, T/F, ClusterRadius),
+            list of cluster properties (Center, 75%PercentileWidth/WHITEN, T/F, ClusterRadius, MedianWidth/WHITEN),
             List of category indices indicating which lines belong to what
             cluster, and list of line properties with associated spatial
             coordinate (which is same format as Region).
@@ -1124,8 +1124,13 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                         indices = [x for x in range(len(category)) if category[x] == Nc and Region[x][5] != 0]
                         properties = Region2.take(indices, axis=0)
                         rep_width = np.percentile(properties[:, 0], 75)
-                        rep_center = np.median(properties[:, 1])
-                        lines.append([rep_center, rep_width, True, MaxDistance])
+                        median_prop = np.median(properties[:, :2], axis=0)
+                        LOG.info(
+                            f"Cluster {Nc}:Replace representative line width: "
+                            f"{median_prop[0]} (median) -> "
+                            f"{rep_width} (75% percentile)"
+                        )
+                        lines.append([median_prop[1], rep_width, True, MaxDistance, median_prop[0]])
                     MemberRate = (len(Region) - Outlier)/float(len(Region))
                     MeanDistance = (distance * np.transpose(np.array(Region))[5]).mean()
                     LOG.trace('lines = %s, MemberRate = %s', lines, MemberRate)
@@ -1171,7 +1176,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
             'algorithm': 'kmean',
             'cluster_score': [ListNcluster, ListScore],
             'detected_lines': Region2,
-            'cluster_property': Bestlines,  # [[Center, Width/WHITEN, T/F, ClusterRadius],[],,,[]]
+            'cluster_property': Bestlines,  # [[Center, 75%PercentileWidth/WHITEN, T/F, ClusterRadius, MedianWidth/WHITEN],[],,,[]]
             'cluster_scale': self.CLUSTER_WHITEN
         }
         self._merge_cluster_info(**cluster_info)
@@ -1235,7 +1240,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         Returns:
             4-tuple representing clustering results, number of clusters,
-            list of cluster properties (Center, Width/WHITEN, T/F, ClusterRadius),
+            list of cluster properties (Center, 75%PercentileWidth/WHITEN, T/F, ClusterRadius, MeanWidth),
             List of category indices indicating which lines belong to what
             cluster, and list of line properties with associated spatial
             coordinate (which is same format as Region).
@@ -1319,7 +1324,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                         Category[NewIDX[i]] = C + NewCategory[i] - 1
         Ncluster = Category.max() # update Ncluster
 
-        (Region, Range, Stdev, Category) = self.clean_cluster(Data, Category, Region, nThreshold2, 2) # nThreshold, NumParam
+        (Region, Range, Percentile75, Stdev, Category) = self.clean_cluster(Data, Category, Region, nThreshold2, 2) # nThreshold, NumParam
         # 2017/7/25 ReNumbering is done in clean_cluster
         #for i in range(len(Category)):
         #    #if Category[i] > Ncluster: Region[i][5] = 0 # flag out cleaned data
@@ -1327,14 +1332,27 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         Bestlines = []
         Ncluster = len(Range)
         for j in range(Ncluster):
-            Bestlines.append([Range[j][1], Range[j][0], True, Range[j][4]])
+            LOG.info(
+                f"Cluster {j}: Replace representative line width: "
+                f"{Range[j][0]} (mean) -> "
+                f"{Percentile75[j][0]} (75% percentile)"
+            )
+            # [[Center, 75%PercentileWidth, T/F, ClusterRadius, MeanWidth]
+            _line = [
+                Range[j][1],
+                Percentile75[j][0],
+                True,
+                Range[j][4],
+                Range[j][0]
+            ]
+            Bestlines.append(_line)
         LOG.info('Final: Ncluster = %s, lines = %s', Ncluster, Bestlines)
 
         cluster_info = {
             'algorithm': 'hierarchy',
             'cluster_score': [[1, 2, 3, 4, 5], [1, 2, 3, 4, 5]],
             'detected_lines': Region2,
-            'cluster_property': Bestlines,  # [[Center, Width, T/F, ClusterRadius],[],,,[]]
+            'cluster_property': Bestlines,  # [[Center, 75%PercentileWidth/WHITEN, T/F, ClusterRadius, MeanWidth/WHITEN],[],,,[]]
             'cluster_scale': self.CLUSTER_WHITEN
         }
         self._merge_cluster_info(**cluster_info)
@@ -1366,34 +1384,43 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         Returns:
             4-tuple of the following values.
                 Region: flag information is added
-                Range: Range[Ncluster][5]: [ClusterCenterX, ClusterCenterY, 0, 0, Threshold]
-                Stdev: Stdev[Ncluster][5]: [ClusterStddevX, ClusterStddevY, 0, 0, 0]
+                Range: [Ncluster][NumParam + 1]
+                    [ClusterCenterX, ClusterCenterY, ..., Threshold]
+                75%Percentile: [Ncluster][NumParam]
+                    [Cluster75PercentileX, Cluster75PercentileY, ...]
+                Stdev: [Ncluster][NumParam]
+                    [ClusterStddevX, ClusterStddevY, ...]
                 Category: renumbered category
         """
         assert NumParam in [2, 3, 4]
         IDX = np.array([x for x in range(len(Data))])
         Ncluster = Category.max()
-        C = Ncluster + 1
         ValidClusterID = []
         ValidRange = []
+        Valid75Percentile = []
         ValidStdev = []
         ReNumber = {}
-        Range = np.zeros((C, 5), float)
-        Stdev = np.zeros((C, 5), float)
+        # feature_mean stores mean of each feature
+        # plus threshold value for outlier detection
+        feature_mean = np.zeros((Ncluster + 1, 5), float)
+        # feature_75percentile stores 75% percentile of each feature
+        feature_75percentile = np.zeros((Ncluster + 1, 4), float)
+        # feature_stddev stores stddev of each feature
+        feature_stddev = np.zeros((Ncluster + 1, 4), float)
         for k in range(Ncluster):
             NewData = Data[Category == k+1]
             NewIDX = IDX[Category == k+1]
-            Range[k][:NumParam] = NewData.mean(axis=0)
-            Stdev[k][:NumParam] = NewData.std(axis=0)
-            percentile75 = np.percentile(NewData, 75, axis=0)
+            feature_mean[k][:NumParam] = NewData.mean(axis=0)
+            feature_75percentile[k][:NumParam] = np.percentile(NewData, 75, axis=0)
+            feature_stddev[k][:NumParam] = NewData.std(axis=0)
             # compute distance from the center of the cluster
             # distance = np.sqrt(np.square((NewData - Range[k][:NumParam]) / Stdev[k][:NumParam]).sum(axis=1))
             distance = np.sqrt(
-                np.square(NewData - Range[k][:NumParam]).sum(axis=1)
+                np.square(NewData - feature_mean[k][:NumParam]).sum(axis=1)
             )
             Threshold = np.median(distance) + distance.std() * Nthreshold
             #Threshold = Tmp.mean() + Tmp.std() * Nthreshold
-            Range[k][4] = Threshold
+            feature_mean[k][4] = Threshold
             LOG.trace('Threshold(%s) = %s', k, Threshold)
             Out = NewIDX[distance > Threshold]
             #if (len(NewIDX) - len(Out)) < 6: # max 3 detections for each binning: detected in two binning pattern
@@ -1411,18 +1438,13 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                     Region[i][5] = 0
             ReNumber[k+1] = len(ValidClusterID)
             ValidClusterID.append(k)
-        for k in ValidClusterID:
-            LOG.info(
-                f"Replace representative line width: mean {Range[k][0]} -> "
-                f"75% percentile {percentile75[0]}"
-            )
-            _range = np.append(percentile75[0:1], Range[k][1:])
-            ValidRange.append(_range)
-            ValidStdev.append(Stdev[k])
+        ValidRange = feature_mean[ValidClusterID]
+        Valid75Percentile = feature_75percentile[ValidClusterID]
+        ValidStdev = feature_stddev[ValidClusterID]
         LOG.debug('ReNumbering Table: %s', ReNumber)
-        for j in range(len(Category)): Category[j] = ReNumber[Category[j]]
-        #return (Region, Range, Stdev)
-        return (Region, np.array(ValidRange), np.array(ValidStdev), Category)
+        for j in range(len(Category)):
+            Category[j] = ReNumber[Category[j]]
+        return (Region, ValidRange, Valid75Percentile, ValidStdev, Category)
 
     def clustering_kmean_score(self, MeanDistance: float, MedianWidth: float, Ncluster: int, MemberRate: float) -> float:
         """Compute score of the clusters.
