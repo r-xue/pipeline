@@ -992,7 +992,7 @@ class RWDataTableColumn(RODataTableColumn):
 
 class DataTableColumnNoChange(RWDataTableColumn):
     def __init__(self, table):
-        super().__init__(table, "NOCHANGE", int)
+        super(RWDataTableColumn, self).__init__(table, "NOCHANGE", int)
 
     def putcell(self, idx, val):
         if isinstance(val, bool):
@@ -1006,7 +1006,7 @@ class DataTableColumnMaskList(RWDataTableColumn):
     NoMask = np.zeros((1, 2), dtype=np.int32) - 1  # [[-1,-1]]
 
     def __init__(self, table):
-        super().__init__(table, "MASKLIST", list)
+        super(RWDataTableColumn, self).__init__(table, "MASKLIST", list)
 
     def getcell(self, idx):
         v = self.tb.getcell(self.name, int(idx))

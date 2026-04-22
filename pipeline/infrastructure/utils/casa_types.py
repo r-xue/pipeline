@@ -8,12 +8,14 @@ from __future__ import annotations
 
 from typing import TypedDict
 
+from numpy.typing import NDArray
+
 
 class QuantityDict(TypedDict):
     """Type for CASA quantity dictionary (from qa tool)."""
 
     unit: str
-    value: float
+    value: NDArray
 
 
 class DirectionDict(TypedDict):
