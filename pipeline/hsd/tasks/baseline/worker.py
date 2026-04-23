@@ -687,7 +687,26 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
     def _process_list(
             parameter_config: dict[int, BaselineFitParamConfig],
             wave_number: list[int]
-    ):
+    ) -> dict[int, BaselineFitParamConfig]:
+        """Merge wave_number list into parameter_config.
+
+        BaselineFitParamConfig instances in the input dictionary
+        will have wave_number attribute that stores a list of
+        wave numbers for sinusoidal fitting. I.e., the update will
+        be done in-place. It also returns updated dictionary.
+
+        The same wave_number is applied to all spws.
+
+        Args:
+            parameter_config: BaselineFitParamConfig instances for each
+                spectral window
+            wave_number: Input wave_number parameter. Must be list.
+            context: Pipeline context object. Defaults to None.
+            ms: MeasurementSet object. Defaults to None.
+
+        Returns:
+            Updated BaselineFitParamConfig dictionary
+        """
         for config in parameter_config.values():
             # We only need to set this if the fit function is sinusoid. Otherwise,
             # it should already be set to None in the case of polynomials and cspline
@@ -703,6 +722,27 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             context: Context | None = None,
             ms: MeasurementSet | None = None
     ) -> dict[int, BaselineFitParamConfig]:
+        """Merge wave_number dictionary into parameter_config.
+
+        BaselineFitParamConfig instances in the input dictionary
+        will have wave_number attribute that stores a list of
+        wave numbers for sinusoidal fitting. I.e., the update will
+        be done in-place. It also returns updated dictionary.
+
+        The list of wave numbers specified in wave_number can vary
+        among spw.
+
+        Args:
+            parameter_config: BaselineFitParamConfig instances for each
+                spectral window
+            wave_number: Input wave_number parameter. Must be dict.
+                Format is {spwidX: [n0, n1, ...], spwidY: [m0, m1, ...]}.
+            context: Pipeline context object. Defaults to None.
+            ms: MeasurementSet object. Defaults to None.
+
+        Returns:
+            Updated BaselineFitParamConfig dictionary
+        """
 
         # translate input spw ids (which are either real or virtual)
         # into real spw ids
@@ -727,10 +767,25 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
     @staticmethod
     def configure_wave_number(
             parameter_config: dict[int, BaselineFitParamConfig],
-            wave_number: list | dict = None,
+            wave_number: list | dict,
             context: Context | None = None,
             ms: MeasurementSet | None = None
-    )->None:
+    ):
+        """Update parameter_config according to the input wave_number.
+
+        The update will be done in-place.
+
+        Args:
+            parameter_config: BaselineFitParamConfig instances for each
+                spectral window
+            wave_number: Input wave_number parameter. Must be
+                either list or dict
+            context: Pipeline context object. Defaults to None.
+            ms: MeasurementSet object. Defaults to None.
+
+        Raises:
+            TypeError: wave_number is neither list nor dict
+        """
         # Possible inputs, wave_number: list, dict[int: list[int]]
         # Check that wave number is a list or a dictionary
         if isinstance(wave_number, list):
