@@ -196,7 +196,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                 self.fitorder_heuristic = fitorder.FitOrderHeuristics()
             else:
                 config_report.append(
-                    'Baseline-Fitting order was fixed to {}'.format(fit_order)
+                    f'Baseline-Fitting order was fixed to {fit_order}'
                 )
                 self.fitorder_heuristic = lambda *args, **kwargs: fit_order
         else:
@@ -210,16 +210,19 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         vis = ms.name
         if DEBUG() or TRACE():
-            LOG.debug('MS "{}" ant {} field {} spw {}'.format(os.path.basename(vis), antenna_id, field_id, spw_id))
+            LOG.debug(
+                f'MS "{os.path.basename(vis)}" ant {antenna_id} '
+                f'field {field_id} spw {spw_id}'
+            )
 
         nchan = ms.spectral_windows[spw_id].num_channels
         data_desc = ms.get_data_description(spw=spw_id)
         npol = data_desc.num_polarizations
         # edge must be formatted to [L, R]
-        assert isinstance(edge, (list, tuple)) and len(edge) == 2, 'edge must be a list [L, R]. "{0}" was given.'.format(edge)
+        assert isinstance(edge, (list, tuple)) and len(edge) == 2, f'edge must be a list [L, R]. "{edge}" was given.'
 
         if DEBUG() or TRACE():
-            LOG.debug('nchan={nchan} edge={edge}'.format(nchan=nchan, edge=edge))
+            LOG.debug(f'nchan={nchan} edge={edge}')
 
         if self.ApplicableDuration == 'subscan':
             timetable_index = 1
@@ -237,15 +240,17 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         # deviation mask
         if DEBUG() or TRACE():
-            LOG.debug('Deviation mask for field {} antenna {} spw {}: {}'.format(
-                field_id, antenna_id, spw_id, deviation_mask))
+            LOG.debug(
+                f'Deviation mask for field {field_id} antenna {antenna_id} '
+                f'spw {spw_id}: {deviation_mask}'
+            )
         if deviation_mask is not None:
             for mask_range in deviation_mask:
                 mask_array[max(0, mask_range[0]):min(nchan, mask_range[1] + 1)] = 0
 
         base_mask_array = mask_array.copy()
 
-        #LOG.info('base_mask_array = {}'.format(''.join(map(str, base_mask_array))))
+        #LOG.info(f"base_mask_array = {''.join(map(str, base_mask_array))}")
 
         time_table = datatable.get_timetable(antenna_id, spw_id, None, os.path.basename(ms.origin_ms), field_id)
         member_list = time_table[timetable_index]
@@ -254,13 +259,13 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         nrow_total = sum((len(x[0]) for x in member_list))
 
         LOG.info('Calculating Baseline Fitting Parameter...')
-        LOG.info('Processing {} spectra...'.format(nrow_total))
+        LOG.info(f'Processing {nrow_total} spectra...')
 
         #colname = self.inputs.colname
         datacolumn = self.__datacolumn(vis)
 
         if DEBUG() or TRACE():
-            LOG.debug('data column name is "{}"'.format(datacolumn))
+            LOG.debug(f'data column name is "{datacolumn}"')
 
         # open blparam file (append mode)
         with open(blparam, 'a') as blparamfileobj:
@@ -290,7 +295,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                     masklist = [datatable.getcell('MASKLIST', idx) for idx in idxs]
                     #masklist = [datatable.getcell('MASKLIST',idxs[i]) + flaglist[i]
                     #            for i in range(len(idxs))]
-                    #LOG.debug('DONE {}'.format(y))
+                    #LOG.debug(f'DONE {y}')
 
                     npol = spectra.shape[1]
                     for pol in range(npol):
@@ -312,19 +317,18 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                         # fit order determination (cnt'd)
                         if fit_order == 'automatic' and self.MaxPolynomialOrder != 'none':
                             averaged_polyorder = min(averaged_polyorder, self.MaxPolynomialOrder)
-                        #LOG.debug('time group {} pol {}: fitting order={}'.format(
-                        #            y, pol, averaged_polyorder))
+                        #LOG.debug(f'time group {y} pol {pol}: fitting order={averaged_polyorder}')
 
                         nrow = len(rows)
                         if DEBUG() or TRACE():
-                            LOG.debug('nrow = {}'.format(nrow))
-                            LOG.debug('len(idxs) = {}'.format(len(idxs)))
+                            LOG.debug(f'nrow = {nrow}')
+                            LOG.debug(f'len(idxs) = {len(idxs)}')
 
                         for i in range(nrow):
                             row = rows[i]
                             idx = idxs[i]
                             if TRACE():
-                                LOG.trace('===== Processing at row = {} ====='.format(row))
+                                LOG.trace(f'===== Processing at row = {row} =====')
                             #nochange = datatable.getcell('NOCHANGE',idx)
                             #LOG.trace('row = %s, Flag = %s'%(row, nochange))
 
@@ -332,10 +336,10 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                             maxwidth = 1
     #                       _masklist = masklist[i]
                             _masklist = list(masklist[i]) + flaglist[i][pol]
-                            #LOG.info('_masklist = {}'.format(_masklist))
-                            #LOG.info('masklist[{}] = {}'.format(i, masklist[i]))
-                            #LOG.info('flaglist[{}][{}] = {}'.format(i, pol, flaglist[i][pol]))
-                            #LOG.info('FLAG[{}][{}] = {}'.format(i, pol, ''.join(map(str, numpy.array(tb.getcell('FLAG', row)[pol], dtype=numpy.uint8)))))
+                            #LOG.info(f'_masklist = {_masklist}')
+                            #LOG.info(f'masklist[{i}] = {masklist[i]}')
+                            #LOG.info(f'flaglist[{i}][{pol}] = {flaglist[i][pol]}')
+                            #LOG.info(f'FLAG[{i}][{pol}] = {"".join(map(str, numpy.array(tb.getcell('FLAG', row)[pol], dtype=numpy.uint8)))}')
                             for [chan0, chan1] in _masklist:
                                 if chan1 - chan0 >= maxwidth:
                                     maxwidth = int((chan1 - chan0 + 1) / 1.4)
@@ -344,10 +348,9 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                                     #                         = 7/5 = 1.4
                             max_polyorder = int((nchan - sum(edge)) // maxwidth + 1)
                             if TRACE():
-                                LOG.trace('Masked Region from previous processes = {}'.format(
-                                    _masklist))
+                                LOG.trace(f'Masked Region from previous processes = {_masklist}')
                                 LOG.trace(f'edge parameters= ({edge.left}, {edge.right})')
-                                LOG.trace('Polynomial order = {}  Max Polynomial order = {}'.format(averaged_polyorder, max_polyorder))
+                                LOG.trace(f'Polynomial order = {averaged_polyorder}  Max Polynomial order = {max_polyorder}')
 
                             # fitting
                             polyorder = min(averaged_polyorder, max_polyorder)
@@ -357,7 +360,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                             param = self._configure_baseline_param(irow, pol, polyorder, nchan, edge, mask_array, _masklist)
 
                             if TRACE():
-                                LOG.trace('Row {}: param={}'.format(row, param))
+                                LOG.trace(f'Row {row}: param={param}')
                             write_blparam(blparamfileobj, param)
 
         return blparam
@@ -389,7 +392,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         """
         # Create mask for line protection
         effective_nchan = nchan - sum(edge)
-        #LOG.info('__ mask (before) = {}'.format(''.join(map(str, mask))))
+        #LOG.info(f'__ mask (before) = {"".join(map(str, mask))}')
 
         # a stuff of masklist is a list of index [start, end]
         if isinstance(mask_list, (list, numpy.ndarray)):
@@ -398,19 +401,18 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         else:
             LOG.critical('Invalid masklist')
 
-        #LOG.info('__ mask (after)  = {}'.format(''.join(map(str, mask))))
+        #LOG.info(f'__ mask (after)  = {"".join(map(str, mask))}')
         num_mask = int(effective_nchan - numpy.sum(mask[edge.left:nchan - edge.right] * 1.0))
 
         # here meaning of "masklist" is changed
         #         masklist: list of channel ranges to be *excluded* from the fit
         # fit_channel_list: list of channel ranges to be *included* in the fit
         fit_channel_list = self.__convert_mask_to_masklist(mask)
-        #LOG.info('__ masklist (before)= {}'.format(masklist))
-        #LOG.info('__ masklist (after) = {}'.format(fit_channel_list))
+        #LOG.info(f'__ masklist (before)= {masklist}')
+        #LOG.info(f'__ masklist (after) = {fit_channel_list}')
 
         if TRACE():
-            LOG.trace('effective_nchan, num_mask, diff={}, {}'.format(
-                effective_nchan, num_mask))
+            LOG.trace(f'effective_nchan, num_mask, diff={effective_nchan}, {num_mask}')
 
         outdata = self._get_fit_param(polyorder, nchan, edge, effective_nchan, num_mask, fit_channel_list)
 
@@ -422,7 +424,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         outdata[BLP.MASK] = as_maskstring(fit_channel_list)
 
         if TRACE():
-            LOG.trace('outdata={}'.format(outdata))
+            LOG.trace(f'outdata={outdata}')
 
         return outdata
 
@@ -527,7 +529,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
             num_nomask = nchan_without_edge - nchan_masked
             num_pieces = max(int(min(polyorder * num_nomask / float(nchan_without_edge) + 0.5, 0.1 * num_nomask)), 1)
             if TRACE():
-                LOG.trace('Cubic Spline Fit: Number of Sections = {}'.format(num_pieces))
+                LOG.trace(f'Cubic Spline Fit: Number of Sections = {num_pieces}')
             self.paramdict[BLP.NPIECE] = num_pieces
 
             fitfunc, order = self.switching_heuristic(

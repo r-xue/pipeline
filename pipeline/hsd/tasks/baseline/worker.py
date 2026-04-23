@@ -371,7 +371,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         wave_number = self.inputs.wave_number
         process_list = self.inputs.plan
         deviationmask_list = self.inputs.deviationmask
-        LOG.info('deviationmask_list={}'.format(deviationmask_list))
+        LOG.info(f'deviationmask_list={deviationmask_list}')
 
         field_id_list = self.inputs.field
         antenna_id_list = self.inputs.antenna
@@ -496,8 +496,10 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             fields = ms.get_fields(field_id=field_id)
             source_name = fields[0].source.name
             if source_name not in org_directions_dict:
-                raise RuntimeError("source_name {} not found in org_directions_dict (sources found are {})"
-                                   "".format(source_name, list(org_directions_dict.keys())))
+                raise RuntimeError(
+                    f"source_name {source_name} not found in "
+                    f"org_directions_dict (sources found are {list(org_directions_dict.keys())})"
+                )
             org_direction = org_directions_dict[source_name]
             data_manager = plotter.BaselineSubtractionDataManager(ms, outfile,
                                                                   self.inputs.context,
