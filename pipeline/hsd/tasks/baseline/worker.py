@@ -617,13 +617,13 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         If a dictionary is provided, keys are normalized to integers; SPWs not specified default to 'cspline'.
 
         Args:
+            real_spw_id_list: list of real spectral window IDs to process.
+            fit_function: The fit function parameter (str, dict, or None).
+            ms: MeasurementSet
+            context:Pipeline context
             switchpoly: Whether to fall back the fits from cubic spline to 1st or
                         2nd order polynomial when large masks exist at the edges
                         of the spw.
-            context:Pipeline context
-            ms: MeasurementSet
-            fit_function: The fit function parameter (str, dict, or None).
-            real_spw_id_list: list of real spectral window IDs to process.
 
         Raises:
             ValueError: fit_function has unsupported value.
