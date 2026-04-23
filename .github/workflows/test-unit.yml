@@ -44,7 +44,7 @@ jobs:
         # Current standard GitHub Runner specs (as of Dec 2025):
         #   ubuntu-latest: 4 CPU cores, 16 GB RAM
         #   macos-latest:  3 CPU cores,  7 GB RAM
-        PYTHONNOUSERSITE=1 python -m pytest -n logical \
+        PYTHONNOUSERSITE=1 python -m pytest -n 0 \
           --cov --cov=pipeline --cov-append \
           --cov-report=html --cov-report=xml  \
           pipeline/
