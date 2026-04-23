@@ -215,6 +215,27 @@ PYTHONNOUSERSITE=1 python -m pytest -n logical \
   pipeline/
 """
 
+# Run fast regression tests in a serial CASA session (xdist, no mpi)
+# Override working directory: PL_WORKDIR=/my/path pixi run test-regression
+test-regression = { cmd = """
+cd $PL_WORKDIR && \
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+  python -m pytest -n logical --dist worksteal \
+  -m "not mpi" \
+  --cov --cov=pipeline --cov-append \
+  --cov-report=html --cov-report=xml \
+  $PIXI_PROJECT_ROOT/tests/regression/fast/
+""", env = { PL_WORKDIR = "../working" } }
+
+# Run a single small ALMA-IF fast regression test (pltest1)
+# Override working directory: PL_WORKDIR=/my/path pixi run test-pltest1
+test-pltest1 = { cmd = """
+cd $PL_WORKDIR && \
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+  python -m casashell --nogui --log2term \
+  -c "import pytest; pytest.main(['$PIXI_PROJECT_ROOT/tests/regression/fast/alma_if_fast_test.py::test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small__PPR__regression'])"
+""", env = { PL_WORKDIR = "../working" } }
+
 # Fetch/update CASA runtime data
 fetch-casarundata = "python -c 'import casatools'"
 
