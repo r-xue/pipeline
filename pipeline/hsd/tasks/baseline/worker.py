@@ -418,21 +418,21 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             LOG.debug('Cleaning up blparam file for %s', vis)
             os.remove(blparam)
 
-        for (field_id, antenna_id, spw_id) in process_list.iterate_id():
-            if (field_id, antenna_id, spw_id) in deviationmask_list:
-                deviationmask = deviationmask_list[(field_id, antenna_id, spw_id)]
+        for (field_id, antenna_id, real_spw_id) in process_list.iterate_id():
+            if (field_id, antenna_id, real_spw_id) in deviationmask_list:
+                deviationmask = deviationmask_list[(field_id, antenna_id, real_spw_id)]
 
             else:
                 deviationmask = None
 
             formatted_edge = list(common.parseEdge(edge))
-            heuristic = spw_funcs_dict[spw_id]
+            heuristic = spw_funcs_dict[real_spw_id]
 
-            current_fit_order = fit_order_dict.get(spw_id, 'automatic')
+            current_fit_order = fit_order_dict.get(real_spw_id, 'automatic')
 
             out_blparam = heuristic(
                 self.datatable, ms, rowmap,
-                antenna_id, field_id, spw_id,
+                antenna_id, field_id, real_spw_id,
                 current_fit_order, formatted_edge,
                 deviationmask, blparam
             )
@@ -482,14 +482,14 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         plot_list = []
         stats = []
 
-        for (field_id, antenna_id, spw_id, grid_table, channelmap_range) in accum.iterate_all():
-            virtual_spwid = self.inputs.context.observing_run.real2virtual_spw_id(spw_id, ms)
-            data_desc = ms.get_data_description(spw=spw_id)
+        for (field_id, antenna_id, real_spw_id, grid_table, channelmap_range) in accum.iterate_all():
+            virtual_spwid = self.inputs.context.observing_run.real2virtual_spw_id(real_spw_id, ms)
+            data_desc = ms.get_data_description(spw=real_spw_id)
             num_pol = data_desc.num_polarizations
             polids = numpy.arange(num_pol, dtype=int)
-            LOG.info('field %s antenna %s spw %s', field_id, antenna_id, spw_id)
-            if (field_id, antenna_id, spw_id) in deviationmask_list:
-                deviationmask = deviationmask_list[(field_id, antenna_id, spw_id)]
+            LOG.info('field %s antenna %s spw %s', field_id, antenna_id, real_spw_id)
+            if (field_id, antenna_id, real_spw_id) in deviationmask_list:
+                deviationmask = deviationmask_list[(field_id, antenna_id, real_spw_id)]
             else:
                 deviationmask = None
 
@@ -508,7 +508,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                                                                                   polids,
                                                                                   grid_table,
                                                                                   org_direction)
-            spw = ms.spectral_windows[spw_id]
+            spw = ms.spectral_windows[real_spw_id]
             nchan = spw.num_channels
             data_desc = ms.get_data_description(spw=spw)
             npol = data_desc.num_polarizations
@@ -522,13 +522,13 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             prefit_integrated_data = data[2]
             prefit_map_data = data[3]
             prefit_averaged_data = data[4]
-            stats.extend(quality_manager.calculate_baseline_quality_stat(field_id, antenna_id, spw_id,
+            stats.extend(quality_manager.calculate_baseline_quality_stat(field_id, antenna_id, real_spw_id,
                                                                          postfit_integrated_data,
                                                                          npol, frequency,
                                                                          deviationmask,
                                                                          channelmap_range,
                                                                          formatted_edge))
-            plot_list.extend(plot_manager.plot_spectra_with_fit(field_id, antenna_id, spw_id,
+            plot_list.extend(plot_manager.plot_spectra_with_fit(field_id, antenna_id, real_spw_id,
                                                                 postfit_integrated_data,
                                                                 postfit_map_data,
                                                                 prefit_integrated_data,
@@ -566,7 +566,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             A dictionary mapping each real SPW ID (int) to its fit order (int or 'automatic').
         """
         if not fit_order:
-            return {spw_id: 'automatic' for spw_id in real_spw_id_list}
+            return {real_spw_id: 'automatic' for real_spw_id in real_spw_id_list}
 
         elif isinstance(fit_order, (int, str)):
             if isinstance(fit_order, str):
@@ -577,7 +577,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                 value = 'automatic'
             else:
                 value = fit_order
-            return {spw_id: value for spw_id in real_spw_id_list}
+            return {real_spw_id: value for real_spw_id in real_spw_id_list}
 
         elif isinstance(fit_order, dict):
             fit_order_dict = {}
@@ -594,8 +594,8 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                     fit_order_dict[real_spw_id] = 'automatic'
                 else:
                     fit_order_dict[real_spw_id] = v
-            return {spw_id: fit_order_dict.get(spw_id, 'automatic')
-                    for spw_id in real_spw_id_list}
+            return {real_spw_id: fit_order_dict.get(real_spw_id, 'automatic')
+                    for real_spw_id in real_spw_id_list}
 
         else:
             raise TypeError(f"Value of fit_order has wrong data type: {type(fit_order)}")
@@ -643,10 +643,10 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                 raise ValueError(f"Unsupported fitting function value: {fit_function}")
 
             heuristics_out = {
-                spw_id: BaselineFitParamConfig(
+                real_spw_id: BaselineFitParamConfig(
                     fitfunc=fit_function,
                     switchpoly=switchpoly
-                ) for spw_id in real_spw_id_list
+                ) for real_spw_id in real_spw_id_list
             }
 
             return heuristics_out
