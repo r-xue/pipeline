@@ -176,7 +176,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         """
         # construct configuration report
         config_report = [
-            f'Starting BaselineFitParamConfig for EB {ms.basename},  '
+            f'Starting BaselineFitParamConfig for MS {ms.basename},  '
             f'field {field_id}, spw {spw_id}, antenna {antenna_id}\n'
         ]
 
