@@ -30,17 +30,16 @@ tracks the latest supported CASA snapshot.
 | Environment | CASA version | Python |
 |-------------|-------------|--------|
 | `default` (alias: `casa675-py312`) | 6.7.5 | 3.12 |
-| `casa675-py313` | 6.7.5 | 3.13 (linux-64 only) |
+| `casa675-py313` | 6.7.5 | 3.13 (linux-64 + osx-arm64) |
 | `casa675-py312` | 6.7.5 | 3.12 |
+| `casa674-py312` | 6.7.4 | 3.12 |
 | `casa671-py312` | 6.7.1 | 3.12 |
-| `casa671-py310` | 6.7.1 | 3.10 |
-| `casa666-py310` | 6.6.6 | 3.10 |
 | `docs` | 6.7.5 | 3.12 (docs extras) |
 
 Select a non-default environment with `--environment` / `-e`:
 
 ```bash
-pixi run -e casa671-py310 test-unit
+pixi run -e casa671-py312 test-unit
 ```
 
 ---
@@ -110,7 +109,7 @@ pixi run fetch-casarundata
 
 ---
 
-### `build-docs` — build HTML documentation
+### `build-docs` — build HTML documentation (full clean rebuild)
 
 Builds the Sphinx documentation into `docs/_build/html/`.
 
@@ -119,6 +118,25 @@ pixi run build-docs
 
 # Use the docs environment (Python 3.12 + docs extras)
 pixi run -e docs build-docs
+```
+
+---
+
+### `build-docs-fast` — incremental HTML documentation build
+
+Reuses cached doctrees and autosummary stubs.  Much faster during active
+documentation development; use `build-docs` for a clean final build.
+
+```bash
+pixi run build-docs-fast
+```
+
+---
+
+### `build-pdf` — build PDF (LaTeX) documentation
+
+```bash
+pixi run build-pdf
 ```
 
 ---
@@ -155,8 +173,8 @@ PL_WORKDIR=/zfs/scratch/PIPE-3061 pixi run test-pltest1
 ## Running tasks against a specific CASA version
 
 ```bash
-# Smoke-test with CASA 6.6.6
-pixi run -e casa666-py310 test-pltest1
+# Smoke-test with CASA 6.7.4
+pixi run -e casa674-py312 test-pltest1
 
 # Full regression with CASA 6.7.1 / Python 3.12
 pixi run -e casa671-py312 test-regression
@@ -170,7 +188,7 @@ Drop into an interactive shell with the environment activated:
 
 ```bash
 pixi shell                  # default environment
-pixi shell -e casa671-py310 # specific environment
+pixi shell -e casa671-py312 # specific environment
 ```
 
 ---
@@ -183,4 +201,6 @@ pixi shell -e casa671-py310 # specific environment
 | Fast regression (all) | `pixi run test-regression` | `../working` |
 | Single ALMA-IF test | `pixi run test-pltest1` | `../working` |
 | Init CASA runtime data | `pixi run fetch-casarundata` | project root |
-| Build docs | `pixi run build-docs` | `docs/` |
+| Build docs (clean) | `pixi run build-docs` | `docs/` |
+| Build docs (fast) | `pixi run build-docs-fast` | `docs/` |
+| Build PDF docs | `pixi run build-pdf` | `docs/` |
