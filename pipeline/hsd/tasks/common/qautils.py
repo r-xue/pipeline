@@ -15,7 +15,7 @@ class QAScoreAggregator():
     Class for QA score aggregation
     """
     def __init__( self,
-                  keys_to_aggregate: list[str],
+                  keys_to_aggregate: list[str] | None = None,
                   longmsg_format: str | dict[str, str] | None = None,
                   longmsg_keys: list[str] | None = None,
                   preserve_original: bool = True,
@@ -25,7 +25,9 @@ class QAScoreAggregator():
         Construct QAScoreAggregator instance
 
         keys_to_aggregate:     List of keys to aggregate.
-                                   Hierarchial matches will be done in the order of the list (list is higher to lower hierarchy)
+                                   Hierarchial matches will be done in the order of the list
+                                   (list is higher to lower hierarchy)
+                                   defalt is None to apply [ 'vis', 'field', 'spw', 'ant', 'pol' ]
         longmsg_format:        Template of the long msg, either a dict or a string.
                                    if string, uniform template applies to all scores.
                                    if dict, template is specified per metric_name.
@@ -36,7 +38,8 @@ class QAScoreAggregator():
         precision:             Number of decimal places to round score values. Default is 2.
         always_update_longmsg: Update longmsg and round the score regardless the aggregation. Default is True.
         """
-        self.keys_to_aggregate = keys_to_aggregate
+        self.keys_to_aggregate = [ 'vis', 'field', 'spw', 'ant', 'pol' ] \
+            if keys_to_aggregate is None else keys_to_aggregate
         self.longmsg_format = longmsg_format
         self.longmsg_keys = longmsg_keys
         self.preserve_original = preserve_original,

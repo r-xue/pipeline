@@ -47,13 +47,12 @@ class SDBaselineQAHandler(pqa.QAPlugin):
             qacalc.score_sd_line_detection(context.observing_run.ms_reduction_group, result)
         )
 
-        keys_to_aggregate = [ 'vis', 'field', 'spw', 'ant', 'pol' ]
-        aggregator = QAScoreAggregator( keys_to_aggregate = keys_to_aggregate,
-                                        longmsg_keys = keys_to_aggregate )
-        aggregated = aggregator.aggregate_qascores( scores )
-
-        result.qa.pool.extend(aggregated)
-
+        # append the reformatted qa message to result.qa.pool
+        longmsg_keys = [ 'vis', 'field', 'spw', 'ant', 'pol' ]
+        aggregator = QAScoreAggregator( longmsg_keys = longmsg_keys )
+        for qascore in scores:
+            aggregator.update_longmsg(qascore)
+        result.qa.pool.extend(scores)
 
 class SDBaselineListQAHandler(pqa.QAPlugin):
     """QA handler to handle list of results."""
