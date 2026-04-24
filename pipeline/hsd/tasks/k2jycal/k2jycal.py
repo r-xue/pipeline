@@ -24,6 +24,13 @@ LOG = infrastructure.get_logger(__name__)
 
 QUERIED_FACTOR_FILE = 'jyperk_query.csv'  # filename of the queried factor file
 
+DEFAULT_BACKUP_HOSTS = [
+    "https://asa.alma.cl/science/jy-kelvins",  # JAO
+    "https://almascience.nao.ac.jp/science/jy-kelvins",  # EA
+    "https://almascience.nrao.edu/science/jy-kelvins",  # NA
+    "https://almascience.eso.org/science/jy-kelvins"  # EU
+]
+
 
 class SDK2JyCalInputs(vdp.StandardInputs):
     """Inputs class for SDK2JyCal task."""
@@ -32,7 +39,7 @@ class SDK2JyCalInputs(vdp.StandardInputs):
     dbservice = vdp.VisDependentProperty(default=True)
     endpoint = vdp.VisDependentProperty(default='asdm')
     caltype = vdp.VisDependentProperty(default='amp', readonly=True)
-    backup_hosts = vdp.VisDependentProperty(default=[])
+    backup_hosts = vdp.VisDependentProperty(default=DEFAULT_BACKUP_HOSTS)
 
     @vdp.VisDependentProperty
     def infiles(self) -> str:
@@ -89,7 +96,7 @@ class SDK2JyCalInputs(vdp.StandardInputs):
         reffile: Optional[str] = None,
         dbservice: Optional[bool] = None,
         endpoint: Optional[str] = None,
-        backup_hosts: list[str] | None = None
+        backup_hosts: list[str] = DEFAULT_BACKUP_HOSTS
     ) -> None:
         """Initialize SDK2JyCalInputs instance.
 
@@ -172,6 +179,8 @@ class SDK2JyCalInputs(vdp.StandardInputs):
                 environment variable, JYPERKDB_URL. The URLs listed
                 here will be used in order when the query
                 to the primary endpoint fails.
+                Default is a list of URLs for all available endpoints,
+                namely JAO, EA, NA, and EU.
 
         """
         super(SDK2JyCalInputs, self).__init__()
