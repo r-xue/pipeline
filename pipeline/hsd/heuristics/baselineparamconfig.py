@@ -1,21 +1,26 @@
+from __future__ import annotations
+
 import abc
 import collections
 import enum
 import os
 import re
+from typing import TYPE_CHECKING
+
 import numpy
 
 import pipeline.infrastructure.api as api
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
-
-from pipeline.domain import DataTable, MeasurementSet
 from pipeline.infrastructure import casa_tools
 from pipeline.hsd.heuristics import fitorder
 
-from typing import Sequence, Tuple, Union
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
-LOG = infrastructure.get_logger(__name__)
+    from pipeline.domain import DataTable, MeasurementSet
+
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 def TRACE():
@@ -73,7 +78,7 @@ def do_switching(engine, nchan, edge, num_pieces, masklist):
     return engine(nchan, edge, num_pieces, masklist)
 
 
-class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
+class BaselineFitParamConfig(api.Heuristic, abc.ABC):
     """
     Generate/update BLParam file according to the input parameters.
     """
@@ -96,7 +101,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
         Raises:
             RuntimeError: Invalid fitting function was specified.
         """
-        super(BaselineFitParamConfig, self).__init__()
+        super().__init__()
         self.fitfunc = fitorder.get_fitting_function(fitfunc)
         LOG.info(f'Baseline parameter is optimized for {self.fitfunc.description} fitting')
 
@@ -139,8 +144,8 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
                   antenna_id: int,
                   field_id: int,
                   spw_id: int,
-                  fit_order: Union[str, int],
-                  edge: Tuple[int, int],
+                  fit_order: str | int,
+                  edge: tuple[int, int],
                   deviation_mask: list[dict],
                   blparam: str
         ) -> str:
@@ -403,7 +408,7 @@ class BaselineFitParamConfig(api.Heuristic, metaclass=abc.ABCMeta):
 
         return outdata
 
-    def _dummy_baseline_param( self, row: int, pol: int ) -> dict[BLP, Union[int, float, str]]:
+    def _dummy_baseline_param( self, row: int, pol: int ) -> dict[BLP, int | float | str]:
         """
         Create a dummy parameter dict for baseline parameters
 
