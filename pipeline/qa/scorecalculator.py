@@ -4012,7 +4012,7 @@ def score_sd_line_emission_off_range_at_peak(context: Context, result: SDImaging
         smsg = 'No significant off-line-range emission is detected at peak.'
         score = 1.0
 
-    origin = pqa.QAOrigin(metric_name='line_emission_off_range_at_peak',
+    origin = pqa.QAOrigin(metric_name='score_sd_line_emission_off_range_at_peak',
                           metric_score=score,
                           metric_units='')
     selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
