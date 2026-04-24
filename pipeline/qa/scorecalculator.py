@@ -4123,7 +4123,7 @@ def score_sdimage_contamination(context: Context, result: SDImagingResultItem) -
 
 
 @log_qa
-def score_sdimage_sensitivity(result: SDImagingResultItem) -> pqa.QAScore:
+def score_sdimage_sensitivity_ratio(result: SDImagingResultItem) -> pqa.QAScore:
     """Evaluate QA score based on observed and theoretical sensitivities estimated from the image
 
     Requirements (PIPE-2958):
@@ -4154,31 +4154,29 @@ def score_sdimage_sensitivity(result: SDImagingResultItem) -> pqa.QAScore:
 
     if theoretical['unit'] != observed['unit']:
         msg = (f"Field {field} Spw {spw}: "
-               "Unit mismatch between Observed sensitivity and Expected noise level")
+               "Unit mismatch between Observed sensitivity and Theoretical sensitivity")
         raise ValueError( msg )
 
     if theoretical['value'] <= 0.0:
         msg = (f"Field {field} Spw {spw}: "
-               "Invalid Expected noise level of {theoretical['value']} {theoretical['unit']}")
+               "Invalid Theoretical sensitivity {theoretical['value']} {theoretical['unit']}")
         raise ValueError( msg )
 
     x = observed['value'] / theoretical['value']
     if x1 < x and x < x2:
         score = 1.0
-        lmsg = (f'Field {field} Spw {spw}: '
-                'Observed sensitivity agrees with the Expected noise level.')
-        smsg =  'Observed sensitivity agrees with the Expected noise level.'
+        smsg = 'Observed sensitivity agrees with Theoretical sensitivity.'
+        lmsg = f'Field {field} Spw {spw}: {smsg}'
     else:
         score = 0.5
-        lmsg = (f'Field {field} Spw {spw}: '
-                'Observed sensitivity deviates from the Expected noise level.')
-        smsg =  'Observed sensitivity deviates from the Expected noise level.'
+        smsg = 'Observed sensitivity deviates from Theoretical sensitivity.'
+        lmsg = f'Field {field} Spw {spw}: {smsg}'
 
-    origin = pqa.QAOrigin(metric_name='SingleDishImageSensitivity',
-                          metric_score=score,
-                          metric_units='')
+    origin = pqa.QAOrigin(metric_name='score_sd_image_sensitivity_ratio',
+                          metric_score=x,
+                          metric_units='Ratio of Observed sensitivity to Theoretical sensitivity')
     selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
-                                        field=set(result.outcome['assoc_fields']),
+                                        field={field},
                                         intent={'TARGET'},
                                         pol={'I'})
     return pqa.QAScore(score,
@@ -4282,7 +4280,7 @@ def score_renorm(result):
 
 
 @log_qa
-def score_polcal_gain_ratio(session_name: str, ant_names: dict, xyratio_result: GaincalResults,
+def score_polcal_gain_rati(osession_name: str, ant_names: dict, xyratio_result: GaincalResults,
                             threshold: float = 0.1) -> list[pqa.QAScore]:
     """
     This QA heuristic inspects the gain ratios in an X/Y gain ratio caltable

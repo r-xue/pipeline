@@ -306,7 +306,7 @@ class PostProcessParameters(Parameters):
         self.rmss = None                           # List[float]: List of RMSs
         self.stat_chans = None                     # str: Converted string from include_channel_range
         self.stat_freqs = None                     # str: Statistics frequencies
-        self.theoretical_rms = None                # Dict[str, float]: Theoretical RMSs
+        self.theoretical_rms = None                # Dict[str, float]: Theoretical sensitivities
         self.validsps = None                       # List[int]: List of valid spectrum
 
     def done(self):
