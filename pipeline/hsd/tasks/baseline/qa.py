@@ -2,6 +2,7 @@
 import os
 from typing import TYPE_CHECKING, List, Optional, Union
 
+from pipeline.hsd.tasks.common import qautils
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
@@ -25,6 +26,23 @@ class SDBaselineQAHandler(pqa.QAPlugin):
     result_cls = baseline.SDBaselineResults
     child_cls = None
 
+    def __init__( self ):
+        """
+        register the parameters for longmsg formatter and aggregator
+        """
+        # register the properties
+        metric_name = 'score_sd_line_detection'
+        qautils.registry.register_longmsg_keys( metric_name, [ 'vis', 'field', 'spw', 'ant', 'pol' ] )
+        qautils.registry.register_keys_to_aggregate( metric_name, [ 'vis', 'field', 'spw', 'ant', 'pol' ] )
+
+        # register the properties (this one should show Spw as Virtual Spw)
+        metric_name = 'score_sd_baseline_quality'
+        qautils.registry.register_keys_to_aggregate( metric_name,
+                                                     [ 'vis', 'field', 'spw', 'ant', 'pol' ] )
+        qautils.registry.register_longmsg_keys( metric_name,
+                                                [ 'vis', 'field', 'spw', 'ant', 'pol' ] )
+
+
     def handle(self, context: 'Context', result: result_cls) -> None:
         """Compute QA score for baseline subtraction task.
 
@@ -47,12 +65,12 @@ class SDBaselineQAHandler(pqa.QAPlugin):
             qacalc.score_sd_line_detection(context.observing_run.ms_reduction_group, result)
         )
 
-        # append the reformatted qa message to result.qa.pool
-        longmsg_keys = [ 'vis', 'field', 'spw', 'ant', 'pol' ]
-        aggregator = QAScoreAggregator( longmsg_keys = longmsg_keys )
+        # reformat the messages and append to result.qa.pool
+        formatter = qautils.QAScoreFormatter()
         for qascore in scores:
-            aggregator.update_longmsg(qascore)
+            formatter.update_longmsg(qascore)
         result.qa.pool.extend(scores)
+        # result.qaregistry = registry
 
 class SDBaselineListQAHandler(pqa.QAPlugin):
     """QA handler to handle list of results."""
