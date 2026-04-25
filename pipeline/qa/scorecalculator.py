@@ -4247,7 +4247,7 @@ def score_renorm(result):
 
 
 @log_qa
-def score_polcal_gain_ratio(osession_name: str, ant_names: dict, xyratio_result: GaincalResults,
+def score_polcal_gain_ratio(session_name: str, ant_names: dict, xyratio_result: GaincalResults,
                             threshold: float = 0.1) -> list[pqa.QAScore]:
     """
     This QA heuristic inspects the gain ratios in an X/Y gain ratio caltable
