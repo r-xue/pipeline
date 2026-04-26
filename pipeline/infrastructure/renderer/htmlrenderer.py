@@ -346,6 +346,7 @@ class T1_1Renderer(RendererBase):
         CGROUP_MEM_LIMIT = 'Cgroup memory limit'
         PYTHON_VERSION = 'Python'
         PLATFORM_TAG = 'Platform tag'
+        GPU_INFO = 'GPU'
 
         def description(self, ctx):
             if self is self.CASA_MEMORY:
@@ -629,6 +630,7 @@ class T1_1Renderer(RendererBase):
             data_rows[props.ULIMIT_CPU].append(n.ulimit_cpu)
 
             data_rows[props.PLATFORM_TAG].append(n.platform_tag)
+            data_rows[props.GPU_INFO].append(n.gpu_info)
             data_rows[props.PYTHON_VERSION].append(sys.version.split()[0])
             for pkg_name, detail in environment.dependency_details.items():
                 pkg_prop = T1_1Renderer._LibraryVersionProp(pkg_name)
@@ -637,7 +639,7 @@ class T1_1Renderer(RendererBase):
         tables = {
             "Host information": T1_1Renderer.EnvironmentTable(
                 ctx=ctx,
-                rows=[props.HOSTNAME, props.OS, props.PLATFORM_TAG, props.NUM_MPI_SERVERS, props.ULIMIT_FILES],
+                rows=[props.HOSTNAME, props.OS, props.PLATFORM_TAG, props.GPU_INFO, props.NUM_MPI_SERVERS, props.ULIMIT_FILES],
                 data=data_rows
             ),
             "CPU resources and limits": T1_1Renderer.EnvironmentTable(

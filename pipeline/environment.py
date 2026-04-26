@@ -191,6 +191,7 @@ class Environment(Protocol):
     ulimit_mem: str             # memory ulimit
 
     platform_tag: str           # tightest compatible wheel platform tag, e.g. manylinux_2_39_x86_64
+    gpu_info: str               # GPU summary, e.g. "NVIDIA GeForce RTX 3090 (24 GiB), Driver 525.105.17" or "N/A"
 
     role: str                   # MPI role
 
@@ -264,6 +265,9 @@ class CommonEnvironment:
             )
         except Exception:
             self.platform_tag = 'N/A'
+
+        # GPU summary via nvidia-smi
+        self.gpu_info = _get_gpu_info()
 
         if not MPIEnvironment.is_mpi_enabled:
             role = 'Non-MPI Host'
@@ -765,6 +769,49 @@ casa_version_string = casatasks.version_string()
 compare_casa_version = casa_tools.utils.compare_version
 
 
+def _get_gpu_info() -> str:
+    """Return a summary string of available GPUs detected via nvidia-smi.
+
+    Queries name, driver version, and total memory for each GPU. Returns
+    'N/A' if nvidia-smi is not available or no GPUs are found.
+
+    Returns:
+        str: e.g. ``"NVIDIA GeForce RTX 3090 (24 GiB); NVIDIA GeForce RTX 3090 (24 GiB), Driver 525.105.17"``
+             or ``"N/A"``.
+    """
+    out = _safe_run(
+        'nvidia-smi --query-gpu=name,driver_version,memory.total --format=csv,noheader,nounits',
+        on_error='',
+        log_errors=False,
+    )
+    if not out:
+        return 'N/A'
+
+    gpus = []
+    driver = ''
+    for line in out.splitlines():
+        parts = [p.strip() for p in line.split(',')]
+        if not parts:
+            continue
+        name = parts[0]
+        if len(parts) >= 2:
+            driver = parts[1]
+        if len(parts) >= 3:
+            try:
+                mem_gib = int(parts[2]) / 1024
+                gpus.append(f'{name} ({mem_gib:.0f} GiB)')
+            except ValueError:
+                gpus.append(name)
+        else:
+            gpus.append(name)
+
+    if not gpus:
+        return 'N/A'
+
+    suffix = f', Driver {driver}' if driver else ''
+    return '; '.join(gpus) + suffix
+
+
 def _get_dependency_details(package_names):
     """Get dependency package version/path."""
 
@@ -871,7 +918,6 @@ _casa6_packages = [
     'numpy',
     'scipy',
     'matplotlib',
-    'astropy',
 ]
 dependency_details = _get_dependency_details(_casa6_packages + _get_required_dependencies('pipeline'))
 
