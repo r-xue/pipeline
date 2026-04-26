@@ -190,6 +190,8 @@ class Environment(Protocol):
     ulimit_cpu: str             # cpu time ulimit, in seconds
     ulimit_mem: str             # memory ulimit
 
+    platform_tag: str           # tightest compatible wheel platform tag, e.g. manylinux_2_39_x86_64
+
     role: str                   # MPI role
 
 
@@ -253,6 +255,15 @@ class CommonEnvironment:
         self.ulimit_cpu = get_ulimit([resource.RLIMIT_CPU])
         # three applicable limits for memory: RSS, heap size, and data seg size.
         self.ulimit_mem = get_ulimit([resource.RLIMIT_AS, resource.RLIMIT_RSS, resource.RLIMIT_DATA])
+
+        # tightest compatible wheel platform tag for this host
+        try:
+            from packaging.tags import sys_tags
+            self.platform_tag = next(
+                t.platform for t in sys_tags() if t.platform != 'any'
+            )
+        except Exception:
+            self.platform_tag = 'N/A'
 
         if not MPIEnvironment.is_mpi_enabled:
             role = 'Non-MPI Host'
@@ -770,6 +781,12 @@ def _get_dependency_details(package_names):
 def _get_required_dependencies(package_name):
     """Get required package dependencies, excluding optional ones.
 
+    First attempts to read dependency metadata from the installed package.
+    If the package is not pip-installed (e.g. inserted into sys.path at
+    runtime), falls back to parsing ``requirements.txt`` from the package
+    source tree, which setuptools populates the ``dependencies`` field from
+    via the ``tool.setuptools.dynamic`` section of ``pyproject.toml``.
+
     Args:
         package_name: Name of an installed package
 
@@ -803,10 +820,59 @@ def _get_required_dependencies(package_name):
     except (ImportError, AttributeError, Exception):
         pass
 
+    # Fallback: the package is not pip-installed (e.g. inserted into sys.path
+    # at runtime). Parse requirements.txt from the source tree, which is the
+    # file that setuptools reads for the dynamic 'dependencies' field.
+    try:
+        req_file = Path(__file__).parent.parent / 'requirements.txt'
+        required_deps = []
+        for line in req_file.read_text(encoding='utf-8').splitlines():
+            line = line.strip()
+            # skip blank lines and comments
+            if not line or line.startswith('#'):
+                continue
+            # skip lines with environment markers (sys_platform, etc.)
+            if ';' in line:
+                continue
+            match = re.match(r'^([A-Za-z0-9._-]+)', line)
+            if match:
+                required_deps.append(match.group(1))
+        if required_deps:
+            return required_deps
+    except Exception:
+        pass
+
+    req_file = Path(__file__).parent.parent / 'requirements.txt'
+    required_deps = []
+    for line in req_file.read_text(encoding='utf-8').splitlines():
+        line = line.strip()
+        # skip blank lines and comments
+        if not line or line.startswith('#'):
+            continue
+        # skip lines with environment markers (sys_platform, etc.)
+        if ';' in line:
+            continue
+        match = re.match(r'^([A-Za-z0-9._-]+)', line)
+        if match:
+            required_deps.append(match.group(1))
+    if required_deps:
+        return required_deps
+
     return []
 
 
-_casa6_packages = ['numpy', 'scipy', 'matplotlib', 'casaconfig', 'casatools', 'casatasks', 'casampi', 'casaplotms']
+_casa6_packages = [
+    'casaconfig',
+    'casatools',
+    'casatasks',
+    'casashell',
+    'casampi',
+    'casaplotms',
+    'numpy',
+    'scipy',
+    'matplotlib',
+    'astropy',
+]
 dependency_details = _get_dependency_details(_casa6_packages + _get_required_dependencies('pipeline'))
 
 iers_info = utils.IERSInfo()
