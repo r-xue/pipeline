@@ -6,6 +6,7 @@ pytest-xdist            # https://github.com/pytest-dev/pytest-xdist
 pytest-cov              # https://github.com/pytest-dev/pytest-cov
 pytest-html             # https://pypi.org/project/pytest-html/
 pytest-benchmark        # https://pytest-benchmark.readthedocs.io/en/latest/
+pytest-xvfb             # https://github.com/The-Compiler/pytest-xvfb
 junit2html              # https://github.com/inorton/junit2html, requires jinja2
 
 # Code Quality & Style
@@ -25,7 +26,7 @@ wheel                   # https://packaging.python.org/en/latest/key_projects/#w
 # setuptools_scm        # https://pypi.org/project/setuptools-scm/
 
 # Profiling
-memory_profiler         # https://pypi.org/project/memory-profiler/
+memray                  # https://github.com/bloomberg/memray
 line_profiler           # https://github.com/pyutils/line_profiler
 
 # Dependency Analysis
