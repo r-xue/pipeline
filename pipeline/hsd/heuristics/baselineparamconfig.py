@@ -255,7 +255,7 @@ class BaselineFitParamConfig(api.Heuristic, abc.ABC):
 
         base_mask_array = mask_array.copy()
 
-        #LOG.info(f"base_mask_array = {''.join(map(str, base_mask_array))}")
+        # LOG.info(f"base_mask_array = {''.join(map(str, base_mask_array))}")
 
         time_table = datatable.get_timetable(antenna_id, spw_id, None, os.path.basename(ms.origin_ms), field_id)
         member_list = time_table[timetable_index]
