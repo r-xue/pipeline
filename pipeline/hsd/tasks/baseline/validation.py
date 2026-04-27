@@ -1365,7 +1365,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                       Region: DetectedLineList,
                       Nthreshold: float,
                       NumParam: int
-    ) -> tuple[list[int | float | bool]], np.ndarray, np.ndarray, list[int]]:
+    ) -> tuple[list[int | float | bool], np.ndarray, np.ndarray, list[int]]:
         """Clean-up cluster by eliminating outliers.
 
          Radius = StandardDeviation * nThreshold (circle/sphere)
