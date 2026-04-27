@@ -39,9 +39,6 @@ __all__ = ['casa_version', 'casa_version_string', 'compare_casa_version', 'pipel
            'dependency_details']
 
 
-LOG = logging.get_logger(__name__)
-
-
 def _run(
     command: str,
     stdout: TextIOWrapper | StringIO | None = None,
@@ -126,9 +123,11 @@ def _load(path: str, encoding: str = 'UTF-8', on_error: AnyStr | None = None) ->
         FileNotFoundError: If the file doesn't exist.
         PermissionError: If the user lacks permission to read the file.
     """
-    with open(path, 'r', encoding=encoding, newline="") as file:
-        return file.read()
-    return on_error
+    try:
+        with open(path, 'r', encoding=encoding, newline='') as file:
+            return file.read()
+    except Exception:
+        return on_error
 
 
 class Environment(Protocol):
@@ -192,6 +191,7 @@ class Environment(Protocol):
 
     platform_tag: str           # tightest compatible wheel platform tag, e.g. manylinux_2_39_x86_64
     gpu_info: str               # GPU summary, e.g. "NVIDIA GeForce RTX 3090 (24 GiB), Driver 525.105.17" or "N/A"
+    python_version: str         # Python version string, e.g. 3.12.4
 
     role: str                   # MPI role
 
@@ -268,6 +268,9 @@ class CommonEnvironment:
 
         # GPU summary via nvidia-smi
         self.gpu_info = _get_gpu_info()
+
+        # Python version for this process
+        self.python_version = sys.version.split()[0]
 
         if not MPIEnvironment.is_mpi_enabled:
             role = 'Non-MPI Host'
@@ -864,7 +867,7 @@ def _get_required_dependencies(package_name):
 
         if required_deps:
             return required_deps
-    except (ImportError, AttributeError, Exception):
+    except Exception:
         pass
 
     # Fallback: the package is not pip-installed (e.g. inserted into sys.path
@@ -888,22 +891,6 @@ def _get_required_dependencies(package_name):
             return required_deps
     except Exception:
         pass
-
-    req_file = Path(__file__).parent.parent / 'requirements.txt'
-    required_deps = []
-    for line in req_file.read_text(encoding='utf-8').splitlines():
-        line = line.strip()
-        # skip blank lines and comments
-        if not line or line.startswith('#'):
-            continue
-        # skip lines with environment markers (sys_platform, etc.)
-        if ';' in line:
-            continue
-        match = re.match(r'^([A-Za-z0-9._-]+)', line)
-        if match:
-            required_deps.append(match.group(1))
-    if required_deps:
-        return required_deps
 
     return []
 

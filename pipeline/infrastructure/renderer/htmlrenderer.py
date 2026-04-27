@@ -631,7 +631,7 @@ class T1_1Renderer(RendererBase):
 
             data_rows[props.PLATFORM_TAG].append(n.platform_tag)
             data_rows[props.GPU_INFO].append(n.gpu_info)
-            data_rows[props.PYTHON_VERSION].append(sys.version.split()[0])
+            data_rows[props.PYTHON_VERSION].append(n.python_version)
             for pkg_name, detail in environment.dependency_details.items():
                 pkg_prop = T1_1Renderer._LibraryVersionProp(pkg_name)
                 data_rows[pkg_prop].append(detail['version'] if detail else 'N/A')
