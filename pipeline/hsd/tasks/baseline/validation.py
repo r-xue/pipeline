@@ -1,10 +1,12 @@
 """Task to perform line validation based on clustering analysis."""
+from __future__ import annotations
+
 import collections
 import math
 import time
 from math import sqrt
 from numbers import Integral
-from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Type, Union
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import numpy.linalg as LA
@@ -18,15 +20,13 @@ from pipeline.domain import DataType
 from pipeline.domain.datatable import DataTableIndexer
 from . import rules
 from .. import common
-from ..common import utils
-
 from .typing import ClusteringResult, DetectedLineList, LineWindow
 
 if TYPE_CHECKING:
     from pipeline.domain.singledish import MSReductionGroupDesc, MSReductionGroupMember
     from pipeline.infrastructure.launcher import Context
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class ValidateLineInputs(vdp.StandardInputs):
@@ -43,12 +43,12 @@ class ValidateLineInputs(vdp.StandardInputs):
     clusteringalgorithm = vdp.VisDependentProperty(default=rules.ClusterRule['ClusterAlgorithm'])
 
     @property
-    def group_desc(self) -> 'MSReductionGroupDesc':
+    def group_desc(self) -> MSReductionGroupDesc:
         """Return reduction group instance of the current group."""
         return self.context.observing_run.ms_reduction_group[self.group_id]
 
     @property
-    def reference_member(self) -> 'MSReductionGroupMember':
+    def reference_member(self) -> MSReductionGroupMember:
         """Return the first reduction group member instance in the current group."""
         return self.group_desc[self.member_list[0]]
 
@@ -72,20 +72,20 @@ class ValidateLineInputs(vdp.StandardInputs):
         self._windowmode = value
 
     def __init__(self,
-                 context: 'Context',
+                 context: Context,
                  group_id: int,
-                 member_list: List[int],
+                 member_list: list[int],
                  iteration: int,
                  grid_ra: float,
                  grid_dec: float,
-                 window: Optional[LineWindow] = None,
-                 windowmode: Optional[str] = None,
-                 edge: Optional[Tuple[int, int]] = None,
-                 nsigma: Optional[float] = None,
-                 xorder: Optional[int] = None,
-                 yorder: Optional[int] = None,
-                 broad_component: Optional[bool] = None,
-                 clusteringalgorithm: Optional[str] = None) -> None:
+                 window: LineWindow | None = None,
+                 windowmode: str | None = None,
+                 edge: tuple[int, int] | None = None,
+                 nsigma: float | None = None,
+                 xorder: int | None = None,
+                 yorder: int | None = None,
+                 broad_component: bool | None = None,
+                 clusteringalgorithm: str | None = None) -> None:
         """Construct ValidateLineInputs instance.
 
         Args:
@@ -115,7 +115,7 @@ class ValidateLineInputs(vdp.StandardInputs):
             clusteringalgorithm: Clustering algorithm to use. Allowed values are 'kmean',
                                  'hierarchy', or 'both'. Defaults to 'hierarchy' if None is given.
         """
-        super(ValidateLineInputs, self).__init__()
+        super().__init__()
 
         self.context = context
         self.group_id = group_id
@@ -137,8 +137,8 @@ class ValidateLineResults(common.SingleDishResults):
     """Results class to hold the result of line validation."""
 
     def __init__(self,
-                 task: Optional[Type[basetask.StandardTaskTemplate]] = None,
-                 success: Optional[bool] = None,
+                 task: type[basetask.StandardTaskTemplate] | None = None,
+                 success: bool | None = None,
                  outcome: Any = None) -> None:
         """Construct ValidateLineResults instance.
 
@@ -147,9 +147,9 @@ class ValidateLineResults(common.SingleDishResults):
             success: Whether task execution is successful or not.
             outcome: Outcome of the task execution.
         """
-        super(ValidateLineResults, self).__init__(task, success, outcome)
+        super().__init__(task, success, outcome)
 
-    def merge_with_context(self, context: 'Context') -> None:
+    def merge_with_context(self, context: Context) -> None:
         """Merge result instance into context.
 
         No specific merge operation is done.
@@ -157,7 +157,7 @@ class ValidateLineResults(common.SingleDishResults):
         Args:
             context: Pipeline context object containing state information.
         """
-        super(ValidateLineResults, self).merge_with_context(context)
+        super().merge_with_context(context)
 
     def _outcome_name(self) -> str:
         """Return string representing the outcome.
@@ -179,9 +179,9 @@ class ValidateLineSinglePointing(basetask.StandardTaskTemplate):
 
     def prepare(self,
                 datatable_dict: dict,
-                index_list: List[int],
+                index_list: list[int],
                 grid_table: Any = None,
-                detect_signal: Optional[dict] = None):
+                detect_signal: dict | None = None):
         """Perform line validation for single/multi pointing observation.
 
         Accept all detected lines without clustering analysis.
@@ -346,11 +346,11 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
     def validate_cluster(
         self,
         clustering_result: ClusteringResult,
-        index_list: List[int],
+        index_list: list[int],
         detect_signal: dict,
         PosList: np.ndarray,
         Region2: np.ndarray
-    ) -> Tuple[dict, List[List[Union[int, bool]]], List[List[Union[int, bool]]], np.ndarray]:
+    ) -> tuple[dict, list[list[int | bool]], list[list[int | bool]], np.ndarray]:
         """Validate cluster detected by clustering analysis.
 
         This method validates clusters detected in line center vs line width space.
@@ -507,7 +507,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
     def prepare(self,
                 datatable_dict: dict,
                 index_list: np.ndarray,
-                grid_table: List[Union[int, float, np.ndarray]],
+                grid_table: list[int | float | np.ndarray],
                 detect_signal: collections.OrderedDict
     ) -> ValidateLineResults:
         """Validate spectral lines detected by detection module.
@@ -813,9 +813,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
     def _merge_cluster_info(
         self,
         algorithm: str,
-        cluster_score: List[List[int]],
+        cluster_score: list[list[int]],
         detected_lines: np.ndarray,
-        cluster_property: List[List[Union[int, bool]]],
+        cluster_property: list[list[int | bool]],
         cluster_scale: float) -> None:
         """Merge information on clustering analysis into "cluster_info" attribute.
 
@@ -853,8 +853,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
     def _merge_cluster_result(
         self,
-        result_list: List[Tuple[dict, List[List[Union[int, bool]]], List[List[Union[int, bool]]], np.ndarray]]
-    ) -> Tuple[dict, List[List[Union[int, bool]]], List[List[Union[int, bool]]], np.ndarray]:
+        result_list: list[tuple[dict, list[list[int | bool]], list[list[int | bool]], np.ndarray]]
+    ) -> tuple[dict, list[list[int | bool]], list[list[int | bool]], np.ndarray]:
         """Merge multiple clustering analysis results into one.
 
         Take union on detected clusters. If length of result_list is 1, simply return
@@ -998,7 +998,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
         return ret
 
-    def CheckLineIdentity(self, old: List[float], new: List[float], overlap: float = 0.7) -> bool:
+    def CheckLineIdentity(self, old: list[float], new: list[float], overlap: float = 0.7) -> bool:
         """Check if the given set of line ranges overlap.
 
         True if the overlap of two lines is greater than the threshold.
@@ -1361,11 +1361,11 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
 
     def clean_cluster(self,
                       Data: np.ndarray,
-                      Category: List[int],
+                      Category: list[int],
                       Region: DetectedLineList,
                       Nthreshold: float,
                       NumParam: int
-    ) -> Tuple[List[Union[int, float, bool]], np.ndarray, np.ndarray, List[int]]:
+    ) -> tuple[list[int | float | bool]], np.ndarray, np.ndarray, list[int]]:
         """Clean-up cluster by eliminating outliers.
 
          Radius = StandardDeviation * nThreshold (circle/sphere)
@@ -1471,10 +1471,10 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         nra: int, ndec: int,
         ra0: float, dec0: float,
         grid_ra: float, grid_dec: float,
-        category: List[int],
+        category: list[int],
         Region: DetectedLineList,
         detect_signal: dict
-    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Classify cluster members by their location on celestial coordinate.
 
         This method implements the first phase of cluster validation process,
@@ -1576,9 +1576,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         self,
         GridCluster: np.ndarray,
         GridMember: np.ndarray,
-        lines: List[List[Union[float, bool]]],
+        lines: list[list[float | bool]],
         cluster_flag: np.ndarray
-    ) -> Tuple[np.ndarray, np.ndarray, List[List[Union[float, bool]]], np.ndarray]:
+    ) -> tuple[np.ndarray, np.ndarray, list[list[float | bool]], np.ndarray]:
         """Validate clusters by their detection fraction on each grid.
 
         This method implements the second phase of cluster validation process,
@@ -1655,9 +1655,9 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
     def smoothing_stage(
         self,
         GridCluster: np.ndarray,
-        lines: List[List[Union[float, bool]]],
+        lines: list[list[float | bool]],
         cluster_flag: np.ndarray
-    ) -> Tuple[np.ndarray, List[List[Union[float, bool]]], np.ndarray]:
+    ) -> tuple[np.ndarray, list[list[float | bool]], np.ndarray]:
         """Smooth cluster distribution.
 
         This method implements the third phase of cluster validation process,
@@ -1765,8 +1765,8 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         GridMember: np.ndarray,
         Region: DetectedLineList,
         Region2: np.ndarray,
-        lines: List[List[Union[int, bool]]],
-        category: List[int],
+        lines: list[list[int | bool]],
+        category: list[int],
         grid_ra: float,
         grid_dec: float,
         broad_component: bool,
@@ -1774,11 +1774,11 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         yorder: int,
         x0: float,
         y0: float,
-        Grid2SpectrumID: List[List[int]],
-        index_list: List[int],
+        Grid2SpectrumID: list[list[int]],
+        index_list: list[int],
         PosList: np.ndarray,
         cluster_flag: np.ndarray
-    ) -> Tuple[collections.OrderedDict, List[List[Union[int, bool]]], List[List[Union[int, bool]]], np.ndarray]:
+    ) -> tuple[collections.OrderedDict, list[list[int | bool]], list[list[int | bool]], np.ndarray]:
         """Distribute validated lines to each observed spectra.
 
         This method implements the final phase of cluster validation process,
@@ -2272,7 +2272,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
                ndec: int,
                SubPlane: np.ndarray,
                ratio: Integral
-        ) -> Tuple[np.ndarray, np.ndarray]:
+        ) -> tuple[np.ndarray, np.ndarray]:
         """Blur cluster subplane.
 
         Convolve subplane data with two-dimensional boxcar kernal whose
@@ -2311,7 +2311,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         # BlurPlane is not used for fitting but just extend the parameter determined in ValidPlane
         return (SubPlane > self.Valid) * 1, (convolve2d(SubPlane, kernel) > self.Marginal) * 1
 
-    def calc_ProtectMask(self, Center: Integral, Width: Integral, nchan: int, MinFWHM: Integral, MaxFWHM: Integral) -> List[int]:
+    def calc_ProtectMask(self, Center: Integral, Width: Integral, nchan: int, MinFWHM: Integral, MaxFWHM: Integral) -> list[int]:
         """Return ProtectMask according to Center and Width.
 
         Return ProtectMask: [MaskL, MaskR]
@@ -2338,7 +2338,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         LOG.trace('Allowance = %s ProtectMask = %s' % (Allowance, ProtectMask))
         return ProtectMask
 
-    def __merge_lines(self, lines: List[List[Integral]], nchan: int) -> List[List[Integral]]:
+    def __merge_lines(self, lines: list[list[Integral]], nchan: int) -> list[list[Integral]]:
         """Merge overlapping lines.
 
         Args:
@@ -2385,7 +2385,7 @@ class ValidateLineRaster(basetask.StandardTaskTemplate):
         cluster_flag: np.ndarray,
         stage: str,
         GridCluster: np.ndarray,
-        threshold: List[Integral],
+        threshold: list[Integral],
         factor: int
     ) -> np.ndarray:
         """Update cluster flag array.
@@ -2488,8 +2488,8 @@ def convolve2d(data: np.ndarray, kernel: np.ndarray, mode: str = 'nearest', cval
 def _eval_poly(
     xorder: int, yorder: int,
     x: Integral, y: Integral,
-    xcoeff: List[Integral], ycoeff: List[Integral]
-) -> Tuple[Integral, Integral]:
+    xcoeff: list[Integral], ycoeff: list[Integral]
+) -> tuple[Integral, Integral]:
     """Evaluate sum of the polynomial terms.
 
     It computes sum of two-dimensional polynomial terms
@@ -2524,7 +2524,7 @@ def _eval_poly(
     return xpoly, ypoly
 
 
-def _to_validated_lines(detect_lines: dict) -> List[List[Union[float, bool]]]:
+def _to_validated_lines(detect_lines: dict) -> list[list[float | bool]]:
     """Convert list of detected lines into list with flags.
 
     In addition to the conversion from dict to list, it also converts
@@ -2547,7 +2547,7 @@ def _to_validated_lines(detect_lines: dict) -> List[List[Union[float, bool]]]:
     return lines_withflag
 
 
-class SVDSolver2D(object):
+class SVDSolver2D:
     """Least-square solver based on singular value decomposition (SVD).
 
     The singular value decomposition (SVD) is a factorization of a
@@ -2584,7 +2584,7 @@ class SVDSolver2D(object):
         self.B = np.empty(self.L, dtype=np.float64)
         self.U = None
 
-    def set_data_points(self, x: Union[List[Integral], np.ndarray], y: Union[List[Integral], np.ndarray]) -> None:
+    def set_data_points(self, x: list[Integral] | np.ndarray, y: list[Integral] | np.ndarray) -> None:
         """Set data array.
 
         Configure design matrix from the input data arrays.
@@ -2608,7 +2608,7 @@ class SVDSolver2D(object):
         self._set_design_matrix(x, y)
         #self._svd()
 
-    def _set_design_matrix(self, x: Union[List[Integral], np.ndarray], y: Union[List[Integral], np.ndarray]) -> None:
+    def _set_design_matrix(self, x: list[Integral] | np.ndarray, y: list[Integral] | np.ndarray) -> None:
         """Configure design matrix.
 
         The design matrix G is a basis array that stores gj(xi)
@@ -2741,8 +2741,8 @@ class SVDSolver2D(object):
 
     def solve_with_mask(
         self,
-        z: Union[List[Integral], np.ndarray],
-        out: Optional[np.ndarray] = None,
+        z: list[Integral] | np.ndarray,
+        out: np.ndarray | None = None,
         nmask: int = 0
     ) -> np.ndarray:
         """Solve least-square problem with SVD.
@@ -2785,8 +2785,8 @@ class SVDSolver2D(object):
 
     def solve_with_eps(
         self,
-        z: Union[List[Integral], np.ndarray],
-        out: Optional[np.ndarray] = None,
+        z: list[Integral] | np.ndarray,
+        out: np.ndarray | None = None,
         eps: float = 1.0e-7
     ) -> np.ndarray:
         """Solve least-square problem with SVD.
@@ -2830,8 +2830,8 @@ class SVDSolver2D(object):
 
     def solve_for(
         self,
-        z: Union[List[Integral], np.ndarray],
-        out: Optional[np.ndarray] = None,
+        z: list[Integral] | np.ndarray,
+        out: np.ndarray | None = None,
         eps: float = 1.0e-7
     ) -> np.ndarray:
         """Solve least-square problem with SVD.
@@ -2875,7 +2875,7 @@ class SVDSolver2D(object):
 
     def find_good_solution(
         self,
-        z: Union[List[Integral], np.ndarray],
+        z: list[Integral] | np.ndarray,
         threshold: float = 0.05
     ) -> np.ndarray:
         """Find the best least-square solution from candidate SVD solutions.
@@ -2940,7 +2940,7 @@ class SVDSolver2D(object):
         return best_ans
 
 
-def ValidationFactory(pattern: str) -> Union[Type[ValidateLineRaster],Type[ValidateLineSinglePointing]]:
+def ValidationFactory(pattern: str) -> type[ValidateLineRaster] | type[ValidateLineSinglePointing]:
     """Return appropriate task class according to observing pattern.
 
     The pattern string must be in uppercase letters.
