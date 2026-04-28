@@ -2999,7 +2999,7 @@ def examine_sd_wide_lines(line_ranges: list[tuple[int, int]], nchan: int, edge: 
     effective_nchan = nchan - sum(edge)
     line_coverage = np.sum(mask[start:end])
     LOG.debug(
-        "line coverage %s, threshold %s, (effective nchan %s, fraction %s), edge (%s, %s)",
+        "line coverage %s, threshold %.1f, (effective nchan %s, fraction %s), edge (%s, %s)",
         line_coverage, effective_nchan * fraction, effective_nchan, fraction, edge[0], edge[1]
     )
 
