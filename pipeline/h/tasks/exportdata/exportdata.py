@@ -6,10 +6,10 @@ from __future__ import annotations
 
 import collections
 import copy
-import json
 import fnmatch
 import glob
 import io
+import json
 import os
 import shutil
 import sys
@@ -20,12 +20,21 @@ from typing import TYPE_CHECKING
 
 import astropy.io.fits as apfits
 
+from pipeline import environment, infrastructure
 from pipeline.domain import DataType
 from pipeline.h.tasks.common import manifest
 from pipeline.h.tasks.exportdata.aqua import export_to_disk as export_aqua_to_disk
-from pipeline import environment, infrastructure
-from pipeline.infrastructure import basetask, callibrary, casa_tasks, casa_tools, imagelibrary, task_registry, utils, vdp
-from pipeline.infrastructure.filenamer import fitsname, PipelineProductNameBuilder
+from pipeline.infrastructure import (
+    basetask,
+    callibrary,
+    casa_tasks,
+    casa_tools,
+    imagelibrary,
+    task_registry,
+    utils,
+    vdp,
+)
+from pipeline.infrastructure.filenamer import PipelineProductNameBuilder, fitsname
 
 if TYPE_CHECKING:
     from pipeline.h.tasks.exportdata.aqua import AquaXmlGenerator
