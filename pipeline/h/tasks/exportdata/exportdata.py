@@ -1,7 +1,4 @@
-"""
-The exportdata module provides base classes for preparing data products
-on disk for upload to the archive.
-"""
+"""The exportdata module provides base classes for preparing data products on disk for upload to the archive."""
 from __future__ import annotations
 
 import collections
@@ -48,8 +45,7 @@ StdFileProducts = collections.namedtuple('StdFileProducts', 'ppr_file weblog_fil
 FINAL_FLAG_VERSION = 'Pipeline_Final'
 
 class ExportDataInputs(vdp.StandardInputs):
-    """
-    ExportDataInputs manages the inputs for the ExportData task.
+    """ExportDataInputs manages the inputs for the ExportData task.
 
     .. py:attribute:: context
 
@@ -113,14 +109,14 @@ class ExportDataInputs(vdp.StandardInputs):
     tarms = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty
-    def products_dir(self):
+    def products_dir(self):  # noqa: D102
         if self.context.products_dir is None:
             return os.path.abspath('./')
         else:
             return self.context.products_dir
 
     @vdp.VisDependentProperty
-    def exportcalprods(self):
+    def exportcalprods(self):  # noqa: D102
         return not (self.imaging_products_only or self.exportmses)
 
     # docstring and type hints: supplements h_exportdata, hsd_exportdata, hsdn_exportdata
@@ -212,11 +208,11 @@ class ExportDataInputs(vdp.StandardInputs):
 
 
 class ExportDataResults(basetask.Results):
+    """Results of the ExportData task."""
+
     def __init__(self, pprequest='', sessiondict=None, msvisdict=None, calvisdict=None, calimages=None, targetimages=None, weblog='',
                  pipescript='', restorescript='', commandslog='', manifest=''):
-        """
-        Initialise the results object with the given list of JobRequests.
-        """
+        """Initialise the results object with the given list of JobRequests."""
         super().__init__()
 
         if sessiondict is None:
@@ -242,7 +238,7 @@ class ExportDataResults(basetask.Results):
         self.commandslog = commandslog
         self.manifest = manifest
 
-    def __repr__(self):
+    def __repr__(self):  # noqa: D105
         s = 'ExportData results:\n'
         return s
 
@@ -250,9 +246,9 @@ class ExportDataResults(basetask.Results):
 @task_registry.set_equivalent_casa_task('h_exportdata')
 @task_registry.set_casa_commands_comment('The output data products are computed.')
 class ExportData(basetask.StandardTaskTemplate):
-    """
-    ExportData is the base class for exporting data to the products
-    subdirectory. It performs the following operations:
+    """ExportData is the base class for exporting data to the products subdirectory.
+
+    It performs the following operations:
 
     - Saves the pipeline processing request in an XML file
     - Saves the final flags per ASDM in a compressed / tarred CASA flag
@@ -277,10 +273,7 @@ class ExportData(basetask.StandardTaskTemplate):
     NameBuilder = PipelineProductNameBuilder
 
     def prepare(self):
-        """
-        Prepare and execute an export data job appropriate to the
-        task inputs.
-        """
+        """Prepare and execute an export data job appropriate to the task inputs."""
         # Create a local alias for inputs, so we're not saying
         # 'self.inputs' everywhere
         inputs = self.inputs
@@ -380,8 +373,7 @@ class ExportData(basetask.StandardTaskTemplate):
         return result
 
     def analyse(self, results):
-        """
-        Analyse the results of the export data operation.
+        """Analyse the results of the export data operation.
 
         This method does not perform any analysis, so the results object is
         returned exactly as-is, with no data massaging or results items
@@ -392,10 +384,7 @@ class ExportData(basetask.StandardTaskTemplate):
         return results
 
     def get_recipename(self, context):
-        """
-        Get the recipe name
-        """
-
+        """Get the recipe name."""
         # Get the parent ous ousstatus name. This is the sanitized ous
         # status uid
         ps = context.project_structure
@@ -420,8 +409,7 @@ class ExportData(basetask.StandardTaskTemplate):
             vis: list[str] | str | None = None,
             imaging_only_mses: bool | None = False,
             ) -> tuple[list[str], list[str], list[list[str]], list[str]]:
-        """
-        Create the vis and sessions lists.
+        """Create the vis and sessions lists.
 
         This method processes input parameters to generate lists of sessions, session names,
         visibility files, and measurement sets based on the provided context and flags.
@@ -465,10 +453,7 @@ class ExportData(basetask.StandardTaskTemplate):
 
     def _do_standard_ous_products(self, context, exportcalprods, oussid, pprfile, session_list, vislist, output_dir,
                                   products_dir):
-        """
-        Generate the per ous standard products
-        """
-
+        """Generate the per OUS standard products."""
         # Locate and copy the pipeline processing request.
         #     There should normally be at most one pipeline processing request.
         #     In interactive mode there is no PPR.
@@ -498,12 +483,10 @@ class ExportData(basetask.StandardTaskTemplate):
         return StdFileProducts(ppr_file, weblog_file, casa_commands_file, casa_pipescript, casa_restore_script)
 
     def _do_ms_products(self, context, vislist, products_dir):
-        """
-        Tar up the final calibrated mses and put them in the products
-        directory.
-        Used for reprocessing applications
-        """
+        """Tar up the final calibrated MSes and put them in the products directory.
 
+        Used for reprocessing applications.
+        """
         # Loop over the measurements sets in the working directory and tar
         # them up.
         mslist = []
@@ -522,10 +505,7 @@ class ExportData(basetask.StandardTaskTemplate):
         return visdict
 
     def _do_standard_ms_products(self, context, vislist, products_dir, flag_version_name):
-        """
-        Generate the per ms standard products
-        """
-
+        """Generate the per-MS standard products."""
         # Loop over the measurements sets in the working directory and
         # save the final flags using the flag manager.
         for visfile in vislist:
@@ -559,10 +539,7 @@ class ExportData(basetask.StandardTaskTemplate):
 
     def _do_standard_session_products(self, context, oussid, session_names, session_vislists, products_dir,
                                       imaging=False):
-        """
-        Generate the per ms standard products
-        """
-
+        """Generate the per-session standard products."""
         # Export tar files of the calibration tables one per session
         caltable_file_list = []
         for i in range(len(session_names)):
@@ -590,9 +567,7 @@ class ExportData(basetask.StandardTaskTemplate):
             imaging_products_only: bool,
             pipeline_stats_file: str = None,
             ) -> str | None:
-        """
-        Generate the auxiliary products
-        """
+        """Generate the auxiliary products."""
         if imaging_products_only:
             contfile_name = 'cont.dat'
             fluxfile_name = 'Undefined'
@@ -724,10 +699,7 @@ class ExportData(basetask.StandardTaskTemplate):
 
     def _make_pipe_manifest(self, context, oussid, stdfproducts, sessiondict, msvisdict, exportmses, calvisdict,
                             exportcalprods, calimages, calimages_fitskeywords, targetimages, targetimages_fitskeywords):
-        """
-        Generate the manifest file
-        """
-
+        """Generate the manifest file."""
         # Separate the calibrator images into per ous and per ms images
         # based on the image values of prefix.
         per_ous_calimages = []
@@ -795,9 +767,7 @@ class ExportData(basetask.StandardTaskTemplate):
         return pipemanifest
 
     def _init_pipemanifest(self, oussid):
-        """
-        Initialize the pipeline manifest
-        """
+        """Initialize the pipeline manifest."""
         return manifest.PipelineManifest(oussid)
 
     def _export_pprfile(self, context, output_dir, products_dir, oussid, pprfile):
@@ -879,10 +849,7 @@ class ExportData(basetask.StandardTaskTemplate):
                 return None
 
     def _save_final_flagversion(self, vis, flag_version_name):
-        """
-        Save the final flags to a final flag version.
-        """
-
+        """Save the final flags to a final flag version."""
         flag_version_dir = vis+'.flagversions/flags.'+flag_version_name
         if os.path.exists(flag_version_dir):
             tt = int(time.time())
@@ -906,9 +873,7 @@ class ExportData(basetask.StandardTaskTemplate):
         self._executor.execute(task)
 
     def _export_final_flagversion(self, context, vis, flag_version_name, products_dir):
-        """
-        Save the final flags version to a compressed tarfile in products.
-        """
+        """Save the final flags version to a compressed tarfile in products."""
         # Define the name of the output tarfile
         visname = os.path.basename(vis)
         tarfilename = visname + '.flagversions.tgz'
@@ -955,9 +920,9 @@ class ExportData(basetask.StandardTaskTemplate):
         return tarfilename
 
     def _export_final_applylist(self, context, vis, products_dir, imaging=False):
-        """
-        Save the final calibration list to a file. For now this is
-        a text file. Eventually it will be the CASA callibrary file.
+        """Save the final calibration list to a file.
+
+        For now this is a text file. Eventually it will be the CASA callibrary file.
         """
         applyfile_name = self.NameBuilder.calapply_list(vis=vis, aux_product=imaging)
         LOG.info('Storing calibration apply list for %s in  %s', os.path.basename(vis), applyfile_name)
@@ -995,12 +960,10 @@ class ExportData(basetask.StandardTaskTemplate):
         return applyfile_name
 
     def _get_sessions(self, context, sessions, vis):
-        """
-        Return a list of sessions where each element of the list contains
-        the vis files associated with that session. In future this routine
-        will be driven by the context but for now use the user defined sessions
-        """
+        """Return a list of sessions where each element contains the vis files associated with that session.
 
+        In future this routine will be driven by the context but for now uses the user-defined sessions.
+        """
         # If the input session list is empty put all the visibility files
         # in the same session.
         if len(sessions) == 0:
@@ -1043,10 +1006,7 @@ class ExportData(basetask.StandardTaskTemplate):
         return wksessions, session_names, session_vis_list
 
     def _export_final_calfiles(self, context, oussid, session, vislist, products_dir, imaging=False):
-        """
-        Save the final calibration tables in a tarfile one file
-        per session.
-        """
+        """Save the final calibration tables in a tarfile one file per session."""
         # Define the name of the output tarfile
         tarfilename = self.NameBuilder.caltables(ousstatus_entity_id=oussid,
                                                  session_name=session,
@@ -1078,15 +1038,11 @@ class ExportData(basetask.StandardTaskTemplate):
         return tarfilename
 
     def _export_weblog(self, context, products_dir):
-        """
-        Save the processing web log to a tarfile
-        """
+        """Save the processing web log to a tarfile."""
         return utils.export_weblog_as_tar(context, products_dir, self.NameBuilder)
 
     def _export_casa_commands_log(self, context, casalog_name, products_dir, oussid):
-        """
-        Save the CASA commands file.
-        """
+        """Save the CASA commands file."""
         casalog_file = os.path.join(context.report_dir, casalog_name)
 
         ps = context.project_structure
@@ -1101,9 +1057,7 @@ class ExportData(basetask.StandardTaskTemplate):
         return os.path.basename(out_casalog_file)
 
     def _export_casa_restore_script(self, context, script_name, products_dir, oussid, vislist, session_list):
-        """
-        Save the CASA restore scropt.
-        """
+        """Save the CASA restore script."""
         script_file = os.path.join(context.report_dir, script_name)
 
         # Get the output file name
@@ -1144,10 +1098,7 @@ finally:
         return os.path.basename(out_script_file)
 
     def _export_casa_script(self, context, casascript_name, products_dir, oussid):
-        """
-        Save the CASA script.
-        """
-
+        """Save the CASA script."""
         ps = context.project_structure
         casascript_file = os.path.join(context.report_dir, casascript_name)
         out_casascript_file = self.NameBuilder.casa_script(casascript_name,
@@ -1161,9 +1112,7 @@ finally:
         return os.path.basename(out_casascript_file)
 
     def _export_pipe_manifest(self, oussid, manifest_name, products_dir, pipemanifest):
-        """
-        Save the manifest file.
-        """
+        """Save the manifest file."""
         out_manifest_file = self.NameBuilder.manifest(manifest_name,
                                                       ousstatus_entity_id=oussid,
                                                       output_dir=products_dir)
@@ -1176,10 +1125,7 @@ finally:
         return out_manifest_file
 
     def _export_images(self, context, calimages, calintents, images, products_dir, ous_name):
-        """
-        Export the images to FITS files.
-        """
-
+        """Export the images to FITS files."""
         # Create the image list
         images_list = []
         if len(images) == 0:
@@ -1489,7 +1435,6 @@ finally:
         Returns:
             AQUA report file path
         """
-
         aqua_file = os.path.join(context.output_dir, context.logs['aqua_report'])
 
         LOG.info('Generating pipeline AQUA report')
