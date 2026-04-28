@@ -162,6 +162,10 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
         finally:
             logging.remove_handler(extra_logrecords_handler)
             extra_logrecords = extra_logrecords_handler.buffer
+            # Since Mako template reverses the order of log records,
+            # order of the log records is reversed here to make them
+            # appear in the original order in the rendered page.
+            extra_logrecords.reverse()
 
         # Update the context with tables, plots, and additional info.
         ctx.update({
