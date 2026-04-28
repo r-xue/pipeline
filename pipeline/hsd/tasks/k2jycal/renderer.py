@@ -135,14 +135,18 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
             if casalog_path and os.path.exists(casalog_path):
                 with open(casalog_path, 'r') as f:
                     db_error_message_key = "Failed to load URL: https://"
+                    msgs = filter(lambda line: db_error_message_key in line, f)
                     db_error_urls = map(
-                        lambda line: re.search("https://[^ ]+", line).group(0),
-                        filter(lambda line: db_error_message_key in line, f)
+                        lambda line: re.search(
+                            "Failed to load URL: (https://[^ ]+)", line
+                        ).group(1),
+                        map(lambda line: line.rstrip("\n"), msgs)
                     )
-                    for url in sorted(set(db_error_urls)):
+                    # extract unique URLs while preserving the original order
+                    for url in dict.fromkeys(db_error_urls).keys():
                         asdm_uid = re.search(
                             "uid://[^ ]+",
-                            urllib.parse.unquote(url))
+                            urllib.parse.unquote(url.rstrip("\n")))
                         if asdm_uid:
                             asdm_uid = asdm_uid.group(0)
                             endpoint_url = url.split("?")[0]
