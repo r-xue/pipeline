@@ -2999,8 +2999,8 @@ def examine_sd_wide_lines(line_ranges: list[tuple[int, int]], nchan: int, edge: 
     effective_nchan = nchan - sum(edge)
     line_coverage = np.sum(mask[start:end])
     LOG.debug(
-        "line coverage %s, effective nchan %s, fraction %s, edge (%s, %s)",
-        line_coverage, effective_nchan, fraction, edge[0], edge[1]
+        "line coverage %s, threshold %s, (effective nchan %s, fraction %s), edge (%s, %s)",
+        line_coverage, effective_nchan * fraction, effective_nchan, fraction, edge[0], edge[1]
     )
 
     return line_coverage > effective_nchan * fraction
@@ -4675,7 +4675,7 @@ def score_mom8_fc_image(
     mom8_fc_score_max = 1.00
     mom8_fc_metric_scale = 100.0
     if mom8_fc_frac_max_segment != 0.0:
-        mom8_fc_score = (mom8_fc_score_min + 0.5 * (mom8_fc_score_max - mom8_fc_score_min) * 
+        mom8_fc_score = (mom8_fc_score_min + 0.5 * (mom8_fc_score_max - mom8_fc_score_min) *
                          (1.0 + special.erf(-np.log10(mom8_fc_metric_scale * mom8_fc_frac_max_segment))))
     else:
         mom8_fc_score = mom8_fc_score_max
@@ -4685,10 +4685,10 @@ def score_mom8_fc_image(
         field = info.get('field')
         spw = info.get('virtspw')
 
-    if (mom8_fc_peak_snr > mom8_fc_outlier_threshold1 and 
+    if (mom8_fc_peak_snr > mom8_fc_outlier_threshold1 and
         mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold1) or \
-       (mom8_fc_peak_snr > mom8_fc_outlier_threshold2 and 
-        mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold2 and 
+       (mom8_fc_peak_snr > mom8_fc_outlier_threshold2 and
+        mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold2 and
         mom8_fc_max_segment_beams > mom8_fc_max_segment_beams_threshold):
         mom8_fc_final_score = min(mom8_fc_score, 0.65)
     else:
