@@ -953,7 +953,7 @@ class ExportData(basetask.StandardTaskTemplate):
             else:
                 applyfile_name = 'Undefined'
                 LOG.info('No calibrations for MS %s', os.path.basename(vis))
-        except:
+        except Exception:
             applyfile_name = 'Undefined'
             LOG.info('No calibrations for MS %s', os.path.basename(vis))
 
@@ -1025,7 +1025,7 @@ class ExportData(basetask.StandardTaskTemplate):
                 calto = callibrary.CalTo(vis=visfile)
                 calstate = context.callibrary.applied.trimmed(context, calto)
                 caltables.update(calstate.get_caltable())
-            except:
+            except Exception:
                 LOG.info('No caltables for MS %s', os.path.basename(visfile))
 
         if not caltables:
