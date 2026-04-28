@@ -284,7 +284,8 @@ class QAScoreAggregator:
                         continue
                     if math.fabs(qascore.score - target_qascore.score) < eps \
                        and qascore.origin.metric_name == target_qascore.origin.metric_name \
-                       and qascore.origin.metric_units == target_qascore.origin.metric_units:
+                       and qascore.origin.metric_units == target_qascore.origin.metric_units \
+                       and qascore.shortmsg == target_qascore.shortmsg:
                         if self._compare_applies_to( qascore, target_qascore, keys_to_compare ):
                             matched_keys.append( getattr( qascore.applies_to, key ) )
                             matched_idxes.append( idx )
