@@ -975,7 +975,8 @@ class ExportData(basetask.StandardTaskTemplate):
             wksessions = sessions
 
         # Determine the number of unique sessions.
-        session_seqno = 0; session_dict = {}
+        session_seqno = 0
+        session_dict = {}
         for i in range(len(wksessions)):
             if wksessions[i] not in session_dict:
                 session_dict[wksessions[i]] = session_seqno
