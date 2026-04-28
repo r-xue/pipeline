@@ -1149,7 +1149,6 @@ finally:
             # any target Stokes I products if the corresponding Stokes IQUV product also
             # exists (PIPE-2465).
             cleanlist_dict = {}
-            product_keys = {}
             deleted_keys = []
             for image in reversed(original_cleanlist):
                 # SD saves the spwlist as list of ints while IF uses a comma separated string.
