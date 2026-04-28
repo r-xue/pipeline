@@ -40,13 +40,12 @@ class T2_4MDetailsVLAImportDataRenderer(basetemplates.T2_4MDetailsDefaultRendere
         minparang = result.inputs['minparang']
         parang_ranges = result.parang_ranges
         if parang_ranges['intents_found']:
+            # Use pipeline intent strings as values so field.intents
+            # membership checks work as intended.
             parang_plots = rendererutils.make_parang_plots(
                 pipeline_context,
                 result,
-                intent_lookup={
-                    'PHASE': 'CALIBRATE_PHASE#UNSPECIFIED',
-                    'POLLEAKAGE': 'CALIBRATE_POL_LEAKAGE#UNSPECIFIED',
-                    },
+                intent=['PHASE', 'POLLEAKAGE'],
                 )
         else:
             parang_plots = {}
