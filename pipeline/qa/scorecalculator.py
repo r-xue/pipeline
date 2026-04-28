@@ -4126,7 +4126,7 @@ def score_sdimage_sensitivity_ratio(result: SDImagingResultItem) -> pqa.QAScore:
 
     if theoretical['value'] <= 0.0:
         msg = (f"Field {field} Spw {spw}: "
-               "Invalid Theoretical sensitivity {theoretical['value']} {theoretical['unit']}")
+               f"Invalid Theoretical sensitivity {theoretical['value']} {theoretical['unit']}")
         raise ValueError( msg )
 
     x = observed['value'] / theoretical['value']

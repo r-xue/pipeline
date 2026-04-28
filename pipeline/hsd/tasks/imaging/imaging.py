@@ -1599,9 +1599,9 @@ class SDImaging(basetask.StandardTaskTemplate):
                 exclude_chan_ranges = convert_frequency_ranges_to_channels(combined_rms_exclude, cs, num_chan)
             finally:
                 cs.done()
-        LOG.info("Merged spectral line channel ranges of combined image = {}".format(str(exclude_chan_ranges)))
+        LOG.info(f"Merged spectral line channel ranges of combined image = {exclude_chan_ranges}")
         include_chan_ranges = invert_ranges(exclude_chan_ranges, num_chan, edge)
-        LOG.info("Line free channel ranges of image to calculate sensitivities = {str(include_chan_ranges)}")
+        LOG.info(f"Line free channel ranges of image to calculate sensitivities = {include_chan_ranges}")
         return include_chan_ranges
 
     def _get_stat_region(self, pp: imaging_params.PostProcessParameters) -> str | None:
