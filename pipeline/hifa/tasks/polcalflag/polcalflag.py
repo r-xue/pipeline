@@ -58,6 +58,7 @@ class PolcalflagInputs(vdp.StandardInputs):
     phaseupsolint = vdp.VisDependentProperty(default='int')
     refant = vdp.VisDependentProperty(default='')
     solint = vdp.VisDependentProperty(default='inf')
+    examineCrossPolSum = vdp.VisDependentProperty(default=False)
 
     @vdp.VisDependentProperty
     def intent(self):
@@ -66,7 +67,7 @@ class PolcalflagInputs(vdp.StandardInputs):
         return 'POLARIZATION,POLANGLE,POLLEAKAGE'
 
     # docstring and type hints: supplements hifa_polcalflag
-    def __init__(self, context, vis=None):
+    def __init__(self, context, vis=None, examineCrossPolSum=None):
         """Initialize Inputs.
 
         Args:
@@ -78,9 +79,12 @@ class PolcalflagInputs(vdp.StandardInputs):
 
                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
 
+            examineCrossPolSum: Whether to examine the XY+YX sum for multi-scan full-polarization data. Defaults to False.
+
         """
         self.context = context
         self.vis = vis
+        self.examineCrossPolSum = examineCrossPolSum
 
 
 @task_registry.set_equivalent_casa_task('hifa_polcalflag')
@@ -157,7 +161,8 @@ class Polcalflag(basetask.StandardTaskTemplate):
 
             # Call correctedampflag for the polarization calibrator intent.
             cafinputs = correctedampflag.Correctedampflag.Inputs(
-                context=inputs.context, vis=inputs.vis, intent=inputs.intent)
+                context=inputs.context, vis=inputs.vis, intent=inputs.intent,
+                examineCrossPolSum=inputs.examineCrossPolSum)
             caftask = correctedampflag.Correctedampflag(cafinputs)
             cafresult = self._executor.execute(caftask)
 
