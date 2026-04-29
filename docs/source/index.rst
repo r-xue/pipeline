@@ -24,6 +24,8 @@
    :maxdepth: 1
    :caption: Misc.
 
+   testing_docs/index
    devnotes
    timeline
    callibrary
+   

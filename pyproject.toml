@@ -120,7 +120,7 @@ omit = ['pipeline/run*pipeline.py', 'tests/*']
 branch = true                                  # Same as --cov-branch
 source = ['pipeline']                          # Same as --cov=pipeline
 parallel = true                                # Enable parallel coverage collection for xdist
-concurrency = ["multiprocessing"]              # Handle xdist workers properly
+concurrency = ["multiprocessing", "thread"]    # Handle xdist workers properly
 
 [tool.coverage.report]
 fail_under = 10 # Set the minimum coverage percentage required
@@ -155,6 +155,7 @@ markers = [
     "importdata: importdata task(s)",
     "selfcal: selfcal task(s)",
     "makeimages: makeimages task(s)",
+    "mpi: test recommended for an MPI-enabled CASA session; use -m mpi or -m 'not mpi' to control execution",
     "unit: unit test",
 ]
 addopts = [
@@ -166,6 +167,7 @@ junit_family = "legacy"
 # Pixi Configuration
 
 [tool.pixi.workspace]
+# 'nodefaults' is not needed as Pixi does not implicitly add the defaults (Anaconda) channel
 channels = ["conda-forge"]
 platforms = ["linux-64", "osx-arm64"]
 
@@ -176,12 +178,12 @@ conda-ecosystem-user-package-isolation = "*"
 ipython = "*"
 pip = ">=23.0"
 # Note: openmpi="*" is sufficient for non-gpu builds
+# But casatools+hpg builds are linked against C++ MPI bindings.
 openmpi-mpicxx = ">=5.0"
 mpi4py = ">=3.1.5"
 certifi = "*"
-poppler = "*"
-imagemagick = "*"
-pandoc = "*"
+poppler = "*"            # required by Pipeline
+imagemagick = "*"        # required by Pipeline (Jupyter notebook → RST conversion)
 
 
 [tool.pixi.pypi-dependencies]
@@ -190,7 +192,8 @@ pandoc = "*"
 # used for monolithic installations.
 # Also install the 'dev' extras to ensure development dependencies are available.
 pipeline = { path = ".", editable = true, extras = ["dev"] }
-protobuf = "==3.20.*"
+# https://casadocs.readthedocs.io/en/stable/notebooks/introduction.html#Known-Issues
+protobuf = "==3.20.*" # casaplotms still requires ver<=3.20
 grpcio = ">=1.62"
 six = ">=1.17"
 
@@ -209,10 +212,31 @@ macos = "15.0"
 [tool.pixi.tasks]
 # Run unit tests with coverage
 test-unit = """
-PYTHONNOUSERSITE=1 python -m pytest -n logical \
-  --cov --cov=pipeline --cov-append \
-  --cov-report=html --cov-report=xml \
-  pipeline/
+cd $INIT_CWD && \
+PYTHONNOUSERSITE=1 python -m pytest \
+  -n logical --max-worker-restart=1 \
+  --junitxml=unit-results.xml \
+  --cov=pipeline --cov-append --cov-report=html --cov-report=xml \
+  $PIXI_PROJECT_ROOT/pipeline/
+"""
+
+# Run fast regression tests in a serial CASA session (xdist, no mpi)
+test-regression = """
+cd $INIT_CWD && \
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+  python -m pytest -n 12 --dist worksteal \
+  -m \"not mpi\" \
+  --junitxml=regression-results.xml \
+  --cov=pipeline --cov-append --cov-report=html --cov-report=xml \
+  $PIXI_PROJECT_ROOT/tests/regression/fast/
+"""
+
+# Run a single small ALMA-IF fast regression test (pltest1)
+test-pltest1 = """
+cd $INIT_CWD && \
+OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+  python -m casashell --nogui --log2term \
+  -c "import pytest; pytest.main(['$PIXI_PROJECT_ROOT/tests/regression/fast/alma_if_fast_test.py::test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small__PPR__regression'])"
 """
 
 # Fetch/update CASA runtime data
@@ -239,6 +263,21 @@ python = "3.12.*"
 
 [tool.pixi.feature.casa671-py312.pypi-dependencies]
 casashell = { version = "==6.7.1.*", index = "https://casa-pip.nrao.edu/repository/pypi-group/simple" }
+
+# --------------------------------------------------------------------------
+# Feature: CASA ver6.7.4-dev/snapshot — Python 3.12
+# casatools/casatasks/numpy etc. will be installed as indirect dependencies
+# of casashell; no need to specify them here.
+# --------------------------------------------------------------------------
+
+[tool.pixi.feature.casa674-py312]
+platforms = ["linux-64", "osx-arm64"]
+
+[tool.pixi.feature.casa674-py312.dependencies]
+python = "3.12.*"
+
+[tool.pixi.feature.casa674-py312.pypi-dependencies]
+casashell = { version = "==6.7.4.*", index = "https://casa-pip.nrao.edu/repository/pypi-group/simple" }
 
 # --------------------------------------------------------------------------
 # Feature: CASA ver6.7.5-dev/snapshot — Python 3.12/3.13
@@ -272,6 +311,7 @@ platforms = ["linux-64", "osx-arm64"]
 
 [tool.pixi.feature.docs.dependencies]
 python = "3.12.*"
+pandoc = "*"             # required by nbsphinx (Jupyter notebook → RST conversion)
 
 [tool.pixi.feature.docs.pypi-dependencies]
 casashell = { version = "==6.7.5.*", index = "https://casa-pip.nrao.edu/repository/pypi-group/simple" }
@@ -282,5 +322,6 @@ furo = ">=2024.1.29"
 default = { features = ["casa675-py312"], solve-group = "casa675-py312" }
 docs = { features = ["docs"], solve-group = "casa675-py312" }
 casa671-py312 = { features = ["casa671-py312"] }
+casa674-py312 = { features = ["casa674-py312"] }
 casa675-py312 = { features = ["casa675-py312"], solve-group = "casa675-py312" }
 casa675-py313 = { features = ["casa675-py313"], solve-group = "casa675-py313" }
