@@ -3,6 +3,7 @@
 ```{list-table}
 :header-rows: 1
 :stub-columns: 2
+:class: small-font-table
 
 * - Pipeline Version
   - CASA Version
@@ -11,11 +12,11 @@
   - Use in Operation
   - Download
 
-* - 2026.1.0
-  - 6.7.1-gpu
+* - 2026.1.0.4
+  - 6.7.1-13-gpu
   - - VLASS/2026: enable new CASA gridders (awp2,awphpg)
   -
-  - - 2026-03 (planned)
+  - - 2026-04 (in validation)
   -
 
 * - 2025.1.0.36
