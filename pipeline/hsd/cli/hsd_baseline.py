@@ -22,7 +22,7 @@ def hsd_baseline(
 
     Cyan-shaded regions indicate channels masked as emission lines. A spatially integrated
     spectrum is shown above each grid, with the magenta curve indicating atmospheric transmission
-    and thick red bars marking channels excluded by the ``deviation mask'' algorithm.
+    and thick red bars marking channels excluded by the ``deviation mask`` algorithm.
     Representative spectra in each cell correspond to the valid pointing nearest the mean
     coordinates of all pointings in that grid cell.
 

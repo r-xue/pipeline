@@ -49,7 +49,7 @@ def hifa_spwphaseup(vis=None, caltable=None, field=None, intent=None, spw=None, 
       printed, and mapping falls back to narrow-to-wide.
 
     - If the signal-to-noise of all spws is greater than ``phasesnr`` for a
-      PHASE or CHECK intent, or greater than ``intphasesnr'' for the other
+      PHASE or CHECK intent, or greater than ``intphasesnr`` for the other
       intents, then if SNR is high enough to keep solint='int', then
       no mapping is used (each spw is used to calibrate itself).  If the calculated
       solint is >'int' then mapping and combine are attempted, to favor a

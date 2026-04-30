@@ -22,7 +22,7 @@ def hsd_tsysflag(vis=None, caltable=None,
     1. **nmedian** (``flag_nmedian``): flag Tsys spectra whose median value is more than
        ``fnm_limit`` (default 3.0) times the median of all spectra.
     2. **derivative** (``flag_derivative``): flag spectra with a high median derivative
-       (``fd_max_limit``), targeting ``ringing'' spectra.
+       (``fd_max_limit``), targeting ``ringing`` spectra.
     3. **edgechans** (``flag_edgechans``): flag the edge channels of each spw
        (``fe_edge_limit``).
     4. **fieldshape** (``flag_fieldshape``): flag spectra whose shape differs significantly
