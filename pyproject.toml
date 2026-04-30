@@ -316,7 +316,6 @@ pandoc = "*"             # required by nbsphinx (Jupyter notebook → RST conver
 [tool.pixi.feature.docs.pypi-dependencies]
 casashell = { version = "==6.7.5.*", index = "https://casa-pip.nrao.edu/repository/pypi-group/simple" }
 pipeline = { path = ".", editable = true, extras = ["docs"] }
-furo = ">=2024.1.29"
 
 [tool.pixi.environments]
 default = { features = ["casa675-py312"], solve-group = "casa675-py312" }
