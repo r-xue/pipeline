@@ -140,7 +140,7 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
                         lambda line: re.search(
                             "Failed to load URL: (https://[^ ]+)", line
                         ).group(1),
-                        map(lambda line: line.rstrip("\n"), msgs)
+                        map(lambda line: line.rstrip(), msgs)
                     )
                     # extract unique URLs while preserving the original order
                     for url in dict.fromkeys(db_error_urls).keys():
