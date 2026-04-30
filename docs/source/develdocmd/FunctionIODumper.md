@@ -53,7 +53,6 @@ This decorator is designed to address a wide variety of scenarios:
   - By using the dumped arguments and return values, the behavior of a particular function is reproduced and verified individually.
   - Help development and debug rapidly. For example, when a debugging of the weblog would normally require regenerating all PNG files per one test run, however, it can be regenerated for a limited number of PNG files by the execution of the individual function which has been debugging, with dumped files.
 
-    ---
     **Practical Example**: regenerating a part of weblog faster
 
     First, decorate update_mako_context() of a Renderer class. For example, the following code is for imaging of SingleDish (stage 13). When it run, the decorator serializes three files: ctx.pickle, context.pickle, and results.pickle into the directory  'update_mako_context.[TimeStamp]' named as the function name.

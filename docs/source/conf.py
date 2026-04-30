@@ -319,8 +319,19 @@ autosummary_generate = True
 autosummary_generate_overwrite = False  # only write stubs that don't exist yet; speeds up incremental builds
 
 # https://www.sphinx-doc.org/en/master/usage/extensions/autosummary.html#confval-autosummary_ignore_module_all
-autosummary_imported_members = True
-autosummary_ignore_module_all = False  # respect `__alll__` in autosummary to get clean output
+# Avoid documenting re-imported names (typing.Any, datatype.DataType, domain.MeasurementSet, ...) as
+# attributes of every module that does `from ... import X`. Without this, each `from typing import Any`
+# registers `pipeline.<pkg>.Any` as a documented attribute, producing dozens of ambiguous cross-reference
+# targets and a huge slow-down of the `writing output...` phase. Re-exports listed in a module's __all__
+# are still emitted because `autosummary_ignore_module_all = False`.
+autosummary_imported_members = False
+autosummary_ignore_module_all = False  # respect `__all__` in autosummary to get clean output
+
+# Suppress duplicate-target warnings from the python domain. The pipeline package legitimately re-exports
+# many classes (Context, MeasurementSet, SpectralWindow, Field, Source, Antenna, DataType, ...) at both
+# the package and submodule level. Sphinx still resolves these refs (smart_resolver picks one), but
+# rendering the multi-KB warning text once per occurrence dominated wall time during `writing output...`.
+suppress_warnings = ['ref.python']
 
 # autodoc_mock_imports = ["pipeline"]
 # autodoc_default_options = ['members']

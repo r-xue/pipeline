@@ -5,8 +5,8 @@ Automated Testing Guide
 ==================================
 
 .. |ptester| replace:: ``PipelineTester``
-.. |testdata_repo| replace:: `pipeline-testdata <https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline-testdata/browse>`_
-.. |testdata_repo_readme| replace:: `README <https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline-testdata/browse/readme.md>`_
+.. |testdata_repo| replace:: `pipeline-testdata <https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline-testdata/browse>`__
+.. |testdata_repo_readme| replace:: `README <https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline-testdata/browse/readme.md>`__
 .. |regression_py| replace:: ``infrastructure/renderer/regression.py``
 .. |recipereducer| replace:: ``recipereducer.py``
 .. |component_test| replace:: ``tests/component/component_test.py``

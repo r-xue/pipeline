@@ -5,8 +5,9 @@
 PYTHON := $(if $(pythonbin),$(pythonbin),python3)
 
 SPHINXOPTS    = -v -j auto
+# SPHINXOPTS    = -v -j auto -b coverage
+# SPHINXOPTS    = -v
 SPHINXBUILD   = ${PYTHON} -msphinx
-#SPHINXOPTS    = -v -j auto -b coverage
 SPHINXPROJ    = pipeline_docs
 SOURCEDIR     = source
 BUILDDIR      = _build

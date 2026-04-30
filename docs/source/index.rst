@@ -18,6 +18,7 @@
    :caption: API Reference
 
    apisummary
+   inheritance
 
 .. toctree::
    :hidden:
