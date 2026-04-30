@@ -146,7 +146,8 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
                     for url in dict.fromkeys(db_error_urls).keys():
                         asdm_uid = re.search(
                             "uid://[^ ]+",
-                            urllib.parse.unquote(url.rstrip("\n")))
+                            urllib.parse.unquote(url)
+                        )
                         if asdm_uid:
                             asdm_uid = asdm_uid.group(0)
                             endpoint_url = url.split("?")[0]
