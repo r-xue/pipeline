@@ -322,7 +322,13 @@ autosummary_generate_overwrite = False  # only write stubs that don't exist yet;
 autosummary_imported_members = True
 autosummary_ignore_module_all = False  # respect `__alll__` in autosummary to get clean output
 
-# autodoc_mock_imports = ["pipeline"]
+autodoc_mock_imports = [
+    "casaconfig",
+    "casaplotms",
+    "casashell",
+    "casatasks",
+    "casatools",
+]
 # autodoc_default_options = ['members']
 
 # Optionally, could disable type hints for the cleaner-look task refernece PDF
