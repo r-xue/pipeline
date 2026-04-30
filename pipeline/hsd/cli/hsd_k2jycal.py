@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hsd_k2jycal(dbservice=None, endpoint=None, reffile=None,
                 infiles=None, caltable=None,
-                backup_hosts=None):
+                backup_urls=None):
     """Derive Kelvin to Jy calibration tables.
 
     Derive the Kelvin to Jy calibration for list of MeasurementSets.

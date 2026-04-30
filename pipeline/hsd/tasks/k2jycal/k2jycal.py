@@ -26,7 +26,7 @@ LOG = infrastructure.logging.get_logger(__name__)
 
 QUERIED_FACTOR_FILE = 'jyperk_query.csv'  # filename of the queried factor file
 
-DEFAULT_BACKUP_HOSTS = [
+DEFAULT_BACKUP_URLS = [
     "https://asa.alma.cl/science/jy-kelvins",  # JAO
     "https://almascience.nao.ac.jp/science/jy-kelvins",  # EA
     "https://almascience.nrao.edu/science/jy-kelvins",  # NA
@@ -41,7 +41,7 @@ class SDK2JyCalInputs(vdp.StandardInputs):
     dbservice = vdp.VisDependentProperty(default=True)
     endpoint = vdp.VisDependentProperty(default='asdm')
     caltype = vdp.VisDependentProperty(default='amp', readonly=True)
-    backup_hosts = vdp.VisDependentProperty(default=DEFAULT_BACKUP_HOSTS)
+    backup_urls = vdp.VisDependentProperty(default=DEFAULT_BACKUP_URLS)
 
     @vdp.VisDependentProperty
     def infiles(self) -> str:
@@ -86,7 +86,7 @@ class SDK2JyCalInputs(vdp.StandardInputs):
         return {'vis': self.vis,
                 'caltable': self.caltable,
                 'endpoint': self.endpoint,
-                'backup_hosts': self.backup_hosts}
+                'backup_hosts': self.backup_urls}
 
     # docstring and type hints: supplements hsd_k2jycal
     def __init__(
@@ -98,7 +98,7 @@ class SDK2JyCalInputs(vdp.StandardInputs):
         reffile: str | None = None,
         dbservice: bool | None = None,
         endpoint: str | None = None,
-        backup_hosts: list[str] = DEFAULT_BACKUP_HOSTS
+        backup_urls: list[str] = DEFAULT_BACKUP_URLS
     ) -> None:
         """Initialize SDK2JyCalInputs instance.
 
@@ -176,7 +176,7 @@ class SDK2JyCalInputs(vdp.StandardInputs):
 
                 Default: None (equivalent to 'asdm')
 
-            backup_hosts: List of backup URLs for DB query.
+            backup_urls: List of backup URLs for DB query.
                 The primary endpoint URL should be defined in the
                 environment variable, JYPERKDB_URL. The URLs listed
                 here will be used in order when the query
@@ -198,7 +198,7 @@ class SDK2JyCalInputs(vdp.StandardInputs):
         self.reffile = reffile
         self.dbservice = dbservice
         self.endpoint = endpoint
-        self.backup_hosts = backup_hosts
+        self.backup_urls = backup_urls
 
 
 class SDK2JyCalResults(basetask.Results):
