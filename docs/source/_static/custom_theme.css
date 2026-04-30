@@ -2,6 +2,12 @@
    Furo theme customisations
    =========================================================================== */
 
+/* --- Releases table: smaller font ----------------------------------------- */
+
+table.small-font-table {
+    font-size: 0.8rem;
+}
+
 /* --- Left sidebar width --------------------------------------------------- */
 
 :root {

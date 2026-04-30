@@ -333,7 +333,13 @@ autosummary_ignore_module_all = False  # respect `__all__` in autosummary to get
 # rendering the multi-KB warning text once per occurrence dominated wall time during `writing output...`.
 suppress_warnings = ['ref.python']
 
-# autodoc_mock_imports = ["pipeline"]
+autodoc_mock_imports = [
+    "casaconfig",
+    "casaplotms",
+    "casashell",
+    "casatasks",
+    "casatools",
+]
 # autodoc_default_options = ['members']
 
 # Optionally, could disable type hints for the cleaner-look task refernece PDF

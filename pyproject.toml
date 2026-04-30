@@ -242,15 +242,6 @@ OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
 # Fetch/update CASA runtime data
 fetch-casarundata = "python -c 'import casatools'"
 
-# Build docs (full clean rebuild)
-build-docs = { cmd = "make html_docs", cwd = "docs" }
-
-# Incremental docs build — reuses doctrees and autosummary stubs (much faster for dev)
-build-docs-fast = { cmd = "make html_fast", cwd = "docs" }
-
-# Build PDF (LaTeX) docs
-build-pdf = { cmd = "make latexpdf", cwd = "docs" }
-
 # --------------------------------------------------------------------------
 # Feature: CASA ver6.7.1-dev/snapshot — Python 3.12
 # --------------------------------------------------------------------------
@@ -314,8 +305,15 @@ python = "3.12.*"
 pandoc = "*"             # required by nbsphinx (Jupyter notebook → RST conversion)
 
 [tool.pixi.feature.docs.pypi-dependencies]
-casashell = { version = "==6.7.5.*", index = "https://casa-pip.nrao.edu/repository/pypi-group/simple" }
 pipeline = { path = ".", editable = true, extras = ["docs"] }
+
+[tool.pixi.feature.docs.tasks]
+# Build docs (full clean rebuild)
+build-docs = { cmd = "make html_docs", cwd = "docs" }
+# Incremental docs build — reuses doctrees and autosummary stubs (much faster for dev)
+build-docs-fast = { cmd = "make html_fast", cwd = "docs" }
+# Build PDF (LaTeX) docs
+build-pdf = { cmd = "make latexpdf", cwd = "docs" }
 
 [tool.pixi.environments]
 default = { features = ["casa675-py312"], solve-group = "casa675-py312" }
