@@ -3067,40 +3067,8 @@ def channel_ranges_for_image(edge: tuple[int, int], nchan: int, sideband: int, r
     return sorted(tuple(x) for x in _ranges_image)
 
 
-def get_edgespw(context):
-    edgespw_dict = {}
-    for result_proxy in context.results:
-        result = result_proxy.read()
-        if result.taskname == "hsd_flagdata":
-            for r in result:
-                vis = r.inputs["vis"]
-                ms = context.observing_run.get_ms(vis)
-                if vis in edgespw_dict:
-                    edges = edgespw_dict[vis]
-                else:
-                    edges = {spw.id: [0, 0] for spw in ms.get_spectral_windows(science_windows_only=True)}
-                edgespw_cmds = filter(
-                    lambda cmd: "reason='edgespw'" in cmd, r.flagcmds()
-                )
-                for cmd in edgespw_cmds:
-                    m = re.search("spw='([^ ]+)'", cmd)
-                    if m:
-                        spw_selection = m.group(1)
-                        with casa_tools.MSReader(vis) as _ms:
-                            _ms.msselect({"spw": spw_selection})
-                            idx = _ms.msselectedindices()
-                            channel_selection = idx["channel"]
-                            for chan in channel_selection:
-                                spw_id = chan[0]
-                                n = chan[2] - chan[1] + 1
-                                i = 0 if chan[1] == 0 else 1
-                                m = edges[spw_id][i]
-                                edges[spw_id][i] = max(n, m)
-                edgespw_dict[vis] = edges
-    return edgespw_dict
 
-
-# @log_qa
+@log_qa
 def score_sd_line_detection(
     reduction_group: dict,
     result: 'SDBaselineResults',
@@ -3230,10 +3198,6 @@ def score_sd_line_detection(
     _edge = result.outcome['edge']
     edge_param = (_edge, _edge) if isinstance(_edge, int) else tuple(_edge[:2])
 
-    # edge channels flagged by hsd_flagdata
-    # {EB: {spw: [left_edge, right_edge]}}
-    edgespw_dict = get_edgespw(context)
-
     # Process each baseline for line detection and DM
     for bl in result.outcome['baselined']:
         reduction_group_id = bl['group_id']
@@ -3249,16 +3213,14 @@ def score_sd_line_detection(
         LOG.debug('Processing reduction group %s, field %s, spw %s', reduction_group_id, field_name, spw.id)
 
         # edge channels
-        edge_edgespw = np.array(
-            [edgespw_dict[reduction_group_desc[m].ms.origin_ms][reduction_group_desc[m].spw.id] for m in member_list]
-        )
+        flagged_edges = bl['flagged_edges']
 
         # take max of edge channels from user inputs and
         # edge channels flagged by hsd_flagdata
-        LOG.info(f"spw: {spw.id}, edge_edgespw: {edge_edgespw}")
+        LOG.info(f"spw: {spw.id}, edge_flagged: {flagged_edges}")
         edge = (
-            max(np.max(edge_edgespw[:, 0]), edge_param[0]),
-            max(np.max(edge_edgespw[:, 1]), edge_param[1])
+            max(flagged_edges[0], edge_param[0]),
+            max(flagged_edges[1], edge_param[1])
         )
 
         # spectral-line scoring

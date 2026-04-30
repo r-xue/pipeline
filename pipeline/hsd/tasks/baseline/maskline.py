@@ -189,9 +189,11 @@ class MaskLine(basetask.StandardTaskTemplate):
         if len(index_list) == 0:
             # No valid data
             outcome = {'detected_lines': [],
+                       'channelmap_range': None,
                        'cluster_info': {},
                        'flag_digits': {},
-                       'grid_table': None}
+                       'grid_table': None,
+                       'flagged_edges': None}
             result = MaskLineResults(task=self.__class__,
                                      success=True,
                                      outcome=outcome)
@@ -238,9 +240,11 @@ class MaskLine(basetask.StandardTaskTemplate):
             LOG.warning(
                 'Line detection/validation will not be done since grid table is empty. Maybe all the data are flagged out in the previous step.')
             outcome = {'detected_lines': [],
+                       'channelmap_range': None,
                        'cluster_info': {},
                        'flag_digits': {},
-                       'grid_table': None}
+                       'grid_table': None,
+                       'flagged_edges': None}
             result = MaskLineResults(task=self.__class__,
                                      success=True,
                                      outcome=outcome)
@@ -262,6 +266,7 @@ class MaskLine(basetask.StandardTaskTemplate):
                                                   spectral_data=spectra)
         # detected line channels for each grid position x ncube (grid_table row)
         detect_signal = detection_result.signals
+        flagged_edges = detection_result.outcome["flagged_edges"]
         t1 = time.time()
 
         LOG.trace('detect_signal=%s', detect_signal)
@@ -307,7 +312,8 @@ class MaskLine(basetask.StandardTaskTemplate):
                    'channelmap_range': channelmap_range,
                    'cluster_info': cluster_info,
                    'flag_digits': flag_digits,
-                   'grid_table': grid_table}
+                   'grid_table': grid_table,
+                   'flagged_edges': flagged_edges}
         result = MaskLineResults(task=self.__class__,
                                  success=True,
                                  outcome=outcome)

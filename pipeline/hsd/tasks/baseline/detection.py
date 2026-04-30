@@ -315,10 +315,32 @@ class DetectLine(basetask.StandardTaskTemplate):
             LOG.debug('End Row %s: Elapsed Time=%.1f sec', row, (ProcEndTime - ProcStartTime))
         del Timer
 
+        # analyse mask (True: valid)
+        collapsed_mask = np.any(masks, axis=0)
+        # identify the range of flagged channels at the beginning
+        ic1 = 0
+        while (not collapsed_mask[ic1]) and (ic1 < nchan):
+            ic1 += 1
+        # identify the range of flagged channels at the end
+        ic2 = 0
+        while (not collapsed_mask[nchan - 1 - ic2]) and (ic2 < nchan):
+            ic2 += 1
+        flagged_edges = [ic1, ic2]
+        LOG.info(f"flagged edge channels: {flagged_edges}")
+        LOG.trace(
+            "collapsed_mask = %s...%s",
+            collapsed_mask[:10].tolist(),
+            collapsed_mask[-10:].tolist()
+        )
+
         #LOG.debug('DetectSignal = %s'%(detect_signal))
+        outcome={
+            'signals': detect_signal,
+            'flagged_edges': flagged_edges
+        }
         result = DetectLineResults(task=self.__class__,
                                    success=True,
-                                   outcome={'signals': detect_signal})
+                                   outcome=outcome)
 
         return result
 
