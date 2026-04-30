@@ -2,6 +2,12 @@
    Furo theme customisations
    =========================================================================== */
 
+/* --- Left sidebar width --------------------------------------------------- */
+
+:root {
+    --sidebar-width: 20rem;  /* default is 15rem; increase as needed */
+}
+
 /* --- Right TOC collapse toggle -------------------------------------------- */
 
 /* The toggle button sits on the left edge of the TOC drawer.
