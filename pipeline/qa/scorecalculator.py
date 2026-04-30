@@ -3215,7 +3215,7 @@ def score_sd_line_detection(
         flagged_edges = bl['flagged_edges']
 
         # take max of edge channels from user inputs and
-        # edge channels flagged by hsd_flagdata
+        # edge channels flagged by preceding stages
         LOG.info(f"spw: {spw.id}, edge_flagged: {flagged_edges}")
         edge = (
             max(flagged_edges[0], edge_param[0]),
