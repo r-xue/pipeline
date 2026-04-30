@@ -7,3 +7,5 @@ pipeline.infrastructure.callibrary
    :inherited-members:
    :no-heading:
    :sort:
+   :noindex:
+   :allowed-package-names: pipeline.infrastructure.callibrary

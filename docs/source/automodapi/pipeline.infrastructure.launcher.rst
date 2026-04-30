@@ -7,3 +7,4 @@ pipeline.infrastructure.launcher
    :inherited-members:
    :no-heading:
    :sort:
+   :allowed-package-names: pipeline.infrastructure.launcher
