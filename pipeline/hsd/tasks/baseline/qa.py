@@ -41,7 +41,6 @@ class SDBaselineQAHandler(pqa.QAPlugin):
         qautils.registry.register_longmsg_keys( metric_name,
                                                 [ 'vis', 'field', 'spw', 'ant', 'pol' ] )
 
-
     def handle(self, context: Context, result: result_cls) -> None:
         """Compute QA score for baseline subtraction task.
 
