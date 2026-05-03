@@ -79,7 +79,8 @@ class PolcalflagInputs(vdp.StandardInputs):
 
                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
 
-            examineCrossPolSum: Whether to examine the XY+YX sum for multi-scan full-polarization data. Defaults to False.
+            examineCrossPolSum: Whether to examine the XY+YX sum for multi-scan full-polarization data. Defaults to
+                False, so only XX+YY is evaluated because the cross-pol sum can be non-flat when Stokes I is stable.
 
         """
         self.context = context

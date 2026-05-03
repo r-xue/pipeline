@@ -530,7 +530,8 @@ class CorrectedampflagInputs(vdp.StandardInputs):
             niter: Maximum number of times to iterate on evaluation of flagging heuristics. If an iteration results in no new flags, then
                 subsequent iterations are skipped.
 
-            examineCrossPolSum: Whether to examine the XY+YX sum for multi-scan full-polarization data. Defaults to False.
+            examineCrossPolSum: Whether to examine the XY+YX sum for multi-scan full-polarization data. Defaults to
+                False, so only XX+YY is evaluated because the cross-pol sum can be non-flat when Stokes I is stable.
 
         """
         super().__init__()
