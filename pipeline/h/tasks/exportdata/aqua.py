@@ -782,7 +782,7 @@ def xml_for_sensitivity(d, stage_name):
             observed_sensitivity = qa.quantity(d['observed_sensitivity'])
             observed_sensitivity_jy_per_beam = value(qa.convert(observed_sensitivity, 'Jy/beam'))
     except:
-        sensitivity_jy_per_beam  = 'N/A'
+        observed_sensitivity_jy_per_beam  = 'N/A'
 
     try:
         if d['pbcor_image_min'] is None:
