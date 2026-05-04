@@ -803,6 +803,24 @@ def xml_for_sensitivity(d, stage_name):
         pbcor_image_max_jy_per_beam = 'N/A'
 
     try:
+        if d['nonpbcor_image_min'] is None:
+            image_min_jy_per_beam = 'N/A'
+        else:
+            image_min = qa.quantity(d['nonpbcor_image_min'])
+            image_min_jy_per_beam = value(qa.convert(image_min, 'Jy/beam'))
+    except:
+        image_min_jy_per_beam = 'N/A'
+
+    try:
+        if d['nonpbcor_image_max'] is None:
+            image_max_jy_per_beam = 'N/A'
+        else:
+            image_max = qa.quantity(d['nonpbcor_image_max'])
+            image_max_jy_per_beam = value(qa.convert(image_max, 'Jy/beam'))
+    except:
+        image_max_jy_per_beam = 'N/A'
+
+    try:
         if d['imagename'] is None:
             imagename = 'N/A'
         else:
@@ -862,6 +880,8 @@ def xml_for_sensitivity(d, stage_name):
         IsRepresentative=is_representative,
         PbcorImageMinJyPerBeam=pbcor_image_min_jy_per_beam,
         PbcorImageMaxJyPerBeam=pbcor_image_max_jy_per_beam,
+        ImageMinJyPerBeam=image_min_jy_per_beam,
+        ImageMaxJyPerBeam=image_max_jy_per_beam,
         ImageName=imagename,
         DataType=datatype
       )

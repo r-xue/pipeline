@@ -902,11 +902,15 @@ class Tclean(cleanbase.CleanBase):
              nonpbcor_image_non_cleanmask_rms_min,  # added to result, later used in Weblog under name 'image_rms_min'
              nonpbcor_image_non_cleanmask_rms_max,  # added to result, later used in Weblog under name 'image_rms_max'
              nonpbcor_image_non_cleanmask_rms,  # printed added to result, later used in Weblog under name 'image_rms'
+             nonpbcor_image_min,
+             nonpbcor_image_max,
              pbcor_image_min,  # added to result, later used in Weblog under name 'image_min'
              pbcor_image_max,  # added to result, later used in Weblog under name 'image_max'
              # USED
              residual_robust_rms,
              nonpbcor_image_robust_rms_and_spectra,
+             nonpbcor_image_min_iquv,
+             nonpbcor_image_max_iquv,
              pbcor_image_min_iquv,
              pbcor_image_max_iquv,
              nonpbcor_image_non_cleanmask_rms_min_iquv,
@@ -1009,10 +1013,14 @@ class Tclean(cleanbase.CleanBase):
              nonpbcor_image_non_cleanmask_rms_min,
              nonpbcor_image_non_cleanmask_rms_max,
              nonpbcor_image_non_cleanmask_rms,
+             nonpbcor_image_min,
+             nonpbcor_image_max,
              pbcor_image_min,
              pbcor_image_max,
              residual_robust_rms,
              nonpbcor_image_robust_rms_and_spectra,
+             nonpbcor_image_min_iquv,
+             nonpbcor_image_max_iquv,
              pbcor_image_min_iquv,
              pbcor_image_max_iquv,
              nonpbcor_image_non_cleanmask_rms_min_iquv,
@@ -1045,6 +1053,10 @@ class Tclean(cleanbase.CleanBase):
             result.set_image_min_iquv(pbcor_image_min_iquv)
             result.set_image_max(pbcor_image_max)
             result.set_image_max_iquv(pbcor_image_max_iquv)
+            result.set_nonpbcor_image_min(nonpbcor_image_min)
+            result.set_nonpbcor_image_min_iquv(nonpbcor_image_min_iquv)
+            result.set_nonpbcor_image_max(nonpbcor_image_max)
+            result.set_nonpbcor_image_max_iquv(nonpbcor_image_max_iquv)
             result.set_image_rms(nonpbcor_image_non_cleanmask_rms)
             result.set_image_rms_iquv(nonpbcor_image_non_cleanmask_rms_iquv)
             result.set_image_rms_min(nonpbcor_image_non_cleanmask_rms_min)
@@ -1182,11 +1194,15 @@ class Tclean(cleanbase.CleanBase):
          nonpbcor_image_non_cleanmask_rms_min,  # added to result, later used in Weblog under name 'image_rms_min'
          nonpbcor_image_non_cleanmask_rms_max,  # added to result, later used in Weblog under name 'image_rms_max'
          nonpbcor_image_non_cleanmask_rms,   # printed added to result, later used in Weblog under name 'image_rms'
+         nonpbcor_image_min,
+         nonpbcor_image_max,
          pbcor_image_min,  # added to result, later used in Weblog under name 'image_min'
          pbcor_image_max,  # added to result, later used in Weblog under name 'image_max'
          # USED
          residual_robust_rms,
          nonpbcor_image_robust_rms_and_spectra,
+         nonpbcor_image_min_iquv,
+         nonpbcor_image_max_iquv,
          pbcor_image_min_iquv,
          pbcor_image_max_iquv,
          nonpbcor_image_non_cleanmask_rms_min_iquv,
@@ -1235,6 +1251,10 @@ class Tclean(cleanbase.CleanBase):
             result.set_image_min_iquv(pbcor_image_min_iquv)
             result.set_image_max(pbcor_image_max)
             result.set_image_max_iquv(pbcor_image_max_iquv)
+            result.set_nonpbcor_image_min(nonpbcor_image_min)
+            result.set_nonpbcor_image_min_iquv(nonpbcor_image_min_iquv)
+            result.set_nonpbcor_image_max(nonpbcor_image_max)
+            result.set_nonpbcor_image_max_iquv(nonpbcor_image_max_iquv)
             result.set_image_rms(nonpbcor_image_non_cleanmask_rms)
             result.set_image_rms_iquv(nonpbcor_image_non_cleanmask_rms_iquv)
             result.set_image_rms_min(nonpbcor_image_non_cleanmask_rms_min)
@@ -1397,6 +1417,10 @@ class Tclean(cleanbase.CleanBase):
             result.set_image_min_iquv(pbcor_image_min_iquv)
             result.set_image_max(pbcor_image_max)
             result.set_image_max_iquv(pbcor_image_max_iquv)
+            result.set_nonpbcor_image_min(nonpbcor_image_min)
+            result.set_nonpbcor_image_min_iquv(nonpbcor_image_min_iquv)
+            result.set_nonpbcor_image_max(nonpbcor_image_max)
+            result.set_nonpbcor_image_max_iquv(nonpbcor_image_max_iquv)
             result.set_image_rms(nonpbcor_image_non_cleanmask_rms)
             result.set_image_rms_iquv(nonpbcor_image_non_cleanmask_rms_iquv)
             result.set_image_rms_min(nonpbcor_image_non_cleanmask_rms_min)

@@ -520,10 +520,14 @@ class MakeImages(basetask.StandardTaskTemplate):
             pbcor_image_rms = result.image_rms_iquv[0]
             pbcor_image_min = result.image_min_iquv[0]
             pbcor_image_max = result.image_max_iquv[0]
+            nonpbcor_image_min = result.nonpbcor_image_min_iquv[0]
+            nonpbcor_image_max = result.nonpbcor_image_max_iquv[0]
         else:
             pbcor_image_rms = result.image_rms
             pbcor_image_min = result.image_min
             pbcor_image_max = result.image_max
+            nonpbcor_image_min = result.nonpbcor_image_min
+            nonpbcor_image_max = result.nonpbcor_image_max
 
         return Sensitivity(array=array,
                            intent=target['intent'],
@@ -541,6 +545,8 @@ class MakeImages(basetask.StandardTaskTemplate):
                            observed_sensitivity=cqa.quantity(pbcor_image_rms, 'Jy/beam'),
                            pbcor_image_min=cqa.quantity(pbcor_image_min, 'Jy/beam'),
                            pbcor_image_max=cqa.quantity(pbcor_image_max, 'Jy/beam'),
+                           nonpbcor_image_min=cqa.quantity(nonpbcor_image_min, 'Jy/beam'),
+                           nonpbcor_image_max=cqa.quantity(nonpbcor_image_max, 'Jy/beam'),
                            imagename=result.image.replace('.pbcor', ''),
                            datatype=result.datatype)
 

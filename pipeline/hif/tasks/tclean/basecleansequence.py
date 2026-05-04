@@ -39,9 +39,14 @@ class BaseCleanSequence:
          nonpbcor_image_non_cleanmask_rms_min,
          nonpbcor_image_non_cleanmask_rms_max,
          nonpbcor_image_non_cleanmask_rms,
-         pbcor_image_min, pbcor_image_max,
+         nonpbcor_image_min, 
+         nonpbcor_image_max,
+         pbcor_image_min, 
+         pbcor_image_max,
          residual_robust_rms,
          nonpbcor_image_robust_rms_and_spectra,
+         nonpbcor_image_min_iquv,
+         nonpbcor_image_max_iquv,
          pbcor_image_min_iquv,
          pbcor_image_max_iquv,
          nonpbcor_image_non_cleanmask_rms_min_iquv,
@@ -67,9 +72,14 @@ class BaseCleanSequence:
                nonpbcor_image_non_cleanmask_rms_min, \
                nonpbcor_image_non_cleanmask_rms_max, \
                nonpbcor_image_non_cleanmask_rms, \
-               pbcor_image_min, pbcor_image_max, \
+               nonpbcor_image_min, \
+               nonpbcor_image_max, \
+               pbcor_image_min, \
+               pbcor_image_max, \
                residual_robust_rms, \
                nonpbcor_image_robust_rms_and_spectra, \
+               nonpbcor_image_min_iquv, \
+               nonpbcor_image_max_iquv, \
                pbcor_image_min_iquv, \
                pbcor_image_max_iquv, \
                nonpbcor_image_non_cleanmask_rms_min_iquv, \

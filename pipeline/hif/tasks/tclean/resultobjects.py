@@ -64,6 +64,10 @@ class TcleanResult(basetask.Results):
         self._image_min_iquv = [0.0, 0.0, 0.0, 0.0]
         self._image_max = 0.0
         self._image_max_iquv = [0.0, 0.0, 0.0, 0.0]
+        self._nonpbcor_image_min = 0.0
+        self._nonpbcor_image_min_iquv = [0.0, 0.0, 0.0, 0.0]
+        self._nonpbcor_image_max = 0.0
+        self._nonpbcor_image_max_iquv = [0.0, 0.0, 0.0, 0.0]
         self._image_rms = 0.0
         self._image_rms_iquv = [0.0, 0.0, 0.0, 0.0]
         self._image_rms_min = 0.0
@@ -584,6 +588,34 @@ class TcleanResult(basetask.Results):
 
     def set_image_max_iquv(self, image_max_iquv):
         self._image_max_iquv = image_max_iquv
+
+    @property
+    def nonpbcor_image_min(self):
+        return self._nonpbcor_image_min
+
+    def set_nonpbcor_image_min(self, nonpbcor_image_min):
+        self._nonpbcor_image_min = nonpbcor_image_min
+
+    @property
+    def nonpbcor_image_min_iquv(self):
+        return self._nonpbcor_image_min_iquv
+
+    def set_nonpbcor_image_min_iquv(self, nonpbcor_image_min_iquv):
+        self._nonpbcor_image_min_iquv = nonpbcor_image_min_iquv
+
+    @property
+    def nonpbcor_image_max(self):
+        return self._nonpbcor_image_max
+
+    def set_nonpbcor_image_max(self, nonpbcor_image_max):
+        self._nonpbcor_image_max = nonpbcor_image_max
+
+    @property
+    def nonpbcor_image_max_iquv(self):
+        return self._nonpbcor_image_max_iquv
+
+    def set_nonpbcor_image_max_iquv(self, nonpbcor_image_max_iquv):
+        self._nonpbcor_image_max_iquv = nonpbcor_image_max_iquv
 
     @property
     def image_rms(self):

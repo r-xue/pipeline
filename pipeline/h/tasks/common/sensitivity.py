@@ -19,6 +19,8 @@ class Sensitivity(dict):
         self['effective_bw'] = None            # quanta
         self['pbcor_image_min'] = None         # quanta
         self['pbcor_image_max'] = None         # quanta
+        self['nonpbcor_image_min'] = None      # quanta
+        self['nonpbcor_image_max'] = None      # quanta
         self['imagename'] = None               # string
         self['datatype'] = None                # string
 

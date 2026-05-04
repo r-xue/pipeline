@@ -412,6 +412,8 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                     ("effective_bw", nx),
                     ("pbcor_image_min", nx),
                     ("pbcor_image_max", nx),
+                    ("nonpbcor_image_min", nx),
+                    ("nonpbcor_image_max", nx),
                     ("theoretical_sensitivity", nx if index < len(topic.results) else None),
                 ]
                 for tag, nx in nested_tags:
