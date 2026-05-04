@@ -202,7 +202,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 nonpbcor_image_max_iquv = image_stats_iquv['max']
 
                 log_imagetype = "non-"
-            elif imagetype == "pbcor" or (imagetype == "nonpbcor" and len(imagetypes) == 1):
+            elif imagetype == "pbcor":
                 pbcor_image_min = image_stats['min'][0]
                 pbcor_image_min_iquv = image_stats_iquv['min']
                 pbcor_image_max = image_stats['max'][0]
