@@ -201,21 +201,21 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 nonpbcor_image_max = image_stats['max'][0]
                 nonpbcor_image_max_iquv = image_stats_iquv['max']
 
-                log_imagetype = 'non-'
+                log_imagetype = "non-"
             elif imagetype == "pbcor" or (imagetype == "nonpbcor" and len(imagetypes) == 1):
                 pbcor_image_min = image_stats['min'][0]
                 pbcor_image_min_iquv = image_stats_iquv['min']
                 pbcor_image_max = image_stats['max'][0]
                 pbcor_image_max_iquv = image_stats_iquv['max']
 
-                log_imagetype = ''
+                log_imagetype = ""
             else:
-                raise ValueError(f'Unexpected imagetype {imagetype}')
+                raise ValueError(f"Unexpected imagetype {imagetype}")
                 
-            log_have_mask = 'cleaned' if have_mask else 'full'
+            log_have_mask = "cleaned" if have_mask else "full"
 
-            LOG.debug(f'Clean {log_imagetype}pb-corrected image min in {log_have_mask} area: {image_stats['min'][0]}')
-            LOG.debug(f'Clean {log_imagetype}pb-corrected image max in {log_have_mask} area: {image_stats['max'][0]}')
+            LOG.debug(f"Clean {log_imagetype}pb-corrected image min in {log_have_mask} area: {image_stats['min'][0]}")
+            LOG.debug(f"Clean {log_imagetype}pb-corrected image max in {log_have_mask} area: {image_stats['max'][0]}")
 
         # Get RMS in non cleanmask area of non-pb-corrected cleaned result
         # If possible use flattened clean mask for exclusion of areas for all spectral channels
