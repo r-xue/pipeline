@@ -129,6 +129,10 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
     pbcor_image_min_iquv = None
     pbcor_image_max = None
     pbcor_image_max_iquv = None
+    nonpbcor_image_min = None
+    nonpbcor_image_min_iquv = None
+    nonpbcor_image_max = None
+    nonpbcor_image_max_iquv = None
     nonpbcor_imagename = None
     nonpbcor_image_non_cleanmask_rms = None
     nonpbcor_image_non_cleanmask_rms_min = None
@@ -146,56 +150,74 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
     nonpbcor_image_cleanmask_npoints = None
     nonpbcor_image_statsmask = None
     if restored not in [None, '']:
-        # get min and max of the pb-corrected cleaned result
-        with casa_tools.ImageReader(restored.replace('.image', '.image%s' % extension)) as image:
-            if pb is not None and os.path.exists(pb+extension):
-                have_mask = True
-                # Default is area pb > 0.3
-                statsmask = '"%s" > %f' % (os.path.basename(pb)+extension, pblimit_cleanmask)
-            elif cleanmask is not None and os.path.exists(cleanmask):
-                have_mask = True
-                # Area inside clean mask
-                statsmask = '"%s" > 0.1' % (os.path.basename(cleanmask))
-            else:
-                have_mask = False
-                statsmask = ''
 
-            if 'TARGET' in image.miscinfo().get('intent', None):
-                image_stats = image.statistics(mask=statsmask, stretch=True)
-                # For polarization calibrators we need stats for I, Q, U and V, so exclude the
-                # Stokes axis from collapsing.
-                image_stats_iquv = image_statistics_per_stokes(image, stokescontrol='a', mask=statsmask, stretch=True)
-            else:
-                # Restrict region to inner 25% x 25% of the image for calibrators to
-                # avoid picking up sidelobes (PIPE-611)
-                shape = image.shape()
-                rgTool = casa_tools.regionmanager
-                nPixels = max(shape[0], shape[1])
-                region = rgTool.box([nPixels*0.375-1, nPixels*0.375-1, 0, 0], [nPixels*0.625-1, nPixels*0.625-1, shape[2]-1, shape[3]-1])
-                image_stats = image.statistics(mask=statsmask, region=region, stretch=True)
-                # For polarization calibrators we need stats for I, Q, U and V, so exclude the
-                # Stokes axis from collapsing.
-                image_stats_iquv = image_statistics_per_stokes(image, stokescontrol='a', mask=statsmask,region=region, stretch=True)
-                rgTool.done()
+        pbcor_imagename = restored.replace('.image', '.image%s' % extension)
 
-            pbcor_image_min = image_stats['min'][0]
-            pbcor_image_min_iquv = image_stats_iquv['min']
-            pbcor_image_max = image_stats['max'][0]
-            pbcor_image_max_iquv = image_stats_iquv['max']
-
-            if have_mask:
-                LOG.debug('Clean pb-corrected image min in cleaned area: %s' % pbcor_image_min)
-                LOG.debug('Clean pb-corrected image max in cleaned area: %s' % pbcor_image_max)
-            else:
-                LOG.debug('Clean pb-corrected image min in full area: %s' % pbcor_image_min)
-                LOG.debug('Clean pb-corrected image max in full area: %s' % pbcor_image_max)
-
-        # get RMS in non cleanmask area of non-pb-corrected cleaned result
         if restored.find('.image.pbcor') != -1:
             nonpbcor_imagename = restored.replace('.image.pbcor', '.image%s' % extension)
+            imagetypes = ["nonpbcor", "pbcor"]
         else:
-            nonpbcor_imagename = restored.replace('.image', '.image%s' % extension)
+            nonpbcor_imagename = pbcor_imagename
+            imagetypes = ["nonpbcor"]
 
+        # get min and max of the cleaned result
+        if pb is not None and os.path.exists(pb+extension):
+            have_mask = True
+            # Default is area pb > 0.3
+            statsmask = '"%s" > %f' % (os.path.basename(pb)+extension, pblimit_cleanmask)
+        elif cleanmask is not None and os.path.exists(cleanmask):
+            have_mask = True
+            # Area inside clean mask
+            statsmask = '"%s" > 0.1' % (os.path.basename(cleanmask))
+        else:
+            have_mask = False
+            statsmask = ''
+
+        for imagetype in imagetypes:
+            imagename = eval(f'{imagetype}_imagename') 
+
+            with casa_tools.ImageReader(imagename) as image:
+                if 'TARGET' in image.miscinfo().get('intent', None):
+                    image_stats = image.statistics(mask=statsmask, stretch=True)
+                    # For polarization calibrators we need stats for I, Q, U and V, so exclude the
+                    # Stokes axis from collapsing.
+                    image_stats_iquv = image_statistics_per_stokes(image, stokescontrol='a', mask=statsmask, stretch=True)
+                else:
+                    # Restrict region to inner 25% x 25% of the image for calibrators to
+                    # avoid picking up sidelobes (PIPE-611)
+                    shape = image.shape()
+                    rgTool = casa_tools.regionmanager
+                    nPixels = max(shape[0], shape[1])
+                    region = rgTool.box([nPixels*0.375-1, nPixels*0.375-1, 0, 0], [nPixels*0.625-1, nPixels*0.625-1, shape[2]-1, shape[3]-1])
+                    image_stats = image.statistics(mask=statsmask, region=region, stretch=True)
+                    # For polarization calibrators we need stats for I, Q, U and V, so exclude the
+                    # Stokes axis from collapsing.
+                    image_stats_iquv = image_statistics_per_stokes(image, stokescontrol='a', mask=statsmask,region=region, stretch=True)
+                    rgTool.done()
+
+            if imagetype == "nonpbcor":
+                nonpbcor_image_min = image_stats['min'][0]
+                nonpbcor_image_min_iquv = image_stats_iquv['min']
+                nonpbcor_image_max = image_stats['max'][0]
+                nonpbcor_image_max_iquv = image_stats_iquv['max']
+
+                log_imagetype = 'non-'
+            elif imagetype == "pbcor" or (imagetype == "nonpbcor" and len(imagetypes) == 1):
+                pbcor_image_min = image_stats['min'][0]
+                pbcor_image_min_iquv = image_stats_iquv['min']
+                pbcor_image_max = image_stats['max'][0]
+                pbcor_image_max_iquv = image_stats_iquv['max']
+
+                log_imagetype = ''
+            else:
+                raise ValueError(f'Unexpected imagetype {imagetype}')
+                
+            log_have_mask = 'cleaned' if have_mask else 'full'
+
+            LOG.debug(f'Clean {log_imagetype}pb-corrected image min in {log_have_mask} area: {image_stats['min'][0]}')
+            LOG.debug(f'Clean {log_imagetype}pb-corrected image max in {log_have_mask} area: {image_stats['max'][0]}')
+
+        # Get RMS in non cleanmask area of non-pb-corrected cleaned result
         # If possible use flattened clean mask for exclusion of areas for all spectral channels
         flattened_mask = None
         if cleanmask is not None and os.path.exists(cleanmask):
@@ -407,7 +429,8 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
 
     return (residual_cleanmask_rms, residual_non_cleanmask_rms, residual_min, residual_max,
             nonpbcor_image_non_cleanmask_rms_min, nonpbcor_image_non_cleanmask_rms_max,
-            nonpbcor_image_non_cleanmask_rms, pbcor_image_min, pbcor_image_max, residual_robust_rms,
+            nonpbcor_image_non_cleanmask_rms, nonpbcor_image_min, nonpbcor_image_max,
+            pbcor_image_min, pbcor_image_max, residual_robust_rms,
             {'nonpbcor_imagename': nonpbcor_imagename,
              'nonpbcor_image_non_cleanmask_freq_ch1': nonpbcor_image_non_cleanmask_freq_ch1,
              'nonpbcor_image_non_cleanmask_freq_chN': nonpbcor_image_non_cleanmask_freq_chN,
@@ -419,6 +442,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
              'nonpbcor_image_cleanmask_npoints': nonpbcor_image_cleanmask_npoints,
              'cont_freq_ranges': cont_freq_ranges,
              'nonpbcor_image_statsmask': nonpbcor_image_statsmask},
+            nonpbcor_image_min_iquv, nonpbcor_image_max_iquv,
             pbcor_image_min_iquv, pbcor_image_max_iquv, nonpbcor_image_non_cleanmask_rms_min_iquv,
             nonpbcor_image_non_cleanmask_rms_max_iquv, nonpbcor_image_non_cleanmask_rms_iquv)
 
