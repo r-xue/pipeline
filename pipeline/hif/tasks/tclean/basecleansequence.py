@@ -1,3 +1,5 @@
+"""Base class for clean sequences used in iterative imaging."""
+
 import os
 
 import pipeline.infrastructure as infrastructure
@@ -9,10 +11,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class BaseCleanSequence:
+    """Base class managing state and iteration for a single clean sequence."""
 
-    def __init__(self, multiterm=None, gridder='', threshold='0.0mJy', sensitivity=0.0, niter=0):
-        """Constructor.
-        """
+    def __init__(self, multiterm=None, gridder='', threshold='0.0mJy', sensitivity=0.0, niter=0): # noqa: D107
         self.result = BoxResult()
 
         self.flux = None
@@ -29,7 +30,6 @@ class BaseCleanSequence:
                          flux, cleanmask, pblimit_image=0.2, pblimit_cleanmask=0.3,
                          cont_freq_ranges=None):
         """This method sets the iteration counter and returns statistics for that iteration."""
-
         self.flux = flux
 
         (residual_cleanmask_rms,
@@ -88,7 +88,6 @@ class BaseCleanSequence:
 
     def iteration(self):
         """The base boxworker allows only one iteration."""
-
         return self.result
 
     def get_rootname(self):

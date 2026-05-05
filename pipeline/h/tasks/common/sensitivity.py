@@ -1,8 +1,7 @@
-class Sensitivity(dict):
+class Sensitivity(dict):  # noqa: D100
+    """Sensitivity template definition."""
 
-    '''Sensitivity template definition.'''
-
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):  # noqa: D107
         self['array'] = None                   # string
         self['intent'] = None                  # string
         self['field'] = None                   # string

@@ -1,3 +1,5 @@
+"""Heuristics for analysing clean results and computing image statistics."""
+
 from __future__ import annotations
 
 import os.path
@@ -23,7 +25,7 @@ LOG = infrastructure.get_logger(__name__)
 
 def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pblimit_image=0.2,
                          pblimit_cleanmask=0.3, cont_freq_ranges=None):
-
+    """Analyse the result of a clean run and return image statistics."""
     qaTool = casa_tools.quanta
 
     if pb == '':
