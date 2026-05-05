@@ -589,7 +589,7 @@ def _create_value_formatter(format_spec):
             # Handle lists of metrics and other possible flavors with a string
             # representation.
             return str(val)
-        except:
+        except Exception:
             return UNDEFINED
 
     return f
@@ -680,7 +680,7 @@ def xml_for_sensitivity(d, stage_name):
             is_representative = 'N/A'
         else:
             is_representative = str(d['is_representative'])
-    except:
+    except Exception:
         is_representative = 'N/A'
 
     try:
@@ -689,7 +689,7 @@ def xml_for_sensitivity(d, stage_name):
         else:
             bandwidth = qa.quantity(d['bandwidth'])
             bandwidth_hz = value(qa.convert(bandwidth, 'Hz'))
-    except:
+    except Exception:
         bandwidth_hz = 'N/A'
 
     try:
@@ -697,7 +697,7 @@ def xml_for_sensitivity(d, stage_name):
         effective_bw_hz = value(qa.convert(effective_bw, 'Hz'))
         if effective_bw_hz == '0.0':
             effective_bw_hz = 'N/A'
-    except:
+    except Exception:
         effective_bw_hz = 'N/A'
 
     try:
@@ -706,7 +706,7 @@ def xml_for_sensitivity(d, stage_name):
         else:
             major = qa.quantity(d['beam']['major'])
             major_arcsec = value(qa.convert(major, 'arcsec'))
-    except:
+    except Exception:
         major_arcsec = 'N/A'
 
     try:
@@ -715,7 +715,7 @@ def xml_for_sensitivity(d, stage_name):
         else:
             minor = qa.quantity(d['beam']['minor'])
             minor_arcsec = value(qa.convert(minor, 'arcsec'))
-    except:
+    except Exception:
         minor_arcsec = 'N/A'
 
     try:
@@ -724,7 +724,7 @@ def xml_for_sensitivity(d, stage_name):
         else:
             cell_x = qa.quantity(d['cell'][0])
             cell_x_arcsec = value(qa.convert(cell_x, 'arcsec'))
-    except:
+    except Exception:
         cell_x_arcsec = 'N/A'
 
     try:
@@ -733,7 +733,7 @@ def xml_for_sensitivity(d, stage_name):
         else:
             cell_y = qa.quantity(d['cell'][1])
             cell_y_arcsec = value(qa.convert(cell_y, 'arcsec'))
-    except:
+    except Exception:
         cell_y_arcsec = 'N/A'
 
     try:
@@ -742,7 +742,7 @@ def xml_for_sensitivity(d, stage_name):
         else:
             positionangle = qa.quantity(d['beam']['positionangle'])
             positionangle_deg = value(qa.convert(positionangle, 'deg'))
-    except:
+    except Exception:
         positionangle_deg = 'N/A'
 
     try:
@@ -751,7 +751,7 @@ def xml_for_sensitivity(d, stage_name):
         else:
             observed_sensitivity = qa.quantity(d['observed_sensitivity'])
             observed_sensitivity_jy_per_beam = value(qa.convert(observed_sensitivity, 'Jy/beam'))
-    except:
+    except Exception:
         observed_sensitivity_jy_per_beam  = 'N/A'
 
     try:
@@ -760,7 +760,7 @@ def xml_for_sensitivity(d, stage_name):
         else:
             pbcor_image_min = qa.quantity(d['pbcor_image_min'])
             pbcor_image_min_jy_per_beam = value(qa.convert(pbcor_image_min, 'Jy/beam'))
-    except:
+    except Exception:
         pbcor_image_min_jy_per_beam = 'N/A'
 
     try:
@@ -769,7 +769,7 @@ def xml_for_sensitivity(d, stage_name):
         else:
             pbcor_image_max = qa.quantity(d['pbcor_image_max'])
             pbcor_image_max_jy_per_beam = value(qa.convert(pbcor_image_max, 'Jy/beam'))
-    except:
+    except Exception:
         pbcor_image_max_jy_per_beam = 'N/A'
 
     try:
@@ -778,7 +778,7 @@ def xml_for_sensitivity(d, stage_name):
         else:
             image_min = qa.quantity(d['nonpbcor_image_min'])
             image_min_jy_per_beam = value(qa.convert(image_min, 'Jy/beam'))
-    except:
+    except Exception:
         image_min_jy_per_beam = 'N/A'
 
     try:
@@ -787,7 +787,7 @@ def xml_for_sensitivity(d, stage_name):
         else:
             image_max = qa.quantity(d['nonpbcor_image_max'])
             image_max_jy_per_beam = value(qa.convert(image_max, 'Jy/beam'))
-    except:
+    except Exception:
         image_max_jy_per_beam = 'N/A'
 
     try:
@@ -795,7 +795,7 @@ def xml_for_sensitivity(d, stage_name):
             imagename = 'N/A'
         else:
             imagename = d['imagename']
-    except:
+    except Exception:
         imagename = 'N/A'
 
     try:
@@ -812,7 +812,7 @@ def xml_for_sensitivity(d, stage_name):
         else:
             theoretical_sensitivity = qa.quantity(d['theoretical_sensitivity'])
             theoretical_sensitivity_jy_per_beam = value(qa.convert(theoretical_sensitivity, 'Jy/beam'))
-    except:
+    except Exception:
         theoretical_sensitivity_jy_per_beam = 'N/A'
 
     try:
@@ -820,7 +820,7 @@ def xml_for_sensitivity(d, stage_name):
             datatype = 'N/A'
         else:
             datatype = d['datatype']
-    except:
+    except Exception:
         datatype = 'N/A'
 
     xml = ElementTree.Element('Sensitivity',

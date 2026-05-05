@@ -576,7 +576,7 @@ def xml_for_extracted_flux_measurements(all_measurements, ms):
                     flux = getattr(measurement, stokes)
                     flux_jy = flux.to_units(measures.FluxDensityUnits.JANSKY)
                     flux_jy = '{:.3f}'.format(flux_jy)
-                except:
+                except Exception:
                     continue
 
                 try:
@@ -586,7 +586,7 @@ def xml_for_extracted_flux_measurements(all_measurements, ms):
                         unc_jy = '{:.6f}'.format(unc_jy)
                     else:
                         unc_jy = ''
-                except:
+                except Exception:
                     unc_jy = ''
 
                 xml = ElementTree.Element('FluxMeasurement',

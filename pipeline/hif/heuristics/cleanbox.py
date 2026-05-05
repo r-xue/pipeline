@@ -69,7 +69,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
             try:
                 residual_cleanmask_rms = resid_clean_stats['rms'][0]
                 LOG.info('Residual rms inside cleaned area: %s' % residual_cleanmask_rms)
-            except:
+            except Exception:
                 pass
 
         # and the rms of the residual image outside the cleaned area
@@ -96,7 +96,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 LOG.info('Residual rms in the annulus: %s' % residual_non_cleanmask_rms)
             else:
                 LOG.info('Residual rms across full area: %s' % residual_non_cleanmask_rms)
-        except:
+        except Exception:
             pass
 
         # get the max, min of the residual image (avoiding the edges
@@ -118,7 +118,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
             # later, the downstream code in tclean.py needs to be adjusted.
             residual_max = residual_stats['max'][0]
             residual_min = residual_stats['min'][0]
-        except:
+        except Exception:
             residual_max = None
             residual_min = None
 
@@ -244,7 +244,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                         nonpbcor_image_cleanmask_npoints = int(np.asarray(npoints_mask).item())
                     else:
                         nonpbcor_image_cleanmask_npoints = 0
-                except:
+                except Exception:
                     nonpbcor_image_cleanmask_npoints = 0
                 flattened_mask_image.done()
 
@@ -256,7 +256,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 csys = image.coordsys()
                 freq_axis = csys.findaxisbyname('spectral')
                 csys.done()
-            except:
+            except Exception:
                 num_axes = image.shape().shape[0]
                 if num_axes > 3:
                     LOG.warning("Can't find spectral axis. Assuming it is 3.")
@@ -277,7 +277,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                     msg_l = msg.lower()
                     if 'spectral' in msg_l and 'reference' in msg_l:
                         nonpbcor_image_non_cleanmask_freq_frame = msg.split(':')[1].strip()
-            except:
+            except Exception:
                 LOG.warning('Cannot determine spectral reference in %s. Assuming it is LSRK.' % (nonpbcor_imagename))
                 nonpbcor_image_non_cleanmask_freq_frame = 'LSRK'
 

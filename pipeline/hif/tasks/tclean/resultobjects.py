@@ -142,7 +142,7 @@ class TcleanResult(basetask.Results):
         # Remove heuristics objects to avoid accumulating large amounts of unnecessary memory
         try:
             del self.inputs['image_heuristics']
-        except:
+        except Exception:
             pass
 
     def empty(self):
