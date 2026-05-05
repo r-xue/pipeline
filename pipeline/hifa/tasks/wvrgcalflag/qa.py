@@ -2,13 +2,13 @@ import collections.abc
 import os
 
 import pipeline.h.tasks.exportdata.aqua as aqua
-import pipeline.infrastructure.logging as logging
+import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
 from . import resultobjects
 
-LOG = logging.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class WvrgcalflagQAHandler(pqa.QAPlugin):    
