@@ -22,10 +22,11 @@ class WvrgcalflagQAHandler(pqa.QAPlugin):
         ms_name = os.path.basename(result.inputs['vis'])
 
         # If too few unflagged antennas were left over after flagging,
-        # then return a fixed very low score:
+        # then return a fixed low score. PIPE-1868 change from 0.1 to 0.34
+        # and add ms name to the longmsg string
         if result.too_few_wvr_post_flagging:
             score_object = pqa.QAScore(
-                0.1, longmsg='Not enough unflagged WVR available',
+                0.34, longmsg='Not enough unflagged WVR available for %s' % (ms_name),
                 shortmsg='Not enough unflagged WVR', vis=ms_name)
             new_origin = pqa.QAOrigin(
                 metric_name='PhaseRmsRatio',
