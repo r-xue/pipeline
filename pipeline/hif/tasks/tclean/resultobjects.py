@@ -8,7 +8,6 @@ import os.path
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
-
 from pipeline.h.tasks.common.displays import sky as sky
 from pipeline.hif.tasks.makeimlist.cleantarget import CleanTargetInfo
 

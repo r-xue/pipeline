@@ -1,9 +1,9 @@
 """Task implementation for hif_tclean: cleans a single imaging target."""
 # ruff: noqa: D102, D107
 
+import inspect
 import os
 import re
-import inspect
 
 import numpy as np
 from scipy.ndimage import label
@@ -24,9 +24,9 @@ from .automaskthresholdsequence import AutoMaskThresholdSequence
 from .autoscalthresholdsequence import AutoScalThresholdSequence
 from .imagecentrethresholdsequence import ImageCentreThresholdSequence
 from .manualmaskthresholdsequence import ManualMaskThresholdSequence
-from .reusemaskthresholdsequence import ReuseMaskThresholdSequence
 from .nomaskthresholdsequence import NoMaskThresholdSequence
 from .resultobjects import TcleanResult
+from .reusemaskthresholdsequence import ReuseMaskThresholdSequence
 from .vlaautomaskthresholdsequence import VlaAutoMaskThresholdSequence
 from .vlassmaskthresholdsequence import VlassMaskThresholdSequence
 

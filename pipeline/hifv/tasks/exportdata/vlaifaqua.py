@@ -2,20 +2,20 @@
 # ruff: noqa: D017
 
 import datetime
-import numpy
 import operator
 import os
 import xml.etree.ElementTree as ElementTree
 from xml.etree.ElementTree import ParseError
 
-import pipeline.domain.measures as measures
-import pipeline.infrastructure.logging as logging
-import pipeline.infrastructure.launcher as launcher
+import numpy
 
+import pipeline.domain.measures as measures
 import pipeline.h.tasks.exportdata.aqua as aqua
+import pipeline.infrastructure.launcher as launcher
+import pipeline.infrastructure.logging as logging
 from pipeline import environment
-from pipeline.h.tasks.exportdata.aqua import UNDEFINED, export_to_disk
 from pipeline.h.tasks.common import flagging_renderer_utils as flagutils
+from pipeline.h.tasks.exportdata.aqua import UNDEFINED, export_to_disk
 from pipeline.infrastructure import utils
 
 LOG = logging.get_logger(__name__)

@@ -14,9 +14,8 @@ from pipeline.infrastructure import casa_tools
 if TYPE_CHECKING:
     from typing import Any
 
-    from numpy.typing import NDArray
-
     import casatools.image
+    from numpy.typing import NDArray
 
     from pipeline.infrastructure.casa_tools import _logging_image_cls as LoggingImage
 

@@ -4,6 +4,8 @@ import os
 import tempfile
 from inspect import signature
 
+import numpy as np
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.daskhelpers as daskhelpers
@@ -11,7 +13,6 @@ import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-
 from pipeline.domain import DataType
 from pipeline.h.tasks.common.sensitivity import Sensitivity
 from pipeline.infrastructure import casa_tools, exceptions, task_registry
@@ -19,7 +20,6 @@ from pipeline.infrastructure import casa_tools, exceptions, task_registry
 from ..tclean import Tclean
 from ..tclean.resultobjects import TcleanResult
 from .resultobjects import MakeImagesResult
-import numpy as np
 
 LOG = infrastructure.get_logger(__name__)
 

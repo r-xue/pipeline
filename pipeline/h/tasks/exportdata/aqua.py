@@ -44,11 +44,11 @@ Future Technical Solutions
 """
 from __future__ import annotations
 
+import copy
 import datetime
 import itertools
 import operator
 import os
-import copy
 import xml.etree.ElementTree as ElementTree
 from typing import TYPE_CHECKING
 from xml.dom import minidom
