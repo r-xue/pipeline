@@ -1,4 +1,4 @@
-# Building the pipeline
+# Pipeline with Monolithic CASA
 
 ## Prerequisites
 

@@ -3,7 +3,7 @@
 ```{toctree}
 :maxdepth: 1
 
-building_the_pipeline
+monolithic_casa
 pixi_tasks
 conda_setup
 readthedocs
