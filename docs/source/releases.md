@@ -14,7 +14,7 @@
 
 * - 2026.1.0.4
   - 6.7.1-13-gpu
-  - - VLASS/2026: enable new CASA gridders (awp2,awphpg)
+  - - VLASS/2026: enable new CASA gridders (awp2, awphpg)
   -
   - - 2026-04 (in validation)
   -
@@ -125,7 +125,7 @@
 
 * - 2021.1.1.32
   - 6.1.3-3
-  - - VLASS/PL2021: Calibration, QL and Single Epoch Imaging
+  - - VLASS/PL2021: calibration, QL, and single-epoch imaging
   -
   - - 2021-07
   - - [casa-6.1.3-3-pipeline-2021.1.1.32.tar.xz](https://casa.nrao.edu/download/distro/casa-pipeline/release/linux)
@@ -171,7 +171,7 @@
 
 * - r43130
   - 5.6.2-3.
-  - - VLA Restore patch
+  - - VLA restore patch
   - - VLA [Calibration](https://science.nrao.edu/facilities/vla/data-processing/pipeline/CIPL_56)
   - - 2020-02-13-2020-12-09
   -
