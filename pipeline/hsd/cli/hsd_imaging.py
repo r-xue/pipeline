@@ -44,6 +44,7 @@ def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None):
     - **Moment maps**: for each spw, three maps are generated: (1) maximum intensity map
       (moment-8) over all channels; (2) total intensity map (moment-0) over line-free channels;
       (3) maximum intensity map using line-free channels only.
+
     - **Diagnostic plots for possible missed line channels** (PL2025+): generated when line
       emission is detected outside the line ranges from ``hsd_baseline`` (SNR threshold = 7).
 

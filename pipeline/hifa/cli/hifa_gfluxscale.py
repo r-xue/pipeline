@@ -74,7 +74,7 @@ def hifa_gfluxscale(vis=None, reference=None, transfer=None, refintent=None, tra
            below 5, with linear interpolation between these limits.
         3. **Spectral consistency**: compares derived spectral index across spws to the Source Catalog.
            For each spw, R_spw = derived / catalog flux; K_spw = R_spw / R_spw(highest-SNR spw). QA
-           score is based on max(|1 - K_spw|):
+           score is based on max(\\|1 - K_spw\\|):
 
            - QA = 1.0 if max deviation < 0.1
            - QA = 0.75 if max deviation 0.1-0.2
