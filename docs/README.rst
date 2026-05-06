@@ -22,10 +22,10 @@ Highlights
 
 This documentation is automatically generated from the main repository and includes:
  
-  * `Past Pipeline Releases <https://pipe-docs.readthedocs.io/en/latest/releases.html#>`_
-  * `Pipeline Dependencies <https://pipe-docs.readthedocs.io/en/latest/dependencies.html>`_
-  * `Running a Pipeline Session in Python <https://pipe-docs.readthedocs.io/en/latest/modular.html>`_
-  * The latest Pipeline task reference manual: `PDF <https://pipe-docs.readthedocs.io/_/downloads/en/latest/pdf/>`_ `HTML <https://pipe-docs.readthedocs.io/en/latest/apisummary.html#pipeline-tasks-autosummary>`_
+  * :doc:`Past Pipeline Releases <releases>`
+  * :doc:`Pipeline Dependencies <dependencies>`
+  * :doc:`Running Pipeline <develdocmd/usage/running_pipeline>`
+  * The latest Pipeline task reference manual: `PDF <https://pipe-docs.readthedocs.io/_/downloads/en/latest/pdf/>`_ :doc:`HTML <apisummary>`
 
 .. _NRAO: http://www.nrao.edu  
 .. _ESO: https://www.eso.org  
