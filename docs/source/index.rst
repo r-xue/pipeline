@@ -23,10 +23,10 @@
    :maxdepth: 2
    :caption: Developer Guide
 
+   develdocmd/setup/index
    develdocmd/usage/index
    develdocmd/process/index
    develdocmd/codestyle/index
-   develdocmd/setup/index
    develdocmd/testing/index
    develdocmd/workflows/index
    develdocmd/reference/index
@@ -40,5 +40,4 @@
    testing_docs/index
    devnotes
    timeline
-   callibrary
    
