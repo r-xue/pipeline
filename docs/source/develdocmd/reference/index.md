@@ -15,4 +15,9 @@ FunctionIODumper
 parallelization
 field_parameter
 FlaggingTasks
+ALMA-Imaging-Workflow
+VLA-Imaging-Workflow
+VLASS-SE-CONT-Imaging-Workflow
+VLASS-SE-CUBE-Imaging-Workflow
+selfcal_workflow
 ```

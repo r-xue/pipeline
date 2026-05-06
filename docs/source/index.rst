@@ -28,7 +28,6 @@
    develdocmd/process/index
    develdocmd/codestyle/index
    develdocmd/testing/index
-   develdocmd/workflows/index
    develdocmd/reference/index
    develdocmd/misc/index
 
