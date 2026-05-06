@@ -114,6 +114,26 @@ The branching diagram below illustrates the development workflow across PL2025 a
 - **release/2026.1.0**: VLASS-focused release (CASA 6.7.1-py3.10-gpu)
 - **release/2026.2.0**: ALMA Cycle-13 and VLA release (CASA 6.7.x-py3.12)
 
+### Development Phases
+
+1. **Feature Development**
+
+   - New features developed on main branch
+   - Feature branches merged back to main
+   - Regular integration and testing
+
+2. **Release Branching**
+
+   - Release branches created at feature freeze
+   - Stabilization and bug fixes on release branches
+   - Critical fixes cherry-picked back to main
+
+3. **Maintenance**
+
+   - Hotfixes applied to release branches
+   - Important fixes backported as needed
+   - Main branch continues with new development
+
 ```mermaid
 %%{init: {'logLevel': 'debug', 'theme': 'base', 'gitGraph': {'showBranches': true, 'showCommitLabel': true, 'mainBranchOrder': 1}}}%%
 gitGraph
@@ -189,39 +209,4 @@ gitGraph
 
 ---
 
-## Branching Workflow
-
-### Development Phases
-
-1. **Feature Development**
-
-   - New features developed on main branch
-   - Feature branches merged back to main
-   - Regular integration and testing
-
-2. **Release Branching**
-
-   - Release branches created at feature freeze
-   - Stabilization and bug fixes on release branches
-   - Critical fixes cherry-picked back to main
-
-3. **Maintenance**
-
-   - Hotfixes applied to release branches
-   - Important fixes backported as needed
-   - Main branch continues with new development
-
-### Version Numbering
-
-The project follows [semantic versioning](https://peps.python.org/pep-0440/#semantic-versioning) with the format: `YEAR.MAJOR.MINOR.MICRO`
-
-- **YEAR**: Calendar year (e.g., 2025, 2026)
-- **MAJOR**: Major release number within the year
-- **MINOR**: Minor feature releases
-- **MICRO**: Merges of features, bug fixes and hotfixes
-
----
-
-```{note}
-For detailed information about specific releases or development schedules, please refer to the project documentation or contact the development team.
-```
+For version string format, see {doc}`develdocmd/reference/versioning`.
