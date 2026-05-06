@@ -38,6 +38,5 @@
    :caption: Misc.
 
    testing_docs/index
-   devnotes
    timeline
    

@@ -5,4 +5,6 @@
 
 old_releases
 python3_conversion_notes
+../../notebooks/context.ipynb
+../../notebooks/tier0dask.ipynb
 ```
