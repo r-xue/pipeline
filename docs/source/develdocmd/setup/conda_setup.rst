@@ -2,16 +2,15 @@ Pipeline with Conda
 ===================
 
 
+.. note::
+
+ For new development setups, using :doc:`pixi <pixi_setup>` directly is recommended. Pixi provides a reproducible, lock-file-based environment that is simpler to maintain than a manually managed Conda environment.
+
 .. warning::
 
  Running and developing the pipeline from a Conda environment is not officially supported or validated for observatory operation, and the information provided here is for demonstration purposes only.
 
-.. contents:: Table of Contents
-   :local:
-   :depth: 2
-
-
-Setup - step-by-step
+Step-by-step
 --------------------
 
 
