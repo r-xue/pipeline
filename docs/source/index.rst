@@ -6,8 +6,6 @@
    :maxdepth: 2
    :caption: Basics
 
-   develdocmd/usage/running_pipeline
-   develdocmd/usage/recipes
    dependencies
    interface
    releases
@@ -17,7 +15,14 @@
    :maxdepth: 2
    :caption: Developer Guide
 
-   develdocmd/index
+   develdocmd/usage/index
+   develdocmd/process/index
+   develdocmd/codestyle/index
+   develdocmd/setup/index
+   develdocmd/testing/index
+   develdocmd/workflows/index
+   develdocmd/reference/index
+   develdocmd/misc/index
 
 .. toctree::
    :hidden:

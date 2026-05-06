@@ -1,3 +1,5 @@
+:orphan:
+
 # Developer Guide
 
 Documentation for Pipeline developers covering the development process, code style, building, testing, and science workflows.
@@ -7,7 +9,7 @@ Documentation for Pipeline developers covering the development process, code sty
 :caption: Process & Workflow
 
 process/git_dev_workflow
-process/ticket_workflow_standard
+process/ticket_workflow
 ```
 
 ```{toctree}

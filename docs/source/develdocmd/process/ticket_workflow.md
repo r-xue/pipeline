@@ -1,6 +1,6 @@
 # Ticket Workflow
 
-## PIPE: Feature/Bug Ticket Workflow
+## PIPE: Feature/BugFix Ticket
 
 The following workflow applies to Pipeline (PIPE) feature, bug, and epic tickets. Engineering and Research Request task tickets follow a similar but simplified workflow that omits the stakeholder validation step.
 
@@ -72,9 +72,9 @@ flowchart TD
     class START gray
 ```
 
-### PIPE: Engineering / Research Request Ticket Workflow
+## PIPE: Engineering Ticket
 
-This simplified workflow omits the stakeholder **Validating** state.
+Engineering tickets cover internal infrastructure work — build system changes, CI/CD improvements, tooling, dependency updates, and other tasks that do not directly change scientific functionality and do not require stakeholder validation. This simplified workflow omits the **Validating** state.
 
 ```mermaid
 flowchart TD
@@ -121,7 +121,9 @@ flowchart TD
 
 ---
 
-### PIPE: Research Request Workflow
+## PIPE: Research Request Ticket
+
+Research Request tickets track investigative or exploratory work — data analysis, feasibility studies, algorithm evaluations, or other research tasks requested by stakeholders. They follow a simplified workflow: there is no formal **Verifying** state, and the **Implementing** and **Pending Release** states are bidirectional to accommodate iterative research cycles.
 
 ```mermaid
 flowchart TD
