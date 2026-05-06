@@ -1,4 +1,4 @@
-# Pipeline Quality Assurance (QA) Score Class Design
+# QA Score Design
 
 Pipeline QA scores are represented by the
 `pipeline/infrastructure/pipelineqa.py::QAScore` class. The basic setup features

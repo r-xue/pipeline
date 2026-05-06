@@ -1,7 +1,7 @@
 # Logging
 
+## Log files for individual tasks
 
-### Log files for individual tasks
 The `casapy.log` that gets linked from the task page is generated upon pickling a
 task result after execution. The contents of this log file are taken from the
 temporary `result.casalog` property that is populated by the `capture_log`
@@ -23,8 +23,8 @@ The `capture_log` decorator operates directly on the CASA log file (and CASA's `
 bypassing the `pipeline.infrastructure.logging` that is used throughout pipeline
 to handle logging.
 
+## Log handling for attention, warning, and error notifications in weblog
 
-### Log handling for attention, warning, and error notifications in weblog
 Separate from `result.casalog`, there also exists a `result.logrecords` property.
 This is initially populated by `basetask.StandardTaskTemplate.execute` itself
 (rather than a decorator for `result.casalog`) and later further appended to by
@@ -44,5 +44,3 @@ to `result.logrecords` as well. Since these are still messages that occur
 during weblog generation, added to `result.logrecords`, these messages will only
 show up as notifications in the weblog (banner at top of page), but not in the
 task-specific `casapy.log`.
-
-

@@ -8,7 +8,7 @@ The Pipeline Context is the Pipeline's record of state, used to:
 The domain objects are logical representations of real-world concepts in the radio interferometry domain, and form
 the core building blocks for the Pipeline application.
 
-### Overview of Context
+## Overview of Context
 
 The following is a brief overview of contents in the Pipeline context, not expected to be comprehensive:
 - Metadata about the Pipeline run (stage counter, output dir)
@@ -62,7 +62,7 @@ Context key functions:
 - [virtual2real|real2virtual]_spw_id(spw_id, target_ms): translate spw ID from virtual to real / real to virtual for given MS
 - real2real_spw_id(spw_id, source_ms, target_ms): translate a real spw ID from one MS to another MS.
 
-### Overview of domain objects
+## Overview of domain objects
 
 Pipeline includes the following domain objects:
 - ObservingRun: Representation of the observing run that is processed
@@ -85,7 +85,7 @@ Pipeline includes the following domain objects:
 - singledish: Defines classes to represent a MS Reduction Group, and individual MS Reduction Group Members.
 
 
-### Using the pipeline context
+## Using the pipeline context
 
 A new Context is created with:
 ```python
@@ -106,7 +106,7 @@ At the end of a Pipeline run, the final state of the Pipeline Context is written
 Depending on the `loglevel` of the Pipeline run, per-staged pickled Contexts can be found in the `saved_stage` folder.
 
 
-### Accessing the pipeline context via task interface
+## Accessing the pipeline context via task interface
 
 Upon initializing a new context:
 ```python
@@ -140,7 +140,7 @@ context = cli.stack.get(cli.PIPELINE_NAME)
 ```
 
 
-### Accessing the pipeline context using Python classes directly
+## Accessing the pipeline context using Python classes directly
 
 Initializing a new run / context and saving to disk:
 ```python
@@ -156,9 +156,9 @@ context = launcher.Pipeline(context='last').context
 ```
 
 
-### Example interactions with the Pipeline context and its domain objects
+## Example interactions with the Pipeline context and its domain objects
 
-#### Context queries: info about pipeline run, results
+### Context queries: info about pipeline run, results
 
 ```python
 # Resume a context:
@@ -191,7 +191,7 @@ import pprint
 pprint.pprint(task_result_list)
 ```
 
-#### Context queries: measurement sets
+### Context queries: measurement sets
 
 ```python
 # Get names of MeasurementSets in current run.
@@ -208,7 +208,7 @@ from pipeline.domain.datatype import DataType
 mslist = context.observing_run.get_measurement_sets_of_type(dtypes=[DataType.REGCAL_CONTLINE_ALL, DataType.REGCAL_CONTLINE_SCIENCE])
 ```
 
-#### Context queries: virtual spectral windows
+### Context queries: virtual spectral windows
 
 ```python
 # Full/short names for all virtual SpWs in the observing run.
@@ -224,7 +224,7 @@ real_spwid = context.observing_run.virtual2real_spw_id(virt_spwid, ms)
 virtual_spwid = context.observing_run.real2virtual_spw_id(22, ms)
 ```
 
-#### MeasurementSet queries: spectral windows
+### MeasurementSet queries: spectral windows
 
 ```python
 ms = context.observing_run.get_ms(name=vis)
@@ -243,7 +243,7 @@ scispw_ids_sel = [spw.id for spw in ms.get_spectral_windows()
                   if spw.band == "ALMA Band 3" and spw.num_channels > 4]
 ```
 
-#### MeasurementSet queries: fields
+### MeasurementSet queries: fields
 
 ```python
 ms = context.observing_run.get_ms(name=vis)
@@ -259,7 +259,7 @@ field_intents = {intent for field in ms.get_fields("J1851+0035,W43-MM1")
 fieldlist = [field.id for field in ms.get_fields(intent="TARGET")]
 ```
 
-#### MeasurementSet queries: scans
+### MeasurementSet queries: scans
 
 ```python
 # Get IDs of all scans.
@@ -271,7 +271,7 @@ times = [scan.time_on_source
          for scan in ms.get_scans(field="J1851+0035,W43-MM1", scan_intent="PHASE")]
 ```
 
-#### MeasurementSet queries: data descriptions
+### MeasurementSet queries: data descriptions
 
 ```python
 # Get polarization ID for given MS, SpW ID, and correlation type.
@@ -280,7 +280,7 @@ datadesc = ms.get_data_description(id=3)
 pol_id = datadesc.get_polarization_id("XY")
 ```
 
-#### Retrieving spectral windows for an MS
+### Retrieving spectral windows for an MS
 
 ```python
 # Restore latest context from disk.

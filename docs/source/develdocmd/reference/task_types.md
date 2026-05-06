@@ -1,4 +1,5 @@
 # Task Types: Single-vis, Multi-vis, and Session-aware
+
 By default, each pipeline task is considered a single-vis task, which means that
 if invoked on a list of measurement sets, the task will automatically be executed
 separately for each measurement set, with the `Results` object from each execution
@@ -22,17 +23,19 @@ Initial updates to the pipeline framework to support sessions were introduced in
 [0a23bd5b](https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/commits/0a23bd5b85154118371d3bfedf9fbc7a50bb4bfc).
 
 As part of CAS-10781, prototype of 2 session-aware tasks were introduced:
+
 - the `session_bandpass` task defined in `hifa.tasks.bandpass.almaphcorbandpass.SessionALMAPhcorBandpass` is a prototype of bandpass task that would process a session of MSes where one or more MSes might miss a bandpass calibrator; for those MSes without a bandpass, it would take a bandpass scan from another MS that is closest in time.
-- the `session_gfluxscale` task defined in `hifa.tasks.fluxscale.gcorfluxscale.SessionGcorFluxscale` is a prototype that would process a session of MSes, adopting flux calibrations from one MS to another MS if the latter were to be missing a flux calibrator 
+- the `session_gfluxscale` task defined in `hifa.tasks.fluxscale.gcorfluxscale.SessionGcorFluxscale` is a prototype that would process a session of MSes, adopting flux calibrations from one MS to another MS if the latter were to be missing a flux calibrator
 
 Note: as of September 2025, these tasks are still prototypes that are not validated,
 have never been used in recipes / production, and are not actively maintained. To
 avoid ongoing maintenance, these tasks could be commented out or removed from their module.
 
-A task is session-aware when it acts separately on each session and its corresponding list of MSes. 
+A task is session-aware when it acts separately on each session and its corresponding list of MSes.
 
 As of September 2025, the following Pipeline tasks are session aware, as
 indicated by their use of `pipeline.infrastructure.sessionutils.group_vislist_into_sessions`:
+
 - hifa_session_refant:
   - used in ALMA IF polarization calibration cal recipes.
   - considers all MSes within a session to assess the best single common reference antenna list.
@@ -43,10 +46,10 @@ indicated by their use of `pipeline.infrastructure.sessionutils.group_vislist_in
   - used in numerous ALMA IF and VLA (imaging) recipes
   - if called with `inputs.per_session=True` (default: False), `hif_makeimlist` will create an image target per session.
 
+## Stage numbers in filenames
 
-
-# Stage numbers in filenames
 The pipeline stage number that is used in pipeline products () is composed of two elements:
+
 - the task counter: incremented in StandardTaskTemplate.execute when the task-to-be-executed is the top-level task.
 - the sub-task counter: incremented in StandardTaskTemplate.execute when the task-to-be-executed is not the top-level task.
 
@@ -55,5 +58,3 @@ that are all stored in the same common 'working' directory, to ensure these prod
 task re-runs a gaincal step multiple times (different sub-tasks) or a pipeline task is run multiple times in a recipe.
 
 The stage number is added to a task result as `result.stage_number` by `infrastructure.basetask.result_finaliser`.
-
-

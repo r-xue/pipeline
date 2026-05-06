@@ -1,4 +1,4 @@
-# Parallelization and DaskCluster Backend Integration in Pipeline
+# Parallelization
 
 * [pipeline/infrastructure/mpihelpers.py](https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse/pipeline/infrastructure/mpihelpers.py) - This module contains the original `casampi`-based wrapper layer. It is used to dispatch {doc}`pipeline tasks <../../apisummary>`, casatasks [jobrequest](https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse/pipeline/infrastructure/jobrequest.py), or any pickleable Python functions through `casampi` on the preallocated MPI cluster spawned from a `mpicasa` session.
 
@@ -8,10 +8,10 @@
 
 ## Future improvement - Potential Parallelization Paradigm for Pipeline processing
 
-## version 1 
+## version 1
 
-- with traditional `mpicasa` configuration, no nested subprocess, dask clusters spawned from the mpi client process
-- mpi cluster is still a fixed resource allocation.
+* with traditional `mpicasa` configuration, no nested subprocess, dask clusters spawned from the mpi client process
+* mpi cluster is still a fixed resource allocation.
 
 ```mermaid
 graph TD
@@ -61,12 +61,12 @@ graph TD
     DaskCluster --> k8s
 ```
 
-## version 2: 
+## version 2
 
-- parallelization/workflow/graphreduction handled by Dask and workflow orchestration library, 
-- with nested subprocess for casampi / tclean(parallel=True) if absolutely necessary when no alternative solution exists, such as [CASA memo#13](https://casadocs.readthedocs.io/en/stable/notebooks/memo-series.html).
-- data processing session reaches out to workload manager / resource manager for surged resource allocation, instead of fixed resource allocation at the start of the session.
-- persisted new context design with adaptation layer to support existing pipeline framework and new parallelization/workflow paradigm.
+* parallelization/workflow/graphreduction handled by Dask and workflow orchestration library,
+* with nested subprocess for casampi / tclean(parallel=True) if absolutely necessary when no alternative solution exists, such as [CASA memo#13](https://casadocs.readthedocs.io/en/stable/notebooks/memo-series.html).
+* data processing session reaches out to workload manager / resource manager for surged resource allocation, instead of fixed resource allocation at the start of the session.
+* persisted new context design with adaptation layer to support existing pipeline framework and new parallelization/workflow paradigm.
 
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#fff4dd', 'edgeLabelBackground':'#ffffff', 'tertiaryColor': '#f4f4f4', 'clusterBkg': '#fafafa', 'clusterBorder': '#eeeeee'}}}%%
