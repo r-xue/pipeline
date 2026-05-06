@@ -41,6 +41,13 @@ data, without the user needing to pass it explicitly on the command line.
 
 An interrupted session can be resumed with `h_resume()`, which restores the last saved Context.
 
+In practice, pipeline runs are launched in one of two ways:
+
+- **PPR XML** (production): a Pipeline Processing Request XML file drives the full task sequence automatically — this is how pipeline runs are triggered at observatory processing centers.
+- **Script replay**: each completed run produces a `casa_pipescript.py` that can be re-executed or edited to reproduce or modify the run.
+
+For full details and examples of both approaches, see {doc}`develdocmd/usage/running_pipeline`.
+
 ## Output Products and Weblog
 
 After each task, the Pipeline renders an HTML weblog incrementally into `<output_dir>/<context_name>/html/`. The weblog entry point is `t1-1.html`. Final data products (images, calibration tables, restore scripts, archive tars, AQUA report) are written to the `products/` directory.
