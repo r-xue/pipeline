@@ -1,4 +1,4 @@
-# Development Workflow
+# Git Development Workflow
 
 We use the standard **feature branch workflow** — no commits are made directly to the `main` branch. The typical steps are described below.
 
