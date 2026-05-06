@@ -6,11 +6,18 @@
    :maxdepth: 2
    :caption: Basics
 
-   develdocmd/ways_to_run_the_pipeline.md
-   develdocmd/recipes.md
+   develdocmd/usage/ways_to_run_the_pipeline
+   develdocmd/usage/recipes
    dependencies
    interface
    releases
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: Developer Guide
+
+   develdocmd/index
 
 .. toctree::
    :hidden:
