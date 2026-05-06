@@ -6,7 +6,7 @@
    :maxdepth: 2
    :caption: Basics
 
-   develdocmd/usage/ways_to_run_the_pipeline
+   develdocmd/usage/running_pipeline
    develdocmd/usage/recipes
    dependencies
    interface

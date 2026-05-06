@@ -22,7 +22,7 @@ codestyle/docstring
 :maxdepth: 1
 :caption: Usage
 
-usage/ways_to_run_the_pipeline
+usage/running_pipeline
 usage/recipes
 ```
 

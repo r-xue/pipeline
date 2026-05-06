@@ -1,16 +1,16 @@
-# Ways to run the Pipeline
+# Running Pipeline
 
 ## PPR: pipeline processing request
 
-At the highest level of abstraction, we can execute a pipeline processing request (ppr), which is how Pipeline
-is run in operations at the ALMA centers.
+At the highest level of abstraction, we can execute a pipeline processing request (PPR), which is how Pipeline
+is run in operations at the observatory processing centers (ALMA, VLA).
 
 This can be done at the command line, or at a CASA command prompt.
 
 Execute PPR from the command line:
 
 ```console
-$ casa --nologger --nogui --log2term --agg -c $SCIPIPE_HEURISTICS/pipeline/runvlapipeline.py PPRnew_VLAT003.xml
+casa --nologger --nogui --log2term --agg -c $SCIPIPE_HEURISTICS/pipeline/runvlapipeline.py PPRnew_VLAT003.xml
 ```
 
 At a CASA command prompt:
@@ -21,14 +21,10 @@ CASA <1>: import pipeline.infrastructure.executevlappr as eppr
 CASA <2>: eppr.executeppr('PPR_VLAT003.xml', importonly=False)
 ```
 
-
 ## Series of steps invoking CASA Pipeline tasks
 
-A little lower level of abstraction would be to run the pipeline as a series of
-steps as described in the VLA pipeline [casaguide](https://casaguides.nrao.edu/index.php/VLA_CASA_Pipeline-CASA4.5.3)
-
-At the lowest level of abstraction, we can run the pipeline as a series of steps
-like the following
+A pipeline run generates an executable script summarizing the steps performed. An older reference for VLA is the
+[VLA CASA Pipeline casaguide](https://casaguides.nrao.edu/index.php/VLA_CASA_Pipeline-CASA4.5.3) (CASA 4.5.3 era).
 
 A pipeline run will generate a file like the following:
 
@@ -36,18 +32,16 @@ A pipeline run will generate a file like the following:
 pipeline_test_data/VLAT003/working/pipeline-20161014T172229/html/casa_pipescript.py
 ```
 
-It contains a series of steps like those described in the casaguide.
-
-We can execute this script from CASA
+It contains a series of pipeline task calls. We can execute this script from CASA:
 
 ```python
-CASA <1>: execfile('casa_pipescript.py')
+CASA <1>: exec(open('casa_pipescript.py').read())
 ```
 
 Or we can run it from the command line:
 
 ```console
-$ casa --nogui --log2term -c casa_pipescript.py
+casa --nogui --log2term -c casa_pipescript.py
 ```
 
 We can edit the script and turn on memory usage for each task:
@@ -58,16 +52,16 @@ CASA <2>: import pipeline
 CASA <3>: pipeline.infrastructure.utils.enable_memstats()
 ```
 
-We can also turn weblog and plotting off:
+We can also turn the weblog off:
 
 ```python
-CASA <1>: h_init(loglevel="info", plotlevel="summary", output_dir="./", weblog=False, overwrite=True)
+CASA <1>: h_init(loglevel='info', plotlevel='summary', weblog=False)
 ```
 
-Or we can turn debug mode on, weblog off:
+Or turn debug logging on with the weblog enabled:
 
 ```python
-CASA <1>: h_init(loglevel="debug", plotlevel="summary", output_dir="./", weblog=True, overwrite=True)
+CASA <1>: h_init(loglevel='debug', plotlevel='summary', weblog=True)
 ```
 
 Full example of running Pipeline importdata task on CASA prompt:
@@ -82,11 +76,11 @@ CASA <6>: exit
 ```
 
 Resuming from a previous Pipeline run on CASA prompt:
+
 ```python
 casa
 CASA <1>: context = h_resume(filename='last')
 ```
-
 
 ## Creating and running Pipeline tasks in Python, bypassing the task interface
 
@@ -108,8 +102,11 @@ context.save()
 
 If we don't have a PPR or an executable script available.
 
+```console
+casa
+```
+
 ```python
-$ casa
 import pipeline.recipes.hifv as hifv
 from pipeline.infrastructure import launcher
 
@@ -122,22 +119,22 @@ vis = '13A-537.foofoof.eb.barbar.2378.2934723984397.ms'
 m = context.observing_run.get_ms(vis)
 type(m)
 # study this m object for INTENTS
-# <class 'pipeline.domain.measurementset.MeasurementSet>
+# <class 'pipeline.domain.measurementset.MeasurementSet'>
 m.intents  # shows a python set of the MS intents
 m.polarization  # show a list of polarization objects
 ```
 
-
 ## Running Pipeline with the "recipereducer"
-The `recipereducer` module is a tool for Pipeline developer to be able to run
-the Pipeline without using the Pipeline Processing Request (PPR) system that is
-only available at the ALMA centers.
+
+The `recipereducer` module is a tool for Pipeline developers to run the Pipeline without using the Pipeline Processing Request (PPR) system used in observatory operations.
 
 All that you need to pass along to the `recipereducer` is the recipe name and the
 path to a directory containing the raw ASDM datasets.
 
 ### Simple "recipereducer" example
+
 Run pipeline for your ASDM, with default pipeline recipe (hifa_calimage):
+
 ```python
 import pipeline.recipereducer
 pipeline.recipereducer.reduce(
@@ -147,16 +144,20 @@ pipeline.recipereducer.reduce(
 ```
 
 ### About the procedure parameter
+
 For the `procedure` parameter, you can specify either:
+
 - the filename of one of the standard recipes (procedure files) located in `pipeline/recipes`
-- a relative/absolute path to a file containing your own (customized) recipe file, 
+- a relative/absolute path to a file containing your own (customized) recipe file,
   e.g. `procedure='/path/to/local/procedure.xml'`, or `procedure='../test_procedure_for_PIPE-1234.xml'`
 
 If the `procedure` parameter is not specified, `recipereducer` will by default
 run the full ALMA calibration + imaging recipe, `procedure_hifa_calimage.xml`.
 
 ### Examples with a different procedure file
+
 Run Single-Dish calibration + imaging on 2 ASDMs:
+
 ```python
 import pipeline.recipereducer
 pipeline.recipereducer.reduce(
@@ -166,6 +167,7 @@ pipeline.recipereducer.reduce(
 ```
 
 Run VLA standard recipe:
+
 ```python
 import pipeline.recipereducer
 pipeline.recipereducer.reduce(
@@ -175,6 +177,7 @@ pipeline.recipereducer.reduce(
 ```
 
 Run with a local copy of a recipe that you may have modified for development:
+
 ```python
 import pipeline.recipereducer
 pipeline.recipereducer.reduce(
@@ -184,8 +187,10 @@ pipeline.recipereducer.reduce(
 ```
 
 ### Examples of stopping / starting at specific stages
+
 Stop after stage 3 has completed. It will depend on the recipe which task this
 stage number corresponds to.
+
 ```python
 import pipeline.recipereducer
 pipeline.recipereducer.reduce(
@@ -197,6 +202,7 @@ pipeline.recipereducer.reduce(
 
 Assuming the developer developed / debugged stage 4, once that is done, it is
 possible to use `recipereducer` to resume with the remainder of the recipe, with:
+
 ```python
 import pipeline.recipereducer
 from pipeline.infrastructure import launcher
@@ -209,10 +215,13 @@ pipeline.recipereducer.reduce(
     startstage=5,
 )
 ```
-Here, since Pipeline is resuming from an earlier run, so the existing context is passed into `recipereducer`.
+
+Here, since Pipeline is resuming from an earlier run, the existing context must be passed into `recipereducer`.
 
 ### Example with sessions
+
 Some datasets will have measurement sets grouped together in separate sessions, which can be specified with:
+
 ```python
 import pipeline.recipereducer
 pipeline.recipereducer.reduce(
@@ -222,13 +231,16 @@ pipeline.recipereducer.reduce(
     exitstage=3,
 )
 ```
+
 Here, the 1st ASDM belongs to "session1" while the latter 2 ASDMs are both in "session3".
 Note, session names are assigned during operations, will normally be populated in the PPR files, and may not
-always appear to have sequential numbers. 
+always appear to have sequential numbers.
 
 ### Example changing log level
-If not specified, the loglevel is `info` by default, but this can be change to e.g. `debug` or `trace` to get 
+
+If not specified, the loglevel is `info` by default, but this can be change to e.g. `debug` or `trace` to get
 (a lot) more diagnostic information during the run:
+
 ```python
 import pipeline.recipereducer
 pipeline.recipereducer.reduce(
@@ -258,6 +270,7 @@ the dataset), a recommended workflow for developers would be to:
 To this end, it may help to create a couple of custom Python scripts:
 
 A `template.script` that runs pipeline up to just before the stage where you wish to implement / debug a task.
+
 ```python
 import pipeline.recipereducer
 pipeline.recipereducer.reduce(
@@ -266,13 +279,16 @@ pipeline.recipereducer.reduce(
     # exitstage=1,  # uncomment this line and set correct stage to stop after.
 )
 ```
+
 Place it in the parent of the working directory, and run with:
+
 ```console
 cd working
 casa -c ../template.script
 ```
 
 A `debug.script` that executes an individual task:
+
 ```python
 task_to_run = 'hifa_tsysflag'
 
@@ -294,6 +310,7 @@ context.save()
 ```
 
 Place it in the parent of the working directory, and run with:
+
 ```console
 casa -c ../debug.script
 ```
@@ -308,25 +325,24 @@ a couple of short-cuts:
 
 - Create a run up through stage N, tarball `working` to snapshot, and optionally unpack to multiple copies
   (working1, working2, working3) to run (in parallel) a given stage with different checkouts of the Pipeline.
-- When working on a shared cluster such as at NRAO Charlottesville, one can copy the run from a different developer / 
+- When working on a shared cluster such as at NRAO Charlottesville, one can copy the run from a different developer /
   PWG member into their own workspace, and resume the context (optionally even one of the pickled results from the
   stage, located under `pipeline-[...]/saved_state`) to inspect the context, re-run a stage with the
   interactive debugger, etc. This can be particularly useful for times where one has to urgently debug an issue that
   occurred for a large dataset.
 
-
 ## Create custom Pipeline processing recipes from SRDP Mustache templates
 
-The SDRP templates are [mustache](http://mustache.github.io/) templates that can be used to generate custom SDRP processing recipe XML files.
+The SRDP templates are [mustache](http://mustache.github.io/) templates that can be used to generate custom SRDP processing recipe XML files.
 All templates are located in the [pipeline/recipes](pipeline/recipes) directory (template_*.xml).
 A mustache template contains both the XML and the mustache tags, the latter of which allows the insertion of values from the JSON file into the XML during rendering.
 
-To generate a custom SDRP recipe, you will need to create a JSON file that contains the custom mustache tag values. Once the JSON file is prepared, we can render the SDRP recipes for testing.
+To generate a custom SRDP recipe, you will need to create a JSON file that contains the custom mustache tag values. Once the JSON file is prepared, the SRDP recipes can be rendered for testing.
 Two [recommended](https://open-jira.nrao.edu/browse/PIPE-72?focusedCommentId=140995&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-140995) rendering options are below:
 
-* Use the demo page on the [mustache](http://mustache.github.io/) site.  You can copy and paste the text from the JSON file and template into the boxes and click the "Render Template" button.
+- Use the demo page on the [mustache](http://mustache.github.io/) site.  You can copy and paste the text from the JSON file and template into the boxes and click the "Render Template" button.
 
-* Use a Python Library, e.g. [pystache](https://github.com/PennyDreadfulMTG/pystache) or [chevron](https://github.com/noahmorrison/chevron), you could do something like this:
+- Use a Python Library, e.g. [pystache](https://github.com/PennyDreadfulMTG/pystache) or [chevron](https://github.com/noahmorrison/chevron), you could do something like this:
 
 ```python
 import json, pystache
@@ -380,7 +396,7 @@ The path of pickled context files is: `output_dir`/`context_name`/`saved_state`/
   First, you back up the context pickle files from different stages:
 
   ```console
-  $ cp -rf pipeline-20210421T172403/saved_state pipeline-20210421T172403/saved_state_backup
+  cp -rf pipeline-20210421T172403/saved_state pipeline-20210421T172403/saved_state_backup
   ```
 
   Then, at a CASA command prompt,
@@ -424,7 +440,7 @@ The path of pickled context files is: `output_dir`/`context_name`/`saved_state`/
   context.save('test-context-stage25.pickle')
   ```
 
-  `recipereducer` doesn't offer the "breakpoint" feature built in `executeppr`. However, a calculated usage of `starttage`/ `exitstage`/`context` keywords may achieve the same workflow-level "break/resume":
+  `recipereducer` doesn't offer the "breakpoint" feature built into `executeppr`. However, a careful use of the `startstage`/`exitstage`/`context` keywords can achieve the same workflow-level "break/resume":
 
   ```python
   from pipeline.infrastructure import task_registry, launcher
@@ -456,9 +472,10 @@ hr.WebLogGenerator.render(context)
 ```
 
 ## Re-run QA heuristics
+
 A common development task is to implement or improve the QA heuristics for a task.
 The QA step is normally run after the main task heuristics are completed and the
-task `Results` have been created. 
+task `Results` have been created.
 
 As such, after having run the task at least once, one can rapidly re-run the QA
 heuristic on the existing task result in the context to iterate more rapidly on
@@ -483,37 +500,20 @@ scores that are displayed in the task weblog. Instead, the snippet is primarily
 useful for interactively debugging the QA heuristics. Once debugged, it would be
 recommended to re-run the entire stage.
 
-
 ## Note on using executeppr/recipereducer and Pipeline CLI tasks
 
-All the above usecases rely on _global_ pipeline context object that holds various information on pipeline processing. Please be careful when executeppr/reciperedicer and CLI tasks are used together in a single CASA session, especially when running executeppr/recipereducer in the middle of interactive processing with CLI tasks, e.g.,
+All the above use cases rely on a _global_ pipeline context object that holds information about the pipeline processing state. Be careful when `executeppr`/`recipereducer` and CLI tasks are used together in a single CASA session, especially when running `executeppr`/`recipereducer` in the middle of interactive processing with CLI tasks, e.g.,
 
-1. `h_init` to start interactive processing (creates context #1 and register it to global scope)
+1. `h_init` to start interactive processing (creates context #1 and registers it in the global scope)
 2. run various tasks interactively (with context #1)
-3. run executeppr (creates context #2 and overwrite global context #1)
+3. run `executeppr` (creates context #2 and overwrites global context #1)
 4. run some more tasks interactively (with context #2)
 
-In this example, step 2. and 4. are no longer continuous because they refer different context object. In such case, please save context object to disk before running executeppr/recipereducer and resume it when necessary. The above workflow should be tweaked as below.
+In this example, steps 2 and 4 are no longer continuous because they refer to different context objects. In such cases, save the context object to disk before running `executeppr`/`recipereducer` and resume it afterwards. The above workflow should be tweaked as follows:
 
 1. `h_init` to start interactive processing (creates context #1 and register it to global scope)
 2. run various tasks interactively (with context #1)
 3. save current state to disk with `h_save('interactive.context')` (save context #1 to disk)
 4. run executeppr (creates context #2 and overwrite global context #1)
-5. resume previous state to disk with `h_resume('interactive.context')` (load context #1 from disk and overwrite global context #2)
+5. resume previous state from disk with `h_resume('interactive.context')` (load context #1 from disk and overwrite global context #2)
 6. run some more tasks interactively (with context #1)
-
-
-
-## Known issues
-
-Don't worry about the following intermittent message at the end of a pipeline run. It's a bug
-but it doesn't mean the pipeline was unsuccessful.
-
-```console
-invalid command name "102990944filter_destroy"
-    while executing
-"102990944filter_destroy 3657 ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? 0 ?? ?? .86583632 17 ?? ?? ??"
-    invoked from within
-"if {"[102990944filter_destroy 3657 ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? 0 ?? ?? .86583632 17 ?? ?? ??]" == "break"} break"
-    (command bound to event)
-```
