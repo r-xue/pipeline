@@ -4,7 +4,7 @@ Pipeline with Conda
 
 .. note::
 
- For new development setups, using :doc:`pixi <pixi_setup>` directly is recommended. Pixi provides a reproducible, lock-file-based environment that is simpler to maintain than a manually managed Conda environment.
+ For new development setups, using :doc:`Pixi <pixi_tasks>` directly is recommended. Pixi provides a reproducible, lock-file-based environment that is simpler to maintain than a manually managed Conda environment.
 
 .. warning::
 

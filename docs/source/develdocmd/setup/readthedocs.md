@@ -1,4 +1,4 @@
-# Documentation of "Docs"
+# Documentation Infrastructure
 
 This page describes the documentation setup that enables automatic generation of Pipeline documentation from the codebase.
 
