@@ -7,16 +7,30 @@ In Pipeline development, Pixi manages reproducible environments per CASA version
 
 ## Prerequisites
 
+Clone the repository:
+
+```bash
+git clone https://open-bitbucket.nrao.edu/scm/pipe/pipeline.git
+cd pipeline/
+```
+
+Check out your branch:
+
+```bash
+git checkout -b PIPE-1234-my-feature   # new branch
+# or
+git checkout PIPE-1234-my-feature      # existing branch
+```
+
 Install pixi (one-time, no root required):
 
 ```bash
 curl -fsSL https://pixi.sh/install.sh | bash
 ```
 
-Then, from the pipeline source root, install the environment:
+Install the environment:
 
 ```bash
-cd pipeline/
 pixi install          # resolves and downloads all deps into .pixi/envs/
 ```
 
