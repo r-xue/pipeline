@@ -22,12 +22,21 @@ This page documents the code style and docstring conventions used in the Pipelin
 
 These settings are enforced by [`ruff`](https://docs.astral.sh/ruff/) (configured in `pyproject.toml`):
 
-| Setting | Value |
-|---|---|
-| Line length | 120 characters |
-| Indentation | 4 spaces |
-| String quotes | Single quotes (`'`) preferred; double quotes only if the string contains a single quote |
-| Docstring code block line length | 140 characters |
+```{list-table}
+:header-rows: 1
+:widths: 40 60
+
+* - Setting
+  - Value
+* - Line length
+  - 120 characters
+* - Indentation
+  - 4 spaces
+* - String quotes
+  - Single quotes (`` ' ``) preferred; double quotes only if the string contains a single quote
+* - Docstring code block line length
+  - 140 characters
+```
 
 ---
 
@@ -35,14 +44,25 @@ These settings are enforced by [`ruff`](https://docs.astral.sh/ruff/) (configure
 
 The codebase targets **Python 3.12+**. Use modern type syntax throughout:
 
-| Avoid | Use instead |
-|---|---|
-| `typing.List[str]` | `list[str]` |
-| `typing.Dict[str, int]` | `dict[str, int]` |
-| `typing.Optional[str]` | `` str | None `` |
-| `typing.Union[str, int]` | `` str | int `` |
-| `TypeAlias` / `Vector = list[float]` | `type Vector = list[float]` (PEP 695) |
-| `TypeVar`-based generics | `def func[T](x: T) -> T` (PEP 695) |
+```{list-table}
+:header-rows: 1
+:widths: 45 55
+
+* - Avoid
+  - Use instead
+* - `typing.List[str]`
+  - `list[str]`
+* - `typing.Dict[str, int]`
+  - `dict[str, int]`
+* - `typing.Optional[str]`
+  - `` str | None ``
+* - `typing.Union[str, int]`
+  - `` str | int ``
+* - `TypeAlias` / `Vector = list[float]`
+  - `type Vector = list[float]` (PEP 695)
+* - `TypeVar`-based generics
+  - `def func[T](x: T) -> T` (PEP 695)
+```
 
 **All function arguments and return values must have type annotations.**
 

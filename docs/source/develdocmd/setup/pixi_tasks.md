@@ -27,14 +27,32 @@ pixi install          # resolves and downloads all deps into .pixi/envs/
 Each environment pins a specific CASA release.  The `default` environment
 tracks the latest supported CASA snapshot.
 
-| Environment | CASA version | Python |
-|-------------|-------------|--------|
-| `default` (alias: `casa675-py312`) | 6.7.5 | 3.12 |
-| `casa675-py313` | 6.7.5 | 3.13 (linux-64 + osx-arm64) |
-| `casa675-py312` | 6.7.5 | 3.12 |
-| `casa674-py312` | 6.7.4 | 3.12 |
-| `casa671-py312` | 6.7.1 | 3.12 |
-| `docs` | 6.7.5 | 3.12 (docs extras) |
+```{list-table}
+:header-rows: 1
+:widths: 42 18 40
+
+* - Environment
+  - CASA version
+  - Python
+* - `default` (alias: `casa675-py312`)
+  - 6.7.5
+  - 3.12
+* - `casa675-py313`
+  - 6.7.5
+  - 3.13 (linux-64 + osx-arm64)
+* - `casa675-py312`
+  - 6.7.5
+  - 3.12
+* - `casa674-py312`
+  - 6.7.4
+  - 3.12
+* - `casa671-py312`
+  - 6.7.1
+  - 3.12
+* - `docs`
+  - 6.7.5
+  - 3.12 (docs extras)
+```
 
 Select a non-default environment with `--environment` / `-e`:
 
@@ -231,12 +249,21 @@ conda env export --from-history > environment_export.yml
 
 Then map the sections manually into `pyproject.toml`:
 
-| `environment.yml` section | `pyproject.toml` section |
-|---|---|
-| `dependencies:` (conda packages) | `[tool.pixi.dependencies]` |
-| `pip:` block under `dependencies:` | `[tool.pixi.pypi-dependencies]` |
-| `channels:` | `[tool.pixi.workspace]` → `channels = [...]` |
-| `name:` | becomes the pixi environment name under `[tool.pixi.environments]` |
+```{list-table}
+:header-rows: 1
+:widths: 45 55
+
+* - `environment.yml` section
+  - `pyproject.toml` section
+* - `dependencies:` (conda packages)
+  - `[tool.pixi.dependencies]`
+* - `pip:` block under `dependencies:`
+  - `[tool.pixi.pypi-dependencies]`
+* - `channels:`
+  - `[tool.pixi.workspace]` → `channels = [...]`
+* - `name:`
+  - becomes the pixi environment name under `[tool.pixi.environments]`
+```
 
 Example `environment.yml` fragment and its pixi equivalent:
 
@@ -323,12 +350,32 @@ in the export.
 
 ## Summary
 
-| Task | Command | Output cwd |
-|------|---------|-------------|
-| Unit tests | `pixi run test-unit` | `$INIT_CWD` (invocation dir) |
-| Fast regression (all) | `pixi run test-regression` | `$INIT_CWD` (invocation dir) |
-| Single ALMA-IF test | `pixi run test-pltest1` | `$INIT_CWD` (invocation dir) |
-| Init CASA runtime data | `pixi run fetch-casarundata` | project root |
-| Build docs (clean) | `pixi run build-docs` | `docs/` |
-| Build docs (fast) | `pixi run build-docs-fast` | `docs/` |
-| Build PDF docs | `pixi run build-pdf` | `docs/` |
+```{list-table}
+:header-rows: 1
+:widths: 25 40 35
+
+* - Task
+  - Command
+  - Output cwd
+* - Unit tests
+  - `pixi run test-unit`
+  - `$INIT_CWD` (invocation dir)
+* - Fast regression (all)
+  - `pixi run test-regression`
+  - `$INIT_CWD` (invocation dir)
+* - Single ALMA-IF test
+  - `pixi run test-pltest1`
+  - `$INIT_CWD` (invocation dir)
+* - Init CASA runtime data
+  - `pixi run fetch-casarundata`
+  - project root
+* - Build docs (clean)
+  - `pixi run build-docs`
+  - `docs/`
+* - Build docs (fast)
+  - `pixi run build-docs-fast`
+  - `docs/`
+* - Build PDF docs
+  - `pixi run build-pdf`
+  - `docs/`
+```

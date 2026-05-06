@@ -5,12 +5,26 @@ Pipeline QA scores are represented by the
 a normalized numerical score ("score") between 0.0 and 1.0 with the following
 numerical ranges, meanings and colors:
 
-| score range           | color  | QA level   |
-|:----------------------|:-------|:-----------|
-| 0.00 <= score <= 0.33 | red    | error      |
-| 0.33 < score <= 0.66  | yellow | warning    |
-| 0.66 < score <= 0.90  | blue   | suboptimal |
-| 0.90 < score <= 1.00  | green  | optimal    |
+```{list-table}
+:header-rows: 1
+:widths: 40 20 40
+
+* - Score range
+  - Color
+  - QA level
+* - 0.00 <= score <= 0.33
+  - red
+  - error
+* - 0.33 < score <= 0.66
+  - yellow
+  - warning
+* - 0.66 < score <= 0.90
+  - blue
+  - suboptimal
+* - 0.90 < score <= 1.00
+  - green
+  - optimal
+```
 
 Optionally, `score` can be set to -0.1 if the score calculation encounters any unhandled errors. A score of -0.1 is considered an error score.
 

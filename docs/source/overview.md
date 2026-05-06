@@ -10,14 +10,32 @@ The Pipeline can be invoked in three ways, depending on the use case:
 
 Pipeline tasks are grouped by telescope and observing mode using a prefix scheme:
 
-| Prefix | Module | Scope |
-|--------|--------|-------|
-| `h_` | `pipeline/h/` | Generic (all modes): `h_init`, `h_save`, `h_resume`, `h_weblog` |
-| `hif_` | `pipeline/hif/` | Generic interferometry |
-| `hifa_` | `pipeline/hifa/` | ALMA interferometry |
-| `hifv_` | `pipeline/hifv/` | VLA interferometry |
-| `hsd_` | `pipeline/hsd/` | ALMA single-dish |
-| `hsdn_` | `pipeline/hsdn/` | Nobeyama single-dish |
+```{list-table}
+:header-rows: 1
+:widths: 12 25 63
+
+* - Prefix
+  - Module
+  - Scope
+* - `h_`
+  - `pipeline/h/`
+  - Generic (all modes): `h_init`, `h_save`, `h_resume`, `h_weblog`
+* - `hif_`
+  - `pipeline/hif/`
+  - Generic interferometry
+* - `hifa_`
+  - `pipeline/hifa/`
+  - ALMA interferometry
+* - `hifv_`
+  - `pipeline/hifv/`
+  - VLA interferometry
+* - `hsd_`
+  - `pipeline/hsd/`
+  - ALMA single-dish
+* - `hsdn_`
+  - `pipeline/hsdn/`
+  - Nobeyama single-dish
+```
 
 ## Session Lifecycle
 
