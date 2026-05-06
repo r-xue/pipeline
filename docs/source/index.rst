@@ -12,6 +12,14 @@
 
 .. toctree::
    :hidden:
+   :maxdepth: 3
+   :caption: API Reference
+
+   apisummary
+   inheritance
+
+.. toctree::
+   :hidden:
    :maxdepth: 2
    :caption: Developer Guide
 
@@ -23,14 +31,6 @@
    develdocmd/workflows/index
    develdocmd/reference/index
    develdocmd/misc/index
-
-.. toctree::
-   :hidden:
-   :maxdepth: 3
-   :caption: API Reference
-
-   apisummary
-   inheritance
 
 .. toctree::
    :hidden:
