@@ -16,6 +16,7 @@ with specific versions of Python and its third-party dependencies. In practice,
 each release is tested and validated solely against a monolithic CASA6 release
 tied to a particular ALMA/VLA cycle. That monolithic release is a self-contained
 Python environment bundling a portable interpreter and all required libraries.
+Current target: **CASA >= 6.7.4 with Python 3.12**.
 CASA6 itself has limited platform support; see the
 [CASA6 compatibility matrix](https://casadocs.readthedocs.io/en/stable/notebooks/introduction.html#Compatibility)
 for OS and library requirements.
@@ -52,6 +53,7 @@ the CASA6 monolithic distribution.
 Python packages (see also `requirements.txt` in the source repository):
 
 - cachetools
+- docstring-inheritance
 - mako
 - pypubsub
 - intervaltree
@@ -83,24 +85,41 @@ Unix command-line tools:
 
 ### Packaging
 
-- `wheel`: for installing older Python packages.
-- `csscompressor`: minifies CSS during installation.
+- `build`
+- `twine`
+- `wheel`
 
 ### Testing
 
 - `pytest`
 - `pytest-cov`
+- `pytest-xdist`
+- `pytest-html`
+- `pytest-xvfb`
+- `pytest-forked`
 
 ### Code quality
 
+- `black`
+- `isort`
+- `flake8`
+- `pylint`
 - `pydocstyle`
 - `pycodestyle`
-- `memory_profiler`
+- `ruff`
+- `pre-commit`
+- `memray`
 - `line_profiler`
 
 ### Documentation
 
-- `sphinx`
+See `requirements_docs.txt` in the source repository. Key packages:
+
+- `sphinx` with `furo` theme
+- `myst-parser`, `myst-nb` (Markdown and notebook support)
+- `sphinxcontrib-mermaid` (diagram support)
+- `sphinx-automodapi`, `sphinx-autoapi` (API docs)
+- `sphinx-copybutton`, `sphinxcontrib-bibtex`
 
 ### Version control
 
