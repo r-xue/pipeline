@@ -1,4 +1,4 @@
-# Specification Document for the Function I/O Dumper Decorator and Helper Functions
+# Function I/O Dumper
 
 This document will explain for the Decorator pipeline/infrastructure/utils/utils.py::function_io_dumper() and helper methods.
 
