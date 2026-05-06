@@ -6,9 +6,10 @@
    :maxdepth: 2
    :caption: Basics
 
-   dependencies
    overview
+   dependencies
    releases
+   timeline
 
 .. toctree::
    :hidden:
@@ -37,5 +38,4 @@
    :caption: Misc.
 
    testing_docs/index
-   timeline
    
