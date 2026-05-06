@@ -25,7 +25,6 @@ Setup - step-by-step
 .. _casatasks: https://casadocs.readthedocs.io/en/stable/api/casatasks.html
 .. _casatools: https://casadocs.readthedocs.io/en/stable/api/casatools.html
 .. _casampi: https://casadocs.readthedocs.io/en/stable/notebooks/parallel-processing.html#Advanced:-Interface-Framework
-.. _environment.yml: https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse/environment.yml
 .. _requirements.txt: https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse/requirements.txt
 .. _pyproject.toml: https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse/pyproject.toml
 
@@ -66,29 +65,34 @@ Setup - step-by-step
       git clone https://open-bitbucket.nrao.edu/scm/pipe/pipeline.git
       cd pipeline
   
-  - Recreate the Conda environment with all `CASA6`_ components for `Pipeline`_ execution and development:
+  - Generate ``environment.yml`` on demand from pixi (``environment.yml`` is no longer committed to the repository — see :doc:`pixi_tasks` for details):
 
     .. code-block:: bash
 
-      PIP_VERBOSE=3 conda env update --name pipeline --file=environment.yml -vv
-      
-    or just simply run:
+      pixi project export conda-environment \
+          | sed 's|^- pip:$|- pip:\n  - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-group/simple|' \
+          > environment.yml
+
+    The ``sed`` step injects the NRAO CASA pip index URL, which pixi's export drops by default.
+    If pixi is not yet installed, see :doc:`pixi_tasks` for the one-line installer.
+
+  - Create or update the Conda environment using the generated file:
 
     .. code-block:: bash
 
-      conda env update
+      conda env create --name pipeline --file=environment.yml
 
-    This will create or update a Conda environment named 'pipeline'.  
+    This will create a Conda environment named ``pipeline``.
 
     .. note::
-      
-        Occasionally, you might also update, clean up, or remove a pre-existing environment:
+
+        To update or remove a pre-existing environment:
 
         .. code-block:: bash
 
-          conda env update --name pipeline --file=environment.yml # Update an existing environment
-          conda env update --name pipeline --file=environment.yml --prune # Remove packages not in the environment file
-          conda env remove --name pipeline # Remove the entire environment
+          conda env update --name pipeline --file=environment.yml           # Update existing
+          conda env update --name pipeline --file=environment.yml --prune   # Also remove unlisted packages
+          conda env remove --name pipeline                                  # Remove the environment entirely
 
 - Activate the environment and verify the `CASA6`_ software stack installation:
 
@@ -117,11 +121,16 @@ Setup - step-by-step
 
   .. note::
 
-    `environment.yml`_, `pyproject.toml`_, and `requirements.txt`_
-    
-    - The scope of `environment.yml`_ (Conda environment definition) is to create a monolithic-`CASA6`_-like self-contained Python environment with all `CASA6`_ components and dependencies required by `Pipeline`_ installed.
+    `pyproject.toml`_ and `requirements.txt`_
+
+    - ``environment.yml`` is no longer committed to the repository. Generate it on demand with
+      ``pixi project export conda-environment`` as shown above (see :doc:`pixi_tasks`).
+      Its purpose is to define a self-contained Python environment with all `CASA6`_ components
+      and dependencies required by `Pipeline`_.
     - `pyproject.toml`_ handles `Pipeline`_ packaging and build system requirements.
-    - A separate `requirements.txt`_ (which is referenced in both `environment.yml`_ and `pyproject.toml`_) handles `Pipeline`_ core/functional dependencies. The separation is intentional for balancing different needs / use cases, e.g. monolithic and modular `CASA6`_ builds, developer/testing installation setups, etc.
+    - A separate `requirements.txt`_ handles `Pipeline`_ core/functional dependencies.
+      The separation is intentional for balancing different needs / use cases,
+      e.g. monolithic and modular `CASA6`_ builds, developer/testing installation setups, etc.
 
 Run `Pipeline`_
 ---------------
