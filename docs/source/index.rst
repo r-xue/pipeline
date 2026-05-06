@@ -7,7 +7,7 @@
    :caption: Basics
 
    dependencies
-   interface
+   overview
    releases
 
 .. toctree::
