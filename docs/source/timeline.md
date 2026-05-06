@@ -1,4 +1,4 @@
-# Roadmap & Branching Strategy
+# PL2026 Timeline & Milestones
 
 ## PL2026 Timeline
 
@@ -43,7 +43,7 @@ gantt
     section Delivery
     %% ALMA Cycle-12 and VLA/SRDP Pipeline (2025.1.0.35, CASA 6.6.6-17-py3.10)  :done, crit, milestone, 2025-10-01, 1d  
     ALMA Cycle-12 and VLA/SRDP Pipeline patch-1 (2025.1.0.36, CASA 6.6.6-18-py3.10)  :done, crit, milestone, 2026-03-01, 1d      
-    VLASS Pipeline (2026.1.0.1, CASA 6.7.1-13-py3.10+gpu)             :active, crit, milestone, 2026-04-10, 1d
+    VLASS Pipeline (2026.1.0.4, CASA 6.7.1-13-py3.10+gpu)             :active, crit, milestone, 2026-04-20, 1d
     ALMA E2E13 Pre-release                :active, crit, milestone, 2026-07-10, 1d
     ALMA Cycle-13 and VLA/SRDP Pipeline (2026.2.0, CASA 6.7.4-py3.12)     :active, crit, milestone, 2026-08-01, 1d
 ```
@@ -54,19 +54,19 @@ gantt
 
 ### Delivery Schedule
 
-October 2025
-: **ALMA Cycle-12 and VLA/SRDP Pipeline**
+March 2026 (patch release)
+: **ALMA Cycle-12 and VLA/SRDP Pipeline patch-1**
 
-  - Version: 2025.1.0.35
-  - CASA: 6.6.6-17-py3.10
+  - Version: 2025.1.0.37
+  - CASA: 6.6.6-18-py3.10
   - Status: Completed
 
-March 2026
+April 2026
 : **VLASS Pipeline**
 
-  - Version: 2026.1.0
-  - CASA: 6.7.1-py3.10+gpu
-  - Status: In Development
+  - Version: 2026.1.0.4
+  - CASA: 6.7.1-13-py3.10+gpu
+  - Status: Completed
 
 July 2026
 : **ALMA E2E13 Pre-release**
@@ -78,7 +78,7 @@ August 2026
 : **ALMA Cycle-13 and VLA/SRDP Pipeline**
 
   - Version: 2026.2.0
-  - CASA: 6.7.x-py3.12
+  - CASA: 6.7.4-py3.12
   - Status: Planned
 
 ### ALMA Testing Schedule
@@ -111,7 +111,7 @@ The branching diagram below illustrates the development workflow across PL2025 a
 
 - **Main Branch**: Continuous development with new features and improvements
 - **release/2025.1.0**: Stable release for ALMA Cycle-12 (CASA 6.6.6-py3.10)
-- **release/2026.1.0**: VLASS-focused release (CASA 6.7.1-py3.10+hpg)
+- **release/2026.1.0**: VLASS-focused release (CASA 6.7.1-py3.10-gpu)
 - **release/2026.2.0**: ALMA Cycle-13 and VLA release (CASA 6.7.x-py3.12)
 
 ```mermaid
@@ -153,8 +153,8 @@ gitGraph
     commit id:"feature8" tag:"2026.0.1.14" tag:"2026.1.0.0" tag:"2026.1.1.0"
 
     %% --- Branch for 2026.1.0 (VLASS) Release ---
-    branch "release/2026.1.0 (casa-6.7.1-py3.10+hpg)" order: 3
-    checkout "release/2026.1.0 (casa-6.7.1-py3.10+hpg)"
+    branch "release/2026.1.0 (casa-6.7.1-py3.10-gpu)" order: 3
+    checkout "release/2026.1.0 (casa-6.7.1-py3.10-gpu)"
     commit id:"bugfix7"
     commit id:"bugfix8" tag:"2026.1.0.2"
     commit id:"hotfix1"
