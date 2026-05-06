@@ -1,4 +1,4 @@
-# Pipeline Context and Domain Objects
+# Context and Domain Objects
 
 The Pipeline Context is the Pipeline's record of state, used to:
 - Transfer state from task to task
