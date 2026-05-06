@@ -5,6 +5,7 @@
 
 context_domain_objects
 callibrary
+versioning
 logging
 weblog
 task_types
