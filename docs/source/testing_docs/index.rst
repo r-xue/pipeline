@@ -110,6 +110,6 @@ Test Organization
 Related Documentation
 =====================
 
-* :doc:`../develdocmd/pipeline_tests` - Additional testing information
-* :doc:`../develdocmd/DataType_Testing` - DataType-specific tests
+* :doc:`../devel/pipeline_tests` - Additional testing information
+* :doc:`../devel/DataType_Testing` - DataType-specific tests
 

@@ -24,13 +24,13 @@
    :maxdepth: 2
    :caption: Developer Guide
 
-   develdocmd/setup/index
-   develdocmd/usage/index
-   develdocmd/process/index
-   develdocmd/codestyle/index
-   develdocmd/testing/index
-   develdocmd/reference/index
-   develdocmd/misc/index
+   devel/setup/index
+   devel/usage/index
+   devel/process/index
+   devel/codestyle/index
+   devel/testing/index
+   devel/reference/index
+   devel/misc/index
 
 .. toctree::
    :hidden:

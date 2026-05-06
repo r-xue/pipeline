@@ -209,4 +209,4 @@ gitGraph
 
 ---
 
-For version string format, see {doc}`develdocmd/reference/versioning`.
+For version string format, see {doc}`devel/reference/versioning`.

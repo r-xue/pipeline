@@ -64,7 +64,7 @@ In practice, pipeline runs are launched in one of two ways:
 - **PPR XML** (production): a Pipeline Processing Request XML file drives the full task sequence automatically — this is how pipeline runs are triggered at observatory processing centers.
 - **Script replay**: each completed run produces a `casa_pipescript.py` that can be re-executed or edited to reproduce or modify the run.
 
-For full details and examples of both approaches, see {doc}`develdocmd/usage/running_pipeline`.
+For full details and examples of both approaches, see {doc}`devel/usage/running_pipeline`.
 
 ## Output Products and Weblog
 
