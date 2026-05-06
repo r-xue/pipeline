@@ -5,5 +5,7 @@
 
 building_the_pipeline
 pixi_tasks
+conda_setup
 readthedocs
+```
 ```
