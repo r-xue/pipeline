@@ -493,8 +493,8 @@ def make_parang_plots(
 
             # Filter intents to only include those present in this specific MS.
             # `intents_to_plot_session` already uses mapped pipeline intents.
-            intents_to_plot = [intent for intent in intents_to_plot_session
-                               if any(intent in field.intents for field in ms.get_fields())]
+            intents_to_plot = [intent_to_plot for intent_to_plot in intents_to_plot_session
+                               if any(intent_to_plot in field.intents for field in ms.get_fields())]
 
             plot_name = plot_path if i == num_ms - 1 else ''
 
