@@ -16,7 +16,7 @@ LOG = infrastructure.get_logger(__name__)
 
 class QAScorePropertiesRegistry:
     """
-    Class to hold QASCore formats
+    Class to hold QAScore formats
     """
     def __init__( self ):
         """
@@ -122,7 +122,7 @@ class QAScoreFormatter:
                                        default is None which applies all keys in applies_to of QA score
                                        longmsg_format will be used regardless the longmsg_keys if longmsg_format is specified
         """
-        # if longmsg_keys is notspecified, try to get it from the registry
+        # if longmsg_keys is not specified, try to get it from the registry
         if longmsg_keys is None:
             longmsg_keys = registry.get_longmsg_keys( qascore.origin.metric_name )
             # apply all keys in TargetDataSelection if longmsg_keys still does not exist
@@ -228,7 +228,7 @@ class QAScoreAggregator:
         """
         Aggregate and recompose longmsg-es of QA scores with specified metric_name
 
-        Aggregates the QA scores with privided metric_name dependent parameters,
+        Aggregates the QA scores with provided metric_name dependent parameters,
         such as keys_to_aggregate and keys_to_show.
         This method is coded to respect the original 'order' of QA scores during the aggregation.
 
