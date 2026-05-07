@@ -165,7 +165,7 @@ flowchart TD
 
 ---
 
-## PIPEREQ: Ticket Workflow
+## PIPEREQ: Standard Ticket
 
 PIPEREQ tickets follow a separate, less formalized workflow.
 
