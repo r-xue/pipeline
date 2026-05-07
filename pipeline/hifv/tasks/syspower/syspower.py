@@ -473,8 +473,8 @@ class Syspower(basetask.StandardTaskTemplate):
                         LOG.info('    restored {0:.2f}% template flags after interpolation'.format(
                                  100.0 * np.sum(sp_median_mask) / sp_median_mask.size))
                         # repeat after square root
-                        if isinstance(sp_data.mask, (bool, np.bool_)):
-                            sp_data.mask = np.ma.getmaskarray(sp_data)
+                        sp_data.mask = np.ma.getmaskarray(sp_data)
+
                         sp_data.mask[sp_data < 0] = True
                         sp_data = np.ma.masked_array(sp_data**0.5, mask=sp_data.mask)
                         sp_template = np.ma.masked_array(sp_template**0.5, mask=sp_template.mask)
@@ -677,9 +677,7 @@ class Syspower(basetask.StandardTaskTemplate):
             y[-j:, -(i + 1)] = x[-1]
             y.mask[-j:, -(i + 1)] = True
         medians = np.ma.median(y, axis=1)
-
-        if isinstance(medians.mask, (bool, np.bool_)):
-            medians.mask = np.ma.getmaskarray(medians)
+        medians.mask = np.ma.getmaskarray(medians)
 
         if np.ma.all(medians.mask): return medians
 
