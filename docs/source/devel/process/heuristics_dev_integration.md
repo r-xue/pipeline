@@ -1,22 +1,20 @@
 # Heuristics Development and Integration in the Pipeline
 
-The process and stage of heuristics development and its pipeline implementation can vary significantly, ranging from direct drop-ins, light adaptations, refactored codebase heavily leverage on the pipeline infrastructure, to, complete rewrites to become "pipeline-native".
+The path from heuristics development to pipeline integration can take many forms — from a direct drop-in, through light adaptation or refactoring against pipeline infrastructure, to a developer-lead full rewrite as "pipeline-native" code.
 
-While leveraging existing pipeline infrastructure is always encouraged from start, heuristics development has traditionally occurred within standalone CASA environments, and its pipeline implementation could begin with heuristic prototyping at varying degrees of code qualities in structures, codestyles, in-line documentation, etc.
+Heuristics development has traditionally occurred in standalone CASA environments, with varying degrees of code quality in structure, style, and documentation. While leveraging existing pipeline infrastructure from the outset is always encouraged, prototype code often begins as an experimental script tested against a limited subset of pipeline operation parameter space, and is refined iteratively from there.
 
-However, one historical lesson we have learned so far is that a clean-cut scientist-to-developer handover situation for complex heuristics often leads to longer adaptation periods, duplicated efforts, lack of detailed all-in-one technical and design documentation, and communication gaps for a sharedn understanding of the latest state in continuous heuristics development and its pipeline maintenance.
+A recurring lesson is that a sharp scientist-to-developer handover for complex heuristics tends to cause longer adaptation periods, duplicated effort, gaps in technical and design documentation, and a loss of shared understanding of the current state of both the heuristics and the pipeline implementation.
 
-To streamline this process, we strongly encourage heuristics development to leverage Pipeline infrastructure early on:
+To streamline this process, we strongly encourage heuristics contributors and pipeline developers to collaborate early, using shared tooling:
 
-- Unified Development Environment: During the heuristics development and adaptation period, heuristics contributors and Pipeline developers should use the same codebase (e.g., a temporary Pipeline repository branch), workspace (e.g., open-bitbucket.nrao), and CASA version.
-
-- Collaborative Tools: Use draft pull requests and open Jira tickets for technical discussions and design decisions.
-
-- Shared Documentation: Document the development process on a shared version-controlled platform (e.g., markdown/RST, Jupyter notebooks, inside the Pipeline repository, GoogleDocs, Overleaf) to ensure transparency and ease of access.
+- **Unified development environment**: Both parties should work from the same codebase (e.g., a shared pipeline repository branch), the same workspace (e.g., `open-bitbucket.nrao.edu`), and the same CASA version.
+- **Collaborative tools**: Use draft pull requests and open Jira tickets for technical discussions and design decisions.
+- **Shared documentation**: Document the development process on a version-controlled platform (e.g., Markdown/RST, Jupyter notebooks in the pipeline repository, Google Docs, or Overleaf) to ensure transparency and ease of access.
 
 ## Accessing Lightly-Adapted Prototype Modules in the Pipeline Codebase
 
-For self-contained prototype modules with generic Python/CASA dependencies, you can easily access these modules and functions after drop-in. Follow the steps below to access them under the pipeline namespace:
+For self-contained prototype modules with generic Python/CASA dependencies, you can access them under the pipeline namespace by inserting the local branch clone into the system path.
 
 1. Insert the pipeline branch local clone into the system path:
 
@@ -61,10 +59,9 @@ Args:
 
 Help on function `get_flagged_solns_per_spw` in module `pipeline.hif.heuristics.auto_selfcal.selfcal_helpers`
 
-get_flagged_solns_per_spw(spwlist, gaintable)
-
 ```python
-get_flagged_solns_per_spw(spwlist,
+get_flagged_solns_per_spw(spwlist, gaintable, extendpol=False)
+
 Calculate the number of flagged and unflagged solutions per spectral window (spw).
 
 This function examines a gain table and calculates the number of flagged and unflagged
@@ -85,24 +82,23 @@ Raises:
     FileNotFoundError: If the specified gain table directory does not exist.
 ```
 
-During the translation/adaptation development period, both developers and prototype contributors can still access, refactor, and experiment from the same ticket codebase. This allows for co-development and discussion of technical matters using the Bitbucket draft PR interface.
+During the translation and adaptation period, both developers and prototype contributors can access, refactor, and experiment from the same ticket branch, enabling co-development and technical discussion via Bitbucket draft PRs.
 
-## Checklist for Adaptation Process
+## Checklist for Adaptation
 
-- Compatibility of Dependency Libraries: Ensure compatibility with different versions of dependencies, such as Astropy and Numpy, considering potential API changes.
-- Code Style: Adhere to the established code style guidelines to maintain consistency across the codebase.
-- Unspecified Implicit Dependencies: Identify and document any implicit dependencies, for example, functions from `analysis_utils`.
-- Avoid Duplications: Utilize existing helper functions within the Pipeline infrastructure to prevent redundant code.
+- **Dependency compatibility**: Verify compatibility with the pipeline's pinned versions of libraries such as `NumPy` and `Astropy`, as well as the targeted CASA version, accounting for potential API changes.
+- **Code style**: Follow the project's {doc}`code style guidelines <../codestyle/index>` to maintain consistency across the codebase.
+- **Implicit dependencies**: Identify and document any unlisted dependencies, such as functions from `analysis_utils`. Where possible, eliminate such dependencies to avoid hidden coupling and keep the code self-contained.
+- **Avoid duplication**: Use existing helper functions in the pipeline infrastructure rather than reimplementing equivalent functionality.
 
 ## Uses of `pipeline.extern`
 
-Rules of thumb for the `pipeline.extern` namespace:
+Guidelines for the `pipeline.extern` namespace:
 
-- `pipeline.extern` in the `main` and `release` branches should mostly host dropped-in modules/classes with no dependencies on the pipeline modules, classes, or functions, e.g. no `from pipeline.abc import xyz` statements. These dropped-in modules can typically function outside of the Pipeline codebase and are likely being used or considered as standalone tools. Currently, `almarenorm.py`, `almarenorm_2023.py`, `XmlObjectifier.py`, and `findContinuum.py` meet this criterion.
+- In `main` and `release` branches, `pipeline.extern` should contain only self-contained, dropped-in modules or classes that have no imports from within the pipeline (i.e., no `from pipeline.abc import xyz` statements) and can function as standalone tools outside the pipeline codebase in the long term. Current examples: `almarenorm.py`, `almarenorm_2023.py`, `XmlObjectifier.py`, and `findContinuum.py`.
 
-_However_, in practice, for codes in the adaptation-in-progress period, which is still largely in the original form, keeping the code is also acceptable. That way, we have some small conveniences:
+- During the adaptation-in-progress period, code that is still largely in its original form may also be kept in `pipeline.extern`. This has practical benefits:
+  - Original contributors can navigate the self-contained code in a simple flat structure, which is useful while heuristics design is still being transferred.
+  - Most modules in `pipeline.extern` are not auto-imported (they are not listed in `__init__.py`), so they can be debugged in a semi-isolated environment — a crash only occurs when the module is explicitly imported. In an iPython or CASA interactive session, `%autoreload 2` can be used to reload the module quickly during active development.
 
-- Easier to access/navigate/parse for original contributors as we can easily parse the self-contained code in a simple one-directory structure: this could be helpful when they’re still tinkering with the code during the early heuristics design transferring phase.
-- Most modules there aren’t auto-imported (not in `__int__.py`): so it has the advantage that you could debug things in a semi-isolated environment, e.g. crashing only happens when you explicitly import that module: if you are in iPython/CASA interactive session, you can enable `autoreload` magic command `%autoreload2` quickly revise/reload the in-development heuristics module being worked on.
-
-For in-progress dev branches or temporary demo/testing branches, we don't need to obey the above consideration for proper uses of `pipeline.extern`: `pipeline.extern` could be considered as an easy staging area before developers make a more decision on how to dissolve/adapt prototyping code blocks into the pipeline code structures.
+- In development or temporary demo/testing branches, the above constraints do not apply. `pipeline.extern` can serve as a convenient staging area while developers decide how to dissolve or integrate prototype code blocks into the pipeline codebase.
