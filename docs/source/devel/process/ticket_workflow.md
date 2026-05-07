@@ -10,17 +10,18 @@ Applies to PIPE feature, bug, and epic tickets. Engineering and Research Request
 - **Reviewed**: Accepted into the backlog "To-Do" list based on scientific or operational priority and available resources; not yet actively worked. Tickets targeting a specific release are labeled accordingly.
 - **Input Required**: Awaiting requirements or clarifying information from a stakeholder or developer.
 - **Implementing**: Actively being developed; a branch exists. Can transition to **Verifying**, directly to **Validating**, **Input Required**, or **Reviewed**.
-  - Open a Draft/WIP Pull Request early to allow team feedback on implementation and style. A descriptive title such as `WIP: PIPE-1234: implementing bugfix for task` is recommended.
-  - Maintain a clear PR description and informative inline comments to surface design questions, explain rationale, and aid both developer and reviewer.
-- **Verifying**: Assigned to developer(s) to review and cross-check changes before stakeholder validation.
-  - Do not advance to **Validating** until the development team is satisfied. For narrow, well-scoped changes a single approval is sufficient; broader changes should have wider review. A ticket may cycle through **Implementing**, **Verifying**, and **Validating** multiple times before merging.
-  - Post PR testing results to the observatory's internal weblog storage for reviewer and stakeholder access:
-    - Use `<PIPE-1234>` as the subdirectory name.
-    - Store only what is needed — weblogs and log files are typically sufficient; avoid large data files.
-    - Organize results within the subdirectory, e.g. `PIPE-1234/main`, `PIPE-1234/pipe1234-v1-attempt1`, `PIPE-1234/pipe1234-v2-attempt2`.
-    - The goal is to let reviewers and stakeholders compare results and assess impact without raw data or deep familiarity with the issue, shortening the development cycle.
-    - Directories may be removed after the code is released.
-  - For narrow, well-scoped changes where both the stakeholder and technical lead agree, the branch may be merged after verification and before formal validation. Merging into `main` still requires at least one developer approval, all PR tasks resolved, and all automated tests passing. In that case, the `Validating-MAIN` label must be applied and a merge comment posted with the commit tag (e.g., `2026.1.1.1`); the ticket then advances to **Validating**, where validation occurs on `main`.
+
+  :::{note}
+  - Open a Draft/WIP Pull Request early to allow team feedback on algorithm and implementation choices. Use a descriptive title such as `WIP: PIPE-1234: implementing bugfix for task` alongside Bitbucket's built-in draft state.
+  - Maintain a clear PR description and informative inline comments to surface design questions, explain rationale, and aid both the developer and reviewer.
+  :::
+
+- **Verifying**: Assigned to other developer(s) for code review and cross-check changes before stakeholder validation. Do not advance to **Validating** until the development team is satisfied — a single code review approval is sufficient for narrow, well-scoped changes; broader changes should have wider review. A ticket may cycle through **Implementing**, **Verifying**, and **Validating** multiple times before merging.
+
+  :::{note}
+  - **Weblog storage**: Post PR testing results to the observatory's internal weblog storage so reviewers and stakeholders can assess impact without needing raw data or deep familiarity with the issue. Use `<PIPE-1234>` as the subdirectory name; weblogs and log files are typically sufficient — avoid large data files. Organize results into labeled sub-directories (e.g. `PIPE-1234/main`, `PIPE-1234/pipe1234-v1-attempt1`, `PIPE-1234/pipe1234-v2-attempt2`). Directories may be removed after the code is released.
+  - **Early merge exception**: If both the stakeholder and technical lead agree, a narrow, well-scoped change may be merged into `main` after verification and before formal validation. This still requires at least one developer approval, all PR tasks resolved, and all automated tests passing. The `Validating-MAIN` label must be applied and a merge comment posted with the commit tag (e.g., `2026.1.1.1`); the ticket then advances to **Validating**, where validation occurs on `main`.
+  :::
 - **Validating**: Assigned to a stakeholder to validate against the ticket branch, or against `main` if the `Validating-MAIN` label is set. On acceptance, moves to **Pending Release**; if issues are found, returns to **Implementing** and may cycle through **Verifying** and **Validating** again.
 - **Pending Release**: Implementation complete; branch ready to merge into `main` pending release. If unexpected issues arise after merging, the ticket can return to **Implementing**.
 - **Closed / Released**: Set in bulk via the Jira bulk change tool once a software version is officially released.
