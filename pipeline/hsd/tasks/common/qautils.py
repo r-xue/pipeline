@@ -105,8 +105,8 @@ class QAScoreFormatter:
 
     def update_longmsg( self,
                         qascore: pqa.QAScore,
-                        longmsg_format: str = None,
-                        longmsg_keys: list[str] = None ):
+                        longmsg_format: str | None = None,
+                        longmsg_keys: list[str] | None = None ):
         """
         Update longmsg of QA score with asocciated keys in applies_to
 
