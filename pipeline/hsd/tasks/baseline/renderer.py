@@ -42,7 +42,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
         """
         super().__init__(template, description, always_rerender)
 
-    def render( self, context: Context, result: SDBaselineResults ) -> str:
+    def render(self, context: Context, result: SDBaselineResults) -> str:
         """
         Custom renderer for hsd_baseline()
 
@@ -66,9 +66,9 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
 
         # aggregate QA scores for weblog accordion
         aggregator = qautils.QAScoreAggregator()
-        result.qa.pool = aggregator.aggregate_qascores( result.qa.pool )
+        result.qa.pool = aggregator.aggregate_qascores(result.qa.pool)
 
-        return super().render( context, result )
+        return super().render(context, result)
 
     def update_mako_context(self, ctx: dict, context: Context, results: ResultsList) -> None:
         """Update context object for Mako template in place.

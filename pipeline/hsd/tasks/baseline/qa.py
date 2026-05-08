@@ -11,7 +11,6 @@ import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
 
 from . import baseline
-from pipeline.hsd.tasks.common.qautils import QAScoreAggregator
 
 if TYPE_CHECKING:
     from pipeline.infrastructure.launcher import Context
@@ -25,21 +24,21 @@ class SDBaselineQAHandler(pqa.QAPlugin):
     result_cls = baseline.SDBaselineResults
     child_cls = None
 
-    def __init__( self ):
+    def __init__(self):
         """
         register the parameters for longmsg formatter and aggregator
         """
         # register the properties
         metric_name = 'score_sd_line_detection'
-        qautils.registry.register_longmsg_keys( metric_name, [ 'vis', 'field', 'spw', 'ant', 'pol' ] )
-        qautils.registry.register_keys_to_aggregate( metric_name, [ 'vis', 'field', 'spw', 'ant', 'pol' ] )
+        qautils.registry.register_longmsg_keys(metric_name, ['vis', 'field', 'spw', 'ant', 'pol'])
+        qautils.registry.register_keys_to_aggregate(metric_name, ['vis', 'field', 'spw', 'ant', 'pol'])
 
         # register the properties (this one should show Spw as Virtual Spw)
         metric_name = 'score_sd_baseline_quality'
-        qautils.registry.register_keys_to_aggregate( metric_name,
-                                                     [ 'vis', 'field', 'spw', 'ant', 'pol' ] )
-        qautils.registry.register_longmsg_keys( metric_name,
-                                                [ 'vis', 'field', 'spw', 'ant', 'pol' ] )
+        qautils.registry.register_keys_to_aggregate(metric_name,
+                                                     ['vis', 'field', 'spw', 'ant', 'pol'])
+        qautils.registry.register_longmsg_keys(metric_name,
+                                                ['vis', 'field', 'spw', 'ant', 'pol'])
 
     def handle(self, context: Context, result: result_cls) -> None:
         """Compute QA score for baseline subtraction task.
