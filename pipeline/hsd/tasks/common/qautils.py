@@ -265,9 +265,13 @@ class QAScoreAggregator:
             keys_to_compare = keys_to_show.copy()
             keys_to_compare.remove(key)
 
-            # scan through QA scores
-            for target_qascore in qascores[:]:
-                # go next if the target_qascore is already removed during former aggregation
+            # first preseve a copy of "qascores" at this point to use it for looping
+            # since "qascores" evolves during the following loop.
+            original_qascores = qascores[:]
+
+            # scan through original_qascores
+            for target_qascore in original_qascores:
+                # go next if the target_qascore is already removed during former aggregation during the loop
                 if target_qascore not in qascores:
                     continue
                 # filter out qascores with different metric_name
