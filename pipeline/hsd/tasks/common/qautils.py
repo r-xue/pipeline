@@ -161,7 +161,7 @@ class QAScoreAggregator:
     """
     def __init__(self,
                  keys_to_aggregate: list[str] | None = None,
-                 preserve_original: bool = True,
+                 preserve_original: bool = False,
                  precision: int = 2,
                  always_update_longmsg: bool = True):
         """
@@ -171,7 +171,7 @@ class QAScoreAggregator:
                                    Hierarchial matches will be done in the order of the list
                                    (list is higher to lower hierarchy)
                                    defalt is None to apply [ 'vis', 'field', 'spw', 'ant', 'pol' ]
-        preserve_original:     Whether to attach the list of original QA scores with WebLogLocation.HIDDEN. Default is True.
+        preserve_original:     Whether to attach the list of original QA scores with WebLogLocation.HIDDEN. Default is False.
         precision:             Number of decimal places to round score values. Default is 2.
         always_update_longmsg: Update longmsg and round the score regardless the aggregation. Default is True.
         """
