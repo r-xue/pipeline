@@ -67,7 +67,6 @@ class SDBaselineQAHandler(pqa.QAPlugin):
         for qascore in scores:
             formatter.update_longmsg(qascore)
         result.qa.pool.extend(scores)
-        # result.qaregistry = registry
 
 class SDBaselineListQAHandler(pqa.QAPlugin):
     """QA handler to handle list of results."""
