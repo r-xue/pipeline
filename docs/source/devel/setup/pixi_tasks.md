@@ -92,6 +92,31 @@ cd /my/workdir
 pixi run test-unit
 ```
 
+:::{tip}
+**Test data setup** — unit and regression tests that require data files depend on the [`pipeline-testdata`](https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline-testdata/browse) Git LFS repository and a `~/.casa/config.py` entry pointing to it:
+
+1. Install Git LFS and clone the repository:
+
+   ```bash
+   git lfs install
+   git clone https://open-bitbucket.nrao.edu/scm/pipe/pipeline-testdata.git /path/to/pipeline-testdata
+   ```
+
+   On Linux, increase the credential cache timeout to avoid repeated password prompts during LFS downloads:
+
+   ```bash
+   git config --global credential.helper 'cache --timeout=3600'
+   ```
+
+2. Add the following to `~/.casa/config.py` (create the file if it does not exist):
+
+   ```python
+   datapath = ["/path/to/pipeline-testdata"]
+   ```
+
+   Tests use `casatools.ctsys.resolve()` to locate data files, which searches all paths in `datapath`.
+:::
+
 ---
 
 ### `test-regression` — fast regression suite (xdist, no MPI)
