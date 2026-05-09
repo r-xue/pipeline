@@ -15,6 +15,9 @@
         var tocDrawer = document.querySelector('.toc-drawer');
         if (!tocDrawer) return;
 
+        // Pages with no local TOC auto-expand via CSS — no button needed.
+        if (tocDrawer.classList.contains('no-toc')) return;
+
         // Only install on wide screens where the inline TOC is visible.
         if (!window.matchMedia('(min-width: 83em)').matches) return;
 

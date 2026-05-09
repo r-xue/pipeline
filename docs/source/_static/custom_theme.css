@@ -59,6 +59,12 @@ table.small-font-table {
 /* Wide-screen collapse logic — only on screens where Furo shows the inline TOC
    (>82em). On smaller screens Furo uses its own overlay; the toggle is hidden. */
 @media (min-width: 83em) {
+    /* Pages with no local TOC: automatically expand content into the empty right
+       column — same layout as the manually-collapsed state, no button needed. */
+    .main:has(.toc-drawer.no-toc) .content {
+        width: calc(46em + 15em);
+    }
+
     /* Shrink the drawer to zero; keep overflow visible so the toggle button
        remains clickable outside the collapsed zero-width box. */
     .toc-drawer.toc-collapsed {
