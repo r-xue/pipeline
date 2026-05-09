@@ -20,11 +20,32 @@ def hsd_baseline(
     2. **Averaged** spectra per grid cell (improves S/N to reveal line features).
     3. Spectra **after** baseline subtraction (red line at zero level per grid cell).
 
-    Cyan-shaded regions indicate channels masked as emission lines. A spatially integrated
-    spectrum is shown above each grid, with the magenta curve indicating atmospheric transmission
-    and thick red bars marking channels excluded by the ``deviation mask`` algorithm.
+    Cyan-shaded regions indicate the sum of all emission-line channels identified across the
+    entire map (not just the individual grid cell). A spatially integrated spectrum per ASDM,
+    antenna, spw, and polarization is shown above each grid, with the magenta curve indicating
+    atmospheric transmission and thick red bars marking channels excluded by the
+    ``deviation mask`` algorithm.
     Representative spectra in each cell correspond to the valid pointing nearest the mean
     coordinates of all pointings in that grid cell.
+
+    .. figure:: /figures/hsd_baseline_representative.png
+       :scale: 60%
+       :alt: Representative position determination
+
+       Examples of how representative positions are determined. Blue points are all
+       pointings; brown crosses are the averaged coordinates; green circles mark the
+       representative positions (nearest valid pointing to the averaged coordinates).
+
+    .. figure:: /figures/guide-img036.jpg
+       :scale: 60%
+       :alt: hsd_baseline WebLog page
+
+       Example of the ``hsd_baseline`` WebLog page showing the first three spectral
+       grid rows (before subtraction, averaged, after subtraction) for one spw.
+
+    Detailed per-antenna spectral maps can be accessed from the detail pages by clicking the
+    **Spectral Window** link on each summary page. Filters by antenna, field, spectral window,
+    and polarization are available in the upper part of the detail pages.
 
     **Fitting order determination**: The default function is a cubic spline. The number of
     spline segments (``N_segment``) is determined via FFT analysis of the power spectrum of
@@ -54,7 +75,11 @@ def hsd_baseline(
 
        Example of baseline flatness evaluation.
 
-    **Clustering analysis** for spectral line detection:
+    **Clustering analysis** for spectral line detection (developer plots, hidden by default;
+    enable with ``plotlevel='all'`` in ``h_init``):
+
+    *Detection*: grid cells with emission exceeding the threshold are identified. Yellow cells
+    have a single time-domain group with detected emission; cyan cells have more than one.
 
     .. figure:: /figures/guide-img037.png
        :scale: 60%
@@ -62,17 +87,31 @@ def hsd_baseline(
 
        Clustering detection step.
 
+    *Validation*: for each grid cell the ratio of spectra containing detected emission lines
+    (``Nmember``) to total spectra in the cell (``Nspectra``) is computed:
+
+    - **Validated** if ``Nmember/Nspectra > 0.5``
+    - **Marginally validated** if ``Nmember/Nspectra > 0.3``
+    - **Questionable** if ``Nmember/Nspectra > 0.2``
+
     .. figure:: /figures/guide-img038.png
        :scale: 60%
        :alt: Clustering validation
 
        Clustering validation step.
 
+    *Smoothing*: the per-cell ratio is convolved with a Gaussian-like grid function to suppress
+    isolated single-line candidates and reinforce detections supported by neighboring cells.
+
     .. figure:: /figures/guide-img039.png
        :scale: 60%
        :alt: Clustering smoothing
 
        Clustering smoothing step.
+
+    *Mask region determination*: in the validated area after smoothing, mask channel ranges are
+    computed over the spatial domain by inter/extrapolating the mask ranges of the averaged
+    spectra in validated cells and applied to each individual spectrum.
 
     .. figure:: /figures/guide-img040.png
        :scale: 60%

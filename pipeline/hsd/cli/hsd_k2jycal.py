@@ -14,9 +14,11 @@ def hsd_k2jycal(dbservice=None, endpoint=None, reffile=None,
 
     The WebLog lists the applied Jy/K factors and displays plots of them:
 
-    - For MSs with fewer than 5 EBs: a scatter plot of factors.
-    - For MOUSs with 5 or more EBs: a box plot. EBs identified as outliers (following the
-      matplotlib boxplot definition) are plotted as individual points with their EB name labeled.
+    - For MOUSs with fewer than 5 EBs: a scatter plot of factors.
+    - For MOUSs with 5 or more EBs: a box plot. Outliers (per the matplotlib
+      `boxplot definition
+      <https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.boxplot.html>`__)
+      are plotted as individual points labeled with their EB name.
 
     .. figure:: /figures/jy2k.png
        :scale: 60%

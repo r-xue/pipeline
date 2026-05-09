@@ -15,8 +15,7 @@ def hsd_atmcor(
 
     Corrects residual atmospheric line features in the science target spectra caused by incomplete
     sky calibration due to elevation differences between ON_SOURCE and OFF_SOURCE measurements.
-    The correction is based on the atmospheric model described in Sawada et al. 2021, PASP,
-    133c4504S.
+    The correction is based on the atmospheric model described in :cite:`2021PASP..133c4504S`.
 
     By default (``atmtype='auto'``), the pipeline evaluates all four standard atmospheric models
     and selects the best fit:

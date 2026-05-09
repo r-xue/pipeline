@@ -28,8 +28,10 @@ def hsd_importdata(vis=None, session=None, hm_rasterscan=None, parallel=None, as
 
        The detailed page of Telescope Pointing on the MS summary page.
 
-    If ``overwrite=False`` and the ASDM output MS already exists in the output directory, the
-    ``importasdm`` conversion step is skipped and the existing MS is imported instead.
+    If ``overwrite=False`` and the task is asked to
+    convert an input ASDM input to an MS, then when the output MS already exists in
+    the output directory, the ``importasdm`` conversion step is skipped, and the
+    existing MS will be imported instead.
 
     Notes:
         QA scoring:
