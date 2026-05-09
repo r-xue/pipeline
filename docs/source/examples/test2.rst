@@ -36,8 +36,3 @@ Citations (from .bib)
 
 References relevant to CASA and Pipeline:
 :cite:`2020ASPC..527..271R`, :cite:`2020ASPC..527..267E`, :cite:`2023PASP..135g4501H`
-
-
-.. bibliography::
-    :cited:
-    :style: astrostyle

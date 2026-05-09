@@ -10,6 +10,7 @@
    dependencies
    releases
    timeline
+   references
 
 .. toctree::
    :hidden:
