@@ -1,8 +1,7 @@
 # Comparing pipeline executions
 
 When refactoring pipeline code, it is common to want to restructure and
-modify the code but leave the overall behaviour unchanged. The pipeline does
-not have automated unit tests or regression tests, so it falls to the
+modify the code but leave the overall behaviour unchanged. It falls to the
 developer to manually verify that the pipeline behaviour has not changed.
 
 There are three general ways to compare pipeline executions and determine
@@ -69,28 +68,28 @@ pipeline.recipereducer.reduce(vis=['uid___A002_X30a93d_X43e'], loglevel='trace')
 
 #### Restricting log output
 
-Lowering the log level to TRACE will log all tool calls - including tools such
+Lowering the log level to TRACE will log all tool calls — including tools such
 as CASA quanta and measures. Records from these tools may be considered noise;
 you may prefer to leave the log level at DEBUG and selectively enable output
 for certain tools by editing `pipeline/infrastructure/casa_tools.py`. For
-example, to enable logging of calls the imager tool alone, edit `casa_tools.py`
-and change the definition of the imager tool from
+example, to enable logging of calls to the imager tool alone, edit `casa_tools.py`
+and change the private class definition from:
 
 ```python
-imager = create_logging_class(casa_tools.imager)
+_logging_imager_cls = create_logging_class(casatools.imager,
+                                           level=logging.INFO, to_log=(...))
 ```
 
-to
+to log all method calls at DEBUG level:
 
 ```python
-imager = create_logging_class(casa_tools.imager, logging.DEBUG)
+_logging_imager_cls = create_logging_class(casatools.imager, level=logging.DEBUG)
 ```
 
-To omit log records entirely, remove the `log_tool_invocations` decorating
-call, e.g.,
+To omit log records entirely for a tool, assign the unwrapped CASA tool class directly:
 
 ```python
-imager = casa_tools.imager
+imager = casatools.imager()
 ```
 
 ## Example
@@ -102,43 +101,36 @@ calls. This can be tested by running an execution for both branches, keeping the
 1. same data
 1. same pipeline recipe
 
-From an initial root directory, run the pipeline procedure for the main trunk with
+From an initial root directory, run the pipeline procedure for the main branch with
 
 ```console
-mkdir trunk
-casa --agg
+mkdir main && cd main
+pixi run -e default casa
 ```
 
 ```python
-<1> sys.path.insert(0, '/path/to/Pipeline-maintrunk.egg')
-<2> import pipeline
-<3> pipeline.recipereducer.reduce(vis=['/rawdata/uid___A002_X30a93d_X43e'],
-                                  procedure='hifacal.xml',
-                                  loglevel='debug')
+import pipeline
+pipeline.recipereducer.reduce(vis=['/rawdata/uid___A002_X30a93d_X43e'],
+                              procedure='hifacal.xml',
+                              loglevel='debug')
 ```
 
-From the same initial root directory, run the pipeline procedure for the branch with
+From the same initial root directory, run the pipeline procedure for the feature branch:
 
 ```console
-mkdir branch
-casa --agg
+mkdir branch && cd branch
+pixi run -e default casa
 ```
 
 ```python
-<1> sys.path.insert(0, '/path/to/Pipeline-branch.egg')
-<2> import pipeline
-<3> pipeline.recipereducer.reduce(vis=['/rawdata/uid___A002_X30a93d_X43e'],
-                                  procedure='hifacal.xml',
-                                  loglevel='debug')
+import pipeline
+pipeline.recipereducer.reduce(vis=['/rawdata/uid___A002_X30a93d_X43e'],
+                              procedure='hifacal.xml',
+                              loglevel='debug')
 ```
 
 You can now diff the output with:
 
 ```console
-diff trunk/casacalls-<hostname>.txt branch/casacalls-<hostname>.txt
+diff main/casacalls-<hostname>.txt branch/casacalls-<hostname>.txt
 ```
-
-**Note**: The main trunk does not have an updated build procedure that
-generates an egg. For the moment, you will have to either run `casa --pipeline` to use the pipeline packaged with CASA (=pipeline main trunk for
-CASA 5.3 prereleases) or add your working directory to the CASA `sys.path`
-using your usual procedure.
