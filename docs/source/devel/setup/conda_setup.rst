@@ -8,7 +8,7 @@ Pipeline with Conda
 
 .. warning::
 
- Running and developing the pipeline from a Conda environment is not officially supported or validated for observatory operation, and the information provided here is for demonstration purposes only.
+ Running the pipeline data-processing workflow from a modular CASA 6 setup is not officially supported or validated for observatory operations. The information provided here is for development and demonstration purposes only.
 
 Step-by-step
 --------------------
