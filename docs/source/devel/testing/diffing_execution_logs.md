@@ -1,4 +1,4 @@
-# Comparing pipeline executions
+# Diffing pipeline execution logs
 
 When refactoring pipeline code, it is common to want to restructure and
 modify the code but leave the overall behaviour unchanged. It falls to the
