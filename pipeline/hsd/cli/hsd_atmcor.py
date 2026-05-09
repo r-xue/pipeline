@@ -10,7 +10,6 @@ def hsd_atmcor(
         infiles=None, antenna=None, parallel=None,
         field=None, spw=None, pol=None
 ):
-
     """Apply offline ATM correction for residual atmospheric effects in calibrated single-dish spectra.
 
     Corrects residual atmospheric line features in the science target spectra caused by incomplete

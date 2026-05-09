@@ -15,11 +15,10 @@ def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None):
 
     - **Image sensitivity table**: achieved rms per spw/source and theoretical rms accounting
       for the flagging fraction.
-    - **Profile maps**: three types are available:
-      (1) simplified profile map of the combined image per spw (front page);
-      (2) simplified profile map per antenna (click ``Spectral Window``);
-      (3) detailed profile map (one spectrum per pixel at 3-cell intervals, max 5x5 plots/page).
-      Each spectrum in the simplified maps corresponds to the average over 1/8 of the image size,
+    - **Profile maps**: three types are shown in the WebLog — a simplified combined-image
+      map per spw (front page), a simplified per-antenna map (click ``Spectral Window``), and
+      a detailed map (one spectrum per pixel at 3-cell intervals, max 5x5 plots/page). Each
+      spectrum in the simplified maps corresponds to the average over 1/8 of the image size,
       giving 8x8 spectra by default. Magenta lines show atmospheric transmission.
 
     .. figure:: /figures/guide-img043.png
