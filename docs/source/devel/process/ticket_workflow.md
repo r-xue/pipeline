@@ -12,8 +12,12 @@ Applies to PIPE feature, bug, and epic tickets. Engineering and Research Request
 - **Implementing**: Actively being developed; a branch exists. Can transition to **Verifying**, directly to **Validating**, **Input Required**, or **Reviewed**.
 
   :::{note}
-  - Open a Draft/WIP Pull Request early to allow team feedback on algorithm and implementation choices. Use a descriptive title such as `WIP: PIPE-1234: implementing bugfix for task` alongside Bitbucket's built-in draft state.
+  - Open a [Draft/WIP Pull Request](https://confluence.atlassian.com/bitbucketserver/draft-pull-requests-1354498120.html) as early as the prototyping stage to allow team feedback on algorithm and implementation choices. Use a descriptive title such as `WIP: PIPE-1234: implementing bugfix for task`.
   - Maintain a clear PR description and informative inline comments to surface design questions, explain rationale, and aid both the developer and reviewer.
+  :::
+
+  :::{tip}
+  A draft PR or a temporary branch used to demonstrate code capability is a legitimate and encouraged collaboration tool — our distributed team relies on asynchronous discussion and co-development. Repository settings are in place to prevent accidental merges into `main` or direct commits to the remote `main` branch.
   :::
 
 - **Verifying**: Assigned to other developer(s) for code review and cross-check changes before stakeholder validation. Do not advance to **Validating** until the development team is satisfied — a single code review approval is sufficient for narrow, well-scoped changes; broader changes should have wider review. A ticket may cycle through **Implementing**, **Verifying**, and **Validating** multiple times before merging.
@@ -22,7 +26,13 @@ Applies to PIPE feature, bug, and epic tickets. Engineering and Research Request
   - **Weblog storage**: Post PR testing results to the observatory's internal weblog storage so reviewers and stakeholders can assess impact without needing raw data or deep familiarity with the issue. Use `<PIPE-1234>` as the subdirectory name; weblogs and log files are typically sufficient — avoid large data files. Organize results into labeled sub-directories (e.g. `PIPE-1234/main`, `PIPE-1234/pipe1234-v1-attempt1`, `PIPE-1234/pipe1234-v2-attempt2`). Directories may be removed after the code is released.
   - **Early merge exception**: If both the stakeholder and technical lead agree, a narrow, well-scoped change may be merged into `main` after verification and before formal validation. This still requires at least one developer approval, all PR tasks resolved, and all automated tests passing. The `Validating-MAIN` label must be applied and a merge comment posted with the commit tag (e.g., `2026.1.1.1`); the ticket then advances to **Validating**, where validation occurs on `main`.
   :::
+
 - **Validating**: Assigned to a stakeholder to validate against the ticket branch, or against `main` if the `Validating-MAIN` label is set. On acceptance, moves to **Pending Release**; if issues are found, returns to **Implementing** and may cycle through **Verifying** and **Validating** again.
+
+  :::{note}
+  - **Independent validation**: For code changes directly contributed by a scientist, the validator must be someone other than the original contributor and should be selected from the stakeholder group to ensure independent validation.
+  :::
+
 - **Pending Release**: Implementation complete; branch ready to merge into `main` pending release. If unexpected issues arise after merging, the ticket can return to **Implementing**.
 - **Closed / Released**: Set in bulk via the Jira bulk change tool once a software version is officially released.
 

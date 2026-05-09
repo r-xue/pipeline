@@ -95,10 +95,11 @@ During the translation and adaptation period, both developers and prototype cont
 
 Guidelines for the `pipeline.extern` namespace:
 
-- In `main` and `release` branches, `pipeline.extern` should contain only self-contained, dropped-in modules or classes that have no imports from within the pipeline (i.e., no `from pipeline.abc import xyz` statements) and can function as standalone tools outside the pipeline codebase in the long term. Current examples: `almarenorm.py`, `almarenorm_2023.py`, `XmlObjectifier.py`, and `findContinuum.py`.
+- In `main` and `release` branches, ideally, `pipeline.extern` should contain only self-contained, dropped-in modules or classes that have no imports from within the pipeline (i.e., no `from pipeline.abc import xyz` statements) and can function as standalone tools outside the pipeline codebase. **A dual-use capability — supporting both standalone use outside the CASA-Pipeline setup and use as a pipeline heuristics module — is a prerequisite for long-term residency in `pipeline.extern`.** If a module does not serve both roles, `pipeline.extern` is not its appropriate long-term namespace. Current examples meeting this criterion: `almarenorm.py`, `almarenorm_2023.py`, `XmlObjectifier.py`, and `findContinuum.py`.
 
-- During the adaptation-in-progress period, code that is still largely in its original form may also be kept in `pipeline.extern`. This has practical benefits:
-  - Original contributors can navigate the self-contained code in a simple flat structure, which is useful while heuristics design is still being transferred.
+- During the adaptation-in-progress period, code that is still largely in its original form may be kept in `pipeline.extern` **for the short term (typically one development cycle)**. This has practical benefits:
+  - Original contributors can navigate the semi-self-contained codebase in a simple flat structure, which is useful while heuristics design is still being transferred.
   - Most modules in `pipeline.extern` are not auto-imported (they are not listed in `__init__.py`), so they can be debugged in a semi-isolated environment — a crash only occurs when the module is explicitly imported. In an iPython or CASA interactive session, `%autoreload 2` can be used to reload the module quickly during active development.
+  - **Once the porting phase is complete, the code should migrate to the appropriate pipeline namespace (e.g., `pipeline/h*/heuristics/`) or another suitable location.**
 
 - In development or temporary demo/testing branches, the above constraints do not apply. `pipeline.extern` can serve as a convenient staging area while developers decide how to dissolve or integrate prototype code blocks into the pipeline codebase.
