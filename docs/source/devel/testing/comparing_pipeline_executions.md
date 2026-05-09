@@ -66,31 +66,7 @@ or if you are using recipereducer,
 pipeline.recipereducer.reduce(vis=['uid___A002_X30a93d_X43e'], loglevel='trace')
 ```
 
-#### Restricting log output
-
-Lowering the log level to TRACE will log all tool calls — including tools such
-as CASA quanta and measures. Records from these tools may be considered noise;
-you may prefer to leave the log level at DEBUG and selectively enable output
-for certain tools by editing `pipeline/infrastructure/casa_tools.py`. For
-example, to enable logging of calls to the imager tool alone, edit `casa_tools.py`
-and change the private class definition from:
-
-```python
-_logging_imager_cls = create_logging_class(casatools.imager,
-                                           level=logging.INFO, to_log=(...))
-```
-
-to log all method calls at DEBUG level:
-
-```python
-_logging_imager_cls = create_logging_class(casatools.imager, level=logging.DEBUG)
-```
-
-To omit log records entirely for a tool, assign the unwrapped CASA tool class directly:
-
-```python
-imager = casatools.imager()
-```
+To restrict log output to specific tools, see {doc}`/devel/reference/logging`.
 
 ## Example
 

@@ -44,3 +44,29 @@ to `result.logrecords` as well. Since these are still messages that occur
 during weblog generation, added to `result.logrecords`, these messages will only
 show up as notifications in the weblog (banner at top of page), but not in the
 task-specific `casapy.log`.
+
+## Restricting log output per tool
+
+Lowering the log level to TRACE will log all tool calls — including tools such
+as CASA quanta and measures. Records from these tools may be considered noise;
+you may prefer to leave the log level at DEBUG and selectively enable output
+for certain tools by editing `pipeline/infrastructure/casa_tools.py`. For
+example, to enable logging of calls to the imager tool alone, edit `casa_tools.py`
+and change the private class definition from:
+
+```python
+_logging_imager_cls = create_logging_class(casatools.imager,
+                                           level=logging.INFO, to_log=(...))
+```
+
+to log all method calls at DEBUG level:
+
+```python
+_logging_imager_cls = create_logging_class(casatools.imager, level=logging.DEBUG)
+```
+
+To omit log records entirely for a tool, assign the unwrapped CASA tool class directly:
+
+```python
+imager = casatools.imager()
+```
