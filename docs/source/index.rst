@@ -33,10 +33,4 @@
    devel/reference/index
    devel/misc/index
 
-.. toctree::
-   :hidden:
-   :maxdepth: 1
-   :caption: Misc.
 
-   testing_docs/index
-   
