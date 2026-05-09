@@ -2,11 +2,27 @@
 
 The pipeline has three test categories that differ in scope, speed, and data requirements.
 
-| Category | Location | Speed | Purpose |
-|---|---|---|---|
-| Unit | `pipeline/` (co-located with source) | Fast (ms) | Validate individual functions and classes |
-| Component | `tests/component/` | Medium | Exercise task sequences in isolation |
-| Regression | `tests/regression/fast/` and `slow/` | Slow | Validate complete pipeline workflows against reference output |
+:::{list-table}
+:header-rows: 1
+:widths: auto
+
+* - Category
+  - Location
+  - Speed
+  - Purpose
+* - Unit
+  - `pipeline/` (co-located with source)
+  - Fast (ms)
+  - Validate individual functions and classes
+* - Component
+  - `tests/component/`
+  - Medium
+  - Exercise task sequences in isolation
+* - Regression
+  - `tests/regression/fast/` and `slow/`
+  - Slow
+  - Validate complete pipeline workflows against reference output
+:::
 
 ## Repository layout
 

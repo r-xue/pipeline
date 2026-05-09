@@ -66,13 +66,23 @@ PYTHONNOUSERSITE=1 ${casa_dir}/bin/python3 -m pytest -v pipeline/infrastructure/
 
 Standard pytest flags that are handy for day-to-day unit test runs:
 
-| Option | Effect |
-|--------|--------|
-| `-x` | Stop after the first failure |
-| `--tb=short` | Compact traceback |
-| `--tb=line` | One-line traceback |
-| `--pdb` | Drop into the Python debugger on failure |
-| `--maxfail=N` | Stop after N failures |
+:::{list-table}
+:header-rows: 1
+:widths: auto
+
+* - Option
+  - Effect
+* - `-x`
+  - Stop after the first failure
+* - `--tb=short`
+  - Compact traceback
+* - `--tb=line`
+  - One-line traceback
+* - `--pdb`
+  - Drop into the Python debugger on failure
+* - `--maxfail=N`
+  - Stop after N failures
+:::
 
 Example — fail-fast with a compact traceback:
 

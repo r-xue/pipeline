@@ -3,18 +3,12 @@
 The pipeline uses the `PipelineTester` framework (`tests/testing_utils.py`) for both
 component and regression tests.
 
-## Test types
-
-### Component tests
-
 Component tests validate individual pipeline tasks or small task sequences in isolation.
 They focus on specific functionality and run faster than full regression tests.
 
 - Located in `tests/component/`
 - Execute specific tasks with controlled inputs
 - Test edge cases without running the full pipeline recipe
-
-### Regression tests
 
 Regression tests validate complete pipeline recipes or PPR (Pipeline Processing Request)
 executions end-to-end, comparing comprehensive output metrics against versioned reference
@@ -54,6 +48,37 @@ Before running locally, configure CASA to find your test data in `~/.casa/config
 
 ```python
 datapath = ['/path/to/pipeline-testdata']
+```
+
+### Using pixi tasks
+
+The recommended way to run tests. Pixi tasks set the necessary environment variables
+(`OMP_NUM_THREADS=1`, `OPENBLAS_NUM_THREADS=1`) and paths automatically:
+
+```console
+# unit tests with coverage report
+pixi run test-unit
+
+# fast regression tests (xdist n=12, non-mpi tests only, with coverage)
+pixi run test-regression
+
+# single small ALMA-IF fast regression test (quick smoke test)
+pixi run test-pltest1
+```
+
+By default pixi tasks run from the project root. To control where CASA logs and output
+land, invoke pytest directly with `pixi run python`:
+
+```console
+cd /my/workdir
+pixi run python -m pytest -n 12 --dist worksteal \
+    -m "not mpi" <pipeline_dir>/tests/regression/fast/
+```
+
+From outside the source tree, use `--manifest-path`:
+
+```console
+pixi run --manifest-path /path/to/pipeline/pyproject.toml test-regression
 ```
 
 ### Component tests
@@ -115,7 +140,101 @@ xvfb-run -d ${casa_dir}/bin/casa --nogui --nologger --agg -c \
      '-k', 'mg2_20170525142607_180419', '<pipeline_dir>/tests/regression'])"
 ```
 
-### Coverage
+::::{note}
+**Choosing `-n` for xdist.** Benchmark runs of the full fast regression suite (18 tests,
+24 CPUs, `--dist worksteal`):
+
+:::{list-table}
+:header-rows: 1
+:widths: auto
+
+* - Workers (`-n`)
+  - MaxRSS
+  - Elapsed
+* - 6
+  - 157 GB
+  - 14:48 h
+* - 12
+  - 161 GB
+  - 08:33 h
+* - 18
+  - 163 GB
+  - 08:24 h
+:::
+
+**Recommended: `-n 12`.** Going from 6 to 12 cuts elapsed time by ~42% with negligible
+extra memory. Beyond 12, gains are less than 2% — the `worksteal` scheduler already
+balances load effectively at that point.
+::::
+
+::::{note}
+**Per-test timing reference** (xdist n=12, fast regression suite, 2026-04-22):
+
+:::{list-table}
+:header-rows: 1
+:widths: auto
+
+* - Test (abbreviated)
+  - Subsystem
+  - Elapsed
+* - `test_2023_1_00228_S…calimage_diffgain`
+  - alma_if
+  - 7:48 h
+* - `test_2022_1_00207_S…PPR`
+  - alma_if
+  - 5:58 h
+* - `test_uid___A002_X85c183…hsd_calimage`
+  - alma_sd
+  - 3:30 h
+* - `test_13A_537…cont_cube_selfcal`
+  - vla
+  - 3:06 h
+* - `test_E2E6_1_00010_S…hifa_image`
+  - alma_if
+  - 2:42 h
+* - `test_mg2_20170525…hsdn_calimage`
+  - nobeyama_sd
+  - 1:48 h
+* - `test_uid___A002_Xee1eb6…calsurvey`
+  - alma_if
+  - 1:41 h
+* - `test_uid___A002_Xc845c0…cycle5_restore`
+  - alma_if
+  - 1:09 h
+* - `test_uid___A002_Xef72bb…renorm_restore`
+  - alma_if
+  - 0:55 h
+* - `test_13A_537…calibration__PPR`
+  - vla
+  - 0:44 h
+* - `test_csv_3899_eb2_small…hifa_calimage`
+  - alma_if
+  - 0:43 h
+* - `test_13A_537…procedure_hifv`
+  - vla
+  - 0:43 h
+* - `test_mg2_20170525…PPR`
+  - nobeyama_sd
+  - 0:31 h
+* - `test_uid___A002_Xc46ab2…selfcal_restore`
+  - alma_if
+  - 0:17 h
+* - `test_uid___A002_X85c183…PPR`
+  - alma_sd
+  - 0:16 h
+* - `test_uid___A002_Xc46ab2_repSPW…PPR`
+  - alma_if
+  - 0:11 h
+* - `test_TSKY0001…vlass_quicklook`
+  - vlass
+  - 0:05 h
+* - `test_13A_537…restore__PPR`
+  - vla
+  - 0:02 h
+:::
+::::
+
+#### Coverage
 
 For a single regression test, using CASA's Python directly (skips the casashell layer):
 
@@ -136,20 +255,104 @@ coverage combine --keep $(find ./* -name ".coverage*")
 coverage html
 ```
 
-### Running in mpicasa
+#### Running mpi tests
 
-Five-process example (1 client + 4 workers):
+The `mpi` marker tags tests that are recommended for an MPI-enabled CASA session.
+There is no auto-skip logic — control execution explicitly with `-m` expressions.
+
+**Serial session: exclude mpi tests** (recommended default for regular runs):
+
+```console
+PYTHONNOUSERSITE=1 ${casa_dir}/bin/python3 -m pytest -m "not mpi" \
+    tests/regression/fast/
+```
+
+**mpicasa session: run mpi-marked tests** (5 processes: 1 client + 4 workers):
 
 ```console
 PYTHONNOUSERSITE=1 xvfb-run -d ${casa_dir}/bin/mpicasa \
     -display-allocation -display-map --report-bindings -oversubscribe -n 5 \
     ${casa_dir}/bin/casa --cachedir ./rcdir --configfile ./rcdir/config.py \
     --startupfile ./rcdir/startup.py --nologger --log2term --nogui --agg -c \
-    "import pytest; pytest.main(['--junitxml=./regression.xml', \
-     '<pipeline_dir>/tests/regression/fast/alma_if_fast_test.py::test_uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small__PPR__regression'])"
+    "import pytest; pytest.main(['-m', 'mpi', '--junitxml=./regression.xml', \
+     '<pipeline_dir>/tests/regression/fast/'])"
 ```
 
-### Compare-only mode
+Combine with other markers:
+
+```console
+# ALMA fast tests, mpi only, under mpicasa
+mpicasa -n 5 casa --nogui --log2term \
+    -c "import pytest; pytest.main(['-m', 'alma and mpi', 'tests/'])"
+
+# All fast tests, skip mpi, serial session
+PYTHONNOUSERSITE=1 ${casa_dir}/bin/python3 -m pytest \
+    -m "fast and not mpi" tests/regression/fast/
+```
+
+Quick reference:
+
+:::{list-table}
+:header-rows: 1
+:widths: auto
+
+* - Session
+  - Goal
+  - `-m` expression
+* - serial
+  - skip mpi tests
+  - `not mpi`
+* - serial
+  - force-run mpi tests *(expect failures)*
+  - `mpi`
+* - mpicasa
+  - mpi tests only
+  - `mpi`
+* - mpicasa
+  - non-mpi tests only
+  - `not mpi`
+:::
+
+::::{warning}
+**Do not combine `mpicasa` with `pytest -n N` (xdist).** They are incompatible:
+
+- xdist spawns independent subprocesses via Python's `multiprocessing`. These are not MPI
+  ranks — inside each worker, `MPIEnvironment.is_mpi_enabled` is `False`, so MPI code paths
+  silently fall back to serial behaviour.
+- MPI collective operations (barriers, broadcasts, reduces) require all ranks to participate
+  together. With xdist running independent tests concurrently, ranks will be in different
+  pipeline tasks at different times and will **deadlock**.
+
+:::{list-table}
+:header-rows: 1
+:widths: auto
+
+* - Tool
+  - Parallelism unit
+  - Use for
+* - `mpicasa -n N`
+  - MPI ranks within one pipeline run
+  - parallelize work *inside* a single test
+* - `pytest -n N` (xdist)
+  - independent test worker processes
+  - run *multiple tests* concurrently
+:::
+
+Safe patterns:
+```console
+# MPI-parallelized pipeline, one test at a time (correct)
+mpicasa -n 8 casa --nogui --log2term \
+    -c "import pytest; pytest.main(['-m', 'mpi', 'tests/regression/fast/'])"
+
+# Multiple serial tests in parallel (correct)
+pytest -n 12 -m "not mpi" tests/regression/fast/
+
+# DO NOT DO THIS — deadlock / wrong results
+# mpicasa -n 8 casa -c "import pytest; pytest.main(['-n', '4', 'tests/regression/fast/'])"
+```
+::::
+
+#### Compare-only mode
 
 Re-evaluate results against reference values without re-running the pipeline. Useful for
 tweaking tolerances, updating expected results files, or debugging comparison logic:
