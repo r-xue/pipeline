@@ -22,6 +22,7 @@ Common locations include:
 - `pipeline/hifa/tasks/` — ALMA interferometry tasks (applycal, flagging, importdata)
 - `pipeline/hifv/` — VLA tasks and heuristics
 - `pipeline/hsd/tasks/` — single-dish baseline, atmcor, common utilities
+- `pipeline/hsd/heuristics/` — grouping, pointing outlier detection, raster scan patterns
 - `pipeline/h/` — common tasks and heuristics (linefinder, atmutil, importdata)
 - `pipeline/qa/` — QA score calculations
 - `pipeline/recipes/` — recipe conversion and VLA recipe tests
