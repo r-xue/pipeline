@@ -22,11 +22,18 @@ class WvrgcalflagQAHandler(pqa.QAPlugin):
         ms_name = os.path.basename(result.inputs['vis'])
 
         # If too few unflagged antennas were left over after flagging,
-        # then return a fixed low score. PIPE-1868 change from 0.1 to 0.34
-        # and add ms name to the longmsg string
+        # then return a fixed low score. PIPE-1868 change score from 0.1 to 0.34
+        # and add ms name to the longmsg string. If the Bandpass phase RMS
+        # without-WVR is good (<1 radian) elevate score to 0.67, with updated
+        # message according to if BP and PH phase RMS are good
         if result.too_few_wvr_post_flagging:
+            score_too_few = 0.67 if result.flaggerresult.dataresult.BPgood else 0.34
+            longmsg_too_few = 'Not enough unflagged WVR available for %s. %s' % \
+                (ms_name,'Bandpass '+(str('and Phase ') if result.flaggerresult.dataresult.PHgood else '')\
+                  +'calibrator atmospheric phase stability appears to be good'\
+                 if result.flaggerresult.dataresult.BPgood else '')
             score_object = pqa.QAScore(
-                0.34, longmsg='Not enough unflagged WVR available for %s' % (ms_name),
+                score_too_few, longmsg=longmsg_too_few,
                 shortmsg='Not enough unflagged WVR', vis=ms_name)
             new_origin = pqa.QAOrigin(
                 metric_name='PhaseRmsRatio',
