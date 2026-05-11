@@ -16,6 +16,7 @@ build:
     - texlive-fonts-recommended
   # Build commands for HTML and PDF
   commands:
+    - git fetch --unshallow
     - git fetch --tags
     - curl -fsSL https://pixi.sh/install.sh | bash
     - $HOME/.pixi/bin/pixi install -e docs
