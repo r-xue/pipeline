@@ -3071,7 +3071,7 @@ def channel_ranges_for_image(edge: tuple[int, int], nchan: int, sideband: int, r
 @log_qa
 def score_sd_line_detection(
     reduction_group: dict,
-    result: 'SDBaselineResults'
+    result: SDBaselineResults
 ) -> list[pqa.QAScore]:
     """Compute QA score based on detected lines and deviation/ATM mask overlaps.
 
