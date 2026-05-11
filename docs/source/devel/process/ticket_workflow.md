@@ -1,8 +1,8 @@
 # Ticket Workflow
 
-## PIPE: Feature/BugFix Ticket
+## [PIPE](https://open-jira.nrao.edu/projects/PIPE): Feature / Bug / Epic Ticket
 
-Applies to PIPE feature, bug, and epic tickets. Engineering and Research Request tickets follow similar but simplified workflows — see below.
+Applies to the following PIPE issue types: **Feature**, **Bug**, **Epic**, and **Sub-task**. Engineering and Research Request tickets follow similar but simplified workflows — see below.
 
 ### States
 
@@ -83,9 +83,9 @@ flowchart TD
     class START gray
 ```
 
-## PIPE: Engineering Ticket
+## [PIPE](https://open-jira.nrao.edu/projects/PIPE): Engineering Task Ticket
 
-Covers internal infrastructure work — build system changes, CI/CD improvements, tooling, and dependency updates — with no direct scientific impact and no stakeholder validation. The **Validating** state is omitted. Minor non-production changes (documentation fixes, CI/CD updates) may be merged without formal review after contacting the technical lead for a repository permission override.
+Applies to the **Engineering Task** issue type. Covers internal infrastructure work — build system changes, CI/CD improvements, tooling, and dependency updates — with no direct scientific impact and no stakeholder validation. The **Validating** state is omitted. Minor non-production changes (documentation fixes, CI/CD updates) may be merged without formal review after contacting the technical lead for a repository permission override.
 
 ```mermaid
 flowchart TD
@@ -132,9 +132,9 @@ flowchart TD
 
 ---
 
-## PIPE: Research Request Ticket
+## [PIPE](https://open-jira.nrao.edu/projects/PIPE): Research Request Ticket
 
-Tracks investigative or exploratory work — data analysis, feasibility studies, or algorithm evaluations. No **Verifying** state; **Implementing** and **Pending Release** are bidirectional to support iterative research cycles.
+Applies to the **Research Request** issue type. Tracks investigative or exploratory work — data analysis, feasibility studies, or algorithm evaluations. No **Verifying** state; **Implementing** and **Pending Release** are bidirectional to support iterative research cycles.
 
 ```mermaid
 flowchart TD
@@ -175,9 +175,9 @@ flowchart TD
 
 ---
 
-## PIPEREQ: Standard Ticket
+## [PIPEREQ](https://open-jira.nrao.edu/projects/PIPEREQ): Epic / Improvement / Research Request Ticket
 
-PIPEREQ tickets follow a separate, less formalized workflow.
+Applies to the following PIPEREQ issue types: **Epic**, **Improvement**, and **Research Request**. These tickets follow a separate, less formalized workflow.
 
 ```mermaid
 flowchart TD
