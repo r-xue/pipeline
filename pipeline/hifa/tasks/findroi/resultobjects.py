@@ -1,0 +1,40 @@
+from __future__ import annotations
+
+from typing import Any
+
+import pipeline.infrastructure.basetask as basetask
+
+
+class FindROIResult(basetask.Results):
+    """Lightweight pipeline result for the hifa_findroi stage."""
+
+    def __init__(
+        self,
+        stage_product_path: str | None = None,
+        artifacts: dict[str, Any] | None = None,
+        summary: dict[str, Any] | None = None,
+        errors: list[str] | None = None,
+    ) -> None:
+        super().__init__()
+        self.stage_product_path = stage_product_path
+        self.artifacts = artifacts or {}
+        self.summary = summary or {}
+        self.errors = errors or []
+
+    def merge_with_context(self, context: Any) -> None:
+        """Keep hifa_findroi read-only for downstream stages in this v1 port."""
+        return None
+
+    def __repr__(self) -> str:
+        n_sources = self.summary.get('n_sources', 0)
+        n_spws = self.summary.get('n_spws', 0)
+        n_source_spws = self.summary.get('n_source_spws', 0)
+        status = 'error' if self.errors else 'ok'
+        return (
+            'FindROIResult:\n'
+            f'\tstatus={status}\n'
+            f'\tsources={n_sources}\n'
+            f'\tspws={n_spws}\n'
+            f'\tsource_spws={n_source_spws}\n'
+            f'\tstage_product={self.stage_product_path}'
+        )
