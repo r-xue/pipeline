@@ -3,8 +3,9 @@ The imaging module contains utility functions used by the imaging tasks.
 
 TODO These utility functions should migrate to hif.tasks.common
 """
-import os
 from __future__ import annotations
+
+import os
 
 import re
 from typing import TYPE_CHECKING
