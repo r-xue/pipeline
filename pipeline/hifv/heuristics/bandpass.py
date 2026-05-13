@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+import math
 import time
 
 import pipeline.infrastructure.utils as utils
@@ -230,6 +231,13 @@ def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypec
         if nchan < 16:
             continue
         Nbin = nchan / 16 if snr <= 0 else min((50.0 / snr) ** 2, nchan / 16)
+        start = int(math.ceil(Nbin))
+
+        for i in range(start, nchan+1):
+            if nchan % i == 0:
+                Nbin = i
+                break
+
         solint_smooth = f"inf,{int(Nbin)}ch"
 
         LOG.info(f"SPW {bad_spw}: median S/N={snr:.1f}, rerunning with solint='{solint_smooth}'")
@@ -242,7 +250,6 @@ def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypec
 
         job = casa_tasks.bandpass(**bandpass_task_args)
         executor.execute(job)
-
     return True
 
 
