@@ -2,7 +2,7 @@
 
 ## Overview
 
-The pipeline context is the central state object used for a pipeline execution. It carries observation data, calibration state, imaging state, execution history and state, project metadata, and serves as the primary communication channel between pipeline stages.
+The pipeline `Context` is the central state object used for a pipeline execution. It carries observation data, calibration state, imaging state, execution history and state, project metadata, and serves as the primary communication channel between pipeline stages.
 
 This document catalogues the use cases of the current pipeline context as determined by examination of the codebase. The goal is to describe the current pipeline context implementation and document observed limitations.
 
@@ -391,8 +391,6 @@ Pickle works for short-lived resume/debug use cases, but it is fragile across ve
 ### Two orchestration planes converge on the same context
 
 Task-driven (interactive CLI) and command-list-driven (PPR / XML procedures) execution both produce and consume the same context. They differ in how inputs are marshalled, how paths are selected, and how resume is initiated, but the persisted context is the same object.
-
-### Concrete limitations discovered
 
 ### Asynchronous execution
 
