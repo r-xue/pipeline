@@ -156,10 +156,10 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
 
         if restored.find('.image.pbcor') != -1:
             nonpbcor_imagename = restored.replace('.image.pbcor', '.image%s' % extension)
-            imagetypes = ["nonpbcor", "pbcor"]
+            imagenames = {'nonpbcor': nonpbcor_imagename, 'pbcor': pbcor_imagename}
         else:
             nonpbcor_imagename = pbcor_imagename
-            imagetypes = ["nonpbcor"]
+            imagenames = {'nonpbcor': nonpbcor_imagename}
 
         # get min and max of the cleaned result
         if pb is not None and os.path.exists(pb+extension):
@@ -174,9 +174,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
             have_mask = False
             statsmask = ''
 
-        for imagetype in imagetypes:
-            imagename = eval(f'{imagetype}_imagename') 
-
+        for imagetype, imagename in imagenames.items():
             with casa_tools.ImageReader(imagename) as image:
                 if 'TARGET' in image.miscinfo().get('intent', None):
                     image_stats = image.statistics(mask=statsmask, stretch=True)
