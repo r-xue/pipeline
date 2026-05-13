@@ -936,8 +936,10 @@ class ExportData(basetask.StandardTaskTemplate):
 
     def _save_final_flagversion(self, vis, flag_version_name):
         """Save the final flags to a final flag version."""
-        flag_version_dir = vis + '.flagversions/flags.' + flag_version_name
-        if os.path.exists(flag_version_dir):
+        task = casa_tasks.flagmanager(vis=vis, mode='list')
+        flaglist = self._executor.execute(task)
+
+        if any(v['name'] == flag_version_name for v in flaglist.values()):
             tt = int(time.time())
             tmpname = flag_version_name + '.old.' + str(tt)
 
