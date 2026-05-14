@@ -29,7 +29,7 @@ LOG = logging.get_logger(__name__)
 # minimum allowed CASA revision. Set to 0 or None to disable
 MIN_CASA_REVISION = [6, 7, 4, 2]
 # maximum allowed CASA revision. Set to 0 or None to disable
-MAX_CASA_REVISION = [6, 7, 5, 0]
+MAX_CASA_REVISION = None
 
 # Define the thread-safe context variable here for the current task executaton state
 current_task_name = contextvars.ContextVar('current_task_name', default=None)
