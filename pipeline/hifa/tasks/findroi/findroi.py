@@ -4760,3 +4760,6 @@ class FindROI(basetask.StandardTaskTemplate):
             summary=summary,
             errors=errors,
         )
+
+    def analyse(self, result):
+        return result
