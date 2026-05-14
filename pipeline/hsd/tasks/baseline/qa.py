@@ -28,12 +28,12 @@ class SDBaselineQAHandler(pqa.QAPlugin):
         """
         register the parameters for longmsg formatter and aggregator
         """
-        # register the properties
+        # register the properties for 'score_sd_line_detection'
         metric_name = 'score_sd_line_detection'
         qautils.registry.register_longmsg_keys(metric_name, ['vis', 'field', 'spw', 'ant', 'pol'])
         qautils.registry.register_keys_to_aggregate(metric_name, ['vis', 'field', 'spw', 'ant', 'pol'])
 
-        # register the properties (this one should show Spw as Virtual Spw)
+        # register the properties for 'score_sd_baseline_quality'
         metric_name = 'score_sd_baseline_quality'
         qautils.registry.register_keys_to_aggregate(metric_name,
                                                      ['vis', 'field', 'spw', 'ant', 'pol'])

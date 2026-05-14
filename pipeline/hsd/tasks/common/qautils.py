@@ -26,7 +26,7 @@ class QAScorePropertiesRegistry:
         self.keys_dict = {}
         self.to_aggregate_dict = {}
 
-    def register_longmsg_format(self, metric_name: str, template):
+    def register_longmsg_format(self, metric_name: str, template: str):
         """
         Register longmsg_format with metric_name as a key
 
