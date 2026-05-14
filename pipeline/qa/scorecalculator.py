@@ -4095,7 +4095,7 @@ def score_sdimage_sensitivity_ratio(result: SDImagingResultItem) -> pqa.QAScore:
 
     Requirements (PIPE-2958):
         - QA score should be
-          - 1.0  if 0.9 < observed sensitivity / theoretical sensitivity < 1.6
+          - 1.0  if X1 < observed sensitivity / theoretical sensitivity < X2
           - 0.5  for others
 
     Args:
@@ -4108,6 +4108,9 @@ def score_sdimage_sensitivity_ratio(result: SDImagingResultItem) -> pqa.QAScore:
         ValueError: when the unit of observed and theoretical sensitivies do not match
                     when the theoretical sensitivity is not a positive
     """
+    # threshold values
+    X1, X2 = 0.9, 1.6
+
     imageitem = result.outcome['image']
     field = imageitem.sourcename
     spw = ','.join(map(str, np.unique(imageitem.spwlist)))
@@ -4115,9 +4118,6 @@ def score_sdimage_sensitivity_ratio(result: SDImagingResultItem) -> pqa.QAScore:
     # fetch sensitivities
     observed    = result.sensitivity_info.sensitivity['observed_sensitivity']
     theoretical = result.theoretical_rms['theoretical_sensitivity']
-
-    # theshold values
-    x1, x2 = 0.9, 1.6
 
     if theoretical['unit'] != observed['unit']:
         msg = (f"Field {field} Spw {spw}: "
@@ -4130,7 +4130,7 @@ def score_sdimage_sensitivity_ratio(result: SDImagingResultItem) -> pqa.QAScore:
         raise ValueError( msg )
 
     x = observed['value'] / theoretical['value']
-    if x1 < x and x < x2:
+    if X1 < x and x < X2:
         score = 1.0
         smsg = 'Observed sensitivity agrees with Theoretical sensitivity.'
         lmsg = f'Field {field} Spw {spw}: {smsg}'
