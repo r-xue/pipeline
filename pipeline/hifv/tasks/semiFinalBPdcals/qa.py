@@ -21,7 +21,8 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
         # 5%-60% of data flagged  --> 1 to 0
         # > 60%  of data flagged  --> 0
 
-        m = context.observing_run.get_ms(result.inputs['vis'])
+        vis = result.inputs['vis']
+        m = context.observing_run.get_ms(vis)
 
         scores = []
 
@@ -50,6 +51,12 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
             LOG.warning('Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'
                         ''.format(antenna, ','.join(uniquespwlist)))
 
+        # PIPE-2512: add QA score for spw solint
+        for bandname, spw_solint in result.spw_solint.items():
+            score3 = qacalc.score_spw_solint(vis, bandname, spw_solint)
+            if score3:
+                scores.append(score3)
+
         result.qa.pool.extend(scores)
 
     def _checkKandBsolution(self, table, m):
@@ -67,8 +74,6 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
                 spwcollect = sorted(set(spwcollect))
                 spwcollect = [str(spw) for spw in spwcollect]
                 self.antspw[antenna_names[antenna]].extend(spwcollect)
-                # LOG.warning('Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'
-                #          ''.format(antenna_names[antenna], ','.join(spwcollect)))
 
         return
 

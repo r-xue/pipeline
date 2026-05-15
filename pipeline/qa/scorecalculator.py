@@ -112,7 +112,8 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_fluxboot',
            'score_testBPdcals_dts_ants',
            'score_testBPdcals_refant',
-           'score_testBPdcals_delay']
+           'score_testBPdcals_delay',
+           'score_spw_solint']
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -5400,3 +5401,41 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
                 qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin, applies_to=applies_to))
 
     return qascores
+
+# PIPE-2512: adding QA score for solint of spws
+@log_qa
+def score_spw_solint(vis: str, band: str, spw_solint: dict)-> pqa.QAScore | None:
+    """Evaluate QA score based on the solint of each spectral window"""
+
+    qascore = None
+
+    pairs = [
+        f"[spw={spw}, solint={solint}ch]"
+        for spw, solint in spw_solint.items()
+        if solint > 1
+    ]
+
+    if pairs:
+        score = rendererutils.SCORE_THRESHOLD_ERROR
+        msg = f"Using per-SPW solints: {', '.join(pairs)} for {band} band"
+
+        origin = pqa.QAOrigin(
+            metric_name='score_spw_solint',
+            metric_score=score,
+            metric_units=''
+        )
+
+        applies_to = pqa.TargetDataSelection(
+            vis={vis},
+            spw=set(spw_solint.keys())
+        )
+
+        qascore = pqa.QAScore(
+            score,
+            longmsg=msg,
+            shortmsg=msg,
+            origin=origin,
+            applies_to=applies_to
+        )
+
+    return qascore
