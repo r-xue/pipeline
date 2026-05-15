@@ -1,10 +1,15 @@
 <%!
 import pipeline.infrastructure.renderer.htmlrenderer as hr
 import pipeline.domain.measures as measures
+from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import utils
 %>
 <html>
 <body>
+<%
+cqa = casa_tools.quanta
+c_mps = float(cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0])
+%>
 
 <div class="page-header">
 	<h1>Spectral Setup Details<button class="btn btn-default pull-right" onclick="javascript:window.history.back();">Back</button></h1>
@@ -104,10 +109,10 @@ from pipeline.infrastructure import utils
 						% endif
 					  % endif
 					  <td>${spw.channels[0].getWidth()}</td>
-					  <td>${str(measures.LinearVelocity(299792458 * spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
+					  <td>${str(measures.LinearVelocity(c_mps * spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
 					  % if spw.resolution is not None:
 					  <td>${spw.resolution}</td>
-					  <td>${str(measures.LinearVelocity(299792458 * spw.resolution.to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
+					  <td>${str(measures.LinearVelocity(c_mps * spw.resolution.to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
 					  % else:
 					  <td>N/A</td>
 					  <td>N/A</td>
@@ -246,10 +251,10 @@ from pipeline.infrastructure import utils
 						%endif
 
 						<td>${spw.channels[0].getWidth()}</td>
-						<td>${str(measures.LinearVelocity(299792458 * spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
+						<td>${str(measures.LinearVelocity(c_mps * spw.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
 						% if spw.resolution is not None:
 						<td>${spw.resolution}</td>
-						<td>${str(measures.LinearVelocity(299792458 * spw.resolution.to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
+						<td>${str(measures.LinearVelocity(c_mps * spw.resolution.to_units(measures.FrequencyUnits.HERTZ) / spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ), measures.LinearVelocityUnits.METRES_PER_SECOND))}</td>
 						% else:
 						<td>N/A</td>
 						<td>N/A</td>
