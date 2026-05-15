@@ -31,9 +31,9 @@ from pipeline.infrastructure import utils
 			            <th scope="col" rowspan="2">Transitions</th>
 						<%
 						# Check to see whether to display the "Online Spec. Avg." column or not to determine the colspan
-						channels_colspan = '3'
+						channels_colspan = '5'
 						if show_online_spec_avg_col.science_windows:
-							channels_colspan = '4'
+							channels_colspan = '6'
 						%>
 			            <th scope="col" colspan=${channels_colspan}>Channels ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
 			            <th scope="col" rowspan="2">Correlator Axis</th>
@@ -175,9 +175,9 @@ from pipeline.infrastructure import utils
 			            <th scope="col" rowspan="2">Transitions</th>
 						<%
 						# Check to see whether to display the "Online Spec. Avg." column or not to determine the colspan
-						channels_colspan = '3'
+						channels_colspan = '5'
 						if show_online_spec_avg_col.all_windows:
-							channels_colspan = '4'
+							channels_colspan = '6'
 						%>
 			            <th scope="col" colspan=${channels_colspan}>Channels ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
 						<th scope="col" rowspan="2">Correlator Axis</th>
