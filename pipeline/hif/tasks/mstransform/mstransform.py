@@ -43,8 +43,6 @@ class MstransformInputs(vdp.StandardInputs):
         DataType.REGCAL_LINE_SCIENCE: DataType.IM_LINE_SCIENCE,
         DataType.SELFCAL_CONTLINE_SCIENCE: DataType.IM_CONTLINE_SCIENCE,
         DataType.SELFCAL_LINE_SCIENCE: DataType.IM_LINE_SCIENCE,
-        DataType.REGCAL_CONTLINE_SCIENCE: DataType.IM_CONTLINE_SCIENCE,
-        DataType.REGCAL_LINE_SCIENCE: DataType.IM_LINE_SCIENCE,
         None: None
         }
 
