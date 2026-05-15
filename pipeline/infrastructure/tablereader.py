@@ -826,7 +826,7 @@ class SpectralWindowTable:
     def get_resolution_info(ms: MeasurementSet, msmd: Any) -> dict | None:
         """
         Extract per-channel spectral resolution from the SPECTRAL_WINDOW table's
-        RESOLUTION column. Present in ALMA Cycle 3+ measurement sets.
+        RESOLUTION column when present.
 
         The RESOLUTION column contains variable-length arrays (one value per channel),
         so it must be read row-by-row with getcell rather than getcol.
@@ -834,10 +834,8 @@ class SpectralWindowTable:
         :param ms: measurement set to inspect
         :param msmd: msmetadata (casa_tools.MSMDReader) for the measurement set.
         :return: dict mapping SPW index to numpy array of channel resolutions (Hz),
-                 or None if the column is absent or the observatory is not ALMA.
+                 or None if the column is absent.
         """
-        if 'ALMA' not in msmd.observatorynames():
-            return None
         with casa_tools.TableReader(ms.name + '/SPECTRAL_WINDOW') as table:
             if 'RESOLUTION' not in table.colnames():
                 LOG.info(f'RESOLUTION does not exist in the SPECTRAL_WINDOW table of MS {_get_ms_basename(ms)}')
