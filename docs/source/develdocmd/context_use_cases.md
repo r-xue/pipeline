@@ -6,6 +6,8 @@ The pipeline `Context` is the central state object used for a pipeline execution
 
 This document catalogues the use cases of the current pipeline context as determined by examination of the codebase. The goal is to describe the current pipeline context implementation and document observed limitations.
 
+These use cases were produced retrospectively, after the pipeline and its context model had already been developed and iterated on over multiple years. They describe behavior that exists in the current implementation and in established pipeline workflows; they are not original requirements that guided the design before implementation.
+
 ---
 
 ## 1. Context Lifecycle
@@ -92,6 +94,7 @@ For the single-dish pipeline, this use case also includes per-MS `DataTable` pro
 
 **Implementation notes** — project metadata (properties of the observation program such as PI, targeted sensitivities, beam requirements) is set during initialization or import, is not modified after import, and is read many times:
 
+ - The current implementation bundles project metadata (scientific intent and constraints: PI, targeted sensitivities, beam requirements) and workflow/recipe metadata (describe how the data should be processed: recipes, execution instructions, heuristic parameters) in the ProjectStructure class. These have different origins and lifecycles.
 - `context.project_summary = project.ProjectSummary(...)` — set by `executeppr()` / `executevlappr()`
 - `context.project_structure = project.ProjectStructure(...)` — set by PPR executors
 - `context.project_performance_parameters` — performance parameters from the PPR
@@ -114,7 +117,6 @@ For the single-dish pipeline, this use case also includes per-MS `DataTable` pro
 - **Read:** `context.callibrary.active.get_caltable(caltypes=...)` — list active cal tables; `context.callibrary.get_calstate(calto)` — get full application state for a target selection
 - Backed by `CalApplication` → `CalTo` / `CalFrom` objects with interval trees for efficient matching.
  - The callibrary also supports de-registration of trial or reverted calibrations via predicate-based removal.
- - The current implementation bundles project metadata (scientific intent and constraints: PI, targeted sensitivities, beam requirements) and workflow/recipe metadata (describe how the data should be processed: recipes, execution instructions, heuristic parameters) in the ProjectStructure class. These have different origins and lifecycles.
 
 ---
 
@@ -373,142 +375,3 @@ Another is ALMA TP / single-dish state, which is array-specific rather than tele
 | **Actor(s)** | Export tasks |
 | **Summary** | Export tasks (for example `hifa_exportdata`, `hifv_exportdata`, and the `hsdn/tasks/exportdata` implementations) consume `context.sciimlist`, `context.callibrary`, `context.project_summary`, `context.report_dir`, and `context.output_dir` to assemble deliverable bundles. The `pipeline/infrastructure/imagelibrary.py` utilities and export task code are the canonical places where exportable product lists are assembled and serialized. |
 | **Invariant** | The information needed to assemble a deliverable product package is accessible through the processing state. |
-
----
-
-## 3. Architectural Observations
-
-### The context is a "big ball of state", by design
-
-The current approach is extremely flexible for a long-running, stateful CASA session, but there is no explicit schema boundary between persisted state, ephemeral caches, runtime-only services, and large artifacts. Tasks can (and do) add new fields in an ad-hoc way over time.
-
-UC-08 shows the same problem in behavioral form rather than structural form: once the contract for cross-stage state exchange stopped being enforced strictly, some code continued to use dedicated merged context state while other code began reaching into `context.results` directly. That drift increased coupling to task ordering and result-object internals, which is a useful concrete example of how context creep develops in practice.
-
-### Persistence is pickle-based
-
-Pickle works for short-lived resume/debug use cases, but it is fragile across version changes, risky as a long-term archive format, and not friendly to multi-writer or multi-process updates. The codebase mitigates size by proxying stage results to disk, but the context itself remains a potentially large and unstable object graph.
-
-### Two orchestration planes converge on the same context
-
-Task-driven (interactive CLI) and command-list-driven (PPR / XML procedures) execution both produce and consume the same context. They differ in how inputs are marshalled, how paths are selected, and how resume is initiated, but the persisted context is the same object.
-
-### Asynchronous execution
-
-The executor and `StandardTaskTemplate` flow (see `pipeline/infrastructure/basetask.py` and `pipeline/h/cli/utils.py`) run child tasks in-process or by MPI worker snapshots. There is no explicit support in the current codebase for independently scheduled subtasks with safe, later-state merges; the pipeline relies on synchronous execution or a snapshot/accept pattern rather than asynchronous commits.
-
-### Distributed execution without a shared filesystem
-
-The MPI helper flow (`pipeline/infrastructure/mpihelpers.py`) serializes the `Context` and task arguments to local files and assumes a shared filesystem for CASA command logs and artifact paths. This creates coupling to POSIX-shared storage and limits execution on nodes that do not share a common filesystem namespace.
-
-### Provenance and metadata gaps
-
-Per-stage snapshots are stored via `ResultsProxy` pickles, but the repository lacks a consistent, structured capture of software/package versions, exact input hashes, executor/node metadata, and other reproducibility records. The current evidence is dispersed in `pipeline/infrastructure/basetask.py` and the `ResultsProxy` implementation, with no single machine-readable provenance record attached to accepted results.
-
-### Partial re-execution / dependency visibility
-
-There is no first-class dependency graph or deterministic invalidation API in the codebase. Several code paths derive stage ordering or affected downstream stages from `context.results` ordering rather than from explicit declared dependencies, which complicates selective re-execution and deterministic invalidation.
-
-### External integration and language-neutral access
-
-Renderers and external tools currently access artifacts and state via filesystem artifacts and pickled context blobs. The repository does not provide a stable, language-neutral query or event interface for external systems (dashboards, archives, schedulers) to consume processing state without parsing files.
-
-### Streaming / incremental ingest
-
-Import code registers measurement sets and execution blocks atomically using the domain model (`pipeline/domain/observingrun.py` and `h*_importdata` tasks). There are no well-adopted incremental registration APIs in the domain objects for appending new scans or execution blocks to a live session.
-
-### Heterogeneous-dataset matching
-
-The domain mapping utilities (for example `observing_run.virtual2real_spw_id()`) implement a single mapping strategy for SPWs. The codebase does not include a pluggable policy mechanism for alternate matching semantics (frequency overlap, channel ranges, column-layout-aware matching) that different calibration or imaging tasks might require.
-
----
-
-## 4. Context Contract Summary
-
-The following capabilities are essential requirements for the pipeline context, derived from current behavior and internal usage patterns:
-
-**System-level requirements:**
-
-- Run identity: `Context` object, recipe/procedure name, inputs, operator/mode
-- Path layout: working/report/products directories with ability to relocate
-- Dataset inventory: execution blocks / measurement sets with per-MS metadata
-- Stage results timeline: ordered stages, durations, QA outcomes, tracebacks
-- Export products: weblog tar, manifest, AQUA report, scripts
-- Resume: restart from last known good stage (or after a breakpoint)
-
-**Internal usage requirements:**
-
-- Fast MS lookup: random-access by name, filtering by data type, virtual-to-real SPW translation
-- Calibration library: append-oriented, ordered, with transactional multi-entry updates and predicate-based queries
-- Image library: four typed registries (science, calibrator, RMS, sub-product) with add/query semantics
-- Imaging state: typed, versioned configuration for the imaging sub-pipeline
-- QA scoring: read-only context snapshot for parallel-safe QA handler execution
-- Weblog rendering: read-only traversal of full results timeline + MS metadata + project metadata
-- MPI/distributed: efficient context snapshot broadcast + results write-back
-- Cross-stage data flow: explicit named outputs rather than results-list walking
-- Contract enforcement: downstream tasks may depend only on declared published context outputs; `context.results` is execution history, not a general integration interface
-- Project metadata: immutable-after-init sub-record
-- Telescope-specific state: typed, composable extension rather than untyped dict
-
----
-
-## Appendix A. Immutability Assessment of the Current Context
-
-The current pipeline context is best described as **partially immutable at a few important boundaries, but not internally immutable overall**. In other words, the codebase already uses snapshots and copy-based isolation in several places, but the shared top-level `Context` object remains an open, mutable state container.
-
-That distinction matters because it means the current implementation already has some useful immutability patterns worth preserving, while also carrying several risks that come from unconstrained in-place mutation.
-
-### Where immutability is respected today
-
-1. **Child-task execution uses a copied context rather than the live shared context.** In `pipeline/infrastructure/basetask.py`, `StandardTaskTemplate.execute()` replaces `self.inputs` with `utils.pickle_copy(original_inputs)` before `prepare()` / `analyse()` runs, and restores the original inputs in `finally`. This gives subtask execution a temporary workspace: child tasks may mutate that copied context freely, but those mutations do not escape unless a result is explicitly accepted into the parent context. This is the strongest immutability boundary in the current framework.
-
-2. **Accepted stage results are treated as snapshots.** `Results.accept()` writes each accepted top-level result through `ResultsProxy`, which pickles a per-stage snapshot to disk and appends the proxy to `context.results`. The UUID check in `_check_for_remerge()` also prevents the same result from being merged twice. This is not full immutability of the context, but it is an append-only history model for stage outcomes.
-
-3. **Some consumers already defend themselves against accidental aliasing.** A good example is `FindContInputs.target_list` in `pipeline/hif/tasks/findcont/findcont.py`, which deep-copies `context.clean_list_pending` specifically to avoid mutating the context's imaging list while preparing task inputs.
-
-4. **Some domain objects are genuinely immutable after construction.** `pipeline/domain/scan.py` stores `antennas`, `fields`, `intents`, `states`, and `data_descriptions` as `frozenset`s. These are good examples of value-like domain records that are safer to share because callers cannot casually mutate them in place.
-
-5. **Parallel workers operate on snapshots rather than shared live state.** The MPI/distribution flow serializes context state for workers and applies worker-side changes only through the normal result acceptance path. This is a pragmatic form of immutability at the process boundary and is important for correctness.
-
-6. **Project metadata is often used as if it were immutable after initialization.** In practice, `project_summary`, `project_structure`, and `project_performance_parameters` are usually initialized during startup/import and then read throughout the rest of the run. The code treats these records as stable inputs even though that stability is conventional rather than enforced.
-
-### Where immutability is not respected
-
-1. **The top-level `Context` is an open mutable bag of attributes.** `pipeline/infrastructure/launcher.py` initializes many public lists, dicts, and registries directly on the context (`results`, `processing_intents`, `clean_list_pending`, `imaging_parameters`, `selfcal_targets`, image libraries, and more), and other code can assign to them freely. The design intentionally favors convenience over encapsulation.
-
-2. **`merge_with_context()` mutates shared state in place and is not transactional.** Result acceptance calls `self.merge_with_context(context)` directly on the live shared context. If a merge fails part-way through, `accept()` can wrap the failure in `FailedTaskResults`, but it does not roll back partial mutations that may already have been applied. This is one of the clearest places where immutability and atomicity are both weak.
-
-3. **Imaging state is carried as ad-hoc mutable sidecars.** Attributes such as `clean_list_pending`, `clean_list_info`, `imaging_mode`, `imaging_parameters`, `synthesized_beams`, and `size_mitigation_parameters` are updated directly by tasks. For example, `pipeline/hif/tasks/editimlist/resultobjects.py` clears and appends to `context.clean_list_pending`, and `pipeline/hif/tasks/findcont/resultobjects.py` rewrites target dictionaries and then replaces the full list. This works, but it gives callers many opportunities to mutate nested structures accidentally.
-
-4. **The observation registry is mutable and directly exposed.** `pipeline/domain/observingrun.py` updates `measurement_sets`, `virtual_science_spw_ids`, and `virtual_science_spw_names` in place during registration. Callers then read those same live lists and dicts directly through the context. This is reasonable during import, but after import the structure is effectively shared mutable state.
-
-5. **Image registries are mutable and leak their backing collection.** `pipeline/infrastructure/imagelibrary.py` stores images in a mutable list of mutable dictionaries. `get_imlist()` returns the backing list itself, not a copy or read-only view, so any caller can mutate the registry without going through `add_item()` or `delete_item()`.
-
-6. **Even some read-only consumers temporarily mutate the context.** `WebLogGenerator.render()` in `pipeline/infrastructure/renderer/htmlrenderer.py` temporarily replaces `context.results` with fully unpickled results and then restores the proxies in `finally`. The net effect is restored correctly, but it is still a read-path that mutates shared state.
-
-7. **Project metadata is not actually enforced as immutable.** `executeppr.py` and `executevlappr.py` replace the project metadata objects outright, and `Context.set_state()` ultimately uses `setattr()` on those records. The current code relies on discipline rather than on a frozen type or a validated update API.
-
-8. **Execution history is sometimes used as a mutable integration surface rather than as history.** A number of tasks and renderers walk `context.results` directly, and some logic depends on the latest result ordering. That is not an immutability violation by itself, but it does weaken the boundary between append-only execution history and current published state.
-
-### How to improve this, and where mutability is acceptable
-
-The highest-value improvements are the ones that strengthen boundaries without forcing the entire pipeline into a fully immutable style.
-
-1. **Make accepted context updates transactional.** The most important improvement would be to stop merging directly into the live shared context. A result merge should either build a patch first and commit it on success, or merge into a scratch copy and swap it in only after the merge completes. That would eliminate the current "partially mutated context after failure" risk.
-
-2. **Seal or freeze state after its construction phase.** `ObservingRun` is naturally mutable during import, and project metadata is naturally mutable during initialization. After those phases finish, both should ideally become read-only to ordinary task code. A freeze-after-init model would preserve the current workflow while tightening contracts.
-
-3. **Replace ad-hoc mutable dictionaries/lists with typed state records.** Imaging state is the clearest candidate. A typed `ImagingState` object would make it easier to validate updates, replace the whole record intentionally, and document which fields are shared across stages.
-
-4. **Stop exposing backing collections directly.** `ImageLibrary.get_imlist()` should return a copy, tuple, or read-only view. Similar accessor patterns would help for `ObservingRun.measurement_sets` and other registries that are currently exposed as raw mutable containers.
-
-5. **Give read-only consumers a snapshot/view API.** Reporting and statistics code should not need to rewrite `context.results` temporarily. A dedicated snapshot helper or iterator over resolved stage results would preserve current behavior without mutating the context on the read path.
-
-6. **Keep execution cursors mutable.** `task_counter` and `subtask_counter` are inherently mutable run-state cursors. Making them immutable would add ceremony without delivering meaningful safety.
-
-7. **Keep the calibration library mutable, but keep it encapsulated.** `context.callibrary` is fundamentally a working state accumulator. Full immutability here would likely be expensive and awkward because calibration tasks are intentionally building and revising a working calibration set. What matters more is that updates stay behind a narrow API and, ideally, produce auditable change records.
-
-8. **Keep temporary child-task workspaces mutable.** The copy-on-execute behavior in `basetask.py` is a good pattern. It gives tasks a mutable sandbox while preserving a stable outer context boundary. This is one area where mutability is not just acceptable but useful.
-
-9. **Treat `context.results` as history, not as general shared state.** Some direct inspection of prior results is unavoidable for reporting and debugging, but downstream processing should prefer explicitly published context state. Tightening that contract would reduce coupling to task order and make immutability boundaries clearer.
-
-Overall, a fully immutable context would probably be the wrong target for the current pipeline because the framework is built around progressive state accumulation, result acceptance, and long-lived interactive sessions. A better target is **selective immutability**: immutable snapshots at task/process/reporting boundaries, frozen records for stable metadata, and tightly scoped mutation APIs for the genuinely stateful parts of the system.
