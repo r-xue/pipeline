@@ -8,7 +8,7 @@ from pipeline.infrastructure import utils
 <body>
 <%
 cqa = casa_tools.quanta
-c_mps = float(cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0])
+c_mps = int(cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0])
 %>
 
 <div class="page-header">
