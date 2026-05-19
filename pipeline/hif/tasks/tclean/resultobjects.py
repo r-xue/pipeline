@@ -37,6 +37,8 @@ class TcleanResult(basetask.Results):
         self.datacolumn = datacolumn
         self.datatype = datatype
         self.datatype_info = datatype_info
+        # PIPE-3096: historically, the raw field name string (as passed to tclean's 'field' parameter,
+        # potentially including quotation marks) was assigned to this 'sourcename' attribute.
         self.sourcename = sourcename
         self.field_ids = field_ids
         self.intent = intent
