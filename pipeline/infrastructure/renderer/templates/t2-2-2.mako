@@ -36,11 +36,12 @@ c_mps = int(cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0])
 			            <th scope="col" rowspan="2">Transitions</th>
 						<%
 						# Check to see whether to display the "Online Spec. Avg." column or not to determine the colspan
-						channels_colspan = '5'
+						channels_colspan = '3'
 						if show_online_spec_avg_col.science_windows:
-							channels_colspan = '6'
+							channels_colspan = '4'
 						%>
 			            <th scope="col" colspan=${channels_colspan}>Channels ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
+				    <th scope="col" colspan="2">Spectral</th>
 			            <th scope="col" rowspan="2">Correlator Axis</th>
 						<!-- Omit Correlation Bits column for the ACA Spectrometer. See PIPE-1993/4 -->
 						% if ms.correlator_name != 'ALMA_ACASPEC':
@@ -180,11 +181,12 @@ c_mps = int(cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0])
 			            <th scope="col" rowspan="2">Transitions</th>
 						<%
 						# Check to see whether to display the "Online Spec. Avg." column or not to determine the colspan
-						channels_colspan = '5'
+						channels_colspan = '3'
 						if show_online_spec_avg_col.all_windows:
-							channels_colspan = '6'
+							channels_colspan = '4'
 						%>
 			            <th scope="col" colspan=${channels_colspan}>Channels ${'(%s)' % (ms.get_spectral_windows()[0].frame)}</th>
+				    <th scope="col" colspan="2">Spectral</th>
 						<th scope="col" rowspan="2">Correlator Axis</th>
 						<!-- Omit Correlation Bits column for the ACA Spectrometer. See PIPE-1993/4 -->
 						% if ms.correlator_name != 'ALMA_ACASPEC':
