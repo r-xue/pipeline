@@ -327,10 +327,11 @@ class DetectLine(basetask.StandardTaskTemplate):
             ic2 += 1
         flagged_edges = [ic1, ic2]
         LOG.info(f"flagged edge channels: {flagged_edges}")
+        DEBUG_EDGE_CHANNELS_TO_SHOW = 10
         LOG.trace(
             "collapsed_mask = %s...%s",
-            collapsed_mask[:10].tolist(),
-            collapsed_mask[-10:].tolist()
+            collapsed_mask[:DEBUG_EDGE_CHANNELS_TO_SHOW].tolist(),
+            collapsed_mask[-DEBUG_EDGE_CHANNELS_TO_SHOW:].tolist()
         )
 
         #LOG.debug('DetectSignal = %s'%(detect_signal))
