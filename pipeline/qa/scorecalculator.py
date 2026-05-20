@@ -4005,7 +4005,7 @@ def score_sd_line_emission_off_range_at_peak(context: Context, result: SDImaging
         smsg = 'No significant off-line-range emission is detected at peak.'
         score = 1.0
 
-    origin = pqa.QAOrigin(metric_name='line_emission_off_range_at_peak',
+    origin = pqa.QAOrigin(metric_name='score_sd_line_emission_off_range_at_peak',
                           metric_score=score,
                           metric_units='')
     selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
@@ -4106,6 +4106,70 @@ def score_sdimage_contamination(context: Context, result: SDImagingResultItem) -
                           metric_units='Sign of possible line contamination')
     selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
                                         field=set(result.outcome['assoc_fields']),
+                                        intent={'TARGET'},
+                                        pol={'I'})
+    return pqa.QAScore(score,
+                       longmsg=lmsg,
+                       shortmsg=smsg,
+                       origin=origin,
+                       applies_to=selection)
+
+
+@log_qa
+def score_sdimage_sensitivity_ratio(result: SDImagingResultItem) -> pqa.QAScore:
+    """Evaluate QA score based on observed and theoretical sensitivities estimated from the image
+
+    Requirements (PIPE-2958):
+        - QA score should be
+          - 1.0  if X1 < observed sensitivity / theoretical sensitivity < X2
+          - 0.5  for others
+
+    Args:
+        result: Imaging result instance
+
+    Returns:
+        QAScore -- QAScore instance holding the score based on the sensitivity estimates
+
+    Raises:
+        ValueError: when the unit of observed and theoretical sensitivies do not match
+                    when the theoretical sensitivity is not a positive
+    """
+    # threshold values
+    X1, X2 = 0.9, 1.6
+
+    imageitem = result.outcome['image']
+    field = imageitem.sourcename
+    spw = ','.join(map(str, np.unique(imageitem.spwlist)))
+
+    # fetch sensitivities
+    observed    = result.sensitivity_info.sensitivity['observed_sensitivity']
+    theoretical = result.theoretical_rms['theoretical_sensitivity']
+
+    if theoretical['unit'] != observed['unit']:
+        msg = (f"Field {field} Spw {spw}: "
+               "Unit mismatch between Observed sensitivity and Theoretical sensitivity")
+        raise ValueError( msg )
+
+    if theoretical['value'] <= 0.0:
+        msg = (f"Field {field} Spw {spw}: "
+               f"Invalid Theoretical sensitivity {theoretical['value']} {theoretical['unit']}")
+        raise ValueError( msg )
+
+    x = observed['value'] / theoretical['value']
+    if X1 < x and x < X2:
+        score = 1.0
+        smsg = 'Observed sensitivity agrees with Theoretical sensitivity.'
+        lmsg = f'Field {field} Spw {spw}: {smsg}'
+    else:
+        score = 0.5
+        smsg = 'Observed sensitivity deviates from Theoretical sensitivity.'
+        lmsg = f'Field {field} Spw {spw}: {smsg}'
+
+    origin = pqa.QAOrigin(metric_name='score_sd_image_sensitivity_ratio',
+                          metric_score=x,
+                          metric_units='Ratio of Observed sensitivity to Theoretical sensitivity')
+    selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
+                                        field={field},
                                         intent={'TARGET'},
                                         pol={'I'})
     return pqa.QAScore(score,
