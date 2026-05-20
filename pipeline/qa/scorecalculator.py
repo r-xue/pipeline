@@ -1430,9 +1430,9 @@ def countbaddelays(m, delaytable, delaymax):
 @log_qa
 def score_total_data_vla_delay(filename, vis, bandname=None):
     """
-    Use a filename of a delay (K-type) calibration table
-    Calculate a score for antennas with a delay > 200 ns
-    For each antenna with delays > 200 ns, reduce score by 0.1
+    Compute a QA score based on maximum delay values in a calibration table.
+    If the maximum delay is below 15 ns, the score is 1.0. Otherwise, the score
+    decreases linearly with increasing delay, down to a minimum of 0.3.
     """
 
     with casa_tools.TableReader(filename) as tb:
@@ -5331,7 +5331,7 @@ def score_testBPdcals_delay(vis: str, caltable: str, bandname: str) -> pqa.QASco
 @log_qa
 def score_flagged_ant_spw(vis:str, flaggedSolnApplycaldelay:dict) -> [pqa.QAScore]:
     """
-        Calcuates score for testBPdcals
+        Calculates score for testBPdcals
         if > 50% of spws in a baseband on a majority of antennas newly flagged 
         then score < 0.5
         The flaggedSolnApplycaldelay dictionary is structured as follows:
@@ -5351,7 +5351,7 @@ def score_flagged_ant_spw(vis:str, flaggedSolnApplycaldelay:dict) -> [pqa.QAScor
     """
     badbandlist = []
     goodbandlist = []
-    applies_to = pqa.TargetDataSelection(vis=vis)
+    applies_to = pqa.TargetDataSelection(vis={vis})
     scorelist = []
     for bandname, flag_results in flaggedSolnApplycaldelay.items():
         flagged_ants = 0
