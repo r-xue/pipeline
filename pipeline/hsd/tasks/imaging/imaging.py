@@ -280,8 +280,6 @@ class SDImaging(basetask.StandardTaskTemplate):
                 finally:
                     pp.done()
 
-                self._detect_missed_lines( cp, rgp, pp )
-
                 self._append_result(cp, rgp)
 
             # NRO specific: generate combined image for each correlation
@@ -980,6 +978,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
         # Define image channels to calculate statistics
         pp.include_channel_range = self._get_stat_chans(pp.imagename, rgp.combined.rms_exclude, cp.edge)
+        rgp.imager_result.outcome["include_channel_range"] = pp.include_channel_range
         pp.stat_chans = convert_range_list_to_string(pp.include_channel_range)
         # Define region to calculate statistics
         pp.raster_infos = self.get_raster_info_list(cp, rgp)
@@ -1026,6 +1025,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             _freq_chan_reversed = rgp.imager_result.frequency_channel_reversed
         rgp.imager_result = self._executor.execute(_combine_task)
         rgp.imager_result.frequency_channel_reversed = _freq_chan_reversed
+        rgp.imager_result.outcome["channelmap_range_list"] = rgp.chanmap_range_list
 
     def _set_representative_flag(self,
                                  rgp: imaging_params.ReductionGroupParameters,
@@ -1233,46 +1233,62 @@ class SDImaging(basetask.StandardTaskTemplate):
         """
         return rgp.imager_result_nro is not None and rgp.imager_result_nro.outcome is not None
 
-    def _detect_missed_lines(self,
-                             cp: imaging_params.CommonParameters,
-                             rgp: imaging_params.ReductionGroupParameters,
-                             pp: imaging_params.PostProcessParameters ):
+    def _detect_missed_lines(
+            self,
+            result_item: SDImagingResultItem,
+            spw_nchan: int,
+            frequency_channel_reversed: bool,
+            edge_channels: tuple[int, int],
+            atm_channels: numpy.ndarray | list[bool] = []
+    ) -> dict[str, bool]:
         """
         Detect lines that are possibly missed to be identified
 
         Args:
-            cp  : Common parameter object of prepare()
-            rgp : Reduction group parameter object of prepare()
-            pp  : Imaging post process parameters of prepare()
+            result_item: Imaging result item to be checked for missed lines
+            spw_nchan: Number of channels for the spw in the MS
+                       (before trimming edge channels)
+            frequency_channel_reversed: A boolean flag whether
+                                        the frequency channel is reversed
+            edge_channels: Two tuple of integers for the number of
+                           edge channels to be excluded from the analysis
+            atm_channels: Channel mask for ATM feature. True means that the
+                          channel is a part of ATM feature.
         Raises:
-            ValueError if unknown mask mode is returned DetectMissedLines.analyze()
+            ValueError if unknown mask mode is returned by
+            DetectMissedLines.analyze()
         """
         do_plot = not basetask.DISABLE_WEBLOG
 
         # pick valid_lines
-        valid_lines = [ ll[0:2] for ll in rgp.channelmap_range_list[0] if ll[2] is True ]
+        channelmap_range_list = result_item.outcome.pop("channelmap_range_list")
+        valid_lines = [ll[0:2] for ll in channelmap_range_list[0] if ll[2] is True]
 
         # get linefree ranges from pp
-        linefree_ranges = convert_range_list_to_ranges( pp.include_channel_range )
+        include_channel_range = result_item.outcome.pop("include_channel_range")
+        linefree_ranges = convert_range_list_to_ranges(include_channel_range)
 
         # initialize
+        edge = result_item.outcome["edge"]
+        image_item = result_item.outcome['image']
         missed_lines = detect_missed_lines.DetectMissedLines(
             self.inputs.context,
-            rgp.msobjs,
-            rgp.spwid_list,
-            rgp.fieldid_list,
-            rgp.imager_result.outcome['image'],
-            rgp.imager_result.frequency_channel_reversed,
-            cp.edge,
+            image_item,
+            spw_nchan,
+            frequency_channel_reversed,
+            edge,
             do_plot
         )
 
         # analyze
-        detections = missed_lines.analyze( valid_lines, linefree_ranges )
+        detections = missed_lines.analyze(
+            valid_lines,
+            linefree_ranges,
+            edge_channels,
+            atm_channels
+        )
 
-        # register the results
-        rgp.imager_result.outcome['line_emission_off_range_at_peak'] = detections['single_beam']
-        rgp.imager_result.outcome['line_emission_off_range_extended'] = detections['moment_mask']
+        return detections
 
     def _detect_contamination(
             self,
@@ -1358,6 +1374,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         )
 
         for r in results_for_contamination_analysis:
+            edge_param = r.outcome["edge"]
             image_item = r.outcome['image']
             edge_channels = r.outcome["edge_channels"]
             with casa_tools.ImageReader(image_item.imagename) as ia:
@@ -1375,12 +1392,20 @@ class SDImaging(basetask.StandardTaskTemplate):
                 r.outcome['assoc_spws']
             )[unique_indices]
 
+            # number of channels for the spectral data
+            # (before trimming edge channels)
+            ms = ctx.observing_run.measurement_sets[ms_index_list[0]]
+            spw_id = ctx.observing_run.virtual2real_spw_id(vspw_list[0], ms)
+            spw_nchan = ms.get_spectral_window(spw_id).num_channels
+
             atm_channels = numpy.zeros(nchan, dtype=bool)
             for ms_id, vspw in zip(ms_index_list, vspw_list):
                 ms = ctx.observing_run.measurement_sets[ms_id]
                 spw_id = ctx.observing_run.virtual2real_spw_id(vspw, ms)
                 # detect channels overlapped with ATM feature
                 _detected_chans = detect_atm_channels(ms, spw_id)
+                # trim edge channels excluded at hsd_baseline stage
+                _detected_chans = _detected_chans[edge_param[0]:len(_detected_chans) - edge_param[1]]
                 if _detected_chans is not None and len(_detected_chans) == nchan:
                     atm_channels = numpy.logical_or(
                         atm_channels, _detected_chans
@@ -1403,6 +1428,12 @@ class SDImaging(basetask.StandardTaskTemplate):
                 atm_channels=atm_channels
             )
             r.outcome['contaminated'] = contaminated
+
+            detections = self._detect_missed_lines(
+                r, spw_nchan, is_lsb, edge_channels, atm_channels
+            )
+            r.outcome['line_emission_off_range_at_peak'] = detections['single_beam']
+            r.outcome['line_emission_off_range_extended'] = detections['moment_mask']
 
         return results
 
