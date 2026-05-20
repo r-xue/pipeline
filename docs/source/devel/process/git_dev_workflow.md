@@ -77,10 +77,14 @@ git push origin <branchname>
 
 Create a Pull Request on Bitbucket to merge your branch into `main`. Any team member can review and approve, including yourself.
 
+## 8. Code Review and Merge
+
+Once the PR is open, request a review from a team member. After approval:
+
 - The person who opened the PR should typically be the one to perform the merge.
 - Enable the **delete branch on merge** option to keep the repository clean. All commits are preserved in `main`.
 
-## 8. Update your local repository after merge
+## 9. Update your local repository after merge
 
 ```bash
 git checkout main
