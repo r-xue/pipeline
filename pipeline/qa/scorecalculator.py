@@ -5546,7 +5546,7 @@ def score_spw_solint(vis: str, band: str, spw_solint: dict)-> pqa.QAScore | None
     if pairs:
         score = rendererutils.SCORE_THRESHOLD_ERROR
         msg = f"Using per-SPW solints: {', '.join(pairs)} for {band} band"
-
+        shortmsg = f"Per-SPW solints > 1ch for {band} band"
         origin = pqa.QAOrigin(
             metric_name='score_spw_solint',
             metric_score=score,
@@ -5561,7 +5561,7 @@ def score_spw_solint(vis: str, band: str, spw_solint: dict)-> pqa.QAScore | None
         qascore = pqa.QAScore(
             score,
             longmsg=msg,
-            shortmsg=msg,
+            shortmsg=shortmsg,
             origin=origin,
             applies_to=applies_to
         )

@@ -1,8 +1,8 @@
 import os
-
-import numpy as np
 import math
 import time
+
+import numpy as np
 
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure as infrastructure
@@ -208,7 +208,7 @@ def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypec
     good_snr_spws = [spw for spw, snr in median_snrs.items() if snr >= 50.0]
     if not low_snr_spws:
         LOG.info("All SPWs have median S/N ≥ 50 — no rerun needed.")
-        return False
+        return {}
 
     LOG.info(f"Re-running bandpass for SPWs with low S/N: {low_snr_spws}")
     # rename the old caltable
