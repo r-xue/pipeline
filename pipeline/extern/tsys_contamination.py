@@ -325,8 +325,10 @@ if True:
         # assert False, f"{nn} {scale}"
         return (np.exp(scale * nn) - 1) / (np.exp(scale) - 1) * maximum
 
-    def _savgol_filter_nan(x, window_length, **kwargs):
+    def _savgol_filter_nan(x, window_length, polyorder, **kwargs):
         """Apply savgol_filter while ignoring NaN values.
+
+        Drop-in replacement for savgol_filter with a compatible signature.
 
         PIPE-2947: savgol_filter has never had native NaN handling (confirmed
         through scipy 1.17.0). This function applies savgol_filter to the non-NaN
@@ -338,7 +340,8 @@ if True:
         """
         is_nan = np.isnan(x)
         result = x.copy()
-        result[~is_nan] = savgol_filter(x[~is_nan], window_length=window_length, **kwargs)
+        result[~is_nan] = savgol_filter(x[~is_nan], window_length=window_length,
+                                        polyorder=polyorder, **kwargs)
         # Dilate the NaN mask using a window_length-wide structuring element so that
         # channels within window_length//2 of a gap are also set to NaN (unreliable
         # edge estimates).
@@ -355,7 +358,7 @@ if True:
             return xp, np.interp(chans, xp[0], model[xp[0]])
         window_length += 1 - window_length % 2
         (atm_1, atm_2) = (
-            _savgol_filter_nan(model, window_length=window_length, deriv=dd, polyorder=3)
+            _savgol_filter_nan(model, window_length=window_length, polyorder=3, deriv=dd)
             for dd in (1, 2)
         )
         if (
