@@ -1382,7 +1382,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 cs = ia.coordsys()
                 freq_axis = cs.findaxisbyname("spectral")
                 cs.done()
-                nchan = image_shape[freq_axis]
+                image_nchan = image_shape[freq_axis]
 
             # detect range of ATM feature
             ms_index_list, unique_indices = numpy.unique(
@@ -1398,17 +1398,18 @@ class SDImaging(basetask.StandardTaskTemplate):
             spw_id = ctx.observing_run.virtual2real_spw_id(vspw_list[0], ms)
             spw_nchan = ms.get_spectral_window(spw_id).num_channels
 
-            atm_channels = numpy.zeros(nchan, dtype=bool)
+            atm_channels = numpy.zeros(image_nchan, dtype=bool)
             for ms_id, vspw in zip(ms_index_list, vspw_list):
                 ms = ctx.observing_run.measurement_sets[ms_id]
                 spw_id = ctx.observing_run.virtual2real_spw_id(vspw, ms)
                 # detect channels overlapped with ATM feature
                 _detected_chans = detect_atm_channels(ms, spw_id)
-                # trim edge channels excluded at hsd_baseline stage
-                _detected_chans = _detected_chans[edge_param[0]:len(_detected_chans) - edge_param[1]]
-                if _detected_chans is not None and len(_detected_chans) == nchan:
+                if _detected_chans is not None and len(_detected_chans) == spw_nchan:
+                    assert spw_nchan - sum(edge_param) == image_nchan
+                    # trim edge channels excluded at hsd_baseline stage
+                    _trimmed = _detected_chans[edge_param[0]:spw_nchan - edge_param[1]]
                     atm_channels = numpy.logical_or(
-                        atm_channels, _detected_chans
+                        atm_channels, _trimmed
                     )
 
             is_lsb = r.frequency_channel_reversed
