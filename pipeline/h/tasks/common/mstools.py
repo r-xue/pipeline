@@ -11,6 +11,7 @@ from pipeline.h.tasks.common.commonhelpermethods import get_corr_products
 from pipeline.infrastructure import casa_tools
 
 if TYPE_CHECKING:
+    import casatools
     from pipeline.domain import MeasurementSet
 
 LOG = infrastructure.logging.get_logger(__name__)
@@ -23,7 +24,7 @@ def read_channel_averaged_data_from_ms(ms: MeasurementSet,
                                        items: list[str],
                                        baseline_set: list | None = None,
                                        *,
-                                       ms_handle=None) -> dict:
+                                       ms_handle: casatools.ms | None = None) -> dict:
     """Read the channel-averaged visibility data from a MS for the given field, spw, intent, and optionally a subset of baselines.
 
     Args:
@@ -33,7 +34,7 @@ def read_channel_averaged_data_from_ms(ms: MeasurementSet,
         intent: intent or list of intents.
         items: List of data arrays to read, e.g., ['corrected_data', 'flag', 'antenna1', 'antenna2'].
         baseline_set: List of baselines (default: all).
-        ms_handle: (PIPE-3089) Optional already-open MS tool handle. When provided the MS is not
+        ms_handle: Optional already-open CASA ms tool (casatools.ms). When provided the MS is not
             opened/closed by this function, allowing callers to amortise the
             (potentially expensive) open cost across many calls. The caller is
             responsible for the lifetime of the handle.
@@ -95,7 +96,7 @@ def compute_mean_flux(ms: MeasurementSet,
                       spwid: str | int,
                       intent: str,
                       *,
-                      ms_handle=None) -> tuple[float, float]:
+                      ms_handle: casatools.ms | None = None) -> tuple[float, float]:
     """Compute the mean flux and its standard deviation (averaged across available polarizations) for the given MS, field, spw and intent.
 
     Args:
@@ -103,7 +104,7 @@ def compute_mean_flux(ms: MeasurementSet,
         fieldid: string or int representing the field ID.
         spwid: string or int representing the SPW ID.
         intent: intent or list of intents.
-        ms_handle: (PIPE-3089) Optional already-open MS tool handle passed through to
+        ms_handle: Optional already-open CASA ms tool (casatools.ms), passed through to
             read_channel_averaged_data_from_ms (see that function for details).
 
     Returns:

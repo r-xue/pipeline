@@ -202,9 +202,7 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
         # lines ordered by field and spw
         fluxcal_lines = []
         freq_cache = {}
-        mse = casa_tools.ms
-        mse.open(inputs.ms.name)
-        try:
+        with casa_tools.MSReader(inputs.ms.name) as mse:
             for field in flux_fields:
                 # Skip if field not in solar system object line list
                 if field.name not in UserSolarSystemLineList:
@@ -250,8 +248,6 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
                                 nchan=spw.num_channels,
                             )
                             fluxcal_lines.append(fluxcal_line)
-        finally:
-            mse.close()
 
         # Generate the channel flagging statistics per field and spw.
         flagstats = self._newflagstats(fluxcal_lines)
@@ -508,14 +504,10 @@ class FluxcalFlag(basetask.StandardTaskTemplate):
         if mse is not None:
             freqs = np.asarray(mse.cvelfreqs(fieldids=[fieldid], spwids=[spwid], mode='frequency', outframe=refframe))
         else:
-            ms_tool = casa_tools.ms
-            ms_tool.open(vis)
-            try:
+            with casa_tools.MSReader(vis) as ms_tool:
                 freqs = np.asarray(
                     ms_tool.cvelfreqs(fieldids=[fieldid], spwids=[spwid], mode='frequency', outframe=refframe)
                 )
-            finally:
-                ms_tool.close()
 
         ascending = len(freqs) <= 1 or freqs[-1] >= freqs[0]
         if ascending:
