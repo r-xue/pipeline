@@ -58,9 +58,9 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
 
         # PIPE-2512: add QA score for spw solint
         for bandname, spw_solint in result.spw_solint.items():
-            score3 = qacalc.score_spw_solint(vis, bandname, spw_solint)
-            if score3:
-                scores.append(score3)
+            score4 = qacalc.score_spw_solint(vis, bandname, spw_solint)
+            if score4:
+                scores.append(score4)
 
         result.qa.pool.extend(scores)
 
