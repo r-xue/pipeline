@@ -144,7 +144,7 @@ class LowgainflagInputs(vdp.StandardInputs):
                 (default: 0.666)
 
         """
-        super(LowgainflagInputs, self).__init__()
+        super().__init__()
 
         # pipeline inputs
         self.context = context
@@ -292,7 +292,7 @@ class Lowgainflag(basetask.StandardTaskTemplate):
 class LowgainflagDataInputs(vdp.StandardInputs):
     def __init__(self, context, output_dir=None, vis=None, intent=None,
                  spw=None, refant=None):
-        super(LowgainflagDataInputs, self).__init__()
+        super().__init__()
 
         # pipeline inputs
         self.context = context
@@ -310,7 +310,7 @@ class LowgainflagData(basetask.StandardTaskTemplate):
     Inputs = LowgainflagDataInputs
 
     def __init__(self, inputs):
-        super(LowgainflagData, self).__init__(inputs)
+        super().__init__(inputs)
 
     def prepare(self):
         inputs = self.inputs
