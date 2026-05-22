@@ -107,7 +107,7 @@ class FinalcalsResults(basetask.Results):
         self.finalphasegaincaltable = finalphasegaincaltable
         self.flaggedSolnApplycalbandpass = flaggedSolnApplycalbandpass
         self.flaggedSolnApplycaldelay = flaggedSolnApplycaldelay
-        self.spw_solint = spw_solint
+        self.spw_solint = spw_solint if spw_solint is not None else {}
 
     def merge_with_context(self, context):
 

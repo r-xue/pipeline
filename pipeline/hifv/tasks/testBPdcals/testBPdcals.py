@@ -153,7 +153,7 @@ class testBPdcalsResults(basetask.Results):
         self.phase_collection = phase_collection
         self.num_antennas = num_antennas
         self.bad_refant = bad_refant
-        self.spw_solint = spw_solint
+        self.spw_solint = spw_solint if spw_solint is not None else {}
 
     def merge_with_context(self, context):
         m = context.observing_run.get_ms(self.vis)

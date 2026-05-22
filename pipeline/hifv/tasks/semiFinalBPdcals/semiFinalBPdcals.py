@@ -98,7 +98,7 @@ class semiFinalBPdcalsResults(basetask.Results):
         self.bpcaltable = bpcaltable
         self.flaggedSolnApplycalbandpass = flaggedSolnApplycalbandpass
         self.flaggedSolnApplycaldelay = flaggedSolnApplycaldelay
-        self.spw_solint = spw_solint
+        self.spw_solint = spw_solint if spw_solint is not None else {}
 
 
 @task_registry.set_equivalent_casa_task('hifv_semiFinalBPdcals')
