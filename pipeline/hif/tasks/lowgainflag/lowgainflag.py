@@ -171,9 +171,9 @@ class LowgainflagInputs(vdp.StandardInputs):
     'Sometimes antennas have significantly lower gain than nominal. Even when calibrated, it is better for ALMA data to'
     ' flag these antennas. The pipeline detects this by calculating a long solint amplitude gain on the bandpass '
     'calibrator.  First, temporary phase and bandpass solutions are calculated, these use the ALMA methodology '
-    'where SpWs can be combined, the solint can be longer than the integration time Second the bandpass solve '
+    'where SpWs can be combined, the solint can be longer than the integration time. Second, the bandpass solve '
     'can also use channel binning to maintain SNR, and finally the bandpass is pre-applied and the solint and '
-    'combine parameters are forwarded to the -short- solint phase and long (inf) solint amplitude solution.'  
+    'combine parameters are forwarded to the -short- solint phase and long (inf) solint amplitude solution.'
 )
 class Lowgainflag(basetask.StandardTaskTemplate):
     Inputs = LowgainflagInputs
@@ -376,14 +376,16 @@ class LowgainflagData(basetask.StandardTaskTemplate):
                 spw=inputs.spw, refant=inputs.refant, solint='inf,7.8125MHz')
             bpcal_task = bandpass.PhcorBandpass(bpcal_inputs)
             bpcal_result = self._executor.execute(bpcal_task, merge=False)
-        
-        if not bpcal_result.final: 
-            LOG.warning("No bandpass solution computed for {}".format(inputs.ms.basename))
+
+        # Default fallback used when bandpass produces no final solution.
+        solint, combine = 'int', ''
+        if not bpcal_result.final:
+            LOG.warning("No bandpass solution computed for %s", inputs.ms.basename)
         else:
             bpcal_result.accept(inputs.context)
-            # PIPE-2601 get the phase-up solution interval and combine paramaters
-            # as these need to be passed to the subsequent gaincal to avoid loss of data
-            # the function returns 'int','' for non-ALMA data
+            # PIPE-2601 get the phase-up solution interval and combine parameters
+            # as these need to be passed to the subsequent gaincal to avoid loss of data.
+            # The function returns 'int', '' for non-ALMA data.
             solint, combine = self._get_prebandpass_phaseup_params(bpcal_result)
 
         return bpcal_result, solint, combine
@@ -426,14 +428,11 @@ class LowgainflagData(basetask.StandardTaskTemplate):
                 spwmap = inputs.ms.get_spectral_windows(task_arg=inputs.spw, science_windows_only=True)
                 combspwmapheur = combine_spwmap(spwmap)
 
-                LOG.info(f'Using combined spw map {combspwmapheur} ALMA phaseup')
+                LOG.info('Using combined spw map %s for ALMA phaseup', combspwmapheur)
 
-                calapp_overrides = {
-                    'spwmap':combspwmapheur,
-                    }
-                modified_calapp = callibrary.copy_calapplication(gpcal_result.pool[0], **calapp_overrides)
+                modified_calapp = callibrary.copy_calapplication(gpcal_result.pool[0], spwmap=combspwmapheur)
                 gpcal_result.pool[0] = modified_calapp
-                gpcal_result.final[0] = modified_calapp                
+                gpcal_result.final[0] = modified_calapp
             gpcal_result.accept(inputs.context)
 
         # pass the result back in case any subsequent or future code want this
@@ -483,29 +482,28 @@ class LowgainflagData(basetask.StandardTaskTemplate):
         :param: result, the bpcal result from bandpass.SerialALMAPhCorBandpass
         :return: solint, combine as strings to gaincal input
         """
-
         # PIPE-2601 protection here to only work on ALMA data
         if self.inputs.ms.antenna_array.name == 'ALMA':
             phaseup_calapps = []
             # loop applies that 'preceded' the bandpass solve, i.e. the phaseup/phase-offset
             for previous_result in result.preceding:
                 for calapp in previous_result:
-                    l = [cf for cf in calapp.calfrom if cf.caltype == 'gaincal']
-                    if l and calapp not in phaseup_calapps:
+                    gaincal_froms = [cf for cf in calapp.calfrom if cf.caltype == 'gaincal']
+                    if gaincal_froms and calapp not in phaseup_calapps:
                         phaseup_calapps.append(calapp)
 
             # extract solint and combine from the calapp applied
+            # there will be a maximum of two calapps for ALMA;
+            # if spw combination was triggered in the ALMAPhcorBandpass method
+            # the first calapp is the phase offset with solint=inf,
+            # the second is the phase-up with solint = 'time', this is what we extract here.
+            solint_use, combine_use = 'int', ''
             for calapp in phaseup_calapps:
                 solint = utils.get_origin_input_arg(calapp, 'solint')
                 combine = utils.get_origin_input_arg(calapp, 'combine')
-
-                # there will be a maximum of two calapps for ALMA
-                # if spw combination was triggered in the ALMAPhcorBandpass method
-                # the first calapp is the phase offset with solint=inf
-                # the second is the phase-up with solint = 'time', this is what we extract here
                 if solint != 'inf':
-                    solint_use = solint  # can only be 'int' or a time values, e.g. 12s
-                    combine_use = combine  # can be empty string or can be 'spw'
+                    solint_use = solint
+                    combine_use = combine
             return solint_use, combine_use
 
         else:
