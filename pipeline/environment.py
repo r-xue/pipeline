@@ -782,6 +782,10 @@ def _get_gpu_info() -> str:
         str: e.g. ``"NVIDIA GeForce RTX 3090 (24 GiB); NVIDIA GeForce RTX 3090 (24 GiB), Driver 525.105.17"``
              or ``"N/A"``.
     """
+    # Check if nvidia-smi is available before attempting to run it
+    if not shutil.which('nvidia-smi'):
+        return 'N/A'
+    
     out = _safe_run(
         'nvidia-smi --query-gpu=name,driver_version,memory.total --format=csv,noheader,nounits',
         on_error='',

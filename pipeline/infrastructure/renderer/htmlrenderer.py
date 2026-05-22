@@ -636,10 +636,17 @@ class T1_1Renderer(RendererBase):
                 pkg_prop = T1_1Renderer._LibraryVersionProp(pkg_name)
                 data_rows[pkg_prop].append(detail['version'] if detail else 'N/A')
 
+        # Conditionally include GPU info row only if GPU is available
+        has_gpu = any(gpu_info and gpu_info != 'N/A' for gpu_info in data_rows[props.GPU_INFO])
+        host_info_rows = [props.HOSTNAME, props.OS, props.PLATFORM_TAG]
+        if has_gpu:
+            host_info_rows.append(props.GPU_INFO)
+        host_info_rows.extend([props.NUM_MPI_SERVERS, props.ULIMIT_FILES])
+
         tables = {
             "Host information": T1_1Renderer.EnvironmentTable(
                 ctx=ctx,
-                rows=[props.HOSTNAME, props.OS, props.PLATFORM_TAG, props.GPU_INFO, props.NUM_MPI_SERVERS, props.ULIMIT_FILES],
+                rows=host_info_rows,
                 data=data_rows
             ),
             "CPU resources and limits": T1_1Renderer.EnvironmentTable(
