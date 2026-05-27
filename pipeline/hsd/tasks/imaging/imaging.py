@@ -1246,7 +1246,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
         Args:
             result_item: Imaging result item to be checked for missed lines
-            spw_nchan: Number of channels for the spw in the MS
+            spw_nchan: Number of channels of the spw in the MS
                        (before trimming edge channels)
             frequency_channel_reversed: A boolean flag whether
                                         the frequency channel is reversed
@@ -1339,7 +1339,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
         Analysis includes a detection of edge channels as well as
         channel range for ATM feature. Based on these information,
-        contamination of the image is examined.
+        contamination and missed line detection of the image are examined.
 
         Args:
             results: Results object
