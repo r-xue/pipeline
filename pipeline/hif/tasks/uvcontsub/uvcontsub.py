@@ -165,7 +165,7 @@ class SerialUVcontSub(basetask.StandardTaskTemplate):
         makeimlist_inputs.specmode = 'mfs'
         makeimlist_inputs.clearlist = True
         makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
-        makeimlist_inputs.uvrange = ''
+        makeimlist_inputs.uvrange = '>0.0lambda'
         # Create imlist
         makeimlist_task = makeimlist.MakeImList(makeimlist_inputs)
         makeimlist_result = makeimlist_task.prepare()
