@@ -482,6 +482,10 @@ class LowgainflagData(basetask.StandardTaskTemplate):
         :param: result, the bpcal result from bandpass.SerialALMAPhCorBandpass
         :return: solint, combine as strings to gaincal input
         """
+
+        # Default parameters for ALMA and non-ALMA data
+        solint_use, combine_use = 'int', ''
+
         # PIPE-2601 protection here to only work on ALMA data
         if self.inputs.ms.antenna_array.name == 'ALMA':
             phaseup_calapps = []
@@ -497,19 +501,14 @@ class LowgainflagData(basetask.StandardTaskTemplate):
             # if spw combination was triggered in the ALMAPhcorBandpass method
             # the first calapp is the phase offset with solint=inf,
             # the second is the phase-up with solint = 'time', this is what we extract here.
-            solint_use, combine_use = 'int', ''
             for calapp in phaseup_calapps:
                 solint = utils.get_origin_input_arg(calapp, 'solint')
                 combine = utils.get_origin_input_arg(calapp, 'combine')
                 if solint != 'inf':
                     solint_use = solint
                     combine_use = combine
-            return solint_use, combine_use
 
-        else:
-            # Not ALMA data
-            return 'int', ''
-
+        return solint_use, combine_use
 
 class LowgainflagView:
 
