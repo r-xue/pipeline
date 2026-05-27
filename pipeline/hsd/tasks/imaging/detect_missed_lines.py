@@ -118,7 +118,7 @@ class DetectMissedLines:
             self,
             valid_lines: list[list[float]],
             linefree_ranges: list[list[int]],
-            edge_channels: list[int] = [0, 0],
+            extra_edge_channels: list[int] = [0, 0],
             atm_channels: np.ndarray | list[bool] = []
     ) -> dict[str, bool]:
         """
@@ -127,8 +127,12 @@ class DetectMissedLines:
         Args:
             valid_lines     : List of valid lines (channels in float)
             linefree_ranges : List of line-free ranges (channels in int)
-            edge_channels: Two tuple of integers for the number of
-                           edge channels to be excluded from the analysis
+            extra_edge_channels: Two tuple of integers of the number of
+                                 edge channels to be excluded from the
+                                 analysis. Channels specified by the tuple
+                                 are excluded in addition to the edge channels
+                                 trimmed during imaging according to the
+                                 edge parameter for hsd_baseline stage.
             atm_channels: Channel mask for ATM feature. True means that the
                           channel is a part of ATM feature.
         Returns:
@@ -155,7 +159,7 @@ class DetectMissedLines:
         detections = self._detect_over_deviation_threshold(
             line_ranges,
             linefree_ranges,
-            edge_channels,
+            extra_edge_channels,
             atm_channels
         )
 
@@ -299,7 +303,7 @@ class DetectMissedLines:
             self,
             line_ranges: list[list[int]],
             linefree_ranges: list[list[int]],
-            edge_channels: list[int] = [0, 0],
+            extra_edge_channels: list[int] = [0, 0],
             atm_channels: np.ndarray | list[bool] = [],
             width_threshold: int = 2
     ) -> bool:
@@ -309,8 +313,12 @@ class DetectMissedLines:
         Args:
             line_ranges     : List of deteced lines in spectral channels.
             linefree_ranges : Line-free ranges in spectral channels.
-            edge_channels: Two tuple of integers for the number of
-                           edge channels to be excluded from the analysis
+            extra_edge_channels: Two tuple of integers of the number of
+                                 edge channels to be excluded from the
+                                 analysis. Channels specified by the tuple
+                                 are excluded in addition to the edge channels
+                                 trimmed during imaging according to the
+                                 edge parameter for hsd_baseline stage.
             atm_channels: Channel mask for ATM feature. True means that the
                           channel is a part of ATM feature.
             width_threshold : Threshold of chunk size in pixels. default is 2.
@@ -356,10 +364,10 @@ class DetectMissedLines:
                 z_line[ line[0]:line[1]+1 ] = z_all[ line[0]:line[1]+1 ]
 
             # invalidate edge channels
-            if edge_channels[0] > 0:
-                z_linefree[:edge_channels[0]] = np.nan
-            if edge_channels[1] > 0:
-                z_linefree[-edge_channels[1]:] = np.nan
+            if extra_edge_channels[0] > 0:
+                z_linefree[:extra_edge_channels[0]] = np.nan
+            if extra_edge_channels[1] > 0:
+                z_linefree[-extra_edge_channels[1]:] = np.nan
 
             # invalidate ATM lines
             if len(atm_channels) > 0:

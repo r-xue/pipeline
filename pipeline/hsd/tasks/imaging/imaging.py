@@ -1238,7 +1238,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             result_item: SDImagingResultItem,
             spw_nchan: int,
             frequency_channel_reversed: bool,
-            edge_channels: tuple[int, int],
+            extra_edge_channels: tuple[int, int],
             atm_channels: numpy.ndarray | list[bool] = []
     ) -> dict[str, bool]:
         """
@@ -1250,8 +1250,12 @@ class SDImaging(basetask.StandardTaskTemplate):
                        (before trimming edge channels)
             frequency_channel_reversed: A boolean flag whether
                                         the frequency channel is reversed
-            edge_channels: Two tuple of integers for the number of
-                           edge channels to be excluded from the analysis
+            extra_edge_channels: Two tuple of integers of the number of
+                                 edge channels to be excluded from the
+                                 analysis. Channels specified by the tuple
+                                 are excluded in addition to the edge channels
+                                 trimmed during imaging according to the
+                                 edge parameter for hsd_baseline stage.
             atm_channels: Channel mask for ATM feature. True means that the
                           channel is a part of ATM feature.
         Raises:
@@ -1284,7 +1288,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         detections = missed_lines.analyze(
             valid_lines,
             linefree_ranges,
-            edge_channels,
+            extra_edge_channels,
             atm_channels
         )
 
@@ -1294,7 +1298,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             self,
             image_item: ImageItem,
             is_lsb: bool,
-            edge_channels: tuple[int, int] = (0, 0),
+            extra_edge_channels: tuple[int, int] = (0, 0),
             atm_channels: numpy.ndarray | list[bool] = []
     ) -> bool:
         """Detect contamination of image.
@@ -1303,8 +1307,12 @@ class SDImaging(basetask.StandardTaskTemplate):
             image_item: Image item to be checked for contamination
             is_lsb: A boolean flag whether the image is for lower sideband
                     (LSB) spw or not
-            edge_channels: Two tuple of integers for the number of
-                           edge channels to be excluded from the analysis
+            extra_edge_channels: Two tuple of integers of the number of
+                                 edge channels to be excluded from the
+                                 analysis. Channels specified by the tuple
+                                 are excluded in addition to the edge channels
+                                 trimmed during imaging according to the
+                                 edge parameter for hsd_baseline stage.
             atm_channels: Channel mask for ATM feature. True means that the
                           channel is a part of ATM feature.
 
@@ -1316,7 +1324,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         # exclude ATM feature
         channel_mask = numpy.logical_not(atm_channels)
         # exclude edge channels
-        edge_count_lower, edge_count_upper = edge_channels
+        edge_count_lower, edge_count_upper = extra_edge_channels
         if edge_count_lower > 0:
             channel_mask[:edge_count_lower] = False
         if edge_count_upper > 0:
@@ -1350,33 +1358,35 @@ class SDImaging(basetask.StandardTaskTemplate):
         ctx = self.inputs.context
 
         # edge channel detection for combined images
-        results_for_edge_channel_detection = [
+        results_for_combined_image = [
             r for r in results if r.outcome["image"].antenna == "COMBINED"
         ]
 
-        for r in results_for_edge_channel_detection:
+        for r in results_for_combined_image:
             image_item = r.outcome['image']
 
-            # detect edge channels
-            # edge_channels is a two tuple of integers
-            edge_channels = detect_edge_channels(image_item.imagename)
-            LOG.debug(
-                "edge channels for %s are %s",
-                image_item.imagename,
-                edge_channels
+            # detect edge channels to be excluded further
+            # extra_edge_channels is a two tuple of integers
+            extra_edge_channels = detect_extra_edge_channels(
+                image_item.imagename
             )
-            r.outcome["edge_channels"] = edge_channels
+            LOG.debug(
+                "extra edge channels for %s are %s",
+                image_item.imagename,
+                extra_edge_channels
+            )
+            r.outcome["extra_edge_channels"] = extra_edge_channels
 
         # contamination analysis for Stokes I combined images
-        results_for_contamination_analysis = filter(
+        results_for_analysis = filter(
             lambda r: r.outcome["image"].stokes == "I",
-            results_for_edge_channel_detection
+            results_for_combined_image
         )
 
-        for r in results_for_contamination_analysis:
+        for r in results_for_analysis:
             edge_param = r.outcome["edge"]
             image_item = r.outcome['image']
-            edge_channels = r.outcome["edge_channels"]
+            extra_edge_channels = r.outcome["extra_edge_channels"]
             with casa_tools.ImageReader(image_item.imagename) as ia:
                 image_shape = ia.shape()
                 cs = ia.coordsys()
@@ -1425,13 +1435,13 @@ class SDImaging(basetask.StandardTaskTemplate):
             contaminated = self._detect_contamination(
                 image_item,
                 is_lsb,
-                edge_channels=edge_channels,
+                extra_edge_channels=extra_edge_channels,
                 atm_channels=atm_channels
             )
             r.outcome['contaminated'] = contaminated
 
             detections = self._detect_missed_lines(
-                r, spw_nchan, is_lsb, edge_channels, atm_channels
+                r, spw_nchan, is_lsb, extra_edge_channels, atm_channels
             )
             r.outcome['line_emission_off_range_at_peak'] = detections['single_beam']
             r.outcome['line_emission_off_range_extended'] = detections['moment_mask']
@@ -2379,8 +2389,8 @@ def invert_ranges(id_range_list: list[tuple[int, int]],
     return inverted_list
 
 
-def detect_edge_channels(imagename: str) -> tuple[int, int]:
-    """Detect list of edge channels to be excluded from QA evaluation.
+def detect_extra_edge_channels(imagename: str) -> tuple[int, int]:
+    """Detect list of extra edge channels to be excluded from QA evaluation.
 
     There are a few edge channels that have less valid spatial pixels
     than other spectral channels, probably due to the effect of frame
@@ -2393,7 +2403,9 @@ def detect_edge_channels(imagename: str) -> tuple[int, int]:
     This function detects such edge channels by calculating the median
     number of valid spatial pixels in each channel. Consecutive
     channels with less valid spatial pixels than the median are
-    regarded as edge channels.
+    regarded as edge channels. If non-zero edge values are specified
+    when hsd_baseline is executed, these channels are trimmed during
+    imaging. This function excludes more channels on top of that.
 
     Args:
         imagename: Name of the image

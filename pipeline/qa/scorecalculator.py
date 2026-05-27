@@ -3834,7 +3834,7 @@ def generate_metric_mask(
     # exclude edge channels
     imagename = outcome['image'].imagename
     nchan = metric_mask.shape[3]
-    edge_count_lower, edge_count_upper = outcome.get("edge_channels", (0, 0))
+    edge_count_lower, edge_count_upper = outcome.get("extra_edge_channels", (0, 0))
     log_edge_channels(imagename, nchan, edge_count_lower, edge_count_upper)
     if edge_count_lower > 0:
         metric_mask[:, :, :, :edge_count_lower] = False
@@ -4706,7 +4706,7 @@ def score_mom8_fc_image(
     mom8_fc_score_max = 1.00
     mom8_fc_metric_scale = 100.0
     if mom8_fc_frac_max_segment != 0.0:
-        mom8_fc_score = (mom8_fc_score_min + 0.5 * (mom8_fc_score_max - mom8_fc_score_min) * 
+        mom8_fc_score = (mom8_fc_score_min + 0.5 * (mom8_fc_score_max - mom8_fc_score_min) *
                          (1.0 + special.erf(-np.log10(mom8_fc_metric_scale * mom8_fc_frac_max_segment))))
     else:
         mom8_fc_score = mom8_fc_score_max
@@ -4716,10 +4716,10 @@ def score_mom8_fc_image(
         field = info.get('field')
         spw = info.get('virtspw')
 
-    if (mom8_fc_peak_snr > mom8_fc_outlier_threshold1 and 
+    if (mom8_fc_peak_snr > mom8_fc_outlier_threshold1 and
         mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold1) or \
-       (mom8_fc_peak_snr > mom8_fc_outlier_threshold2 and 
-        mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold2 and 
+       (mom8_fc_peak_snr > mom8_fc_outlier_threshold2 and
+        mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold2 and
         mom8_fc_max_segment_beams > mom8_fc_max_segment_beams_threshold):
         mom8_fc_final_score = min(mom8_fc_score, 0.65)
     else:
