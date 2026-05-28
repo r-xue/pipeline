@@ -317,8 +317,9 @@ It generates an image combined spectral data from whole antenna as well as image
 
 %if missedlines_plots is not None:
     <p>There are two types of diagnostic methods: "single peak" and "extended".
+    Only the plots with possible off-line-range emissions detected are shown.
     The thresholds for "single peak" and "extended" are 7&sigma; and 5&sigma;, respectively,
-    as indicated by the blue dashed lines. The emission line ranges detected at hsd_baseline
+    as indicated by the blue dotted lines. The emission line ranges detected at hsd_baseline
     stage are painted in cyan, and channel ranges excluded from the analysis (deviation masks, etc.)
     are over-plotted with magenta.
     The red points indicate the excess found as possible off-line-range emission.</p>
