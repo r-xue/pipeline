@@ -4015,7 +4015,7 @@ def score_sd_line_emission_off_range_at_peak(context: Context, result: SDImaging
                           metric_score=score,
                           metric_units='')
     selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
-                                        field=set(result.outcome['assoc_fields']),
+                                        field={field},
                                         intent={'TARGET'},
                                         pol={'I'})
     return pqa.QAScore(score,
@@ -4059,7 +4059,7 @@ def score_sd_line_emission_off_range_extended(context: Context, result: SDImagin
                           metric_score=score,
                           metric_units='')
     selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
-                                        field=set(result.outcome['assoc_fields']),
+                                        field={field},
                                         intent={'TARGET'},
                                         pol={'I'})
     return pqa.QAScore(score,
@@ -4111,7 +4111,7 @@ def score_sdimage_contamination(context: Context, result: SDImagingResultItem) -
                           metric_score=contaminated,
                           metric_units='Sign of possible line contamination')
     selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
-                                        field=set(result.outcome['assoc_fields']),
+                                        field={field},
                                         intent={'TARGET'},
                                         pol={'I'})
     return pqa.QAScore(score,
