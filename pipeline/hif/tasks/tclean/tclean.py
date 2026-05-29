@@ -108,7 +108,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
         return {}
 
     @vdp.VisDependentProperty
-    def spwsel_topo(self):
+    def spwsel_ms_frame(self):
         # mutable object, so should not use VisDependentProperty(default=[])
         return []
 
@@ -127,7 +127,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
     # class methods ----------------------------------------------------------------------------------------------------
 
     def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
-                 spwsel_lsrk=None, spwsel_topo=None, uvrange=None, specmode=None, gridder=None, deconvolver=None,
+                 spwsel_lsrk=None, spwsel_ms_frame=None, uvrange=None, specmode=None, gridder=None, deconvolver=None,
                  nterms=None, outframe=None, imsize=None, cell=None, phasecenter=None, psf_phasecenter=None, stokes=None, nchan=None,
                  start=None, width=None, nbin=None, datacolumn=None, datatype=None, datatype_info=None, pblimit=None,
                  cfcache=None, restoringbeam=None, hm_masking=None, hm_sidelobethreshold=None, hm_noisethreshold=None,
@@ -175,7 +175,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
         self.reffreq = reffreq
         self.restfreq = restfreq
         self.spwsel_lsrk = spwsel_lsrk
-        self.spwsel_topo = spwsel_topo
+        self.spwsel_ms_frame = spwsel_ms_frame
         self.spwsel_all_cont = spwsel_all_cont
         self.spwsel_low_bandwidth = spwsel_low_bandwidth
         self.spwsel_low_spread = spwsel_low_spread
@@ -616,7 +616,7 @@ class Tclean(cleanbase.CleanBase):
             inputs.spwsel_low_spread = low_spread
 
         # Get TOPO frequency ranges for all MSs
-        (spw_topo_freq_param, _, _, spw_topo_chan_param_dict, _, _, self.aggregate_lsrk_bw) = self.image_heuristics.calc_topo_ranges(inputs)
+        (spw_ms_frame_freq_param, _, _, spw_ms_frame_chan_param_dict, _, _, self.aggregate_lsrk_bw) = self.image_heuristics.calc_ms_frame_ranges(inputs)
 
         # Save continuum frequency ranges for later.
         if (inputs.specmode == 'cube') and (inputs.spwsel_lsrk.get('spw%s' % inputs.spw, None) not in (None,
@@ -635,7 +635,7 @@ class Tclean(cleanbase.CleanBase):
             # Get a noise estimate from the CASA sensitivity calculator
             (sensitivity, eff_ch_bw, _, sens_reffreq, per_spw_cont_sensitivities_all_chan) = \
                 self.image_heuristics.calc_sensitivities(inputs.vis, inputs.field, inputs.intent, inputs.spw,
-                                                         inputs.nbin, spw_topo_chan_param_dict, inputs.specmode,
+                                                         inputs.nbin, spw_ms_frame_chan_param_dict, inputs.specmode,
                                                          inputs.gridder, inputs.cell, inputs.imsize, inputs.weighting,
                                                          inputs.robust, inputs.uvtaper,
                                                          known_sensitivities=per_spw_cont_sensitivities_all_chan,
@@ -672,9 +672,9 @@ class Tclean(cleanbase.CleanBase):
 
         # Choose TOPO frequency selections
         if inputs.specmode != 'cube':
-            inputs.spwsel_topo = spw_topo_freq_param
+            inputs.spwsel_ms_frame = spw_ms_frame_freq_param
         else:
-            inputs.spwsel_topo = ['%s' % inputs.spw] * len(inputs.vis)
+            inputs.spwsel_ms_frame = ['%s' % inputs.spw] * len(inputs.vis)
 
         if inputs.tlimit:
             tlimit = inputs.tlimit
@@ -1480,7 +1480,7 @@ class Tclean(cleanbase.CleanBase):
                                                   intent=inputs.intent,
                                                   field=inputs.field,
                                                   spw=inputs.spw,
-                                                  spwsel=inputs.spwsel_topo,
+                                                  spwsel=inputs.spwsel_ms_frame,
                                                   spwsel_all_cont=inputs.spwsel_all_cont,
                                                   spwsel_low_bandwidth=inputs.spwsel_low_bandwidth,
                                                   spwsel_low_spread=inputs.spwsel_low_spread,
