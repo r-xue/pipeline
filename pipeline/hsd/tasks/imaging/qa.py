@@ -1,3 +1,4 @@
+from pipeline.hsd.tasks.common import qautils
 import pipeline.infrastructure.logging as logging
 import pipeline.qa.scorecalculator as qacalc
 import pipeline.infrastructure.utils as utils
@@ -18,6 +19,18 @@ class SDImagingQAHandler(pqa.QAPlugin):
     child_cls = None
     generating_task = imaging.SDImaging
 
+    def __init__(self):
+        """
+        register the parameters for longmsg formatter and aggregator
+        """
+        # register the properties
+        for metric_name in ['SingleDishImageContamination',
+                            'score_sd_line_emission_off_range_at_peak',
+                            'score_sd_line_emission_off_range_extended',
+                            'score_sd_image_sensitivity_ratio']:
+            qautils.registry.register_longmsg_keys(metric_name, ['field', 'spw'])
+            qautils.registry.register_keys_to_aggregate(metric_name, ['field', 'spw'])
+
     def handle(self, context, result):
         """
         This handles single SDImagingResultItem.
@@ -31,27 +44,36 @@ class SDImagingQAHandler(pqa.QAPlugin):
         if antenna_name != 'COMBINED':
             return
 
+        # accumulate QAScore
+        scores = []
+
         score_masked = qacalc.score_sdimage_masked_pixels(context, result)
-        result.qa.pool.append(score_masked)
+        scores.append(score_masked)
 
         score_sd_line_emission_off_range_at_peak = qacalc.score_sd_line_emission_off_range_at_peak(context, result)
-        result.qa.pool.append(score_sd_line_emission_off_range_at_peak)
+        scores.append(score_sd_line_emission_off_range_at_peak)
 
         score_sd_line_emission_off_range_extended = qacalc.score_sd_line_emission_off_range_extended(context, result)
-        result.qa.pool.append(score_sd_line_emission_off_range_extended)
+        scores.append(score_sd_line_emission_off_range_extended)
 
         score_contamination = qacalc.score_sdimage_contamination(context, result)
-        result.qa.pool.append(score_contamination)
+        scores.append(score_contamination)
 
         if result.sensitivity_info is not None:
             score_sd_sensitivity_ratio = qacalc.score_sdimage_sensitivity_ratio(result)
-            result.qa.pool.append(score_sd_sensitivity_ratio)
+            scores.append(score_sd_sensitivity_ratio)
 
         score_resterscan_raster_gap = qacalc.score_rasterscan_correctness_imaging_raster_gap(result)
-        result.qa.pool.extend(score_resterscan_raster_gap)
+        scores.extend(score_resterscan_raster_gap)
 
         score_resterscan_incomplete = qacalc.score_rasterscan_correctness_imaging_raster_analysis_incomplete(result)
-        result.qa.pool.extend(score_resterscan_incomplete)
+        scores.extend(score_resterscan_incomplete)
+
+        # reformat the messages and append to result.qa.pool
+        formatter = qautils.QAScoreFormatter()
+        for qascore in scores:
+            formatter.update_longmsg(qascore)
+        result.qa.pool.extend(scores)
 
 
 class SDImagingListQAHandler(pqa.QAPlugin):
