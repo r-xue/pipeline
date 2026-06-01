@@ -284,6 +284,11 @@ class QAScoreAggregator:
                 # filter out qascores with different metric_name
                 if target_qascore.origin.metric_name != metric_name:
                     continue
+
+                # skip if non of the keys of 'keys_to_aggregate' exist in target_qascore
+                if all(len(getattr(target_qascore.applies_to, key)) == 0 for key in keys_to_aggregate):
+                    continue
+
                 # now the target qascore is selected
                 target_idx = qascores.index(target_qascore)
 
