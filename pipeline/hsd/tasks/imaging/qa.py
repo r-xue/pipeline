@@ -30,6 +30,9 @@ class SDImagingQAHandler(pqa.QAPlugin):
                             'score_sd_image_sensitivity_ratio']:
             qautils.registry.register_longmsg_keys(metric_name, ['field', 'spw'])
             qautils.registry.register_keys_to_aggregate(metric_name, ['field', 'spw'])
+        metric_name = 'score_rasterscan_correctness'
+        qautils.registry.register_longmsg_keys(metric_name, ['vis', 'ant'])
+        qautils.registry.register_keys_to_aggregate(metric_name, ['vis', 'ant'])
 
     def handle(self, context, result):
         """

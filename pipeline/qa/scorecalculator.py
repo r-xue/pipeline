@@ -4813,7 +4813,7 @@ def score_rasterscan_correctness_imaging_raster_analysis_incomplete(result: SDIm
     Returns:
         A list of QAScores.
     """
-    msg = 'Raster scan analysis incomplete. Skipping calculation of theoretical image RMS'
+    msg = 'Raster scan analysis incomplete. Skipping calculation of Theoretical sensitivity'
     return _score_rasterscan_correctness(result.rasterscan_heuristics_results_incomp, msg)
 
 
@@ -4860,7 +4860,8 @@ def _rasterscan_failed_per_eb(execblock_id:str, failed_ants: list[str], msg: str
     origin = pqa.QAOrigin(metric_name='score_rasterscan_correctness',
                         metric_score=SCORE_FAIL,
                         metric_units='raster scan correctness')
-    return pqa.QAScore(SCORE_FAIL, longmsg=longmsg, shortmsg=msg, origin=origin)
+    applies_to = pqa.TargetDataSelection(vis={execblock_id}, ant=set(failed_ants))
+    return pqa.QAScore(SCORE_FAIL, longmsg=longmsg, shortmsg=msg, origin=origin, applies_to=applies_to)
 
 
 @log_qa
