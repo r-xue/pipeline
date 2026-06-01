@@ -24,9 +24,10 @@ class SDImagingQAHandler(pqa.QAPlugin):
         register the parameters for longmsg formatter and aggregator
         """
         # register the properties
-        for metric_name in ['SingleDishImageContamination',
+        for metric_name in ['SingleDishImageMaskedPixels',
                             'score_sd_line_emission_off_range_at_peak',
                             'score_sd_line_emission_off_range_extended',
+                            'SingleDishImageContamination',
                             'score_sd_image_sensitivity_ratio']:
             qautils.registry.register_longmsg_keys(metric_name, ['field', 'spw'])
             qautils.registry.register_keys_to_aggregate(metric_name, ['field', 'spw'])

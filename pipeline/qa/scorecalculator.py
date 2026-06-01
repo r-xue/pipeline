@@ -3892,6 +3892,8 @@ def score_sdimage_masked_pixels(context: Context, result: SDImagingResultItem) -
     result_item = result.outcome
     image_item = result_item['image']
     imagename = image_item.imagename
+    field = image_item.sourcename
+    spw = result_item['assoc_spws']
 
     LOG.debug('imagename = {}'.format(imagename))
     with casa_tools.ImageReader(imagename) as ia:
@@ -3943,28 +3945,29 @@ def score_sdimage_masked_pixels(context: Context, result: SDImagingResultItem) -
     if metric_score > metric_score_max:
         # metric_score should not exceed 1.0. something wrong.
         _x = frac2percentage(metric_score_max)
-        lmsg = '{}: fraction of number of masked pixels should not exceed {}. something went wrong.'.format(imbasename, _x)
-        smsg = 'metric value out of range.'
+        _y = frac2percentage(metric_score)
+        smsg = f'Masked pixels ({_y}) exceeds {_x}'
+        lmsg = smsg + f' {imbasename}'
         score = 0.0
     elif metric_score < metric_score_min:
-        lmsg = '{}: No pixels associated with pointing data exist. something went wrong.'.format(imbasename)
-        smsg = 'metric value out of range.'
+        smsg = 'No pixels associated with pointing data exist.'
+        lmsg = smsg + f' {imbasename}'
         score = 0.0
     elif metric_score == metric_score_min:
-        lmsg = 'All examined pixels in image {} are valid.'.format(imbasename)
         smsg = 'All examined pixels are valid.'
+        lmsg = smsg + f' {imbasename}'
         score = 1.0
     elif metric_score > metric_score_threshold:
         _x = frac2percentage(metric_score_threshold)
         _y = frac2percentage(metric_score)
-        lmsg = 'Fraction of masked pixels in image {} is {}, exceeding threshold value ({}).'.format(imbasename, _y, _x)
-        smsg = 'More than {} of image pixels are masked.'.format(_x)
+        smsg = f'Masked pixels ({_y}) exceeds threshold of {_x}.'
+        lmsg = smsg + f' {imbasename}'
         score = 0.0
     else:
         # interpolate between 0.5 and 0.0
         _x = frac2percentage(metric_score)
-        lmsg = 'Fraction of masked pixels in image {} is {}.'.format(imbasename, _x)
-        smsg = '{} of image pixels are masked.'.format(_x)
+        smsg = f'{_x} of image pixels are masked.'
+        lmsg = smsg + f' {imbasename}'
         smax = 0.5
         mmax = 0.0
         smin = 0.0
@@ -3974,11 +3977,13 @@ def score_sdimage_masked_pixels(context: Context, result: SDImagingResultItem) -
     origin = pqa.QAOrigin(metric_name='SingleDishImageMaskedPixels',
                           metric_score=metric_score,
                           metric_units='Fraction of masked pixels in image')
+    applies_to = pqa.TargetDataSelection(field={field}, spw=set(spw))
 
     return pqa.QAScore(score,
                        longmsg=lmsg,
                        shortmsg=smsg,
-                       origin=origin)
+                       origin=origin,
+                       applies_to=applies_to)
 
 
 def score_sd_line_emission_off_range_at_peak(context: Context, result: SDImagingResultItem) -> pqa.QAScore:
