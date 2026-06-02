@@ -3937,30 +3937,34 @@ def score_sdimage_masked_pixels(context: Context, result: SDImagingResultItem) -
     metric_score_threshold = 0.1
     metric_score_max = 1.0
     metric_score_min = 0.0
+    eps = 1.0E-6
 
     # convert score and threshold for logging purpose
     frac2percentage = lambda x: '{:.4g}%'.format(x * 100)
     imbasename = os.path.basename(imagename.rstrip('/'))
 
+    # force score=0.0 for inappropriate cases
     if metric_score > metric_score_max:
         # metric_score should not exceed 1.0. something wrong.
         _x = frac2percentage(metric_score_max)
         _y = frac2percentage(metric_score)
-        smsg = f'Masked pixels ({_y}) exceeds {_x}'
+        smsg = f'Masked image pixels ({_y}) exceeds {_x}'
         lmsg = smsg + f' {imbasename}'
         score = 0.0
     elif metric_score < metric_score_min:
-        smsg = 'No pixels associated with pointing data exist.'
+        smsg = 'No data exists.'
         lmsg = smsg + f' {imbasename}'
         score = 0.0
-    elif metric_score == metric_score_min:
-        smsg = 'All examined pixels are valid.'
+
+    # deal with the realistic cases
+    elif abs(metric_score - metric_score_min) < eps:
+        smsg = 'All examined image pixels are valid.'
         lmsg = smsg + f' {imbasename}'
         score = 1.0
     elif metric_score > metric_score_threshold:
         _x = frac2percentage(metric_score_threshold)
         _y = frac2percentage(metric_score)
-        smsg = f'Masked pixels ({_y}) exceeds threshold of {_x}.'
+        smsg = f'Masked image pixels ({_y}) exceeds threshold of {_x}.'
         lmsg = smsg + f' {imbasename}'
         score = 0.0
     else:
