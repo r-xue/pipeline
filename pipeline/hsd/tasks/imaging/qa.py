@@ -4,6 +4,7 @@ import pipeline.qa.scorecalculator as qacalc
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.h.tasks.exportdata.aqua as aqua
+from pipeline.hsd.tasks.common import utils as sdutils
 from . import imaging
 from . import resultobjects
 
@@ -67,11 +68,31 @@ class SDImagingQAHandler(pqa.QAPlugin):
             score_sd_sensitivity_ratio = qacalc.score_sdimage_sensitivity_ratio(result)
             scores.append(score_sd_sensitivity_ratio)
 
+        # If NRO, these 'may' run twice for I and XXYY,
+        # resulting in duplicated lines for 'score_rasterscan_correctness' in the AQUA report.
+        # Weblog accordion will be 'aggregated', which 'should solve' the duplication (as a result).
         score_resterscan_raster_gap = qacalc.score_rasterscan_correctness_imaging_raster_gap(result)
         scores.extend(score_resterscan_raster_gap)
 
         score_resterscan_incomplete = qacalc.score_rasterscan_correctness_imaging_raster_analysis_incomplete(result)
         scores.extend(score_resterscan_incomplete)
+
+        # Override registry for NRO to add 'pol' to longmsg_keys and keys_to_aggregate.
+        # Placed here since this cannot be done in __init__() under the current framework.
+        if sdutils.is_nro(context):
+            for metric_name in ['SingleDishImageMaskedPixels',
+                                'score_sd_line_emission_off_range_at_peak',
+                                'score_sd_line_emission_off_range_extended',
+                                'SingleDishImageContamination',
+                                'score_sd_image_sensitivity_ratio']:
+                longmsg_keys = qautils.registry.get_longmsg_keys(metric_name)
+                if 'pol' not in longmsg_keys:
+                    longmsg_keys.append('pol')
+                qautils.registry.register_longmsg_keys(metric_name, longmsg_keys)
+                keys_to_aggregate = qautils.registry.get_keys_to_aggregate(metric_name)
+                if 'pol' not in keys_to_aggregate:
+                    keys_to_aggregate.append('pol')
+                qautils.registry.register_longmsg_keys(metric_name, keys_to_aggregate)
 
         # reformat the messages and append to result.qa.pool
         formatter = qautils.QAScoreFormatter()

@@ -3894,6 +3894,7 @@ def score_sdimage_masked_pixels(context: Context, result: SDImagingResultItem) -
     imagename = image_item.imagename
     field = image_item.sourcename
     spw = result_item['assoc_spws']
+    stokes = result_item['stokes']
 
     LOG.debug('imagename = {}'.format(imagename))
     with casa_tools.ImageReader(imagename) as ia:
@@ -3981,13 +3982,13 @@ def score_sdimage_masked_pixels(context: Context, result: SDImagingResultItem) -
     origin = pqa.QAOrigin(metric_name='SingleDishImageMaskedPixels',
                           metric_score=metric_score,
                           metric_units='Fraction of masked pixels in image')
-    applies_to = pqa.TargetDataSelection(field={field}, spw=set(spw))
+    selection = pqa.TargetDataSelection(field={field}, spw=set(spw), pol={stokes})
 
     return pqa.QAScore(score,
                        longmsg=lmsg,
                        shortmsg=smsg,
                        origin=origin,
-                       applies_to=applies_to)
+                       applies_to=selection)
 
 
 def score_sd_line_emission_off_range_at_peak(context: Context, result: SDImagingResultItem) -> pqa.QAScore:
@@ -4009,6 +4010,8 @@ def score_sd_line_emission_off_range_at_peak(context: Context, result: SDImaging
     imageitem = result.outcome['image']
     field = imageitem.sourcename
     spw = ','.join(map(str, np.unique(imageitem.spwlist)))
+    stokes = result.outcome['stokes']
+
     if emission_off_range_at_peak:
         lmsg = (f'Field {field} Spw {spw}: '
                 'Significant off-line-range emission is detected at peak.')
@@ -4026,7 +4029,7 @@ def score_sd_line_emission_off_range_at_peak(context: Context, result: SDImaging
     selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
                                         field={field},
                                         intent={'TARGET'},
-                                        pol={'I'})
+                                        pol={stokes})
     return pqa.QAScore(score,
                        longmsg=lmsg,
                        shortmsg=smsg,
@@ -4053,6 +4056,8 @@ def score_sd_line_emission_off_range_extended(context: Context, result: SDImagin
     imageitem = result.outcome['image']
     field = imageitem.sourcename
     spw = ','.join(map(str, np.unique(imageitem.spwlist)))
+    stokes = result.outcome['stokes']
+
     if emission_off_range_extended:
         lmsg = (f'Field {field} Spw {spw}: '
                 'Significant off-line-range extended emission is detected.')
@@ -4070,7 +4075,7 @@ def score_sd_line_emission_off_range_extended(context: Context, result: SDImagin
     selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
                                         field={field},
                                         intent={'TARGET'},
-                                        pol={'I'})
+                                        pol={stokes})
     return pqa.QAScore(score,
                        longmsg=lmsg,
                        shortmsg=smsg,
@@ -4104,6 +4109,8 @@ def score_sdimage_contamination(context: Context, result: SDImagingResultItem) -
     imageitem = result.outcome['image']
     field = imageitem.sourcename
     spw = ','.join(map(str, np.unique(imageitem.spwlist)))
+    stokes = result.outcome['stokes']
+
     if contaminated:
         lmsg = (f'Field {field} Spw {spw}: '
                 'Possible astronomical line contamination was detected. '
@@ -4122,7 +4129,7 @@ def score_sdimage_contamination(context: Context, result: SDImagingResultItem) -
     selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
                                         field={field},
                                         intent={'TARGET'},
-                                        pol={'I'})
+                                        pol={stokes})
     return pqa.QAScore(score,
                        longmsg=lmsg,
                        shortmsg=smsg,
@@ -4869,8 +4876,8 @@ def _rasterscan_failed_per_eb(execblock_id:str, failed_ants: list[str], msg: str
     origin = pqa.QAOrigin(metric_name='score_rasterscan_correctness',
                         metric_score=SCORE_FAIL,
                         metric_units='raster scan correctness')
-    applies_to = pqa.TargetDataSelection(vis={execblock_id}, ant=set(failed_ants))
-    return pqa.QAScore(SCORE_FAIL, longmsg=longmsg, shortmsg=msg, origin=origin, applies_to=applies_to)
+    selection = pqa.TargetDataSelection(vis={execblock_id}, ant=set(failed_ants))
+    return pqa.QAScore(SCORE_FAIL, longmsg=longmsg, shortmsg=msg, origin=origin, applies_to=selection)
 
 
 @log_qa
