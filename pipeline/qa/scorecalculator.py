@@ -4845,7 +4845,7 @@ def _score_rasterscan_correctness(
         msg: short message for QA
 
     Returns:
-        A lists contains QAScore objects.
+        A list contains QAScore objects.
     """
 
     qa_scores = []  # [pqa.QAScore]
