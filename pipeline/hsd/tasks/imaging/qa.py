@@ -20,21 +20,24 @@ class SDImagingQAHandler(pqa.QAPlugin):
     child_cls = None
     generating_task = imaging.SDImaging
 
+    IMAGE_RELATED_QASCORES = ['SingleDishImageMaskedPixels',
+                            'score_sd_line_emission_off_range_at_peak',
+                            'score_sd_line_emission_off_range_extended',
+                            'SingleDishImageContamination',
+                            'score_sd_image_sensitivity_ratio']
+    RASTERSCAN_RELATED_QASCORES = ['score_rasterscan_correctness']
+    
     def __init__(self):
         """
         register the parameters for longmsg formatter and aggregator
         """
         # register the properties
-        for metric_name in ['SingleDishImageMaskedPixels',
-                            'score_sd_line_emission_off_range_at_peak',
-                            'score_sd_line_emission_off_range_extended',
-                            'SingleDishImageContamination',
-                            'score_sd_image_sensitivity_ratio']:
+        for metric_name in self.IMAGE_RELATED_QASCORES: 
             qautils.registry.register_longmsg_keys(metric_name, ['field', 'spw'])
             qautils.registry.register_keys_to_aggregate(metric_name, ['field', 'spw'])
-        metric_name = 'score_rasterscan_correctness'
-        qautils.registry.register_longmsg_keys(metric_name, ['vis', 'ant'])
-        qautils.registry.register_keys_to_aggregate(metric_name, ['vis', 'ant'])
+        for metric_name in self.RASTERSCAN_RELATED_QASCORES:
+            qautils.registry.register_longmsg_keys(metric_name, ['vis', 'ant'])
+            qautils.registry.register_keys_to_aggregate(metric_name, ['vis', 'ant'])
 
     def handle(self, context, result):
         """
@@ -77,14 +80,13 @@ class SDImagingQAHandler(pqa.QAPlugin):
         score_resterscan_incomplete = qacalc.score_rasterscan_correctness_imaging_raster_analysis_incomplete(result)
         scores.extend(score_resterscan_incomplete)
 
-        # Override registry for NRO to add 'pol' to longmsg_keys and keys_to_aggregate.
+        # Override registry for NRO to add 'pol' to longmsg_keys and keys_to_aggregate
+        # for IMAGE_RELATED_QASCORES.
         # Placed here since this cannot be done in __init__() under the current framework.
+        # Those in RASTERSCAN_RELATED_QASCORES are excluded, since they are absolutely
+        # pol independent by definition and should not show pol in their QA message.
         if sdutils.is_nro(context):
-            for metric_name in ['SingleDishImageMaskedPixels',
-                                'score_sd_line_emission_off_range_at_peak',
-                                'score_sd_line_emission_off_range_extended',
-                                'SingleDishImageContamination',
-                                'score_sd_image_sensitivity_ratio']:
+            for metric_name in self.IMAGE_RELATED_QASCORES:
                 longmsg_keys = qautils.registry.get_longmsg_keys(metric_name)
                 if 'pol' not in longmsg_keys:
                     longmsg_keys.append('pol')
