@@ -1270,7 +1270,10 @@ class SDImaging(basetask.StandardTaskTemplate):
 
         # get linefree ranges from pp
         include_channel_range = result_item.outcome.pop("include_channel_range")
-        linefree_ranges = convert_range_list_to_ranges(include_channel_range)
+        linefree_ranges = numpy.reshape(
+            include_channel_range,
+            (len(include_channel_range) // 2, 2)
+        ).tolist()
 
         # initialize
         edge = result_item.outcome["edge"]
@@ -2288,25 +2291,6 @@ def convert_range_list_to_string(range_list: list[int]) -> str:
     stat_chans = str(';').join(['{:d}~{:d}'.format(range_list[iseg], range_list[iseg + 1])
                                for iseg in range(0, len(range_list), 2)])
     return stat_chans
-
-
-def convert_range_list_to_ranges(range_list: list[int]) -> list[list[int]]:
-    """
-    Convert a list of index ranges to list of signle ranges
-
-    Args:
-        range_list : A list of ranges, e.g., [imin0, imax0, imin1, imax1, ...]
-
-    Returns:
-        A list of single ranges, e.g. '[ [imin0, imax0], [imin1, imax1], ...]
-
-    Example:
-        >>> convert_range_list_to_string( [5, 10, 15, 20] )
-        '[[5, 10], [15, 20]]'
-    """
-    ranges = [ [range_list[i], range_list[i+1]] for i in range(0, len(range_list), 2) ]
-
-    return ranges
 
 
 def merge_ranges(range_list: list[tuple[Number, Number]]) -> list[tuple[Number, Number]]:
