@@ -50,14 +50,14 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
 
     def render(self, context: Context, result: SDImagingResults) -> str:
         """
-        Custom renderer for hsd_baseline()
+        Custom renderer for hsd_imaging()
 
         This method aggegates the QAScores and renders the weblog,
         then resotres the original QAScores for subsequent processes (eg. AQUA report)
 
         Args:
             context: Pipeline context
-            result:  SDBaselineResults object
+            result:  SDImagingResults object
         Returns:
             Rendered html document
         """
