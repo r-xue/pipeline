@@ -211,6 +211,11 @@ class SDImaging(basetask.StandardTaskTemplate):
         Returns:
             result object of imaging
         """
+        # The following dictionaries are intended to convey values computed
+        # in the prepare method to the analyse method. Dict key is image name.
+        self.channelmap_range_dict = {}
+        self.include_channel_range_dict = {}
+
         cp = self._initialize_common_parameters()
 
         # loop over reduction group (spw and source combination)
@@ -978,7 +983,8 @@ class SDImaging(basetask.StandardTaskTemplate):
 
         # Define image channels to calculate statistics
         pp.include_channel_range = self._get_stat_chans(pp.imagename, rgp.combined.rms_exclude, cp.edge)
-        rgp.imager_result.outcome["include_channel_range"] = pp.include_channel_range
+        imagename = rgp.imager_result.outcome["image"].imagename
+        self.include_channel_range_dict[imagename] = pp.include_channel_range
         pp.stat_chans = convert_range_list_to_string(pp.include_channel_range)
         # Define region to calculate statistics
         pp.raster_infos = self.get_raster_info_list(cp, rgp)
@@ -1025,7 +1031,8 @@ class SDImaging(basetask.StandardTaskTemplate):
             _freq_chan_reversed = rgp.imager_result.frequency_channel_reversed
         rgp.imager_result = self._executor.execute(_combine_task)
         rgp.imager_result.frequency_channel_reversed = _freq_chan_reversed
-        rgp.imager_result.outcome["channelmap_range_list"] = rgp.chanmap_range_list
+        imagename = rgp.imager_result.outcome["image"].imagename
+        self.channelmap_range_dict[imagename] = rgp.chanmap_range_list
 
     def _set_representative_flag(self,
                                  rgp: imaging_params.ReductionGroupParameters,
@@ -1263,13 +1270,15 @@ class SDImaging(basetask.StandardTaskTemplate):
             DetectMissedLines.analyze()
         """
         do_plot = not basetask.DISABLE_WEBLOG
+        image_item = result_item.outcome['image']
+        imagename = image_item.imagename
 
         # pick valid_lines
-        channelmap_range_list = result_item.outcome.pop("channelmap_range_list")
+        channelmap_range_list = self.channelmap_range_dict[imagename]
         valid_lines = [ll[0:2] for ll in channelmap_range_list[0] if ll[2] is True]
 
         # get linefree ranges from pp
-        include_channel_range = result_item.outcome.pop("include_channel_range")
+        include_channel_range = self.include_channel_range_dict[imagename]
         linefree_ranges = numpy.reshape(
             include_channel_range,
             (len(include_channel_range) // 2, 2)
@@ -1277,7 +1286,6 @@ class SDImaging(basetask.StandardTaskTemplate):
 
         # initialize
         edge = result_item.outcome["edge"]
-        image_item = result_item.outcome['image']
         missed_lines = detect_missed_lines.DetectMissedLines(
             self.inputs.context,
             image_item,
