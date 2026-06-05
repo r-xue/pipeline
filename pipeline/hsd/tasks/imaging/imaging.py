@@ -1279,6 +1279,9 @@ class SDImaging(basetask.StandardTaskTemplate):
 
         # get linefree ranges from pp
         include_channel_range = self.include_channel_range_dict[imagename]
+        # Input list, include_channel_range, is 1-D list of line ranges like
+        # [min0, max0, min1, max1, ...]. What we need is a list of [min, max]
+        # pairs, so reshape to 2-D like [[min0, max0], [min1, max1], ...].
         linefree_ranges = numpy.reshape(
             include_channel_range,
             (len(include_channel_range) // 2, 2)
