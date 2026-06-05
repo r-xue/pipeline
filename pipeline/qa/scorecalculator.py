@@ -1246,7 +1246,7 @@ def score_applycal_agents(ms, summaries):
     intents = ['TARGET']
 
     # Get score for 'applycal' agent and 'TARGET' intent.
-    score = score_data_flagged_by_agents(ms, summaries, 0.05, 0.6, agents=agents, intents=intents)
+    score = score_data_flagged_by_agents(ms, summaries, 0.24, 0.79, agents=agents, intents=intents)
     perc_flagged = 100. * score.origin.metric_score
 
     # Get score for all agents (total) for 'TARGET' intent.
