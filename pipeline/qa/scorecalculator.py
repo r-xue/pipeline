@@ -3949,30 +3949,30 @@ def score_sdimage_masked_pixels(context: Context, result: SDImagingResultItem) -
         # metric_score should not exceed 1.0. something wrong.
         _x = frac2percentage(metric_score_max)
         _y = frac2percentage(metric_score)
+        lmsg = f'{imbasename}: fraction of number of masked pixels should not exceed {_x}. something went wrong.'
         smsg = f'Masked image pixels ({_y}) exceeds {_x}'
-        lmsg = smsg + f' {imbasename}'
         score = 0.0
     elif metric_score < metric_score_min:
+        lmsg = f'{imbasename}: No pixels associated with pointing data exist. something went wrong.'
         smsg = 'No data exists.'
-        lmsg = smsg + f' {imbasename}'
         score = 0.0
 
     # deal with the realistic cases
     elif abs(metric_score - metric_score_min) < eps:
+        lmsg = f'All examined pixels in image {imbasename} are valid.'
         smsg = 'All examined image pixels are valid.'
-        lmsg = smsg + f' {imbasename}'
         score = 1.0
     elif metric_score > metric_score_threshold:
         _x = frac2percentage(metric_score_threshold)
         _y = frac2percentage(metric_score)
+        lmsg = f'Fraction of masked pixels in image {imbasename} is {_y}, exceeding threshold value ({_x}).'
         smsg = f'Masked image pixels ({_y}) exceeds threshold of {_x}.'
-        lmsg = smsg + f' {imbasename}'
         score = 0.0
     else:
         # interpolate between 0.5 and 0.0
         _x = frac2percentage(metric_score)
+        lmsg = f'Fraction of masked pixels in image {imbasename} is {_x}.'
         smsg = f'{_x} of image pixels are masked.'
-        lmsg = smsg + f' {imbasename}'
         smax = 0.5
         mmax = 0.0
         smin = 0.0
