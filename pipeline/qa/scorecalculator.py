@@ -3495,7 +3495,10 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
             offset_metric = beams
             if beams > 0.30:
                 warnings.append('large fitted offset of %.2f marcsec and %.2f synth beam' % (offset, beams))
-
+        
+        #PIPE-3042: fitflux score based on gfluxscale is not used anymore
+        #So the following part is not necessary
+        """
         fitflux_score = 0.0
         fitflux_metric = 'N/A'
         fitflux_unit = 'fitflux/refflux'
@@ -3509,7 +3512,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
             fitflux_metric = chk_fitflux_gfluxscale_ratio
             if chk_fitflux_gfluxscale_ratio < 0.8:
                 warnings.append('low [Fitted / gfluxscale] Flux Density Ratio of %.2f' % (chk_fitflux_gfluxscale_ratio))
-
+        """
         fitpeak_score = 0.0
         fitpeak_metric = 'N/A'
         fitpeak_unit = 'fitpeak/fitflux'
@@ -3523,23 +3526,29 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
             fitpeak_metric = chk_fitpeak_fitflux_ratio
             if chk_fitpeak_fitflux_ratio < 0.7:
                 warnings.append('low Fitted [Peak Intensity / Flux Density] Ratio of %.2f' % (chk_fitpeak_fitflux_ratio))
-
+        
+        #PIPE-3042: QA message based on gfluxscale is not used anymore
+        #So the following part is not necessary
+        """
         snr_msg = ''
         if gfluxscale is not None and gfluxscale_err is not None:
             if gfluxscale_err != 0.0:
                 chk_gfluxscale_snr = gfluxscale / gfluxscale_err
                 if chk_gfluxscale_snr < 20.:
                     snr_msg = ', however, the S/N of the gfluxscale measurement is low'
-
-        if any(np.array([offset_score, fitflux_score, fitpeak_score]) < 1.0):
-            score = math.sqrt(offset_score * fitflux_score * fitpeak_score)
+        """
+        #PIPE-3042: fitflux score is not used anymore
+        if any(np.array([offset_score, fitpeak_score]) < 1.0):
+            score = min(offset_score,fitpeak_score)
         else:
-            score = offset_score * fitflux_score * fitpeak_score
-        metric_score = [offset_metric, fitflux_metric, fitpeak_metric]
-        metric_units = '%s, %s, %s' % (offset_unit, fitflux_unit, fitpeak_unit)
+            score = offset_score * fitpeak_score
+        
+        metric_score = [offset_metric, fitpeak_metric]
+        metric_units = '%s, %s' % (offset_unit, fitpeak_unit)
 
         if warnings != []:
-            longmsg = 'EB %s field %s spwid %d: has a %s%s' % (msnames, fieldname, spwid, ' and a '.join(warnings), snr_msg)
+            #PIPE-3042: QA message based on gfluxscale is not used anymore
+            longmsg = 'EB %s field %s spwid %d: has a %s' % (msnames, fieldname, spwid, ' and a '.join(warnings))
         else:
             if score <= 0.9:
                 longmsg = 'EB %s field %s spwid %d: Check source fit not optimal' % (msnames, fieldname, spwid)
