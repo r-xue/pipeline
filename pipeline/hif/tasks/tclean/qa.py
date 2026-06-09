@@ -13,6 +13,10 @@ from pipeline.infrastructure import casa_tasks, casa_tools
 
 from . import resultobjects
 
+#PIPE-3082 needs to access hm_specmode variable in TcleanResult, so the following import command is used
+#An alternative way is to use resultobjects.TcleanResult() later in the code  
+from .resultobjects import TcleanResult
+
 LOG = logging.get_logger(__name__)
 
 
@@ -173,7 +177,10 @@ class TcleanQAHandler(pqa.QAPlugin):
                                   applies_to=data_selection, weblog_location=pqa.WebLogLocation.HIDDEN))
 
         # MOM8_FC based score
-        if result.mom8_fc is not None and result.mom8_fc_peak_snr is not None:
+        # PIPE-3082 ignore mom8fc score if the hm_specmode is "repBW"
+        # so only compute mom8fc score if hm_specmode is "cube"
+        result_imlist=TcleanResult()
+        if result.mom8_fc is not None and result.mom8_fc_peak_snr is not None and result_imlist.hm_specmode == 'cube':
             try:
                 mom8_fc_score = scorecalc.score_mom8_fc_image(result.mom8_fc,
                                                               result.mom8_fc_peak_snr,
