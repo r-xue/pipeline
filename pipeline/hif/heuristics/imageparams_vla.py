@@ -723,12 +723,43 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             else:
                 raise Exception('Cannot select representative target from TARGET intent.')
 
-        repr_source = target_sources[0]
+        # Find the first source with at least 5% unflagged data
+        repr_source = None
+        flag_stats_spw = None
+        min_unflagged_fraction = 0.05
 
-        # Determine least flagged spectral window
-        job = casa_tasks.flagdata(vis=repr_ms.name, field=utils.fieldname_for_casa(repr_source), mode='summary')
-        flag_stats = job.execute()
-        flag_stats_spw = flag_stats['spw']
+        for source_candidate in target_sources:
+            job = casa_tasks.flagdata(
+                vis=repr_ms.name, field=utils.fieldname_for_casa(source_candidate), mode="summary"
+            )
+            flag_stats = job.execute()
+            flag_stats_spw = flag_stats["spw"]
+
+            # Calculate unflagged fraction for each spw
+            unflagged_fractions = {
+                str(spw.id): (flag_stats_spw[str(spw.id)]["total"] - flag_stats_spw[str(spw.id)]["flagged"])
+                / flag_stats_spw[str(spw.id)]["total"]
+                for spw in repr_ms.get_spectral_windows()
+                if str(spw.id) in flag_stats_spw and flag_stats_spw[str(spw.id)]["total"] > 0
+            }
+            LOG.info("Source %s unflagged fractions by spw: %s", source_candidate, unflagged_fractions)
+
+            # Check if this source has at least 10% unflagged data in any spw
+            has_sufficient_data = any(frac >= min_unflagged_fraction for frac in unflagged_fractions.values())
+
+            if has_sufficient_data:
+                repr_source = source_candidate
+                LOG.info(
+                    "Selected %s as representative source (meets %.0f%% threshold)",
+                    repr_source,
+                    min_unflagged_fraction * 100,
+                )
+                break
+
+        if repr_source is None:
+            raise Exception(
+                f"No suitable representative target found with at least {min_unflagged_fraction:.0%} unflagged data from {target_sources}"
+            )
 
         spw_flagfrac = {
             spw: flag_stats_spw[str(spw.id)]['flagged'] / flag_stats_spw[str(spw.id)]['total']
