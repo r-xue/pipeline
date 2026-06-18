@@ -45,7 +45,7 @@ class GainCurves(basetask.StandardTaskTemplate):
 
         callist = []
         calto = callibrary.CalTo(vis=inputs.vis)
-        calfrom = callibrary.CalFrom(gencal_args['caltable'], caltype='gc', interp='', calwt=False)
+        calfrom = callibrary.CalFrom(gencal_args['caltable'], caltype='gceff', interp='', calwt=False)
         calapp = callibrary.CalApplication(calto, calfrom)
         callist.append(calapp)
 
