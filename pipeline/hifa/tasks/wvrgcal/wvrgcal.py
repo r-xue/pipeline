@@ -560,11 +560,11 @@ class Wvrgcal(basetask.StandardTaskTemplate):
                 nowvr_phasediff_result.accept(inputs.context) 
                 nowvr_result = self._do_nowvr_gaincal(inputs)
                 # must now remove the gaintable from the local context as the
-                # phasediff withput wvr is not valid for further solves
+                # phasediff without wvr is not valid for further solves
             
                 def phasediff_matcher(calto: callibrary.CalToArgs, calfrom: callibrary.CalFrom) -> bool:
                     calto_vis = {os.path.basename(v) for v in calto.vis}
-                    return 'solintinf.gpcal.nowvr' in calfrom.gaintable and inputs.vis in calto_vis
+                    return 'solintinf.gpcal.nowvr' in calfrom.gaintable and inputs.ms.basename in calto_vis
 
                 LOG.info('Unregistering previous phasediff without wvr calibration while task executes')
                 inputs.context.callibrary.unregister_calibrations(phasediff_matcher)
@@ -574,7 +574,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
             else:
                 # result of no-wvr gaincal is passed through
                 nowvr_result = self._do_nowvr_gaincal(inputs)
-                LOG.info(f'qa: wvrgcal QA calculation withput WVR is reused')                
+                LOG.info(f'qa: wvrgcal QA calculation without WVR is reused')                
                 LOG.info(f'    will pass solutions in combined SpW {sorted(qa_spw_list)[0]} for with/without WVR assessment')
 
                 
@@ -640,7 +640,7 @@ class Wvrgcal(basetask.StandardTaskTemplate):
             
             def phasediff_matcher(calto: callibrary.CalToArgs, calfrom: callibrary.CalFrom) -> bool:
                 calto_vis = {os.path.basename(v) for v in calto.vis}
-                return 'solintinf.gpcal.wvr' in calfrom.gaintable and inputs.vis in calto_vis
+                return 'solintinf.gpcal.wvr' in calfrom.gaintable and inputs.ms.basename in calto_vis
 
             LOG.info('Unregistering previous phasediff with wvr calibration while task executes')
             inputs.context.callibrary.unregister_calibrations(phasediff_matcher)
