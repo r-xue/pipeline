@@ -117,7 +117,8 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_fluxboot',
            'score_testBPdcals_dts_ants',
            'score_testBPdcals_refant',
-           'score_testBPdcals_delay']
+           'score_testBPdcals_delay',
+           'score_spw_solint']
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -131,6 +132,7 @@ def log_qa(method):
     WARNING for any other level. These messages are meant for pipeline runs
     without a weblog output.
     """
+    @functools.wraps(method)
     def f(self, *args, **kw):
         # get the size of the CASA log before task execution
         qascore = method(self, *args, **kw)
@@ -1090,7 +1092,7 @@ def score_online_shadow_template_agents(ms, summaries):
 
     0 < score < 1 === 60% < frac_flagged < 5%
     """
-    score = score_data_flagged_by_agents(ms, summaries, 0.05, 0.6,
+    score = score_data_flagged_by_agents(ms, summaries, 0.24, 0.79,
                                          agents=['online', 'shadow', 'qa0', 'qa2', 'before', 'template'])
 
     new_origin = pqa.QAOrigin(metric_name='score_online_shadow_template_agents',
@@ -1245,7 +1247,7 @@ def score_applycal_agents(ms, summaries):
     intents = ['TARGET']
 
     # Get score for 'applycal' agent and 'TARGET' intent.
-    score = score_data_flagged_by_agents(ms, summaries, 0.05, 0.6, agents=agents, intents=intents)
+    score = score_data_flagged_by_agents(ms, summaries, 0.24, 0.79, agents=agents, intents=intents)
     perc_flagged = 100. * score.origin.metric_score
 
     # Get score for all agents (total) for 'TARGET' intent.
@@ -2998,6 +3000,10 @@ def examine_sd_wide_lines(line_ranges: list[tuple[int, int]], nchan: int, edge: 
     end = nchan - edge[1]
     effective_nchan = nchan - sum(edge)
     line_coverage = np.sum(mask[start:end])
+    LOG.debug(
+        "line coverage %s, threshold %.1f, (effective nchan %s, fraction %s), edge (%s, %s)",
+        line_coverage, effective_nchan * fraction, effective_nchan, fraction, edge[0], edge[1]
+    )
 
     return line_coverage > effective_nchan * fraction
 
@@ -3063,8 +3069,12 @@ def channel_ranges_for_image(edge: tuple[int, int], nchan: int, sideband: int, r
     return sorted(tuple(x) for x in _ranges_image)
 
 
+
 @log_qa
-def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') -> list[pqa.QAScore]:
+def score_sd_line_detection(
+    reduction_group: dict,
+    result: SDBaselineResults
+) -> list[pqa.QAScore]:
     """Compute QA score based on detected lines and deviation/ATM mask overlaps.
 
     QA scores are evaluated based on the line detection result for
@@ -3186,7 +3196,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
 
     # edge parameter for image channel mapping
     _edge = result.outcome['edge']
-    edge = (_edge, _edge) if isinstance(_edge, int) else tuple(_edge[:2])
+    edge_param = (_edge, _edge) if isinstance(_edge, int) else tuple(_edge[:2])
 
     # Process each baseline for line detection and DM
     for bl in result.outcome['baselined']:
@@ -3198,9 +3208,21 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
         # sideband is 1 for USB, -1 for LSB
         sideband = int(spw.sideband)
         nchan = reduction_group_desc.nchan
-        lines = get_line_ranges(bl['lines'])
+        # PIPE-2959/PIPE-2964 use channelmap_range for QA evaluation
+        lines = get_line_ranges(bl['channelmap_range'])
 
         LOG.debug('Processing reduction group %s, field %s, spw %s', reduction_group_id, field_name, spw.id)
+
+        # edge channels
+        flagged_edges = bl['flagged_edges']
+
+        # take max of edge channels from user inputs and
+        # edge channels flagged by preceding stages
+        LOG.info(f"spw: {spw.id}, edge_flagged: {flagged_edges}")
+        edge = (
+            max(flagged_edges[0], edge_param[0]),
+            max(flagged_edges[1], edge_param[1])
+        )
 
         # spectral-line scoring
         if len(lines) > 0:
@@ -3840,7 +3862,7 @@ def generate_metric_mask(
     # exclude edge channels
     imagename = outcome['image'].imagename
     nchan = metric_mask.shape[3]
-    edge_count_lower, edge_count_upper = outcome.get("edge_channels", (0, 0))
+    edge_count_lower, edge_count_upper = outcome.get("extra_edge_channels", (0, 0))
     log_edge_channels(imagename, nchan, edge_count_lower, edge_count_upper)
     if edge_count_lower > 0:
         metric_mask[:, :, :, :edge_count_lower] = False
@@ -4728,7 +4750,7 @@ def score_mom8_fc_image(
     mom8_fc_score_max = 1.00
     mom8_fc_metric_scale = 100.0
     if mom8_fc_frac_max_segment != 0.0:
-        mom8_fc_score = (mom8_fc_score_min + 0.5 * (mom8_fc_score_max - mom8_fc_score_min) * 
+        mom8_fc_score = (mom8_fc_score_min + 0.5 * (mom8_fc_score_max - mom8_fc_score_min) *
                          (1.0 + special.erf(-np.log10(mom8_fc_metric_scale * mom8_fc_frac_max_segment))))
     else:
         mom8_fc_score = mom8_fc_score_max
@@ -4738,10 +4760,10 @@ def score_mom8_fc_image(
         field = info.get('field')
         spw = info.get('virtspw')
 
-    if (mom8_fc_peak_snr > mom8_fc_outlier_threshold1 and 
+    if (mom8_fc_peak_snr > mom8_fc_outlier_threshold1 and
         mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold1) or \
-       (mom8_fc_peak_snr > mom8_fc_outlier_threshold2 and 
-        mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold2 and 
+       (mom8_fc_peak_snr > mom8_fc_outlier_threshold2 and
+        mom8_10_fc_histogram_asymmetry > mom8_fc_histogram_asymmetry_threshold2 and
         mom8_fc_max_segment_beams > mom8_fc_max_segment_beams_threshold):
         mom8_fc_final_score = min(mom8_fc_score, 0.65)
     else:
@@ -5616,3 +5638,41 @@ def score_fluxboot(context, result) -> list[pqa.QAScore]:
                 qascores.append(pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin, applies_to=applies_to))
 
     return qascores
+
+# PIPE-2512: adding QA score for solint of spws
+@log_qa
+def score_spw_solint(vis: str, band: str, spw_solint: dict)-> pqa.QAScore | None:
+    """Evaluate QA score based on the solint of each spectral window"""
+
+    qascore = None
+
+    pairs = [
+        f"[spw={spw}, solint={solint}ch]"
+        for spw, solint in spw_solint.items()
+        if solint > 1
+    ]
+
+    if pairs:
+        score = rendererutils.SCORE_THRESHOLD_ERROR
+        msg = f"Using per-SPW solints: {', '.join(pairs)} for {band} band"
+        shortmsg = f"Per-SPW solints > 1ch for {band} band"
+        origin = pqa.QAOrigin(
+            metric_name='score_spw_solint',
+            metric_score=score,
+            metric_units=''
+        )
+
+        applies_to = pqa.TargetDataSelection(
+            vis={vis},
+            spw=set(spw_solint.keys())
+        )
+
+        qascore = pqa.QAScore(
+            score,
+            longmsg=msg,
+            shortmsg=shortmsg,
+            origin=origin,
+            applies_to=applies_to
+        )
+
+    return qascore
