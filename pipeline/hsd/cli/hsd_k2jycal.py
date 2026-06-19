@@ -4,7 +4,8 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hsd.tasks.k2jycal.k2jycal.SDK2JyCalInputs.__init__
 @utils.cli_wrapper
 def hsd_k2jycal(dbservice=None, endpoint=None, reffile=None,
-                infiles=None, caltable=None):
+                infiles=None, caltable=None,
+                backup_urls=None):
     """Obtain and apply the Kelvin-to-Jansky conversion factors.
 
     Reads Kelvin-to-Jansky (Jy/K) conversion factors from a ``jyperk_query.csv`` file (when
