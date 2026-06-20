@@ -31,9 +31,6 @@ def hif_applycal(vis=None, field=None, intent=None, spw=None, antenna=None, para
         Flagging QA: 0.0 if the additional flag fraction on the science target >= 50%; 1.0 if <= 5%;
         linearly interpolated between 0 and 1 for fractions between 5% and 50%.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Apply the calibration to the target data:
 

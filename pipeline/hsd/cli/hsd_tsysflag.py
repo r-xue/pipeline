@@ -32,9 +32,6 @@ def hsd_tsysflag(vis=None, caltable=None,
        already flagged exceeds ``tmf1_limit``; flag all timestamps in a spw if the fraction
        entirely flagged exceeds ``tmef1_limit``.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Flag Tsys measurements using all recommended tests:
 

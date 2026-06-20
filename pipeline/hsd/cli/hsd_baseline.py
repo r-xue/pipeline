@@ -153,9 +153,6 @@ def hsd_baseline(
             hsd_baseline(spw='0'); hsd_blflag(spw='0'); hsd_imaging(spw='0')
             hsd_baseline(spw='1'); hsd_blflag(spw='1'); hsd_imaging(spw='1')
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Basic usage with automatic line detection:
 

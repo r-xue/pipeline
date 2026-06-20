@@ -38,9 +38,6 @@ def hsd_flagdata(vis=None, autocorr=None, shadow=None, scan=None,
         - Pointing outlier QA (PL2025+): 1.0 if no pointing outliers detected; 0.83 if outliers
           detected.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Do basic flagging on a MeasurementSet:
 

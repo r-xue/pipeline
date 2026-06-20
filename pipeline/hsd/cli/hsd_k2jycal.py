@@ -35,9 +35,6 @@ def hsd_k2jycal(dbservice=None, endpoint=None, reffile=None,
         - QA = 1.0 if Jy/K conversion factors are available for all data.
         - QA = 0.0 if Jy/K conversion factors are missing for any data.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Derive and apply Jy/K calibration using the online database:
 

@@ -35,9 +35,6 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
     Notes:
         QA = fraction of images successfully added to the list compared to the total expected.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Make a list of science target images to be cleaned, one image per science spw:
 

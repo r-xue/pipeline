@@ -71,9 +71,6 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None, hm_imsize=None, h
         - QA = 0.90 if a new/experimental mode (e.g. mosaic self-calibration) was used.
         - QA = N/A for unsupported modes (e.g. ephemeris targets).
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Run self-calibration on all science targets:
 

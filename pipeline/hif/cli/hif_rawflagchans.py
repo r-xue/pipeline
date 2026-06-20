@@ -64,9 +64,6 @@ def hif_rawflagchans(vis=None, spw=None, intent=None,
     Notes:
         The QA score for this stage is equal to ``1 - (fraction of data newly flagged)``.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Flag bad quadrants and wild outliers, default method:
 

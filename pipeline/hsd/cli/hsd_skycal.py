@@ -32,9 +32,6 @@ def hsd_skycal(calmode=None, fraction=None, noff=None,
         - QA = 1.0 if the elevation difference between ON and OFF is <= 3 degrees.
         - QA = 0.8 if the elevation difference between ON and OFF is > 3 degrees.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Generate caltables for all data in the context:
 

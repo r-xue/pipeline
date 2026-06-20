@@ -68,9 +68,6 @@ def hif_makeimages(vis=None, target_list=None, hm_masking=None,
           of the theoretical noise and the DR correction factor. QA = 1.0 if that ratio <= 1.0;
           QA = 0.0 if >= 5.0; linearly scaled between 1 and 5.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Compute clean results for all imaging targets defined in a previous :py:func:`hif_makeimlist <hif_makeimlist>` call:
 

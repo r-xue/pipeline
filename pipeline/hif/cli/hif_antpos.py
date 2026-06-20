@@ -26,9 +26,6 @@ def hif_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=No
     generate other calibration tables, or permanently to generate calibrated
     visibilities for imaging.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Correct the position of antenna 5 for all the visibility files in a single
         pipeline run:

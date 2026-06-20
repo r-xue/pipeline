@@ -70,9 +70,6 @@ def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None):
         - **Missed line channels** (PL2025+): QA = 0.60 if significant off-line-range emission
           is detected; QA = 1.0 otherwise.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Generate images with default settings:
 

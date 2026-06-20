@@ -34,9 +34,6 @@ def hif_refant(vis=None, field=None, spw=None, intent=None, hm_refant=None,
 
         The QA score is 1.0 if a suitable reference antenna is found, otherwise 0.0.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Compute the references antennas to be used for bandpass and gain calibration.
 

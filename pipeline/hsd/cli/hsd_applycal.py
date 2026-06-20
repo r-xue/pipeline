@@ -40,9 +40,6 @@ def hsd_applycal(vis=None, field=None, intent=None, spw=None, antenna=None,
         - QA = 0.95-0.65 if an XX-YY deviation is detected.
         - QA < 0.65 if a large XX-YY deviation outlier is detected.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Apply calibration to the science target data:
 

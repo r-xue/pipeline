@@ -42,9 +42,6 @@ def hsd_importdata(vis=None, session=None, hm_rasterscan=None, parallel=None, as
         - -0.5 if existing processing history is detected.
         - -0.5 if existing model data is detected.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Load ASDMs from the ``../rawdata`` directory into the context:
 

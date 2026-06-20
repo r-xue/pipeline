@@ -36,9 +36,6 @@ def hsd_blflag(iteration=None, edge=None, flag_tsys=None, tsys_thresh=None,
         - QA = 1.0-0.5 if additional flagging is 5%-50%.
         - QA = 0.0 if additional flagging > 50%.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Run all flagging rules:
 

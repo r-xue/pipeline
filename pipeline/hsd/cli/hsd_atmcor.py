@@ -40,9 +40,6 @@ def hsd_atmcor(
         - QA = N/A if ATM correction is not applied.
         - QA = 0.0 if an error occurs during the correction.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Apply ATM correction with automatic model selection:
 

@@ -19,9 +19,6 @@ def hsd_exportdata(pprfile=None, targetimages=None, products_dir=None):
     Notes:
         QA = 1.0 if all products were successfully exported; QA = 0.0 otherwise.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Export pipeline results to the data products directory:
 

@@ -46,9 +46,6 @@ def hif_checkproductsize(vis=None, maxcubesize=None, maxcubelimit=None, maxprodu
         QA = 1.0 if no mitigation was necessary; 0.85 (blue) if mitigation was applied; 0.0 if
         mitigation was attempted but failed (error message appears at the top of the WebLog page).
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Check product sizes with internal defaults:
 

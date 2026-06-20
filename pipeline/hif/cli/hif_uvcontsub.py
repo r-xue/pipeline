@@ -24,9 +24,6 @@ def hif_uvcontsub(vis=None, field=None, intent=None, spw=None, fitorder=None, pa
     Notes:
         QA = 1.0 if a continuum fit table is successfully created; 0.0 otherwise.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Subtract continuum for all science targets and spws:
 

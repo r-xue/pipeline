@@ -49,9 +49,6 @@ def hif_findcont(vis=None, target_list=None, hm_mosweight=None, hm_perchanweight
         QA = 1.0 if continuum frequency ranges were found for all spws; otherwise QA = fraction
         of spws for which a range was identified. QA = 0.0 if size mitigation previously failed.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Identify continuum frequency ranges for all science targets and spws:
 

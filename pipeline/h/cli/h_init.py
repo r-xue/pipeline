@@ -32,9 +32,6 @@ def h_init(
 
         processing_intents: Dictionary of processing intents for the current pipeline run.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Create the pipeline context
 

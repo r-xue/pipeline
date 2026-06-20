@@ -34,9 +34,6 @@ def hif_setmodels(vis=None, reference=None, refintent=None, transfer=None, trans
         The QA score is set to 1.0 if the flux density of the amplitude calibrator is successfully set for all
         spectral windows and if the spectral index of the bandpass calibrator is set; otherwise it is set to 0.0.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Set model fluxes for the flux, bandpass, phase, and check sources.
 

@@ -18,9 +18,6 @@ def h_tsyscal(vis=None, caltable=None, chantol=None, parallel=None):
 
         The QA score is 1.0 if all science spws could be mapped to a Tsys spw, otherwise 0.0.
 
-    Returns:
-        The results object for the pipeline task is returned.
-
     Examples:
         1. Standard call
 
