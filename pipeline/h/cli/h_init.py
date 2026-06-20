@@ -8,11 +8,11 @@ from . import cli, utils
 def h_init(loglevel='info', plotlevel='default', weblog=True, processing_intents=None):
     """Initialize the pipeline state and context.
 
-    `h_init`  must be called before any other pipeline task. The pipeline
+    :py:func:`h_init <h_init>` must be called before any other pipeline task. The pipeline
     can be initialized in one of two ways: by creating a new pipeline
-    state (`h_init`) or be loading a saved pipeline state (`h_resume`).
+    state (:py:func:`h_init <h_init>`) or be loading a saved pipeline state (:py:func:`h_resume <h_resume>`).
 
-    `h_init` creates an empty pipeline context but does not load visibility data
+    :py:func:`h_init <h_init>` creates an empty pipeline context but does not load visibility data
     into the context. Any of the pipeline `h*_importdata` tasks can be used to load data.
 
     Args:

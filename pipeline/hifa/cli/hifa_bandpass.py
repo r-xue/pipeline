@@ -32,7 +32,7 @@ def hifa_bandpass(vis=None, caltable=None, field=None, intent=None, spw=None, an
            :alt: Workflow for hifa_bandpass temporal phase-up
 
            The logical workflow for the temporal phase-up process used in the
-           `hifa_bandpassflag` and `hifa_bandpass` tasks that compute the
+           :py:func:`hifa_bandpassflag <hifa_bandpassflag>` and :py:func:`hifa_bandpass <hifa_bandpass>` tasks that compute the
            `gaincal` `solint` and `combine` parameters.
 
         **Frequency Interval Calculation**

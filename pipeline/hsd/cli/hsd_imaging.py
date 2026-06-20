@@ -45,7 +45,7 @@ def hsd_imaging(mode=None, restfreq=None, infiles=None, field=None, spw=None):
       (3) maximum intensity map using line-free channels only.
 
     - **Diagnostic plots for possible missed line channels** (PL2025+): generated when line
-      emission is detected outside the line ranges from ``hsd_baseline`` (SNR threshold = 7).
+      emission is detected outside the line ranges from :py:func:`hsd_baseline <hsd_baseline>` (SNR threshold = 7).
 
     .. figure:: /figures/missedlines.png
        :scale: 60%

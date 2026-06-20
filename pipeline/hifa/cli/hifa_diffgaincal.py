@@ -54,7 +54,7 @@ def hifa_diffgaincal(vis=None, flagging_frac_limit=None, hm_spwmapmode=None, mis
     within +/-30 deg; good-conditions data should be within +/-50 deg.
 
     As of PL2025, low-SNR heuristics allow ``combine='spw'`` to be used in any of the three solve steps.
-    The heuristic is triggered if (i) ``combine='spw'`` was required in `hifa_spwphaseup` for the DIFFGAIN
+    The heuristic is triggered if (i) ``combine='spw'`` was required in :py:func:`hifa_spwphaseup <hifa_spwphaseup>` for the DIFFGAIN
     intent, or (ii) a temporary ``gaincal`` shows that the fraction of flagged or missing solutions would
     exceed 0.7 of the total.
 

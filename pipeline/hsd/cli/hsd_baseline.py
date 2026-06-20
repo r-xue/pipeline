@@ -40,7 +40,7 @@ def hsd_baseline(
        :scale: 60%
        :alt: hsd_baseline WebLog page
 
-       Example of the ``hsd_baseline`` WebLog page showing the first three spectral
+       Example of the :py:func:`hsd_baseline <hsd_baseline>` WebLog page showing the first three spectral
        grid rows (before subtraction, averaged, after subtraction) for one spw.
 
     Detailed per-antenna spectral maps can be accessed from the detail pages by clicking the
@@ -147,7 +147,7 @@ def hsd_baseline(
         line ranges is detected (triggering deviation masks).
 
     Warning:
-        ``hsd_baseline`` overwrites results from previous runs. If processing spws separately,
+        :py:func:`hsd_baseline <hsd_baseline>` overwrites results from previous runs. If processing spws separately,
         each spw must be taken through to the imaging stage before the next spw is processed::
 
             hsd_baseline(spw='0'); hsd_blflag(spw='0'); hsd_imaging(spw='0')

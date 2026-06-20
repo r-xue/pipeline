@@ -8,7 +8,7 @@ def hifa_polcalflag(vis=None, examineCrossPolSum=None):
 
     Performs a temporary calibration and applies it, then identifies and flags outlier visibilities in the
     polarization calibrator by examining the scalar difference of calibrated amplitudes minus model
-    amplitudes (the same approach as `hifa_bandpassflag` and `hifa_gfluxscaleflag`). The polarization
+    amplitudes (the same approach as :py:func:`hifa_bandpassflag <hifa_bandpassflag>` and :py:func:`hifa_gfluxscaleflag <hifa_gfluxscaleflag>`). The polarization
     calibrator is always treated as a multi-scan calibrator.
 
     The WebLog shows amplitude vs. uv-distance and amplitude vs. time plots before flagging and (if any
