@@ -38,8 +38,23 @@ CLI_MODULES = [
 #: Directory (relative to source) where stubs are written.
 AUTOSUMMARY_DIR = '_autosummary'
 
-#: Template for individual function stubs.
-STUB_TEMPLATE = """\
+#: Template for class-based task wrappers (with parameter documentation note).
+STUB_TEMPLATE_CLASS_BASED = """\
+{title}
+{underline}
+
+.. note::
+
+   Parameters set to ``None`` will use intelligent defaults from the pipeline context.
+   Pass explicit values to override context defaults.
+
+.. currentmodule:: {module}
+
+.. autofunction:: {name}
+"""
+
+#: Template for regular Python functions (without note).
+STUB_TEMPLATE_REGULAR = """\
 {title}
 {underline}
 
@@ -50,6 +65,28 @@ STUB_TEMPLATE = """\
 
 #: Marker so we only patch a module stub once.
 _TOCTREE_MARKER = '.. cli_function_stubs toctree'
+
+
+def _is_class_based_task(mod_name: str, func_name: str) -> bool:
+    """Check if a function is a class-based task wrapper.
+
+    Uses the task_registry approach (same as cli_wrapper) to determine if
+    a function is a registered pipeline task.
+
+    Returns True if the function is a registered pipeline task, False otherwise.
+    """
+    try:
+        # Import task_registry only when needed to avoid circular imports
+        from pipeline.infrastructure import task_registry
+
+        # If this succeeds, it's a registered pipeline task (class-based)
+        task_registry.get_pipeline_class_for_task(func_name)
+        return True
+    except (KeyError, ImportError, AttributeError, ModuleNotFoundError):
+        # KeyError: not a registered pipeline task (regular function)
+        # ImportError: dependencies not available (assume not class-based)
+        # AttributeError/ModuleNotFoundError: task_registry not available
+        return False
 
 
 def _discover_functions(mod_name: str) -> list[str]:
@@ -90,7 +127,12 @@ def _generate_cli_function_stubs(app: Sphinx) -> None:
                 continue
 
             escaped = name.replace('_', r'\_')
-            content = STUB_TEMPLATE.format(
+            
+            # Choose template based on whether it's a class-based task
+            is_class_based = _is_class_based_task(mod_name, name)
+            template = STUB_TEMPLATE_CLASS_BASED if is_class_based else STUB_TEMPLATE_REGULAR
+            
+            content = template.format(
                 title=escaped,
                 underline='=' * len(escaped),
                 module=mod_name,
