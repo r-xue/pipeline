@@ -118,6 +118,7 @@ extensions = [
     'IPython.sphinxext.ipython_console_highlighting',
     'IPython.sphinxext.ipython_directive',
     'cli_function_stubs',
+    'parameter_linking',
 ]
 
 add_module_names = False
@@ -342,8 +343,8 @@ autodoc_mock_imports = [
 ]
 # autodoc_default_options = ['members']
 
-# Optionally, could disable type hints for the cleaner-look task refernece PDF
-autodoc_typehints = 'signature'  # 'none'
+# Move type hints from signature to parameter descriptions for cleaner display
+autodoc_typehints = 'description'  # 'signature' or 'none'
 
 autodoc_default_options = {
     # other options
