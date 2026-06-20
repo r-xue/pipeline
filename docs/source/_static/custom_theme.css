@@ -163,3 +163,69 @@ div.nboutput.container div.output_area {
 :root {
     font-size: 93.75%;  /* browser default 16px × 93.75% ≈ 15px */
 }
+
+/* =============================================================================
+   Option 1: Subtle Section Styling for Visual Distinction (Minimal)
+   =========================================================================== */
+
+/* --- Function signature styling -------------------------------------------- */
+/* Add subtle background to distinguish function signature from content */
+dt.sig {
+    background-color: var(--color-highlight-on-white, #f0f0f8);
+    padding: 0.75rem;
+    margin: 1rem 0;
+    border-radius: 0.25rem;
+    border-left: 2px solid var(--color-brand-primary, #0066cc);
+}
+
+/* Dark mode support for signature */
+@media (prefers-color-scheme: dark) {
+    dt.sig {
+        background-color: #1a1a2e;
+        border-left-color: #4a7fbf;
+    }
+}
+
+/* --- Field list headers (Parameters, Returns, Examples, etc.) ------------- */
+/* Add subtle styling to section headers - slightly different from code blocks */
+dl.field-list > dt {
+    background-color: var(--color-background-secondary, #fafafa);
+    padding: 0.25rem 0.5rem;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-background-border, #e0e0e0);
+    font-weight: 500;
+}
+
+/* Dark mode support for field list headers */
+@media (prefers-color-scheme: dark) {
+    dl.field-list > dt {
+        background-color: #2a2a3a;
+        border-bottom-color: #3a3a4a;
+    }
+}
+
+/* --- Field list content (dd) ---------------------------------------------- */
+/* Improved spacing between sections */
+dl.field-list > dd {
+    margin-bottom: 1.5rem;
+}
+
+/* --- Section headings (Notes, Examples, See Also, etc.) ------------------- */
+/* Style docstring section headings (rendered as p.rubric) to match field-list  */
+p.rubric {
+    background-color: var(--color-background-secondary, #fafafa);
+    padding: 0.25rem 0.5rem;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-background-border, #e0e0e0);
+    font-weight: 500;
+}
+
+/* Dark mode support for section headings */
+@media (prefers-color-scheme: dark) {
+    p.rubric {
+        background-color: #2a2a3a;
+        border-bottom-color: #3a3a4a;
+    }
+}
