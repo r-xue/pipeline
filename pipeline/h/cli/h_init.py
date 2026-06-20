@@ -1,3 +1,5 @@
+from typing import Any
+
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.launcher as launcher
 
@@ -5,7 +7,12 @@ from . import cli, utils
 
 
 @utils.cli_wrapper
-def h_init(loglevel='info', plotlevel='default', weblog=True, processing_intents=None):
+def h_init(
+    loglevel: str = 'info',
+    plotlevel: str = 'default',
+    weblog: bool = True,
+    processing_intents: dict[str, Any] | None = None,
+) -> launcher.Context:
     """Initialize the pipeline state and context.
 
     :py:func:`h_init <h_init>` must be called before any other pipeline task. The pipeline
