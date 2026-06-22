@@ -13,10 +13,6 @@ from pipeline.infrastructure import casa_tasks, casa_tools
 
 from . import resultobjects
 
-#PIPE-3082 needs to access hm_specmode variable in TcleanResult, so the following import command is used
-#An alternative way is to use resultobjects.TcleanResult() later in the code  
-from .resultobjects import TcleanResult
-
 LOG = logging.get_logger(__name__)
 
 
@@ -177,16 +173,34 @@ class TcleanQAHandler(pqa.QAPlugin):
                                   applies_to=data_selection, weblog_location=pqa.WebLogLocation.HIDDEN))
 
         # MOM8_FC based score
-        # PIPE-3082 ignore mom8fc score if the hm_specmode is "repBW"
-        # so only compute mom8fc score if hm_specmode is "cube"
-        result_imlist=TcleanResult()
-        if result.mom8_fc is not None and result.mom8_fc_peak_snr is not None and result_imlist.hm_specmode == 'cube':
+        # PIPE-3082 modifies mom8fc score if the hm_specmode is "repBW"
+        if result.mom8_fc is not None and result.mom8_fc_peak_snr is not None:
             try:
                 mom8_fc_score = scorecalc.score_mom8_fc_image(result.mom8_fc,
                                                               result.mom8_fc_peak_snr,
                                                               result.mom8_10_fc_histogram_asymmetry,
                                                               result.mom8_fc_max_segment_beams,
                                                               result.mom8_fc_frac_max_segment)
+                #PIPE-3082 score update max(0.66,score) for repBW
+                if result.hm_specmode == 'repBW':
+                    value=getattr(mom8_fc_score,'score',None)
+                    if value is None:
+                        LOG.warning('Exception scoring MOM8 FC image result: %s. Setting score to -0.1.' % (e))
+                        result.qa.pool.append(pqa.QAScore(-0.1, longmsg='Exception scoring MOM8 FC image result: %s' % (e),
+                                      shortmsg='Exception scoring MOM8 FC image result', weblog_location=pqa.WebLogLocation.UNSET, applies_to=data_selection))
+                    else:
+                        #Update the score
+                        new_score=max(0.67,value)  
+                        #Preserve other existing attrtibutes
+                        longmsg=getattr(mom8_fc_score,'longmsg')
+                        shortmsg=getattr(mom8_fc_score,'shortmsg')
+                        origin=getattr(mom8_fc_score,'origin')
+                        hierarchy=getattr(mom8_fc_score,'hierarchy')
+                        weblog_location=getattr(mom8_fc_score,'weblog_location')
+                        applies_to=getattr(mom8_fc_score,'applies_to')
+                        mom8_fc_score=pqa.QAScore(new_score, longmsg=longmsg, shortmsg=shortmsg,origin=origin,
+                                                  weblog_location=pqa.WebLogLocation.UNSET,applies_to=data_selection)    
+
                 result.qa.pool.append(mom8_fc_score)
             except Exception as e:
                 LOG.warning('Exception scoring MOM8 FC image result: %s. Setting score to -0.1.' % (e))
