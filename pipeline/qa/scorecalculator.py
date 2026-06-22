@@ -3496,23 +3496,7 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
             if beams > 0.30:
                 warnings.append('large fitted offset of %.2f marcsec and %.2f synth beam' % (offset, beams))
         
-        #PIPE-3042: fitflux score based on gfluxscale is not used anymore
-        #So the following part is not necessary
-        """
-        fitflux_score = 0.0
-        fitflux_metric = 'N/A'
-        fitflux_unit = 'fitflux/refflux'
-        if gfluxscale is None:
-            warnings.append('undefined gfluxscale result')
-        elif gfluxscale == 0.0:
-            warnings.append('gfluxscale value of 0.0 mJy')
-        else:
-            chk_fitflux_gfluxscale_ratio = fitflux * 1000. / gfluxscale
-            fitflux_score = max(0.33, 1.0 - abs(1.0 - chk_fitflux_gfluxscale_ratio))
-            fitflux_metric = chk_fitflux_gfluxscale_ratio
-            if chk_fitflux_gfluxscale_ratio < 0.8:
-                warnings.append('low [Fitted / gfluxscale] Flux Density Ratio of %.2f' % (chk_fitflux_gfluxscale_ratio))
-        """
+        #PIPE-3042: fitflux score and QA message based on gfluxscale are not used anymore, so they are removed.
         fitpeak_score = 0.0
         fitpeak_metric = 'N/A'
         fitpeak_unit = 'fitpeak/fitflux'
@@ -3527,21 +3511,9 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
             if chk_fitpeak_fitflux_ratio < 0.7:
                 warnings.append('low Fitted [Peak Intensity / Flux Density] Ratio of %.2f' % (chk_fitpeak_fitflux_ratio))
         
-        #PIPE-3042: QA message based on gfluxscale is not used anymore
-        #So the following part is not necessary
-        """
-        snr_msg = ''
-        if gfluxscale is not None and gfluxscale_err is not None:
-            if gfluxscale_err != 0.0:
-                chk_gfluxscale_snr = gfluxscale / gfluxscale_err
-                if chk_gfluxscale_snr < 20.:
-                    snr_msg = ', however, the S/N of the gfluxscale measurement is low'
-        """
-        #PIPE-3042: fitflux score is not used anymore
-        if any(np.array([offset_score, fitpeak_score]) < 1.0):
-            score = min(offset_score,fitpeak_score)
-        else:
-            score = offset_score * fitpeak_score
+        #PIPE-3042: fitflux score is not used anymore and the aggregated QA is minimum of offset_score and peak_fitflux score,
+        #both of which is >0.33 and <1.0, so we just need to use min(offset_score, peak_fitflux score) for QA score
+        score = min(offset_score,fitpeak_score)
         
         metric_score = [offset_metric, fitpeak_metric]
         metric_units = '%s, %s' % (offset_unit, fitpeak_unit)
