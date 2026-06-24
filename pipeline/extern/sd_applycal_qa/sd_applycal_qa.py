@@ -7,6 +7,7 @@ from itertools import product
 from scipy.stats import mstats
 
 import pipeline.infrastructure.pipelineqa as pqa
+from pipeline.infrastructure.renderer import rendererutils
 from . import mswrapper_sd
 from . import sd_qa_utils
 from . import sd_qa_reports
@@ -309,7 +310,7 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
                                              scan={'all'},
                                              intent={'TARGET'},
                                              spw={msw.spw},
-                                             ant={msw.antenna})     ###@@ add pol?
+                                             ant={msw.antenna})
         comes_from = pqa.QAOrigin(metric_name=reason, metric_score=0.0, metric_units='n-sigma deviation')
         thisqascore = pqa.QAScore(1.0,
                                   longmsg=f'{msname}: Only XX polarization available, no XX-YY QA possible for spw {msw.spw}, antenna {msw.antenna} in scan all.',
@@ -403,11 +404,11 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
                                                  intent={'TARGET'},
                                                  spw={msw.spw},
                                                  ant={msw.antenna},
-                                                 pol={flaggedpol})    ##@@ distinguish with the other one?
+                                                 pol={flaggedpol})
             comes_from = pqa.QAOrigin(metric_name=reason, metric_score=0.0, metric_units='n-sigma deviation')
             thisqascore = pqa.QAScore(0.34,
                                       longmsg=f'{msname}: Data fully flagged for one polarization only for spw {msw.spw}, antenna {msw.antenna} in scan {scan} (field {fieldname}), pol {flaggedpol}.',
-                                      shortmsg='Data flagged for one polarization only',
+                                      shortmsg='Data for one polarization are fully flagged',
                                       origin=comes_from,
                                       applies_to=applies_to)
             qascores_scans.append(thisqascore)
@@ -486,38 +487,37 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
                                              pol=badpol_set)
         comes_from = pqa.QAOrigin(metric_name=reason, metric_score=nsigma_ondata, metric_units='n-sigma deviation')
 
-        #QA score value evaluation
-        if has_data_outliers and (has_trecX_outliers or has_trecY_outliers) and (peak_outlier_percent >= thresholds['min_freq_dev_percent']):
-            #Case where actual outliers were found, put a yellow QA score
-            qascore_value = qascorefunc(nsigma_ondata, score_top = 0.67, score_bottom = 0.34, nsigma_threshold = thresholds['X-Y_freq_dev'], nsigma_bottom = thresholds['nsigma_bottom'])
-            longmsg = 'XX-YY large deviation outlier in data and Trec table for spw {0:d}, antenna {1:s}, polarization {2:s} in scan {3:s} (field {4:s})'.format(msw.spw, msw.antenna, badpol, str(scan), fieldname)
-            #longmsg = 'XX-YY deviation outlier ({0:.1f}% of RMS) at {1:.3f}-sigma for spw {2:d}, antenna {3:s}, polarization {4:s} in scan {5:s} (field {6:s}) {7:s}; nsigma Trec: {8:.3f},{9:.3f}; width: {10:.2f}%'.format(peak_outlier_percent, nsigma_ondata, msw.spw, msw.antenna, badpol, str(scan), fieldname, badtrec, nsigma_trecX, nsigma_trecY, width_bw_percent)
-            shortmsg = 'XX-YY large deviation outlier in data and Trec table'
-            #Mark outliers in outlier array for plotting
+        # QA score value evaluation
+        if has_data_outliers and peak_outlier_percent >= thresholds['min_freq_dev_percent']:
+            if has_trecX_outliers or has_trecY_outliers:
+                # Case where actual outliers were found, put a yellow QA score
+                score_top, score_bottom = rendererutils.SCORE_THRESHOLD_WARNING, rendererutils.SCORE_THRESHOLD_ERROR + 0.01
+                shortmsg = 'XX-YY large deviation outlier in data and Trec table'
+                longmsg = f'XX-YY large deviation outlier in data and Trec table for spw {msw.spw}, antenna {msw.antenna}, polarization {badpol} in scan {str(scan)} (field {fieldname})'
+            else:
+                # Non outliers case only, put a blue QA score
+                score_top, score_bottom = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, rendererutils.SCORE_THRESHOLD_WARNING + 0.01
+                shortmsg = 'XX-YY deviation'
+                longmsg = f'XX-YY deviation for spw {msw.spw}, antenna {msw.antenna}, polarization {badpol} in scan {str(scan)} (field {fieldname})'
+            # calculate qascore value
+            qascore_value = qascorefunc(nsigma_ondata,
+                                        score_top=score_top,
+                                        score_bottom=score_bottom,
+                                        nsigma_threshold=thresholds['X-Y_freq_dev'],
+                                        nsigma_bottom=thresholds['nsigma_bottom'])
+            # Mark outliers in outlier array for plotting
             if scan != 'all':
                 for row in np.where(msw.scantimesel[scan])[0]:
-                    msw.outliers[:,row] = outlier_data
+                    msw.outliers[:, row] = outlier_data
             else:
                 for row in range(nrows):
-                    msw.outliers[:,row] = outlier_data
-        elif has_data_outliers and not(has_trecX_outliers or has_trecY_outliers):
-            #Non outliers case only, put a blue QA score
-            qascore_value = qascorefunc(nsigma_ondata, score_top = 0.9, score_bottom = 0.68, nsigma_threshold = thresholds['X-Y_freq_dev'], nsigma_bottom = thresholds['nsigma_bottom'])
-            longmsg = 'XX-YY deviation for spw {0:d}, antenna {1:s}, polarization {2:s} in scan {3:s} (field {4:s})'.format(msw.spw, msw.antenna, badpol, str(scan), fieldname)
-            #longmsg = 'XX-YY polarization difference ({0:.1f}% of RMS) at {1:.3f}-sigma for spw {2:d}, antenna {3:s}, polarization {4:s} in scan {5:s} (field {6:s}), likely due to atmosphere instability, check deviation mask at baseline subtraction; nsigma Trec: {7:.3f},{8:.3f}; width: {9:.2f}%'.format(peak_outlier_percent, nsigma_ondata, msw.spw, msw.antenna, badpol, str(scan), fieldname, nsigma_trecX, nsigma_trecY, width_bw_percent)
-            shortmsg = 'XX-YY deviation'
-            #Mark outliers in outlier array for plotting
-            if scan != 'all':
-                for row in np.where(msw.scantimesel[scan])[0]:
-                    msw.outliers[:,row] = outlier_data
-            else:
-                for row in range(nrows):
-                    msw.outliers[:,row] = outlier_data
+                    msw.outliers[:, row] = outlier_data
         else:
-            #Case of no outliers and no information
+            # Case of no outliers and no information
             qascore_value = 1.0
-            longmsg = 'No significant XX-YY polarization difference detected for spw {0:d}, antenna {1:s} in scan {2:s} (field {3:s})'.format(msw.spw, msw.antenna, str(scan), fieldname)
-            shortmsg = 'No significant XX-YY polarization differences'
+            shortmsg = 'No significant XX-YY differences'
+            longmsg = f'No significant XX-YY differences detected for spw {msw.spw}, antenna {msw.antenna} in scan {str(scan)} (field {fieldname})'
+
         if qascore_value <= qascore_lowest:
             qascore_lowest = qascore_value
             idx_lowest = k
