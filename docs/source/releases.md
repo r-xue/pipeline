@@ -12,12 +12,20 @@
   - Use in Operation
   - Download
 
-* - 2026.1.0.4
+* - 2026.2.0
+  - 6.7.4-4
+  - - ALMA/Cycle-13
+    - VLA/PL2026
+  -
+  - - 2026-10 (planned)
+  -
+
+* - 2026.1.0.5
   - 6.7.1-13-gpu
   - - VLASS/2026: enable new CASA gridders (awp2, awphpg)
   -
-  - - 2026-04 (in validation)
-  -
+  - - 2026-05
+  - - [casa-6.7.1-13-pipeline-2026.1.0.5-py3.10-gpu.el8.tar.xz](https://casa.nrao.edu/download/distro/casa-pipeline/release/linux)
 
 * - 2025.1.0.36
   - 6.6.6-18

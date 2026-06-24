@@ -1,4 +1,4 @@
-# PL2026 Timeline & Milestones
+# Timeline & Milestones
 
 ## PL2026 Timeline
 
@@ -21,8 +21,8 @@ gantt
     %% VLASS Feature Dev Complete            :active, milestone, 2026-02-01, 1d
     VLASS Branch release/2026.1.0         :active, milestone, 2026-03-06, 1d
     CASA Branch PL2026                    :active, milestone, 2026-02-15, 1d
-    %% ALMA/VLA Feature Dev Complete         :active, milestone, 2026-07-01, 1d
-    ALMA/VLA Branch release/2026.2.0      :active, milestone, 2026-07-01, 1d
+    ALMA/VLA IF Feature Dev Freeze        :active, milestone, 2026-07-03, 1d
+    ALMA/VLA Branch release/2026.2.0      :active, milestone, 2026-07-20, 1d
     Optimization & Bugfixes               :active, 2026-07-01, 2026-07-31
 
     section ALMA Testing
