@@ -157,28 +157,32 @@ class VLARestoreData(restoredata.RestoreData):
 
         spws_to_smooth_list = conversion.range_to_list(spws_to_smooth) if spws_to_smooth is not None else []
 
-        _MSTOOLS_HANNING_CUTOFF = parse("2026.1.1.3")
+        _MSTOOLS_HANNING_CUTOFF = parse('2026.1.1.3')
         pipeline_version_original = None  # computed lazily on first need, then cached
         partial_mstools_hanning_mses = []
         for ms in self.inputs.context.observing_run.measurement_sets:
-
             spws = ms.get_spectral_windows(science_windows_only=True)
             partial_mstools_hanning = False
             if 0 < len(spws_to_smooth_list) < len(spws):
                 # In older pipeline versions (2024.1.22–2025.1.0.37, after PIPE-672, before PIPE-2473,
                 # i.e. ver<2026.1.1.3), partial Hanning smoothing (subset of SPWs) was done via mstools,
-                # which is now deprecated.  We re-smooth using the Hanning task (mstransform-based) instead,
-                # which produces a different row order — so the extracted flagversions must be remapped.
+                # which is now deprecated.  Here we re-smooth using the Hanning task (mstransform-based) instead,
+                # which might produce a different row order — so the extracted flagversions must be remapped.
                 if pipeline_version_original is None:
-                    # we delay the pipeline version check until we know it's needed, since it requires parsing the manifest and extracting the version string, which might not work for older manifests
+                    # we delay the pipeline version check until we know it's needed, since it
+                    # requires parsing the manifest and extracting the version string, which
+                    # might not work for older manifests
                     _, pipeline_version, _ = self._extract_casa_pipeline_version(pipemanifest)
                     pipeline_version_original = parse(pipeline_version)
                 if pipeline_version_original < _MSTOOLS_HANNING_CUTOFF:
                     partial_mstools_hanning = True
-                    LOG.info("MS %s: original pipeline version %s used mstools (deprecated) for partial"
-                             " Hanning smoothing; re-smoothing via the Hanning task (mstransform-based)"
-                             " and remapping flagversions to the new row order",
-                             ms.name, pipeline_version_original)
+                    LOG.info(
+                        'MS %s: original pipeline version %s used mstools (deprecated) for partial'
+                        ' Hanning smoothing; re-smoothing via the Hanning task (mstransform-based)'
+                        ' and remapping flagversions to the new row order',
+                        ms.name,
+                        pipeline_version_original,
+                    )
 
             if partial_mstools_hanning:
                 self._do_hanningsmooth(spws_to_smooth=spws_to_smooth, keep_original=True)
