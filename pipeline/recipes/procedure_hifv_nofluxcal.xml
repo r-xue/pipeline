@@ -1,6 +1,6 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>hifv_calimage_cont_fast</ProcedureTitle>
+    <ProcedureTitle>hifv_nofluxcal</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifv_importdata</Command>
@@ -8,10 +8,10 @@
             <Parameter>
                 <Keyword xmlns="">specline_spws</Keyword>
                 <Value xmlns="">none</Value>
-            </Parameter>        
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
-    
+
     <ProcessingCommand>
         <Command xmlns="">hifv_hanning</Command>
         <ParameterSet>
@@ -28,10 +28,10 @@
             <Parameter>
                 <Keyword xmlns="">fracspw</Keyword>
                 <Value xmlns="">0.01</Value>
-            </Parameter>            
+            </Parameter>
             <Parameter>
                 <Keyword xmlns="">intents</Keyword>
-                <Value xmlns="">*POINTING*,*FOCUS*,*ATMOSPHERE*,*SIDEBAND_RATIO*, *UNKNOWN*, *SYSTEM_CONFIGURATION*, *UNSPECIFIED#UNSPECIFIED*</Value>
+                <Value xmlns="">*POINTING*,*FOCUS*,*ATMOSPHERE*,*SIDEBAND_RATIO*,*UNKNOWN*,*SYSTEM_CONFIGURATION*,*UNSPECIFIED#UNSPECIFIED*</Value>
             </Parameter>
             <Parameter>
                 <Keyword xmlns="">autocorr</Keyword>
@@ -47,7 +47,7 @@
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
-    
+
     <ProcessingCommand>
         <Command xmlns="">hifv_priorcals</Command>
         <ParameterSet>
@@ -63,7 +63,7 @@
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
-    
+
     <ProcessingCommand>
         <Command xmlns="">hifv_solint</Command>
         <ParameterSet>
@@ -148,7 +148,7 @@
             <Parameter>
                 <Keyword xmlns="">checkflagmode</Keyword>
                 <Value xmlns="">bpd-vla</Value>
-            </Parameter>            
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -160,7 +160,7 @@
                 <Value xmlns="">target-vla</Value>
             </Parameter>
         </ParameterSet>
-    </ProcessingCommand>   
+    </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifv_statwt</Command>
@@ -173,7 +173,7 @@
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
-    
+
     <ProcessingCommand>
         <Command xmlns="">hifv_mstransform</Command>
         <ParameterSet>
@@ -181,16 +181,26 @@
     </ProcessingCommand>
 
     <ProcessingCommand>
+        <Command xmlns="">hif_checkproductsize</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">maximsize</Keyword>
+                <Value xmlns="">4000</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
         <Command xmlns="">hif_makeimlist</Command>
         <ParameterSet>
-           <Parameter>
-               <Keyword xmlns="">intent</Keyword>
-               <Value xmlns="">TARGET,PHASE</Value>
-           </Parameter>
-           <Parameter>
-               <Keyword xmlns="">specmode</Keyword>
-               <Value xmlns="">cont</Value>
-           </Parameter>
+            <Parameter>
+                <Keyword xmlns="">intent</Keyword>
+                <Value xmlns="">TARGET,PHASE</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">specmode</Keyword>
+                <Value xmlns="">cont</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -207,7 +217,47 @@
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
-    
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_selfcal</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <!-- cont imaging / selfcal'ed-->
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimlist</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">intent</Keyword>
+                <Value xmlns="">TARGET</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">specmode</Keyword>
+                <Value xmlns="">cont</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">selfcal</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">hm_masking</Keyword>
+                <Value xmlns="">auto</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">hm_cyclefactor</Keyword>
+                <Value xmlns="">2.0</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
     <ProcessingCommand>
         <Command xmlns="">hifv_exportdata</Command>
         <ParameterSet>
