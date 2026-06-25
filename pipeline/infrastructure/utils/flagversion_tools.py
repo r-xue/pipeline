@@ -12,7 +12,8 @@ Algorithm
    key (DATA_DESC_ID, FIELD_ID, ANTENNA2, ANTENNA1, TIME) matches row *i* of
    ms_target.  When ``remap_ids=True`` the DDID and FIELD_ID values of
    ms_target are first translated back to the original numbering via SPW
-   REF_FREQUENCY matching and field NAME matching respectively.
+   REF_FREQUENCY matching and field PHASE_DIR (phase centre) matching
+   respectively.
 
 2. :func:`_remap_flagversion` applies the permutation to a flag version table
    via ``selectrows(perm).copy()``.  This builds the output directly in target
@@ -35,6 +36,12 @@ from pipeline.infrastructure import casa_tools, logging
 
 LOG = logging.get_logger(__name__)
 
+# Tolerance for phase-centre matching in _build_row_perm when remap_ids=True.
+# mstransform preserves PHASE_DIR bit-for-bit, so genuine matches have zero
+# separation; 1 mas (4.848e-9 rad) admits floating-point noise while
+# remaining far below any real inter-field spacing.
+_FIELD_MATCH_TOL_RAD = np.deg2rad(1.0 / 3_600_000)  # 1 mas in radians
+
 __all__ = ['transfer_flagversion']
 
 
@@ -49,9 +56,10 @@ def _build_row_perm(
         ms_source: Path to the original MS.
         ms_target: Path to the transformed MS.
         remap_ids: If True, remap DATA_DESC_ID via SPW REF_FREQUENCY matching
-            and FIELD_ID via field NAME matching before key comparison.  Set
-            this when ms_target was produced with mstransform's default
-            reindex=True.  When False (default), DATA_DESC_ID and FIELD_ID
+            and FIELD_ID via PHASE_DIR (phase centre) matching before key
+            comparison.  Set this when ms_target was produced with
+            mstransform's default reindex=True.  When False (default),
+            DATA_DESC_ID and FIELD_ID
             values are compared directly, which is correct for reindex=False.
 
     Returns:
@@ -60,7 +68,7 @@ def _build_row_perm(
 
     Raises:
         ValueError: if any row in ms_target has no exact-key match in ms_source,
-            or if ms_source contains duplicate field NAMEs (only when
+            or if two source fields share an identical phase centre (only when
             remap_ids=True).
 
     Notes:
@@ -117,38 +125,40 @@ def _build_row_perm(
         )
         orig_ddid_for_new = ddid_map[k_new['DATA_DESC_ID']]  # (N_new,) orig DDID per new row
 
-        # Build new_field_id → orig_field_id mapping via field NAME matching.
-        # mstransform renumbers field IDs when field selection is applied, so the
-        # raw FIELD_ID values in ms_target cannot be used directly.
+        # Build new_field_id → orig_field_id mapping via PHASE_DIR (phase centre)
+        # matching.  mstransform renumbers field IDs when field selection is
+        # applied, so the raw FIELD_ID values in ms_target cannot be used directly.
+        # Phase centres are matched rather than field NAMEs to avoid ambiguity when
+        # two distinct fields share the same name.
         with casa_tools.TableReader(os.path.join(ms_source, 'FIELD')) as tb:
-            orig_field_names = tb.getcol('NAME')
+            orig_phase_dir = tb.getcol('PHASE_DIR')  # shape (2, n_poly, n_orig_fields)
         with casa_tools.TableReader(os.path.join(ms_target, 'FIELD')) as tb:
-            new_field_names = tb.getcol('NAME')
-        orig_name_to_field = {name: i for i, name in enumerate(orig_field_names)}
-        if len(orig_name_to_field) != len(orig_field_names):
-            seen: dict[str, int] = {}
-            dupes: list[str] = []
-            for name in orig_field_names:
-                if name in seen:
-                    dupes.append(name)
-                seen[name] = 1
-            raise ValueError(
-                'ms_source has duplicate field NAMEs; field matching is ambiguous: '
-                + ', '.join(sorted(set(dupes)))
-            )
-        new_field_to_orig_field: dict[int, int] = {}
-        for new_fid, name in enumerate(new_field_names):
-            if name not in orig_name_to_field:
+            new_phase_dir = tb.getcol('PHASE_DIR')  # shape (2, n_poly, n_new_fields)
+
+        # Flatten to (n_fields, 2) arrays of [RA, Dec] in radians using the
+        # zeroth-order polynomial term (axis 1, index 0).
+        orig_dirs = orig_phase_dir[:, 0, :].T  # (n_orig, 2)
+        new_dirs = new_phase_dir[:, 0, :].T  # (n_new, 2)
+
+        # Flat-sky approximation: valid only for near-identical directions, which
+        # is guaranteed here since mstransform preserves phase centres bit-for-bit.
+        field_map = np.empty(len(new_dirs), dtype=np.int32)
+        for new_fid, nd in enumerate(new_dirs):
+            sep = np.hypot((orig_dirs[:, 0] - nd[0]) * np.cos(nd[1]), orig_dirs[:, 1] - nd[1])
+            best = int(np.argmin(sep))
+            if sep[best] > _FIELD_MATCH_TOL_RAD:
                 raise ValueError(
-                    f'No matching orig field for new field {new_fid} (NAME={name!r})'
+                    f'No matching orig field for new field {new_fid} '
+                    f'(PHASE_DIR=[{np.degrees(nd[0]):.6f}, {np.degrees(nd[1]):.6f}] deg); '
+                    f'closest orig field {best} is {np.degrees(sep[best]) * 3600:.2f} arcsec away'
                 )
-            new_field_to_orig_field[new_fid] = orig_name_to_field[name]
-            LOG.debug('Field map: new %d -> orig %d (NAME=%r)',
-                      new_fid, orig_name_to_field[name], name)
-        field_map = np.array(
-            [new_field_to_orig_field[nf] for nf in range(len(new_field_names))],
-            dtype=np.int32,
-        )
+            if (sep <= _FIELD_MATCH_TOL_RAD).sum() > 1:
+                raise ValueError(
+                    f'Multiple orig fields within {_FIELD_MATCH_TOL_RAD:.0e} rad of new field '
+                    f'{new_fid}; phase-centre matching is ambiguous'
+                )
+            field_map[new_fid] = best
+            LOG.debug('Field map: new %d -> orig %d (sep=%.3e rad)', new_fid, best, sep[best])
         orig_field_for_new = field_map[k_new['FIELD_ID']]  # (N_new,) orig FIELD_ID per new row
 
     # Build perm[new_row] = orig_row via structured-array exact key matching.
