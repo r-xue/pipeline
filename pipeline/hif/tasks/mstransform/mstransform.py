@@ -360,7 +360,7 @@ class SerialMstransform(basetask.StandardTaskTemplate):
 
 
 class MstransformResults(basetask.Results):
-    def __init__(self, vis, outputvis, output_data_type):
+    def __init__(self, vis, outputvis, output_data_type=None):
         super().__init__()
         self.vis = vis
         self.outputvis = outputvis

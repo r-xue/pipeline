@@ -122,7 +122,7 @@ class VlaMstransform(mst.SerialMstransform):
         mst.SerialMstransform._update_history(inputs.vis, inputs.outputvis)
 
         if not self.inputs.omit_contline_ms:
-            # Create output MS for line data (_target.ms)
+            # Create output MS for cont+line data (_target.ms)
             self._create_targets_ms(inputs, mstransform_args)
 
         # Create the results structure
