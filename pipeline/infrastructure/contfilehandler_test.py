@@ -10,9 +10,7 @@ cont_ranges_test_params = ({'fields': {'helms30': {'0': {'spwname': 'X339408637#
 
 class mock_spw:
     def __init__(self, frame):
-        self._frame = frame
-    def frame(self):
-        return self._frame
+        self.frame = frame
 
 class mock_ms:
     def __init__(self, name):
