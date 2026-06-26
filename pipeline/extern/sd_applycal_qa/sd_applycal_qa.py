@@ -313,7 +313,7 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
         comes_from = pqa.QAOrigin(metric_name=reason, metric_score=0.0, metric_units='n-sigma deviation')
         qascore = pqa.QAScore(1.0,
                               longmsg=f'{msname}: All data flagged for spw {msw.spw}, antenna {msw.antenna} in scan all (field {fieldname}).',
-                              shortmsg='All data are flagged',
+                              shortmsg='Data is fully flagged',
                               origin=comes_from,
                               applies_to=applies_to)
         return (msw, qascore, [qascore], 'N/A')
@@ -405,7 +405,7 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
             comes_from = pqa.QAOrigin(metric_name=reason, metric_score=0.0, metric_units='n-sigma deviation')
             thisqascore = pqa.QAScore(1.0,
                                       longmsg=f'{msname}: All data flagged for spw {msw.spw}, antenna {msw.antenna} in scan {scan} (field {fieldname}).',
-                                      shortmsg='All data are flagged',
+                                      shortmsg='Scan is fully flagged',
                                       origin=comes_from,
                                       applies_to=applies_to)
             qascores_scans.append(thisqascore)
@@ -430,7 +430,7 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
             comes_from = pqa.QAOrigin(metric_name=reason, metric_score=0.0, metric_units='n-sigma deviation')
             thisqascore = pqa.QAScore(0.34,
                                       longmsg=f'{msname}: Data fully flagged for one polarization only for spw {msw.spw}, antenna {msw.antenna} in scan {scan} (field {fieldname}), pol {flaggedpol}.',
-                                      shortmsg='Data for one polarization are fully flagged',
+                                      shortmsg='Data is fully flagged for one polarization',
                                       origin=comes_from,
                                       applies_to=applies_to)
             qascores_scans.append(thisqascore)
@@ -516,12 +516,12 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
             if has_trecX_outliers or has_trecY_outliers:
                 # Case where actual outliers were found, put a yellow QA score
                 score_top, score_bottom = rendererutils.SCORE_THRESHOLD_WARNING, rendererutils.SCORE_THRESHOLD_ERROR + 0.01
-                shortmsg = 'XX-YY large deviation outlier in data and Trec table'
+                shortmsg = 'XX-YY deviation outliers in data and Trec table'
                 longmsg = f'XX-YY large deviation outlier in data and Trec table for spw {msw.spw}, antenna {msw.antenna}, polarization {badpol} in scan {str(scan)} (field {fieldname})'
             else:
                 # Non outliers case only, put a blue QA score
                 score_top, score_bottom = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, rendererutils.SCORE_THRESHOLD_WARNING + 0.01
-                shortmsg = 'XX-YY deviation'
+                shortmsg = 'XX-YY deviation outliers in data'
                 longmsg = f'XX-YY deviation for spw {msw.spw}, antenna {msw.antenna}, polarization {badpol} in scan {str(scan)} (field {fieldname})'
             # calculate qascore value
             qascore_value = qascorefunc(nsigma_ondata,
