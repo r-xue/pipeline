@@ -310,6 +310,7 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
                                     ant={msw.antenna})
             )
         comes_from = pqa.QAOrigin(metric_name=reason, metric_score=0.0, metric_units='n-sigma deviation')
+        # (tentative)  shortmsg change for this QAScore should be reflected to sd_qa_reports.py
         qascore = pqa.QAScore(1.0,
                               longmsg=f'{msname}: All data flagged for spw {msw.spw}, antenna {msw.antenna} in scan all (field {fieldname}).',
                               shortmsg='Data is fully flagged',
@@ -328,6 +329,7 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
                                     ant={msw.antenna})
             )
         comes_from = pqa.QAOrigin(metric_name=reason, metric_score=0.0, metric_units='n-sigma deviation')
+        # (tentative)  shortmsg change for this QAScore should be reflected to sd_qa_reports.py
         thisqascore = pqa.QAScore(1.0,
                                   longmsg=f'{msname}: Only XX polarization available, no XX-YY QA possible for spw {msw.spw}, antenna {msw.antenna} in scan all.',
                                   shortmsg='Only one polarization in data',
