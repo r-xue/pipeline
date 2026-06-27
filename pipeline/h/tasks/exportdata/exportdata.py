@@ -1257,9 +1257,12 @@ finally:
                     spwlist_key = ','.join(str(spwid) for spwid in image['spwlist'])
                 else:
                     spwlist_key = image['spwlist']
+                # PIPE-3074: Include imagename_prefix (usually MOUS/EB UID or session names) to distinguish check sources
+                # from different EBs while preserving PIPE-2465 Stokes I/IQUV deduplication.
                 product_key = (
                     image['sourcename'],
                     image['sourcetype'],
+                    image['imagename_prefix'],
                     spwlist_key,
                     image['specmode'],
                     image['stokes'],
@@ -1273,6 +1276,7 @@ finally:
                     product_key_stokes_i = (
                         image['sourcename'],
                         image['sourcetype'],
+                        image['imagename_prefix'],
                         spwlist_key,
                         image['specmode'],
                         'I',
