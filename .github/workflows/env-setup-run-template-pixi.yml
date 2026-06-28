@@ -57,6 +57,7 @@ jobs:
           cache: false
           # To enable caching in future, set `cache: true` and define an appropriate cache key,
           # for example: v1-${{ runner.os }}-${{ inputs.pixi_env }}.
+          locked: false
           activate-environment: ${{ inputs.pixi_env }}
 
       - name: Enable post-link scripts
