@@ -77,7 +77,6 @@ class SDApplycalListQAHandler(pqa.QAPlugin):
         # collate the QAScores from each child result, pulling them into our
         # own QAscore list
         collated = utils.flatten([r.qa.pool for r in result])
-        LOG.info( "###@@ collated={}".format(collated))
         result.qa.pool.extend(collated)
 
 
