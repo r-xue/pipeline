@@ -125,7 +125,8 @@ class TcleanResult(basetask.Results):
 
         # Clean masks and thresholds for later stages
         if self.stokes == 'I' and (self.cleanmask not in (None, '')):
-            cleanTargetKey = CleanTargetInfo(datatype=self.datatype, field=self.sourcename, intent=self.intent, virtspw=self.spw, stokes=self.stokes, specmode=self.specmode)
+            cleanTargetKey = CleanTargetInfo(datatype=self.datatype, field=self.sourcename, intent=self.intent,
+                                             virtspw=self.spw, stokes=self.stokes, specmode=self.hm_specmode)
             context.clean_masks[cleanTargetKey] = self.cleanmask
             context.clean_thresholds[cleanTargetKey] = self.threshold
 
