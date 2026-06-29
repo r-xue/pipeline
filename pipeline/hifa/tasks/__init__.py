@@ -7,7 +7,6 @@ from .exportdata import ALMAExportData
 from .flagging import FlagDeterALMA
 from .flagging import FlagTargetsALMA
 from .fluxcalflag import FluxcalFlag
-from .findroi import FindROI
 from .fluxscale import GcorFluxscale, SessionGcorFluxscale
 from .gaincal import TimeGaincal
 from .gaincalsnr import GaincalSnr

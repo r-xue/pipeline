@@ -6,7 +6,7 @@ import pipeline.infrastructure.basetask as basetask
 
 
 class FindROIResult(basetask.Results):
-    """Lightweight pipeline result for the hifa_findroi stage."""
+    """Lightweight pipeline result for the hif_findroi stage."""
 
     def __init__(
         self,
@@ -22,7 +22,7 @@ class FindROIResult(basetask.Results):
         self.errors = errors or []
 
     def merge_with_context(self, context: Any) -> None:
-        """Keep hifa_findroi read-only for downstream stages in this v1 port."""
+        """Keep hif_findroi read-only for downstream stages in this v1 port."""
         return None
 
     def __repr__(self) -> str:

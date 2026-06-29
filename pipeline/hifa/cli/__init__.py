@@ -9,7 +9,6 @@ from .hifa_exportdata import hifa_exportdata
 from .hifa_flagdata import hifa_flagdata
 from .hifa_flagtargets import hifa_flagtargets
 from .hifa_fluxcalflag import hifa_fluxcalflag
-from .hifa_findroi import hifa_findroi
 from .hifa_gaincalsnr import hifa_gaincalsnr
 from .hifa_gfluxscale import hifa_gfluxscale
 from .hifa_gfluxscaleflag import hifa_gfluxscaleflag
@@ -39,7 +38,6 @@ __all__ = ['hifa_antpos',
            'hifa_flagdata',
            'hifa_flagtargets',
            'hifa_fluxcalflag',
-           'hifa_findroi',
            'hifa_gaincalsnr',
            'hifa_gfluxscale',
            'hifa_gfluxscaleflag',

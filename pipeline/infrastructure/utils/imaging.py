@@ -22,7 +22,7 @@ LOG = infrastructure.logging.get_logger(__name__)
 __all__ = ['chan_selection_to_frequencies', 'freq_selection_to_channels', 'spw_intersect', 'update_sens_dict',
            'update_beams_dict', 'set_nested_dict', 'intersect_ranges', 'intersect_ranges_by_weight', 'merge_ranges', 'equal_to_n_digits',
            'velocity_to_frequency', 'frequency_to_velocity',
-           'predict_kernel']
+           'predict_kernel', 'chan_ranges_to_freq_ranges_ghz', 'get_field_phase_centers_rad']
 
 
 def _get_cube_freq_axis(img: str) -> tuple[float, float, str, float, int]:
@@ -163,6 +163,75 @@ def freq_selection_to_channels(img: str, selection: str) -> list[int] | list[str
         channels = ['NONE']
 
     return channels
+
+
+def chan_ranges_to_freq_ranges_ghz(
+    chan_ranges: list[tuple[int, int]],
+    chan_freqs_hz: numpy.ndarray | list[float] | tuple[float, ...] | None,
+) -> list[tuple[float, float]]:
+    """
+    Convert channel index ranges into frequency ranges in GHz.
+
+    Args:
+        chan_ranges: Inclusive channel-index ranges.
+        chan_freqs_hz: Output-frame channel frequencies in Hz.
+
+    Returns:
+        Inclusive frequency ranges in GHz.
+    """
+    if chan_freqs_hz is None:
+        return []
+    freq = numpy.asarray(chan_freqs_hz, dtype=numpy.float64).ravel()
+    nchan = int(freq.size)
+    if nchan == 0:
+        return []
+    out = []
+    for lo, hi in chan_ranges:
+        a = max(0, min(int(lo), nchan - 1))
+        b = max(0, min(int(hi), nchan - 1))
+        if b < a:
+            a, b = b, a
+        f0 = float(freq[a]) * 1.0e-9
+        f1 = float(freq[b]) * 1.0e-9
+        if f1 < f0:
+            f0, f1 = f1, f0
+        out.append((f0, f1))
+    return out
+
+
+def get_field_phase_centers_rad(fields_or_vis) -> dict[int, tuple[float, float]]:
+    """
+    Return field phase centers in radians from imported field objects or a FIELD table.
+
+    Args:
+        fields_or_vis: Iterable of pipeline Field objects or an MS path.
+
+    Returns:
+        Mapping of field id to ``(ra_rad, dec_rad)``.
+    """
+    if isinstance(fields_or_vis, str):
+        with casa_tools.TableReader(fields_or_vis + '/FIELD') as tb:
+            phase_dir = numpy.asarray(tb.getcol('PHASE_DIR'), dtype=numpy.float64)
+        if phase_dir.ndim == 3:
+            ra = phase_dir[0, 0, :]
+            dec = phase_dir[1, 0, :]
+        elif phase_dir.ndim == 2:
+            ra = phase_dir[0, :]
+            dec = phase_dir[1, :]
+        else:
+            raise RuntimeError('Unexpected FIELD/PHASE_DIR shape')
+        return {int(i): (float(ra[i]), float(dec[i])) for i in range(ra.size)}
+
+    phase_centers = {}
+    for field in fields_or_vis:
+        mdirection = getattr(field, 'mdirection', None)
+        if mdirection is None:
+            continue
+        phase_centers[int(field.id)] = (
+            float(mdirection['m0']['value']),
+            float(mdirection['m1']['value']),
+        )
+    return phase_centers
 
 
 def spw_intersect(spw_range: list[float], line_regions: list[list[float]]) -> list[list[float]]:

@@ -14,14 +14,10 @@ from typing import Any
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.mpihelpers as mpihelpers
-import pipeline.infrastructure.sessionutils as sessionutils
-import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
-from pipeline.infrastructure import task_registry
-
-from .resultobjects import FindROIResult
+from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure.utils import imaging
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -106,13 +102,6 @@ def _profile_logf(log_dir: str | None, fmt: str, *args: Any) -> None:
 def _set_profile_default_dir(log_dir: str | None) -> None:
     global _PROFILE_DEFAULT_DIR
     _PROFILE_DEFAULT_DIR = log_dir
-
-KNOWN_EPHEMERIS_SOURCE_NAMES = {
-    'VENUS', 'MARS', 'JUPITER', 'URANUS', 'NEPTUNE',
-    'PLUTO', 'IO', 'EUROPA', 'GANYMEDE', 'CALLISTO',
-    'TITAN', 'TRITON', 'CERES', 'PALLAS', 'VESTA',
-    'JUNO', 'VICTORIA', 'DAVIDA',
-}
 _UID_RE = re.compile(r'(uid://[A-Za-z0-9_./:-]+|uid___[A-Za-z0-9_]+)')
 
 GridDiag = dict
@@ -135,53 +124,21 @@ def _get_tb() -> Any:
     return tb_obj
 
 
-def _get_msmd() -> Any:
-    '''Return the CASA msmetadata tool from the interactive namespace.'''
-    msmd_obj = getattr(_main, 'msmd', None)
-    if msmd_obj is None:
-        try:
-            from casatools import msmetadata as msmdtool
-        except Exception as exc:
-            raise RuntimeError('msmd is not defined; run inside CASA with msmd available.') from exc
-        msmd_obj = msmdtool()
-        setattr(_main, 'msmd', msmd_obj)
-    return msmd_obj
-
-
-def _get_mstransform() -> Any:
-    '''Return the CASA mstransform task from the interactive namespace.'''
-    task = getattr(_main, 'mstransform', None)
-    if task is None:
-        try:
-            from casatasks import mstransform as mst
-        except Exception as exc:
-            raise RuntimeError('mstransform is not defined; run inside CASA with mstransform available.') from exc
-        task = mst
-        setattr(_main, 'mstransform', task)
-    return task
-
-
-def _get_ms() -> Any:
-    '''Return the CASA ms tool from the interactive namespace.'''
-    ms_obj = getattr(_main, 'ms', None)
-    if ms_obj is None:
-        try:
-            from casatools import ms as mstool
-        except Exception as exc:
-            raise RuntimeError('ms is not defined; run inside CASA with ms available.') from exc
-        ms_obj = mstool()
-        setattr(_main, 'ms', ms_obj)
-    return ms_obj
-
-
 def _sanitize_uid(uid: str) -> str:
     '''Return a filesystem-safe UID prefix.'''
     uid = uid.replace('uid://', 'uid___')
     return re.sub(r'[^A-Za-z0-9_]+', '_', uid).strip('_')
 
 
-def _get_mous_prefix(vis: str) -> str:
-    '''Extract MOUS UID-like token from OBSERVATION table or MS name.'''
+def _get_mous_prefix(context: Any | None, vis: str) -> str:
+    '''Return a stable MOUS-like token for artifact naming.'''
+    if context is not None:
+        try:
+            oussid = str(context.get_oussid())
+        except Exception:
+            oussid = 'unknown'
+        if oussid and oussid != 'unknown':
+            return _sanitize_uid(oussid)
     tb_obj = _get_tb()
     try:
         tb_obj.open(vis + '/OBSERVATION')
@@ -351,10 +308,10 @@ def _resolve_pipeline_vis_list(context: Any, vis: Any) -> list[str]:
         msonly=False,
     )
     if not ms_objects:
-        raise RuntimeError('No suitable measurement sets found for hifa_findroi.')
-    LOG.info('Using data type %s for hifa_findroi.', str(selected_datatype).split('.')[-1])
+        raise RuntimeError('No suitable measurement sets found for hif_findroi.')
+    LOG.info('Using data type %s for hif_findroi.', str(selected_datatype).split('.')[-1])
     if selected_datatype == DataType.RAW:
-        LOG.warning('Falling back to raw data for hifa_findroi.')
+        LOG.warning('Falling back to raw data for hif_findroi.')
     return [ms.name for ms in ms_objects.keys()]
 
 
@@ -400,7 +357,7 @@ def _context_field_groups_by_source_id(
             selected_fields.append(field_obj)
     if not selected_fields:
         if explicit_fields is not None:
-            raise RuntimeError(f'No fields matched hifa_findroi field={field!r} for {vis}.')
+            raise RuntimeError(f'No fields matched hif_findroi field={field!r} for {vis}.')
         return None
     max_field_id = max(int(f.id) for f in getattr(ms, 'fields', []))
     field_names = [''] * (max_field_id + 1)
@@ -490,8 +447,21 @@ def _lookup_real_spw_id(spw_ids_by_vis: dict[str, int] | None, vis: str, fallbac
     return int(spw_ids_by_vis.get(vis, spw_ids_by_vis.get(os.path.basename(os.path.normpath(vis)), fallback)))
 
 
-def get_spw_id(vis: str, ddid: int = 0) -> int:
+def _chan_freqs_from_spw(spw: Any) -> np.ndarray:
+    chan_freqs = getattr(getattr(spw, 'channels', None), 'chan_freqs', None)
+    if chan_freqs is None:
+        return np.zeros((0,), dtype=np.float64)
+    if isinstance(chan_freqs, np.ndarray):
+        return np.asarray(chan_freqs, dtype=np.float64).ravel()
+    return np.asarray(list(chan_freqs), dtype=np.float64).ravel()
+
+
+def get_spw_id(vis: str, ddid: int = 0, ms: Any | None = None) -> int:
     '''Return SPW id for a given DDID.'''
+    if ms is not None:
+        dd = ms.get_data_description(id=int(ddid))
+        if dd is not None and getattr(dd, 'spw', None) is not None:
+            return int(dd.spw.id)
     tb_obj = _get_tb()
     tb_obj.open(vis + '/DATA_DESCRIPTION')
     spw_id = int(np.asarray(tb_obj.getcol('SPECTRAL_WINDOW_ID')).ravel()[ddid])
@@ -499,9 +469,15 @@ def get_spw_id(vis: str, ddid: int = 0) -> int:
     return spw_id
 
 
-def get_chan_freqs_hz(vis: str, ddid: int = 0) -> np.ndarray:
+def get_chan_freqs_hz(vis: str, ddid: int = 0, ms: Any | None = None) -> np.ndarray:
     '''Return channel frequencies for a given DDID.'''
-    spw_id = get_spw_id(vis, ddid=ddid)
+    if ms is not None:
+        dd = ms.get_data_description(id=int(ddid))
+        if dd is not None and getattr(dd, 'spw', None) is not None:
+            freq = _chan_freqs_from_spw(dd.spw)
+            if freq.size:
+                return freq
+    spw_id = get_spw_id(vis, ddid=ddid, ms=ms)
     tb_obj = _get_tb()
     tb_obj.open(vis + '/SPECTRAL_WINDOW')
     # CHAN_FREQ is a variable-shaped array column in some MSes; getcell is robust.
@@ -510,35 +486,49 @@ def get_chan_freqs_hz(vis: str, ddid: int = 0) -> np.ndarray:
     return freqs
 
 
-def get_ddid_spw_inventory(vis: str) -> list[dict[str, Any]]:
+def get_ddid_spw_inventory(vis: str, ms: Any | None = None) -> list[dict[str, Any]]:
     '''Return DDID/SPW inventory with metadata and row counts.'''
-    tb_obj = _get_tb()
-    tb_obj.open(vis + '/DATA_DESCRIPTION')
-    spw_ids = np.asarray(tb_obj.getcol('SPECTRAL_WINDOW_ID')).ravel().astype(int)
-    tb_obj.close()
-    tb_obj.open(vis + '/SPECTRAL_WINDOW')
-    nchan_all = np.asarray(tb_obj.getcol('NUM_CHAN')).ravel().astype(int)
-    names = np.asarray(tb_obj.getcol('NAME')).ravel()
-    tb_obj.close()
+    if ms is not None:
+        dd_rows = []
+        for dd in getattr(ms, 'data_descriptions', []):
+            spw = getattr(dd, 'spw', None)
+            if spw is None:
+                continue
+            dd_rows.append({
+                'ddid': int(dd.id),
+                'spw_id': int(spw.id),
+                'nchan': int(len(getattr(spw, 'channels', ()))),
+                'name': str(getattr(spw, 'name', '')),
+            })
+        dd_rows.sort(key=lambda row: row['ddid'])
+    else:
+        tb_obj = _get_tb()
+        tb_obj.open(vis + '/DATA_DESCRIPTION')
+        spw_ids = np.asarray(tb_obj.getcol('SPECTRAL_WINDOW_ID')).ravel().astype(int)
+        tb_obj.close()
+        tb_obj.open(vis + '/SPECTRAL_WINDOW')
+        nchan_all = np.asarray(tb_obj.getcol('NUM_CHAN')).ravel().astype(int)
+        names = np.asarray(tb_obj.getcol('NAME')).ravel()
+        tb_obj.close()
+        dd_rows = [{
+            'ddid': int(ddid),
+            'spw_id': int(spw_id),
+            'nchan': int(nchan_all[spw_id]),
+            'name': str(names[spw_id]),
+        } for ddid, spw_id in enumerate(spw_ids)]
     rows = []
+    tb_obj = _get_tb()
     tb_obj.open(vis)
-    for ddid, spw_id in enumerate(spw_ids):
-        nchan = int(nchan_all[spw_id])
-        name = str(names[spw_id])
+    for row in dd_rows:
+        ddid = int(row['ddid'])
         nrows = 0
         try:
-            sub = tb_obj.query(f'DATA_DESC_ID=={int(ddid)}')
+            sub = tb_obj.query(f'DATA_DESC_ID=={ddid}')
             nrows = int(sub.nrows())
             sub.close()
         except Exception:
             nrows = 0
-        rows.append({
-            'ddid': int(ddid),
-            'spw_id': int(spw_id),
-            'nchan': int(nchan),
-            'nrows': int(nrows),
-            'name': name,
-        })
+        rows.append(dict(row, nrows=int(nrows)))
     tb_obj.close()
     return rows
 
@@ -573,69 +563,28 @@ def select_science_ddids(
     return out
 
 
-def get_field_groups_by_source_id(
-    vis: str,
-    intents_filter: tuple[str, ...] | None = None,
-) -> dict[str, Any]:
-    '''Group field IDs by source_id with optional intent filtering.'''
-    tb_obj = _get_tb()
-    tb_obj.open(vis + '/FIELD')
-    field_names = np.asarray(tb_obj.getcol('NAME')).ravel().tolist()
-    source_ids = np.asarray(tb_obj.getcol('SOURCE_ID')).ravel()
-    tb_obj.close()
-
-    intents_per_field = []
-    try:
-        msmd_obj = _get_msmd()
-        msmd_obj.open(vis)
-        for fid in range(msmd_obj.nfields()):
-            intents_per_field.append(set(msmd_obj.intentsforfield(fid)))
-        msmd_obj.close()
-    except Exception:
-        intents_per_field = [set() for _ in range(len(field_names))]
-
-    groups = {}
-    for fid, src_id in enumerate(source_ids):
-        intents = intents_per_field[fid]
-        if intents_filter:
-            if not intents:
-                continue
-            if not any(any(frag in it for frag in intents_filter) for it in intents):
-                continue
-        groups.setdefault(int(src_id), []).append(int(fid))
-
-    source_names: dict[int, str] = {}
-    try:
-        tb_obj = _get_tb()
-        tb_obj.open(vis + '/SOURCE')
-        src_ids = np.asarray(tb_obj.getcol('SOURCE_ID')).ravel().astype(int)
-        src_names = np.asarray(tb_obj.getcol('NAME')).ravel()
-        tb_obj.close()
-        for sid, sname in zip(src_ids, src_names):
-            if int(sid) not in source_names and str(sname):
-                source_names[int(sid)] = str(sname)
-    except Exception:
-        pass
-    for sid, fids in groups.items():
-        if sid not in source_names and fids:
-            source_names[sid] = str(field_names[fids[0]])
-    return {
-        'field_names': field_names,
-        'source_ids': source_ids,
-        'source_names': source_names,
-        'intents_per_field': intents_per_field,
-        'groups': groups,
-    }
-
-
 def get_source_outframes(
     vis: str,
     field_info: dict[str, Any] | None = None,
+    ms: Any | None = None,
 ) -> dict[int, str]:
     '''Return per-source CASA outframe, using SOURCE for ephemeris sources.'''
     source_names: dict[int, str] = {}
     if field_info is not None:
         source_names.update({int(k): str(v) for k, v in field_info.get('source_names', {}).items()})
+
+    out: dict[int, str] = {}
+    if ms is not None:
+        sources = {int(source.id): source for source in getattr(ms, 'sources', [])}
+        source_ids = set(sources.keys()) | set(source_names.keys())
+        if field_info is not None:
+            source_ids.update(int(k) for k in field_info.get('groups', {}).keys())
+        for source_id in sorted(source_ids):
+            source = sources.get(int(source_id))
+            out[int(source_id)] = 'SOURCE' if bool(getattr(source, 'is_eph_obj', False)) else 'LSRK'
+            if source is not None:
+                source_names.setdefault(int(source_id), str(source.name))
+        return out
 
     eph_source_ids: set[int] = set()
     try:
@@ -651,36 +600,46 @@ def get_source_outframes(
         tb_obj.close()
     except Exception:
         pass
-
-    try:
-        tb_obj = _get_tb()
-        tb_obj.open(vis + '/SOURCE')
-        src_ids = np.asarray(tb_obj.getcol('SOURCE_ID')).ravel().astype(int)
-        src_names = np.asarray(tb_obj.getcol('NAME')).ravel()
-        tb_obj.close()
-        for sid, sname in zip(src_ids, src_names):
-            source_names.setdefault(int(sid), str(sname))
-    except Exception:
-        pass
-
-    out: dict[int, str] = {}
-    source_ids = set(source_names.keys())
+    source_ids = set(source_names.keys()) | eph_source_ids
     if field_info is not None:
         source_ids.update(int(k) for k in field_info.get('groups', {}).keys())
-    source_ids.update(eph_source_ids)
     for source_id in sorted(source_ids):
-        source_name = str(source_names.get(int(source_id), ''))
-        is_ephemeris = int(source_id) in eph_source_ids or source_name.upper() in KNOWN_EPHEMERIS_SOURCE_NAMES
-        out[int(source_id)] = 'SOURCE' if is_ephemeris else 'LSRK'
+        out[int(source_id)] = 'SOURCE' if int(source_id) in eph_source_ids else 'LSRK'
     return out
 
 
-def _get_field_ephemeris_info(vis: str, field_id: int) -> tuple[int, str]:
+def _context_field_ephemeris_paths(ms: Any | None) -> dict[int, str]:
+    '''Return FIELD_ID -> ephemeris table path from imported pipeline field/source objects.'''
+    if ms is None:
+        return {}
+    out: dict[int, str] = {}
+    for field_obj in getattr(ms, 'fields', []):
+        source = getattr(field_obj, 'source', None)
+        if source is None or not bool(getattr(source, 'is_eph_obj', False)):
+            continue
+        table_name = str(getattr(source, 'ephemeris_table', '') or '')
+        if not table_name:
+            continue
+        if not table_name.endswith('.tab'):
+            table_name = f'{table_name}.tab'
+        out[int(field_obj.id)] = os.path.join(ms.name, 'FIELD', table_name)
+    return out
+
+
+def _get_field_ephemeris_info(vis: str, field_id: int, ephem_path: str | None = None) -> tuple[int, str]:
     '''Return (ephemeris_id, ephemeris_table_path) for a field.'''
     key = (os.path.abspath(vis), int(field_id))
     cached = _EPHEM_RADVEL_CACHE.get(key)
     if cached is not None:
         path, _, _ = cached
+        base = os.path.basename(path)
+        m = re.match(r'EPHEM(\d+)_', base)
+        eph_id = int(m.group(1)) if m else 0
+        return eph_id, path
+    if ephem_path:
+        path = str(ephem_path)
+        if not os.path.exists(path):
+            raise RuntimeError(f'Ephemeris table {path} does not exist for {vis} field {field_id}')
         base = os.path.basename(path)
         m = re.match(r'EPHEM(\d+)_', base)
         eph_id = int(m.group(1)) if m else 0
@@ -702,13 +661,13 @@ def _get_field_ephemeris_info(vis: str, field_id: int) -> tuple[int, str]:
     return eph_id, matches[0]
 
 
-def _get_ephemeris_radvel_series(vis: str, field_id: int) -> tuple[str, np.ndarray, np.ndarray]:
+def _get_ephemeris_radvel_series(vis: str, field_id: int, ephem_path: str | None = None) -> tuple[str, np.ndarray, np.ndarray]:
     '''Return (ephem_path, mjd, radvel_m_s) for a field ephemeris table.'''
     key = (os.path.abspath(vis), int(field_id))
     cached = _EPHEM_RADVEL_CACHE.get(key)
     if cached is not None:
         return cached
-    _, ephem_path = _get_field_ephemeris_info(vis, field_id)
+    _, ephem_path = _get_field_ephemeris_info(vis, field_id, ephem_path=ephem_path)
     tb_obj = _get_tb()
     tb_obj.open(ephem_path)
     try:
@@ -728,9 +687,10 @@ def _interp_ephemeris_radvel_to_times(
     vis: str,
     field_id: int,
     times_s: np.ndarray,
+    ephem_path: str | None = None,
 ) -> tuple[str, np.ndarray]:
     '''Interpolate ephemeris RadVel onto row TIME values and return (path, v_rad_m_s).'''
-    ephem_path, mjd, radvel_m_s = _get_ephemeris_radvel_series(vis, field_id)
+    ephem_path, mjd, radvel_m_s = _get_ephemeris_radvel_series(vis, field_id, ephem_path=ephem_path)
     t = np.asarray(times_s, dtype=np.float64).ravel()
     if t.size == 0:
         return ephem_path, np.zeros((0,), dtype=np.float64)
@@ -765,6 +725,7 @@ def _build_ephemeris_source_axis_hz(
     field_id: int,
     times_s: np.ndarray,
     chan_freqs_geo_hz: np.ndarray,
+    ephem_path: str | None = None,
 ) -> tuple[np.ndarray, dict[str, Any]]:
     '''Build a common SOURCE axis from the GEO axis using the reference-time RadVel.'''
     geo = np.asarray(chan_freqs_geo_hz, dtype=np.float64).ravel()
@@ -773,9 +734,9 @@ def _build_ephemeris_source_axis_hz(
         raise RuntimeError('Cannot build ephemeris SOURCE axis from an empty GEO axis')
     if t.size == 0:
         raise RuntimeError('Cannot build ephemeris SOURCE axis without row times')
-    ephem_path, row_radvel_m_s = _interp_ephemeris_radvel_to_times(vis, field_id, t)
+    ephem_path, row_radvel_m_s = _interp_ephemeris_radvel_to_times(vis, field_id, t, ephem_path=ephem_path)
     tref_s = float(np.min(t))
-    _, vref = _interp_ephemeris_radvel_to_times(vis, field_id, np.asarray([tref_s], dtype=np.float64))
+    _, vref = _interp_ephemeris_radvel_to_times(vis, field_id, np.asarray([tref_s], dtype=np.float64), ephem_path=ephem_path)
     ref_freq_hz = float(np.median(geo))
     shift_ref_hz = float(_ephemeris_geo_to_source_shift_hz(ref_freq_hz, vref)[0])
     src = geo + shift_ref_hz
@@ -799,6 +760,7 @@ def _apply_ephemeris_geo_to_source_correction(
     chan_freqs_geo_hz: np.ndarray,
     chan_freqs_source_hz: np.ndarray,
     log_dir: str | None = None,
+    ephem_path: str | None = None,
 ) -> tuple[dict[str, np.ndarray], dict[str, Any]]:
     '''Resample GEO-frame visibilities onto a common SOURCE grid using per-time RadVel.'''
     out = dict(preloaded)
@@ -810,7 +772,7 @@ def _apply_ephemeris_geo_to_source_correction(
         raise RuntimeError('Expected preloaded V to be 2D [row, chan] for ephemeris correction')
     if v_in.shape[1] != geo.size or src.size != geo.size:
         raise RuntimeError('Ephemeris spectral axis size mismatch')
-    ephem_path, row_radvel_m_s = _interp_ephemeris_radvel_to_times(vis, field_id, times)
+    ephem_path, row_radvel_m_s = _interp_ephemeris_radvel_to_times(vis, field_id, times, ephem_path=ephem_path)
     u_times, inv = np.unique(times, return_inverse=True)
     _, idx_first = np.unique(inv, return_index=True)
     group_radvel_m_s = row_radvel_m_s[idx_first]
@@ -864,8 +826,12 @@ def _apply_ephemeris_geo_to_source_correction(
     return out, diag
 
 
-def get_antenna_diameter_m(vis: str) -> float:
+def get_antenna_diameter_m(vis: str, ms: Any | None = None) -> float:
     '''Return the median antenna diameter in meters.'''
+    if ms is not None and getattr(ms, 'antenna_array', None) is not None:
+        diameters = np.asarray([ant.diameter for ant in getattr(ms.antenna_array, 'antennas', [])], dtype=np.float64)
+        if diameters.size:
+            return float(np.median(diameters))
     tb_obj = _get_tb()
     tb_obj.open(vis + '/ANTENNA')
     d = np.asarray(tb_obj.getcol('DISH_DIAMETER'), dtype=np.float64).ravel()
@@ -873,9 +839,9 @@ def get_antenna_diameter_m(vis: str) -> float:
     return float(np.median(d)) if d.size else 12.0
 
 
-def estimate_pb_fwhm_arcsec(vis: str, ref_freq_hz: float) -> float:
+def estimate_pb_fwhm_arcsec(vis: str, ref_freq_hz: float, ms: Any | None = None) -> float:
     '''Estimate primary-beam FWHM in arcseconds.'''
-    dish_diameter_m = get_antenna_diameter_m(vis)
+    dish_diameter_m = get_antenna_diameter_m(vis, ms=ms)
     wavelength_m = C / ref_freq_hz
     theta_rad = 1.13 * wavelength_m / dish_diameter_m
     return theta_rad * 206265.0
@@ -886,21 +852,13 @@ def _wrap_pm_pi(angle_rad: np.ndarray | float) -> np.ndarray | float:
     return (np.asarray(angle_rad) + np.pi) % (2.0 * np.pi) - np.pi
 
 
-def get_field_phase_centers_rad(vis: str) -> dict[int, tuple[float, float]]:
-    '''Return J2000-like phase centers from the FIELD table in radians.'''
-    tb_obj = _get_tb()
-    tb_obj.open(vis + '/FIELD')
-    phase_dir = np.asarray(tb_obj.getcol('PHASE_DIR'), dtype=np.float64)
-    tb_obj.close()
-    if phase_dir.ndim == 3:
-        ra = phase_dir[0, 0, :]
-        dec = phase_dir[1, 0, :]
-    elif phase_dir.ndim == 2:
-        ra = phase_dir[0, :]
-        dec = phase_dir[1, :]
-    else:
-        raise RuntimeError('Unexpected FIELD/PHASE_DIR shape')
-    return {int(i): (float(ra[i]), float(dec[i])) for i in range(ra.size)}
+def get_field_phase_centers_rad(vis: str, ms: Any | None = None) -> dict[int, tuple[float, float]]:
+    '''Return phase centers in radians, preferring imported field domain objects.'''
+    if ms is not None:
+        phase_centers = imaging.get_field_phase_centers_rad(getattr(ms, 'fields', []))
+        if phase_centers:
+            return phase_centers
+    return imaging.get_field_phase_centers_rad(vis)
 
 
 def _reference_center_rad(
@@ -2284,24 +2242,7 @@ def _chan_ranges_to_frame_freq_ranges_ghz(
     chan_freqs_hz: np.ndarray | None,
 ) -> list[tuple[float, float]]:
     '''Convert channel ranges into output-frame frequency ranges in GHz.'''
-    if chan_freqs_hz is None:
-        return []
-    freq = np.asarray(chan_freqs_hz, dtype=np.float64).ravel()
-    nchan = int(freq.size)
-    if nchan == 0:
-        return []
-    out: list[tuple[float, float]] = []
-    for lo, hi in chan_ranges:
-        a = max(0, min(int(lo), nchan - 1))
-        b = max(0, min(int(hi), nchan - 1))
-        if b < a:
-            a, b = b, a
-        f0 = float(freq[a]) * 1.0e-9
-        f1 = float(freq[b]) * 1.0e-9
-        if f1 < f0:
-            f0, f1 = f1, f0
-        out.append((f0, f1))
-    return out
+    return imaging.chan_ranges_to_freq_ranges_ghz(chan_ranges, chan_freqs_hz)
 
 
 def _fmt_frame_freq_ranges(
@@ -2952,12 +2893,11 @@ def _prepare_regridded_ms(
     timebin_sec: float | None,
     tmp_root: str,
     tag: str,
+    executor: Any | None = None,
     overwrite: bool = True,
 ) -> tuple[str, str, float, float]:
     '''Create outframe-regridded MS files.'''
     t_profile_total = time.perf_counter()
-    mstransform = _get_mstransform()
-    ms_tool = _get_ms()
     is_ephem = str(outframe).upper() == 'SOURCE'
     bin_ms = os.path.join(tmp_root, f'tmp_{tag}_bin.ms')
     frame_token = 'geo' if is_ephem else str(outframe).lower()
@@ -2969,7 +2909,7 @@ def _prepare_regridded_ms(
             shutil.rmtree(regridded_ms)
     t0 = time.perf_counter()
     if is_ephem:
-        mstransform(
+        job = casa_tasks.mstransform(
             vis=vis,
             outputvis=bin_ms,
             datacolumn='DATA',
@@ -2978,22 +2918,32 @@ def _prepare_regridded_ms(
             spw=str(spw_id),
             keepflags=False,
         )
+        if executor is None:
+            job.execute()
+        else:
+            executor.execute(job)
         bin_source = bin_ms
         bin_ms_out = bin_ms
         t1 = time.perf_counter()
-        shutil.copytree(bin_source, regridded_ms)
-        ms_tool.open(regridded_ms, nomodify=False)
-        try:
-            ms_tool.regridspw(outframe='GEO', mode='chan', interpolation='LINEAR', hanning=False)
-        finally:
-            ms_tool.close()
+        job = casa_tasks.mstransform(
+            vis=bin_source,
+            outputvis=regridded_ms,
+            datacolumn='DATA',
+            regridms=True,
+            outframe='GEO',
+            keepflags=False,
+        )
+        if executor is None:
+            job.execute()
+        else:
+            executor.execute(job)
     else:
         if timebin_sec is None:
             bin_source = vis
             bin_ms_out = vis
             t1 = t0
         else:
-            mstransform(
+            job = casa_tasks.mstransform(
                 vis=vis,
                 outputvis=bin_ms,
                 datacolumn='DATA',
@@ -3002,6 +2952,10 @@ def _prepare_regridded_ms(
                 spw=str(spw_id),
                 keepflags=False,
             )
+            if executor is None:
+                job.execute()
+            else:
+                executor.execute(job)
             bin_source = bin_ms
             bin_ms_out = bin_ms
             t1 = time.perf_counter()
@@ -3015,7 +2969,11 @@ def _prepare_regridded_ms(
         )
         if timebin_sec is None:
             kwargs['spw'] = str(spw_id)
-        mstransform(**kwargs)
+        job = casa_tasks.mstransform(**kwargs)
+        if executor is None:
+            job.execute()
+        else:
+            executor.execute(job)
     t2 = time.perf_counter()
     _profile_logf(tmp_root, 'prepare_regridded_ms tag=%s spw_id=%s outframe=%s timebin=%s dt_bin=%.3f dt_regrid=%.3f dt_total=%.3f', tag, spw_id, outframe, str(timebin_sec), (t1 - t0), (t2 - t1), (t2 - t_profile_total))
     return bin_ms_out, regridded_ms, (t1 - t0), (t2 - t1)
@@ -3476,8 +3434,12 @@ def _process_spw(
     ddid: int,
     spw_name: str,
     spw_ids_by_vis: dict[str, int] | None,
+    fallback_spw_id: int,
     field_groups: dict[int, list[int]],
     common_geometry_plan: dict[int, dict[str, Any]] | None = None,
+    source_outframe: dict[int, str] | None = None,
+    field_phase_centers: dict[int, tuple[float, float]] | None = None,
+    field_ephemeris_paths: dict[int, str] | None = None,
     prefix: str | None = None,
     timebin_sec: float = 240,
     npix: int = 256,
@@ -3499,6 +3461,7 @@ def _process_spw(
     uv_taper_auto: bool = True,
     uv_taper_sigma_uv: float | None = None,
     uv_taper_fwhm_cell: float = 2.0,
+    executor: Any | None = None,
 ) -> dict[str, Any]:
     '''Process one SPW and return per-field spectra and evidence.'''
     t_all = time.perf_counter()
@@ -3506,7 +3469,7 @@ def _process_spw(
     _set_profile_default_dir(tmp_dir)
     _rank_logf(tmp_dir, '[rank %s/%s] start spw=%s ddid=%s', rank, size, spw_name, ddid)
     vis0 = vis_list[0]
-    spw_id = _lookup_real_spw_id(spw_ids_by_vis, vis0, get_spw_id(vis0, ddid=ddid))
+    spw_id = _lookup_real_spw_id(spw_ids_by_vis, vis0, int(fallback_spw_id))
     prefix_str = f'{prefix}_' if prefix else ''
     tag = f'{prefix_str}spw{spw_id}'
 
@@ -3514,8 +3477,9 @@ def _process_spw(
     _profile_logf(tmp_dir, 'process_spw start spw=%s ddid=%s n_vis=%s n_sources=%s', spw_name, ddid, len(vis_list), len(field_groups))
     spectra_by_source = {sid: {} for sid in field_groups.keys()}
     source_is_mosaic = {int(source_id): (len(field_ids) > 1) for source_id, field_ids in field_groups.items()}
-    source_outframe = get_source_outframes(vis0, {'groups': field_groups})
-    field_phase_centers = get_field_phase_centers_rad(vis0)
+    source_outframe = {int(k): str(v) for k, v in (source_outframe or {}).items()} or get_source_outframes(vis0, {'groups': field_groups})
+    field_phase_centers = dict(field_phase_centers or {}) or get_field_phase_centers_rad(vis0)
+    field_ephemeris_paths = {int(k): str(v) for k, v in (field_ephemeris_paths or {}).items()}
     source_stitch_meta: dict[int, dict[str, Any]] = {}
     source_stitch_states: dict[int, dict[str, Any]] = {}
     source_regridded_ms_paths: dict[int, list[str]] = {int(source_id): [] for source_id in field_groups.keys()}
@@ -3539,6 +3503,7 @@ def _process_spw(
                     timebin_sec,
                     tmp_dir,
                     frame_tag,
+                    executor=executor,
                     overwrite=tmp_overwrite,
                 )
                 ms_cache[cache_key] = (regridded_ms, float(dt_bin), float(dt_regrid))
@@ -3593,6 +3558,7 @@ def _process_spw(
                     axis_field_id,
                     axis_preloaded['TIME'],
                     chan_freqs_geo_hz,
+                    ephem_path=field_ephemeris_paths.get(int(axis_field_id)),
                 )
             else:
                 chan_freqs_hz = chan_freqs_geo_hz.copy()
@@ -3632,6 +3598,7 @@ def _process_spw(
                     chan_freqs_geo_hz,
                     chan_freqs_hz,
                     log_dir=tmp_dir,
+                    ephem_path=field_ephemeris_paths.get(int(field_id)),
                 )
             d_preload['ref_freq_hz'] = ref_freq_hz
             d_preload['lam'] = C / ref_freq_hz
@@ -3955,6 +3922,7 @@ def _process_spw(
 def run_findroi_mpi(
     vis: str | list[str],
     context: Any | None = None,
+    executor: Any | None = None,
     timebin_sec: float = 240,
     min_nchan: int = 128,
     field: str | int | list[int] | None = 'target',
@@ -3995,6 +3963,8 @@ def run_findroi_mpi(
     verbose: bool = True,
 ) -> dict[str, Any] | None:
     '''Run MPI-parallel findROI processing and return the stage product.'''
+    if context is None:
+        raise RuntimeError('hif_findroi requires pipeline context from importdata.')
     t_run = time.perf_counter()
     if evidence_thr is not None:
         pos_evidence_thr = float(evidence_thr)
@@ -4004,12 +3974,15 @@ def run_findroi_mpi(
     _rank_logf(tmp_dir, '[run] start findroi')
 
     t_inv = time.perf_counter()
-    vis_list = _resolve_pipeline_vis_list(context, vis) if context is not None else resolve_vis_list(vis)
-    prefix = _get_mous_prefix(vis_list[0])
+    vis_list = _resolve_pipeline_vis_list(context, vis)
+    ms0 = _context_ms_for_vis(context, vis_list[0])
+    if ms0 is None:
+        raise RuntimeError(f'No pipeline MeasurementSet found in context for {vis_list[0]}.')
+    prefix = _get_mous_prefix(context, vis_list[0])
 
     # Temporary hard switch for 7m/12m-specific heuristics.
     # Keep this simple so it can later be replaced by pipeline Context.
-    dish_diameter_m = float(get_antenna_diameter_m(vis_list[0]))
+    dish_diameter_m = float(get_antenna_diameter_m(vis_list[0], ms=ms0))
     array = '7m' if dish_diameter_m < 9.0 else '12m'
     if array == '7m':
         npix_eff = 128
@@ -4023,27 +3996,26 @@ def run_findroi_mpi(
         uv_taper_auto_eff = bool(uv_taper_auto)
         uv_taper_sigma_uv_eff = uv_taper_sigma_uv
         timebin_sec_eff = timebin_sec
-    inv = get_ddid_spw_inventory(vis_list[0])
+    inv = get_ddid_spw_inventory(vis_list[0], ms=ms0)
     sci = select_science_ddids(inv, min_nchan=min_nchan)
     sci = _filter_science_ddids(inv, sci, spw, context, vis_list[0])
     if not sci:
-        raise RuntimeError(f'No science SPWs selected for hifa_findroi spw={spw!r}.')
+        raise RuntimeError(f'No science SPWs selected for hif_findroi spw={spw!r}.')
     spw_names = {r['ddid']: r['name'] for r in inv}
     ddid_rows = {int(r['ddid']): r for r in inv}
-    ms0 = _context_ms_for_vis(context, vis_list[0])
     sci_spw = []
     for ddid in sci:
         row = ddid_rows[int(ddid)]
         virtual_spw_id = int(row['spw_id'])
-        if context is not None and ms0 is not None:
-            mapped = context.observing_run.real2virtual_spw_id(int(row['spw_id']), ms0)
-            if mapped is not None:
-                virtual_spw_id = int(mapped)
+        mapped = context.observing_run.real2virtual_spw_id(int(row['spw_id']), ms0)
+        if mapped is not None:
+            virtual_spw_id = int(mapped)
         sci_spw.append((int(ddid), spw_names.get(int(ddid), ''), virtual_spw_id))
-    all_field_info = _context_field_groups_by_source_id(context, vis_list[0], None) if context is not None else None
+    all_field_info = _context_field_groups_by_source_id(context, vis_list[0], None)
     if all_field_info is None:
-        all_field_info = get_field_groups_by_source_id(vis_list[0], intents_filter=None)
-    project_outframes = get_source_outframes(vis_list[0], all_field_info)
+        raise RuntimeError(f'No field/source information found in context for {vis_list[0]}.')
+    project_outframes = get_source_outframes(vis_list[0], all_field_info, ms=ms0)
+    field_ephemeris_paths = _context_field_ephemeris_paths(ms0)
     project_has_ephemeris = any(str(v).upper() == 'SOURCE' for v in project_outframes.values())
     if project_has_ephemeris:
         timebin_sec_eff = None
@@ -4061,41 +4033,19 @@ def run_findroi_mpi(
     explicit_field_ids = _field_ids_from_input(
         vis_list[0],
         field,
-        getattr(ms0, 'fields', []) if ms0 is not None else None,
+        getattr(ms0, 'fields', []),
     )
     if field is None or field == 'target' or field == 'target_groups':
-        field_info = _context_field_groups_by_source_id(context, vis_list[0], field) if context is not None else None
+        field_info = _context_field_groups_by_source_id(context, vis_list[0], field)
         if field_info is None:
-            field_info = get_field_groups_by_source_id(
-                vis_list[0],
-                intents_filter=('TARGET', 'OBSERVE_TARGET', 'SCIENCE'),
-            )
+            raise RuntimeError(f'No target fields found in context for {vis_list[0]}.')
         field_groups = field_info['groups']
-    elif context is not None:
-        context_field_info = _context_field_groups_by_source_id(context, vis_list[0], field) if context is not None else None
-        if context_field_info is not None:
-            field_info = context_field_info
-            field_groups = field_info['groups']
-        else:
-            raise RuntimeError(f'No fields matched hifa_findroi field={field!r} for {vis_list[0]}.')
     else:
-        if not explicit_field_ids:
-            raise RuntimeError(f'No fields matched hifa_findroi field={field!r} for {vis_list[0]}.')
-        source_ids = np.asarray(all_field_info.get('source_ids', np.array([], dtype=int)), dtype=int)
-        field_groups: dict[int, list[int]] = {}
-        source_names = {int(k): str(v) for k, v in all_field_info.get('source_names', {}).items()}
-        # Preserve native source grouping even when running without pipeline Context.
-        for field_id in explicit_field_ids:
-            source_id = int(source_ids[int(field_id)]) if int(field_id) < len(source_ids) else 0
-            field_groups.setdefault(source_id, []).append(int(field_id))
-            source_names.setdefault(source_id, _field_name_for_id(all_field_info.get('field_names', []), int(field_id)))
-        field_info = {
-            'field_names': all_field_info.get('field_names', []),
-            'source_ids': source_ids,
-            'source_names': source_names,
-            'intents_per_field': all_field_info.get('intents_per_field', []),
-            'groups': {sid: sorted(fids) for sid, fids in field_groups.items()},
-        }
+        context_field_info = _context_field_groups_by_source_id(context, vis_list[0], field)
+        if context_field_info is None:
+            raise RuntimeError(f'No fields matched hif_findroi field={field!r} for {vis_list[0]}.')
+        field_info = context_field_info
+        field_groups = field_info['groups']
     dt_inventory = time.perf_counter() - t_inv
     science_rows = []
     for row in inv:
@@ -4103,12 +4053,12 @@ def run_findroi_mpi(
             continue
         row_use = dict(row)
         try:
-            chan_freqs_hz = get_chan_freqs_hz(vis_list[0], ddid=int(row['ddid']))
+            chan_freqs_hz = get_chan_freqs_hz(vis_list[0], ddid=int(row['ddid']), ms=ms0)
             row_use['ref_freq_hz'] = float(np.median(np.asarray(chan_freqs_hz, dtype=np.float64)))
         except Exception:
             continue
         science_rows.append(row_use)
-    field_phase_centers = get_field_phase_centers_rad(vis_list[0])
+    field_phase_centers = get_field_phase_centers_rad(vis_list[0], ms=ms0)
     common_geometry_plan = {
         int(source_id): _source_common_geometry_plan(
             vis=vis_list[0],
@@ -4139,14 +4089,15 @@ def run_findroi_mpi(
             fallback_spw_id=int(ddid_rows[int(ddid)]['spw_id']),
         )
         args.append((
-            vis_list, ddid, spw_name, spw_ids_by_vis, field_groups, common_geometry_plan, prefix,
+            vis_list, ddid, spw_name, spw_ids_by_vis, int(ddid_rows[int(ddid)]['spw_id']), field_groups,
+            common_geometry_plan, project_outframes, field_phase_centers, field_ephemeris_paths, prefix,
             timebin_sec_eff, npix_eff, fov_pb_mult_eff,
             ref_sigma, mom0_thresh_sigma, gate_sigma,
             ref_zero_frac_thr, mom0_zero_frac_thr,
             ref_smooth_width, mom0_smooth_width,
             neg_extent_delta_thr, neg_extent_trim_frac,
             tmp_dir, tmp_overwrite, verbose, save_moment0, save_cube,
-            uv_taper_auto_eff, uv_taper_sigma_uv_eff, uv_taper_fwhm_cell,
+            uv_taper_auto_eff, uv_taper_sigma_uv_eff, uv_taper_fwhm_cell, executor,
         ))
 
     spw_results = None
@@ -4520,14 +4471,14 @@ def _stage_token(context: Any) -> str:
     return re.sub(r'[^A-Za-z0-9_]+', '_', str(raw)).strip('_') or 'unknown'
 
 
-def _default_tmp_dir(context: Any, output_dir: str | None, tmp_dir: str | None) -> str:
+def default_tmp_dir(context: Any, output_dir: str | None, tmp_dir: str | None) -> str:
     if tmp_dir not in (None, ''):
         return os.path.abspath(str(tmp_dir))
     root = output_dir or getattr(context, 'output_dir', '.') or '.'
-    return os.path.abspath(os.path.join(root, f'hifa_findroi_stage{_stage_token(context)}'))
+    return os.path.abspath(os.path.join(root, f'hif_findroi_stage{_stage_token(context)}'))
 
 
-def _summarize_stage_product(stage_product: dict[str, Any]) -> dict[str, Any]:
+def summarize_stage_product(stage_product: dict[str, Any]) -> dict[str, Any]:
     fields = stage_product.get('products', {}).get('fields', {})
     spws = stage_product.get('inventory', {}).get('science_spws', {})
     counts = stage_product.get('metadata', {}).get('counts', {})
@@ -4554,212 +4505,3 @@ def _summarize_stage_product(stage_product: dict[str, Any]) -> dict[str, Any]:
         'n_roi_with_continuum': int(n_roi_with_cont),
         'total_run_s': timing.get('total_run_s'),
     }
-
-
-class FindROIInputs(vdp.StandardInputs):
-    """Inputs for the hifa_findroi stage."""
-
-    processing_data_type = [
-        DataType.SELFCAL_CONTLINE_SCIENCE,
-        DataType.REGCAL_CONTLINE_SCIENCE,
-        DataType.REGCAL_CONTLINE_ALL,
-        DataType.RAW,
-    ]
-
-    timebin_sec = vdp.VisDependentProperty(default=240)
-    min_nchan = vdp.VisDependentProperty(default=128)
-    field = vdp.VisDependentProperty(default='target')
-    spw = vdp.VisDependentProperty(default='')
-    npix = vdp.VisDependentProperty(default=256)
-    fov_pb_mult = vdp.VisDependentProperty(default=1.5)
-    ref_sigma = vdp.VisDependentProperty(default=3.0)
-    mom0_thresh_sigma = vdp.VisDependentProperty(default=5.0)
-    gate_sigma = vdp.VisDependentProperty(default=1.0)
-    pos_evidence_thr = vdp.VisDependentProperty(default=5.0)
-    neg_evidence_thr = vdp.VisDependentProperty(default=7.0)
-    evidence_thr = vdp.VisDependentProperty(default=None)
-    evidence_bin_scales = vdp.VisDependentProperty(default=(1, 2, 3, 4, 5, 6, 8, 10, 20, 40, 60, 80))
-    ref_zero_frac_thr = vdp.VisDependentProperty(default=0.05)
-    mom0_zero_frac_thr = vdp.VisDependentProperty(default=0.05)
-    ref_smooth_width = vdp.VisDependentProperty(default=4)
-    mom0_smooth_width = vdp.VisDependentProperty(default=4)
-    neg_extent_delta_thr = vdp.VisDependentProperty(default=5.0)
-    neg_extent_trim_frac = vdp.VisDependentProperty(default=0.10)
-    acf_edge_trim_frac = vdp.VisDependentProperty(default=0.10)
-    acf_smooth_frac = vdp.VisDependentProperty(default=0.20)
-    fwhm_global_fallback_factor = vdp.VisDependentProperty(default=5.0)
-    fwhm_min_chan = vdp.VisDependentProperty(default=4)
-    rolling_rms_window = vdp.VisDependentProperty(default=10)
-    rolling_rms_target_unsmoothed = vdp.VisDependentProperty(default=0.87)
-    rolling_rms_target_smoothed = vdp.VisDependentProperty(default=0.66)
-    uv_taper_auto = vdp.VisDependentProperty(default=True)
-    uv_taper_sigma_uv = vdp.VisDependentProperty(default=None)
-    uv_taper_fwhm_cell = vdp.VisDependentProperty(default=2.0)
-    roi_thresh = vdp.VisDependentProperty(default=7.0)
-    roi_cont_thresh = vdp.VisDependentProperty(default=7.0)
-    tmp_dir = vdp.VisDependentProperty(default='')
-    tmp_overwrite = vdp.VisDependentProperty(default=True)
-    save_moment0 = vdp.VisDependentProperty(default=True)
-    save_cube = vdp.VisDependentProperty(default=False)
-    save_results_path = vdp.VisDependentProperty(default=None)
-    verbose = vdp.VisDependentProperty(default=True)
-    parallel = sessionutils.parallel_inputs_impl()
-
-    # docstring and type hints: supplements hifa_findroi
-    def __init__(
-        self,
-        context,
-        output_dir=None,
-        vis=None,
-        field=None,
-        spw=None,
-        parallel=None,
-        timebin_sec=None,
-        min_nchan=None,
-        npix=None,
-        fov_pb_mult=None,
-        ref_sigma=None,
-        mom0_thresh_sigma=None,
-        gate_sigma=None,
-        pos_evidence_thr=None,
-        neg_evidence_thr=None,
-        evidence_thr=None,
-        evidence_bin_scales=None,
-        ref_zero_frac_thr=None,
-        mom0_zero_frac_thr=None,
-        ref_smooth_width=None,
-        mom0_smooth_width=None,
-        neg_extent_delta_thr=None,
-        neg_extent_trim_frac=None,
-        acf_edge_trim_frac=None,
-        acf_smooth_frac=None,
-        fwhm_global_fallback_factor=None,
-        fwhm_min_chan=None,
-        rolling_rms_window=None,
-        rolling_rms_target_unsmoothed=None,
-        rolling_rms_target_smoothed=None,
-        uv_taper_auto=None,
-        uv_taper_sigma_uv=None,
-        uv_taper_fwhm_cell=None,
-        roi_thresh=None,
-        roi_cont_thresh=None,
-        tmp_dir=None,
-        tmp_overwrite=None,
-        save_moment0=None,
-        save_cube=None,
-        save_results_path=None,
-        verbose=None,
-    ):
-        super().__init__()
-        self.context = context
-        self.output_dir = output_dir
-        self.vis = vis
-        self.field = field
-        self.spw = spw
-        self.parallel = parallel
-        self.timebin_sec = timebin_sec
-        self.min_nchan = min_nchan
-        self.npix = npix
-        self.fov_pb_mult = fov_pb_mult
-        self.ref_sigma = ref_sigma
-        self.mom0_thresh_sigma = mom0_thresh_sigma
-        self.gate_sigma = gate_sigma
-        self.pos_evidence_thr = pos_evidence_thr
-        self.neg_evidence_thr = neg_evidence_thr
-        self.evidence_thr = evidence_thr
-        self.evidence_bin_scales = evidence_bin_scales
-        self.ref_zero_frac_thr = ref_zero_frac_thr
-        self.mom0_zero_frac_thr = mom0_zero_frac_thr
-        self.ref_smooth_width = ref_smooth_width
-        self.mom0_smooth_width = mom0_smooth_width
-        self.neg_extent_delta_thr = neg_extent_delta_thr
-        self.neg_extent_trim_frac = neg_extent_trim_frac
-        self.acf_edge_trim_frac = acf_edge_trim_frac
-        self.acf_smooth_frac = acf_smooth_frac
-        self.fwhm_global_fallback_factor = fwhm_global_fallback_factor
-        self.fwhm_min_chan = fwhm_min_chan
-        self.rolling_rms_window = rolling_rms_window
-        self.rolling_rms_target_unsmoothed = rolling_rms_target_unsmoothed
-        self.rolling_rms_target_smoothed = rolling_rms_target_smoothed
-        self.uv_taper_auto = uv_taper_auto
-        self.uv_taper_sigma_uv = uv_taper_sigma_uv
-        self.uv_taper_fwhm_cell = uv_taper_fwhm_cell
-        self.roi_thresh = roi_thresh
-        self.roi_cont_thresh = roi_cont_thresh
-        self.tmp_dir = tmp_dir
-        self.tmp_overwrite = tmp_overwrite
-        self.save_moment0 = save_moment0
-        self.save_cube = save_cube
-        self.save_results_path = save_results_path
-        self.verbose = verbose
-
-
-@task_registry.set_equivalent_casa_task('hifa_findroi')
-class FindROI(basetask.StandardTaskTemplate):
-    Inputs = FindROIInputs
-
-    is_multi_vis_task = True
-
-    def prepare(self):
-        inputs = self.inputs
-        tmp_dir = _default_tmp_dir(inputs.context, inputs.output_dir, inputs.tmp_dir)
-        LOG.info('Writing hifa_findroi artifacts under %s', tmp_dir)
-
-        stage_product = run_findroi_mpi(
-            vis=inputs.vis,
-            context=inputs.context,
-            timebin_sec=inputs.timebin_sec,
-            min_nchan=inputs.min_nchan,
-            field=inputs.field,
-            spw=inputs.spw,
-            npix=inputs.npix,
-            fov_pb_mult=inputs.fov_pb_mult,
-            ref_sigma=inputs.ref_sigma,
-            mom0_thresh_sigma=inputs.mom0_thresh_sigma,
-            gate_sigma=inputs.gate_sigma,
-            pos_evidence_thr=inputs.pos_evidence_thr,
-            neg_evidence_thr=inputs.neg_evidence_thr,
-            evidence_thr=inputs.evidence_thr,
-            evidence_bin_scales=tuple(inputs.evidence_bin_scales),
-            ref_zero_frac_thr=inputs.ref_zero_frac_thr,
-            mom0_zero_frac_thr=inputs.mom0_zero_frac_thr,
-            ref_smooth_width=inputs.ref_smooth_width,
-            mom0_smooth_width=inputs.mom0_smooth_width,
-            neg_extent_delta_thr=inputs.neg_extent_delta_thr,
-            neg_extent_trim_frac=inputs.neg_extent_trim_frac,
-            acf_edge_trim_frac=inputs.acf_edge_trim_frac,
-            acf_smooth_frac=inputs.acf_smooth_frac,
-            fwhm_global_fallback_factor=inputs.fwhm_global_fallback_factor,
-            fwhm_min_chan=inputs.fwhm_min_chan,
-            rolling_rms_window=inputs.rolling_rms_window,
-            rolling_rms_target_unsmoothed=inputs.rolling_rms_target_unsmoothed,
-            rolling_rms_target_smoothed=inputs.rolling_rms_target_smoothed,
-            uv_taper_auto=inputs.uv_taper_auto,
-            uv_taper_sigma_uv=inputs.uv_taper_sigma_uv,
-            uv_taper_fwhm_cell=inputs.uv_taper_fwhm_cell,
-            roi_thresh=inputs.roi_thresh,
-            roi_cont_thresh=inputs.roi_cont_thresh,
-            tmp_dir=tmp_dir,
-            tmp_overwrite=inputs.tmp_overwrite,
-            save_moment0=inputs.save_moment0,
-            save_cube=inputs.save_cube,
-            parallel=inputs.parallel,
-            save_results_path=inputs.save_results_path,
-            verbose=inputs.verbose,
-        )
-
-        if stage_product is None:
-            return FindROIResult(errors=['No successful hifa_findroi SPW results were produced.'])
-
-        artifacts = copy.deepcopy(stage_product.get('metadata', {}).get('artifacts', {}))
-        errors = list(stage_product.get('metadata', {}).get('errors', []))
-        summary = _summarize_stage_product(stage_product)
-        return FindROIResult(
-            stage_product_path=artifacts.get('results_pickle'),
-            artifacts=artifacts,
-            summary=summary,
-            errors=errors,
-        )
-
-    def analyse(self, result):
-        return result

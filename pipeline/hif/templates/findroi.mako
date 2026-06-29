@@ -10,7 +10,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 
 % if errors:
 <div class="alert alert-danger">
-  <p>hifa_findroi reported errors:</p>
+  <p>hif_findroi reported errors:</p>
   <ul>
   % for error in errors:
     <li>${error}</li>
