@@ -154,11 +154,6 @@ class FindCont(basetask.StandardTaskTemplate):
 
             inputs.vis = [k.basename for k in ms_objects_and_columns.keys()]
 
-        findcont_heuristics = findcont.FindContHeuristics(context)
-
-        contfile_handler = contfilehandler.ContFileHandler(context.contfile)
-        cont_ranges = contfile_handler.read()
-
         known_synthesized_beams = inputs.context.synthesized_beams
 
         # Get list of fields and spw to work on from makeimlist call
@@ -180,6 +175,11 @@ class FindCont(basetask.StandardTaskTemplate):
         makeimlist_task = makeimlist.MakeImList(makeimlist_inputs)
         makeimlist_result = makeimlist_task.prepare()
         imlist = makeimlist_result.targets
+
+        findcont_heuristics = findcont.FindContHeuristics(context)
+
+        contfile_handler = contfilehandler.ContFileHandler(context.contfile)
+        cont_ranges = contfile_handler.read()
 
         result_cont_ranges = {}
         joint_mask_names = {}
