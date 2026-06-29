@@ -500,19 +500,19 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
 
         #Create objects to create QAscore
         reason = 'XX-YY.deviation'
-        applies_to = sanitize_attributes(
-            pqa.TargetDataSelection(vis={msname},
-                                    field={fieldname},
-                                    scan={scan},
-                                    intent={'TARGET'},
-                                    spw={msw.spw},
-                                    ant={msw.antenna},
-                                    pol=badpol_set)
-            )
         comes_from = pqa.QAOrigin(metric_name=reason, metric_score=nsigma_ondata, metric_units='n-sigma deviation')
 
         # QA score value evaluation
         if has_data_outliers and peak_outlier_percent >= thresholds['min_freq_dev_percent']:
+            applies_to = sanitize_attributes(
+                pqa.TargetDataSelection(vis={msname},
+                                        field={fieldname},
+                                        scan={scan},
+                                        intent={'TARGET'},
+                                        spw={msw.spw},
+                                        ant={msw.antenna},
+                                        pol=badpol_set)
+            )
             if has_trecX_outliers or has_trecY_outliers:
                 # Case where actual outliers were found, put a yellow QA score
                 score_top, score_bottom = rendererutils.SCORE_THRESHOLD_WARNING, rendererutils.SCORE_THRESHOLD_ERROR + 0.01
@@ -537,6 +537,14 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
                 for row in range(nrows):
                     msw.outliers[:, row] = outlier_data
         else:
+            applies_to = sanitize_attributes(
+                pqa.TargetDataSelection(vis={msname},
+                                        field={fieldname},
+                                        scan={scan},
+                                        intent={'TARGET'},
+                                        spw={msw.spw},
+                                        ant={msw.antenna})
+            )
             # Case of no outliers and no information
             qascore_value = 1.0
             shortmsg = 'No significant XX-YY differences'
