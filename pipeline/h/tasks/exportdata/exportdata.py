@@ -939,7 +939,7 @@ class ExportData(basetask.StandardTaskTemplate):
         task = casa_tasks.flagmanager(vis=vis, mode='list')
         flag_dict = self._executor.execute(task)
         flag_dict = filter(lambda v: isinstance(v, dict) and "name" in v, flag_dict.values())
-        
+
         if any(v['name'] == flag_version_name for v in flag_dict):
             tt = int(time.time())
             tmpname = flag_version_name + '.old.' + str(tt)
@@ -1263,6 +1263,7 @@ finally:
                     spwlist_key,
                     image['specmode'],
                     image['stokes'],
+                    image.get("antenna", None),
                     image['datatype'],
                     image['version'],
                 )
