@@ -12,6 +12,7 @@ import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
+from pipeline.hif.tasks.makeimlist import makeimlist
 from pipeline.hif.heuristics import findcont
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
@@ -96,7 +97,7 @@ class FindCont(basetask.StandardTaskTemplate):
 
         # Check if this stage should be skipped
         if self._skip_findcont():
-            # only triggered for VLA-PI pieplein (not for ALMA)
+            # only triggered for VLA-PI pipeline (not for ALMA)
             result = FindContResult({}, {}, '', 0, 0, [], {})
             return result
 
@@ -130,7 +131,7 @@ class FindCont(basetask.StandardTaskTemplate):
                 result = FindContResult({}, {}, '', 0, 0, [], {})
                 return result
 
-            LOG.info(f'Using data type {str(selected_datatype).split(".")[-1]} for continuum finding.')
+            LOG.info(f'Using data type {selected_datatype.name} for continuum finding.')
             if selected_datatype == DataType.RAW:
                 LOG.warning('Falling back to raw data for continuum finding.')
 
@@ -158,6 +159,28 @@ class FindCont(basetask.StandardTaskTemplate):
         contfile_handler = contfilehandler.ContFileHandler(context.contfile)
         cont_ranges = contfile_handler.read()
 
+        known_synthesized_beams = inputs.context.synthesized_beams
+
+        # Get list of fields and spw to work on from makeimlist call
+
+        # Create makeimlist inputs
+        makeimlist_inputs = makeimlist.MakeImListInputs(inputs.context, vis=inputs.vis)
+        makeimlist_inputs.datatype = selected_datatype.name
+        makeimlist_inputs.intent = 'TARGET'
+        makeimlist_inputs.specmode = 'mfs'
+        # Choose 3 pixels per beam instead of the default 5 to speed up
+        # continuum finding
+        makeimlist_inputs.hm_cell = '3ppb'
+        # PIPE-107 requests using a fixed robust value of 1.0
+        makeimlist_inputs.robust = 1.0
+        makeimlist_inputs.clearlist = True
+        makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
+
+        # Create imlist
+        makeimlist_task = makeimlist.MakeImList(makeimlist_inputs)
+        makeimlist_result = makeimlist_task.prepare()
+        imlist = makeimlist_result.targets
+
         result_cont_ranges = {}
         joint_mask_names = {}
         momDiffSNRs = {}
@@ -165,7 +188,8 @@ class FindCont(basetask.StandardTaskTemplate):
         num_found = 0
         num_total = 0
         single_range_channel_fractions = []
-        for i, target in enumerate(inputs.target_list):
+        #for i, target in enumerate(inputs.target_list):
+        for i, target in enumerate(imlist):
             for spwid in target['spw'].split(','):
                 source_name = utils.dequote(target['field'])
                 spw_name = context.observing_run.virtual_science_spw_ids[int(spwid)]
@@ -366,7 +390,9 @@ class FindCont(basetask.StandardTaskTemplate):
                         specmode = 'cube'
 
                     # PIPE-107 requests using a fixed robust value of 1.0.
-                    robust = 1.0
+                    # PIPE-3131 introduced the intrinsic hif_makeimlist call
+                    # where this robust value is being used.
+                    robust = target['robust']
 
                     if target['uvrange'] not in (None, [], ''):
                         uvrange = target['uvrange']
