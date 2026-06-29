@@ -489,7 +489,7 @@ class SerialFlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
 
                     if np.all(np.logical_not(antenna_mask)):
                         LOG.debug(
-                            'MS "%s" field "%s" antenna "%s": no outliers detected',
+                            'MS "%s" field "%s" antenna "%s": no pointing outliers detected',
                             msname, field.name, antenna.name
                         )
                         continue
@@ -513,7 +513,7 @@ class SerialFlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
             else:
                 for antenna in antennas:
                     LOG.debug(
-                        'MS "%s" field "%s" antenna "%s": no outliers detected',
+                        'MS "%s" field "%s" antenna "%s": no pointing outliers detected',
                         msname, field.name, antenna.name
                     )
 
