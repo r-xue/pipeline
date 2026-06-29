@@ -165,6 +165,8 @@ class SerialUVcontSub(basetask.StandardTaskTemplate):
         makeimlist_inputs.specmode = 'mfs'
         makeimlist_inputs.clearlist = True
         makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
+        # PIPE-2952: Explicitly specified uvrange to prevent excessive runtime
+        # caused by VLA imaging uvrange selection heuristics
         makeimlist_inputs.uvrange = '>0.0lambda'
         # Create imlist
         makeimlist_task = makeimlist.MakeImList(makeimlist_inputs)
