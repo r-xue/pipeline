@@ -12,6 +12,7 @@ import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
+from pipeline.hif.heuristics import imageparams_factory
 from pipeline.hif.tasks.makeimlist import makeimlist
 from pipeline.hif.heuristics import findcont
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
@@ -29,12 +30,23 @@ class FindContInputs(vdp.StandardInputs):
     target_list = vdp.VisDependentProperty(null_input=['', None, {}], default=[])
     hm_perchanweightdensity = vdp.VisDependentProperty(default=None)
     hm_weighting = vdp.VisDependentProperty(default=None)
+    hm_mode = vdp.VisDependentProperty(default='coarse')
     datacolumn = vdp.VisDependentProperty(default='')
     parallel = vdp.VisDependentProperty(default='automatic')
 
+    @hm_mode.convert
+    def hm_mode(self, value):
+        allowed = ('coarse', 'normal')
+        if value not in allowed:
+            m = ', '.join(('{!r}'.format(i) for i in allowed))
+            raise ValueError(
+                'Value not in allowed value set ({!s}): {!r}'.format(m, value)
+            )
+        return value
+
     # docstring and type hints: supplements hif_findcont
     def __init__(self, context, output_dir=None, vis=None, target_list=None, hm_mosweight=None,
-                 hm_perchanweightdensity=None, hm_weighting=None, datacolumn=None, parallel=None):
+                 hm_perchanweightdensity=None, hm_weighting=None, hm_mode=None, datacolumn=None, parallel=None):
         """Initialize Inputs.
 
         Args:
@@ -58,6 +70,9 @@ class FindContInputs(vdp.StandardInputs):
 
             hm_weighting: Weighting scheme (natural,uniform,briggs,briggsabs[experimental],briggsbwtaper[experimental])
 
+            hm_mode: Continuum-finding imaging mode. "coarse" applies the new fast local override
+                and "normal" preserves the previous-cycle behavior.
+
             datacolumn: Data column to image. Only to be used for manual overriding when the automatic choice by data type is not appropriate.
 
             parallel: Use CASA/tclean built-in parallel imaging when possible.
@@ -75,6 +90,7 @@ class FindContInputs(vdp.StandardInputs):
         self.hm_mosweight = hm_mosweight
         self.hm_perchanweightdensity = hm_perchanweightdensity
         self.hm_weighting = hm_weighting
+        self.hm_mode = hm_mode
         self.datacolumn = datacolumn
         self.parallel = parallel
 
@@ -163,13 +179,31 @@ class FindCont(basetask.StandardTaskTemplate):
             makeimlist_inputs.datatype = selected_datatype.name
             makeimlist_inputs.intent = 'TARGET'
             makeimlist_inputs.specmode = 'mfs'
-            # Choose 3 pixels per beam instead of the default 5 to speed up
-            # continuum finding
-            makeimlist_inputs.hm_cell = '3ppb'
             # PIPE-107 requests using a fixed robust value of 1.0
             makeimlist_inputs.robust = 1.0
             makeimlist_inputs.clearlist = True
             makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
+
+            if inputs.hm_mode == 'coarse':
+                image_heuristics_factory = imageparams_factory.ImageParamsHeuristicsFactory()
+
+                initial_heuristics = image_heuristics_factory.getHeuristics(
+                                         vislist=inputs.vis, spw='',
+                                         observing_run=context.observing_run,
+                                         imagename_prefix=context.project_structure.ousstatus_entity_id,
+                                         proj_params=context.project_performance_parameters,
+                                         contfile=context.contfile,
+                                         linesfile=context.linesfile,
+                                         imaging_params=context.imaging_parameters,
+                                         processing_intents=context.processing_intents,
+                                         imaging_mode=context.project_summary.telescope
+                                     )
+
+                array_descs = initial_heuristics.arrays(inputs.vis)
+                if '7m' in array_descs:
+                    makeimlist_inputs.hm_cell = '4ppb'
+                else:
+                    makeimlist_inputs.hm_cell = '3ppb'
 
             # Create imlist
             makeimlist_task = makeimlist.MakeImList(makeimlist_inputs)
