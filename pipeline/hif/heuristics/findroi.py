@@ -2678,7 +2678,7 @@ def _save_default_summary_plots(
 ) -> dict[str, dict[str, str]]:
     '''Generate and save per-source summary plots; return artifact paths.'''
     import matplotlib.pyplot as plt
-    from . import plots as fplots
+    from pipeline.hif.tasks.findroi import plots as fplots
     plt.ioff()
 
     os.makedirs(tmp_dir, exist_ok=True)
