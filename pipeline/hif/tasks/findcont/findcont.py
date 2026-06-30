@@ -166,6 +166,8 @@ class FindCont(basetask.StandardTaskTemplate):
 
         known_synthesized_beams = inputs.context.synthesized_beams
 
+        findcont_heuristics = findcont.FindContHeuristics()
+
         if inputs.target_list:
             # Note that the deepcopy is necessary to avoid changing the
             # clean_list inadvertently when removing the heuristics
@@ -185,32 +187,15 @@ class FindCont(basetask.StandardTaskTemplate):
             makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
 
             if inputs.hm_mode == 'coarse':
-                image_heuristics_factory = imageparams_factory.ImageParamsHeuristicsFactory()
-
-                initial_heuristics = image_heuristics_factory.getHeuristics(
-                                         vislist=inputs.vis, spw='',
-                                         observing_run=context.observing_run,
-                                         imagename_prefix=context.project_structure.ousstatus_entity_id,
-                                         proj_params=context.project_performance_parameters,
-                                         contfile=context.contfile,
-                                         linesfile=context.linesfile,
-                                         imaging_params=context.imaging_parameters,
-                                         processing_intents=context.processing_intents,
-                                         imaging_mode=context.project_summary.telescope
-                                     )
-
-                array_descs = initial_heuristics.arrays(inputs.vis)
-                if '7m' in array_descs:
-                    makeimlist_inputs.hm_cell = '4ppb'
+                if inputs.context.project_summary.telescope == 'ALMA':
+                    makeimlist_inputs.hm_cell, makeimlist_inputs.uvtaper = findcont_heuristics.coarse_mode_params(inputs)
                 else:
-                    makeimlist_inputs.hm_cell = '3ppb'
+                    LOG.info('coarse mode only implemented for ALMA')
 
             # Create imlist
             makeimlist_task = makeimlist.MakeImList(makeimlist_inputs)
             makeimlist_result = makeimlist_task.prepare()
             imlist = makeimlist_result.targets
-
-        findcont_heuristics = findcont.FindContHeuristics(context)
 
         contfile_handler = contfilehandler.ContFileHandler(context.contfile)
         cont_ranges = contfile_handler.read()

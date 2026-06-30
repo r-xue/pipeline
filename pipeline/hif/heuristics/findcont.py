@@ -1,7 +1,9 @@
 import os
+import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
+from pipeline.hif.heuristics import imageparams_factory
 from pipeline.extern.findContinuum import findContinuum
 from pipeline.extern.findContinuum import countChannelsInRanges
 from pipeline.extern.findContinuum import numberOfChannelsInCube
@@ -11,8 +13,34 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class FindContHeuristics:
-    def __init__(self, context):
-        self.context = context
+
+    def coarse_mode_params(self, inputs):
+        image_heuristics_factory = imageparams_factory.ImageParamsHeuristicsFactory()
+
+        initial_heuristics = image_heuristics_factory.getHeuristics(
+                                 vislist=inputs.vis, spw='',
+                                 observing_run=inputs.context.observing_run,
+                                 imagename_prefix=inputs.context.project_structure.ousstatus_entity_id,
+                                 proj_params=inputs.context.project_performance_parameters,
+                                 contfile=inputs.context.contfile,
+                                 linesfile=inputs.context.linesfile,
+                                 imaging_params=inputs.context.imaging_parameters,
+                                 processing_intents=inputs.context.processing_intents,
+                                 imaging_mode=inputs.context.project_summary.telescope
+                             )
+
+        array_descs = initial_heuristics.arrays(inputs.vis)
+        if '7m' in array_descs:
+            hm_cell = '4ppb'
+        else:
+            hm_cell = '3ppb'
+
+        L80, _ = initial_heuristics.calc_percentile_baseline_length(80.)
+        C = 0.441
+        uvtaper_arcsec = C * L80 / np.sqrt(((3/5) * (2 + 2 * np.clip(np.log(L80/100) / np.log(8000/100), 0, 1)**0.376))**2 - 1)
+        uvtaper = ['%.2garcsec' % uvtaper_arcsec]
+
+        return hm_cell, uvtaper
 
     def find_continuum(self, dirty_cube: str, pb_cube: str | None = None, psf_cube: str | None = None,
                        single_continuum: bool = False, is_eph_obj: bool = False,
