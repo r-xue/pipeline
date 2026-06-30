@@ -10,10 +10,10 @@ This file can be found in a typical pipeline distribution directory, e.g.:
 /lustre/naasc/sciops/comm/rindebet/pipeline/branches/trunk/pipeline/extern
 As of March 7, 2019 (version 3.36), it is compatible with both python 2 and 3.
 
-Code changes for Pipeline2026 (as of June 09, 2026)
+Code changes for Pipeline2026 (as of June 29, 2026)
 1) Fix for PIPE-3102
 2) Convert np.int64/float64 to int/float for lists that are printed to the log
-3) Fix for PIPE-3103
+3) Fix for PIPE-3103 (incl. typo found by Rui in code review)
 4) Fix for PIPE-3107
 5) Fix for PIPE-850 (y-axis limits for strong masers)
 6) Moved the automatic check of singleContinuum upward prior to first use of 
@@ -335,7 +335,7 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle13.py,v 9.5 2026/06/09 19:49:23 we Exp $" 
+    myversion = "$Id: findContinuumCycle13.py,v 9.6 2026/06/29 17:37:59 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
@@ -6403,7 +6403,7 @@ def findChannelsInChannelRangeWithComparableIntensity(channels, channelRange, co
     if positiveThreshold is None:
         imax = np.max(intensity[channels])
     else:
-        imax = negativeThreshold
+        imax = positiveThreshold
     newList = []
 #    sigma = np.std(intensity[channels])  fc <= v7.16
     sigma = MAD(intensity[channels])   # fc v7.17
