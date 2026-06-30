@@ -23,7 +23,7 @@ class StatwtInputs(vdp.StandardInputs):
     datacolumn = vdp.VisDependentProperty(default='corrected')
     overwrite_modelcol = vdp.VisDependentProperty(default=False)
     statwtmode = vdp.VisDependentProperty(default='VLA')
-    usecontdat = vdp.VisDependentProperty(default=False)
+    usecontdat = vdp.VisDependentProperty(default=True)
 
     @datacolumn.postprocess
     def datacolumn(self, unprocessed):
@@ -52,9 +52,9 @@ class StatwtInputs(vdp.StandardInputs):
                 mode is meant to be used with datacolumn='residual_data'.
                 Default is 'VLA'.
 
-            usecontdat: If True, use cont.dat file if present to restrict weight calculations to specified spectral windows.
-                If False (default), ignore any cont.dat file and apply weights to all spectral windows.
-                Default is False.
+            usecontdat: If True (default), use cont.dat file if present to restrict weight calculations
+                to specified spectral windows.
+                If False, ignore any cont.dat file and apply weights to all spectral windows.
 
         """
         super().__init__()
@@ -102,9 +102,11 @@ class Statwt(basetask.StandardTaskTemplate):
         if self.inputs.usecontdat:
             fielddict = contfile_to_spwsel(self.inputs.vis, self.inputs.context)
             if fielddict != {}:
-                LOG.info('usecontdat=True and cont.dat file found: Using VLA Spectral Line Heuristics for task statwt.')
+                LOG.info('usecontdat=True and cont.dat found: Using VLA Spectral Line Heuristics '
+                         'for task statwt.')
             else:
-                LOG.warning('usecontdat=True but no cont.dat file found or file is empty: Applying weights to all spectral windows.')
+                LOG.warning('usecontdat=True but no cont.dat found or empty: '
+                            'Applying weights to all spectral windows.')
         else:
             LOG.info('usecontdat=False: Applying weights to all spectral windows.')
             fielddict = {}

@@ -18,8 +18,8 @@ def hifv_statwt(vis=None, datacolumn=None, overwrite_modelcol=None, statwtmode=N
 
         >>> hifv_statwt(mode='vlass-se', datacolumn='residual_data')
 
-        3. Use cont.dat file if present to restrict weight calculations:
+        3. Ignore cont.dat file and apply weights to all spectral windows:
 
-        >>> hifv_statwt(usecontdat=True)
+        >>> hifv_statwt(usecontdat=False)
 
     """

@@ -14,8 +14,8 @@ def hifv_checkflag(vis=None, checkflagmode=None, growflags=None, overwrite_model
 
         >>> hifv_checkflag()
 
-        2. Use cont.dat file if present for target-vla mode:
+        2. Ignore cont.dat file for target-vla mode:
 
-        >>> hifv_checkflag(checkflagmode='target-vla', usecontdat=True)
+        >>> hifv_checkflag(checkflagmode='target-vla', usecontdat=False)
 
     """
