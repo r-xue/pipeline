@@ -11,7 +11,8 @@ table.small-font-table {
 /* --- Left sidebar width --------------------------------------------------- */
 
 :root {
-    --sidebar-width: 20rem;  /* default is 15rem; increase as needed */
+    --sidebar-width: 15rem;
+    /* default is 15rem; increase as needed */
 }
 
 /* --- Right TOC collapse toggle -------------------------------------------- */
@@ -58,11 +59,13 @@ table.small-font-table {
 
 /* Wide-screen collapse logic — only on screens where Furo shows the inline TOC
    (>82em). On smaller screens Furo uses its own overlay; the toggle is hidden. */
-@media (min-width: 83em) {
+@media (min-width: 82em) {
+
     /* Pages with no local TOC: automatically expand content into the empty right
        column — same layout as the manually-collapsed state, no button needed. */
     .main:has(.toc-drawer.no-toc) .content {
-        width: calc(46em + 15em);
+        width: auto !important;
+        max-width: 77rem !important;
     }
 
     /* Shrink the drawer to zero; keep overflow visible so the toggle button
@@ -82,7 +85,8 @@ table.small-font-table {
        remaining viewport space, and the content's own padding (0 3em) all
        stay identical. */
     .main.toc-collapsed .content {
-        width: calc(46em + 15em);
+        width: auto !important;
+        max-width: 77rem !important;
     }
 }
 
@@ -153,6 +157,7 @@ div.nboutput.container div.output_area {
     font-size: 0 !important;
     visibility: hidden !important;
 }
+
 .bottom-of-page .left-details .copyright {
     font-size: 0.81rem !important;
     visibility: visible !important;
@@ -161,7 +166,8 @@ div.nboutput.container div.output_area {
 /* --- Slightly reduce global font size ------------------------------------ */
 /* Setting on :root scales all rem-based sizes (Furo uses rem extensively).   */
 :root {
-    font-size: 93.75%;  /* browser default 16px × 93.75% ≈ 15px */
+    font-size: 93.75%;
+    /* browser default 16px × 93.75% ≈ 15px */
 }
 
 /* =============================================================================
@@ -188,7 +194,7 @@ dt.sig {
 
 /* --- Field list headers (Parameters, Returns, Examples, etc.) ------------- */
 /* Add subtle styling to section headers - slightly different from code blocks */
-dl.field-list > dt {
+dl.field-list>dt {
     background-color: var(--color-background-secondary, #fafafa);
     padding: 0.25rem 0.5rem;
     margin-top: 1rem;
@@ -199,7 +205,7 @@ dl.field-list > dt {
 
 /* Dark mode support for field list headers */
 @media (prefers-color-scheme: dark) {
-    dl.field-list > dt {
+    dl.field-list>dt {
         background-color: #2a2a3a;
         border-bottom-color: #3a3a4a;
     }
@@ -207,7 +213,7 @@ dl.field-list > dt {
 
 /* --- Field list content (dd) ---------------------------------------------- */
 /* Improved spacing between sections */
-dl.field-list > dd {
+dl.field-list>dd {
     margin-bottom: 1.5rem;
 }
 
@@ -227,5 +233,35 @@ p.rubric {
     p.rubric {
         background-color: #2a2a3a;
         border-bottom-color: #3a3a4a;
+    }
+}
+
+/* --- Layout width adjustments for wide screens ---------------------------- */
+@media (min-width: 67.5em) {
+    .page {
+        max-width: none;
+        width: 100%;
+    }
+
+    /* Let the sidebar drawer extend to the far left edge of the viewport
+       so its background fills the entire left empty space.
+       With calc(50% - 31rem), the navigation container (15rem), content (62rem),
+       and TOC drawer (15rem) are centered symmetrically in the viewport. */
+    .sidebar-drawer {
+        width: calc(50% - 34rem);
+        min-width: var(--sidebar-width, 15rem);
+        max-width: none;
+        flex-shrink: 0;
+    }
+
+    .sidebar-container {
+        width: var(--sidebar-width, 15rem);
+    }
+
+    /* Let content stretch cleanly inside .main up to 62rem */
+    .content {
+        flex: 1;
+        width: auto !important;
+        max-width: 62rem;
     }
 }

@@ -44,8 +44,15 @@
             var mainEl = tocDrawer.parentElement;
             if (mainEl) mainEl.classList.add('toc-collapsed');
             btn.textContent = '\u276E';  // chevron left = click to expand
-            // Re-position after layout change.
-            requestAnimationFrame(positionBtn);
+            // Re-position continuously during CSS transition (~200ms).
+            var start = performance.now();
+            function trackPosition() {
+                positionBtn();
+                if (performance.now() - start < 320) {
+                    requestAnimationFrame(trackPosition);
+                }
+            }
+            requestAnimationFrame(trackPosition);
         }
 
         btn.addEventListener('click', function () {
@@ -54,8 +61,16 @@
             if (mainEl) mainEl.classList.toggle('toc-collapsed', collapsed);
             localStorage.setItem('furo-toc-collapsed', collapsed);
             btn.textContent = collapsed ? '\u276E' : '\u276F';
-            // Re-position after layout change.
-            requestAnimationFrame(positionBtn);
+            
+            // Re-position continuously during CSS transition (~200ms).
+            var start = performance.now();
+            function trackPosition() {
+                positionBtn();
+                if (performance.now() - start < 320) {
+                    requestAnimationFrame(trackPosition);
+                }
+            }
+            requestAnimationFrame(trackPosition);
         });
     }
 

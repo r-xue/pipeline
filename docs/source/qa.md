@@ -32,6 +32,7 @@ recipereducer.reduce(vis=['uid___A001_X123_X456.ms'], procedure='procedure_hifa_
 :::{note}
 In production operations, a dataset-specific PPR XML is dynamically generated online by merging a generic recipe procedure with observation project metadata.
 :::
+
 ### What Python version does the pipeline require?
 
 The latest pipeline version supports Python 3.12+. Check the branch-specific `pyproject.toml` for exact version constraints and compatible CASA versions.
@@ -43,6 +44,7 @@ The latest pipeline version supports Python 3.12+. Check the branch-specific `py
 You can create a standalone CASA distribution with the pipeline pre-installed using a custom setup script. This is useful for creating reproducible environments to facilitate validation testing of specific CASA and pipeline version combinations not covered by the automated packaging matrix at NRAO.
 
 **Prerequisites:**
+
 - ~3 GB of available disk space
 - Internet connection for downloading release tarballs and dependencies
 - `git` and `wget` installed
@@ -97,24 +99,25 @@ PYTHONNOUSERSITE=1 "${casa_ver}/bin/pip3" install \
 echo "Setup complete! Pipeline package successfully installed inside ${casa_ver}."
 ```
 
-2. **Customize target versions:**
+1. **Customize target versions:**
    - Modify `casa_ver` inside the script to select a different base CASA release.
    - Modify `pipe_ver` to target a specific git branch, release tag, or commit hash.
 
-3. **Make executable and run:**
+2. **Make executable and run:**
+
 ```bash
 chmod +x setup_casa_pipeline.sh
 ./setup_casa_pipeline.sh
 ```
 
-4. **Package as a monolithic tarball (Optional):**
+1. **Package as a monolithic tarball (Optional):**
 Once setup completes, archive and compress the resulting CASA directory for easy distribution:
 
 ```bash
 tar czf casa-6.7.1-with-pipeline.tar.gz casa-6.7.1-13-py3.10-gpu.el8/
 ```
 
-5. **Deploy to target systems:**
+1. **Deploy to target systems:**
 Transfer and unpack the standalone bundle on target environments (e.g., HPC clusters):
 
 ```bash
@@ -125,7 +128,7 @@ scp casa-6.7.1-with-pipeline.tar.gz user@cluster:/shared/software/
 tar xzf casa-6.7.1-with-pipeline.tar.gz
 ```
 
-6. **Verify the installation:**
+1. **Verify the installation:**
 Test that CASA launches properly and loads the pipeline package revision:
 
 ```bash
@@ -137,6 +140,7 @@ Test that CASA launches properly and loads the pipeline package revision:
 **Editable Development Installation**
 
 If you are actively developing or modifying pipeline source code, replace the final package install command in Step 1 with editable mode (`-e`):
+
 ```bash
 PYTHONNOUSERSITE=1 "${casa_ver}/bin/pip3" install \
     --disable-pip-version-check \
@@ -144,6 +148,7 @@ PYTHONNOUSERSITE=1 "${casa_ver}/bin/pip3" install \
     --use-pep517 \
     -e pipeline/.
 ```
+
 Installing in editable mode links CASA directly to your local git checkout rather than copying files into `site-packages`. Any modifications you make to the pipeline code will take effect immediately upon restarting CASA, without needing to reinstall.
 :::
 
@@ -153,27 +158,26 @@ The pipeline can be deployed in several distinct configurations depending on you
 
 - **Monolithic CASA Distribution (Self-contained tarball)**
   A complete CASA 6 release bundled with an embedded Python interpreter, all C++/Python libraries, and the Pipeline pre-installed.
-  * **Best for:** Observatory production operations and standalone data reduction requiring a self-contained, reproducible environment with near-zero setup.
+  - **Best for:** Observatory production operations and standalone data reduction requiring a self-contained, reproducible environment with near-zero setup.
 
 - **Modular Python Environment (Managed via Pixi or Conda)**
   A standard Python environment where CASA 6 tools (`casatools`, `casatasks`) and Pipeline dependencies are installed dynamically according to the Pipeline project package specifications.
-  * **Best for:** Scientific research, customized data workflows, and environments needing minimal initial disk size (requires internet access or a local package cache).
+  - **Best for:** Scientific research, customized data workflows, and environments needing minimal initial disk size (requires internet access or a local package cache).
 
 - **Editable Development Installation**
   Built on top of either a monolithic CASA distribution or a modular Python environment, with the Pipeline source repository linked in editable mode (`pip install -e`).
-  * **Best for:** Active software development, testing new algorithms, and debugging pipeline recipes without reinstalling after code changes.
+  - **Best for:** Active software development, testing new algorithms, and debugging pipeline recipes without reinstalling after code changes.
 
 - **Containerized Execution (Docker / Singularity / Apptainer)**
   An encapsulated container image that packages the OS runtime, CASA suite, and Pipeline into an immutable, portable environment.
-  * **Best for:** High-Performance Computing (HPC/HTC) clusters, cloud-native processing, and automated CI/CD workflows.
-
-
+  - **Best for:** High-Performance Computing (HPC/HTC) clusters, cloud-native processing, and automated CI/CD workflows.
 
 ## Configuration
 
 ### How do I customize pipeline workflow executaion and behaviors?
 
 Parameters are defined in:
+
 - **PPR XML files** — task-specific settings for production runs
 - **Recipe procedures** — task parameters passed to `recipereducer`
 - **Environment variables** — global configuration (see [Interface Reference](pipeline_icd))
@@ -188,7 +192,6 @@ Key variables include:
 - `ENABLE_TIER0_PLOTMS` — enable/disable plotms visualization
 
 See [Environment Variables](pipeline_icd.md#environment-variables) for complete list.
-
 
 ## Data Products
 
@@ -208,6 +211,7 @@ Pipeline outputs are written to the current working directory by default, manage
 ### What is in pipeline_manifest.xml?
 
 The manifest contains:
+
 - Processing metadata (versions, timestamps, execution time)
 - Data product inventory (names, paths, sizes)
 - Task execution summary
@@ -216,6 +220,7 @@ The manifest contains:
 ### How do I interpret the weblog?
 
 The weblog is an HTML report with:
+
 - Per-stage summaries and diagnostic plots
 - Flag statistics and RFI detection results
 - Calibration solution plots
@@ -238,10 +243,10 @@ See [Execution Environment](pipeline_icd.md#execution-environment-external-sched
 
 ## Troubleshooting
 
-
 ### What if the flux service is unavailable?
 
 The pipeline has fallback behavior:
+
 - Primary service is `FLUX_SERVICE_URL` (almascience.org)
 - Backup is `FLUX_SERVICE_URL_BACKUP` (asa.alma.cl)
 - Use local `flux.csv` override file for manual values
@@ -282,9 +287,6 @@ xvfb-run -a casa --nogui --nologger -c pipeline/runpipeline.py ppr_file.xml
 ## Performance
 ### How can I optimize pipeline performance?
 -->
-
-
-
 
 ## References
 
