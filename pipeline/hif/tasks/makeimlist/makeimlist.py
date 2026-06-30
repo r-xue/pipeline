@@ -287,9 +287,9 @@ class MakeImListInputs(vdp.StandardInputs):
                 frequency mode images.
                 'pilotimage' for 15 MHz / 8 channel heuristic
 
-            nbins: Channel binning factors for each spw. Format: 'spw1:nb1,spw2:nb2,...' with optional wildcards: '*:nb'
+            nbins: Channel binning factors for each spw. Format: 'spw1:nb1,spw2:nb2,...' with optional wildcards: '\\*:nb'
 
-                Examples: '9:2,11:4,13:2,15:8', '*:2'
+                Examples: '9:2,11:4,13:2,15:8', '\\*:2'
 
             robust: Briggs robustness parameter Values range from -2.0 (uniform) to 2.0 (natural)
 
