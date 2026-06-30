@@ -89,9 +89,9 @@ extensions = [
     # --------
     # https://docs.readthedocs.io/en/stable/guides/jupyter.html#using-notebooks-in-other-formats
     # option 1 # better integration with intersphinx
-    'myst_nb',
+    'myst_nb',  # Handles both notebooks and plain markdown files
     # option 2 # https://github.com/executablebooks/MyST-NB/issues/421
-    # 'myst_parser',
+    # 'myst_parser',  # Not needed with myst_nb
     # 'nbsphinx',
     # ---------
     'sphinx.ext.autodoc',
@@ -131,8 +131,8 @@ templates_path = ['_templates']
 smartquotes = False
 
 # The suffix(es) of source filenames.
-# You can specify multiple suffix as a list of string:
-
+# MyST parser handles both .rst and .md files automatically when enabled
+# (myst_nb and myst_parser both register .md suffix)
 # source_suffix = {
 #    '.rst': 'restructuredtext',
 #    '.md': 'markdown',

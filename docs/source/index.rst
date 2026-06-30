@@ -10,6 +10,7 @@
    dependencies
    releases
    timeline
+   qa
    references
 
 .. toctree::
