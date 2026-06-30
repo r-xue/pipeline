@@ -26,17 +26,11 @@ class FindContInputs(vdp.StandardInputs):
     # automatic determination depending on specmode, field and spw.
     processing_data_type = []
 
+    target_list = vdp.VisDependentProperty(null_input=['', None, {}], default=[])
     hm_perchanweightdensity = vdp.VisDependentProperty(default=None)
     hm_weighting = vdp.VisDependentProperty(default=None)
     datacolumn = vdp.VisDependentProperty(default='')
     parallel = vdp.VisDependentProperty(default='automatic')
-
-    @vdp.VisDependentProperty(null_input=['', None, {}])
-    def target_list(self):
-        # Note that the deepcopy is necessary to avoid changing the
-        # context's clean_list inadvertently when removing the heuristics
-        # objects from the inputs' clean_list.
-        return copy.deepcopy(self.context.clean_list_pending)
 
     # docstring and type hints: supplements hif_findcont
     def __init__(self, context, output_dir=None, vis=None, target_list=None, hm_mosweight=None,
@@ -156,25 +150,31 @@ class FindCont(basetask.StandardTaskTemplate):
 
         known_synthesized_beams = inputs.context.synthesized_beams
 
-        # Get list of fields and spw to work on from makeimlist call
+        if inputs.target_list:
+            # Note that the deepcopy is necessary to avoid changing the
+            # clean_list inadvertently when removing the heuristics
+            # objects from the inputs' clean_list.
+            imlist = copy.deepcopy(inputs.target_list)
+        else:
+            # Get list of fields and spw to work on from makeimlist call
 
-        # Create makeimlist inputs
-        makeimlist_inputs = makeimlist.MakeImListInputs(inputs.context, vis=inputs.vis)
-        makeimlist_inputs.datatype = selected_datatype.name
-        makeimlist_inputs.intent = 'TARGET'
-        makeimlist_inputs.specmode = 'mfs'
-        # Choose 3 pixels per beam instead of the default 5 to speed up
-        # continuum finding
-        makeimlist_inputs.hm_cell = '3ppb'
-        # PIPE-107 requests using a fixed robust value of 1.0
-        makeimlist_inputs.robust = 1.0
-        makeimlist_inputs.clearlist = True
-        makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
+            # Create makeimlist inputs
+            makeimlist_inputs = makeimlist.MakeImListInputs(inputs.context, vis=inputs.vis)
+            makeimlist_inputs.datatype = selected_datatype.name
+            makeimlist_inputs.intent = 'TARGET'
+            makeimlist_inputs.specmode = 'mfs'
+            # Choose 3 pixels per beam instead of the default 5 to speed up
+            # continuum finding
+            makeimlist_inputs.hm_cell = '3ppb'
+            # PIPE-107 requests using a fixed robust value of 1.0
+            makeimlist_inputs.robust = 1.0
+            makeimlist_inputs.clearlist = True
+            makeimlist_inputs.known_synthesized_beams = known_synthesized_beams
 
-        # Create imlist
-        makeimlist_task = makeimlist.MakeImList(makeimlist_inputs)
-        makeimlist_result = makeimlist_task.prepare()
-        imlist = makeimlist_result.targets
+            # Create imlist
+            makeimlist_task = makeimlist.MakeImList(makeimlist_inputs)
+            makeimlist_result = makeimlist_task.prepare()
+            imlist = makeimlist_result.targets
 
         findcont_heuristics = findcont.FindContHeuristics(context)
 
@@ -188,7 +188,6 @@ class FindCont(basetask.StandardTaskTemplate):
         num_found = 0
         num_total = 0
         single_range_channel_fractions = []
-        #for i, target in enumerate(inputs.target_list):
         for i, target in enumerate(imlist):
             for spwid in target['spw'].split(','):
                 source_name = utils.dequote(target['field'])
