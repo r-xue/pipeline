@@ -1257,13 +1257,14 @@ finally:
                     spwlist_key = ','.join(str(spwid) for spwid in image['spwlist'])
                 else:
                     spwlist_key = image['spwlist']
+                antenna_key = image.get("antenna", None)
                 product_key = (
                     image['sourcename'],
                     image['sourcetype'],
                     spwlist_key,
                     image['specmode'],
                     image['stokes'],
-                    image.get("antenna", None),
+                    antenna_key,
                     image['datatype'],
                     image['version'],
                 )
@@ -1277,6 +1278,7 @@ finally:
                         spwlist_key,
                         image['specmode'],
                         'I',
+                        antenna_key,
                         image['datatype'],
                         image['version'],
                     )
