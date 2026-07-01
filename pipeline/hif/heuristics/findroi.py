@@ -129,13 +129,19 @@ def _sanitize_uid(uid: str) -> str:
 
 def _get_mous_prefix(context: Any) -> str:
     '''Return the pipeline OUS token for artifact naming.'''
+    ps = getattr(context, 'project_structure', None)
+    candidates = []
+    if ps is not None:
+        candidates.append(getattr(ps, 'ousstatus_entity_id', None))
+        candidates.append(getattr(ps, 'ous_entity_id', None))
     try:
-        oussid = str(context.get_oussid())
-    except Exception as exc:
-        raise RuntimeError('hif_findroi requires context.get_oussid() after importdata.') from exc
-    if not oussid or oussid == 'unknown':
-        raise RuntimeError('hif_findroi requires a valid OUS identifier in pipeline context.')
-    return _sanitize_uid(oussid)
+        candidates.append(context.get_oussid())
+    except Exception:
+        pass
+    for candidate in candidates:
+        if candidate not in (None, '', 'unknown'):
+            return _sanitize_uid(str(candidate))
+    raise RuntimeError('hif_findroi requires an OUS identifier in pipeline context.')
 
 
 def _mpi_rank_size() -> tuple[int, int]:
