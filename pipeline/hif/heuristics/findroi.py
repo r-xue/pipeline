@@ -3815,10 +3815,8 @@ def run_findroi_mpi(
         raise RuntimeError(f'No pipeline MeasurementSet found in context for {vis_list[0]}.')
     project_structure = getattr(context, 'project_structure', None)
     oussid = None if project_structure is None else getattr(project_structure, 'ousstatus_entity_id', None)
-    if oussid in (None, '', 'unknown') and project_structure is not None:
-        oussid = getattr(project_structure, 'ous_entity_id', None)
     if oussid in (None, '', 'unknown'):
-        raise RuntimeError('hif_findroi requires an OUS identifier in pipeline context.')
+        oussid = 'oussid'
     prefix = _sanitize_uid(str(oussid))
 
     # Temporary hard switch for 7m/12m-specific heuristics.
