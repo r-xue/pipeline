@@ -127,23 +127,6 @@ def _sanitize_uid(uid: str) -> str:
     return re.sub(r'[^A-Za-z0-9_]+', '_', uid).strip('_')
 
 
-def _get_mous_prefix(context: Any) -> str:
-    '''Return the pipeline OUS token for artifact naming.'''
-    ps = getattr(context, 'project_structure', None)
-    candidates = []
-    if ps is not None:
-        candidates.append(getattr(ps, 'ousstatus_entity_id', None))
-        candidates.append(getattr(ps, 'ous_entity_id', None))
-    try:
-        candidates.append(context.get_oussid())
-    except Exception:
-        pass
-    for candidate in candidates:
-        if candidate not in (None, '', 'unknown'):
-            return _sanitize_uid(str(candidate))
-    raise RuntimeError('hif_findroi requires an OUS identifier in pipeline context.')
-
-
 def _mpi_rank_size() -> tuple[int, int]:
     '''Return current MPI rank and size if available, otherwise (0, 1).'''
     try:
@@ -3882,7 +3865,13 @@ def run_findroi_mpi(
     ms0 = _context_ms_for_vis(context, vis_list[0])
     if ms0 is None:
         raise RuntimeError(f'No pipeline MeasurementSet found in context for {vis_list[0]}.')
-    prefix = _get_mous_prefix(context)
+    project_structure = getattr(context, 'project_structure', None)
+    oussid = None if project_structure is None else getattr(project_structure, 'ousstatus_entity_id', None)
+    if oussid in (None, '', 'unknown') and project_structure is not None:
+        oussid = getattr(project_structure, 'ous_entity_id', None)
+    if oussid in (None, '', 'unknown'):
+        raise RuntimeError('hif_findroi requires an OUS identifier in pipeline context.')
+    prefix = _sanitize_uid(str(oussid))
 
     # Temporary hard switch for 7m/12m-specific heuristics.
     # Keep this simple so it can later be replaced by pipeline Context.
