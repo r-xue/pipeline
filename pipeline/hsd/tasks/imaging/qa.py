@@ -26,13 +26,13 @@ class SDImagingQAHandler(pqa.QAPlugin):
                             'SingleDishImageContamination',
                             'score_sd_image_sensitivity_ratio']
     RASTERSCAN_RELATED_QASCORES = ['score_rasterscan_correctness']
-    
+
     def __init__(self):
         """
         register the parameters for longmsg formatter and aggregator
         """
         # register the properties
-        for metric_name in self.IMAGE_RELATED_QASCORES: 
+        for metric_name in self.IMAGE_RELATED_QASCORES:
             keys = ['field', 'spw']
             qautils.registry.register_longmsg_keys(metric_name, keys)
             qautils.registry.register_keys_to_aggregate(metric_name, keys)

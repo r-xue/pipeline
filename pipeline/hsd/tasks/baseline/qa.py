@@ -68,6 +68,7 @@ class SDBaselineQAHandler(pqa.QAPlugin):
             formatter.update_longmsg(qascore)
         result.qa.pool.extend(scores)
 
+
 class SDBaselineListQAHandler(pqa.QAPlugin):
     """QA handler to handle list of results."""
 
