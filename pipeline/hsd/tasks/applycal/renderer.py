@@ -53,7 +53,7 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
 
     def render(self, context: Context, result: ApplycalResults) -> str:
         """
-        Custom renderer for hsd_baseline()
+        Custom renderer for hsd_applycal()
 
         This method aggegates the QAScores and renders the weblog.
 
