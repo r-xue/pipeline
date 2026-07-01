@@ -55,8 +55,7 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
         """
         Custom renderer for hsd_baseline()
 
-        This method aggegates the QAScores and renders the weblog,
-        then resotres the original QAScores for subsequent processes (eg. AQUA report)
+        This method aggegates the QAScores and renders the weblog.
 
         Args:
             context: Pipeline context
