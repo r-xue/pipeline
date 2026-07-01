@@ -3,7 +3,6 @@ from __future__ import annotations
 import __main__ as _main
 import copy
 import datetime as dt
-import glob
 import os
 import pickle
 import re
@@ -102,8 +101,6 @@ def _profile_logf(log_dir: str | None, fmt: str, *args: Any) -> None:
 def _set_profile_default_dir(log_dir: str | None) -> None:
     global _PROFILE_DEFAULT_DIR
     _PROFILE_DEFAULT_DIR = log_dir
-_UID_RE = re.compile(r'(uid://[A-Za-z0-9_./:-]+|uid___[A-Za-z0-9_]+)')
-
 GridDiag = dict
 GridPrecompute = tuple
 _PB_IMAGE_CACHE: dict[tuple[int, int, float, float, float], tuple[np.ndarray, np.ndarray]] = {}
@@ -130,46 +127,15 @@ def _sanitize_uid(uid: str) -> str:
     return re.sub(r'[^A-Za-z0-9_]+', '_', uid).strip('_')
 
 
-def _get_mous_prefix(context: Any | None, vis: str) -> str:
-    '''Return a stable MOUS-like token for artifact naming.'''
-    if context is not None:
-        try:
-            oussid = str(context.get_oussid())
-        except Exception:
-            oussid = 'unknown'
-        if oussid and oussid != 'unknown':
-            return _sanitize_uid(oussid)
-    tb_obj = _get_tb()
+def _get_mous_prefix(context: Any) -> str:
+    '''Return the pipeline OUS token for artifact naming.'''
     try:
-        tb_obj.open(vis + '/OBSERVATION')
-        colnames = tb_obj.colnames()
-        for col in colnames:
-            try:
-                vals = tb_obj.getcol(col)
-            except Exception:
-                continue
-            arr = np.asarray(vals)
-            if arr.dtype.kind not in ('O', 'U', 'S'):
-                continue
-            for v in arr.ravel():
-                if v is None:
-                    continue
-                s = str(v)
-                m = _UID_RE.search(s)
-                if m:
-                    tb_obj.close()
-                    return _sanitize_uid(m.group(1))
-        tb_obj.close()
-    except Exception:
-        try:
-            tb_obj.close()
-        except Exception:
-            pass
-    base = os.path.basename(os.path.normpath(vis))
-    m = _UID_RE.search(base)
-    if m:
-        return _sanitize_uid(m.group(1))
-    return _sanitize_uid(base)
+        oussid = str(context.get_oussid())
+    except Exception as exc:
+        raise RuntimeError('hif_findroi requires context.get_oussid() after importdata.') from exc
+    if not oussid or oussid == 'unknown':
+        raise RuntimeError('hif_findroi requires a valid OUS identifier in pipeline context.')
+    return _sanitize_uid(oussid)
 
 
 def _mpi_rank_size() -> tuple[int, int]:
@@ -279,18 +245,16 @@ def resolve_vis_list(vis: str | list[str] | tuple[str, ...]) -> list[str]:
     return [vis]
 
 
-def _context_ms_for_vis(context: Any, vis: str) -> Any | None:
+def _context_ms_for_vis(context: Any, vis: str) -> Any:
     '''Return the context MeasurementSet matching a vis path or basename.'''
-    if context is None:
-        return None
     try:
         return context.observing_run.get_ms(vis)
     except Exception:
         pass
     try:
         return context.observing_run.get_ms(os.path.basename(os.path.normpath(vis)))
-    except Exception:
-        return None
+    except Exception as exc:
+        raise RuntimeError(f'No pipeline MeasurementSet found in context for {vis}.') from exc
 
 
 def _resolve_pipeline_vis_list(context: Any, vis: Any) -> list[str]:
@@ -344,8 +308,6 @@ def _context_field_groups_by_source_id(
 ) -> dict[str, Any] | None:
     '''Build field/source groups from hifa_importdata context when available.'''
     ms = _context_ms_for_vis(context, vis)
-    if ms is None:
-        return None
     explicit_fields = _field_ids_from_input(ms.name, field, getattr(ms, 'fields', []))
     target_intents = {'TARGET', 'OBSERVE_TARGET', 'SCIENCE'}
     selected_fields = []
@@ -456,66 +418,43 @@ def _chan_freqs_from_spw(spw: Any) -> np.ndarray:
     return np.asarray(list(chan_freqs), dtype=np.float64).ravel()
 
 
-def get_spw_id(vis: str, ddid: int = 0, ms: Any | None = None) -> int:
-    '''Return SPW id for a given DDID.'''
-    if ms is not None:
-        dd = ms.get_data_description(id=int(ddid))
-        if dd is not None and getattr(dd, 'spw', None) is not None:
-            return int(dd.spw.id)
+def get_chan_freqs_hz(ms: Any, ddid: int = 0) -> np.ndarray:
+    '''Return channel frequencies for an imported pipeline DDID.'''
+    dd = ms.get_data_description(id=int(ddid))
+    if dd is None or getattr(dd, 'spw', None) is None:
+        raise RuntimeError(f'No pipeline data description found for DDID {ddid}.')
+    freq = _chan_freqs_from_spw(dd.spw)
+    if freq.size == 0:
+        raise RuntimeError(f'No pipeline channel frequencies found for DDID {ddid}.')
+    return freq
+
+
+def _get_temp_ms_chan_freqs_hz(vis: str, ddid: int = 0) -> np.ndarray:
+    '''Return channel frequencies for a temporary regridded MS product.'''
     tb_obj = _get_tb()
     tb_obj.open(vis + '/DATA_DESCRIPTION')
     spw_id = int(np.asarray(tb_obj.getcol('SPECTRAL_WINDOW_ID')).ravel()[ddid])
     tb_obj.close()
-    return spw_id
-
-
-def get_chan_freqs_hz(vis: str, ddid: int = 0, ms: Any | None = None) -> np.ndarray:
-    '''Return channel frequencies for a given DDID.'''
-    if ms is not None:
-        dd = ms.get_data_description(id=int(ddid))
-        if dd is not None and getattr(dd, 'spw', None) is not None:
-            freq = _chan_freqs_from_spw(dd.spw)
-            if freq.size:
-                return freq
-    spw_id = get_spw_id(vis, ddid=ddid, ms=ms)
-    tb_obj = _get_tb()
     tb_obj.open(vis + '/SPECTRAL_WINDOW')
-    # CHAN_FREQ is a variable-shaped array column in some MSes; getcell is robust.
     freqs = np.asarray(tb_obj.getcell('CHAN_FREQ', int(spw_id)), dtype=np.float64).ravel()
     tb_obj.close()
     return freqs
 
 
-def get_ddid_spw_inventory(vis: str, ms: Any | None = None) -> list[dict[str, Any]]:
-    '''Return DDID/SPW inventory with metadata and row counts.'''
-    if ms is not None:
-        dd_rows = []
-        for dd in getattr(ms, 'data_descriptions', []):
-            spw = getattr(dd, 'spw', None)
-            if spw is None:
-                continue
-            dd_rows.append({
-                'ddid': int(dd.id),
-                'spw_id': int(spw.id),
-                'nchan': int(len(getattr(spw, 'channels', ()))),
-                'name': str(getattr(spw, 'name', '')),
-            })
-        dd_rows.sort(key=lambda row: row['ddid'])
-    else:
-        tb_obj = _get_tb()
-        tb_obj.open(vis + '/DATA_DESCRIPTION')
-        spw_ids = np.asarray(tb_obj.getcol('SPECTRAL_WINDOW_ID')).ravel().astype(int)
-        tb_obj.close()
-        tb_obj.open(vis + '/SPECTRAL_WINDOW')
-        nchan_all = np.asarray(tb_obj.getcol('NUM_CHAN')).ravel().astype(int)
-        names = np.asarray(tb_obj.getcol('NAME')).ravel()
-        tb_obj.close()
-        dd_rows = [{
-            'ddid': int(ddid),
-            'spw_id': int(spw_id),
-            'nchan': int(nchan_all[spw_id]),
-            'name': str(names[spw_id]),
-        } for ddid, spw_id in enumerate(spw_ids)]
+def get_ddid_spw_inventory(vis: str, ms: Any) -> list[dict[str, Any]]:
+    '''Return DDID/SPW inventory from imported pipeline metadata plus MAIN row counts.'''
+    dd_rows = []
+    for dd in getattr(ms, 'data_descriptions', []):
+        spw = getattr(dd, 'spw', None)
+        if spw is None:
+            continue
+        dd_rows.append({
+            'ddid': int(dd.id),
+            'spw_id': int(spw.id),
+            'nchan': int(len(getattr(spw, 'channels', ()))),
+            'name': str(getattr(spw, 'name', '')),
+        })
+    dd_rows.sort(key=lambda row: row['ddid'])
     rows = []
     tb_obj = _get_tb()
     tb_obj.open(vis)
@@ -564,54 +503,29 @@ def select_science_ddids(
 
 
 def get_source_outframes(
-    vis: str,
+    ms: Any,
     field_info: dict[str, Any] | None = None,
-    ms: Any | None = None,
 ) -> dict[int, str]:
-    '''Return per-source CASA outframe, using SOURCE for ephemeris sources.'''
+    '''Return per-source CASA outframe from imported pipeline source metadata.'''
     source_names: dict[int, str] = {}
     if field_info is not None:
         source_names.update({int(k): str(v) for k, v in field_info.get('source_names', {}).items()})
 
     out: dict[int, str] = {}
-    if ms is not None:
-        sources = {int(source.id): source for source in getattr(ms, 'sources', [])}
-        source_ids = set(sources.keys()) | set(source_names.keys())
-        if field_info is not None:
-            source_ids.update(int(k) for k in field_info.get('groups', {}).keys())
-        for source_id in sorted(source_ids):
-            source = sources.get(int(source_id))
-            out[int(source_id)] = 'SOURCE' if bool(getattr(source, 'is_eph_obj', False)) else 'LSRK'
-            if source is not None:
-                source_names.setdefault(int(source_id), str(source.name))
-        return out
-
-    eph_source_ids: set[int] = set()
-    try:
-        tb_obj = _get_tb()
-        tb_obj.open(vis + '/FIELD')
-        field_source_ids = np.asarray(tb_obj.getcol('SOURCE_ID')).ravel().astype(int)
-        colnames = set(tb_obj.colnames())
-        if 'EPHEMERIS_ID' in colnames:
-            eph_ids = np.asarray(tb_obj.getcol('EPHEMERIS_ID')).ravel().astype(int)
-            for sid, eph_id in zip(field_source_ids, eph_ids):
-                if int(eph_id) >= 0:
-                    eph_source_ids.add(int(sid))
-        tb_obj.close()
-    except Exception:
-        pass
-    source_ids = set(source_names.keys()) | eph_source_ids
+    sources = {int(source.id): source for source in getattr(ms, 'sources', [])}
+    source_ids = set(sources.keys()) | set(source_names.keys())
     if field_info is not None:
         source_ids.update(int(k) for k in field_info.get('groups', {}).keys())
     for source_id in sorted(source_ids):
-        out[int(source_id)] = 'SOURCE' if int(source_id) in eph_source_ids else 'LSRK'
+        source = sources.get(int(source_id))
+        out[int(source_id)] = 'SOURCE' if bool(getattr(source, 'is_eph_obj', False)) else 'LSRK'
+        if source is not None:
+            source_names.setdefault(int(source_id), str(source.name))
     return out
 
 
-def _context_field_ephemeris_paths(ms: Any | None) -> dict[int, str]:
+def _context_field_ephemeris_paths(ms: Any) -> dict[int, str]:
     '''Return FIELD_ID -> ephemeris table path from imported pipeline field/source objects.'''
-    if ms is None:
-        return {}
     out: dict[int, str] = {}
     for field_obj in getattr(ms, 'fields', []):
         source = getattr(field_obj, 'source', None)
@@ -644,21 +558,7 @@ def _get_field_ephemeris_info(vis: str, field_id: int, ephem_path: str | None = 
         m = re.match(r'EPHEM(\d+)_', base)
         eph_id = int(m.group(1)) if m else 0
         return eph_id, path
-    tb_obj = _get_tb()
-    tb_obj.open(vis + '/FIELD')
-    try:
-        eph_ids = np.asarray(tb_obj.getcol('EPHEMERIS_ID')).ravel().astype(int)
-    finally:
-        tb_obj.close()
-    if int(field_id) < 0 or int(field_id) >= eph_ids.size:
-        raise IndexError(f'FIELD_ID {field_id} out of bounds for {vis}')
-    eph_id = int(eph_ids[int(field_id)])
-    if eph_id < 0:
-        raise RuntimeError(f'Field {field_id} in {vis} does not have an ephemeris table')
-    matches = sorted(glob.glob(os.path.join(vis, 'FIELD', f'EPHEM{eph_id}_*.tab')))
-    if len(matches) != 1:
-        raise RuntimeError(f'Expected exactly one EPHEM{eph_id}_*.tab for {vis} field {field_id}, found {len(matches)}')
-    return eph_id, matches[0]
+    raise RuntimeError(f'hif_findroi requires imported ephemeris metadata for {vis} field {field_id}.')
 
 
 def _get_ephemeris_radvel_series(vis: str, field_id: int, ephem_path: str | None = None) -> tuple[str, np.ndarray, np.ndarray]:
@@ -826,22 +726,17 @@ def _apply_ephemeris_geo_to_source_correction(
     return out, diag
 
 
-def get_antenna_diameter_m(vis: str, ms: Any | None = None) -> float:
-    '''Return the median antenna diameter in meters.'''
-    if ms is not None and getattr(ms, 'antenna_array', None) is not None:
-        diameters = np.asarray([ant.diameter for ant in getattr(ms.antenna_array, 'antennas', [])], dtype=np.float64)
-        if diameters.size:
-            return float(np.median(diameters))
-    tb_obj = _get_tb()
-    tb_obj.open(vis + '/ANTENNA')
-    d = np.asarray(tb_obj.getcol('DISH_DIAMETER'), dtype=np.float64).ravel()
-    tb_obj.close()
-    return float(np.median(d)) if d.size else 12.0
+def get_antenna_diameter_m(ms: Any) -> float:
+    '''Return the median antenna diameter in meters from imported pipeline metadata.'''
+    diameters = np.asarray([ant.diameter for ant in getattr(ms.antenna_array, 'antennas', [])], dtype=np.float64)
+    if diameters.size == 0:
+        raise RuntimeError('No antenna diameters found in pipeline context.')
+    return float(np.median(diameters))
 
 
-def estimate_pb_fwhm_arcsec(vis: str, ref_freq_hz: float, ms: Any | None = None) -> float:
+def estimate_pb_fwhm_arcsec(vis: str, ref_freq_hz: float, ms: Any) -> float:
     '''Estimate primary-beam FWHM in arcseconds.'''
-    dish_diameter_m = get_antenna_diameter_m(vis, ms=ms)
+    dish_diameter_m = get_antenna_diameter_m(ms)
     wavelength_m = C / ref_freq_hz
     theta_rad = 1.13 * wavelength_m / dish_diameter_m
     return theta_rad * 206265.0
@@ -852,13 +747,12 @@ def _wrap_pm_pi(angle_rad: np.ndarray | float) -> np.ndarray | float:
     return (np.asarray(angle_rad) + np.pi) % (2.0 * np.pi) - np.pi
 
 
-def get_field_phase_centers_rad(vis: str, ms: Any | None = None) -> dict[int, tuple[float, float]]:
-    '''Return phase centers in radians, preferring imported field domain objects.'''
-    if ms is not None:
-        phase_centers = imaging.get_field_phase_centers_rad(getattr(ms, 'fields', []))
-        if phase_centers:
-            return phase_centers
-    return imaging.get_field_phase_centers_rad(vis)
+def get_field_phase_centers_rad(ms: Any) -> dict[int, tuple[float, float]]:
+    '''Return phase centers in radians from imported field domain objects.'''
+    phase_centers = imaging.get_field_phase_centers_rad(getattr(ms, 'fields', []))
+    if not phase_centers:
+        raise RuntimeError('No field phase centers found in pipeline context.')
+    return phase_centers
 
 
 def _reference_center_rad(
@@ -3477,8 +3371,12 @@ def _process_spw(
     _profile_logf(tmp_dir, 'process_spw start spw=%s ddid=%s n_vis=%s n_sources=%s', spw_name, ddid, len(vis_list), len(field_groups))
     spectra_by_source = {sid: {} for sid in field_groups.keys()}
     source_is_mosaic = {int(source_id): (len(field_ids) > 1) for source_id, field_ids in field_groups.items()}
-    source_outframe = {int(k): str(v) for k, v in (source_outframe or {}).items()} or get_source_outframes(vis0, {'groups': field_groups})
-    field_phase_centers = dict(field_phase_centers or {}) or get_field_phase_centers_rad(vis0)
+    source_outframe = {int(k): str(v) for k, v in (source_outframe or {}).items()}
+    if not source_outframe:
+        raise RuntimeError('hif_findroi requires source outframe metadata from pipeline context.')
+    field_phase_centers = dict(field_phase_centers or {})
+    if not field_phase_centers:
+        raise RuntimeError('hif_findroi requires field phase-center metadata from pipeline context.')
     field_ephemeris_paths = {int(k): str(v) for k, v in (field_ephemeris_paths or {}).items()}
     source_stitch_meta: dict[int, dict[str, Any]] = {}
     source_stitch_states: dict[int, dict[str, Any]] = {}
@@ -3547,7 +3445,7 @@ def _process_spw(
         axis_field_id = int(sorted(field_chunks.keys())[0]) if field_chunks else None
         source_axis_diag = None
         try:
-            freqs = get_chan_freqs_hz(os.path.join(tmp_dir, f'tmp_{frame_tag}_{frame_token}.ms'), ddid=0)
+            freqs = _get_temp_ms_chan_freqs_hz(os.path.join(tmp_dir, f'tmp_{frame_tag}_{frame_token}.ms'), ddid=0)
             chan_freqs_geo_hz = np.asarray(freqs, dtype=np.float64).ravel()
             if outframe == 'SOURCE':
                 if axis_field_id is None:
@@ -3978,11 +3876,11 @@ def run_findroi_mpi(
     ms0 = _context_ms_for_vis(context, vis_list[0])
     if ms0 is None:
         raise RuntimeError(f'No pipeline MeasurementSet found in context for {vis_list[0]}.')
-    prefix = _get_mous_prefix(context, vis_list[0])
+    prefix = _get_mous_prefix(context)
 
     # Temporary hard switch for 7m/12m-specific heuristics.
     # Keep this simple so it can later be replaced by pipeline Context.
-    dish_diameter_m = float(get_antenna_diameter_m(vis_list[0], ms=ms0))
+    dish_diameter_m = float(get_antenna_diameter_m(ms0))
     array = '7m' if dish_diameter_m < 9.0 else '12m'
     if array == '7m':
         npix_eff = 128
@@ -3996,7 +3894,7 @@ def run_findroi_mpi(
         uv_taper_auto_eff = bool(uv_taper_auto)
         uv_taper_sigma_uv_eff = uv_taper_sigma_uv
         timebin_sec_eff = timebin_sec
-    inv = get_ddid_spw_inventory(vis_list[0], ms=ms0)
+    inv = get_ddid_spw_inventory(vis_list[0], ms0)
     sci = select_science_ddids(inv, min_nchan=min_nchan)
     sci = _filter_science_ddids(inv, sci, spw, context, vis_list[0])
     if not sci:
@@ -4014,7 +3912,7 @@ def run_findroi_mpi(
     all_field_info = _context_field_groups_by_source_id(context, vis_list[0], None)
     if all_field_info is None:
         raise RuntimeError(f'No field/source information found in context for {vis_list[0]}.')
-    project_outframes = get_source_outframes(vis_list[0], all_field_info, ms=ms0)
+    project_outframes = get_source_outframes(ms0, all_field_info)
     field_ephemeris_paths = _context_field_ephemeris_paths(ms0)
     project_has_ephemeris = any(str(v).upper() == 'SOURCE' for v in project_outframes.values())
     if project_has_ephemeris:
@@ -4053,12 +3951,12 @@ def run_findroi_mpi(
             continue
         row_use = dict(row)
         try:
-            chan_freqs_hz = get_chan_freqs_hz(vis_list[0], ddid=int(row['ddid']), ms=ms0)
+            chan_freqs_hz = get_chan_freqs_hz(ms0, ddid=int(row['ddid']))
             row_use['ref_freq_hz'] = float(np.median(np.asarray(chan_freqs_hz, dtype=np.float64)))
         except Exception:
             continue
         science_rows.append(row_use)
-    field_phase_centers = get_field_phase_centers_rad(vis_list[0], ms=ms0)
+    field_phase_centers = get_field_phase_centers_rad(ms0)
     common_geometry_plan = {
         int(source_id): _source_common_geometry_plan(
             vis=vis_list[0],

@@ -199,31 +199,18 @@ def chan_ranges_to_freq_ranges_ghz(
     return out
 
 
-def get_field_phase_centers_rad(fields_or_vis) -> dict[int, tuple[float, float]]:
+def get_field_phase_centers_rad(fields) -> dict[int, tuple[float, float]]:
     """
-    Return field phase centers in radians from imported field objects or a FIELD table.
+    Return field phase centers in radians from imported pipeline Field objects.
 
     Args:
-        fields_or_vis: Iterable of pipeline Field objects or an MS path.
+        fields: Iterable of pipeline Field objects.
 
     Returns:
         Mapping of field id to ``(ra_rad, dec_rad)``.
     """
-    if isinstance(fields_or_vis, str):
-        with casa_tools.TableReader(fields_or_vis + '/FIELD') as tb:
-            phase_dir = numpy.asarray(tb.getcol('PHASE_DIR'), dtype=numpy.float64)
-        if phase_dir.ndim == 3:
-            ra = phase_dir[0, 0, :]
-            dec = phase_dir[1, 0, :]
-        elif phase_dir.ndim == 2:
-            ra = phase_dir[0, :]
-            dec = phase_dir[1, :]
-        else:
-            raise RuntimeError('Unexpected FIELD/PHASE_DIR shape')
-        return {int(i): (float(ra[i]), float(dec[i])) for i in range(ra.size)}
-
     phase_centers = {}
-    for field in fields_or_vis:
+    for field in fields:
         mdirection = getattr(field, 'mdirection', None)
         if mdirection is None:
             continue
