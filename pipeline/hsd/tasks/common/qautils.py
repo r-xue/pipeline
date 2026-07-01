@@ -391,8 +391,10 @@ def smartsort(x: any) -> tuple[int, any]:
     """
     Auxiliary method to sort a numerical value / str mixed list
 
-    This can be used with shrted as: sorted(arr, key=smartsort)
-    Numerical values in str are coverted to float for evaluation.
+    This can be used with sorted as: sorted(arr, key=smartsort)
+    Numerical values stored as str are coverted to float for evaluation.
+    ex)
+     ['11.0', '6', '5.0deg', '4.3'] -> ['4.3', '6', '11.0', '5.0deg']
 
     Args:
         x : any value
