@@ -30,12 +30,14 @@ class SDApplycalQAHandler(pqa.QAPlugin):
         """
         # register the properties for 'score_sd_line_detection'
         metric_name = 'AmpVsTimePlotQuality'
-        qautils.registry.register_longmsg_keys(metric_name, ['vis', 'spw', 'ant'])
-        qautils.registry.register_keys_to_aggregate(metric_name, ['vis', 'spw', 'ant'])
+        keys = ['vis', 'spw', 'ant']
+        qautils.registry.register_longmsg_keys(metric_name, keys)
+        qautils.registry.register_keys_to_aggregate(metric_name, keys)
 
         metric_name = 'XX-YY.deviation'
-        qautils.registry.register_longmsg_keys(metric_name, ['vis', 'field', 'spw', 'ant', 'pol', 'scan'])
-        qautils.registry.register_keys_to_aggregate(metric_name, ['vis', 'field', 'spw', 'ant', 'pol', 'scan'])
+        keys = ['vis', 'field', 'spw', 'ant', 'pol', 'scan']
+        qautils.registry.register_longmsg_keys(metric_name, keys)
+        qautils.registry.register_keys_to_aggregate(metric_name, keys)
 
         # register metrics to exclude form formatting/aggregation
         qautils.registry.register_excludes(['%ApplycalFlags'])

@@ -33,11 +33,13 @@ class SDImagingQAHandler(pqa.QAPlugin):
         """
         # register the properties
         for metric_name in self.IMAGE_RELATED_QASCORES: 
-            qautils.registry.register_longmsg_keys(metric_name, ['field', 'spw'])
-            qautils.registry.register_keys_to_aggregate(metric_name, ['field', 'spw'])
+            keys = ['field', 'spw']
+            qautils.registry.register_longmsg_keys(metric_name, keys)
+            qautils.registry.register_keys_to_aggregate(metric_name, keys)
         for metric_name in self.RASTERSCAN_RELATED_QASCORES:
-            qautils.registry.register_longmsg_keys(metric_name, ['vis', 'ant'])
-            qautils.registry.register_keys_to_aggregate(metric_name, ['vis', 'ant'])
+            keys = ['vis', 'ant']
+            qautils.registry.register_longmsg_keys(metric_name, keys)
+            qautils.registry.register_keys_to_aggregate(metric_name, keys)
 
     def handle(self, context, result):
         """

@@ -30,15 +30,15 @@ class SDBaselineQAHandler(pqa.QAPlugin):
         """
         # register the properties for 'score_sd_line_detection'
         metric_name = 'score_sd_line_detection'
-        qautils.registry.register_longmsg_keys(metric_name, ['vis', 'field', 'spw', 'ant', 'pol'])
-        qautils.registry.register_keys_to_aggregate(metric_name, ['vis', 'field', 'spw', 'ant', 'pol'])
+        keys = ['vis', 'field', 'spw', 'ant', 'pol']
+        qautils.registry.register_longmsg_keys(metric_name, keys)
+        qautils.registry.register_keys_to_aggregate(metric_name, keys)
 
         # register the properties for 'score_sd_baseline_quality'
         metric_name = 'score_sd_baseline_quality'
-        qautils.registry.register_keys_to_aggregate(metric_name,
-                                                     ['vis', 'field', 'spw', 'ant', 'pol'])
-        qautils.registry.register_longmsg_keys(metric_name,
-                                                ['vis', 'field', 'spw', 'ant', 'pol'])
+        keys = ['vis', 'field', 'spw', 'ant', 'pol']
+        qautils.registry.register_keys_to_aggregate(metric_name, keys)
+        qautils.registry.register_longmsg_keys(metric_name, keys)
 
     def handle(self, context: Context, result: result_cls) -> None:
         """Compute QA score for baseline subtraction task.
