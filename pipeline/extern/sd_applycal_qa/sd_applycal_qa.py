@@ -242,7 +242,7 @@ def qascorefunc(nsigma: float, score_top: float = 0.67, score_bottom: float = 0.
 
     return max(score_top - (score_top - score_bottom)*(nsigma - nsigma_threshold)/(nsigma_bottom - nsigma_threshold), score_bottom)
 
-def sanitize_attributes( s: pqa.TargetDataSelection ) -> pqa.TargetDataSelection:
+def sanitize_attributes(s: pqa.TargetDataSelection) -> pqa.TargetDataSelection:
     """
     Convert NumPy objects in the attributes to native Python objects
 
