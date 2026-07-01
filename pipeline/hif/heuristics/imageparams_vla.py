@@ -723,10 +723,11 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             else:
                 raise Exception('Cannot select representative target from TARGET intent.')
 
-        # Find the first source with at least 5% unflagged data
+        # Iterate through target sources to find the first one with sufficient unflagged data
+        # (at least 5% non-flagged data in at least one SPW)
         repr_source = None
-        flag_stats_spw = None
-        min_unflagged_fraction = 0.05
+        repr_source_flag_stats_spw = None  # Will hold flag statistics for the selected representative source
+        min_unflagged_fraction = 0.05  # Minimum acceptable unflagged fraction (5%)
 
         for source_candidate in target_sources:
             job = casa_tasks.flagdata(
@@ -735,7 +736,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             flag_stats = job.execute()
             flag_stats_spw = flag_stats["spw"]
 
-            # Calculate unflagged fraction for each spw
+            # Calculate the unflagged fraction (ratio of unflagged to total data) for each SPW
             unflagged_fractions = {
                 str(spw.id): (flag_stats_spw[str(spw.id)]["total"] - flag_stats_spw[str(spw.id)]["flagged"])
                 / flag_stats_spw[str(spw.id)]["total"]
@@ -744,11 +745,12 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             }
             LOG.info("Source %s unflagged fractions by spw: %s", source_candidate, unflagged_fractions)
 
-            # Check if this source has at least 10% unflagged data in any spw
+            # Check if this source has sufficient unflagged data in any SPW (>= 5%)
             has_sufficient_data = any(frac >= min_unflagged_fraction for frac in unflagged_fractions.values())
 
             if has_sufficient_data:
                 repr_source = source_candidate
+                repr_source_flag_stats_spw = flag_stats_spw
                 LOG.info(
                     "Selected %s as representative source (meets %.0f%% threshold)",
                     repr_source,
@@ -761,9 +763,10 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
                 f"No suitable representative target found with at least {min_unflagged_fraction:.0%} unflagged data from {target_sources}"
             )
 
+        # Calculate flagging fraction for each SPW using the representative source's flag stats
         spw_flagfrac = {
-            spw: flag_stats_spw[str(spw.id)]['flagged'] / flag_stats_spw[str(spw.id)]['total']
-            for spw in repr_ms.get_spectral_windows() if str(spw.id) in flag_stats_spw
+            spw: repr_source_flag_stats_spw[str(spw.id)]['flagged'] / repr_source_flag_stats_spw[str(spw.id)]['total']
+            for spw in repr_ms.get_spectral_windows() if str(spw.id) in repr_source_flag_stats_spw
         }
 
         # Select SPW with minimum flagging fraction
