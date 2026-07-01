@@ -491,44 +491,6 @@ def select_science_ddids(
     return out
 
 
-def get_source_outframes(
-    ms: Any,
-    field_info: dict[str, Any] | None = None,
-) -> dict[int, str]:
-    '''Return per-source CASA outframe from imported pipeline source metadata.'''
-    source_names: dict[int, str] = {}
-    if field_info is not None:
-        source_names.update({int(k): str(v) for k, v in field_info.get('source_names', {}).items()})
-
-    out: dict[int, str] = {}
-    sources = {int(source.id): source for source in getattr(ms, 'sources', [])}
-    source_ids = set(sources.keys()) | set(source_names.keys())
-    if field_info is not None:
-        source_ids.update(int(k) for k in field_info.get('groups', {}).keys())
-    for source_id in sorted(source_ids):
-        source = sources.get(int(source_id))
-        out[int(source_id)] = 'SOURCE' if bool(getattr(source, 'is_eph_obj', False)) else 'LSRK'
-        if source is not None:
-            source_names.setdefault(int(source_id), str(source.name))
-    return out
-
-
-def _context_field_ephemeris_paths(ms: Any) -> dict[int, str]:
-    '''Return FIELD_ID -> ephemeris table path from imported pipeline field/source objects.'''
-    out: dict[int, str] = {}
-    for field_obj in getattr(ms, 'fields', []):
-        source = getattr(field_obj, 'source', None)
-        if source is None or not bool(getattr(source, 'is_eph_obj', False)):
-            continue
-        table_name = str(getattr(source, 'ephemeris_table', '') or '')
-        if not table_name:
-            continue
-        if not table_name.endswith('.tab'):
-            table_name = f'{table_name}.tab'
-        out[int(field_obj.id)] = os.path.join(ms.name, 'FIELD', table_name)
-    return out
-
-
 def _get_field_ephemeris_info(vis: str, field_id: int, ephem_path: str | None = None) -> tuple[int, str]:
     '''Return (ephemeris_id, ephemeris_table_path) for a field.'''
     key = (os.path.abspath(vis), int(field_id))
@@ -715,17 +677,8 @@ def _apply_ephemeris_geo_to_source_correction(
     return out, diag
 
 
-def get_antenna_diameter_m(ms: Any) -> float:
-    '''Return the median antenna diameter in meters from imported pipeline metadata.'''
-    diameters = np.asarray([ant.diameter for ant in getattr(ms.antenna_array, 'antennas', [])], dtype=np.float64)
-    if diameters.size == 0:
-        raise RuntimeError('No antenna diameters found in pipeline context.')
-    return float(np.median(diameters))
-
-
-def estimate_pb_fwhm_arcsec(vis: str, ref_freq_hz: float, ms: Any) -> float:
+def estimate_pb_fwhm_arcsec(ref_freq_hz: float, dish_diameter_m: float) -> float:
     '''Estimate primary-beam FWHM in arcseconds.'''
-    dish_diameter_m = get_antenna_diameter_m(ms)
     wavelength_m = C / ref_freq_hz
     theta_rad = 1.13 * wavelength_m / dish_diameter_m
     return theta_rad * 206265.0
@@ -734,14 +687,6 @@ def estimate_pb_fwhm_arcsec(vis: str, ref_freq_hz: float, ms: Any) -> float:
 def _wrap_pm_pi(angle_rad: np.ndarray | float) -> np.ndarray | float:
     '''Wrap angles into [-pi, pi).'''
     return (np.asarray(angle_rad) + np.pi) % (2.0 * np.pi) - np.pi
-
-
-def get_field_phase_centers_rad(ms: Any) -> dict[int, tuple[float, float]]:
-    '''Return phase centers in radians from imported field domain objects.'''
-    phase_centers = imaging.get_field_phase_centers_rad(getattr(ms, 'fields', []))
-    if not phase_centers:
-        raise RuntimeError('No field phase centers found in pipeline context.')
-    return phase_centers
 
 
 def _reference_center_rad(
@@ -823,23 +768,23 @@ def _next_casa_friendly_size(n: int) -> int:
 
 
 def _estimate_field_cell_arcsec(
-    vis: str,
     ref_freq_hz: float,
+    dish_diameter_m: float,
     npix: int,
     fov_pb_mult: float,
 ) -> float:
     '''Estimate the image cell size implied by the current field-imaging heuristic.'''
-    pb_fwhm_arcsec = estimate_pb_fwhm_arcsec(vis, ref_freq_hz)
+    pb_fwhm_arcsec = estimate_pb_fwhm_arcsec(ref_freq_hz, dish_diameter_m)
     fov_arcsec = float(pb_fwhm_arcsec) * float(fov_pb_mult)
     return float(fov_arcsec / max(int(npix), 1))
 
 
 def _source_common_geometry_plan(
-    vis: str,
     source_id: int,
     field_ids: list[int],
     science_rows: list[dict[str, Any]],
     phase_centers_rad: dict[int, tuple[float, float]],
+    dish_diameter_m: float,
     npix: int,
     fov_pb_mult: float,
     pb_cutoff: float = 0.1,
@@ -854,8 +799,8 @@ def _source_common_geometry_plan(
     per_spw = []
     for row in science_rows:
         ref_freq_hz = float(row['ref_freq_hz'])
-        cell_arcsec = _estimate_field_cell_arcsec(vis, ref_freq_hz, npix=npix, fov_pb_mult=fov_pb_mult)
-        pb_fwhm_arcsec = estimate_pb_fwhm_arcsec(vis, ref_freq_hz)
+        cell_arcsec = _estimate_field_cell_arcsec(ref_freq_hz, dish_diameter_m, npix=npix, fov_pb_mult=fov_pb_mult)
+        pb_fwhm_arcsec = estimate_pb_fwhm_arcsec(ref_freq_hz, dish_diameter_m)
         per_spw.append({
             'ddid': int(row['ddid']),
             'spw_id': int(row['spw_id']),
@@ -1867,6 +1812,7 @@ def _effective_nbin_from_rho(nbin: int, rho: np.ndarray) -> float:
 
 def cube_threshold_spectrum(
     vis: str,
+    dish_diameter_m: float,
     ddid: int = 0,
     spw_name: str | None = None,
     field: int | None = None,
@@ -1904,7 +1850,7 @@ def cube_threshold_spectrum(
     v_m = preloaded['V_m']
     lam = preloaded['lam']
     nchan = v.shape[1]
-    pb = estimate_pb_fwhm_arcsec(vis, preloaded['ref_freq_hz'])
+    pb = estimate_pb_fwhm_arcsec(preloaded['ref_freq_hz'], dish_diameter_m)
     t_cube = time.perf_counter()
     t_gridprep = time.perf_counter()
     idx, w, inb, idx2, w2, inb2, diag = _precompute_grid_indices(
@@ -3324,6 +3270,7 @@ def _process_spw(
     field_phase_centers: dict[int, tuple[float, float]] | None = None,
     field_ephemeris_paths: dict[int, str] | None = None,
     prefix: str | None = None,
+    dish_diameter_m: float = 12.0,
     timebin_sec: float = 240,
     npix: int = 256,
     fov_pb_mult: float = 1.5,
@@ -3502,6 +3449,7 @@ def _process_spw(
 
             res = cube_threshold_spectrum(
                 vis0,
+                dish_diameter_m=dish_diameter_m,
                 ddid=ddid,
                 spw_name=spw_name,
                 field=field_id,
@@ -3875,7 +3823,10 @@ def run_findroi_mpi(
 
     # Temporary hard switch for 7m/12m-specific heuristics.
     # Keep this simple so it can later be replaced by pipeline Context.
-    dish_diameter_m = float(get_antenna_diameter_m(ms0))
+    diameters = np.asarray([ant.diameter for ant in getattr(ms0.antenna_array, 'antennas', [])], dtype=np.float64)
+    if diameters.size == 0:
+        raise RuntimeError('No antenna diameters found in pipeline context.')
+    dish_diameter_m = float(np.median(diameters))
     array = '7m' if dish_diameter_m < 9.0 else '12m'
     if array == '7m':
         npix_eff = 128
@@ -3907,8 +3858,22 @@ def run_findroi_mpi(
     all_field_info = _context_field_groups_by_source_id(context, vis_list[0], None)
     if all_field_info is None:
         raise RuntimeError(f'No field/source information found in context for {vis_list[0]}.')
-    project_outframes = get_source_outframes(ms0, all_field_info)
-    field_ephemeris_paths = _context_field_ephemeris_paths(ms0)
+    sources_by_id = {int(source.id): source for source in getattr(ms0, 'sources', [])}
+    project_outframes = {}
+    for source_id in sorted(int(k) for k in all_field_info.get('groups', {}).keys()):
+        source = sources_by_id.get(int(source_id))
+        project_outframes[int(source_id)] = 'SOURCE' if bool(getattr(source, 'is_eph_obj', False)) else 'LSRK'
+    field_ephemeris_paths: dict[int, str] = {}
+    for field_obj in getattr(ms0, 'fields', []):
+        source = getattr(field_obj, 'source', None)
+        if source is None or not bool(getattr(source, 'is_eph_obj', False)):
+            continue
+        table_name = str(getattr(source, 'ephemeris_table', '') or '')
+        if not table_name:
+            continue
+        if not table_name.endswith('.tab'):
+            table_name = f'{table_name}.tab'
+        field_ephemeris_paths[int(field_obj.id)] = os.path.join(ms0.name, 'FIELD', table_name)
     project_has_ephemeris = any(str(v).upper() == 'SOURCE' for v in project_outframes.values())
     if project_has_ephemeris:
         timebin_sec_eff = None
@@ -3951,14 +3916,16 @@ def run_findroi_mpi(
         except Exception:
             continue
         science_rows.append(row_use)
-    field_phase_centers = get_field_phase_centers_rad(ms0)
+    field_phase_centers = imaging.get_field_phase_centers_rad(getattr(ms0, 'fields', []))
+    if not field_phase_centers:
+        raise RuntimeError('No field phase centers found in pipeline context.')
     common_geometry_plan = {
         int(source_id): _source_common_geometry_plan(
-            vis=vis_list[0],
             source_id=int(source_id),
             field_ids=[int(fid) for fid in field_ids],
             science_rows=science_rows,
             phase_centers_rad=field_phase_centers,
+            dish_diameter_m=dish_diameter_m,
             npix=npix_eff,
             fov_pb_mult=fov_pb_mult_eff,
             pb_cutoff=0.1,
@@ -3983,7 +3950,7 @@ def run_findroi_mpi(
         )
         args.append((
             vis_list, ddid, spw_name, spw_ids_by_vis, int(ddid_rows[int(ddid)]['spw_id']), field_groups,
-            common_geometry_plan, project_outframes, field_phase_centers, field_ephemeris_paths, prefix,
+            common_geometry_plan, project_outframes, field_phase_centers, field_ephemeris_paths, prefix, dish_diameter_m,
             timebin_sec_eff, npix_eff, fov_pb_mult_eff,
             ref_sigma, mom0_thresh_sigma, gate_sigma,
             ref_zero_frac_thr, mom0_zero_frac_thr,
