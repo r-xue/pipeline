@@ -17,6 +17,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.mpihelpers as mpihelpers
 from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks, casa_tools
+from pipeline.infrastructure.filenamer import PipelineProductNameBuilder
 from pipeline.infrastructure.utils import imaging
 
 LOG = infrastructure.get_logger(__name__)
@@ -101,7 +102,7 @@ _DEFAULT_FINDROI_CONFIG = {
     'roi_cont_thresh': 7.0,
     'tmp_overwrite': True,
     'save_moment0': True,
-    'save_cube': False,
+    'save_cube': True,
     'verbose': True,
 }
 
@@ -3845,7 +3846,6 @@ def run_findroi_mpi(
     os.makedirs(products_dir, exist_ok=True)
     os.makedirs(logs_dir, exist_ok=True)
     os.makedirs(diagnostics_dir, exist_ok=True)
-    products_tgz_path = os.path.join(tmp_dir, 'findroi_products.tgz') if tmp_dir else 'findroi_products.tgz'
     _rank_logf(tmp_dir, '[run] start findroi')
 
     t_inv = time.perf_counter()
@@ -3858,6 +3858,11 @@ def run_findroi_mpi(
     if oussid in (None, '', 'unknown'):
         oussid = 'oussid'
     prefix = re.sub(r'[^A-Za-z0-9_]+', '_', str(oussid).replace('uid://', 'uid___')).strip('_')
+    products_tgz_path = PipelineProductNameBuilder.auxiliary_products(
+        'findroi_products.tgz',
+        ousstatus_entity_id=prefix,
+        output_dir=tmp_dir,
+    )
 
     # Temporary hard switch for 7m/12m-specific heuristics.
     # Keep this simple so it can later be replaced by pipeline Context.
