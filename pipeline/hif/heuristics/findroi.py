@@ -15,7 +15,7 @@ import numpy as np
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.mpihelpers as mpihelpers
 from pipeline.domain import DataType
-from pipeline.infrastructure import casa_tasks
+from pipeline.infrastructure import casa_tasks, casa_tools
 from pipeline.infrastructure.utils import imaging
 
 LOG = infrastructure.get_logger(__name__)
@@ -67,9 +67,45 @@ except Exception:
             return self._results
 
 
-C = 299792458.0
-C_KM_S = 299792.458
+_QUANTA = casa_tools.quanta
+_SPEED_OF_LIGHT_M_S = _QUANTA.getvalue(_QUANTA.convert(_QUANTA.constants('c'), 'm/s'))[0]
+_SPEED_OF_LIGHT_KM_S = _QUANTA.getvalue(_QUANTA.convert(_QUANTA.constants('c'), 'km/s'))[0]
 AU_DAY_TO_M_S = 1731.45683633 * 1000.0
+_DEFAULT_FINDROI_CONFIG = {
+    'timebin_sec': 240.0,
+    'min_nchan': 128,
+    'npix': 256,
+    'fov_pb_mult': 1.5,
+    'ref_sigma': 3.0,
+    'mom0_thresh_sigma': 5.0,
+    'gate_sigma': 1.0,
+    'pos_evidence_thr': 5.0,
+    'neg_evidence_thr': 7.0,
+    'evidence_thr': None,
+    'evidence_bin_scales': (1, 2, 3, 4, 5, 6, 8, 10, 20, 40, 60, 80),
+    'ref_zero_frac_thr': 0.05,
+    'mom0_zero_frac_thr': 0.05,
+    'ref_smooth_width': 4,
+    'mom0_smooth_width': 4,
+    'neg_extent_delta_thr': 5.0,
+    'neg_extent_trim_frac': 0.10,
+    'acf_edge_trim_frac': 0.10,
+    'acf_smooth_frac': 0.20,
+    'fwhm_global_fallback_factor': 5.0,
+    'fwhm_min_chan': 4,
+    'rolling_rms_window': 10,
+    'rolling_rms_target_unsmoothed': 0.87,
+    'rolling_rms_target_smoothed': 0.66,
+    'uv_taper_auto': True,
+    'uv_taper_sigma_uv': None,
+    'uv_taper_fwhm_cell': 2.0,
+    'roi_thresh': 7.0,
+    'roi_cont_thresh': 7.0,
+    'tmp_overwrite': True,
+    'save_moment0': True,
+    'save_cube': False,
+    'verbose': True,
+}
 
 # Optional per-rank profiling logs used to diagnose stage runtime hotspots.
 def _profile_path(log_dir: str | None) -> str | None:
@@ -463,27 +499,15 @@ def get_ddid_spw_inventory(vis: str, ms: Any) -> list[dict[str, Any]]:
 
 def select_science_ddids(
     inv: list[dict[str, Any]],
+    science_spw_ids: set[int],
     min_nchan: int = 128,
-    exclude_spw_name_substrings: tuple[str, ...] = (
-        'WVR',
-        'SQLD',
-        'AVG',
-        'AV',
-        'CAL',
-        'TP',
-        'WIDE',
-        'CONT',
-        'AUX',
-        'POINTING',
-    ),
 ) -> list[int]:
-    '''Select science DDIDs by channel count, name, and row count.'''
+    '''Select science DDIDs using pipeline science SPWs plus local row-count filtering.'''
     out = []
     for r in inv:
-        if r['nchan'] < min_nchan:
+        if int(r['spw_id']) not in science_spw_ids:
             continue
-        name = r['name'].upper()
-        if any(tok in name for tok in exclude_spw_name_substrings):
+        if r['nchan'] < min_nchan:
             continue
         if r.get('nrows', 0) <= 0:
             continue
@@ -567,7 +591,7 @@ def _ephemeris_geo_to_source_shift_hz(
     radvel_m_s: np.ndarray,
 ) -> np.ndarray:
     '''Return additive GEO->SOURCE frequency shift around a reference frequency.'''
-    beta = np.asarray(radvel_m_s, dtype=np.float64) / C
+    beta = np.asarray(radvel_m_s, dtype=np.float64) / _SPEED_OF_LIGHT_M_S
     return float(ref_freq_hz) * beta
 
 
@@ -679,7 +703,7 @@ def _apply_ephemeris_geo_to_source_correction(
 
 def estimate_pb_fwhm_arcsec(ref_freq_hz: float, dish_diameter_m: float) -> float:
     '''Estimate primary-beam FWHM in arcseconds.'''
-    wavelength_m = C / ref_freq_hz
+    wavelength_m = _SPEED_OF_LIGHT_M_S / ref_freq_hz
     theta_rad = 1.13 * wavelength_m / dish_diameter_m
     return theta_rad * 206265.0
 
@@ -2313,7 +2337,7 @@ def _build_findroi_stage_product(
                 break
         chan_width_kms = None
         if ref_freq_hz and chan_width_hz:
-            chan_width_kms = float((float(chan_width_hz) / float(ref_freq_hz)) * C_KM_S)
+            chan_width_kms = float((float(chan_width_hz) / float(ref_freq_hz)) * _SPEED_OF_LIGHT_KM_S)
         science_spws[spw_key] = {
             'ddid': int(row['ddid']),
             'spw_id': spw_id,
@@ -3435,7 +3459,7 @@ def _process_spw(
                     ephem_path=field_ephemeris_paths.get(int(field_id)),
                 )
             d_preload['ref_freq_hz'] = ref_freq_hz
-            d_preload['lam'] = C / ref_freq_hz
+            d_preload['lam'] = _SPEED_OF_LIGHT_M_S / ref_freq_hz
 
             save_moment0_path = None
             if save_moment0 and (not is_mosaic_source):
@@ -3758,46 +3782,47 @@ def run_findroi_mpi(
     vis: str | list[str],
     context: Any | None = None,
     executor: Any | None = None,
-    timebin_sec: float = 240,
-    min_nchan: int = 128,
     field: str | int | list[int] | None = 'target',
     spw: str | int | list[int] | None = None,
-    npix: int = 256,
-    fov_pb_mult: float = 1.5,
-    ref_sigma: float = 3.0,
-    mom0_thresh_sigma: float = 5.0,
-    gate_sigma: float = 1.0,
-    pos_evidence_thr: float = 5.0,
-    neg_evidence_thr: float = 7.0,
-    evidence_thr: float | None = None,
-    evidence_bin_scales: tuple[int, ...] = (1, 2, 3, 4, 5, 6, 8, 10, 20, 40, 60, 80),
-    ref_zero_frac_thr: float = 0.05,
-    mom0_zero_frac_thr: float = 0.05,
-    ref_smooth_width: int = 4,
-    mom0_smooth_width: int = 4,
-    neg_extent_delta_thr: float = 5.0,
-    neg_extent_trim_frac: float = 0.10,
-    acf_edge_trim_frac: float = 0.10,
-    acf_smooth_frac: float = 0.20,
-    fwhm_global_fallback_factor: float = 5.0,
-    fwhm_min_chan: int = 4,
-    rolling_rms_window: int = 10,
-    rolling_rms_target_unsmoothed: float = 0.87,
-    rolling_rms_target_smoothed: float = 0.66,
-    uv_taper_auto: bool = True,
-    uv_taper_sigma_uv: float | None = None,
-    uv_taper_fwhm_cell: float = 2.0,
-    roi_thresh: float = 7.0,
-    roi_cont_thresh: float = 7.0,
     tmp_dir: str = 'tmp_findroi',
-    tmp_overwrite: bool = True,
-    save_moment0: bool = True,
-    save_cube: bool = False,
     parallel: str | bool = 'automatic',
-    save_results_path: str | None = None,
-    verbose: bool = True,
 ) -> dict[str, Any] | None:
     '''Run MPI-parallel findROI processing and return the stage product.'''
+    cfg = copy.deepcopy(_DEFAULT_FINDROI_CONFIG)
+    timebin_sec = float(cfg['timebin_sec'])
+    min_nchan = int(cfg['min_nchan'])
+    npix = int(cfg['npix'])
+    fov_pb_mult = float(cfg['fov_pb_mult'])
+    ref_sigma = float(cfg['ref_sigma'])
+    mom0_thresh_sigma = float(cfg['mom0_thresh_sigma'])
+    gate_sigma = float(cfg['gate_sigma'])
+    pos_evidence_thr = float(cfg['pos_evidence_thr'])
+    neg_evidence_thr = float(cfg['neg_evidence_thr'])
+    evidence_thr = cfg['evidence_thr']
+    evidence_bin_scales = tuple(int(v) for v in cfg['evidence_bin_scales'])
+    ref_zero_frac_thr = float(cfg['ref_zero_frac_thr'])
+    mom0_zero_frac_thr = float(cfg['mom0_zero_frac_thr'])
+    ref_smooth_width = int(cfg['ref_smooth_width'])
+    mom0_smooth_width = int(cfg['mom0_smooth_width'])
+    neg_extent_delta_thr = float(cfg['neg_extent_delta_thr'])
+    neg_extent_trim_frac = float(cfg['neg_extent_trim_frac'])
+    acf_edge_trim_frac = float(cfg['acf_edge_trim_frac'])
+    acf_smooth_frac = float(cfg['acf_smooth_frac'])
+    fwhm_global_fallback_factor = float(cfg['fwhm_global_fallback_factor'])
+    fwhm_min_chan = int(cfg['fwhm_min_chan'])
+    rolling_rms_window = int(cfg['rolling_rms_window'])
+    rolling_rms_target_unsmoothed = float(cfg['rolling_rms_target_unsmoothed'])
+    rolling_rms_target_smoothed = float(cfg['rolling_rms_target_smoothed'])
+    uv_taper_auto = bool(cfg['uv_taper_auto'])
+    uv_taper_sigma_uv = cfg['uv_taper_sigma_uv']
+    uv_taper_fwhm_cell = float(cfg['uv_taper_fwhm_cell'])
+    roi_thresh = float(cfg['roi_thresh'])
+    roi_cont_thresh = float(cfg['roi_cont_thresh'])
+    tmp_overwrite = bool(cfg['tmp_overwrite'])
+    save_moment0 = bool(cfg['save_moment0'])
+    save_cube = bool(cfg['save_cube'])
+    save_results_path = None
+    verbose = bool(cfg['verbose'])
     if context is None:
         raise RuntimeError('hif_findroi requires pipeline context from importdata.')
     t_run = time.perf_counter()
@@ -3839,7 +3864,11 @@ def run_findroi_mpi(
         uv_taper_sigma_uv_eff = uv_taper_sigma_uv
         timebin_sec_eff = timebin_sec
     inv = get_ddid_spw_inventory(vis_list[0], ms0)
-    sci = select_science_ddids(inv, min_nchan=min_nchan)
+    science_spw_ids = {
+        int(spw_obj.id)
+        for spw_obj in ms0.get_spectral_windows(science_windows_only=True)
+    }
+    sci = select_science_ddids(inv, science_spw_ids=science_spw_ids, min_nchan=min_nchan)
     sci = _filter_science_ddids(inv, sci, spw, context, vis_list[0])
     if not sci:
         raise RuntimeError(f'No science SPWs selected for hif_findroi spw={spw!r}.')
@@ -4003,7 +4032,7 @@ def run_findroi_mpi(
                 chan_width_hz = s['chan_width_hz']
                 if chan_width_hz is None or ref_freq_hz is None:
                     continue
-                dv_kms = abs((chan_width_hz / ref_freq_hz) * C_KM_S)
+                dv_kms = abs((chan_width_hz / ref_freq_hz) * _SPEED_OF_LIGHT_KM_S)
                 hwhm, fwhm = _acf_hwhm_fwhm(
                     evid,
                     smooth_frac=acf_smooth_frac,
@@ -4089,7 +4118,7 @@ def run_findroi_mpi(
                         reason='missing_channel_metadata',
                     )
                     continue
-                dv_kms = abs((chan_width_hz / ref_freq_hz) * C_KM_S)
+                dv_kms = abs((chan_width_hz / ref_freq_hz) * _SPEED_OF_LIGHT_KM_S)
                 if dv_kms <= 0.0 or not np.isfinite(dv_kms):
                     out['sources'][source_id][field_id] = _empty_mini_with_continuum(
                         nchan=nchan,
@@ -4329,9 +4358,7 @@ def _stage_token(context: Any) -> str:
     return re.sub(r'[^A-Za-z0-9_]+', '_', str(raw)).strip('_') or 'unknown'
 
 
-def default_tmp_dir(context: Any, output_dir: str | None, tmp_dir: str | None) -> str:
-    if tmp_dir not in (None, ''):
-        return os.path.abspath(str(tmp_dir))
+def default_tmp_dir(context: Any, output_dir: str | None) -> str:
     root = output_dir or getattr(context, 'output_dir', '.') or '.'
     return os.path.abspath(os.path.join(root, f'hif_findroi_stage{_stage_token(context)}'))
 
