@@ -7,6 +7,7 @@ import os
 import pickle
 import re
 import shutil
+import tarfile
 import time
 from typing import Any
 
@@ -109,6 +110,7 @@ def _profile_path(log_dir: str | None) -> str | None:
     use_dir = log_dir if log_dir else _PROFILE_DEFAULT_DIR
     if not use_dir:
         return None
+    use_dir = os.path.join(use_dir, 'logs')
     os.makedirs(use_dir, exist_ok=True)
     rank, _ = _mpi_rank_size()
     return os.path.join(use_dir, f'profile_rank{rank}.txt')
@@ -175,8 +177,9 @@ def _rank_log(tmp_dir: str | None, msg: str) -> None:
     if not tmp_dir:
         return
     try:
-        os.makedirs(tmp_dir, exist_ok=True)
-        path = os.path.join(tmp_dir, f'mpi_rank{rank}.log')
+        log_dir = os.path.join(tmp_dir, 'logs')
+        os.makedirs(log_dir, exist_ok=True)
+        path = os.path.join(log_dir, f'mpi_rank{rank}.log')
         with open(path, 'a', encoding='ascii') as fh:
             fh.write(msg + '\n')
     except Exception:
@@ -201,8 +204,9 @@ def _rank_diag(tmp_dir: str | None, msg: str) -> None:
     if not tmp_dir:
         return
     try:
-        os.makedirs(tmp_dir, exist_ok=True)
-        path = os.path.join(tmp_dir, f'grid_diagnostics_rank{rank}.txt')
+        diagnostics_dir = os.path.join(tmp_dir, 'diagnostics')
+        os.makedirs(diagnostics_dir, exist_ok=True)
+        path = os.path.join(diagnostics_dir, f'grid_diagnostics_rank{rank}.txt')
         with open(path, 'a', encoding='ascii') as fh:
             fh.write(msg + '\n')
     except Exception:
@@ -2517,15 +2521,14 @@ def _build_findroi_stage_product(
 
 def _save_default_summary_plots(
     results: dict[str, Any],
-    tmp_dir: str,
-    prefix: str,
+    products_dir: str,
 ) -> dict[str, dict[str, str]]:
     '''Generate and save per-source summary plots; return artifact paths.'''
     import matplotlib.pyplot as plt
     from pipeline.hif.tasks.findroi import plots as fplots
     plt.ioff()
 
-    os.makedirs(tmp_dir, exist_ok=True)
+    os.makedirs(products_dir, exist_ok=True)
     out: dict[str, dict[str, str]] = {}
     cfg = results.get('metadata', {}).get('config', {})
     pos_thr = float(cfg.get('pos_evidence_thr', cfg.get('evidence_thr', 7.0)))
@@ -2537,14 +2540,14 @@ def _save_default_summary_plots(
         try:
             fplots.plot_spectra_by_spw(results, source_name=source_name, field_id=None, use_snr=True)
             fig = plt.gcf()
-            p_spectra = os.path.join(tmp_dir, f'{prefix}_findroi_source-{token}_spectra.png')
+            p_spectra = os.path.join(products_dir, f'findroi_source-{token}_spectra.png')
             fig.savefig(p_spectra, dpi=160, bbox_inches='tight')
             plt.close(fig)
             per_source['spectra_png'] = p_spectra
 
             fplots.plot_moment0_by_spw(results, source_name=source_name, field_id=None)
             fig = plt.gcf()
-            p_mom0 = os.path.join(tmp_dir, f'{prefix}_findroi_source-{token}_moment0.png')
+            p_mom0 = os.path.join(products_dir, f'findroi_source-{token}_moment0.png')
             fig.savefig(p_mom0, dpi=160, bbox_inches='tight')
             plt.close(fig)
             per_source['moment0_png'] = p_mom0
@@ -2557,7 +2560,7 @@ def _save_default_summary_plots(
                 min_neg_region_snr=neg_thr,
             )
             fig = plt.gcf()
-            p_evidence = os.path.join(tmp_dir, f'{prefix}_findroi_source-{token}_evidence.png')
+            p_evidence = os.path.join(products_dir, f'findroi_source-{token}_evidence.png')
             fig.savefig(p_evidence, dpi=160, bbox_inches='tight')
             plt.close(fig)
             per_source['evidence_png'] = p_evidence
@@ -2612,15 +2615,14 @@ def _complement_channel_ranges(excluded: list[tuple[int, int]], nchan: int) -> l
 
 def _write_roi_dat_files(
     results: dict[str, Any],
-    tmp_dir: str,
-    prefix: str,
+    products_dir: str,
     roi_thresh: float,
     roi_cont_thresh: float,
 ) -> dict[str, str]:
     '''Write ROI.dat and ROIcont.dat in cont.dat-like format from source-aggregate products.'''
-    os.makedirs(tmp_dir, exist_ok=True)
-    roi_path = os.path.join(tmp_dir, 'ROI.dat')
-    roi_cont_path = os.path.join(tmp_dir, 'ROIcont.dat')
+    os.makedirs(products_dir, exist_ok=True)
+    roi_path = os.path.join(products_dir, 'ROI.dat')
+    roi_cont_path = os.path.join(products_dir, 'ROIcont.dat')
 
     fields = results.get('products', {}).get('fields', {})
     inv_spw = results.get('inventory', {}).get('science_spws', {})
@@ -3284,7 +3286,7 @@ def _process_spw(
     source_outframe: dict[int, str] | None = None,
     field_phase_centers: dict[int, tuple[float, float]] | None = None,
     field_ephemeris_paths: dict[int, str] | None = None,
-    prefix: str | None = None,
+    products_dir: str | None = None,
     dish_diameter_m: float = 12.0,
     timebin_sec: float = 240,
     npix: int = 256,
@@ -3315,8 +3317,7 @@ def _process_spw(
     _rank_logf(tmp_dir, '[rank %s/%s] start spw=%s ddid=%s', rank, size, spw_name, ddid)
     vis0 = vis_list[0]
     spw_id = int(spw_ids_by_vis.get(vis0, spw_ids_by_vis.get(os.path.basename(os.path.normpath(vis0)), fallback_spw_id))) if spw_ids_by_vis else int(fallback_spw_id)
-    prefix_str = f'{prefix}_' if prefix else ''
-    tag = f'{prefix_str}spw{spw_id}'
+    tag = f'spw{spw_id}'
 
     # Record one full SPW-processing timing bundle when profiling is enabled.
     _profile_logf(tmp_dir, 'process_spw start spw=%s ddid=%s n_vis=%s n_sources=%s', spw_name, ddid, len(vis_list), len(field_groups))
@@ -3456,13 +3457,13 @@ def _process_spw(
 
             save_moment0_path = None
             if save_moment0 and (not is_mosaic_source):
-                base = f'{prefix_str}cube_moment0_source{source_id}_field{field_id}_ddid{ddid}.npy'
-                save_moment0_path = os.path.join(tmp_dir if tmp_dir else '.', base)
+                base = f'cube_moment0_source{source_id}_field{field_id}_ddid{ddid}.npy'
+                save_moment0_path = os.path.join(products_dir if products_dir else (tmp_dir if tmp_dir else '.'), base)
 
             save_cube_path = None
             if save_cube:
-                base = f'{prefix_str}cube_source{source_id}_field{field_id}_ddid{ddid}.npy'
-                save_cube_path = os.path.join(tmp_dir if tmp_dir else '.', base)
+                base = f'cube_source{source_id}_field{field_id}_ddid{ddid}.npy'
+                save_cube_path = os.path.join(products_dir if products_dir else (tmp_dir if tmp_dir else '.'), base)
 
             res = cube_threshold_spectrum(
                 vis0,
@@ -3624,12 +3625,12 @@ def _process_spw(
 
         save_mosaic_cube_path = None
         if save_cube:
-            base = f'{prefix_str}cube_source{source_id}_fieldsourceaggregate_ddid{ddid}.npy'
-            save_mosaic_cube_path = os.path.join(tmp_dir if tmp_dir else '.', base)
+            base = f'cube_source{source_id}_fieldsourceaggregate_ddid{ddid}.npy'
+            save_mosaic_cube_path = os.path.join(products_dir if products_dir else (tmp_dir if tmp_dir else '.'), base)
         save_mosaic_moment0_path = None
         if save_moment0:
-            base = f'{prefix_str}cube_moment0_source{source_id}_fieldsourceaggregate_ddid{ddid}.npy'
-            save_mosaic_moment0_path = os.path.join(tmp_dir if tmp_dir else '.', base)
+            base = f'cube_moment0_source{source_id}_fieldsourceaggregate_ddid{ddid}.npy'
+            save_mosaic_moment0_path = os.path.join(products_dir if products_dir else (tmp_dir if tmp_dir else '.'), base)
 
         t_src_agg = time.perf_counter()
         t_stitch_finalize = time.perf_counter()
@@ -3745,8 +3746,8 @@ def _process_spw(
         }
         if save_moment0:
             weight_sum_path = os.path.join(
-                tmp_dir if tmp_dir else '.',
-                f'{prefix_str}cube_weights_source{source_id}_fieldsourceaggregate_ddid{ddid}.npy',
+                products_dir if products_dir else (tmp_dir if tmp_dir else '.'),
+                f'cube_weights_source{source_id}_fieldsourceaggregate_ddid{ddid}.npy',
             )
             np.save(weight_sum_path, mosaic_meta['weight_sum'].astype(np.float32, copy=False))
             mosaic_entry['stitch_weight_sum_npy'] = weight_sum_path
@@ -3823,7 +3824,16 @@ def run_findroi_mpi(
         pos_evidence_thr = float(evidence_thr)
     if tmp_dir:
         tmp_dir = os.path.abspath(tmp_dir)
+        if tmp_overwrite and os.path.isdir(tmp_dir):
+            shutil.rmtree(tmp_dir)
         os.makedirs(tmp_dir, exist_ok=True)
+    products_dir = os.path.join(tmp_dir, 'findroi_products') if tmp_dir else 'findroi_products'
+    logs_dir = os.path.join(tmp_dir, 'logs') if tmp_dir else 'logs'
+    diagnostics_dir = os.path.join(tmp_dir, 'diagnostics') if tmp_dir else 'diagnostics'
+    os.makedirs(products_dir, exist_ok=True)
+    os.makedirs(logs_dir, exist_ok=True)
+    os.makedirs(diagnostics_dir, exist_ok=True)
+    products_tgz_path = os.path.join(tmp_dir, 'findroi_products.tgz') if tmp_dir else 'findroi_products.tgz'
     _rank_logf(tmp_dir, '[run] start findroi')
 
     t_inv = time.perf_counter()
@@ -3970,7 +3980,7 @@ def run_findroi_mpi(
         )
         args.append((
             vis_list, ddid, spw_name, spw_ids_by_vis, int(ddid_rows[int(ddid)]['spw_id']), field_groups,
-            common_geometry_plan, project_outframes, field_phase_centers, field_ephemeris_paths, prefix, dish_diameter_m,
+            common_geometry_plan, project_outframes, field_phase_centers, field_ephemeris_paths, products_dir, dish_diameter_m,
             timebin_sec_eff, npix_eff, fov_pb_mult_eff,
             ref_sigma, mom0_thresh_sigma, gate_sigma,
             ref_zero_frac_thr, mom0_zero_frac_thr,
@@ -4220,8 +4230,8 @@ def run_findroi_mpi(
     dt_detect = time.perf_counter() - t_detect
     _rank_logf(tmp_dir, '[run] roi detection dt=%.2fs', dt_detect)
 
-    if save_results_path is None and tmp_dir:
-        save_results_path = os.path.join(tmp_dir, f'{prefix}_findroi_results.pkl')
+    if save_results_path is None:
+        save_results_path = os.path.join(products_dir, 'findroi_results.pkl')
 
     config = {
         'timebin_sec': None if timebin_sec_eff is None else float(timebin_sec_eff),
@@ -4305,7 +4315,7 @@ def run_findroi_mpi(
     }
 
     t_plot = time.perf_counter()
-    plot_artifacts = _save_default_summary_plots(results, tmp_dir=tmp_dir, prefix=prefix)
+    plot_artifacts = _save_default_summary_plots(results, products_dir=products_dir)
     run_timing['summary_plot_s'] = float(time.perf_counter() - t_plot)
     results['metadata']['artifacts']['summary_plots'] = plot_artifacts
     _rank_logf(
@@ -4318,8 +4328,7 @@ def run_findroi_mpi(
     t_roi_dat = time.perf_counter()
     roi_dat_artifacts = _write_roi_dat_files(
         results,
-        tmp_dir=tmp_dir,
-        prefix=prefix,
+        products_dir=products_dir,
         roi_thresh=roi_thresh,
         roi_cont_thresh=roi_cont_thresh,
     )
@@ -4330,6 +4339,9 @@ def run_findroi_mpi(
         '[run] ROI dat files dt=%.2fs',
         run_timing['roi_dat_write_s'],
     )
+
+    results['metadata']['artifacts']['findroi_products_dir'] = products_dir
+    results['metadata']['artifacts']['findroi_products_tgz'] = products_tgz_path
 
     if save_results_path:
         t_save = time.perf_counter()
@@ -4351,6 +4363,10 @@ def run_findroi_mpi(
         run_timing['save_results_s'] = 0.0
         run_timing['total_run_s'] = float(time.perf_counter() - t_run)
         results['metadata']['timing'] = copy.deepcopy(run_timing)
+    if os.path.exists(products_tgz_path):
+        os.remove(products_tgz_path)
+    with tarfile.open(products_tgz_path, 'w:gz') as tfh:
+        tfh.add(products_dir, arcname=os.path.basename(products_dir))
     _rank_logf(tmp_dir, '[run] total dt=%.2fs', run_timing['total_run_s'])
 
     return results
@@ -4358,8 +4374,7 @@ def run_findroi_mpi(
 
 def default_tmp_dir(context: Any, output_dir: str | None) -> str:
     root = output_dir or getattr(context, 'output_dir', '.') or '.'
-    stage = getattr(context, 'task_counter', 'unknown')
-    return os.path.abspath(os.path.join(root, f'stage{stage}'))
+    return os.path.abspath(os.path.join(root, 'findroi_workdir'))
 
 
 def summarize_stage_product(stage_product: dict[str, Any]) -> dict[str, Any]:
