@@ -144,16 +144,16 @@ class QAScoreFormatter:
             force_update:          True to Update the longmsg even if TargetDataSelection is empty
                                        default is False which inhibits to update longmsg for an empty TargetDataSelection
         """
+        # skip formatting if the metric_name is in the excludes list
+        if qascore.origin.metric_name in registry.get_excludes():
+            return
+
         # if longmsg_keys is not specified, try to get it from the registry
         if longmsg_keys is None:
             longmsg_keys = registry.get_longmsg_keys(qascore.origin.metric_name)
             # apply all keys in TargetDataSelection if longmsg_keys still does not exist
             if longmsg_keys is None:
                 longmsg_keys = list(vars(qascore.applies_to).keys())
-
-        # skip formatting if the metric_name is in the excludes list
-        if qascore.origin.metric_name in registry.get_excludes():
-            return
 
         # inhibit formatting if 1) everything associated with longmsg_keys are empty and 2) force_update is False
         # this will prevent longmsg from being unintentionally overwritten with shortmsg
