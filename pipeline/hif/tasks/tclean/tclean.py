@@ -1,6 +1,9 @@
+"""Task implementation for hif_tclean: cleans a single imaging target."""
+# ruff: noqa: D102, D107
+
+import inspect
 import os
 import re
-import inspect
 
 import numpy as np
 from scipy.ndimage import label
@@ -21,9 +24,9 @@ from .automaskthresholdsequence import AutoMaskThresholdSequence
 from .autoscalthresholdsequence import AutoScalThresholdSequence
 from .imagecentrethresholdsequence import ImageCentreThresholdSequence
 from .manualmaskthresholdsequence import ManualMaskThresholdSequence
-from .reusemaskthresholdsequence import ReuseMaskThresholdSequence
 from .nomaskthresholdsequence import NoMaskThresholdSequence
 from .resultobjects import TcleanResult
+from .reusemaskthresholdsequence import ReuseMaskThresholdSequence
 from .vlaautomaskthresholdsequence import VlaAutoMaskThresholdSequence
 from .vlassmaskthresholdsequence import VlassMaskThresholdSequence
 
@@ -31,6 +34,8 @@ LOG = infrastructure.logging.get_logger(__name__)
 
 
 class TcleanInputs(cleanbase.CleanBaseInputs):
+    """Inputs for hif_tclean."""
+
     # Search order of input vis
     # This is just an initial default to get any vis. The real selection is
     # usually made in hif_makeimlist and passed on as explicit parameter
@@ -210,11 +215,14 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
 @task_registry.set_equivalent_casa_task('hif_tclean')
 @task_registry.set_casa_commands_comment('A single target source is cleaned.')
 class Tclean(cleanbase.CleanBase):
+    """Task that runs tclean for a single imaging target."""
+
     Inputs = TcleanInputs
 
     is_multi_vis_task = True
 
     def rm_stage_files(self, imagename, stokes=''):
+        """Remove per-iteration image files matching the given imagename and stokes pattern."""
         filenames = utils.glob_ordered('%s*.%s.iter*' % (imagename, stokes))
         for filename in filenames:
             try:
@@ -229,7 +237,7 @@ class Tclean(cleanbase.CleanBase):
                 LOG.warning('Exception while deleting %s: %s' % (filename, e))
 
     def rm_iter_files(self, rootname, iteration):
-        # Delete any old files with this naming root
+        """Delete any old files with this naming root."""
         filenames = utils.glob_ordered('%s.iter%s*' % (rootname, iteration))
         for filename in filenames:
             try:
@@ -239,6 +247,7 @@ class Tclean(cleanbase.CleanBase):
                 LOG.warning('Exception while deleting %s: %s' % (filename, e))
 
     def copy_products(self, old_pname, new_pname, ignore=None):
+        """Copy all image products from old_pname to new_pname, skipping files matching ignore."""
         imlist = utils.glob_ordered('%s.*' % (old_pname))
         imlist = [xx for xx in imlist if ignore is None or ignore not in xx]
         for image_name in imlist:
@@ -280,6 +289,7 @@ class Tclean(cleanbase.CleanBase):
         return
 
     def prepare(self):
+        """Run tclean and collect image statistics for the imaging target."""
         inputs = self.inputs
         context = self.inputs.context
         self.known_synthesized_beams = self.inputs.context.synthesized_beams
@@ -781,14 +791,14 @@ class Tclean(cleanbase.CleanBase):
         return result
 
     def analyse(self, result):
-        # Perform QA here if this is a sub-task
+        """Run QA scoring on the tclean result if executed as a sub-task."""
         context = self.inputs.context
         pipelineqa.qa_registry.do_qa(context, result)
 
         return result
 
     def _do_iterative_vlass_se_imaging(self, sequence_manager):
-        """VLASS-SE-CONT imaging mode specific cleaning and imaging cycle
+        """VLASS-SE-CONT imaging mode specific cleaning and imaging cycle.
 
         This method implements the following workflow:
          1a) Compute PSF with cfcache_nowb (wbapw=False)
@@ -854,7 +864,7 @@ class Tclean(cleanbase.CleanBase):
             restore_startmodel = self.image_heuristics.restore_startmodel
             restore_imagename = self.image_heuristics.restore_imagename
             calcres_iter0 = False
-            LOG.info(f'set calcres=False for the tclean initilization call because we are going to restore the model column.')
+            LOG.info('set calcres=False for the tclean initilization call because we are going to restore the model column.')
             LOG.info(f'Will use startmodel: {restore_startmodel}, for the final modelcolumn prediction.')
         else:
             restore_imagename = restore_startmodel = calcres_iter0 = None
@@ -909,11 +919,15 @@ class Tclean(cleanbase.CleanBase):
              nonpbcor_image_non_cleanmask_rms_min,  # added to result, later used in Weblog under name 'image_rms_min'
              nonpbcor_image_non_cleanmask_rms_max,  # added to result, later used in Weblog under name 'image_rms_max'
              nonpbcor_image_non_cleanmask_rms,  # printed added to result, later used in Weblog under name 'image_rms'
+             nonpbcor_image_min,
+             nonpbcor_image_max,
              pbcor_image_min,  # added to result, later used in Weblog under name 'image_min'
              pbcor_image_max,  # added to result, later used in Weblog under name 'image_max'
              # USED
              residual_robust_rms,
              nonpbcor_image_robust_rms_and_spectra,
+             nonpbcor_image_min_iquv,
+             nonpbcor_image_max_iquv,
              pbcor_image_min_iquv,
              pbcor_image_max_iquv,
              nonpbcor_image_non_cleanmask_rms_min_iquv,
@@ -1016,10 +1030,14 @@ class Tclean(cleanbase.CleanBase):
              nonpbcor_image_non_cleanmask_rms_min,
              nonpbcor_image_non_cleanmask_rms_max,
              nonpbcor_image_non_cleanmask_rms,
+             nonpbcor_image_min,
+             nonpbcor_image_max,
              pbcor_image_min,
              pbcor_image_max,
              residual_robust_rms,
              nonpbcor_image_robust_rms_and_spectra,
+             nonpbcor_image_min_iquv,
+             nonpbcor_image_max_iquv,
              pbcor_image_min_iquv,
              pbcor_image_max_iquv,
              nonpbcor_image_non_cleanmask_rms_min_iquv,
@@ -1052,6 +1070,10 @@ class Tclean(cleanbase.CleanBase):
             result.set_image_min_iquv(pbcor_image_min_iquv)
             result.set_image_max(pbcor_image_max)
             result.set_image_max_iquv(pbcor_image_max_iquv)
+            result.set_nonpbcor_image_min(nonpbcor_image_min)
+            result.set_nonpbcor_image_min_iquv(nonpbcor_image_min_iquv)
+            result.set_nonpbcor_image_max(nonpbcor_image_max)
+            result.set_nonpbcor_image_max_iquv(nonpbcor_image_max_iquv)
             result.set_image_rms(nonpbcor_image_non_cleanmask_rms)
             result.set_image_rms_iquv(nonpbcor_image_non_cleanmask_rms_iquv)
             result.set_image_rms_min(nonpbcor_image_non_cleanmask_rms_min)
@@ -1118,7 +1140,6 @@ class Tclean(cleanbase.CleanBase):
         standard calibration procedures but they have been splitted from the original *_targets.ms
         and rebinned in frequency.
         """
-
         raise NotImplementedError("The self-calibration imaging/gaincal loop is not implemented yet!")
 
     def _do_iterative_imaging(self, sequence_manager):
@@ -1189,11 +1210,15 @@ class Tclean(cleanbase.CleanBase):
          nonpbcor_image_non_cleanmask_rms_min,  # added to result, later used in Weblog under name 'image_rms_min'
          nonpbcor_image_non_cleanmask_rms_max,  # added to result, later used in Weblog under name 'image_rms_max'
          nonpbcor_image_non_cleanmask_rms,   # printed added to result, later used in Weblog under name 'image_rms'
+         nonpbcor_image_min,
+         nonpbcor_image_max,
          pbcor_image_min,  # added to result, later used in Weblog under name 'image_min'
          pbcor_image_max,  # added to result, later used in Weblog under name 'image_max'
          # USED
          residual_robust_rms,
          nonpbcor_image_robust_rms_and_spectra,
+         nonpbcor_image_min_iquv,
+         nonpbcor_image_max_iquv,
          pbcor_image_min_iquv,
          pbcor_image_max_iquv,
          nonpbcor_image_non_cleanmask_rms_min_iquv,
@@ -1242,6 +1267,10 @@ class Tclean(cleanbase.CleanBase):
             result.set_image_min_iquv(pbcor_image_min_iquv)
             result.set_image_max(pbcor_image_max)
             result.set_image_max_iquv(pbcor_image_max_iquv)
+            result.set_nonpbcor_image_min(nonpbcor_image_min)
+            result.set_nonpbcor_image_min_iquv(nonpbcor_image_min_iquv)
+            result.set_nonpbcor_image_max(nonpbcor_image_max)
+            result.set_nonpbcor_image_max_iquv(nonpbcor_image_max_iquv)
             result.set_image_rms(nonpbcor_image_non_cleanmask_rms)
             result.set_image_rms_iquv(nonpbcor_image_non_cleanmask_rms_iquv)
             result.set_image_rms_min(nonpbcor_image_non_cleanmask_rms_min)
@@ -1354,10 +1383,14 @@ class Tclean(cleanbase.CleanBase):
              nonpbcor_image_non_cleanmask_rms_min,
              nonpbcor_image_non_cleanmask_rms_max,
              nonpbcor_image_non_cleanmask_rms,
+             nonpbcor_image_min,
+             nonpbcor_image_max,
              pbcor_image_min,
              pbcor_image_max,
              residual_robust_rms,
              nonpbcor_image_robust_rms_and_spectra,
+             nonpbcor_image_min_iquv,
+             nonpbcor_image_max_iquv,
              pbcor_image_min_iquv,
              pbcor_image_max_iquv,
              nonpbcor_image_non_cleanmask_rms_min_iquv,
@@ -1404,6 +1437,10 @@ class Tclean(cleanbase.CleanBase):
             result.set_image_min_iquv(pbcor_image_min_iquv)
             result.set_image_max(pbcor_image_max)
             result.set_image_max_iquv(pbcor_image_max_iquv)
+            result.set_nonpbcor_image_min(nonpbcor_image_min)
+            result.set_nonpbcor_image_min_iquv(nonpbcor_image_min_iquv)
+            result.set_nonpbcor_image_max(nonpbcor_image_max)
+            result.set_nonpbcor_image_max_iquv(nonpbcor_image_max_iquv)
             result.set_image_rms(nonpbcor_image_non_cleanmask_rms)
             result.set_image_rms_iquv(nonpbcor_image_non_cleanmask_rms_iquv)
             result.set_image_rms_min(nonpbcor_image_non_cleanmask_rms_min)
@@ -1584,11 +1621,10 @@ class Tclean(cleanbase.CleanBase):
                 original.done()
 
     def _calc_moment_image(self, imagename=None, moments=None, outfile=None, chans=None, iter=None):
-        '''
-        Computes moment image, writes it to disk and updates moment image metadata.
+        """Computes moment image, writes it to disk and updates moment image metadata.
 
         This method is used in _calc_mom0_8() and _calc_mom0_8_10_fc().
-        '''
+        """
         context = self.inputs.context
 
         # Determine moment image type.
@@ -1867,13 +1903,14 @@ class Tclean(cleanbase.CleanBase):
                         (self.inputs.intent, self.inputs.field, self.inputs.spw))
 
     def _calc_mom0_8(self, result):
-        '''
-        Creates moment 0 (integrated flux) and 8 (peak flux) maps for non--primary-beam corrected
-        images after continuum subtraction, using *all channels* (may include channels with lines).
+        """Generate integrated and peak flux maps.
+        
+        Create moment 0 (integrated flux) and 8 (peak flux) maps for 
+        non-primary-beam corrected images after continuum subtraction.
+        Uses *all channels* (may include channels with lines).
 
         See PIPE-558 (https://open-jira.nrao.edu/browse/PIPE-558).
-        '''
-
+        """
         # Find max iteration that was performed.
         maxiter = max(result.iterations.keys())
 
@@ -1901,8 +1938,7 @@ class Tclean(cleanbase.CleanBase):
                          level: str | None = None, ctrfrq: float | None = None,
                          obspatt: str | None = None, arrays: str | None = None,
                          modifier: str | None = None, session: str | None = None):
-        """
-        Update image header keywords.
+        """Update image header keywords.
 
         Args:
             imagename (str): image name
@@ -1914,13 +1950,13 @@ class Tclean(cleanbase.CleanBase):
             effbw (float): effective bandwidth in Hz
             level (str): OUS kind (member, group)
             obspatt (str): observing pattern (mos, sf, sd)
+            arrays (str): array configuration string
             ctrfrq: Image center frequency in Hz
             modifier (str): image name modifier (binnedN?)
             session (str): session name
         Returns:
             None
         """
-
         with casa_tools.ImageReader(imagename) as image:
             # Get current header
             info = image.miscinfo()
