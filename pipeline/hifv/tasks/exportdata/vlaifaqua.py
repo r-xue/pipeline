@@ -347,7 +347,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
 
         # add execution block IDs as comma-separated list
         execblock_ids = context.observing_run.execblock_ids
-        execblock_ids = ', '.join(sorted(execblock_ids)) if execblock_ids else UNDEFINED
+        execblock_ids = ', '.join(execblock_ids) if execblock_ids else UNDEFINED
 
         ElementTree.SubElement(root, 'ExecBlockId').text = execblock_ids
 
