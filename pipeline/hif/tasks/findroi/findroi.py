@@ -76,11 +76,15 @@ class FindROI(basetask.StandardTaskTemplate):
         artifacts = copy.deepcopy(stage_product.get('metadata', {}).get('artifacts', {}))
         errors = list(stage_product.get('metadata', {}).get('errors', []))
         summary = heuristics.summarize_stage_product(stage_product)
+        findroi_resources = None
+        if artifacts.get('findroi_products_tar'):
+            findroi_resources = [artifacts['findroi_products_tar']]
         return FindROIResult(
             stage_product_path=artifacts.get('results_pickle'),
             artifacts=artifacts,
             summary=summary,
             errors=errors,
+            findroi_resources=findroi_resources,
         )
 
     def analyse(self, result):

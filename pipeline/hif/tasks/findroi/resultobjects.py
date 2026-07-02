@@ -14,16 +14,19 @@ class FindROIResult(basetask.Results):
         artifacts: dict[str, Any] | None = None,
         summary: dict[str, Any] | None = None,
         errors: list[str] | None = None,
+        findroi_resources: list[str] | None = None,
     ) -> None:
         super().__init__()
         self.stage_product_path = stage_product_path
         self.artifacts = artifacts or {}
         self.summary = summary or {}
         self.errors = errors or []
+        self.findroi_resources = findroi_resources
 
     def merge_with_context(self, context: Any) -> None:
-        """Keep hif_findroi read-only for downstream stages in this v1 port."""
-        return None
+        """Register exported findroi resources for later downstream discovery."""
+        if self.findroi_resources is not None:
+            context.findroi_resources = self.findroi_resources
 
     def __repr__(self) -> str:
         n_sources = self.summary.get('n_sources', 0)

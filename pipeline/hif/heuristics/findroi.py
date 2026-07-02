@@ -3858,8 +3858,8 @@ def run_findroi_mpi(
     if oussid in (None, '', 'unknown'):
         oussid = 'oussid'
     prefix = re.sub(r'[^A-Za-z0-9_]+', '_', str(oussid).replace('uid://', 'uid___')).strip('_')
-    products_tgz_path = PipelineProductNameBuilder.auxiliary_products(
-        'findroi_products.tgz',
+    products_tar_path = PipelineProductNameBuilder.auxiliary_products(
+        'findroi_products.tar',
         ousstatus_entity_id=prefix,
         output_dir=tmp_dir,
     )
@@ -4365,7 +4365,7 @@ def run_findroi_mpi(
     )
 
     results['metadata']['artifacts']['findroi_products_dir'] = products_dir
-    results['metadata']['artifacts']['findroi_products_tgz'] = products_tgz_path
+    results['metadata']['artifacts']['findroi_products_tar'] = products_tar_path
 
     if save_results_path:
         t_save = time.perf_counter()
@@ -4387,9 +4387,9 @@ def run_findroi_mpi(
         run_timing['save_results_s'] = 0.0
         run_timing['total_run_s'] = float(time.perf_counter() - t_run)
         results['metadata']['timing'] = copy.deepcopy(run_timing)
-    if os.path.exists(products_tgz_path):
-        os.remove(products_tgz_path)
-    with tarfile.open(products_tgz_path, 'w:gz') as tfh:
+    if os.path.exists(products_tar_path):
+        os.remove(products_tar_path)
+    with tarfile.open(products_tar_path, 'w') as tfh:
         tfh.add(products_dir, arcname=os.path.basename(products_dir))
     _rank_logf(tmp_dir, '[run] total dt=%.2fs', run_timing['total_run_s'])
 
