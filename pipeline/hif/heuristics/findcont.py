@@ -15,30 +15,36 @@ LOG = infrastructure.get_logger(__name__)
 class FindContHeuristics:
 
     def coarse_mode_params(self, inputs):
+        cqa = casa_tools.quanta
+
         image_heuristics_factory = imageparams_factory.ImageParamsHeuristicsFactory()
 
-        initial_heuristics = image_heuristics_factory.getHeuristics(
-                                 vislist=inputs.vis, spw='',
-                                 observing_run=inputs.context.observing_run,
-                                 imagename_prefix=inputs.context.project_structure.ousstatus_entity_id,
-                                 proj_params=inputs.context.project_performance_parameters,
-                                 contfile=inputs.context.contfile,
-                                 linesfile=inputs.context.linesfile,
-                                 imaging_params=inputs.context.imaging_parameters,
-                                 processing_intents=inputs.context.processing_intents,
-                                 imaging_mode=inputs.context.project_summary.telescope
-                             )
+        image_heuristics = image_heuristics_factory.getHeuristics(
+                               vislist=inputs.vis, spw='',
+                               observing_run=inputs.context.observing_run,
+                               imagename_prefix=inputs.context.project_structure.ousstatus_entity_id,
+                               proj_params=inputs.context.project_performance_parameters,
+                               contfile=inputs.context.contfile,
+                               linesfile=inputs.context.linesfile,
+                               imaging_params=inputs.context.imaging_parameters,
+                               processing_intents=inputs.context.processing_intents,
+                               imaging_mode=inputs.context.project_summary.telescope
+                           )
 
-        array_descs = initial_heuristics.arrays(inputs.vis)
+        array_descs = image_heuristics.arrays(inputs.vis)
         if '7m' in array_descs:
             hm_cell = '4ppb'
         else:
             hm_cell = '3ppb'
 
-        L80, _ = initial_heuristics.calc_percentile_baseline_length(80.)
+        L80, _ = image_heuristics.calc_percentile_baseline_length(80.)
         C = 0.441
-        uvtaper_arcsec = C * L80 / np.sqrt(((3/5) * (2 + 2 * np.clip(np.log(L80/100) / np.log(8000/100), 0, 1)**0.376))**2 - 1)
-        uvtaper = ['%.2garcsec' % uvtaper_arcsec]
+
+        _, _, _, repr_freq, _, _, _, _, _, _ = image_heuristics.representative_target()
+        repr_wavelength = cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] / cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
+
+        uvtaper_value = C * L80 / np.sqrt(((3/5) * (2 + 2 * np.clip(np.log(L80/100) / np.log(8000/100), 0, 1)**0.376))**2 - 1) / repr_wavelength
+        uvtaper = ['%.2gklambda' % utils.round_half_up(uvtaper_value/1000., 2)]
 
         return hm_cell, uvtaper
 
