@@ -67,9 +67,6 @@ except Exception:
             return self._results
 
 
-_QUANTA = casa_tools.quanta
-_SPEED_OF_LIGHT_M_S = _QUANTA.getvalue(_QUANTA.convert(_QUANTA.constants('c'), 'm/s'))[0]
-_SPEED_OF_LIGHT_KM_S = _QUANTA.getvalue(_QUANTA.convert(_QUANTA.constants('c'), 'km/s'))[0]
 AU_DAY_TO_M_S = 1731.45683633 * 1000.0
 _DEFAULT_FINDROI_CONFIG = {
     'timebin_sec': 240.0,
@@ -155,12 +152,6 @@ def _get_tb() -> Any:
         tb_obj = tbtool()
         setattr(_main, 'tb', tb_obj)
     return tb_obj
-
-
-def _sanitize_uid(uid: str) -> str:
-    '''Return a filesystem-safe UID prefix.'''
-    uid = uid.replace('uid://', 'uid___')
-    return re.sub(r'[^A-Za-z0-9_]+', '_', uid).strip('_')
 
 
 def _mpi_rank_size() -> tuple[int, int]:
@@ -428,27 +419,18 @@ def _real_spw_ids_by_vis(
     return out
 
 
-def _lookup_real_spw_id(spw_ids_by_vis: dict[str, int] | None, vis: str, fallback: int) -> int:
-    if not spw_ids_by_vis:
-        return int(fallback)
-    return int(spw_ids_by_vis.get(vis, spw_ids_by_vis.get(os.path.basename(os.path.normpath(vis)), fallback)))
-
-
-def _chan_freqs_from_spw(spw: Any) -> np.ndarray:
-    chan_freqs = getattr(getattr(spw, 'channels', None), 'chan_freqs', None)
-    if chan_freqs is None:
-        return np.zeros((0,), dtype=np.float64)
-    if isinstance(chan_freqs, np.ndarray):
-        return np.asarray(chan_freqs, dtype=np.float64).ravel()
-    return np.asarray(list(chan_freqs), dtype=np.float64).ravel()
-
-
 def get_chan_freqs_hz(ms: Any, ddid: int = 0) -> np.ndarray:
     '''Return channel frequencies for an imported pipeline DDID.'''
     dd = ms.get_data_description(id=int(ddid))
     if dd is None or getattr(dd, 'spw', None) is None:
         raise RuntimeError(f'No pipeline data description found for DDID {ddid}.')
-    freq = _chan_freqs_from_spw(dd.spw)
+    chan_freqs = getattr(getattr(dd.spw, 'channels', None), 'chan_freqs', None)
+    if chan_freqs is None:
+        freq = np.zeros((0,), dtype=np.float64)
+    elif isinstance(chan_freqs, np.ndarray):
+        freq = np.asarray(chan_freqs, dtype=np.float64).ravel()
+    else:
+        freq = np.asarray(list(chan_freqs), dtype=np.float64).ravel()
     if freq.size == 0:
         raise RuntimeError(f'No pipeline channel frequencies found for DDID {ddid}.')
     return freq
@@ -591,7 +573,9 @@ def _ephemeris_geo_to_source_shift_hz(
     radvel_m_s: np.ndarray,
 ) -> np.ndarray:
     '''Return additive GEO->SOURCE frequency shift around a reference frequency.'''
-    beta = np.asarray(radvel_m_s, dtype=np.float64) / _SPEED_OF_LIGHT_M_S
+    beta = np.asarray(radvel_m_s, dtype=np.float64) / casa_tools.quanta.getvalue(
+        casa_tools.quanta.convert(casa_tools.quanta.constants('c'), 'm/s')
+    )[0]
     return float(ref_freq_hz) * beta
 
 
@@ -703,7 +687,9 @@ def _apply_ephemeris_geo_to_source_correction(
 
 def estimate_pb_fwhm_arcsec(ref_freq_hz: float, dish_diameter_m: float) -> float:
     '''Estimate primary-beam FWHM in arcseconds.'''
-    wavelength_m = _SPEED_OF_LIGHT_M_S / ref_freq_hz
+    wavelength_m = casa_tools.quanta.getvalue(
+        casa_tools.quanta.convert(casa_tools.quanta.constants('c'), 'm/s')
+    )[0] / ref_freq_hz
     theta_rad = 1.13 * wavelength_m / dish_diameter_m
     return theta_rad * 206265.0
 
@@ -2337,7 +2323,12 @@ def _build_findroi_stage_product(
                 break
         chan_width_kms = None
         if ref_freq_hz and chan_width_hz:
-            chan_width_kms = float((float(chan_width_hz) / float(ref_freq_hz)) * _SPEED_OF_LIGHT_KM_S)
+            chan_width_kms = float(
+                (float(chan_width_hz) / float(ref_freq_hz))
+                * casa_tools.quanta.getvalue(
+                    casa_tools.quanta.convert(casa_tools.quanta.constants('c'), 'km/s')
+                )[0]
+            )
         science_spws[spw_key] = {
             'ddid': int(row['ddid']),
             'spw_id': spw_id,
@@ -3323,7 +3314,7 @@ def _process_spw(
     _set_profile_default_dir(tmp_dir)
     _rank_logf(tmp_dir, '[rank %s/%s] start spw=%s ddid=%s', rank, size, spw_name, ddid)
     vis0 = vis_list[0]
-    spw_id = _lookup_real_spw_id(spw_ids_by_vis, vis0, int(fallback_spw_id))
+    spw_id = int(spw_ids_by_vis.get(vis0, spw_ids_by_vis.get(os.path.basename(os.path.normpath(vis0)), fallback_spw_id))) if spw_ids_by_vis else int(fallback_spw_id)
     prefix_str = f'{prefix}_' if prefix else ''
     tag = f'{prefix_str}spw{spw_id}'
 
@@ -3348,7 +3339,7 @@ def _process_spw(
 
     for eb_idx, vis in enumerate(vis_list):
         ms_cache: dict[tuple[str, int | None], tuple[str, float, float]] = {}
-        real_spw_id = _lookup_real_spw_id(spw_ids_by_vis, vis, spw_id)
+        real_spw_id = int(spw_ids_by_vis.get(vis, spw_ids_by_vis.get(os.path.basename(os.path.normpath(vis)), spw_id))) if spw_ids_by_vis else int(spw_id)
         for source_id, fids in field_groups.items():
             outframe = str(source_outframe.get(int(source_id), 'LSRK'))
             cache_key = (outframe, None if outframe == 'LSRK' else int(source_id))
@@ -3459,7 +3450,9 @@ def _process_spw(
                     ephem_path=field_ephemeris_paths.get(int(field_id)),
                 )
             d_preload['ref_freq_hz'] = ref_freq_hz
-            d_preload['lam'] = _SPEED_OF_LIGHT_M_S / ref_freq_hz
+            d_preload['lam'] = casa_tools.quanta.getvalue(
+                casa_tools.quanta.convert(casa_tools.quanta.constants('c'), 'm/s')
+            )[0] / ref_freq_hz
 
             save_moment0_path = None
             if save_moment0 and (not is_mosaic_source):
@@ -3842,7 +3835,7 @@ def run_findroi_mpi(
     oussid = None if project_structure is None else getattr(project_structure, 'ousstatus_entity_id', None)
     if oussid in (None, '', 'unknown'):
         oussid = 'oussid'
-    prefix = _sanitize_uid(str(oussid))
+    prefix = re.sub(r'[^A-Za-z0-9_]+', '_', str(oussid).replace('uid://', 'uid___')).strip('_')
 
     # Temporary hard switch for 7m/12m-specific heuristics.
     # Keep this simple so it can later be replaced by pipeline Context.
@@ -4032,7 +4025,12 @@ def run_findroi_mpi(
                 chan_width_hz = s['chan_width_hz']
                 if chan_width_hz is None or ref_freq_hz is None:
                     continue
-                dv_kms = abs((chan_width_hz / ref_freq_hz) * _SPEED_OF_LIGHT_KM_S)
+                dv_kms = abs(
+                    (chan_width_hz / ref_freq_hz)
+                    * casa_tools.quanta.getvalue(
+                        casa_tools.quanta.convert(casa_tools.quanta.constants('c'), 'km/s')
+                    )[0]
+                )
                 hwhm, fwhm = _acf_hwhm_fwhm(
                     evid,
                     smooth_frac=acf_smooth_frac,
@@ -4118,7 +4116,12 @@ def run_findroi_mpi(
                         reason='missing_channel_metadata',
                     )
                     continue
-                dv_kms = abs((chan_width_hz / ref_freq_hz) * _SPEED_OF_LIGHT_KM_S)
+                dv_kms = abs(
+                    (chan_width_hz / ref_freq_hz)
+                    * casa_tools.quanta.getvalue(
+                        casa_tools.quanta.convert(casa_tools.quanta.constants('c'), 'km/s')
+                    )[0]
+                )
                 if dv_kms <= 0.0 or not np.isfinite(dv_kms):
                     out['sources'][source_id][field_id] = _empty_mini_with_continuum(
                         nchan=nchan,
@@ -4353,14 +4356,10 @@ def run_findroi_mpi(
     return results
 
 
-def _stage_token(context: Any) -> str:
-    raw = getattr(context, 'stage', None) or getattr(context, 'task_counter', 'unknown')
-    return re.sub(r'[^A-Za-z0-9_]+', '_', str(raw)).strip('_') or 'unknown'
-
-
 def default_tmp_dir(context: Any, output_dir: str | None) -> str:
     root = output_dir or getattr(context, 'output_dir', '.') or '.'
-    return os.path.abspath(os.path.join(root, f'hif_findroi_stage{_stage_token(context)}'))
+    stage = getattr(context, 'task_counter', 'unknown')
+    return os.path.abspath(os.path.join(root, f'stage{stage}'))
 
 
 def summarize_stage_product(stage_product: dict[str, Any]) -> dict[str, Any]:
