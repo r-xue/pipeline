@@ -2228,8 +2228,9 @@ def _spectra_block_from_raw(s: dict[str, Any]) -> dict[str, Any]:
 def _artifact_block_from_raw(s: dict[str, Any]) -> dict[str, Any]:
     '''Build an artifact block from an internal spectra result.'''
     return {
-        'cube_npy': s.get('cube_npy'),
-        'moment0_npy': s.get('moment0_npy'),
+        'cube_path': s.get('cube_path'),
+        'moment0_path': s.get('moment0_path'),
+        'mosaic_weights_path': s.get('mosaic_weights_path'),
     }
 
 
@@ -2247,7 +2248,7 @@ def _source_spw_identity_block(
         'source_name': str(source_name),
         'field_id': None,
         'field_name': None,
-        'field_role': 'source_aggregate',
+        'field_role': 'source_level',
         'spw_id': int(spw_id),
         'spw_name': str(spw_name),
         'ddid': int(ddid),
@@ -3282,6 +3283,8 @@ def _process_spw(
     spw_ids_by_vis: dict[str, int] | None,
     fallback_spw_id: int,
     field_groups: dict[int, list[int]],
+    source_names_by_id: dict[int, str] | None = None,
+    field_names_by_id: dict[int, str] | None = None,
     common_geometry_plan: dict[int, dict[str, Any]] | None = None,
     source_outframe: dict[int, str] | None = None,
     field_phase_centers: dict[int, tuple[float, float]] | None = None,
@@ -3329,6 +3332,8 @@ def _process_spw(
     field_phase_centers = dict(field_phase_centers or {})
     if not field_phase_centers:
         raise RuntimeError('hif_findroi requires field phase-center metadata from pipeline context.')
+    source_names_by_id = {int(k): str(v) for k, v in (source_names_by_id or {}).items()}
+    field_names_by_id = {int(k): str(v) for k, v in (field_names_by_id or {}).items()}
     field_ephemeris_paths = {int(k): str(v) for k, v in (field_ephemeris_paths or {}).items()}
     source_stitch_meta: dict[int, dict[str, Any]] = {}
     source_stitch_states: dict[int, dict[str, Any]] = {}
@@ -3454,15 +3459,19 @@ def _process_spw(
             d_preload['lam'] = casa_tools.quanta.getvalue(
                 casa_tools.quanta.convert(casa_tools.quanta.constants('c'), 'm/s')
             )[0] / ref_freq_hz
+            source_label = source_names_by_id.get(int(source_id), f'source_{int(source_id)}')
+            source_token = _sanitize_token(source_label)
+            field_label = field_names_by_id.get(int(field_id), f'field_{int(field_id)}')
+            field_token = _sanitize_token(field_label)
 
             save_moment0_path = None
             if save_moment0 and (not is_mosaic_source):
-                base = f'cube_moment0_source{source_id}_field{field_id}_ddid{ddid}.npy'
+                base = f'moment0_source-{source_token}_field-{field_token}_spw-{spw_id}.npy'
                 save_moment0_path = os.path.join(products_dir if products_dir else (tmp_dir if tmp_dir else '.'), base)
 
             save_cube_path = None
             if save_cube:
-                base = f'cube_source{source_id}_field{field_id}_ddid{ddid}.npy'
+                base = f'cube_source-{source_token}_field-{field_token}_spw-{spw_id}.npy'
                 save_cube_path = os.path.join(products_dir if products_dir else (tmp_dir if tmp_dir else '.'), base)
 
             res = cube_threshold_spectrum(
@@ -3549,8 +3558,9 @@ def _process_spw(
                     } if (ephem_diag is not None or source_axis_diag is not None) else None,
                     'reference_sum_noise_mask': res.get('reference_sum_noise_mask'),
                     'moment0_weighted_sum_noise_mask': res.get('moment0_weighted_sum_noise_mask'),
-                    'cube_npy': save_cube_path,
-                    'moment0_npy': save_moment0_path,
+                    'cube_path': save_cube_path,
+                    'moment0_path': save_moment0_path,
+                    'mosaic_weights_path': None,
                     'timing': {
                         'imaging_s': imaging_s,
                         'processing_s': processing_s,
@@ -3624,12 +3634,14 @@ def _process_spw(
             continue
 
         save_mosaic_cube_path = None
+        source_label = source_names_by_id.get(int(source_id), f'source_{int(source_id)}')
+        source_token = _sanitize_token(source_label)
         if save_cube:
-            base = f'cube_source{source_id}_fieldsourceaggregate_ddid{ddid}.npy'
+            base = f'cube_source-{source_token}_mosaic_spw-{spw_id}.npy'
             save_mosaic_cube_path = os.path.join(products_dir if products_dir else (tmp_dir if tmp_dir else '.'), base)
         save_mosaic_moment0_path = None
         if save_moment0:
-            base = f'cube_moment0_source{source_id}_fieldsourceaggregate_ddid{ddid}.npy'
+            base = f'moment0_source-{source_token}_mosaic_spw-{spw_id}.npy'
             save_mosaic_moment0_path = os.path.join(products_dir if products_dir else (tmp_dir if tmp_dir else '.'), base)
 
         t_src_agg = time.perf_counter()
@@ -3727,12 +3739,12 @@ def _process_spw(
                 'field_num_weight_sum': copy.deepcopy(mosaic_meta.get('field_num_weight_sum', {})),
                 'field_den_weight_sum': copy.deepcopy(mosaic_meta.get('field_den_weight_sum', {})),
             },
-            'stitch_weight_sum_npy': None,
+            'mosaic_weights_path': None,
             'spectra_qc': copy.deepcopy(products.get('spectra_qc', {})),
             'reference_sum_noise_mask': products.get('reference_sum_noise_mask'),
             'moment0_weighted_sum_noise_mask': products.get('moment0_weighted_sum_noise_mask'),
-            'cube_npy': save_mosaic_cube_path,
-            'moment0_npy': save_mosaic_moment0_path,
+            'cube_path': save_mosaic_cube_path,
+            'moment0_path': save_mosaic_moment0_path,
             'timing': {
                 'imaging_s': float(dt_stitch),
                 'processing_s': float(dt_products),
@@ -3747,10 +3759,10 @@ def _process_spw(
         if save_moment0:
             weight_sum_path = os.path.join(
                 products_dir if products_dir else (tmp_dir if tmp_dir else '.'),
-                f'cube_weights_source{source_id}_fieldsourceaggregate_ddid{ddid}.npy',
+                f'mosaic_weights_source-{source_token}_spw-{spw_id}.npy',
             )
             np.save(weight_sum_path, mosaic_meta['weight_sum'].astype(np.float32, copy=False))
-            mosaic_entry['stitch_weight_sum_npy'] = weight_sum_path
+            mosaic_entry['mosaic_weights_path'] = weight_sum_path
         results['sources'][source_id]['mosaic'] = mosaic_entry
 
     _rank_logf(
@@ -3946,6 +3958,12 @@ def run_findroi_mpi(
         except Exception:
             continue
         science_rows.append(row_use)
+    source_names_by_id = {int(k): str(v) for k, v in field_info.get('source_names', {}).items()}
+    field_names_by_id = {
+        int(fid): _field_name_for_id(field_info.get('field_names', []), int(fid))
+        for source_field_ids in field_groups.values()
+        for fid in source_field_ids
+    }
     field_phase_centers = imaging.get_field_phase_centers_rad(getattr(ms0, 'fields', []))
     if not field_phase_centers:
         raise RuntimeError('No field phase centers found in pipeline context.')
@@ -3980,6 +3998,7 @@ def run_findroi_mpi(
         )
         args.append((
             vis_list, ddid, spw_name, spw_ids_by_vis, int(ddid_rows[int(ddid)]['spw_id']), field_groups,
+            source_names_by_id, field_names_by_id,
             common_geometry_plan, project_outframes, field_phase_centers, field_ephemeris_paths, products_dir, dish_diameter_m,
             timebin_sec_eff, npix_eff, fov_pb_mult_eff,
             ref_sigma, mom0_thresh_sigma, gate_sigma,

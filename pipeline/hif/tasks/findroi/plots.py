@@ -19,6 +19,12 @@ def _load_results(path: str) -> dict[str, Any]:
 
 
 def _find_results_path(tmp_dir: str, prefix: str | None) -> str:
+    candidate = os.path.join(tmp_dir, 'findroi_products', 'findroi_results.pkl')
+    if os.path.exists(candidate):
+        return candidate
+    candidate = os.path.join(tmp_dir, 'findroi_results.pkl')
+    if os.path.exists(candidate):
+        return candidate
     if prefix:
         candidate = os.path.join(tmp_dir, f'{prefix}_findroi_results.pkl')
         if os.path.exists(candidate):
@@ -31,6 +37,8 @@ def _find_results_path(tmp_dir: str, prefix: str | None) -> str:
 
 def _guess_prefix(results_path: str) -> str | None:
     base = os.path.basename(results_path)
+    if base == 'findroi_results.pkl':
+        return None
     if base.endswith('_findroi_results.pkl'):
         return base.replace('_findroi_results.pkl', '')
     return None
@@ -205,7 +213,7 @@ def plot_spectra_by_spw(
     if axes:
         axes[0].legend(loc='upper right')
         axes[-1].set_xlabel(xlabel)
-    level = 'source aggregate' if field_id is None else f'field {field_id}'
+    level = 'source-level' if field_id is None else f'field {field_id}'
     fig.suptitle(f'{source_name} spectra per spw ({level})')
     fig.tight_layout()
 
@@ -233,7 +241,7 @@ def plot_moment0_by_spw(
         src_spw = _source_spw_block(res, source_name, spw_key)
         block = _select_product_block(src_spw, field_id)
         art = block.get('artifacts', {})
-        mom0_path = art.get('moment0_npy')
+        mom0_path = art.get('moment0_path')
         if not mom0_path or not os.path.exists(mom0_path):
             ax.text(0.5, 0.5, 'no moment0', ha='center', va='center')
             ax.set_axis_off()
@@ -244,7 +252,7 @@ def plot_moment0_by_spw(
         ax.set_title(f"spw {spw_meta['spw_id']} {spw_meta['spw_name']}")
         fig.colorbar(im, ax=ax, shrink=0.8)
 
-    level = 'source aggregate' if field_id is None else f'field {field_id}'
+    level = 'source-level' if field_id is None else f'field {field_id}'
     fig.suptitle(f'moment0 per spw ({source_name}, {level})')
     fig.tight_layout()
 
@@ -466,7 +474,7 @@ def plot_evidence_with_lines(
         ax.grid(alpha=0.2)
     if axes:
         axes[-1].set_xlabel(xlabel)
-    level = 'source aggregate' if field_id is None else f'field {field_id}'
+    level = 'source-level' if field_id is None else f'field {field_id}'
     fig.suptitle(f'{source_name} evidence with line ranges ({level})')
     fig.tight_layout()
 
