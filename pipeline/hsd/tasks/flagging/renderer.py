@@ -1,8 +1,16 @@
+from __future__ import annotations
+
 import os
 import shutil
+from operator import attrgetter
+from typing import TYPE_CHECKING
 
 import pipeline.infrastructure.logging as logging
 import pipeline.h.tasks.flagging.renderer as super_renderer
+
+if TYPE_CHECKING:
+    from pipeline.hsd.tasks.flagdeteralmasd import FlagDeterALMASingleDishResults
+    from pipeline.infrastructure.launcher import Context
 
 LOG = logging.get_logger(__name__)
 
@@ -13,6 +21,29 @@ class T2_4MDetailsFlagDeterAlmaSdRenderer(super_renderer.T2_4MDetailsFlagDeterBa
 
         super().__init__(
             uri=uri, description=description, always_rerender=always_rerender)
+
+    def render(self, context: Context, result: FlagDeterALMASingleDishResults) -> str:
+        """
+        Custom renderer for hsd_baseline()
+
+        This method sorts the QAScores and renders the weblog,
+
+        Args:
+            context: Pipeline context
+            result:  FlagDeterALMASingleDishResults object
+        Returns:
+            Rendered html document
+        """
+        # This method modifies the result object,
+        # but the changes do not propergate to the original result or context,
+        # since they are local in render() thanks to the mechanism of PL infrastructure.
+        # Therefore there is no need to bracket the aggregation process
+        # with stashing and recovering the original result.qa.pool here.
+
+        # sort QAScores with 'score's
+        result.qa.pool.sort(key=attrgetter("score"))
+
+        return super().render(context, result)
 
     def update_mako_context(self, mako_context, pipeline_context, result):
         super().update_mako_context(mako_context, pipeline_context, result)
@@ -40,7 +71,6 @@ class T2_4MDetailsFlagDeterAlmaSdRenderer(super_renderer.T2_4MDetailsFlagDeterBa
                 ))
             except ValueError:
                 pass
-
 
         # insert pointing agent
         agent = mako_context['agents']
