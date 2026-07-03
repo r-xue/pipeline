@@ -5,6 +5,7 @@ import collections
 import os
 import re
 import shutil
+from operator import attrgetter
 from typing import TYPE_CHECKING, Any
 import urllib.parse
 
@@ -20,6 +21,7 @@ from ..common import utils as sdutils
 if TYPE_CHECKING:
     from pipeline.infrastructure.launcher import Context
     from pipeline.infrastructure.basetask import ResultsList
+    from pipeline.hsd.tasks.k2jycal.k2jycal import SDK2JyCalResults
 
 LOG = logging.get_logger(__name__)
 
@@ -43,6 +45,29 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
         """
         super().__init__(
             uri=uri, description=description, always_rerender=always_rerender)
+
+    def render(self, context: Context, result: SDK2JyCalResults) -> str:
+        """
+        Custom renderer for hsd_k2jycal()
+
+        This method sorts the QAScores with their scores, and renders the weblog,
+
+        Args:
+            context: Pipeline context
+            result:  SDK2JyCalResults object
+        Returns:
+            Rendered html document
+        """
+        # This method modifies the result object,
+        # but the changes do not propergate to the original result or context,
+        # since they are local in render() thanks to the mechanism of PL infrastructure.
+        # Therefore there is no need to bracket the aggregation process
+        # with stashing and recovering the original result.qa.pool here.
+
+        # sort QAScores with 'score's
+        result.qa.pool.sort(key=attrgetter("score"))
+
+        return super().render(context, result)
 
     def update_mako_context(self, ctx: dict[str, Any], context: Context, results: ResultsList) -> None:
         """Update context for weblog rendering.
