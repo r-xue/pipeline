@@ -5103,7 +5103,7 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
                                   metric_units='Score based on quality of calibrated amp vs time plots')
             applies_to = pqa.TargetDataSelection(vis={vis},
                                                  spw={spwid},
-                                                 intent={'OBSERVE_TARGET#ON_SOURCE'},
+                                                 intent={'TARGET'},
                                                  ant={ant})
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to))
 
