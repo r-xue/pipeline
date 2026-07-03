@@ -10,6 +10,7 @@ from __future__ import annotations
 import collections
 import os
 import re
+from operator import attrgetter
 from typing import TYPE_CHECKING
 
 import pipeline.domain.measures as measures
@@ -49,6 +50,29 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
         """
         super().__init__(
             uri=uri, description=description, always_rerender=always_rerender)
+
+    def render(self, context: Context, result: ApplycalResults) -> str:
+        """
+        Custom renderer for hsd_applycal()
+
+        This method sorts the QAScores with their scores and renders the weblog.
+
+        Args:
+            context: Pipeline context
+            result:  ApplycalResults object
+        Returns:
+            Rendered html document
+        """
+        # This method modifies the result object,
+        # but the changes do not propergate to the original result or context,
+        # since they are local in render() thanks to the mechanism of PL infrastructure.
+        # Therefore there is no need to bracket the aggregation process
+        # with stashing and recovering the original result.qa.pool here.
+
+        # sort QAScores with 'score's
+        result.qa.pool.sort(key=attrgetter("score"))
+
+        return super().render(context, result)
 
     def update_mako_context(self, ctx: dict, context: Context, result: ResultsList):
         """Update mako context dict to render.
