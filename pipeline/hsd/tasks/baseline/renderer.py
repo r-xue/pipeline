@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import collections
 import os
+from operator import attrgetter
 from typing import TYPE_CHECKING
 
 from pipeline.hsd.tasks.common import qautils
@@ -47,7 +48,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
         Custom renderer for hsd_baseline()
 
         This method aggegates the QAScores and renders the weblog,
-        then resotres the original QAScores for subsequent processes (eg. AQUA report)
+        and sorts them with their scores.
 
         Args:
             context: Pipeline context
@@ -67,6 +68,9 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
         # aggregate QA scores for weblog accordion
         aggregator = qautils.QAScoreAggregator()
         result.qa.pool = aggregator.aggregate_qascores(result.qa.pool)
+
+        # sort QAScores with 'score's
+        result.qa.pool.sort(key=attrgetter("score"))
 
         return super().render(context, result)
 
