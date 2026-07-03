@@ -55,12 +55,3 @@ class T2_4MDetailsSDExportDataRenderer(basetemplates.T2_4MDetailsDefaultRenderer
 
         return super().render(context, result)
 
-#    def update_mako_context(self, ctx: dict, context: Context, result: ExportDataResults):
-#        """Update mako context dict to render.
-#       
-#        Args:
-#            ctx: mako context dict
-#            context: pipeline context
-#            result: list of ApplycalResults
-#        """
-#        super().update_mako_context(ctx, context, result)
