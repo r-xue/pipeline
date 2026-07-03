@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import collections
 import os
+from operator import attrgetter
 from typing import TYPE_CHECKING, Any
 
 import pipeline.infrastructure as infrastructure
@@ -15,6 +16,7 @@ from . import display as skycal_display
 
 if TYPE_CHECKING:
     from pipeline.domain import Field, MeasurementSet
+    from pipeline.hsd.tasks.skycal.skycal import SDSkyCalResults
     from pipeline.infrastructure.basetask import ResultsList
     from pipeline.infrastructure.launcher import Context
 
@@ -38,6 +40,29 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
         """
         super().__init__(
             uri=uri, description=description, always_rerender=always_rerender)
+
+    def render(self, context: Context, result: SDSkyCalResults) -> str:
+        """
+        Custom renderer for hsd_skycal()
+
+        This method sorts the QAScores and renders the weblog,
+
+        Args:
+            context: Pipeline context
+            result:  SDSkyCalResults object
+        Returns:
+            Rendered html document
+        """
+        # This method modifies the result object,
+        # but the changes do not propergate to the original result or context,
+        # since they are local in render() thanks to the mechanism of PL infrastructure.
+        # Therefore there is no need to bracket the aggregation process
+        # with stashing and recovering the original result.qa.pool here.
+
+        # sort QAScores with 'score's
+        result.qa.pool.sort(key=attrgetter("score"))
+
+        return super().render(context, result)
 
     def update_mako_context(self,
                             ctx: dict[str, Any],
