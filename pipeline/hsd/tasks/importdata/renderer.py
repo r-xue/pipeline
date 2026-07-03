@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import collections
+from operator import attrgetter
 from typing import TYPE_CHECKING, Any
 
 import pipeline.h.tasks.importdata.renderer as super_renderer
@@ -12,6 +13,7 @@ LOG = logging.get_logger(__name__)
 
 if TYPE_CHECKING:
     from pipeline.infrastructure.basetask import Results
+    from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
     from pipeline.infrastructure.launcher import Context
 
 DeductionGroupTR = collections.namedtuple('ReductionGroupTR', 'id fmin fmax field msname antenna spw nchan')
@@ -34,6 +36,29 @@ class T2_4MDetailsSingleDishImportDataRenderer(super_renderer.T2_4MDetailsImport
                              If False, weblog of this stage is generated only once when the stage is initially invoked.
         """
         super().__init__(uri, description, always_rerender)
+
+    def render(self, context: Context, result: SDImportDataResults) -> str:
+        """
+        Custom renderer for hsd_importdata()
+
+        This method sorts the QAScores and renders the weblog,
+
+        Args:
+            context: Pipeline context
+            result:  SDImportDataResults object
+        Returns:
+            Rendered html document
+        """
+        # This method modifies the result object,
+        # but the changes do not propergate to the original result or context,
+        # since they are local in render() thanks to the mechanism of PL infrastructure.
+        # Therefore there is no need to bracket the aggregation process
+        # with stashing and recovering the original result.qa.pool here.
+
+        # sort QAScores with 'score's
+        result.qa.pool.sort(key=attrgetter("score"))
+
+        return super().render(context, result)
 
     def update_mako_context(self, mako_context: dict[str, Any], pipeline_context: Context, result: Results):
         """Update mako context.
