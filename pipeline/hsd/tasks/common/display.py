@@ -650,7 +650,9 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
         """Generate channel mask for immoments according to channel selection enum.
 
         Args:
-            channel_selection: Channel selection enum.
+            channel_selection: Channel selection enum. Should be either
+                               ChannelSelection.ALL or
+                               ChannelSelection.LINE_FREE.
 
         Returns:
             Channel selection string.
@@ -658,20 +660,22 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
         if channel_selection == ChannelSelection.ALL:
             # use all channels
             return ''
+        elif channel_selection == ChannelSelection.LINE_FREE:
+            # convert line list into (start, end) list
+            range_list = self.__get_image_line_ranges()
 
-        # convert line list into (start, end) list
-        range_list = self.__get_image_line_ranges()
-
-        # invert range if line-free channels are requested
-        if channel_selection == ChannelSelection.LINE_FREE:
+            # invert range if line-free channels are requested
             range_list = invert_range_list(range_list, self.image.nchan)
 
-        # convert line list into channel selection string
-        # range_list is inclusive at the start while exclusive
-        # at the end, i.e., [start, end)
-        # On the other hand, CASA's channel selection is inclusive
-        # at both ends, i.e., [start, end]
-        return ';'.join([f'{s}~{e - 1}' for s, e in range_list])
+            # convert line list into channel selection string
+            # range_list is inclusive at the start while exclusive
+            # at the end, i.e., [start, end)
+            # On the other hand, CASA's channel selection is inclusive
+            # at both ends, i.e., [start, end]
+            return ';'.join([f'{s}~{e - 1}' for s, e in range_list])
+        else:
+            # any unexpected value, just return empty string
+            return ''
 
     def get_line_free_channels(self) -> list[int]:
         """Get list of line-free channels.
