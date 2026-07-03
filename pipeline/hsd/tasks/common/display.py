@@ -610,6 +610,42 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
                         line_list.append(ll)
         return line_list
 
+    def __get_image_line_ranges(self) -> list[list[float]]:
+        """Return list of channel ranges of valid spectral lines.
+
+        Original line ranges are taken from reduction group description.
+        They contain center and width of detected lines with additional
+        information such as validity flags. Only valid lines are
+        selected by valid_lines() method. Then, each line center/width pair
+        is converted to [min, max] range. In the conversion, edge channels
+        and frequency channel reversal are taken into account.
+        More specifically, edge channels specified in edge parameter on
+        hsd_baseline stage are trimmed and location of the line center
+        (hence [min, max] range) is shifted accordingly. Line center is
+        flipped if frequency channel is reversed (LSB).
+
+        Returns:
+            the list of valid spectral lines in image spectral coordinate
+        """
+        line_list = self.valid_lines()
+        edge = self.result.outcome['edge']
+        is_lsb = self.result.frequency_channel_reversed
+        nchan = self.image.nchan
+        line_list_in_image_spectral_coord = []
+        for line in line_list:
+            line_center, line_width = line[:2]
+            # LSB data is flipped, edge channels are trimmed
+            if is_lsb:
+                # number of spw channels: N = nchan + edge[0] + edge[1]
+                # flipped line_center is N - 1 - line_center - edge[1]
+                line_center = nchan + edge[0] - 1 - line_center
+            else:
+                line_center = line_center - edge[0]
+            line_start = max(0, int(round(line_center - line_width / 2)))
+            line_end = min(nchan, int(round(line_start + line_width)))
+            line_list_in_image_spectral_coord.append([line_start, line_end])
+        return line_list_in_image_spectral_coord
+
     def create_channel_mask(self, channel_selection: ChannelSelection) -> str:
         """Generate channel mask for immoments according to channel selection enum.
 
@@ -624,12 +660,7 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
             return ''
 
         # convert line list into (start, end) list
-        range_list = []
-        for line in self.valid_lines():
-            line_center, line_width = line[:2]
-            line_start = int(round(line_center - line_width / 2))
-            line_end = int(round(line_start + line_width))
-            range_list.append((line_start, line_end))
+        range_list = self.__get_image_line_ranges()
 
         # invert range if line-free channels are requested
         if channel_selection == ChannelSelection.LINE_FREE:
@@ -651,13 +682,11 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
         # per-channel mask to diffentiate line/line-free regions
         # line regions: False
         # line-free regions: True
-        is_line_free = np.ones(self.image.nchan, dtype=bool)
+        nchan = self.image.nchan
+        is_line_free = np.ones(nchan, dtype=bool)
 
         # invalidate line regions
-        for line in self.valid_lines():
-            line_center, line_width = line[:2]
-            line_start = int(round(line_center - line_width / 2))
-            line_end = int(round(line_start + line_width))
+        for line_start, line_end in self.__get_image_line_ranges():
             is_line_free[line_start:line_end] = False
 
         return np.where(is_line_free)[0]
