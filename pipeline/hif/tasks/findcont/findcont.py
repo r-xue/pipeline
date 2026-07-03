@@ -188,7 +188,10 @@ class FindCont(basetask.StandardTaskTemplate):
 
             if inputs.hm_mode == 'coarse':
                 if inputs.context.project_summary.telescope == 'ALMA':
-                    makeimlist_inputs.hm_cell, makeimlist_inputs.uvtaper = findcont_heuristics.coarse_mode_params(inputs)
+                    makeimlist_inputs.hm_cell, \
+                    makeimlist_inputs.uvtaper, \
+                    makeimlist_inputs.minpix = \
+                        findcont_heuristics.coarse_mode_params(inputs)
                 else:
                     LOG.info('coarse mode only implemented for ALMA')
 

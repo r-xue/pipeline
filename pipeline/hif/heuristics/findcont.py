@@ -46,7 +46,9 @@ class FindContHeuristics:
         uvtaper_value = C * L80 / np.sqrt(((3/5) * (2 + 2 * np.clip(np.log(L80/100) / np.log(8000/100), 0, 1)**0.376))**2 - 1) / repr_wavelength
         uvtaper = ['%.2gklambda' % utils.round_half_up(uvtaper_value/1000., 2)]
 
-        return hm_cell, uvtaper
+        minpix = 64
+
+        return hm_cell, uvtaper, minpix
 
     def find_continuum(self, dirty_cube: str, pb_cube: str | None = None, psf_cube: str | None = None,
                        single_continuum: bool = False, is_eph_obj: bool = False,
