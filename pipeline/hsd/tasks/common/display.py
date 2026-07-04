@@ -720,6 +720,7 @@ def invert_range_list(range_list: list[list[int]], nchan: int) -> list[list[int]
 
     Args:
         range_list: List of (start, end) ranges.
+                    Items in the list must not be negative.
         nchan: Length of target array.
 
     Returns:
