@@ -642,7 +642,7 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
             else:
                 line_center = line_center - edge[0]
             line_start = max(0, int(round(line_center - line_width / 2)))
-            line_end = min(nchan, int(round(line_start + line_width)))
+            line_end = min(nchan, int(round(line_center + line_width / 2)))
             line_list_in_image_spectral_coord.append([line_start, line_end])
         return line_list_in_image_spectral_coord
 
