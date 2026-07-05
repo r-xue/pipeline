@@ -3,16 +3,15 @@ from __future__ import annotations
 
 import collections
 import os
-from operator import attrgetter
 from typing import TYPE_CHECKING
 
-from pipeline.hsd.tasks.common import qautils
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.filenamer as filenamer
+from pipeline.hsd.tasks.common import compress
+from pipeline.hsd.tasks.common import qautils
+from pipeline.hsd.tasks.common import utils
 from . import display
-from ..common import compress
-from ..common import utils
 
 if TYPE_CHECKING:
     from pipeline.domain.field import Field
@@ -43,6 +42,8 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
         """
         super().__init__(template, description, always_rerender)
 
+    @qautils.aggregate_qascores
+    @qautils.sort_qascores
     def render(self, context: Context, result: SDBaselineResults) -> str:
         """
         Custom renderer for hsd_baseline()
@@ -56,21 +57,11 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
         Returns:
             Rendered html document
         """
-        # result.qa.pool will be temporary modified to aggregate the QA messages,
-        # which is required to happen on weblog but not on the AQUA report
-        # as per PIPEREQ-422.
-        # This method modifies the result object for this purpose,
+        # This method modifies the result object
         # but the changes do not propergate to the original result or context,
         # since they are local in render() thanks to the mechanism of PL infrastructure.
         # Therefore there is no need to bracket the aggregation process
         # with stashing and recovering the original result.qa.pool here.
-
-        # aggregate QA scores for weblog accordion
-        aggregator = qautils.QAScoreAggregator()
-        result.qa.pool = aggregator.aggregate_qascores(result.qa.pool)
-
-        # sort QAScores with 'score's
-        result.qa.pool.sort(key=attrgetter("score"))
 
         return super().render(context, result)
 
@@ -383,3 +374,5 @@ class SingleDishClusterPlotsRenderer(basetemplates.JsonPlotRenderer):
             plot: Plot object
         """
         d['type'] = plot.parameters['type']
+
+

@@ -5,7 +5,6 @@ import collections
 import glob
 import os
 import re
-from operator import attrgetter
 from typing import TYPE_CHECKING
 
 import pipeline.infrastructure.casa_tools as casa_tools
@@ -14,6 +13,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
+from pipeline.hsd.tasks.common import qautils
 
 from .display import PlotmsRealVsFreqPlotter
 
@@ -202,6 +202,7 @@ class T2_4MDetailsSingleDishATMCorRenderer(basetemplates.T2_4MDetailsDefaultRend
         description = 'Apply correction for atmospheric effects'
         super().__init__(uri=uri, description=description, always_rerender=always_rerender)
 
+    @qautils.sort_qascores
     def render(self, context: Context, result: SDATMCorrectionResults) -> str:
         """
         Custom renderer for hsd_atmcor()
@@ -219,9 +220,6 @@ class T2_4MDetailsSingleDishATMCorRenderer(basetemplates.T2_4MDetailsDefaultRend
         # since they are local in render() thanks to the mechanism of PL infrastructure.
         # Therefore there is no need to bracket the aggregation process
         # with stashing and recovering the original result.qa.pool here.
-
-        # sort QAScores with 'score's
-        result.qa.pool.sort(key=attrgetter("score"))
 
         return super().render(context, result)
 

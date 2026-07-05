@@ -3,12 +3,11 @@ T2_4MDetailsSDTsysflagRenderer class.
 """
 from __future__ import annotations
 
-from operator import attrgetter
 from typing import TYPE_CHECKING
 
 import pipeline.h.tasks.tsysflag.renderer as super_renderer
-
 import pipeline.infrastructure.logging as logging
+from pipeline.hsd.tasks.common import qautils
 
 if TYPE_CHECKING:
     from pipeline.h.tasks.tsysflag.resultobjects import TsysflagResults
@@ -28,6 +27,7 @@ class T2_4MDetailsSDTsysflagRenderer(super_renderer.T2_4MDetailsTsysflagRenderer
         """
         super().__init__(always_rerender=always_rerender)
 
+    @qautils.sort_qascores
     def render(self, context: Context, result: TsysflagResults) -> str:
         """
         Custom renderer for hsd_tsysflag()
@@ -45,8 +45,5 @@ class T2_4MDetailsSDTsysflagRenderer(super_renderer.T2_4MDetailsTsysflagRenderer
         # since they are local in render() thanks to the mechanism of PL infrastructure.
         # Therefore there is no need to bracket the aggregation process
         # with stashing and recovering the original result.qa.pool here.
-
-        # sort QAScores with 'score's
-        result.qa.pool.sort(key=attrgetter("score"))
 
         return super().render(context, result)

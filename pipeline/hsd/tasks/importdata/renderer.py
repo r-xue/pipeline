@@ -2,12 +2,12 @@
 from __future__ import annotations
 
 import collections
-from operator import attrgetter
 from typing import TYPE_CHECKING, Any
 
 import pipeline.h.tasks.importdata.renderer as super_renderer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
+from pipeline.hsd.tasks.common import qautils
 
 LOG = logging.get_logger(__name__)
 
@@ -37,6 +37,7 @@ class T2_4MDetailsSingleDishImportDataRenderer(super_renderer.T2_4MDetailsImport
         """
         super().__init__(uri, description, always_rerender)
 
+    @qautils.sort_qascores
     def render(self, context: Context, result: SDImportDataResults) -> str:
         """
         Custom renderer for hsd_importdata()
@@ -54,9 +55,6 @@ class T2_4MDetailsSingleDishImportDataRenderer(super_renderer.T2_4MDetailsImport
         # since they are local in render() thanks to the mechanism of PL infrastructure.
         # Therefore there is no need to bracket the aggregation process
         # with stashing and recovering the original result.qa.pool here.
-
-        # sort QAScores with 'score's
-        result.qa.pool.sort(key=attrgetter("score"))
 
         return super().render(context, result)
 

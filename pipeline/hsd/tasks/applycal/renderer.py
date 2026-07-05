@@ -10,7 +10,6 @@ from __future__ import annotations
 import collections
 import os
 import re
-from operator import attrgetter
 from typing import TYPE_CHECKING
 
 import pipeline.domain.measures as measures
@@ -22,6 +21,7 @@ import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.common import flagging_renderer_utils as flagutils
 from pipeline.h.tasks.common.displays import applycal as applycal
+from pipeline.hsd.tasks.common import qautils
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.renderer.logger import Plot
 
@@ -51,6 +51,7 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
         super().__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
+    @qautils.sort_qascores
     def render(self, context: Context, result: ApplycalResults) -> str:
         """
         Custom renderer for hsd_applycal()
@@ -68,9 +69,6 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
         # since they are local in render() thanks to the mechanism of PL infrastructure.
         # Therefore there is no need to bracket the aggregation process
         # with stashing and recovering the original result.qa.pool here.
-
-        # sort QAScores with 'score's
-        result.qa.pool.sort(key=attrgetter("score"))
 
         return super().render(context, result)
 

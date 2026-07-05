@@ -3,15 +3,15 @@ from __future__ import annotations
 
 import os
 import collections
-from operator import attrgetter
 from typing import TYPE_CHECKING
 
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.filenamer as filenamer
-import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.logging as logging
-from ..common import utils as sdutils
+import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
+from pipeline.hsd.tasks.common import qautils
+from pipeline.hsd.tasks.common import utils as sdutils
 
 if TYPE_CHECKING:
     from pipeline.infrastructure import Context
@@ -40,6 +40,7 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         super().__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
+    @qautils.sort_qascores
     def render(self, context: Context, result: SDBLFlagResults) -> str:
         """
         Custom renderer for hsd_imaging()
@@ -57,9 +58,6 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # since they are local in render() thanks to the mechanism of PL infrastructure.
         # Therefore there is no need to bracket the aggregation process
         # with stashing and recovering the original result.qa.pool here.
-
-        # sort QAScores with 'score's
-        result.qa.pool.sort(key=attrgetter("score"))
 
         return super().render(context, result)
 

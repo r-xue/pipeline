@@ -5,7 +5,6 @@ import collections
 import os
 import re
 import shutil
-from operator import attrgetter
 from typing import TYPE_CHECKING, Any
 import urllib.parse
 
@@ -14,9 +13,9 @@ from numpy import percentile
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
-
+from pipeline.hsd.tasks.common import qautils
+from pipeline.hsd.tasks.common import utils as sdutils
 from . import display as display
-from ..common import utils as sdutils
 
 if TYPE_CHECKING:
     from pipeline.infrastructure.launcher import Context
@@ -46,6 +45,7 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
         super().__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
+    @qautils.sort_qascores
     def render(self, context: Context, result: SDK2JyCalResults) -> str:
         """
         Custom renderer for hsd_k2jycal()
@@ -63,9 +63,6 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
         # since they are local in render() thanks to the mechanism of PL infrastructure.
         # Therefore there is no need to bracket the aggregation process
         # with stashing and recovering the original result.qa.pool here.
-
-        # sort QAScores with 'score's
-        result.qa.pool.sort(key=attrgetter("score"))
 
         return super().render(context, result)
 

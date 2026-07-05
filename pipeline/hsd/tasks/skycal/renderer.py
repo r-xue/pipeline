@@ -3,13 +3,13 @@ from __future__ import annotations
 
 import collections
 import os
-from operator import attrgetter
 from typing import TYPE_CHECKING, Any
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.domain.datatable import DataTableImpl as DataTable
+from pipeline.hsd.tasks.common import qautils
 from pipeline.infrastructure import casa_tools
 from . import skycal as skycal_task
 from . import display as skycal_display
@@ -41,6 +41,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
         super().__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
+    @qautils.sort_qascores
     def render(self, context: Context, result: SDSkyCalResults) -> str:
         """
         Custom renderer for hsd_skycal()
@@ -58,9 +59,6 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
         # since they are local in render() thanks to the mechanism of PL infrastructure.
         # Therefore there is no need to bracket the aggregation process
         # with stashing and recovering the original result.qa.pool here.
-
-        # sort QAScores with 'score's
-        result.qa.pool.sort(key=attrgetter("score"))
 
         return super().render(context, result)
 
