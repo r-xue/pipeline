@@ -188,6 +188,7 @@ class FindCont(basetask.StandardTaskTemplate):
 
             if inputs.hm_mode == 'coarse':
                 if inputs.context.project_summary.telescope == 'ALMA':
+                    makeimlist_inputs.hm_mosweight = False
                     makeimlist_inputs.hm_cell, \
                     makeimlist_inputs.uvtaper, \
                     makeimlist_inputs.minpix = \
@@ -251,7 +252,11 @@ class FindCont(basetask.StandardTaskTemplate):
                         mosweight = image_heuristics.mosweight(target['intent'], target['field'])
 
                     # Determine weighting and perchanweightdensity parameters
-                    if inputs.hm_weighting in (None, ''):
+                    if inputs.hm_mode == 'coarse':
+                        weighting = 'briggs'
+                        perchanweightdensity = False
+                        mosweight = False
+                    elif inputs.hm_weighting in (None, ''):
                         weighting = image_heuristics.weighting('cube')
                         perchanweightdensity = image_heuristics.perchanweightdensity('cube')
                     else:
