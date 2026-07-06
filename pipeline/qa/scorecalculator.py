@@ -1827,7 +1827,7 @@ def score_wvrgcal(ms_name, dataresult):
 def score_sdtotal_data_flagged(frac_flagged: float,
                                ms_name: str | None = None,
                                field: str | None = None,
-                               spw: str | None = None ) -> pqa.QAScore:
+                               spw: int | None = None ) -> pqa.QAScore:
     """
     Calculate a score for the flagging task based on the total fraction of
     data flagged.
@@ -1858,9 +1858,9 @@ def score_sdtotal_data_flagged(frac_flagged: float,
                           metric_units='Fraction of data newly flagged')
 
     selection = pqa.TargetDataSelection(
-        vis={ms_name} if ms_name else None,
-        field={field} if field else None,
-        spw={spw} if spw else None
+        vis={ms_name} if ms_name is not None else None,
+        field={field} if field is not None else None,
+        spw={spw} if spw is not None else None
     )
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
