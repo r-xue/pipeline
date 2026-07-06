@@ -202,12 +202,13 @@ class T2_4MDetailsSingleDishATMCorRenderer(basetemplates.T2_4MDetailsDefaultRend
         description = 'Apply correction for atmospheric effects'
         super().__init__(uri=uri, description=description, always_rerender=always_rerender)
 
+    @qautils.aggregate_qascores
     @qautils.sort_qascores
     def render(self, context: Context, result: SDATMCorrectionResults) -> str:
         """
         Custom renderer for hsd_atmcor()
 
-        This method sorts the QAScores with their scores, and renders the weblog,
+        This method aggregates and sorts the QAScores with their scores, and renders the weblog,
 
         Args:
             context: Pipeline context
