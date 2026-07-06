@@ -38,7 +38,7 @@ class FindContHeuristics:
             hm_cell = '3ppb'
 
         L80, _ = image_heuristics.calc_percentile_baseline_length(80.)
-        C = 0.441
+        C = 0.769
 
         _, _, _, repr_freq, _, _, _, _, _, _ = image_heuristics.representative_target()
         repr_wavelength = cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] / cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
