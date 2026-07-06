@@ -462,7 +462,6 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
                 status = False : Failed to create caltable
         """
         inputs = self.inputs
-        status = None
 
         task_args = common_params.copy()
         task_args['infile'] = inputs.reffile
@@ -487,9 +486,9 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
                 job = casa_tasks.gencal(**task_args)
                 try:
                     self._executor.execute(job)
-                    # following the definition of status in the docstring,
-                    # keep status None if caltable exists
-                    if not os.path.exists(task_args['caltable']):
+                    if os.path.exists(task_args['caltable']):
+                        status = None
+                    else:
                         status = False
                 except Exception as e:
                     LOG.error( "{}: Failed to create caltable from CSV file: {}".format(inputs.vis, e) )
