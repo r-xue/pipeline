@@ -79,7 +79,8 @@ class MakeImagesResult(basetask.Results):
 
             # Clean masks and thresholds for later stages
             if result.stokes == 'I' and (result.cleanmask not in (None, '')):
-                cleanTargetKey = CleanTargetInfo(datatype=result.datatype, field=result.sourcename, intent=result.intent, virtspw=result.spw, stokes=result.stokes, specmode=result.specmode)
+                cleanTargetKey = CleanTargetInfo(datatype=result.datatype, field=result.sourcename,
+                                                 intent=result.intent, virtspw=result.spw, stokes=result.stokes, specmode=result.hm_specmode)
                 context.clean_masks[cleanTargetKey] = result.cleanmask
                 context.clean_thresholds[cleanTargetKey] = result.threshold
 
