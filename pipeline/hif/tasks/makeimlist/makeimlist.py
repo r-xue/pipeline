@@ -24,7 +24,7 @@ LOG = infrastructure.get_logger(__name__)
 class MakeImListInputs(vdp.StandardInputs):
     # Must use empty data type list to allow for user override and
     # automatic determination depending on specmode, field and spw.
-    processing_data_type = []
+    processing_data_types = []
 
     # simple properties with no logic ----------------------------------------------------------------------------------
     calmaxpix = vdp.VisDependentProperty(default=300)
@@ -1740,8 +1740,10 @@ class MakeImList(basetask.StandardTaskTemplate):
         Note: this is only relevant for VLA to check if we should proceed with VLA cube imaging
         """
         cube_imaging_datatypes = [
+            DataType.IM_LINE_SCIENCE,
             DataType.SELFCAL_LINE_SCIENCE,
             DataType.REGCAL_LINE_SCIENCE,
+            DataType.IM_CONTLINE_SCIENCE,
             DataType.SELFCAL_CONTLINE_SCIENCE,
             DataType.REGCAL_CONTLINE_SCIENCE,
         ]

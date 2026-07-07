@@ -25,7 +25,7 @@ LOG = infrastructure.get_logger(__name__)
 class FindContInputs(vdp.StandardInputs):
     # Must use empty data type list to allow for user override and
     # automatic determination depending on specmode, field and spw.
-    processing_data_type = []
+    processing_data_types = []
 
     target_list = vdp.VisDependentProperty(null_input=['', None, {}], default=[])
     hm_perchanweightdensity = vdp.VisDependentProperty(default=None)

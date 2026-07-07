@@ -69,7 +69,7 @@ class ExportDataInputs(vdp.StandardInputs):
         products_dir: The directory where the data productions will be written.
     """
 
-    processing_data_type = [
+    processing_data_types = [
         DataType.RAW,
         DataType.REGCAL_CONTLINE_ALL,
         DataType.REGCAL_CONTLINE_SCIENCE,
@@ -77,8 +77,8 @@ class ExportDataInputs(vdp.StandardInputs):
         DataType.REGCAL_CONT_SCIENCE,
         DataType.SELFCAL_CONT_SCIENCE,
         DataType.REGCAL_LINE_SCIENCE,
-        DataType.SELFCAL_LINE_SCIENCE,
-    ]
+        DataType.SELFCAL_LINE_SCIENCE
+        ]
 
     calimages = vdp.VisDependentProperty(default=[])
     calintents = vdp.VisDependentProperty(default='')
@@ -421,13 +421,16 @@ class ExportData(basetask.StandardTaskTemplate):
     def _has_imaging_data(self, context, vis):
         """Check if the given vis contains any imaging data."""
         imaging_datatypes = [
-            DataType.SELFCAL_CONTLINE_SCIENCE,
-            DataType.REGCAL_CONTLINE_SCIENCE,
-            DataType.SELFCAL_CONT_SCIENCE,
-            DataType.REGCAL_CONT_SCIENCE,
+            DataType.IM_LINE_SCIENCE,
+            DataType.IM_CONT_SCIENCE,
+            DataType.IM_CONTLINE_SCIENCE,
             DataType.SELFCAL_LINE_SCIENCE,
+            DataType.SELFCAL_CONT_SCIENCE,
+            DataType.SELFCAL_CONTLINE_SCIENCE,
             DataType.REGCAL_LINE_SCIENCE,
-        ]
+            DataType.REGCAL_CONT_SCIENCE,
+            DataType.REGCAL_CONTLINE_SCIENCE
+            ]
         ms_object = context.observing_run.get_ms(name=vis)
         return any(ms_object.get_data_column(datatype) for datatype in imaging_datatypes)
 
