@@ -6,7 +6,9 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 <%inherit file="t2-4m_details-base.mako"/>
 
 <%block name="title">Targetflag </%block>
-
+% if result[0].use_contdat:
+<p> 'cont.dat' file is present. Using VLA Spectral Line Heuristics for checkflagmode=target-vla.</p>
+%endif
 <p>Run all calibrated data (including intent='*CALIBRATE*,*TARGET*') through rflag if specified.  If a file with continuum
 regions is specified, then rflag will only flag those spw and frequency ranges per the pipeline spectral line heuristics.</p>
 
