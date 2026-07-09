@@ -5055,7 +5055,7 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
         longmsg_success = f'{shortmsg_success} for EB {vis}, SPW {spwid}'
         shortmsg_failed = 'Failed to create calibrated amplitude vs time plot'
         longmsg_failed = f'{shortmsg_failed} for EB {vis}, SPW {spwid}'
-        shortmsg_empty = 'No target data about calibrated amplitude vs time plot'
+        shortmsg_empty = 'No data for calibrated amplitude vs time plot'
         longmsg_empty = f'{shortmsg_empty} for EB {vis}, SPW {spwid}'
         sumflagged = 0
         sumtotal = 0
@@ -5100,7 +5100,7 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
                                   metric_units='Score based on quality of calibrated amp vs time plots')
             applies_to = pqa.TargetDataSelection(vis={vis},
                                                  spw={spwid},
-                                                 intent={'OBSERVE_TARGET#ON_SOURCE'},
+                                                 intent={'TARGET'},
                                                  ant={ant})
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to))
 
