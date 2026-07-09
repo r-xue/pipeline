@@ -454,7 +454,6 @@ def smartsort(x: any) -> tuple[int, any]:
         return (0, float(x))
     except ValueError:
         return (1, x)
->>>>>>> e4626cf7cdf871ff42b699d37261d9eeb66809ed
 
 
 registry = QAScorePropertiesRegistry()
