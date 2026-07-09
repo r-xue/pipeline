@@ -193,7 +193,7 @@ class QAScoreAggregator:
         """
         self.keys_to_aggregate = ['vis', 'field', 'spw', 'ant', 'pol'] \
             if keys_to_aggregate is None else keys_to_aggregate
-        self.preserve_original = preserve_original,
+        self.preserve_original = preserve_original
         self.precision = precision
         self.always_update_longmsg = always_update_longmsg
 
