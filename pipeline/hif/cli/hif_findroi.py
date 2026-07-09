@@ -9,7 +9,8 @@ def hif_findroi(vis=None, field=None, spw=None, parallel=None):
     This task is intended to run after ``hifa_importdata``. By default it uses
     the pipeline context to process all science target sources and science
     spectral windows. It writes a native findROI stage-product pickle, ROI DAT
-    files, and summary plots without changing downstream pipeline context.
+    files, summary plots, and exported findROI resources for later downstream
+    discovery through pipeline context.
 
     Returns:
         The results object for the pipeline task is returned.

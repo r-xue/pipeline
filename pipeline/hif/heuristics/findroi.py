@@ -2292,6 +2292,7 @@ def _build_findroi_stage_product(
     config: dict[str, Any],
     inv: list[dict[str, Any]],
     sci_ddids: list[int],
+    science_spws: dict[str, dict[str, Any]],
     field_info: dict[str, Any],
     spw_results: list[dict[str, Any]],
     findroi_blocks: list[dict[str, Any]],
@@ -2306,46 +2307,7 @@ def _build_findroi_stage_product(
     source_names_by_id = {int(k): str(v) for k, v in field_info.get('source_names', {}).items()}
     field_names = [str(v) for v in field_info.get('field_names', [])]
 
-    spw_result_by_id = {int(r['spw_id']): r for r in spw_results}
     findroi_by_spw_id = {int(r['spw_id']): r for r in findroi_blocks}
-
-    science_spws: dict[str, dict[str, Any]] = {}
-    for row in inv:
-        if int(row['ddid']) not in selected_ddids:
-            continue
-        spw_id = int(row['spw_id'])
-        spw_key = str(spw_id)
-        spw_res = spw_result_by_id.get(spw_id, {})
-        ref_freq_hz = None
-        chan_width_hz = None
-        for src_fields in spw_res.get('sources', {}).values():
-            for fid, s in src_fields.items():
-                if isinstance(fid, str):
-                    continue
-                ref_freq_hz = s.get('ref_freq_hz')
-                chan_width_hz = s.get('chan_width_hz')
-                break
-            if ref_freq_hz is not None:
-                break
-        chan_width_kms = None
-        if ref_freq_hz and chan_width_hz:
-            chan_width_kms = float(
-                (float(chan_width_hz) / float(ref_freq_hz))
-                * casa_tools.quanta.getvalue(
-                    casa_tools.quanta.convert(casa_tools.quanta.constants('c'), 'km/s')
-                )[0]
-            )
-        science_spws[spw_key] = {
-            'ddid': int(row['ddid']),
-            'spw_id': spw_id,
-            'spw_name': str(row['name']),
-            'nchan': int(row['nchan']),
-            'channel_axis': {
-                'ref_freq_hz': float(ref_freq_hz) if ref_freq_hz is not None else None,
-                'chan_width_hz': float(chan_width_hz) if chan_width_hz is not None else None,
-                'chan_width_kms': chan_width_kms,
-            },
-        }
 
     inventory_sources: dict[str, dict[str, Any]] = {}
     for source_id, field_ids in field_info.get('groups', {}).items():
@@ -2521,6 +2483,63 @@ def _build_findroi_stage_product(
     }
 
 
+def _science_spw_metadata_from_inventory(
+    vis: str,
+    ms: Any,
+    inv: list[dict[str, Any]],
+    sci_ddids: list[int],
+) -> tuple[dict[str, dict[str, Any]], list[dict[str, Any]]]:
+    '''Build canonical science-SPW metadata from context-backed inventory/MS state.'''
+    selected_ddids = {int(v) for v in sci_ddids}
+    science_spws: dict[str, dict[str, Any]] = {}
+    science_rows: list[dict[str, Any]] = []
+    c_kms = casa_tools.quanta.getvalue(
+        casa_tools.quanta.convert(casa_tools.quanta.constants('c'), 'km/s')
+    )[0]
+    for row in inv:
+        if int(row['ddid']) not in selected_ddids:
+            continue
+        spw_id = int(row['spw_id'])
+        ref_freq_hz = None
+        chan_width_hz = None
+        chan_width_kms = None
+        try:
+            chan_freqs_hz = np.asarray(get_chan_freqs_hz(ms, ddid=int(row['ddid'])), dtype=np.float64).ravel()
+            if chan_freqs_hz.size > 0:
+                ref_freq_hz = float(np.median(chan_freqs_hz))
+            if chan_freqs_hz.size > 1:
+                chan_diffs_hz = np.diff(chan_freqs_hz)
+                finite_diffs = chan_diffs_hz[np.isfinite(chan_diffs_hz)]
+                if finite_diffs.size > 0:
+                    chan_width_hz = float(np.median(finite_diffs))
+            if ref_freq_hz and chan_width_hz:
+                chan_width_kms = float((chan_width_hz / ref_freq_hz) * c_kms)
+        except Exception as exc:
+            LOG.warning(
+                'Failed to derive canonical channel-axis metadata for hif_findroi ddid=%s spw=%s vis=%s: %s',
+                row['ddid'],
+                spw_id,
+                vis,
+                exc,
+            )
+        if ref_freq_hz is not None:
+            row_use = dict(row)
+            row_use['ref_freq_hz'] = ref_freq_hz
+            science_rows.append(row_use)
+        science_spws[str(spw_id)] = {
+            'ddid': int(row['ddid']),
+            'spw_id': spw_id,
+            'spw_name': str(row['name']),
+            'nchan': int(row['nchan']),
+            'channel_axis': {
+                'ref_freq_hz': ref_freq_hz,
+                'chan_width_hz': chan_width_hz,
+                'chan_width_kms': chan_width_kms,
+            },
+        }
+    return science_spws, science_rows
+
+
 def _save_default_summary_plots(
     results: dict[str, Any],
     products_dir: str,
@@ -2568,7 +2587,8 @@ def _save_default_summary_plots(
             per_source['evidence_png'] = p_evidence
 
             out[source_name] = per_source
-        except Exception:
+        except Exception as exc:
+            LOG.warning('Failed to generate default hif_findroi summary plots for source %s: %s', source_name, exc)
             plt.close('all')
     return out
 
@@ -2676,6 +2696,8 @@ def _write_roi_dat_files(
                 outframe = str((src_agg.get('identity') or {}).get('outframe', channel_axis.get('outframe', 'LSRK')))
                 chan_freqs_hz = channel_axis.get('chan_freqs_hz')
                 if chan_freqs_hz is None:
+                    if str(outframe).upper() != 'LSRK':
+                        continue
                     spw_meta = inv_spw.get(str(spw_id), {})
                     ref_freq_hz = spw_meta.get('channel_axis', {}).get('ref_freq_hz')
                     chan_width_hz = spw_meta.get('channel_axis', {}).get('chan_width_hz')
@@ -3935,11 +3957,6 @@ def run_findroi_mpi(
         str(uv_taper_sigma_uv_eff),
         str(project_has_ephemeris),
     )
-    explicit_field_ids = _field_ids_from_input(
-        vis_list[0],
-        field,
-        getattr(ms0, 'fields', []),
-    )
     if field is None or field == 'target' or field == 'target_groups':
         field_info = _context_field_groups_by_source_id(context, vis_list[0], field)
         if field_info is None:
@@ -3951,18 +3968,8 @@ def run_findroi_mpi(
             raise RuntimeError(f'No fields matched hif_findroi field={field!r} for {vis_list[0]}.')
         field_info = context_field_info
         field_groups = field_info['groups']
+    science_spws, science_rows = _science_spw_metadata_from_inventory(vis_list[0], ms0, inv, sci)
     dt_inventory = time.perf_counter() - t_inv
-    science_rows = []
-    for row in inv:
-        if int(row['ddid']) not in sci:
-            continue
-        row_use = dict(row)
-        try:
-            chan_freqs_hz = get_chan_freqs_hz(ms0, ddid=int(row['ddid']))
-            row_use['ref_freq_hz'] = float(np.median(np.asarray(chan_freqs_hz, dtype=np.float64)))
-        except Exception:
-            continue
-        science_rows.append(row_use)
     source_names_by_id = {int(k): str(v) for k, v in field_info.get('source_names', {}).items()}
     field_names_by_id = {
         int(fid): _field_name_for_id(field_info.get('field_names', []), int(fid))
@@ -4255,7 +4262,8 @@ def run_findroi_mpi(
     _rank_logf(tmp_dir, '[run] roi detection dt=%.2fs', dt_detect)
 
     if save_results_path is None:
-        save_results_path = os.path.join(products_dir, 'findroi_results.pkl')
+        save_results_path = os.path.join(tmp_dir, 'findroi_results.pkl') if tmp_dir else 'findroi_results.pkl'
+    export_results_path = os.path.join(products_dir, 'findroi_results.pkl')
 
     config = {
         'timebin_sec': None if timebin_sec_eff is None else float(timebin_sec_eff),
@@ -4308,6 +4316,7 @@ def run_findroi_mpi(
         'summary_plot_s': 0.0,
         'roi_dat_write_s': 0.0,
         'save_results_s': 0.0,
+        'tar_products_s': 0.0,
         'total_run_s': 0.0,
         'spw': spw_timing,
     }
@@ -4321,6 +4330,7 @@ def run_findroi_mpi(
         config=config,
         inv=inv,
         sci_ddids=sci,
+        science_spws=science_spws,
         field_info=field_info,
         spw_results=spw_results,
         findroi_blocks=final,
@@ -4366,31 +4376,55 @@ def run_findroi_mpi(
 
     results['metadata']['artifacts']['findroi_products_dir'] = products_dir
     results['metadata']['artifacts']['findroi_products_tar'] = products_tar_path
+    results['metadata']['artifacts']['findroi_products_tar_bytes'] = None
 
+    save_results_total_s = 0.0
+    run_timing['save_results_s'] = 0.0
     if save_results_path:
         t_save = time.perf_counter()
         with open(save_results_path, 'wb') as fh:
             pickle.dump(results, fh, protocol=pickle.HIGHEST_PROTOCOL)
-        run_timing['save_results_s'] = float(time.perf_counter() - t_save)
+        final_save_s = float(time.perf_counter() - t_save)
+        save_results_total_s += final_save_s
+        # The timing metadata itself requires one final sync write; use the measured
+        # post-tar save as the best estimate for that last write so persisted timing
+        # does not underreport the total save path.
+        run_timing['save_results_s'] = float(save_results_total_s + final_save_s)
+        run_timing['total_run_s'] = float((time.perf_counter() - t_run) + final_save_s)
+        results['metadata']['timing'] = copy.deepcopy(run_timing)
+        with open(save_results_path, 'wb') as fh:
+            pickle.dump(results, fh, protocol=pickle.HIGHEST_PROTOCOL)
+    else:
+        run_timing['save_results_s'] = float(save_results_total_s)
+        run_timing['total_run_s'] = float(time.perf_counter() - t_run)
+        results['metadata']['timing'] = copy.deepcopy(run_timing)
+
+    # Keep the exported tarball self-contained by shipping a snapshot results pickle
+    # alongside the product files, while the authoritative results pickle lives at
+    # save_results_path and carries the final timing metadata.
+    with open(export_results_path, 'wb') as fh:
+        pickle.dump(results, fh, protocol=pickle.HIGHEST_PROTOCOL)
+    if os.path.exists(products_tar_path):
+        os.remove(products_tar_path)
+    t_tar = time.perf_counter()
+    with tarfile.open(products_tar_path, 'w') as tfh:
+        tfh.add(products_dir, arcname=os.path.basename(products_dir))
+    run_timing['tar_products_s'] = float(time.perf_counter() - t_tar)
+    results['metadata']['artifacts']['findroi_products_tar_bytes'] = int(os.path.getsize(products_tar_path))
+    if save_results_path:
         run_timing['total_run_s'] = float(time.perf_counter() - t_run)
         results['metadata']['timing'] = copy.deepcopy(run_timing)
         with open(save_results_path, 'wb') as fh:
             pickle.dump(results, fh, protocol=pickle.HIGHEST_PROTOCOL)
         _rank_logf(
             tmp_dir,
-            '[run] saved results to %s (save=%.2fs total=%.2fs)',
+            '[run] finalized results to %s (save=%.2fs tar=%.2fs tar_bytes=%s total=%.2fs)',
             save_results_path,
             run_timing['save_results_s'],
+            run_timing['tar_products_s'],
+            results['metadata']['artifacts']['findroi_products_tar_bytes'],
             run_timing['total_run_s'],
         )
-    else:
-        run_timing['save_results_s'] = 0.0
-        run_timing['total_run_s'] = float(time.perf_counter() - t_run)
-        results['metadata']['timing'] = copy.deepcopy(run_timing)
-    if os.path.exists(products_tar_path):
-        os.remove(products_tar_path)
-    with tarfile.open(products_tar_path, 'w') as tfh:
-        tfh.add(products_dir, arcname=os.path.basename(products_dir))
     _rank_logf(tmp_dir, '[run] total dt=%.2fs', run_timing['total_run_s'])
 
     return results
