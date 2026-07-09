@@ -3531,7 +3531,7 @@ def _process_spw(
                 save_moment0_path = os.path.join(products_dir if products_dir else (tmp_dir if tmp_dir else '.'), base)
 
             save_cube_path = None
-            if save_cube:
+            if save_cube and (not is_mosaic_source):
                 base = f'cube_source-{source_token}_field-{field_token}_spw-{spw_id}.npy'
                 save_cube_path = os.path.join(products_dir if products_dir else (tmp_dir if tmp_dir else '.'), base)
 
