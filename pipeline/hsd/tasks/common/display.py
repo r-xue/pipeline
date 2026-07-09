@@ -686,8 +686,7 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
         # per-channel mask to diffentiate line/line-free regions
         # line regions: False
         # line-free regions: True
-        nchan = self.image.nchan
-        is_line_free = np.ones(nchan, dtype=bool)
+        is_line_free = np.ones(self.image.nchan, dtype=bool)
 
         # invalidate line regions
         for line_start, line_end in self.__get_image_line_ranges():
