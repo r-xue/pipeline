@@ -16,6 +16,7 @@ import numpy as np
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.mpihelpers as mpihelpers
 from pipeline.domain import DataType
+from pipeline.hif.heuristics import imageparams_factory
 from pipeline.infrastructure import casa_tasks, casa_tools
 from pipeline.infrastructure.filenamer import PipelineProductNameBuilder
 from pipeline.infrastructure.utils import imaging
@@ -298,6 +299,33 @@ def _resolve_pipeline_vis_list(context: Any, vis: Any) -> list[str]:
     if selected_datatype == DataType.RAW:
         LOG.warning('Falling back to raw data for hif_findroi.')
     return [ms.name for ms in ms_objects.keys()]
+
+
+def _findroi_antenna_selections(context: Any, vis_list: list[str], intent: str = 'TARGET') -> dict[str, str]:
+    '''Return per-vis CASA antenna selections matching imaging antenna policy.'''
+    canonical_vis_list = [_context_ms_for_vis(context, vis).name for vis in vis_list]
+    project_structure = getattr(context, 'project_structure', None)
+    imagename_prefix = '' if project_structure is None else getattr(project_structure, 'ousstatus_entity_id', '')
+    heuristics = imageparams_factory.ImageParamsHeuristicsFactory.getHeuristics(
+        vislist=canonical_vis_list,
+        spw='',
+        observing_run=context.observing_run,
+        imagename_prefix=imagename_prefix,
+        proj_params=getattr(context, 'project_performance_parameters', None),
+        contfile=None,
+        linesfile=None,
+        imaging_params=getattr(context, 'imaging_parameters', None),
+        processing_intents=getattr(context, 'processing_intents', None),
+        imaging_mode='ALMA',
+    )
+    antenna_ids = heuristics.antenna_ids(intent, vislist=canonical_vis_list)
+    selections: dict[str, str] = {}
+    for vis, canonical_vis in zip(vis_list, canonical_vis_list):
+        antenna_id_list = antenna_ids.get(os.path.basename(canonical_vis))
+        if not antenna_id_list:
+            raise RuntimeError(f'No {intent} antenna selection determined for hif_findroi vis={vis}.')
+        selections[vis] = ','.join(map(str, antenna_id_list)) + '&'
+    return selections
 
 
 def _field_task_arg(field: str | int | list[int | str] | tuple[int | str, ...] | None) -> str | int | None:
@@ -2763,6 +2791,7 @@ def _prepare_regridded_ms(
     timebin_sec: float | None,
     tmp_root: str,
     tag: str,
+    antenna: str | None = None,
     executor: Any | None = None,
     overwrite: bool = True,
 ) -> tuple[str, str, float, float]:
@@ -2786,6 +2815,7 @@ def _prepare_regridded_ms(
             timeaverage=True,
             timebin='10.0s',
             spw=str(spw_id),
+            antenna=antenna,
             keepflags=False,
         )
         if executor is None:
@@ -2820,6 +2850,7 @@ def _prepare_regridded_ms(
                 timeaverage=True,
                 timebin=f'{float(timebin_sec)}s',
                 spw=str(spw_id),
+                antenna=antenna,
                 keepflags=False,
             )
             if executor is None:
@@ -2839,6 +2870,7 @@ def _prepare_regridded_ms(
         )
         if timebin_sec is None:
             kwargs['spw'] = str(spw_id)
+            kwargs['antenna'] = antenna
         job = casa_tasks.mstransform(**kwargs)
         if executor is None:
             job.execute()
@@ -3306,6 +3338,7 @@ def _process_spw(
     spw_ids_by_vis: dict[str, int] | None,
     fallback_spw_id: int,
     field_groups: dict[int, list[int]],
+    antenna_selections_by_vis: dict[str, str] | None = None,
     source_names_by_id: dict[int, str] | None = None,
     field_names_by_id: dict[int, str] | None = None,
     common_geometry_plan: dict[int, dict[str, Any]] | None = None,
@@ -3365,10 +3398,14 @@ def _process_spw(
     mstransform_bin_s = 0.0
     mstransform_regrid_s = 0.0
     mstransform_calls = 0
+    antenna_selections_by_vis = dict(antenna_selections_by_vis or {})
 
     for eb_idx, vis in enumerate(vis_list):
         ms_cache: dict[tuple[str, int | None], tuple[str, float, float]] = {}
         real_spw_id = int(spw_ids_by_vis.get(vis, spw_ids_by_vis.get(os.path.basename(os.path.normpath(vis)), spw_id))) if spw_ids_by_vis else int(spw_id)
+        antenna_selection = antenna_selections_by_vis.get(vis)
+        if antenna_selection is None:
+            raise RuntimeError(f'No antenna selection found for hif_findroi vis={vis}.')
         for source_id, fids in field_groups.items():
             outframe = str(source_outframe.get(int(source_id), 'LSRK'))
             cache_key = (outframe, None if outframe == 'LSRK' else int(source_id))
@@ -3381,6 +3418,7 @@ def _process_spw(
                     timebin_sec,
                     tmp_dir,
                     frame_tag,
+                    antenna=antenna_selection,
                     executor=executor,
                     overwrite=tmp_overwrite,
                 )
@@ -3968,6 +4006,7 @@ def run_findroi_mpi(
             raise RuntimeError(f'No fields matched hif_findroi field={field!r} for {vis_list[0]}.')
         field_info = context_field_info
         field_groups = field_info['groups']
+    antenna_selections_by_vis = _findroi_antenna_selections(context, vis_list, intent='TARGET')
     science_spws, science_rows = _science_spw_metadata_from_inventory(vis_list[0], ms0, inv, sci)
     dt_inventory = time.perf_counter() - t_inv
     source_names_by_id = {int(k): str(v) for k, v in field_info.get('source_names', {}).items()}
@@ -4010,6 +4049,7 @@ def run_findroi_mpi(
         )
         args.append((
             vis_list, ddid, spw_name, spw_ids_by_vis, int(ddid_rows[int(ddid)]['spw_id']), field_groups,
+            antenna_selections_by_vis,
             source_names_by_id, field_names_by_id,
             common_geometry_plan, project_outframes, field_phase_centers, field_ephemeris_paths, products_dir, dish_diameter_m,
             timebin_sec_eff, npix_eff, fov_pb_mult_eff,
