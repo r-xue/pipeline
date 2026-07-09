@@ -2738,12 +2738,15 @@ def _write_roi_dat_files(
                 if chan_freqs_hz.size != nchan:
                     continue
 
+                keep_line_lines: list[str] = []
                 if roi_union_ranges:
                     merged_roi = _merge_channel_ranges(roi_union_ranges, nchan=nchan)
                     roi_freq_ghz = _chan_ranges_to_frame_freq_ranges_ghz(merged_roi, chan_freqs_hz)
                     keep_line_lines = _fmt_frame_freq_ranges(roi_freq_ghz, outframe)
-                    if keep_line_lines:
-                        roi_lines.append((spw_id, keep_line_lines))
+                if keep_line_lines:
+                    roi_lines.append((spw_id, keep_line_lines))
+                else:
+                    roi_lines.append((spw_id, ['NONE']))
 
                 if cont_excluded_ranges:
                     merged_excluded = _merge_channel_ranges(cont_excluded_ranges, nchan=nchan)
