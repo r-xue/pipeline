@@ -148,6 +148,7 @@ class Context:
         self.rmsimlist = imagelibrary.ImageLibrary()  # CAS-9632
         self.sciimlist = imagelibrary.ImageLibrary()
         self.selfcal_resources: list[str] = []  # PIPE-1802
+        self.findroi_resources: list[str] = []  # PIPE-3136
         self.selfcal_targets = []  # PIPE-1802
         self.size_mitigation_parameters = {}  # CAS-9255
         self.subimlist = imagelibrary.ImageLibrary()  # CAS-10345

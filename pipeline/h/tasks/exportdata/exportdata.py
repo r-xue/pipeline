@@ -613,6 +613,16 @@ class ExportData(basetask.StandardTaskTemplate):
         if selfcal_resources_list:
             empty = False
 
+        # PIPE-3136: look for the hif_findroi products tar resource
+        findroi_resources_list = []
+        if hasattr(self.inputs.context, 'findroi_resources') and isinstance(self.inputs.context.findroi_resources, list):
+            findroi_resources_list = [
+                resource for resource in self.inputs.context.findroi_resources
+                if os.path.basename(resource).endswith('findroi_products.tar')
+            ]
+        if findroi_resources_list:
+            empty = False
+
         # PIPE-2094: check for the pipeline stats file
         if pipeline_stats_file and os.path.exists(pipeline_stats_file):
             empty = False
@@ -674,6 +684,12 @@ class ExportData(basetask.StandardTaskTemplate):
                 if os.path.exists(selfcal_resource):
                     tar.add(selfcal_resource, arcname=selfcal_resource)
                     LOG.info('Saving auxiliary data product %s in %s', selfcal_resource, tarfilename)
+
+            # PIPE-3136: Save hif_findroi resources
+            for findroi_resource in findroi_resources_list:
+                if os.path.exists(findroi_resource):
+                    tar.add(findroi_resource, arcname=findroi_resource)
+                    LOG.info('Saving auxiliary data product %s in %s', findroi_resource, tarfilename)
 
             # PIPE-2094: Save pipeline statistics file
             if pipeline_stats_file and os.path.exists(pipeline_stats_file):
