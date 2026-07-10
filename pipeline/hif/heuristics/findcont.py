@@ -38,7 +38,7 @@ class FindContHeuristics:
             hm_cell = '3ppb'
 
         L80, _ = image_heuristics.calc_percentile_baseline_length(80.)
-        C = 0.769
+        C = 0.769 # PIPEREQ-416, derived from 2*ln(2)/pi / 0.574, numerator from Gaussian normalization and denominator from THB eq. 7.4
 
         _, _, _, repr_freq, _, _, _, _, _, _ = image_heuristics.representative_target()
         repr_wavelength = cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] / cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
