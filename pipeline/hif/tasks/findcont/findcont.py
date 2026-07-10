@@ -163,6 +163,20 @@ class FindCont(basetask.StandardTaskTemplate):
                     datacolumn = ''
 
             inputs.vis = [k.basename for k in ms_objects_and_columns.keys()]
+        else:
+            if not datacolumn:
+                raise ValueError('Specifying a vis list requires defining a data column too.')
+
+            # Assuming that all MSes have the same datatype in the given
+            # column we read the datatype from the first in the list
+            ref_ms = context.observing_run.get_ms(inputs.vis[0])
+            if datacolumn.upper() == 'DATA':
+                datacolumn_dict_value = 'DATA'
+            elif datacolumn.upper() in ('CORRECTED', 'CORRECTED_DATA'):
+                datacolumn_dict_value = 'CORRECTED_DATA'
+            else:
+                raise ValueError(f'Unknown datacolumn value "{datacolumn}"')
+            selected_datatype = [k for k,v in ref_ms.data_column.items() if v == datacolumn_dict_value][0]
 
         known_synthesized_beams = inputs.context.synthesized_beams
 
@@ -188,10 +202,10 @@ class FindCont(basetask.StandardTaskTemplate):
 
             if inputs.hm_mode == 'coarse':
                 if inputs.context.project_summary.telescope == 'ALMA':
-                    makeimlist_inputs.hm_mosweight = False
                     makeimlist_inputs.hm_cell, \
                     makeimlist_inputs.uvtaper, \
-                    makeimlist_inputs.minpix = \
+                    makeimlist_inputs.minpix, \
+                    makeimlist_inputs.mosweight = \
                         findcont_heuristics.coarse_mode_params(inputs)
                 else:
                     LOG.info('coarse mode only implemented for ALMA')

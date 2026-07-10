@@ -48,7 +48,9 @@ class FindContHeuristics:
 
         minpix = 64
 
-        return hm_cell, uvtaper, minpix
+        mosweight = False
+
+        return hm_cell, uvtaper, minpix, mosweight
 
     def find_continuum(self, dirty_cube: str, pb_cube: str | None = None, psf_cube: str | None = None,
                        single_continuum: bool = False, is_eph_obj: bool = False,
