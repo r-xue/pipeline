@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 LOG = logging.get_logger(__name__)
 
 # minimum allowed CASA revision. Set to 0 or None to disable
-MIN_CASA_REVISION = [6, 7, 3, 20]
+MIN_CASA_REVISION = [6, 7, 4, 2]
 # maximum allowed CASA revision. Set to 0 or None to disable
 MAX_CASA_REVISION = None
 
@@ -140,10 +140,10 @@ class Context:
         self.clean_list_pending = []  # CAS-10146
         self.clean_masks = {}  # PIPE-2464
         self.clean_thresholds = {}  # PIPE-2464
-        self.contfile: str | None = None
+        self.contfile: str | None = 'cont.dat' # PIPE-3131 starts with an intrinsic hif_makeimlist call which does not populate this name. It needs to be initialized here.
         self.imaging_mode: str | None = None  # PIPE-592
         self.imaging_parameters = {}  # CAS-10146
-        self.linesfile: str | None = None
+        self.linesfile: str | None = 'lines.dat'
         self.per_spw_cont_sensitivities_all_chan = {'robust': None, 'uvtaper': None}  # CAS-11211
         self.rmsimlist = imagelibrary.ImageLibrary()  # CAS-9632
         self.sciimlist = imagelibrary.ImageLibrary()

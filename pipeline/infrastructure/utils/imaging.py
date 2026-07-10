@@ -5,24 +5,29 @@ TODO These utility functions should migrate to hif.tasks.common
 """
 from __future__ import annotations
 
+import os
+
 import re
 from typing import TYPE_CHECKING
 
 import numpy
 
 import pipeline.infrastructure as infrastructure
+from pipeline.infrastructure import casa_tasks
+
 from .. import casa_tools, utils
 
 if TYPE_CHECKING:
     from collections.abc import Generator
     from typing import Any
 
+
 LOG = infrastructure.logging.get_logger(__name__)
 
 __all__ = ['chan_selection_to_frequencies', 'freq_selection_to_channels', 'spw_intersect', 'update_sens_dict',
            'update_beams_dict', 'set_nested_dict', 'intersect_ranges', 'intersect_ranges_by_weight', 'merge_ranges', 'equal_to_n_digits',
            'velocity_to_frequency', 'frequency_to_velocity',
-           'predict_kernel', 'chan_ranges_to_freq_ranges_ghz', 'get_field_phase_centers_rad']
+           'predict_kernel', 'get_vlass_image_type', 'get_stats']
 
 
 def _get_cube_freq_axis(img: str) -> tuple[float, float, str, float, int]:
@@ -163,62 +168,6 @@ def freq_selection_to_channels(img: str, selection: str) -> list[int] | list[str
         channels = ['NONE']
 
     return channels
-
-
-def chan_ranges_to_freq_ranges_ghz(
-    chan_ranges: list[tuple[int, int]],
-    chan_freqs_hz: numpy.ndarray | list[float] | tuple[float, ...] | None,
-) -> list[tuple[float, float]]:
-    """
-    Convert channel index ranges into frequency ranges in GHz.
-
-    Args:
-        chan_ranges: Inclusive channel-index ranges.
-        chan_freqs_hz: Output-frame channel frequencies in Hz.
-
-    Returns:
-        Inclusive frequency ranges in GHz.
-    """
-    if chan_freqs_hz is None:
-        return []
-    freq = numpy.asarray(chan_freqs_hz, dtype=numpy.float64).ravel()
-    nchan = int(freq.size)
-    if nchan == 0:
-        return []
-    out = []
-    for lo, hi in chan_ranges:
-        a = max(0, min(int(lo), nchan - 1))
-        b = max(0, min(int(hi), nchan - 1))
-        if b < a:
-            a, b = b, a
-        f0 = float(freq[a]) * 1.0e-9
-        f1 = float(freq[b]) * 1.0e-9
-        if f1 < f0:
-            f0, f1 = f1, f0
-        out.append((f0, f1))
-    return out
-
-
-def get_field_phase_centers_rad(fields) -> dict[int, tuple[float, float]]:
-    """
-    Return field phase centers in radians from imported pipeline Field objects.
-
-    Args:
-        fields: Iterable of pipeline Field objects.
-
-    Returns:
-        Mapping of field id to ``(ra_rad, dec_rad)``.
-    """
-    phase_centers = {}
-    for field in fields:
-        mdirection = getattr(field, 'mdirection', None)
-        if mdirection is None:
-            continue
-        phase_centers[int(field.id)] = (
-            float(mdirection['m0']['value']),
-            float(mdirection['m1']['value']),
-        )
-    return phase_centers
 
 
 def spw_intersect(spw_range: list[float], line_regions: list[list[float]]) -> list[list[float]]:
@@ -566,3 +515,35 @@ def predict_kernel(beam, target_beam, pstol=1e-6, patol=1e-3):
 
 
     return rt_kernel, rt_code
+
+
+def get_vlass_image_type(filename:str, append_tt: bool = True) -> str:
+    """
+        Determine the VLASS image type based on specific substrings in the filename.
+    """
+    filename = os.path.basename(filename).lower()
+    base = (
+        "ALPHAERR" if ".alpha.error" in filename else
+        "ALPHA" if ".alpha" in filename else
+        "RMS" if ".rms" in filename else
+        "INTENSITY_PBCOR" if "image.pbcor." in filename else
+        "WEIGHT" if ".weight." in filename else
+        "SUMWT" if ".sumwt." in filename else
+        "PSF" if ".psf." in filename else
+        "UNKNOWN"
+    )
+    if base == "UNKNOWN" or not append_tt:
+        return base
+
+    tt = ("_TT0" if "tt0" in filename else "_TT1" if "tt1" in filename else "")
+    return base + tt
+
+
+def get_stats(image_name: str, metrics: list, stokes: str = 'I') -> dict:
+    """Return a dict of requested statistics for the given image."""
+
+    if not os.path.exists(image_name):
+        return {m: None for m in metrics}
+    job = casa_tasks.imstat(imagename=image_name, stokes=stokes)
+    stats = job.execute()
+    return {m: (float(stats.get(m)[0]) if stats.get(m) is not None else None) for m in metrics}
