@@ -32,6 +32,7 @@ from pipeline.infrastructure import basetask, casa_tasks, casa_tools, utils
 from pipeline.infrastructure.renderer import rendererutils
 from pipeline.infrastructure.utils import ous_parallactic_range
 from pipeline.hsd.tasks.common import utils as sdutils
+from pipeline.hsd.tasks.skycal.skycal import ELEVATION_DIFFERENCE_THRESHOLD
 from pipeline.qa import checksource
 
 if TYPE_CHECKING:
@@ -3555,7 +3556,7 @@ def score_multiply(scores_list):
 def score_sd_skycal_elevation_difference(
     ms: MeasurementSet,
     resultdict: dict,
-    threshold: float = 3.0
+    el_threshold: float = ELEVATION_DIFFERENCE_THRESHOLD
 ) -> pqa.QAScore | None:
     """
     Compute QA score based on elevation difference between ON and OFF scans.
@@ -3569,7 +3570,7 @@ def score_sd_skycal_elevation_difference(
         ms: MeasurementSet object
         resultdict: A dictionary containing elevation difference results
                     for each field, antenna, and spw.
-        threshold: Elevation difference threshold in degrees for scoring.
+        el_threshold: Elevation difference threshold in degrees for scoring.
 
     Returns:
         A QAScore object representing the QA score based on elevation
@@ -3581,9 +3582,8 @@ def score_sd_skycal_elevation_difference(
     # CAS-11054: it is decided that we do not calculate QA score based on elevation difference for Cycle 6
     # PIPE-246: we implement QA score based on elevation difference for Cycle 7.
     #           requirement is that score is 0.8 if elevation difference is larger than 3deg.
-    # make sure threshold is 3deg
-    el_threshold = threshold
-    assert el_threshold == 3.0
+    # make sure el_threshold is 3deg
+    assert el_threshold == ELEVATION_DIFFERENCE_THRESHOLD
 
     for field_id in field_ids:
         metric_score = []
@@ -3602,40 +3602,32 @@ def score_sd_skycal_elevation_difference(
                 if len(preceding) > 0:
                     max_pred = np.abs(preceding).max()
                     metric_score.append(max_pred)
-                    if max_pred >= el_threshold:
-                        warned_antennas.add(antenna_id)
                 if len(subsequent) > 0:
                     max_subq = np.abs(subsequent).max()
                     metric_score.append(max_subq)
-                    if max_subq >= el_threshold:
-                        warned_antennas.add(antenna_id)
-                LOG.debug('field {} antenna {} spw {} metric_score {}'.format(field_id, antenna_id, spw_id, metric_score))
 
-        if len(warned_antennas) > 0:
-            antennas = [ms.antennas[a].name for a in warned_antennas]
-        else:
-            antennas = []
+                max_metric_score = np.max(metric_score)
+                if max_metric_score < el_threshold:
+                    score = 1.0
+                    ant = []
+                    shortmsg = f'Elevation difference between ON and OFF is within {el_threshold} deg.'
+                    longmsg = f'{shortmsg} for {ms.basename}: Field {field.name}'
+                else:
+                    score = 0.8
+                    ant = [ms.antennas[antenna_id].name]
+                    shortmsg = f'Elevation difference between ON and OFF exceeds {el_threshold} deg.'
+                    longmsg = f'{shortmsg} for {ms.basename}: Field {field.name} Antenna {ant}'
 
-        max_metric_score = np.max(metric_score)
-        if max_metric_score < el_threshold:
-            score = 1.0
-            shortmsg = f'Elevation difference between ON and OFF is within {el_threshold} deg.'
-            longmsg = f'{shortmsg} for {ms.basename}' 
-        else:
-            score = 0.8
-            shortmsg = f'Elevation difference between ON and OFF exceeds {el_threshold} deg.'
-            longmsg = f'{shortmsg} for {ms.basename}: {antennas}'
-        
-        selection = pqa.TargetDataSelection(vis={ms.basename},
-                                            field={field.name},
-                                            ant=set(antennas))
-        origin = pqa.QAOrigin(metric_name='OnOffElevationDifference',
-                              metric_score=max_metric_score,
-                              metric_units='deg')
+                selection = pqa.TargetDataSelection(vis={ms.basename},
+                                                    field={field.name},
+                                                    ant=set(ant))
+                origin = pqa.QAOrigin(metric_name='OnOffElevationDifference',
+                                      metric_score=float(max_metric_score),
+                                      metric_units='deg')
 
-        qascore = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg,
-                              origin=origin, applies_to=selection )
-        qascores.append(qascore)
+                qascore = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg,
+                                      origin=origin, applies_to=selection )
+                qascores.append(qascore)
 
     return qascores
 

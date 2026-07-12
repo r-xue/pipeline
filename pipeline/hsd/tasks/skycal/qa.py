@@ -26,8 +26,8 @@ class SDSkyCalQAHandler(pqa.QAPlugin):
 
     def __init__(self):
         """
-         register er the parameters for longmsg formatter and aggregator
-         """
+        register er the parameters for longmsg formatter and aggregator
+        """
         # register the properties for 'OnOffElevationDifference'
         metric_name = 'OnOffElevationDifference'
         keys = ['vis', 'field', 'ant']
@@ -50,8 +50,8 @@ class SDSkyCalQAHandler(pqa.QAPlugin):
 
         vis = calapps[0].calto.vis
         ms = context.observing_run.get_ms(vis)
-        threshold = skycal.ELEVATION_DIFFERENCE_THRESHOLD
-        qascores = qacalc.score_sd_skycal_elevation_difference(ms, resultdict, threshold=threshold)
+        el_threshold = skycal.ELEVATION_DIFFERENCE_THRESHOLD
+        qascores = qacalc.score_sd_skycal_elevation_difference(ms, resultdict, el_threshold=el_threshold)
         if qascores:
             # first, consolidate QAScores for field and antennas before feeding into result.qa.pool
             # modify keys_to_aggregate temporary
@@ -60,16 +60,10 @@ class SDSkyCalQAHandler(pqa.QAPlugin):
             qautils.registry.register_keys_to_aggregate(metric_name, ['field', 'ant'])
             # aggregate for field and ant
             aggregator = qautils.QAScoreAggregator()
-            qascores = aggregator.aggregate_qascores(qascores)
+            qascores = aggregator.aggregate_qascores(qascores, metric_scores_func=max)
             # recover keys_to_aggregate
             qautils.registry.register_keys_to_aggregate(metric_name, original_keys)
 
-            # reformat the messages and append to result.qa.pool
-            # this additional step is needed to reformat all QAScores including those skipped during aggregation
-            formatter = qautils.QAScoreFormatter()
-            for qascore in qascores:
-                formatter.update_longmsg(qascore)
-            
             result.qa.pool.extend(qascores)
 
 
@@ -90,6 +84,7 @@ class SDSkyCalListQAHandler(pqa.QAPlugin):
         # own QAscore list
         collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated
+
 
 aqua_exporter = aqua.xml_generator_for_metric('OnOffElevationDifference', '{:0.3f}deg')
 aqua.register_aqua_metric(aqua_exporter)
