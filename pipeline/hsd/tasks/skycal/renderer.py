@@ -41,6 +41,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
         super().__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
+    @qautils.aggregate_qascores
     @qautils.sort_qascores
     def render(self, context: Context, result: SDSkyCalResults) -> str:
         """

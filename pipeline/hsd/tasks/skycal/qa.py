@@ -52,15 +52,17 @@ class SDSkyCalQAHandler(pqa.QAPlugin):
         ms = context.observing_run.get_ms(vis)
         el_threshold = skycal.ELEVATION_DIFFERENCE_THRESHOLD
         qascores = qacalc.score_sd_skycal_elevation_difference(ms, resultdict, el_threshold=el_threshold)
+
         if qascores:
-            # first, consolidate QAScores for field and antennas before feeding into result.qa.pool
-            # modify keys_to_aggregate temporary
+            # this block does not aggregate for 'vis', override keys_to_aggregate with ['field', 'ant']
             metric_name = 'OnOffElevationDifference'
             original_keys = qautils.registry.get_keys_to_aggregate(metric_name)
             qautils.registry.register_keys_to_aggregate(metric_name, ['field', 'ant'])
-            # aggregate for field and ant
+
+            # first, consolidate QAScores for field and antennas before feeding into result.qa.pool
             aggregator = qautils.QAScoreAggregator()
             qascores = aggregator.aggregate_qascores(qascores, metric_scores_func=max)
+
             # recover keys_to_aggregate
             qautils.registry.register_keys_to_aggregate(metric_name, original_keys)
 
