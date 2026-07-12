@@ -3576,10 +3576,17 @@ def score_sd_skycal_elevation_difference(
         difference, or None if no valid metric score is available.
     """
     field_ids = list(resultdict.keys())
-    metric_score = []
+    qascores = []
+    
+    # CAS-11054: it is decided that we do not calculate QA score based on elevation difference for Cycle 6
+    # PIPE-246: we implement QA score based on elevation difference for Cycle 7.
+    #           requirement is that score is 0.8 if elevation difference is larger than 3deg.
+    # make sure threshold is 3deg
     el_threshold = threshold
-    lmsg_list = []
+    assert el_threshold == 3.0
+
     for field_id in field_ids:
+        metric_score = []
         field = ms.fields[field_id]
         if field_id not in resultdict:
             continue
@@ -3605,47 +3612,32 @@ def score_sd_skycal_elevation_difference(
                 LOG.debug('field {} antenna {} spw {} metric_score {}'.format(field_id, antenna_id, spw_id, metric_score))
 
         if len(warned_antennas) > 0:
-            antenna_names = ', '.join([ms.antennas[a].name for a in warned_antennas])
-            lmsg_list.append(
-                'field {} (antennas {})'.format(field.name, antenna_names)
-            )
+            antennas = [ms.antennas[a].name for a in warned_antennas]
+        else:
+            antennas = []
 
-    if len(lmsg_list) > 0:
-        longmsg = 'Elevation difference between ON and OFF exceeds threshold ({}deg) for {}: {}'.format(
-            el_threshold,
-            ms.basename,
-            ', '.join(lmsg_list)
-        )
-    else:
-        longmsg = 'Elevation difference between ON and OFF is below threshold ({}deg) for {}'.format(
-            el_threshold,
-            ms.basename
-        )
+        max_metric_score = np.max(metric_score)
+        if max_metric_score < el_threshold:
+            score = 1.0
+            shortmsg = f'Elevation difference between ON and OFF is within {el_threshold} deg.'
+            longmsg = f'{shortmsg} for {ms.basename}' 
+        else:
+            score = 0.8
+            shortmsg = f'Elevation difference between ON and OFF exceeds {el_threshold} deg.'
+            longmsg = f'{shortmsg} for {ms.basename}: {antennas}'
+        
+        selection = pqa.TargetDataSelection(vis={ms.basename},
+                                            field={field.name},
+                                            ant=set(antennas))
+        origin = pqa.QAOrigin(metric_name='OnOffElevationDifference',
+                              metric_score=max_metric_score,
+                              metric_units='deg')
 
-    # CAS-11054: it is decided that we do not calculate QA score based on elevation difference for Cycle 6
-    # PIPE-246: we implement QA score based on elevation difference for Cycle 7.
-    #           requirement is that score is 0.8 if elevation difference is larger than 3deg.
-    # make sure threshold is 3deg
-    assert el_threshold == 3.0
+        qascore = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg,
+                              origin=origin, applies_to=selection )
+        qascores.append(qascore)
 
-    if len(metric_score) == 0:
-        # no valid metric score, skip scoring
-        LOG.info("No valid elevation difference data found. Skipping QA scoring.")
-        return None
-
-    max_metric_score = np.max(metric_score)
-    # lower the score if elevation difference exceeds 3deg
-    score = 1.0 if max_metric_score < el_threshold else 0.8
-    origin = pqa.QAOrigin(metric_name='OnOffElevationDifference',
-                          metric_score=max_metric_score,
-                          metric_units='deg')
-
-    if score < 1.0:
-        shortmsg = 'Elevation difference between ON and OFF exceeds {}deg'.format(el_threshold)
-    else:
-        shortmsg = 'Elevation difference between ON and OFF is below {}deg'.format(el_threshold)
-
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, vis=ms.basename)
+    return qascores
 
 
 def log_edge_channels(
