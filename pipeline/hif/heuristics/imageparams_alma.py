@@ -19,6 +19,33 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
                                        linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'ALMA'
 
+    def get_sourcename(
+        self, _vislist: list[str] | str, fieldlist: list[str] | str, intent: str, as_list: bool = False
+    ) -> list[str] | str:
+        """Get source name(s) from a measurement set list for given field and intent selections.
+
+        For ALMA, return field names from the field selection (string field name), normalized and deduplicated,
+        in the requested format (list if as_list=True, else comma-separated string).
+
+        Note: Unlike the base class, ALMA/VLA assume fieldlist contains pre-resolved
+        field names (not IDs) and don't filter by intent, as field selection has
+        already been validated upstream.
+        """
+        # Normalize fieldlist to a list
+        if isinstance(fieldlist, str):
+            field_list = [f.strip() for f in fieldlist.split(',') if f.strip()]
+        else:
+            field_list = fieldlist if fieldlist else []
+
+        # Deduplicate
+        deduplicated = utils.deduplicate(field_list)
+
+        # Return in requested format
+        if as_list:
+            return deduplicated
+        else:
+            return ','.join(deduplicated)
+
     def robust(self, specmode=None):
         """robust parameter heuristic."""
         if 'robust' in self.imaging_params:
