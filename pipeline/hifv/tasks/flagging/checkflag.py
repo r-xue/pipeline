@@ -213,8 +213,8 @@ class Checkflag(basetask.StandardTaskTemplate):
                              'for checkflagmode=target-vla.')
                     use_contdat = True
                 else:
-                    LOG.warning('usecontdat=True but no cont.dat found or empty: '
-                                'Applying flagging to all spectral windows.')
+                    LOG.info('usecontdat=True but no cont.dat found or empty: '
+                             'Applying flagging to all spectral windows.')
             else:
                 LOG.info('usecontdat=False: Applying flagging to all spectral windows.')
 
