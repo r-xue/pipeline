@@ -48,7 +48,7 @@ class T2_4MDetailsSingleDishBaselineRenderer(basetemplates.T2_4MDetailsDefaultRe
         """
         Custom renderer for hsd_baseline()
 
-        This method aggegates and sorts the QAScores, and renders the weblog,
+        This method aggregates and sorts the QAScores, and renders the weblog,
 
         Args:
             context: Pipeline context
