@@ -69,7 +69,7 @@ class ExportDataInputs(vdp.StandardInputs):
         products_dir: The directory where the data productions will be written.
     """
 
-    processing_data_type = [
+    processing_data_types = [
         DataType.RAW,
         DataType.REGCAL_CONTLINE_ALL,
         DataType.REGCAL_CONTLINE_SCIENCE,
@@ -77,8 +77,8 @@ class ExportDataInputs(vdp.StandardInputs):
         DataType.REGCAL_CONT_SCIENCE,
         DataType.SELFCAL_CONT_SCIENCE,
         DataType.REGCAL_LINE_SCIENCE,
-        DataType.SELFCAL_LINE_SCIENCE,
-    ]
+        DataType.SELFCAL_LINE_SCIENCE
+        ]
 
     calimages = vdp.VisDependentProperty(default=[])
     calintents = vdp.VisDependentProperty(default='')
@@ -421,13 +421,16 @@ class ExportData(basetask.StandardTaskTemplate):
     def _has_imaging_data(self, context, vis):
         """Check if the given vis contains any imaging data."""
         imaging_datatypes = [
-            DataType.SELFCAL_CONTLINE_SCIENCE,
-            DataType.REGCAL_CONTLINE_SCIENCE,
-            DataType.SELFCAL_CONT_SCIENCE,
-            DataType.REGCAL_CONT_SCIENCE,
+            DataType.IM_LINE_SCIENCE,
+            DataType.IM_CONT_SCIENCE,
+            DataType.IM_CONTLINE_SCIENCE,
             DataType.SELFCAL_LINE_SCIENCE,
+            DataType.SELFCAL_CONT_SCIENCE,
+            DataType.SELFCAL_CONTLINE_SCIENCE,
             DataType.REGCAL_LINE_SCIENCE,
-        ]
+            DataType.REGCAL_CONT_SCIENCE,
+            DataType.REGCAL_CONTLINE_SCIENCE
+            ]
         ms_object = context.observing_run.get_ms(name=vis)
         return any(ms_object.get_data_column(datatype) for datatype in imaging_datatypes)
 
@@ -660,6 +663,16 @@ class ExportData(basetask.StandardTaskTemplate):
         if selfcal_resources_list:
             empty = False
 
+        # PIPE-3136: look for the hif_findroi products tar resource
+        findroi_resources_list = []
+        if hasattr(self.inputs.context, 'findroi_resources') and isinstance(self.inputs.context.findroi_resources, list):
+            findroi_resources_list = [
+                resource for resource in self.inputs.context.findroi_resources
+                if os.path.basename(resource).endswith('findroi_products.tar')
+            ]
+        if findroi_resources_list:
+            empty = False
+
         # PIPE-2094: check for the pipeline stats file
         if pipeline_stats_file and os.path.exists(pipeline_stats_file):
             empty = False
@@ -720,6 +733,12 @@ class ExportData(basetask.StandardTaskTemplate):
                 if os.path.exists(selfcal_resource):
                     tar.add(selfcal_resource, arcname=selfcal_resource)
                     LOG.info('Saving auxiliary data product %s in %s', selfcal_resource, tarfilename)
+
+            # PIPE-3136: Save hif_findroi resources
+            for findroi_resource in findroi_resources_list:
+                if os.path.exists(findroi_resource):
+                    tar.add(findroi_resource, arcname=findroi_resource)
+                    LOG.info('Saving auxiliary data product %s in %s', findroi_resource, tarfilename)
 
             # PIPE-2094: Save pipeline statistics file
             if pipeline_stats_file and os.path.exists(pipeline_stats_file):
@@ -1257,10 +1276,15 @@ finally:
                     spwlist_key = ','.join(str(spwid) for spwid in image['spwlist'])
                 else:
                     spwlist_key = image['spwlist']
+
                 antenna_key = image.get("antenna", None)
+
+                # PIPE-3074: Include imagename_prefix (usually MOUS/EB UID or session names) to distinguish check sources
+                # from different EBs while preserving PIPE-2465 Stokes I/IQUV deduplication.
                 product_key = (
                     image['sourcename'],
                     image['sourcetype'],
+                    image['imagename_prefix'],
                     spwlist_key,
                     image['specmode'],
                     image['stokes'],
@@ -1275,6 +1299,7 @@ finally:
                     product_key_stokes_i = (
                         image['sourcename'],
                         image['sourcetype'],
+                        image['imagename_prefix'],
                         spwlist_key,
                         image['specmode'],
                         'I',
