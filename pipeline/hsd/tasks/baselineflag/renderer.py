@@ -40,12 +40,13 @@ class T2_4MDetailsBLFlagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         super().__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
+    @qautils.aggregate_qascores
     @qautils.sort_qascores
     def render(self, context: Context, result: SDBLFlagResults) -> str:
         """
-        Custom renderer for hsd_imaging()
+        Custom renderer for hsd_blflag()
 
-        This method sorts the QAScores with their scores and renders the weblog,
+        This method aggregates, sorts the QAScores with their scores and renders the weblog,
 
         Args:
             context: Pipeline context

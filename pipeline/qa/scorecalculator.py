@@ -1824,14 +1824,25 @@ def score_wvrgcal(ms_name, dataresult):
 
 
 @log_qa
-def score_sdtotal_data_flagged(label, frac_flagged):
+def score_sdtotal_data_flagged(frac_flagged: float,
+                               ms_name: str | None = None,
+                               field: str | None = None,
+                               spw: int | None = None ) -> pqa.QAScore:
     """
     Calculate a score for the flagging task based on the total fraction of
     data flagged.
 
-    0%-5% flagged   -> 1
-    5%-50% flagged  -> 0.5
-    50-100% flagged -> 0
+    0%-5% flagged   -> 1.0
+    5%-50% flagged  -> liearly interpolated between 1.0 and 0.0
+    50-100% flagged -> 0.0
+
+    Args:
+        frac_flagged : flagged fraction
+        ms_name : MS name
+        field : field name
+        spw : spectral window ID
+    Returns:
+        QAScore object
     """
     if frac_flagged > 0.5:
         score = 0
@@ -1839,15 +1850,20 @@ def score_sdtotal_data_flagged(label, frac_flagged):
         score = linear_score(frac_flagged, 0.05, 0.5, 1.0, 0.5)
 
     percent = 100.0 * frac_flagged
-    longmsg = '%0.2f%% of data in %s was newly flagged' % (percent, label)
-    shortmsg = '%0.2f%% data flagged' % percent
-
+    label = f'{ms_name} Field {field} Spw {spw}' if ms_name else f'Field {field} Spw {spw}'
+    longmsg = f'{percent:.2f}% of data in {label} was newly flagged'
+    shortmsg = f'{percent:.2f}% of data newly flagged'
     origin = pqa.QAOrigin(metric_name='score_sdtotal_data_flagged',
                           metric_score=frac_flagged,
                           metric_units='Fraction of data newly flagged')
 
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=None, origin=origin)
+    selection = pqa.TargetDataSelection(
+        vis={ms_name} if ms_name is not None else None,
+        field={field} if field is not None else None,
+        spw={spw} if spw is not None else None
+    )
 
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
 
 @log_qa
 def score_sdtotal_data_flagged_old(name, ant, spw, pol, frac_flagged, field=None):
