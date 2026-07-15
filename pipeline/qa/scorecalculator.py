@@ -118,7 +118,8 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_testBPdcals_dts_ants',
            'score_testBPdcals_refant',
            'score_testBPdcals_delay',
-           'score_spw_solint']
+           'score_spw_solint',
+           'score_contdat_applied']
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -5657,3 +5658,29 @@ def score_spw_solint(vis: str, band: str, spw_solint: dict)-> pqa.QAScore | None
         )
 
     return qascore
+
+# PIPE-3046: adding QA score 1 if cont.dat is applied
+@log_qa
+def score_contdat_applied(vis: str)-> pqa.QAScore:
+    """Evaluate QA score based on whether cont.dat is applied"""
+
+    score = 1.0
+    longmsg = f"'cont.dat' file is present. Using VLA Spectral Line Heuristics for checkflagmode=target-vla."
+    shortmsg = f"cont.dat is applied"
+    origin = pqa.QAOrigin(
+        metric_name='score_contdat_applied',
+        metric_score=score,
+        metric_units=''
+    )
+
+    applies_to = pqa.TargetDataSelection(
+        vis={vis}
+    )
+
+    return pqa.QAScore(
+        score,
+        longmsg=longmsg,
+        shortmsg=shortmsg,
+        origin=origin,
+        applies_to=applies_to
+    )

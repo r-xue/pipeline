@@ -33,9 +33,7 @@ if result[0].inputs['statwtmode'] == 'VLA':
     mean =  result[0].jobs[0]['mean']
     variance = result[0].jobs[0]['variance'] 
     %>
-    % if result[0].use_contdat:
-    <p> 'cont.dat' file is present. Using VLA Spectral Line Heuristics for checkflagmode=target-vla.</p>
-    %endif
+
     <h3>Overall results:</h3>
     <b>Mean:</b> ${format_wt_overall(mean)} 
     <br>

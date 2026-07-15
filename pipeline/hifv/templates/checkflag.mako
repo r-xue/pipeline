@@ -7,9 +7,7 @@ import pipeline.infrastructure.utils as utils
 <%inherit file="t2-4m_details-base.mako"/>
 
 <%block name="title">RFI Flagging</%block>
-% if result[0].use_contdat:
-<p> 'cont.dat' file is present. Using VLA Spectral Line Heuristics for checkflagmode=target-vla.</p>
-%endif
+
 <p>Flag possible RFI using rflag and tfcrop; checkflagmode=${repr(result[0].inputs['checkflagmode'])}.</p>
 
 % if result[0].inputs['checkflagmode'] == 'target-vla':
