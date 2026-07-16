@@ -45,12 +45,13 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
         super().__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
+    @qautils.aggregate_qascores
     @qautils.sort_qascores
     def render(self, context: Context, result: SDK2JyCalResults) -> str:
         """
         Custom renderer for hsd_k2jycal()
 
-        This method sorts the QAScores with their scores, and renders the weblog,
+        This method aggregates and sorts the QAScores with their scores, and renders the weblog,
 
         Args:
             context: Pipeline context

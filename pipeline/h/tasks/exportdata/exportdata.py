@@ -958,7 +958,7 @@ class ExportData(basetask.StandardTaskTemplate):
         task = casa_tasks.flagmanager(vis=vis, mode='list')
         flag_dict = self._executor.execute(task)
         flag_dict = filter(lambda v: isinstance(v, dict) and "name" in v, flag_dict.values())
-        
+
         if any(v['name'] == flag_version_name for v in flag_dict):
             tt = int(time.time())
             tmpname = flag_version_name + '.old.' + str(tt)
@@ -1276,6 +1276,9 @@ finally:
                     spwlist_key = ','.join(str(spwid) for spwid in image['spwlist'])
                 else:
                     spwlist_key = image['spwlist']
+
+                antenna_key = image.get("antenna", None)
+
                 # PIPE-3074: Include imagename_prefix (usually MOUS/EB UID or session names) to distinguish check sources
                 # from different EBs while preserving PIPE-2465 Stokes I/IQUV deduplication.
                 product_key = (
@@ -1285,6 +1288,7 @@ finally:
                     spwlist_key,
                     image['specmode'],
                     image['stokes'],
+                    antenna_key,
                     image['datatype'],
                     image['version'],
                 )
@@ -1299,6 +1303,7 @@ finally:
                         spwlist_key,
                         image['specmode'],
                         'I',
+                        antenna_key,
                         image['datatype'],
                         image['version'],
                     )
