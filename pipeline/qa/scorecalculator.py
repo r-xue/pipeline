@@ -3557,7 +3557,7 @@ def score_sd_skycal_elevation_difference(
     ms: MeasurementSet,
     resultdict: dict,
     el_threshold: float = ELEVATION_DIFFERENCE_THRESHOLD
-) -> pqa.QAScore | None:
+) -> list[pqa.QAScore]:
     """
     Compute QA score based on elevation difference between ON and OFF scans.
 
