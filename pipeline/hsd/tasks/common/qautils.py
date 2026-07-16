@@ -235,7 +235,7 @@ class QAScoreAggregator:
             destination:        QA score to update origin field
             qascores:           List of QA scores
             matched_idxes:      List of indexes of QA scores to aggregate
-            metric_scores_func: Function to calculate the metric_score when aggrgating.
+            metric_scores_func: Function to calculate the metric_score when aggregating.
                                 Default is None, which concatenates the metric_scores as a string.
         """
         names   = [qascores[idx].origin.metric_name for idx in matched_idxes]
@@ -286,7 +286,7 @@ class QAScoreAggregator:
         Args:
             qascores:    list of QA scores
             metric_name: metric_name to target
-            metric_scores_func: Function to calculate the metric_score when aggrgating.
+            metric_scores_func: Function to calculate the metric_score when aggregating.
                                 Default is None, which concatenates the metric_scores as a string.
         Returns:
             Aggregated QA scores
@@ -382,7 +382,7 @@ class QAScoreAggregator:
 
         Args:
             orig_qascores: Original list of QA scores
-            metric_scores_func: Function to calculate the metric_score when aggrgating.
+            metric_scores_func: Function to calculate the metric_score when aggregating.
                                 Default is None, which concatenates the metric_scores as a string.
         Returns:
             Aggregated List of QA scores (and, if requested, the original QA scores with WegLogLocation.HIDDEN)
