@@ -32,7 +32,6 @@ from pipeline.infrastructure import basetask, casa_tasks, casa_tools, utils
 from pipeline.infrastructure.renderer import rendererutils
 from pipeline.infrastructure.utils import ous_parallactic_range
 from pipeline.hsd.tasks.common import utils as sdutils
-from pipeline.hsd.tasks.skycal.skycal import ELEVATION_DIFFERENCE_THRESHOLD
 from pipeline.qa import checksource
 
 if TYPE_CHECKING:
@@ -3556,7 +3555,7 @@ def score_multiply(scores_list):
 def score_sd_skycal_elevation_difference(
     ms: MeasurementSet,
     resultdict: dict,
-    el_threshold: float = ELEVATION_DIFFERENCE_THRESHOLD
+    el_threshold: float,
 ) -> list[pqa.QAScore]:
     """
     Compute QA score based on elevation difference between ON and OFF scans.
@@ -3579,12 +3578,6 @@ def score_sd_skycal_elevation_difference(
     field_ids = list(resultdict.keys())
     qascores = []
     
-    # CAS-11054: it is decided that we do not calculate QA score based on elevation difference for Cycle 6
-    # PIPE-246: we implement QA score based on elevation difference for Cycle 7.
-    #           requirement is that score is 0.8 if elevation difference is larger than 3deg.
-    # make sure el_threshold is 3deg
-    assert el_threshold == ELEVATION_DIFFERENCE_THRESHOLD
-
     for field_id in field_ids:
         metric_score = []
         field = ms.fields[field_id]

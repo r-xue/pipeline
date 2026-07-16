@@ -51,7 +51,7 @@ class SDSkyCalQAHandler(pqa.QAPlugin):
         vis = calapps[0].calto.vis
         ms = context.observing_run.get_ms(vis)
         el_threshold = skycal.ELEVATION_DIFFERENCE_THRESHOLD
-        qascores = qacalc.score_sd_skycal_elevation_difference(ms, resultdict, el_threshold=el_threshold)
+        qascores = qacalc.score_sd_skycal_elevation_difference(ms, resultdict, el_threshold)
 
         if qascores:
             # this block does not aggregate for 'vis', override keys_to_aggregate with ['field', 'ant']
