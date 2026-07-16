@@ -59,12 +59,14 @@ class SDSkyCalQAHandler(pqa.QAPlugin):
             original_keys = qautils.registry.get_keys_to_aggregate(metric_name)
             qautils.registry.register_keys_to_aggregate(metric_name, ['field', 'ant'])
 
-            # first, consolidate QAScores for field and antennas before feeding into result.qa.pool
-            aggregator = qautils.QAScoreAggregator()
-            qascores = aggregator.aggregate_qascores(qascores, metric_scores_func=max)
-
-            # recover keys_to_aggregate
-            qautils.registry.register_keys_to_aggregate(metric_name, original_keys)
+            # try-finally block is implemented to recover keys_to_aggregate even when the aggregator fails
+            try:
+                # first, consolidate QAScores for field and antennas before feeding into result.qa.pool
+                aggregator = qautils.QAScoreAggregator()
+                qascores = aggregator.aggregate_qascores(qascores, metric_scores_func=max)
+            finally:
+                # recover keys_to_aggregate
+                qautils.registry.register_keys_to_aggregate(metric_name, original_keys)
 
             result.qa.pool.extend(qascores)
 
