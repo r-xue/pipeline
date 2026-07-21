@@ -12,7 +12,6 @@ import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
-from pipeline.hif.heuristics import imageparams_factory
 from pipeline.hif.tasks.makeimlist import makeimlist
 from pipeline.hif.heuristics import findcont
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
@@ -213,11 +212,10 @@ class FindCont(basetask.StandardTaskTemplate):
             # Get list of fields and spw to work on from makeimlist call
 
             # Create makeimlist inputs
-            makeimlist_inputs = makeimlist.MakeImListInputs(inputs.context, vis=inputs.vis)
+            makeimlist_inputs = makeimlist.MakeImListInputs(
+                inputs.context, vis=inputs.vis, intent='TARGET', field=inputs.field, specmode='mfs'
+            )
             makeimlist_inputs.datatype = selected_datatype.name
-            makeimlist_inputs.intent = 'TARGET'
-            makeimlist_inputs.specmode = 'mfs'
-            makeimlist_inputs.field = inputs.field
             # PIPE-107 requests using a fixed robust value of 1.0
             makeimlist_inputs.robust = 1.0
             makeimlist_inputs.clearlist = True
